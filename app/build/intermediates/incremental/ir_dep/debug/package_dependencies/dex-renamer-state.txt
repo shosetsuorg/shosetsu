@@ -1,4 +1,0 @@
-#Fri May 31 06:28:09 EDT 2019
-base.0=/mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/build/intermediates/transforms/dexMerger/debug/10
-path.0=classes.dex
-renamed.0=classes.dex

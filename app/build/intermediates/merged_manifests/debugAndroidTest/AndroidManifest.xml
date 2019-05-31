@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.Doomsdayrs.apps.test" >
+    package="com.github.Doomsdayrs.apps.shosetsu.test" >
 
     <uses-sdk
-        android:minSdkVersion="24"
+        android:minSdkVersion="21"
         android:targetSdkVersion="28" />
 
     <instrumentation
-        android:name="android.support.test.runner.AndroidJUnitRunner"
+        android:name="androidx.test.runner.AndroidJUnitRunner"
         android:functionalTest="false"
         android:handleProfiling="false"
-        android:label="Tests for com.github.Doomsdayrs.apps"
-        android:targetPackage="com.github.Doomsdayrs.apps" />
+        android:label="Tests for com.github.Doomsdayrs.apps.shosetsu"
+        android:targetPackage="com.github.Doomsdayrs.apps.shosetsu" />
 
     <application android:debuggable="true" >
         <uses-library android:name="android.test.runner" />
