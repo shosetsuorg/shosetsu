@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "/mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-land/values-land.xml",
+            "map": [
+                {
+                    "source": "/home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/res/values-land/values-land.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "5",
+                        "endColumns": "10",
+                        "endOffsets": "222"
+                    },
+                    "to": {
+                        "startLines": "5",
+                        "startColumns": "4",
+                        "startOffsets": "264",
+                        "endLines": "8",
+                        "endColumns": "10",
+                        "endOffsets": "431"
+                    }
+                },
+                {
+                    "source": "/home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/84b65fb5d25f91c67df050171f7416aa/res/values-land/values-land.xml",
+                    "from": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,125,196",
+                        "endColumns": "69,70,67",
+                        "endOffsets": "120,191,259"
+                    }
+                }
+            ]
+        }
+    ]
+}
