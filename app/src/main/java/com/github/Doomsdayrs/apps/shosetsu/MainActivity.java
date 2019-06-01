@@ -7,16 +7,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CatalogueFragment;
+import com.github.Doomsdayrs.apps.shosetsu.fragment.LibraryFragement;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.SettingsFragment;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
-import com.github.Doomsdayrs.apps.shosetsu.fragment.LibraryFragement;
 
 import java.util.ArrayList;
 
@@ -70,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.e("Nav", "Library selected");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new LibraryFragement()).commit();
-
-
             }
             break;
             case R.id.nav_catalogue: {
