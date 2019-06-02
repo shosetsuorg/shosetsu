@@ -1,5 +1,6 @@
 package com.github.Doomsdayrs.apps.shosetsu.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CatalogueFragement;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.NovelCardsViewHolder> {
     private ArrayList<CatalogueCard> recycleCards;
     private FragmentManager fragmentManager;
+    private Context context;
 
     public CatalogueCardsAdapter(ArrayList<CatalogueCard> recycleCards, FragmentManager fragmentManager) {
         this.recycleCards = recycleCards;
@@ -32,6 +35,7 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
     @Override
     public NovelCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.catalogue_item_card, viewGroup, false);
+        context = viewGroup.getContext();
         return new NovelCardsViewHolder(view, fragmentManager);
     }
 
@@ -41,7 +45,13 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
         CatalogueCard catalogueCard = recycleCards.get(i);
         novelCardsViewHolder.setFormatter(catalogueCard.formatter);
 
-        novelCardsViewHolder.library_card_image.setImageResource(catalogueCard.libraryImageResource);
+        if (catalogueCard.formatter.getImageURL() != null && !catalogueCard.formatter.getImageURL().isEmpty())
+            Glide.with(context)
+                    .asBitmap()
+                    .load(catalogueCard.formatter.getImageURL())
+                    .into(novelCardsViewHolder.library_card_image);
+        else
+            novelCardsViewHolder.library_card_image.setImageResource(catalogueCard.libraryImageResource);
         novelCardsViewHolder.library_card_title.setText(catalogueCard.libraryText);
     }
 
@@ -65,13 +75,13 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
 
         public void setFormatter(Formatter formatter) {
             this.formatter = formatter;
-            Log.d("FormatterSet",formatter.getName());
+            Log.d("FormatterSet", formatter.getName());
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Log.d("ForrmatterSelection",formatter.getName());
+            Log.d("ForrmatterSelection", formatter.getName());
             CatalogueFragement catalogueFragement = new CatalogueFragement();
             catalogueFragement.setFormatter(formatter);
             setFormatter(formatter);

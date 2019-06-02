@@ -26,8 +26,8 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
 
         public NovelCardsViewHolder(@NonNull View itemView) {
             super(itemView);
-            library_card_image = itemView.findViewById(R.id.catalogue_item_card_image);
-            library_card_title = itemView.findViewById(R.id.catalogue_item_card_text);
+            library_card_image = itemView.findViewById(R.id.novel_item_image);
+            library_card_title = itemView.findViewById(R.id.textView);
         }
     }
 
@@ -40,7 +40,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
     @Override
     public NovelCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         this.context = viewGroup.getContext();
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.catalogue_item_card, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.novel_item_card, viewGroup, false);
         return new NovelCardsViewHolder(view);
     }
 

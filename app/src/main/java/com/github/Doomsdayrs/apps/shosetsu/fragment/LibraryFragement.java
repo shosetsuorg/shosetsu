@@ -1,6 +1,7 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +26,7 @@ public class LibraryFragement extends Fragment {
     private SearchView searchView;
     private Context context;
 
-    private ArrayList<RecycleCard> libraryCards = new ArrayList<>();
+    private static ArrayList<RecycleCard> libraryCards = new ArrayList<>();
     private RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
@@ -64,7 +65,10 @@ public class LibraryFragement extends Fragment {
     private void setLibraryCards(ArrayList<RecycleCard> recycleCards) {
         if (library_view != null) {
             library_view.setHasFixedSize(false);
-            library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
+            if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
+            else
+                library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
             library_Adapter = new NovelCardsAdapter(recycleCards);
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);

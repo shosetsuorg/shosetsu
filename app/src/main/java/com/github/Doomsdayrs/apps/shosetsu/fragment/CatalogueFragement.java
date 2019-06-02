@@ -1,6 +1,7 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,7 +33,8 @@ public class CatalogueFragement extends Fragment {
     private SearchView searchView;
     private Context context;
 
-    private ArrayList<CatalogueNovelCard> libraryCards = new ArrayList<>();
+    private static ArrayList<CatalogueNovelCard> libraryCards = new ArrayList<>();
+    private static ArrayList<CatalogueNovelCard> searchResults = new ArrayList<>();
     private RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
@@ -52,16 +54,17 @@ public class CatalogueFragement extends Fragment {
         View view = inflater.inflate(R.layout.fragment_library, container, false);
         library_view = view.findViewById(R.id.fragment_library_recycler);
         this.context = container.getContext();
-        try {
-            boolean b = new FillNovels().execute().get();
-            if (b)
-                setLibraryCards(libraryCards);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        if (savedInstanceState == null) {
+            try {
+                boolean b = new setLatest().execute().get();
+                if (b)
+                    setLibraryCards(libraryCards);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else setLibraryCards(libraryCards);
         return view;
     }
 
@@ -79,7 +82,10 @@ public class CatalogueFragement extends Fragment {
     private void setLibraryCards(ArrayList<CatalogueNovelCard> recycleCards) {
         if (library_view != null) {
             library_view.setHasFixedSize(false);
-            library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
+            if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
+            else
+                library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
             library_Adapter = new CatalogueNovelCardsAdapter(context, recycleCards);
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);
@@ -90,13 +96,22 @@ public class CatalogueFragement extends Fragment {
         @Override
         public boolean onClose() {
             setLibraryCards(libraryCards);
-            return false;
+            return true;
         }
     }
 
     private class SearchQuery implements SearchView.OnQueryTextListener {
         @Override
         public boolean onQueryTextSubmit(String query) {
+            try {
+                searchResults = new querySearch().execute(query).get();
+                setLibraryCards(searchResults);
+                return true;
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return false;
         }
 
@@ -110,12 +125,27 @@ public class CatalogueFragement extends Fragment {
         }
     }
 
-    class FillNovels extends AsyncTask<String, Void, Boolean> {
+    class querySearch extends AsyncTask<String, Void, ArrayList<CatalogueNovelCard>> {
+        @Override
+        protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
+            ArrayList<CatalogueNovelCard> result = new ArrayList<>();
+            try {
+                List<Novel> novels = formatter.search(strings[0]);
+                for (Novel novel : novels)
+                    result.add(new CatalogueNovelCard(novel.imageURL, novel.title));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+
+    class setLatest extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... strings) {
-            List<Novel> novels = null;
             try {
-                novels = formatter.parseLatest(formatter.getLatestURL(1));
+                List<Novel> novels = formatter.parseLatest(formatter.getLatestURL(1));
                 for (Novel novel : novels)
                     libraryCards.add(new CatalogueNovelCard(novel.imageURL, novel.title));
                 return true;
