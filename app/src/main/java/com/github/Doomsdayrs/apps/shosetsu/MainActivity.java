@@ -11,47 +11,41 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.github.Doomsdayrs.apps.shosetsu.fragment.CatalogueFragment;
+import com.github.Doomsdayrs.apps.shosetsu.fragment.CataloguesFragment;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.LibraryFragement;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.SettingsFragment;
-import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
-
-    private ArrayList<RecycleCard> settingsCards = new ArrayList<>();
-
-
+    private LibraryFragement libraryFragement = new LibraryFragement();
+    private CataloguesFragment cataloguesFragment = new CataloguesFragment();
+    private SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Set the content view
         setContentView(R.layout.activity_main);
+        //Sets the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Prevent the frag from changing on rotation
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new LibraryFragement()).commit();
+                   libraryFragement).commit();
             navigationView.setCheckedItem(R.id.nav_library);
         }
-
-
-        settingsCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "dummy"));
-
-
     }
 
     @Override
@@ -67,19 +61,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_library: {
                 Log.e("Nav", "Library selected");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new LibraryFragement()).commit();
+                        libraryFragement).commit();
             }
             break;
             case R.id.nav_catalogue: {
                 Log.e("Nav", "Catalogue selected");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new CatalogueFragment()).commit();
+                        cataloguesFragment).commit();
             }
             break;
             case R.id.nav_settings: {
                 Log.e("Nav", "Settings selected");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new SettingsFragment()).commit();
+                        settingsFragment).commit();
             }
             break;
         }

@@ -1,6 +1,7 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,38 +16,52 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
-import com.github.Doomsdayrs.apps.shosetsu.adapters.NovelCardsAdapter;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
+import com.github.Doomsdayrs.apps.shosetsu.adapters.CatalogueNovelCardsAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueNovelCard;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class LibraryFragement extends Fragment {
+public class CatalogueFragement extends Fragment {
+    private Formatter formatter;
     private SearchView searchView;
     private Context context;
 
-    private ArrayList<RecycleCard> libraryCards = new ArrayList<>();
+    private ArrayList<CatalogueNovelCard> libraryCards = new ArrayList<>();
     private RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
 
-
-    public LibraryFragement() {
+    public CatalogueFragement() {
         setHasOptionsMenu(true);
+    }
+
+    public void setFormatter(Formatter formatter) {
+        this.formatter = formatter;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "a"));
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "b"));
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "c"));
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "d"));
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "e"));
+
         View view = inflater.inflate(R.layout.fragment_library, container, false);
         library_view = view.findViewById(R.id.fragment_library_recycler);
         this.context = container.getContext();
-        setLibraryCards(libraryCards);
+        try {
+            boolean b = new FillNovels().execute().get();
+            if (b)
+                setLibraryCards(libraryCards);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return view;
     }
 
@@ -61,11 +76,11 @@ public class LibraryFragement extends Fragment {
     }
 
 
-    private void setLibraryCards(ArrayList<RecycleCard> recycleCards) {
+    private void setLibraryCards(ArrayList<CatalogueNovelCard> recycleCards) {
         if (library_view != null) {
             library_view.setHasFixedSize(false);
             library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
-            library_Adapter = new NovelCardsAdapter(recycleCards);
+            library_Adapter = new CatalogueNovelCardsAdapter(context, recycleCards);
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);
         }
@@ -88,11 +103,26 @@ public class LibraryFragement extends Fragment {
         @Override
         public boolean onQueryTextChange(String newText) {
             Log.d("Library search", newText);
-            ArrayList<RecycleCard> recycleCards = new ArrayList<>(libraryCards);
-            recycleCards.removeIf(recycleCard -> !recycleCard.libraryText.contains(newText));
+            ArrayList<CatalogueNovelCard> recycleCards = new ArrayList<>(libraryCards);
+            recycleCards.removeIf(recycleCard -> !recycleCard.title.contains(newText));
             setLibraryCards(recycleCards);
             return recycleCards.size() != 0;
         }
     }
 
+    class FillNovels extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            List<Novel> novels = null;
+            try {
+                novels = formatter.parseLatest(formatter.getLatestURL(1));
+                for (Novel novel : novels)
+                    libraryCards.add(new CatalogueNovelCard(novel.imageURL, novel.title));
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
 }
