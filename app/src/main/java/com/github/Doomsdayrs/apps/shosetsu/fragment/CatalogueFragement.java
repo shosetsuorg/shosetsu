@@ -21,9 +21,11 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.CatalogueNovelCardsAdapter;
-import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueNovelCard;
+import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.NovelCard;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -33,8 +35,8 @@ public class CatalogueFragement extends Fragment {
     private SearchView searchView;
     private Context context;
 
-    private static ArrayList<CatalogueNovelCard> libraryCards = new ArrayList<>();
-    private static ArrayList<CatalogueNovelCard> searchResults = new ArrayList<>();
+    private static ArrayList<NovelCard> libraryCards = new ArrayList<>();
+    private static ArrayList<NovelCard> searchResults = new ArrayList<>();
     private RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
@@ -79,14 +81,14 @@ public class CatalogueFragement extends Fragment {
     }
 
 
-    private void setLibraryCards(ArrayList<CatalogueNovelCard> recycleCards) {
+    private void setLibraryCards(ArrayList<NovelCard> recycleCards) {
         if (library_view != null) {
             library_view.setHasFixedSize(false);
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
                 library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
             else
                 library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
-            library_Adapter = new CatalogueNovelCardsAdapter(context, recycleCards);
+            library_Adapter = new CatalogueNovelCardsAdapter(context, recycleCards,getFragmentManager(),formatter);
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);
         }
@@ -118,22 +120,24 @@ public class CatalogueFragement extends Fragment {
         @Override
         public boolean onQueryTextChange(String newText) {
             Log.d("Library search", newText);
-            ArrayList<CatalogueNovelCard> recycleCards = new ArrayList<>(libraryCards);
+            ArrayList<NovelCard> recycleCards = new ArrayList<>(libraryCards);
             recycleCards.removeIf(recycleCard -> !recycleCard.title.contains(newText));
             setLibraryCards(recycleCards);
             return recycleCards.size() != 0;
         }
     }
 
-    class querySearch extends AsyncTask<String, Void, ArrayList<CatalogueNovelCard>> {
+    class querySearch extends AsyncTask<String, Void, ArrayList<NovelCard>> {
         @Override
-        protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
-            ArrayList<CatalogueNovelCard> result = new ArrayList<>();
+        protected ArrayList<NovelCard> doInBackground(String... strings) {
+            ArrayList<NovelCard> result = new ArrayList<>();
             try {
                 List<Novel> novels = formatter.search(strings[0]);
                 for (Novel novel : novels)
-                    result.add(new CatalogueNovelCard(novel.imageURL, novel.title));
+                    result.add(new NovelCard(novel.imageURL, novel.title,new URI(novel.link)));
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
             return result;
@@ -147,9 +151,11 @@ public class CatalogueFragement extends Fragment {
             try {
                 List<Novel> novels = formatter.parseLatest(formatter.getLatestURL(1));
                 for (Novel novel : novels)
-                    libraryCards.add(new CatalogueNovelCard(novel.imageURL, novel.title));
+                    libraryCards.add(new NovelCard(novel.imageURL, novel.title,new URI(novel.link)));
                 return true;
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
             return false;

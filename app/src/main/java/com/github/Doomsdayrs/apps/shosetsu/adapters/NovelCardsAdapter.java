@@ -1,6 +1,7 @@
 package com.github.Doomsdayrs.apps.shosetsu.adapters;
 
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 public class NovelCardsAdapter extends RecyclerView.Adapter<NovelCardsAdapter.NovelCardsViewHolder> {
     private ArrayList<RecycleCard> recycleCards;
+    private FragmentManager fragmentManager;
 
     static class NovelCardsViewHolder extends RecyclerView.ViewHolder {
         public ImageView library_card_image;
@@ -27,8 +29,9 @@ public class NovelCardsAdapter extends RecyclerView.Adapter<NovelCardsAdapter.No
         }
     }
 
-    public NovelCardsAdapter(ArrayList<RecycleCard> recycleCards){
+    public NovelCardsAdapter(ArrayList<RecycleCard> recycleCards,FragmentManager fragmentManager){
         this.recycleCards = recycleCards;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull

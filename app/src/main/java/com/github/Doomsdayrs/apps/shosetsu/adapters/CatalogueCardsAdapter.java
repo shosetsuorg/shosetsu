@@ -16,11 +16,10 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CatalogueFragement;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueCard;
-import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
 
 import java.util.ArrayList;
 
-public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.NovelCardsViewHolder> {
+public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.CatalogueHolder> {
     private ArrayList<CatalogueCard> recycleCards;
     private FragmentManager fragmentManager;
     private Context context;
@@ -33,26 +32,26 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
 
     @NonNull
     @Override
-    public NovelCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public CatalogueHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.catalogue_item_card, viewGroup, false);
         context = viewGroup.getContext();
-        return new NovelCardsViewHolder(view, fragmentManager);
+        return new CatalogueHolder(view, fragmentManager);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NovelCardsViewHolder novelCardsViewHolder, int i) {
+    public void onBindViewHolder(@NonNull CatalogueHolder catalogueHolder, int i) {
 
         CatalogueCard catalogueCard = recycleCards.get(i);
-        novelCardsViewHolder.setFormatter(catalogueCard.formatter);
+        catalogueHolder.setFormatter(catalogueCard.formatter);
 
         if (catalogueCard.formatter.getImageURL() != null && !catalogueCard.formatter.getImageURL().isEmpty())
             Glide.with(context)
                     .asBitmap()
                     .load(catalogueCard.formatter.getImageURL())
-                    .into(novelCardsViewHolder.library_card_image);
+                    .into(catalogueHolder.library_card_image);
         else
-            novelCardsViewHolder.library_card_image.setImageResource(catalogueCard.libraryImageResource);
-        novelCardsViewHolder.library_card_title.setText(catalogueCard.libraryText);
+            catalogueHolder.library_card_image.setImageResource(catalogueCard.libraryImageResource);
+        catalogueHolder.library_card_title.setText(catalogueCard.libraryText);
     }
 
     @Override
@@ -60,13 +59,13 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
         return recycleCards.size();
     }
 
-    static class NovelCardsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class CatalogueHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView library_card_image;
         public TextView library_card_title;
         public Formatter formatter;
         FragmentManager fragmentManager;
 
-        public NovelCardsViewHolder(@NonNull View itemView, FragmentManager fragmentManager) {
+        public CatalogueHolder(@NonNull View itemView, FragmentManager fragmentManager) {
             super(itemView);
             library_card_image = itemView.findViewById(R.id.catalogue_item_card_image);
             library_card_title = itemView.findViewById(R.id.catalogue_item_card_text);

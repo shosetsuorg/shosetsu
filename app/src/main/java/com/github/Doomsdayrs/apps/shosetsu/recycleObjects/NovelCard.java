@@ -1,15 +1,18 @@
 package com.github.Doomsdayrs.apps.shosetsu.recycleObjects;
 
-public class CatalogueNovelCard {
+import java.net.URI;
+
+public class NovelCard {
     public String libraryImageResource;
     public String title;
+    public String URL;
 
-    public CatalogueNovelCard(String libraryImageResource, String title){
+    public NovelCard(String libraryImageResource, String title,URI URL){
         this.libraryImageResource = libraryImageResource;
         this.title = title;
     }
 
-    public CatalogueNovelCard(String title){
+    public NovelCard(String title, URI URL){
         this.libraryImageResource = null;
         this.title = title;
     }
