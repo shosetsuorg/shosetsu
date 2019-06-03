@@ -3,6 +3,7 @@ package com.github.Doomsdayrs.apps.shosetsu;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Sets the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Prevent the frag from changing on rotation
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                   libraryFragement).commit();
+                    libraryFragement).commit();
             navigationView.setCheckedItem(R.id.nav_library);
         }
     }
@@ -60,20 +60,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()) {
             case R.id.nav_library: {
                 Log.e("Nav", "Library selected");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        libraryFragement).commit();
+                getSupportFragmentManager().beginTransaction()
+                        .addToBackStack("tag")
+                        .replace(R.id.fragment_container, libraryFragement)
+                        .commit();
             }
             break;
             case R.id.nav_catalogue: {
                 Log.e("Nav", "Catalogue selected");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        cataloguesFragment).commit();
+                getSupportFragmentManager().beginTransaction()
+                        .addToBackStack("tag")
+                        .replace(R.id.fragment_container, cataloguesFragment)
+                        .commit();
             }
             break;
             case R.id.nav_settings: {
                 Log.e("Nav", "Settings selected");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        settingsFragment).commit();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack("tag")
+                        .replace(R.id.fragment_container, settingsFragment)
+                        .commit();
             }
             break;
         }

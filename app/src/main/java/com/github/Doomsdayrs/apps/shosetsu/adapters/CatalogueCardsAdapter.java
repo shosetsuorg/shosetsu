@@ -84,7 +84,10 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
             CatalogueFragement catalogueFragement = new CatalogueFragement();
             catalogueFragement.setFormatter(formatter);
             setFormatter(formatter);
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, catalogueFragement).commit();
+            fragmentManager.beginTransaction()
+                    .addToBackStack("tag")
+                    .replace(R.id.fragment_container, catalogueFragement)
+                    .commit();
         }
     }
 }

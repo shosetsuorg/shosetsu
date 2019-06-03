@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,9 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;;
+import java.util.concurrent.TimeoutException;
 
-public class NovelFragment extends Fragment {
+public class NovelFragment extends Fragment{
     boolean incrementChapters;
 
     ArrayList<NovelChapter> novelChapters = new ArrayList<>();
@@ -58,6 +59,8 @@ public class NovelFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_novel, container, false);
+
+
         imageView = view.findViewById(R.id.fragment_novel_image);
         title = view.findViewById(R.id.fragment_novel_title);
         author = view.findViewById(R.id.fragment_novel_author);
@@ -66,7 +69,7 @@ public class NovelFragment extends Fragment {
             String u = new fillData().execute().get(10, TimeUnit.SECONDS);
             Glide.with(getContext())
                     .asBitmap()
-                    .load(u)
+                    .load("http://novelfull.com" +u)
                     .into(imageView);
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -81,6 +84,12 @@ public class NovelFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+
+
+    }
+
+    private void setupViewPager(ViewPager viewPager){
+
     }
 
     class fillData extends AsyncTask<Void, Void, String> {
