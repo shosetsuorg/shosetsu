@@ -88,10 +88,7 @@ public class NovelFragment extends Fragment{
 
     }
 
-    private void setupViewPager(ViewPager viewPager){
-
-    }
-
+    private void setupViewPager(ViewPager viewPager){}
     class fillData extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... voids) {
