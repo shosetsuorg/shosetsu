@@ -10,11 +10,13 @@ public class NovelCard {
     public NovelCard(String libraryImageResource, String title,URI URL){
         this.libraryImageResource = libraryImageResource;
         this.title = title;
+        this.URL = URL.getPath();
     }
 
     public NovelCard(String title, URI URL){
         this.libraryImageResource = null;
         this.title = title;
+        this.URL = URL.getPath();
     }
 
 
