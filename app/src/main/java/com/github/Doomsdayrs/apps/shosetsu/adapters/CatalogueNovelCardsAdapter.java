@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.fragment.NovelFragment;
+import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragment;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.NovelCard;
 
 import java.net.URI;

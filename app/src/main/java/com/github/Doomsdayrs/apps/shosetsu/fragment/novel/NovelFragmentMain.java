@@ -1,6 +1,5 @@
-package com.github.Doomsdayrs.apps.shosetsu.fragment;
+package com.github.Doomsdayrs.apps.shosetsu.fragment.novel;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.novel_full.NovelFull;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
@@ -30,11 +28,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class NovelFragment extends Fragment{
+public class NovelFragmentMain extends Fragment {
     boolean incrementChapters;
 
-    ArrayList<NovelChapter> novelChapters = new ArrayList<>();
 
+    static NovelPage novelPage;
     static Formatter formatter;
     static String URL;
     ImageView imageView;
@@ -42,34 +40,33 @@ public class NovelFragment extends Fragment{
     TextView author;
     TextView description;
 
-    public NovelFragment() {
+    public NovelFragmentMain() {
         setHasOptionsMenu(true);
     }
 
     public void setFormatter(Formatter formatter) {
-        this.formatter = formatter;
+        NovelFragmentMain.formatter = formatter;
         incrementChapters = formatter.isIncrementingChapterList();
     }
 
     public void setURL(String URL) {
-        this.URL = URL;
+        NovelFragmentMain.URL = URL;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_novel, container, false);
-
-
+        View view = inflater.inflate(R.layout.fragment_novel_main, container, false);
         imageView = view.findViewById(R.id.fragment_novel_image);
         title = view.findViewById(R.id.fragment_novel_title);
         author = view.findViewById(R.id.fragment_novel_author);
         description = view.findViewById(R.id.fragment_novel_description);
+
         try {
-            String u = new fillData().execute().get(10, TimeUnit.SECONDS);
+            String u = new fillData().execute().get(40, TimeUnit.SECONDS);
             Glide.with(getContext())
                     .asBitmap()
-                    .load("http://novelfull.com" +u)
+                    .load("http://novelfull.com" + u)
                     .into(imageView);
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -84,26 +81,17 @@ public class NovelFragment extends Fragment{
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
-
     }
 
-    private void setupViewPager(ViewPager viewPager){}
+
     class fillData extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... voids) {
-            try {
-                NovelPage novelPage = formatter.parseNovel("http://novelfull.com" + URL);
-                novelChapters.addAll(novelPage.novelChapters);
-                title.setText(novelPage.title);
-                author.setText(Arrays.toString(novelPage.authors));
-                description.setText(novelPage.description);
-                Log.d("Novel",novelPage.toString());
-                return novelPage.imageURL;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+            Log.d("Novel", novelPage.toString());
+            title.setText(novelPage.title);
+            author.setText(Arrays.toString(novelPage.authors));
+            description.setText(novelPage.description);
+            return novelPage.imageURL;
         }
     }
 }
