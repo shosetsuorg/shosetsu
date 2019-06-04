@@ -24,50 +24,30 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class NovelFragmentMain extends Fragment {
+public class NovelFragmentChapters extends Fragment {
+
     boolean incrementChapters;
-
-
     static NovelPage novelPage;
     static Formatter formatter;
     static String URL;
-    ImageView imageView;
-    TextView title;
-    TextView author;
-    TextView description;
 
-    public NovelFragmentMain() {
+    public NovelFragmentChapters() {
         setHasOptionsMenu(true);
     }
 
     public void setFormatter(Formatter formatter) {
-        NovelFragmentMain.formatter = formatter;
+        NovelFragmentChapters.formatter = formatter;
         incrementChapters = formatter.isIncrementingChapterList();
     }
 
     public void setURL(String URL) {
-        NovelFragmentMain.URL = URL;
+        NovelFragmentChapters.URL = URL;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_novel_main, container, false);
-        imageView = view.findViewById(R.id.fragment_novel_image);
-        title = view.findViewById(R.id.fragment_novel_title);
-        author = view.findViewById(R.id.fragment_novel_author);
-        description = view.findViewById(R.id.fragment_novel_description);
-
-        try {
-            String u = new fillData().execute().get(40, TimeUnit.SECONDS);
-
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+        View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         return view;
     }
 
@@ -76,16 +56,4 @@ public class NovelFragmentMain extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
-    class fillData extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... voids) {
-            if (novelPage==null) return null;
-            title.setText(novelPage.title);
-            author.setText(Arrays.toString(novelPage.authors));
-            description.setText(novelPage.description);
-            Picasso.get().load("http://novelfull.com" + novelPage.imageURL).into(imageView);
-            return novelPage.imageURL;
-        }
-    }
 }

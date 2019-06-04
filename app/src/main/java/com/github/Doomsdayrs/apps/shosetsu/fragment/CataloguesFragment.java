@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.adapters.CatalogueCardsAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.adapters.catalogue.CatalogueCardsAdapter;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueCard;
 
 import java.util.ArrayList;

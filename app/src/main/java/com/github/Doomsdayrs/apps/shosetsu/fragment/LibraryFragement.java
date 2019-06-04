@@ -69,7 +69,7 @@ public class LibraryFragement extends Fragment {
                 library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
             else
                 library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
-            library_Adapter = new NovelCardsAdapter(recycleCards,getFragmentManager());
+            library_Adapter = new NovelCardsAdapter(recycleCards);
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);
         }

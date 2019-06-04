@@ -20,7 +20,7 @@ import android.widget.SearchView;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.adapters.CatalogueNovelCardsAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.adapters.catalogue.CatalogueNovelCardsAdapter;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.NovelCard;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class CatalogueFragement extends Fragment {
-    private Formatter formatter;
+    static Formatter formatter;
     private SearchView searchView;
     private Context context;
 
@@ -46,7 +46,7 @@ public class CatalogueFragement extends Fragment {
     }
 
     public void setFormatter(Formatter formatter) {
-        this.formatter = formatter;
+        CatalogueFragement.formatter = formatter;
     }
 
     @Nullable
@@ -88,7 +88,7 @@ public class CatalogueFragement extends Fragment {
                 library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
             else
                 library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
-            library_Adapter = new CatalogueNovelCardsAdapter(context, recycleCards,getFragmentManager(),formatter);
+            library_Adapter = new CatalogueNovelCardsAdapter(context, recycleCards, getFragmentManager(), formatter);
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);
         }
@@ -127,14 +127,14 @@ public class CatalogueFragement extends Fragment {
         }
     }
 
-    class querySearch extends AsyncTask<String, Void, ArrayList<NovelCard>> {
+    static class querySearch extends AsyncTask<String, Void, ArrayList<NovelCard>> {
         @Override
         protected ArrayList<NovelCard> doInBackground(String... strings) {
             ArrayList<NovelCard> result = new ArrayList<>();
             try {
                 List<Novel> novels = formatter.search(strings[0]);
                 for (Novel novel : novels)
-                    result.add(new NovelCard(novel.imageURL, novel.title,new URI(novel.link)));
+                    result.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (URISyntaxException e) {
@@ -145,13 +145,13 @@ public class CatalogueFragement extends Fragment {
     }
 
 
-    class setLatest extends AsyncTask<String, Void, Boolean> {
+    static class setLatest extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... strings) {
             try {
                 List<Novel> novels = formatter.parseLatest(formatter.getLatestURL(1));
                 for (Novel novel : novels)
-                    libraryCards.add(new NovelCard(novel.imageURL, novel.title,new URI(novel.link)));
+                    libraryCards.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();

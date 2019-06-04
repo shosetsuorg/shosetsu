@@ -6,17 +6,16 @@ INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/
 INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:2:1-11:12
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:17:1-24:12
-MERGED from [com.android.support:appcompat-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/84b65fb5d25f91c67df050171f7416aa/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:gridlayout-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d3415b4df8ae78f3a1c14fcc8d329185/AndroidManifest.xml:17:1-22:12
-MERGED from [com.github.bumptech.glide:glide:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/871a7db02db8fa1b3933210c435c3b05/AndroidManifest.xml:2:1-12:12
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:2:1-14:12
+MERGED from [com.android.support:appcompat-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/84b65fb5d25f91c67df050171f7416aa/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d665b98aef43f0ac649ae440e89feea0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-fragment:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/26acd04b18b77a37fd5dd494e8f3431d/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:animated-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2dfd61778124b8698229f0ab25e96f45/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d665b98aef43f0ac649ae440e89feea0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-core-ui:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/9d9be46bf267b6ac16613b793210e423/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-core-utils:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/4afe122179e2572ac3365dfb002cd048/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/362c6a69577ff88840bde512d4c228b0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:transition:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/f7ab9273275576737aa41a2797468a0b/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:loader:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/cd92f9ef145727aa1acb1e4e636978c9/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/362c6a69577ff88840bde512d4c228b0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:viewpager:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/58f86ca37293788bf4bc983ee1471274/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:coordinatorlayout:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/4ae7b54b05969c945a1ab36ac4465492/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:drawerlayout:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/ff5b591e2914299459482ccb0020847f/AndroidManifest.xml:17:1-22:12
@@ -24,17 +23,18 @@ MERGED from [com.android.support:slidingpanelayout:28.0.0] /home/doomsdayrs/.gra
 MERGED from [com.android.support:customview:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/5ab73dc6eccacd905e89463eaa1d56bc/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:swiperefreshlayout:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/dc5966b4cbd14e5e938507912322458b/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:asynclayoutinflater:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a20c50c95c9440e252daa6aeb9ab1e01/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:loader:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/cd92f9ef145727aa1acb1e4e636978c9/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-compat:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a4edf3c4f3bcb7055648019c13e82e48/AndroidManifest.xml:17:1-24:12
+MERGED from [com.android.support:cardview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e2dffb57e7711e913e7d7bd5be05b6a7/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:exifinterface:27.1.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/91fa3f7824c9aa5f88b986b5588116e2/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:versionedparcelable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e6c7c8f3cf1483123075c7f7808ffe1d/AndroidManifest.xml:17:1-25:12
 MERGED from [com.android.support:cursoradapter:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/dce943e5be7cede2ba6e25655abec8c0/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:cardview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e2dffb57e7711e913e7d7bd5be05b6a7/AndroidManifest.xml:17:1-22:12
-MERGED from [com.github.bumptech.glide:gifdecoder:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a26ebea50fb3ad078559896e72f4e661/AndroidManifest.xml:2:1-11:12
 MERGED from [android.arch.lifecycle:runtime:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d542efb7306b53f6830d4486cc8062e8/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:interpolator:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/40e4015aac3a4113f9bf76cd803899c8/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:documentfile:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/c39e1a15aec32f76e3dbd8b7a7add39a/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:localbroadcastmanager:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/078bec364800e17cae8790bb6386d277/AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:print:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/58fb53896742e80e94761fd70c9392d0/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/8f6ab0fcb9bffc49281e1e7a954dff3c/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:interpolator:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/40e4015aac3a4113f9bf76cd803899c8/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:livedata:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/ea5adf78a0e37f6e1305e731e947b7f2/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/fbc7974910efe1b4fadbfb043498945d/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.core:runtime:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/71a8c6f4ce59d795565afb9ca5cb8ba8/AndroidManifest.xml:17:1-22:12
@@ -71,14 +71,12 @@ MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:9:5-20
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:22:5-20
-MERGED from [com.github.bumptech.glide:glide:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/871a7db02db8fa1b3933210c435c3b05/AndroidManifest.xml:10:5-20
-MERGED from [com.github.bumptech.glide:glide:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/871a7db02db8fa1b3933210c435c3b05/AndroidManifest.xml:10:5-20
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:7:5-12:19
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:7:5-12:19
 MERGED from [com.android.support:support-compat:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a4edf3c4f3bcb7055648019c13e82e48/AndroidManifest.xml:22:5-94
 MERGED from [com.android.support:support-compat:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a4edf3c4f3bcb7055648019c13e82e48/AndroidManifest.xml:22:5-94
 MERGED from [com.android.support:versionedparcelable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e6c7c8f3cf1483123075c7f7808ffe1d/AndroidManifest.xml:22:5-23:19
 MERGED from [com.android.support:versionedparcelable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e6c7c8f3cf1483123075c7f7808ffe1d/AndroidManifest.xml:22:5-23:19
-MERGED from [com.github.bumptech.glide:gifdecoder:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a26ebea50fb3ad078559896e72f4e661/AndroidManifest.xml:9:5-20
-MERGED from [com.github.bumptech.glide:gifdecoder:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a26ebea50fb3ad078559896e72f4e661/AndroidManifest.xml:9:5-20
 	android:appComponentFactory
 		ADDED from [com.android.support:support-compat:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a4edf3c4f3bcb7055648019c13e82e48/AndroidManifest.xml:22:18-91
 	android:supportsRtl
@@ -119,28 +117,26 @@ MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:5:5-7:41
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:appcompat-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/84b65fb5d25f91c67df050171f7416aa/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:appcompat-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/84b65fb5d25f91c67df050171f7416aa/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:gridlayout-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d3415b4df8ae78f3a1c14fcc8d329185/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:gridlayout-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d3415b4df8ae78f3a1c14fcc8d329185/AndroidManifest.xml:20:5-44
-MERGED from [com.github.bumptech.glide:glide:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/871a7db02db8fa1b3933210c435c3b05/AndroidManifest.xml:6:5-8:41
-MERGED from [com.github.bumptech.glide:glide:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/871a7db02db8fa1b3933210c435c3b05/AndroidManifest.xml:6:5-8:41
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:5:5-44
+MERGED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:5:5-44
+MERGED from [com.android.support:appcompat-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/84b65fb5d25f91c67df050171f7416aa/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/84b65fb5d25f91c67df050171f7416aa/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d665b98aef43f0ac649ae440e89feea0/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d665b98aef43f0ac649ae440e89feea0/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-fragment:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/26acd04b18b77a37fd5dd494e8f3431d/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-fragment:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/26acd04b18b77a37fd5dd494e8f3431d/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:animated-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2dfd61778124b8698229f0ab25e96f45/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:animated-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2dfd61778124b8698229f0ab25e96f45/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d665b98aef43f0ac649ae440e89feea0/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d665b98aef43f0ac649ae440e89feea0/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-ui:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/9d9be46bf267b6ac16613b793210e423/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-ui:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/9d9be46bf267b6ac16613b793210e423/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-utils:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/4afe122179e2572ac3365dfb002cd048/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-utils:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/4afe122179e2572ac3365dfb002cd048/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/362c6a69577ff88840bde512d4c228b0/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/362c6a69577ff88840bde512d4c228b0/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:transition:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/f7ab9273275576737aa41a2797468a0b/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:transition:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/f7ab9273275576737aa41a2797468a0b/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:loader:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/cd92f9ef145727aa1acb1e4e636978c9/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:loader:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/cd92f9ef145727aa1acb1e4e636978c9/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/362c6a69577ff88840bde512d4c228b0/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/362c6a69577ff88840bde512d4c228b0/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:viewpager:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/58f86ca37293788bf4bc983ee1471274/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:viewpager:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/58f86ca37293788bf4bc983ee1471274/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:coordinatorlayout:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/4ae7b54b05969c945a1ab36ac4465492/AndroidManifest.xml:20:5-44
@@ -155,18 +151,22 @@ MERGED from [com.android.support:swiperefreshlayout:28.0.0] /home/doomsdayrs/.gr
 MERGED from [com.android.support:swiperefreshlayout:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/dc5966b4cbd14e5e938507912322458b/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:asynclayoutinflater:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a20c50c95c9440e252daa6aeb9ab1e01/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:asynclayoutinflater:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a20c50c95c9440e252daa6aeb9ab1e01/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/cd92f9ef145727aa1acb1e4e636978c9/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/cd92f9ef145727aa1acb1e4e636978c9/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-compat:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a4edf3c4f3bcb7055648019c13e82e48/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-compat:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a4edf3c4f3bcb7055648019c13e82e48/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cardview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e2dffb57e7711e913e7d7bd5be05b6a7/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cardview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e2dffb57e7711e913e7d7bd5be05b6a7/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:exifinterface:27.1.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/91fa3f7824c9aa5f88b986b5588116e2/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:exifinterface:27.1.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/91fa3f7824c9aa5f88b986b5588116e2/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:versionedparcelable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e6c7c8f3cf1483123075c7f7808ffe1d/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:versionedparcelable:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e6c7c8f3cf1483123075c7f7808ffe1d/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:cursoradapter:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/dce943e5be7cede2ba6e25655abec8c0/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:cursoradapter:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/dce943e5be7cede2ba6e25655abec8c0/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:cardview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e2dffb57e7711e913e7d7bd5be05b6a7/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:cardview-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/e2dffb57e7711e913e7d7bd5be05b6a7/AndroidManifest.xml:20:5-44
-MERGED from [com.github.bumptech.glide:gifdecoder:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a26ebea50fb3ad078559896e72f4e661/AndroidManifest.xml:5:5-7:41
-MERGED from [com.github.bumptech.glide:gifdecoder:4.8.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a26ebea50fb3ad078559896e72f4e661/AndroidManifest.xml:5:5-7:41
 MERGED from [android.arch.lifecycle:runtime:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d542efb7306b53f6830d4486cc8062e8/AndroidManifest.xml:20:5-44
 MERGED from [android.arch.lifecycle:runtime:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d542efb7306b53f6830d4486cc8062e8/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/40e4015aac3a4113f9bf76cd803899c8/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/40e4015aac3a4113f9bf76cd803899c8/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:documentfile:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/c39e1a15aec32f76e3dbd8b7a7add39a/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:documentfile:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/c39e1a15aec32f76e3dbd8b7a7add39a/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:localbroadcastmanager:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/078bec364800e17cae8790bb6386d277/AndroidManifest.xml:20:5-44
@@ -175,8 +175,6 @@ MERGED from [com.android.support:print:28.0.0] /home/doomsdayrs/.gradle/caches/t
 MERGED from [com.android.support:print:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/58fb53896742e80e94761fd70c9392d0/AndroidManifest.xml:20:5-44
 MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/8f6ab0fcb9bffc49281e1e7a954dff3c/AndroidManifest.xml:20:5-44
 MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/8f6ab0fcb9bffc49281e1e7a954dff3c/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:interpolator:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/40e4015aac3a4113f9bf76cd803899c8/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:interpolator:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/40e4015aac3a4113f9bf76cd803899c8/AndroidManifest.xml:20:5-44
 MERGED from [android.arch.lifecycle:livedata:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/ea5adf78a0e37f6e1305e731e947b7f2/AndroidManifest.xml:20:5-44
 MERGED from [android.arch.lifecycle:livedata:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/ea5adf78a0e37f6e1305e731e947b7f2/AndroidManifest.xml:20:5-44
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/fbc7974910efe1b4fadbfb043498945d/AndroidManifest.xml:20:5-44
@@ -193,3 +191,11 @@ INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/
 		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+provider#com.squareup.picasso.PicassoProvider
+ADDED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:8:9-11:40
+	android:authorities
+		ADDED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:10:13-72
+	android:exported
+		ADDED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:11:13-37
+	android:name
+		ADDED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:9:13-64

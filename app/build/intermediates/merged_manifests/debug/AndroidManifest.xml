@@ -35,6 +35,10 @@
         </activity>
 
         <provider
+            android:name="com.squareup.picasso.PicassoProvider"
+            android:authorities="com.github.Doomsdayrs.apps.shosetsu.com.squareup.picasso"
+            android:exported="false" />
+        <provider
             android:name="com.android.tools.ir.server.InstantRunContentProvider"
             android:authorities="com.github.Doomsdayrs.apps.shosetsu.com.android.tools.ir.server.InstantRunContentProvider"
             android:multiprocess="true" />

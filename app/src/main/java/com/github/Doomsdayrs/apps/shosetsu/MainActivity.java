@@ -18,6 +18,7 @@ import com.github.Doomsdayrs.apps.shosetsu.fragment.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
+
     private LibraryFragement libraryFragement = new LibraryFragement();
     private CataloguesFragment cataloguesFragment = new CataloguesFragment();
     private SettingsFragment settingsFragment = new SettingsFragment();

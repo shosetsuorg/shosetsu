@@ -1,4 +1,4 @@
-package com.github.Doomsdayrs.apps.shosetsu.adapters;
+package com.github.Doomsdayrs.apps.shosetsu.adapters.catalogue;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragment;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.NovelCard;
+import com.squareup.picasso.Picasso;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,18 +22,18 @@ import java.util.List;
 
 public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNovelCardsAdapter.NovelCardsViewHolder> {
     private FragmentManager fragmentManager;
-    private List<NovelCard> recycleCards;
+    static List<NovelCard> recycleCards;
     private Context context;
     private Formatter formatter;
 
     static class NovelCardsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public FragmentManager fragmentManager;
-        public Formatter formatter;
-        public ImageView library_card_image;
-        public TextView library_card_title;
-        public URI uri;
+        FragmentManager fragmentManager;
+        Formatter formatter;
+        ImageView library_card_image;
+        TextView library_card_title;
+        URI uri;
 
-        public NovelCardsViewHolder(@NonNull View itemView) {
+        NovelCardsViewHolder(@NonNull View itemView) {
             super(itemView);
             library_card_image = itemView.findViewById(R.id.novel_item_image);
             library_card_title = itemView.findViewById(R.id.textView);
@@ -54,7 +54,13 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
 
     public CatalogueNovelCardsAdapter(Context context, List<NovelCard> recycleCards, FragmentManager fragmentManager, Formatter formatter) {
         this.context = context;
-        this.recycleCards = recycleCards;
+        if (CatalogueNovelCardsAdapter.recycleCards !=null && !CatalogueNovelCardsAdapter.recycleCards.containsAll(recycleCards)){
+            CatalogueNovelCardsAdapter.recycleCards = null;
+            CatalogueNovelCardsAdapter.recycleCards = recycleCards;
+        }
+        else if (CatalogueNovelCardsAdapter.recycleCards == null)
+            CatalogueNovelCardsAdapter.recycleCards = recycleCards;
+
         this.fragmentManager = fragmentManager;
         this.formatter = formatter;
     }
@@ -63,7 +69,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
     @Override
     public NovelCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         this.context = viewGroup.getContext();
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.novel_item_card, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_card, viewGroup, false);
         NovelCardsViewHolder novelCardsViewHolder = new NovelCardsViewHolder(view);
         novelCardsViewHolder.fragmentManager = fragmentManager;
         novelCardsViewHolder.formatter = formatter;
@@ -80,11 +86,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
                 e.printStackTrace();
             }
             novelCardsViewHolder.library_card_title.setText(recycleCard.title);
-
-            Glide.with(context)
-                    .asBitmap()
-                    .load(recycleCard.libraryImageResource)
-                    .into(novelCardsViewHolder.library_card_image);
+            Picasso.get().load(recycleCard.libraryImageResource).into(novelCardsViewHolder.library_card_image);
         }
 
     }

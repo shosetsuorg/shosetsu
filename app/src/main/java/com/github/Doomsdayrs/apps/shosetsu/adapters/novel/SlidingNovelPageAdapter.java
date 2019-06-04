@@ -1,4 +1,4 @@
-package com.github.Doomsdayrs.apps.shosetsu.adapters;
+package com.github.Doomsdayrs.apps.shosetsu.adapters.novel;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

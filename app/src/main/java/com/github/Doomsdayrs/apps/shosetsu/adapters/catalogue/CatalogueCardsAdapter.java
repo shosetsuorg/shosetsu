@@ -1,4 +1,4 @@
-package com.github.Doomsdayrs.apps.shosetsu.adapters;
+package com.github.Doomsdayrs.apps.shosetsu.adapters.catalogue;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CatalogueFragement;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueCard;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -45,10 +45,7 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
         catalogueHolder.setFormatter(catalogueCard.formatter);
 
         if (catalogueCard.formatter.getImageURL() != null && !catalogueCard.formatter.getImageURL().isEmpty())
-            Glide.with(context)
-                    .asBitmap()
-                    .load(catalogueCard.formatter.getImageURL())
-                    .into(catalogueHolder.library_card_image);
+            Picasso.get().load(catalogueCard.formatter.getImageURL()).into(catalogueHolder.library_card_image);
         else
             catalogueHolder.library_card_image.setImageResource(catalogueCard.libraryImageResource);
         catalogueHolder.library_card_title.setText(catalogueCard.libraryText);

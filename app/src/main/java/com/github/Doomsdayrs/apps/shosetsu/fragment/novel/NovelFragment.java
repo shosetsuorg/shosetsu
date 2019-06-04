@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.adapters.SlidingNovelPageAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.SlidingNovelPageAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +33,7 @@ public class NovelFragment extends Fragment {
     static String URL;
     static NovelPage novelPage;
     static NovelFragmentMain novelFragmentMain;
+    static NovelFragmentChapters novelFragmentChapters;
     static ViewPager viewPager;
     static SlidingNovelPageAdapter pagerAdapter;
 
@@ -56,6 +57,7 @@ public class NovelFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_novel, container, false);
         fragmentManager = getFragmentManager();
         new fillData();
+        setViewPager();
         return view;
     }
 
@@ -73,8 +75,12 @@ public class NovelFragment extends Fragment {
         novelFragmentMain.setURL(URL);
         novelFragmentMain.setFormatter(formatter);
 
+        novelFragmentChapters = new NovelFragmentChapters();
+        novelFragmentChapters.setURL(URL);
+        novelFragmentChapters.setFormatter(formatter);
+
         fragments.add(novelFragmentMain);
-        fragments.add(novelFragmentMain);
+        fragments.add(novelFragmentChapters);
 
         pagerAdapter = new SlidingNovelPageAdapter(fragmentManager, fragments);
         viewPager.setAdapter(pagerAdapter);
@@ -86,7 +92,6 @@ public class NovelFragment extends Fragment {
             try {
                 novelPage = formatter.parseNovel("http://novelfull.com" + URL);
                 NovelFragmentMain.novelPage = novelPage;
-                setViewPager();
                 Log.d("Novel", novelPage.toString());
             } catch (IOException e) {
                 e.printStackTrace();

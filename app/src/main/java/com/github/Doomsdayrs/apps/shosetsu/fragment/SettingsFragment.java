@@ -47,7 +47,7 @@ public class SettingsFragment extends Fragment {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             layoutManager = new LinearLayoutManager(container.getContext());
-            adapter = new NovelCardsAdapter(cards,getFragmentManager());
+            adapter = new NovelCardsAdapter(cards);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
         }

@@ -1,7 +1,6 @@
 package com.github.Doomsdayrs.apps.shosetsu.adapters;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,28 +15,26 @@ import java.util.ArrayList;
 
 public class NovelCardsAdapter extends RecyclerView.Adapter<NovelCardsAdapter.NovelCardsViewHolder> {
     private ArrayList<RecycleCard> recycleCards;
-    private FragmentManager fragmentManager;
 
     static class NovelCardsViewHolder extends RecyclerView.ViewHolder {
-        public ImageView library_card_image;
-        public TextView library_card_title;
+        ImageView library_card_image;
+        TextView library_card_title;
 
-        public NovelCardsViewHolder(@NonNull View itemView) {
+        NovelCardsViewHolder(@NonNull View itemView) {
             super(itemView);
             library_card_image = itemView.findViewById(R.id.novel_item_image);
             library_card_title = itemView.findViewById(R.id.textView);
         }
     }
 
-    public NovelCardsAdapter(ArrayList<RecycleCard> recycleCards,FragmentManager fragmentManager){
+    public NovelCardsAdapter(ArrayList<RecycleCard> recycleCards){
         this.recycleCards = recycleCards;
-        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
     @Override
     public NovelCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.novel_item_card, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_card, viewGroup, false);
         return new NovelCardsViewHolder(view);
     }
 
