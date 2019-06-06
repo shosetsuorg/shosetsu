@@ -26,6 +26,7 @@ import com.github.Doomsdayrs.apps.shosetsu.adapters.catalogue.CatalogueCardsAdap
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.NovelChaptersAdapter;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +36,7 @@ import java.util.concurrent.TimeoutException;
 public class NovelFragmentChapters extends Fragment {
     boolean incrementChapters;
 
+    private List<NovelChapter> novelChapters;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -49,6 +51,10 @@ public class NovelFragmentChapters extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters);
+
+        novelChapters = new ArrayList<>();
+        novelChapters.add(new NovelChapter());
+        setNovels(new ArrayList<>());
         this.context = container.getContext();
         return view;
     }

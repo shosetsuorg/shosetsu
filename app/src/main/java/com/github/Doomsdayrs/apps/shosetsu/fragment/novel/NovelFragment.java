@@ -68,7 +68,7 @@ public class NovelFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    static void setViewPager() {
+    void setViewPager() {
         viewPager = view.findViewById(R.id.fragment_novel_viewpager);
 
         List<Fragment> fragments = new ArrayList<>();

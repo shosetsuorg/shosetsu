@@ -28,13 +28,13 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
     @Override
     public ChaptersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_novel_chapters, viewGroup, false);
-
         return new ChaptersViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
         NovelChapter novelChapter = novelChapters.get(i);
+        chaptersViewHolder.library_card_title.setText(novelChapter.toString());
     }
 
     @Override
