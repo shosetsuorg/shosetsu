@@ -32,8 +32,10 @@ public class NovelFragment extends Fragment {
     static Formatter formatter;
     static String URL;
     static NovelPage novelPage;
+
     static NovelFragmentMain novelFragmentMain;
     static NovelFragmentChapters novelFragmentChapters;
+
     static ViewPager viewPager;
     static SlidingNovelPageAdapter pagerAdapter;
 
@@ -76,8 +78,6 @@ public class NovelFragment extends Fragment {
         novelFragmentMain.setFormatter(formatter);
 
         novelFragmentChapters = new NovelFragmentChapters();
-        novelFragmentChapters.setURL(URL);
-        novelFragmentChapters.setFormatter(formatter);
 
         fragments.add(novelFragmentMain);
         fragments.add(novelFragmentChapters);

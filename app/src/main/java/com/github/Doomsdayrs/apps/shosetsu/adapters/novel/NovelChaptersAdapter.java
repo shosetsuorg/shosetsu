@@ -8,37 +8,33 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 
 import java.util.List;
 
 public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdapter.ChaptersViewHolder> {
+
+
     private List<NovelChapter> novelChapters;
-    private final Formatter formatter;
-    private final String URL;
 
-
-    public NovelChaptersAdapter(Formatter formatter, String url) {
-        this.formatter = formatter;
-        URL = url;
+    public NovelChaptersAdapter(List<NovelChapter> novels) {
+        this.novelChapters = novels;
     }
 
-
-    public int getCount() {
-        return novelChapters.size();
-    }
 
     @NonNull
     @Override
     public ChaptersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_novel_chapters, viewGroup, false);
+
         return new ChaptersViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
-
+        NovelChapter novelChapter = novelChapters.get(i);
     }
 
     @Override
