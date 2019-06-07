@@ -56,8 +56,9 @@ public class NovelFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("OnCreate","NovelFragment");
         view = inflater.inflate(R.layout.fragment_novel, container, false);
-        fragmentManager = getFragmentManager();
+        fragmentManager = getChildFragmentManager();
         new fillData();
         setViewPager();
         return view;
@@ -81,6 +82,7 @@ public class NovelFragment extends Fragment {
 
         fragments.add(novelFragmentMain);
         fragments.add(novelFragmentChapters);
+        Log.d("Fragments",fragments.toString());
 
         pagerAdapter = new SlidingNovelPageAdapter(fragmentManager, fragments);
         viewPager.setAdapter(pagerAdapter);

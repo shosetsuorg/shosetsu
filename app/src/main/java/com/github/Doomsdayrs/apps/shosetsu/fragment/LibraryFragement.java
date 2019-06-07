@@ -39,6 +39,7 @@ public class LibraryFragement extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("OnCreate","LibraryFragment");
         libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "a"));
         libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "b"));
         libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "c"));
