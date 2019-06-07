@@ -35,4 +35,5 @@ dependencies {
     implementation 'com.github.Doomsdayrs:novelreader-services:v1.0.5'
     implementation 'com.github.Doomsdayrs:novelreader-extensions:v1.0.3'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'org.jetbrains:annotations:15.0'
 }
