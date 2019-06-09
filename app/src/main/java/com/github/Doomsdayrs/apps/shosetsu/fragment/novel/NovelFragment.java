@@ -59,7 +59,7 @@ public class NovelFragment extends Fragment {
         Log.d("OnCreate","NovelFragment");
         view = inflater.inflate(R.layout.fragment_novel, container, false);
         fragmentManager = getChildFragmentManager();
-        new fillData();
+        new fillData().execute();
         setViewPager();
         return view;
     }

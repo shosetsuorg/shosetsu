@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:2:1-11:12
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.support:gridlayout-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d3415b4df8ae78f3a1c14fcc8d329185/AndroidManifest.xml:17:1-22:12
@@ -38,35 +38,35 @@ MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /home/doomsdayrs/.gradle/ca
 MERGED from [android.arch.lifecycle:livedata:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/ea5adf78a0e37f6e1305e731e947b7f2/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/fbc7974910efe1b4fadbfb043498945d/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.core:runtime:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/71a8c6f4ce59d795565afb9ca5cb8ba8/AndroidManifest.xml:17:1-22:12
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
 	package
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:4:5-50
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:4:5-50
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 	android:versionName
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 	xmlns:dist
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:3:5-61
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:3:5-61
 	android:versionCode
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:1-27:12
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 	xmlns:android
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:2:11-69
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:2:11-69
 dist:module
-ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:6:5-40
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:6:5-40
 	dist:instant
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:6:18-37
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:6:18-37
 uses-permission#android.permission.INTERNET
-ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:7:5-67
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:7:5-67
 	android:name
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:7:22-64
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:7:22-64
 application
-ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:8:5-25:19
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:8:5-25:19
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:9:5-20
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:9:5-20
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:22:5-20
@@ -80,39 +80,39 @@ MERGED from [com.android.support:versionedparcelable:28.0.0] /home/doomsdayrs/.g
 	android:appComponentFactory
 		ADDED from [com.android.support:support-compat:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a4edf3c4f3bcb7055648019c13e82e48/AndroidManifest.xml:22:18-91
 	android:supportsRtl
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:14:9-35
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:14:9-35
 	android:label
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:12:9-41
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:12:9-41
 	android:roundIcon
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:13:9-54
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:13:9-54
 	android:icon
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:11:9-43
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:11:9-43
 	android:allowBackup
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:10:9-35
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:10:9-35
 	android:theme
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:15:9-40
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:15:9-40
 	android:networkSecurityConfig
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:9:9-69
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:9:9-69
 activity#com.github.Doomsdayrs.apps.shosetsu.MainActivity
-ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:16:9-24:20
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:16:9-24:20
 	android:theme
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:18:13-56
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:18:13-56
 	android:name
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:17:13-41
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:17:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:19:13-23:29
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:19:13-23:29
 action#android.intent.action.MAIN
-ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:20:17-69
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:20:17-69
 	android:name
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:20:25-66
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:20:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:22:17-77
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:22:17-77
 	android:name
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml:22:27-74
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml:22:27-74
 uses-sdk
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:5:5-7:41
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:5:5-7:41
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:20:5-44
@@ -181,16 +181,16 @@ MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/doomsdayrs/.gradl
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/fbc7974910efe1b4fadbfb043498945d/AndroidManifest.xml:20:5-44
 MERGED from [android.arch.core:runtime:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/71a8c6f4ce59d795565afb9ca5cb8ba8/AndroidManifest.xml:20:5-44
 MERGED from [android.arch.core:runtime:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/71a8c6f4ce59d795565afb9ca5cb8ba8/AndroidManifest.xml:20:5-44
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-		ADDED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
-		INJECTED from /home/doomsdayrs/NovelReader/shosetsu/app/src/main/AndroidManifest.xml
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
+		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/Shosetsu/app/src/main/AndroidManifest.xml
 provider#com.squareup.picasso.PicassoProvider
 ADDED from [com.squareup.picasso:picasso:2.71828] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/2916d6f0de4ca46449326daf2dc6752f/AndroidManifest.xml:8:9-11:40
 	android:authorities

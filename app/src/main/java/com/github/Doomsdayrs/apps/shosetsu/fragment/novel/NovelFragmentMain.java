@@ -52,7 +52,7 @@ public class NovelFragmentMain extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreate","NovelFragmentMain");
+        Log.d("OnCreate", "NovelFragmentMain");
         View view = inflater.inflate(R.layout.fragment_novel_main, container, false);
         imageView = view.findViewById(R.id.fragment_novel_image);
         title = view.findViewById(R.id.fragment_novel_title);
@@ -60,8 +60,8 @@ public class NovelFragmentMain extends Fragment {
         description = view.findViewById(R.id.fragment_novel_description);
 
         try {
-            String u = new fillData().execute().get(40, TimeUnit.SECONDS);
-
+            String u = new fillData().execute(this).get(40, TimeUnit.SECONDS);
+            Picasso.get().load("http://novelfull.com" + u).into(imageView);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -78,14 +78,13 @@ public class NovelFragmentMain extends Fragment {
     }
 
 
-    class fillData extends AsyncTask<Void, Void, String> {
+    static class fillData extends AsyncTask<NovelFragmentMain, Void, String> {
         @Override
-        protected String doInBackground(Void... voids) {
-            if (novelPage==null) return null;
-            title.setText(novelPage.title);
-            author.setText(Arrays.toString(novelPage.authors));
-            description.setText(novelPage.description);
-            Picasso.get().load("http://novelfull.com" + novelPage.imageURL).into(imageView);
+        protected String doInBackground(NovelFragmentMain... novelFragmentMains) {
+            if (novelPage == null) return null;
+            novelFragmentMains[0].title.setText(novelPage.title);
+            novelFragmentMains[0].author.setText(Arrays.toString(novelPage.authors));
+            novelFragmentMains[0].description.setText(novelPage.description);
             return novelPage.imageURL;
         }
     }
