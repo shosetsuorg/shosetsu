@@ -92,7 +92,7 @@ public class NovelFragment extends Fragment {
 
         novelFragmentChapters = new NovelFragmentChapters();
         novelFragmentChapters.setFormatter(formatter);
-        novelFragmentChapters.setURL(URL);
+        novelFragmentChapters.setNovelURL(URL);
         novelFragmentChapters.setFragmentManager(fragmentManager);
 
         novelFragmentMain = new NovelFragmentMain();

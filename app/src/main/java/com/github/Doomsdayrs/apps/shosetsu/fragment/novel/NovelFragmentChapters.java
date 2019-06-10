@@ -17,15 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.NovelChaptersAdapter;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -49,7 +47,7 @@ public class NovelFragmentChapters extends Fragment {
 
     public List<NovelChapter> novelChapters;
     private Formatter formatter;
-    private String URL;
+    private String novelURL;
     private FragmentManager fragmentManager;
     public RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -65,14 +63,14 @@ public class NovelFragmentChapters extends Fragment {
         this.formatter = formatter;
     }
 
-    public void setURL(String URL) {
-        this.URL = URL;
-    }
 
     public void setFragmentManager(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
 
+    public void setNovelURL(String novelURL) {
+        this.novelURL = novelURL;
+    }
 
     @Nullable
     @Override
@@ -91,6 +89,7 @@ public class NovelFragmentChapters extends Fragment {
 
         adapter = new NovelChaptersAdapter(novels, fragmentManager, formatter);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new bottom(this));
         recyclerView.setAdapter(adapter);
     }
 
@@ -100,10 +99,10 @@ public class NovelFragmentChapters extends Fragment {
     }
 
 
-    static class setLatest extends AsyncTask<Integer, Void, Boolean> {
+    static class addMore extends AsyncTask<Integer, Void, Boolean> {
         NovelFragmentChapters novelFragmentChapters;
 
-        public setLatest(NovelFragmentChapters novelFragmentChapters) {
+        public addMore(NovelFragmentChapters novelFragmentChapters) {
             this.novelFragmentChapters = novelFragmentChapters;
         }
 
@@ -111,18 +110,15 @@ public class NovelFragmentChapters extends Fragment {
         protected Boolean doInBackground(Integer... integers) {
             if (novelFragmentChapters.formatter.isIncrementingChapterList())
                 try {
-                    List<Novel> novels;
+                    NovelPage novelPage;
                     if (integers.length == 0)
-                        novels = novelFragmentChapters.formatter.parseLatest(novelFragmentChapters.formatter.parseNovel(UR);
+                        novelPage = novelFragmentChapters.formatter.parseNovel("http://novelfull.com/" + novelFragmentChapters.novelURL);
                     else
-                        novels = novelFragmentChapters.formatter.parseLatest(novelFragmentChapters.formatter.getLatestURL(integers[0]));
-
-                    for (Novel novel : novels)
-                        novelFragmentChapters.novelChapters.add(new NovelChapter()));
+                        novelPage = novelFragmentChapters.formatter.parseNovel("http://novelfull.com" + novelFragmentChapters.novelURL, integers[0]);
+                    if (novelPage.novelChapters.get(novelPage.novelChapters.size() - 1).link.equals(novelFragmentChapters.novelChapters.get(novelFragmentChapters.novelChapters.size() - 1).link))
+                        novelFragmentChapters.novelChapters.addAll(novelPage.novelChapters);
                     return true;
                 } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
             return false;
@@ -144,17 +140,7 @@ public class NovelFragmentChapters extends Fragment {
                 if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
                     running = true;
                     novelFragmentChapters.currentMaxPage++;
-                    try {
-                        if (new novelFragmentChapters.setLatest().execute(catalogueFragement.currentMaxPage).get()) {
-                            catalogueFragement.setLibraryCards(libraryCards);
-                            running = true;
-                        }
-
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new addMore(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage);
                 }
         }
     }
