@@ -1,6 +1,7 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment.novel;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,11 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.NovelChaptersAdapter;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -46,9 +51,10 @@ public class NovelFragmentChapters extends Fragment {
     private Formatter formatter;
     private String URL;
     private FragmentManager fragmentManager;
-    private RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    public int currentMaxPage = 1;
     private Context context;
 
     public NovelFragmentChapters() {
@@ -92,5 +98,66 @@ public class NovelFragmentChapters extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+
+    static class setLatest extends AsyncTask<Integer, Void, Boolean> {
+        NovelFragmentChapters novelFragmentChapters;
+
+        public setLatest(NovelFragmentChapters novelFragmentChapters) {
+            this.novelFragmentChapters = novelFragmentChapters;
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            if (novelFragmentChapters.formatter.isIncrementingChapterList())
+                try {
+                    List<Novel> novels;
+                    if (integers.length == 0)
+                        novels = novelFragmentChapters.formatter.parseLatest(novelFragmentChapters.formatter.parseNovel(UR);
+                    else
+                        novels = novelFragmentChapters.formatter.parseLatest(novelFragmentChapters.formatter.getLatestURL(integers[0]));
+
+                    for (Novel novel : novels)
+                        novelFragmentChapters.novelChapters.add(new NovelChapter()));
+                    return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            return false;
+        }
+    }
+
+    static class bottom extends RecyclerView.OnScrollListener {
+        NovelFragmentChapters novelFragmentChapters;
+        boolean running = false;
+
+        public bottom(NovelFragmentChapters novelFragmentChapters) {
+            this.novelFragmentChapters = novelFragmentChapters;
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
+            if (!running)
+                if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
+                    running = true;
+                    novelFragmentChapters.currentMaxPage++;
+                    try {
+                        if (new novelFragmentChapters.setLatest().execute(catalogueFragement.currentMaxPage).get()) {
+                            catalogueFragement.setLibraryCards(libraryCards);
+                            running = true;
+                        }
+
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
+    }
+
 
 }

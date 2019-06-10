@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_catalogue_refresh"
+    tools:context=".MainActivity">
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragment_catalogue_recycler"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="6dp"
-        android:scrollbars="vertical" />
-</RelativeLayout>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_catalogue_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dp"
+                android:scrollbars="vertical" />
+        </android.support.v7.widget.GridLayout>
+
+
+    </RelativeLayout>
+
+
+</android.support.v4.widget.SwipeRefreshLayout>

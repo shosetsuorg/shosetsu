@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -50,16 +51,16 @@ import java.util.concurrent.ExecutionException;
  */
 public class CatalogueFragement extends Fragment {
     static Formatter formatter;
-    private static ArrayList<NovelCard> libraryCards = new ArrayList<>();
-    private static ArrayList<NovelCard> searchResults = new ArrayList<>();
+    public static ArrayList<NovelCard> libraryCards = new ArrayList<>();
+    static ArrayList<NovelCard> searchResults = new ArrayList<>();
     private SearchView searchView;
     private Context context;
     private boolean firstRun;
-
-    private RecyclerView library_view;
+    public SwipeRefreshLayout swipeRefreshLayout;
+    public RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
-
+    public int currentMaxPage = 1;
 
     public CatalogueFragement() {
         setHasOptionsMenu(true);
@@ -74,8 +75,12 @@ public class CatalogueFragement extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_library, container, false);
-        library_view = view.findViewById(R.id.fragment_library_recycler);
+        View view = inflater.inflate(R.layout.fragment_catalogue, container, false);
+        library_view = view.findViewById(R.id.fragment_catalogue_recycler);
+        swipeRefreshLayout = view.findViewById(R.id.fragment_catalogue_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new refresh(this));
+
+
         this.context = container.getContext();
         if (savedInstanceState == null) {
             Log.d("Process", "Loading up latest");
@@ -115,6 +120,7 @@ public class CatalogueFragement extends Fragment {
                 library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
             library_Adapter = new CatalogueNovelCardsAdapter(recycleCards, getFragmentManager(), formatter);
             library_view.setLayoutManager(library_layoutManager);
+            library_view.addOnScrollListener(new bottom(this));
             library_view.setAdapter(library_Adapter);
         }
     }
@@ -136,11 +142,45 @@ public class CatalogueFragement extends Fragment {
         }
     }
 
-    static class setLatest extends AsyncTask<String, Void, Boolean> {
+    static class bottom extends RecyclerView.OnScrollListener {
+        CatalogueFragement catalogueFragement;
+        boolean running = false;
+
+        public bottom(CatalogueFragement catalogueFragement) {
+            this.catalogueFragement = catalogueFragement;
+        }
+
         @Override
-        protected Boolean doInBackground(String... strings) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
+            if (!running)
+                if (!catalogueFragement.library_view.canScrollVertically(1)) {
+                    running = true;
+                    catalogueFragement.currentMaxPage++;
+                    try {
+                        if (new setLatest().execute(catalogueFragement.currentMaxPage).get()) {
+                            catalogueFragement.setLibraryCards(libraryCards);
+                            running = true;
+                        }
+
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
+    }
+
+    static class setLatest extends AsyncTask<Integer, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
             try {
-                List<Novel> novels = formatter.parseLatest(formatter.getLatestURL(1));
+                List<Novel> novels;
+                if (integers.length == 0)
+                    novels = formatter.parseLatest(formatter.getLatestURL(1));
+                else novels = formatter.parseLatest(formatter.getLatestURL(integers[0]));
+
                 for (Novel novel : novels)
                     libraryCards.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
                 return true;
@@ -152,6 +192,34 @@ public class CatalogueFragement extends Fragment {
             return false;
         }
     }
+
+
+    class refresh implements SwipeRefreshLayout.OnRefreshListener {
+        CatalogueFragement catalogueFragement;
+
+        refresh(CatalogueFragement catalogueFragement) {
+            this.catalogueFragement = catalogueFragement;
+        }
+
+        @Override
+        public void onRefresh() {
+            catalogueFragement.swipeRefreshLayout.setRefreshing(true);
+
+            libraryCards = new ArrayList<>();
+            try {
+
+                if (new setLatest().execute().get()) {
+                    catalogueFragement.setLibraryCards(libraryCards);
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            catalogueFragement.swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
 
     private class SearchClose implements SearchView.OnCloseListener {
         @Override
