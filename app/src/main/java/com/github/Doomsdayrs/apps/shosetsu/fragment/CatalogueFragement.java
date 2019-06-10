@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 
 public class CatalogueFragement extends Fragment {
     static Formatter formatter;
+
     private SearchView searchView;
     private Context context;
 
@@ -88,7 +89,7 @@ public class CatalogueFragement extends Fragment {
                 library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
             else
                 library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
-            library_Adapter = new CatalogueNovelCardsAdapter(context, recycleCards, getFragmentManager(), formatter);
+            library_Adapter = new CatalogueNovelCardsAdapter(recycleCards, getFragmentManager(), formatter);
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);
         }

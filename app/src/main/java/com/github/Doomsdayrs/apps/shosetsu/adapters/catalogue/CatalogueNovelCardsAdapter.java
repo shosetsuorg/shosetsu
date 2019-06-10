@@ -22,8 +22,7 @@ import java.util.List;
 
 public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNovelCardsAdapter.NovelCardsViewHolder> {
     private FragmentManager fragmentManager;
-    static List<NovelCard> recycleCards;
-    private Context context;
+    private static List<NovelCard> recycleCards;
     private Formatter formatter;
 
     static class NovelCardsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -52,8 +51,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         }
     }
 
-    public CatalogueNovelCardsAdapter(Context context, List<NovelCard> recycleCards, FragmentManager fragmentManager, Formatter formatter) {
-        this.context = context;
+    public CatalogueNovelCardsAdapter(List<NovelCard> recycleCards, FragmentManager fragmentManager, Formatter formatter) {
         if (CatalogueNovelCardsAdapter.recycleCards !=null && !CatalogueNovelCardsAdapter.recycleCards.containsAll(recycleCards)){
             CatalogueNovelCardsAdapter.recycleCards = null;
             CatalogueNovelCardsAdapter.recycleCards = recycleCards;
@@ -68,7 +66,6 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
     @NonNull
     @Override
     public NovelCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        this.context = viewGroup.getContext();
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_card, viewGroup, false);
         NovelCardsViewHolder novelCardsViewHolder = new NovelCardsViewHolder(view);
         novelCardsViewHolder.fragmentManager = fragmentManager;

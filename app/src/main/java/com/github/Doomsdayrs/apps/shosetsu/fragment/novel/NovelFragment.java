@@ -33,10 +33,10 @@ public class NovelFragment extends Fragment {
     static String URL;
     static NovelPage novelPage;
 
-    static NovelFragmentMain novelFragmentMain;
-    static NovelFragmentChapters novelFragmentChapters;
+    NovelFragmentMain novelFragmentMain;
+    NovelFragmentChapters novelFragmentChapters;
 
-    static ViewPager viewPager;
+    ViewPager viewPager;
     static SlidingNovelPageAdapter pagerAdapter;
 
 
@@ -45,7 +45,7 @@ public class NovelFragment extends Fragment {
     }
 
     public void setFormatter(Formatter formatter) {
-        this.formatter = formatter;
+        NovelFragment.formatter = formatter;
         incrementChapters = formatter.isIncrementingChapterList();
     }
 
@@ -74,14 +74,19 @@ public class NovelFragment extends Fragment {
 
         List<Fragment> fragments = new ArrayList<>();
 
+        novelFragmentChapters = new NovelFragmentChapters();
+        novelFragmentChapters.setFormatter(formatter);
+        novelFragmentChapters.setURL(URL);
+
         novelFragmentMain = new NovelFragmentMain();
         novelFragmentMain.setURL(URL);
         novelFragmentMain.setFormatter(formatter);
+        novelFragmentMain.setNovelFragmentChapters(novelFragmentChapters);
 
-        novelFragmentChapters = new NovelFragmentChapters();
 
         fragments.add(novelFragmentMain);
         fragments.add(novelFragmentChapters);
+
         Log.d("Fragments",fragments.toString());
 
         pagerAdapter = new SlidingNovelPageAdapter(fragmentManager, fragments);

@@ -31,6 +31,9 @@ public class NovelFragmentMain extends Fragment {
     static NovelPage novelPage;
     static Formatter formatter;
     static String URL;
+
+    NovelFragmentChapters novelFragmentChapters;
+
     ImageView imageView;
     TextView title;
     TextView author;
@@ -47,6 +50,10 @@ public class NovelFragmentMain extends Fragment {
 
     public void setURL(String URL) {
         NovelFragmentMain.URL = URL;
+    }
+
+    public void setNovelFragmentChapters(NovelFragmentChapters novelFragmentChapters) {
+        this.novelFragmentChapters = novelFragmentChapters;
     }
 
     @Nullable
@@ -85,6 +92,7 @@ public class NovelFragmentMain extends Fragment {
             novelFragmentMains[0].title.setText(novelPage.title);
             novelFragmentMains[0].author.setText(Arrays.toString(novelPage.authors));
             novelFragmentMains[0].description.setText(novelPage.description);
+            novelFragmentMains[0].novelFragmentChapters.novelChapters = novelPage.novelChapters;
             return novelPage.imageURL;
         }
     }

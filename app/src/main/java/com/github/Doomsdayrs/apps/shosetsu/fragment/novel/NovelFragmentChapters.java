@@ -34,9 +34,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class NovelFragmentChapters extends Fragment {
-    boolean incrementChapters;
 
-    private List<NovelChapter> novelChapters;
+    private Formatter formatter;
+    private String URL;
+
+    public List<NovelChapter> novelChapters;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -46,16 +48,22 @@ public class NovelFragmentChapters extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    public void setFormatter(Formatter formatter) {
+        this.formatter = formatter;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreate","NovelFragmentChapters");
+        Log.d("OnCreate", "NovelFragmentChapters");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
-        recyclerView = view.findViewById(R.id.fragment_novel_chapters);
+        recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
 
-        novelChapters = new ArrayList<>();
-        novelChapters.add(new NovelChapter());
-        setNovels(new ArrayList<>());
+        setNovels(novelChapters);
         this.context = container.getContext();
         return view;
     }
@@ -63,7 +71,8 @@ public class NovelFragmentChapters extends Fragment {
     public void setNovels(List<NovelChapter> novels) {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(context);
-        adapter = new NovelChaptersAdapter(novels);
+
+        adapter = new NovelChaptersAdapter(novels,getFragmentManager(),formatter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }

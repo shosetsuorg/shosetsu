@@ -43,8 +43,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Prevent the frag from changing on rotation
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    libraryFragement).commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, libraryFragement).commit();
             navigationView.setCheckedItem(R.id.nav_library);
         }
     }
