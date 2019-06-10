@@ -36,14 +36,26 @@ public class CatalogueFragement extends Fragment {
     private SearchView searchView;
     private Context context;
 
+
+
+
+
     private static ArrayList<NovelCard> libraryCards = new ArrayList<>();
     private static ArrayList<NovelCard> searchResults = new ArrayList<>();
+
+
+    private boolean firstRun;
+
     private RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
 
+
+
+
     public CatalogueFragement() {
         setHasOptionsMenu(true);
+        firstRun = true;
     }
 
     public void setFormatter(Formatter formatter) {
@@ -58,10 +70,15 @@ public class CatalogueFragement extends Fragment {
         library_view = view.findViewById(R.id.fragment_library_recycler);
         this.context = container.getContext();
         if (savedInstanceState == null) {
+            Log.d("Process","Loading up latest");
             try {
-                boolean b = new setLatest().execute().get();
-                if (b)
-                    setLibraryCards(libraryCards);
+                if (firstRun){
+                    firstRun = false;
+                    boolean b = new setLatest().execute().get();
+                    if (b)
+                        setLibraryCards(libraryCards);
+                }
+                else setLibraryCards(libraryCards);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

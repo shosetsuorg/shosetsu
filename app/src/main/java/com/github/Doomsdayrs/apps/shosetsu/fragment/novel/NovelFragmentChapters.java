@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class NovelFragmentChapters extends Fragment {
 
     private Formatter formatter;
     private String URL;
+    private FragmentManager fragmentManager;
 
     public List<NovelChapter> novelChapters;
     private RecyclerView recyclerView;
@@ -56,13 +58,17 @@ public class NovelFragmentChapters extends Fragment {
         this.URL = URL;
     }
 
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreate", "NovelFragmentChapters");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
-
         setNovels(novelChapters);
         this.context = container.getContext();
         return view;
@@ -72,7 +78,7 @@ public class NovelFragmentChapters extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(context);
 
-        adapter = new NovelChaptersAdapter(novels,getFragmentManager(),formatter);
+        adapter = new NovelChaptersAdapter(novels,fragmentManager,formatter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
