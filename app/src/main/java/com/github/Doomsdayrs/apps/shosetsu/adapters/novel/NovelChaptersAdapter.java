@@ -111,7 +111,10 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
             }
             dialog.show();
 */
-            fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, novelFragmentChapterView).commit();
+            fragmentManager.beginTransaction()
+                    .addToBackStack("tag")
+                    .replace(R.id.fragment_container, novelFragmentChapterView)
+                    .commit();
         }
     }
 }

@@ -76,14 +76,19 @@ public class NovelFragmentMain extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreate", "NovelFragmentMain");
         View view = inflater.inflate(R.layout.fragment_novel_main, container, false);
+        System.out.println("Loading view...");
         imageView = view.findViewById(R.id.fragment_novel_image);
         title = view.findViewById(R.id.fragment_novel_title);
         author = view.findViewById(R.id.fragment_novel_author);
         description = view.findViewById(R.id.fragment_novel_description);
-
+        System.out.println("Completed.");
         try {
+            Log.d("Novel info load", "Loading");
             String u = new fillData().execute(this).get(40, TimeUnit.SECONDS);
-            Picasso.get().load("http://novelfull.com" + u).into(imageView);
+            Picasso.get()
+                    .load("http://novelfull.com" + u)
+                    .into(imageView);
+            Log.d("Novel info load", "Loading complete");
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
