@@ -155,12 +155,18 @@ public class CatalogueFragement extends Fragment {
 
             if (!running)
                 if (!catalogueFragement.library_view.canScrollVertically(1)) {
+                    Log.d("CatalogueFragmentLoad", "Getting next page");
                     running = true;
                     catalogueFragement.currentMaxPage++;
                     try {
                         if (new setLatest().execute(catalogueFragement.currentMaxPage).get()) {
-                            catalogueFragement.setLibraryCards(libraryCards);
-                            running = true;
+                            catalogueFragement.library_view.post(() -> {
+                                catalogueFragement.library_Adapter.notifyDataSetChanged();
+                                catalogueFragement.library_view.addOnScrollListener(this);
+                            });
+
+                            running = false;
+                            Log.d("CatalogueFragmentLoad", "Completed");
                         }
 
                     } catch (ExecutionException e) {
@@ -207,9 +213,10 @@ public class CatalogueFragement extends Fragment {
 
             libraryCards = new ArrayList<>();
             try {
-
+                Log.d("CatalogueFragmentRefresh", "Refreshing catalogue data");
                 if (new setLatest().execute().get()) {
-                    catalogueFragement.setLibraryCards(libraryCards);
+                    Log.d("CatalogueFragmentRefresh", "Complete");
+                    catalogueFragement.library_Adapter.notifyDataSetChanged();
                 }
             } catch (ExecutionException e) {
                 e.printStackTrace();

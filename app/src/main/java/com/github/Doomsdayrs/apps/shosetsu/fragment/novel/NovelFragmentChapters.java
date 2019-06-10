@@ -86,14 +86,15 @@ public class NovelFragmentChapters extends Fragment {
     }
 
     public void setNovels(List<NovelChapter> novels) {
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(context);
 
-        adapter = new NovelChaptersAdapter(novels, fragmentManager, formatter);
+        adapter = new NovelChaptersAdapter(this,novels, fragmentManager, formatter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new bottom(this));
         recyclerView.setAdapter(adapter);
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -149,7 +150,7 @@ public class NovelFragmentChapters extends Fragment {
                     novelFragmentChapters.currentMaxPage++;
                     try {
                         if (new addMore(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage).get())
-                            novelFragmentChapters.setNovels(novelFragmentChapters.novelChapters);
+                            novelFragmentChapters.adapter.notifyDataSetChanged();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

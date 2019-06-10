@@ -1,10 +1,11 @@
 package com.github.Doomsdayrs.apps.shosetsu.adapters.novel;
 
-import android.app.Dialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,10 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView;
+import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapters;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -38,12 +39,14 @@ import java.util.concurrent.ExecutionException;
  * @author github.com/doomsdayrs
  */
 public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdapter.ChaptersViewHolder> {
+    private NovelFragmentChapters novelFragmentChapters;
     private static Formatter formatter;
     private FragmentManager fragmentManager;
     private List<NovelChapter> novelChapters;
 
 
-    public NovelChaptersAdapter(List<NovelChapter> novels, FragmentManager fragmentManager, Formatter formatter) {
+    public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters, List<NovelChapter> novels, FragmentManager fragmentManager, Formatter formatter) {
+        this.novelFragmentChapters = novelFragmentChapters;
         this.novelChapters = novels;
         this.fragmentManager = fragmentManager;
         NovelChaptersAdapter.formatter = formatter;
@@ -98,6 +101,12 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
             NovelFragmentChapterView novelFragmentChapterView = new NovelFragmentChapterView();
             novelFragmentChapterView.setFormatter(formatter);
             novelFragmentChapterView.setURL(novelChapter.link);
+            Log.d("Transaction", "Chapters > chapter view");
+            fragmentManager.beginTransaction()
+                    .addToBackStack("tag")
+                    .replace(R.id.fragment_novel_chapters_recycler, novelFragmentChapterView)
+                    .commit();
+
 
             /*Dialog dialog = new Dialog(v.getContext());
             dialog.setContentView(R.layout.fragment_novel_chapter_view);
@@ -111,10 +120,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
             }
             dialog.show();
 */
-            fragmentManager.beginTransaction()
-                    .addToBackStack("tag")
-                    .replace(R.id.fragment_container, novelFragmentChapterView)
-                    .commit();
+
         }
     }
 }
