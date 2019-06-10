@@ -23,21 +23,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This file is part of Shosetsu.
+ * Shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Foobar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with Shosetsu.  If not, see https://www.gnu.org/licenses/ .
+ * ====================================================================
+ * Shosetsu
+ * 9 / June / 2019
+ *
+ * @author github.com/doomsdayrs
+ */
 public class NovelFragment extends Fragment {
     static View view;
     static FragmentManager fragmentManager;
-
-    boolean incrementChapters;
-
     static Formatter formatter;
     static String URL;
     static NovelPage novelPage;
-
+    static SlidingNovelPageAdapter pagerAdapter;
+    boolean incrementChapters;
     NovelFragmentMain novelFragmentMain;
     NovelFragmentChapters novelFragmentChapters;
-
     ViewPager viewPager;
-    static SlidingNovelPageAdapter pagerAdapter;
 
 
     public NovelFragment() {
@@ -50,7 +64,7 @@ public class NovelFragment extends Fragment {
     }
 
     public void setURL(String URL) {
-        this.URL = URL;
+        NovelFragment.URL = URL;
     }
 
     @Nullable

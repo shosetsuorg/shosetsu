@@ -12,25 +12,43 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.Doomsdayrs.apps.shosetsu.adapters.NovelCardsAdapter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
+import com.github.Doomsdayrs.apps.shosetsu.adapters.NovelCardsAdapter;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
 
 import java.util.ArrayList;
 
+/**
+ * This file is part of Shosetsu.
+ * Shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Foobar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with Shosetsu.  If not, see https://www.gnu.org/licenses/ .
+ * ====================================================================
+ * Shosetsu
+ * 9 / June / 2019
+ *
+ * @author github.com/doomsdayrs
+ */
 public class SettingsFragment extends Fragment {
     private ArrayList<RecycleCard> cards = new ArrayList<>();
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    public SettingsFragment(){
+    public SettingsFragment() {
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.toolbar_settings,menu);
+        inflater.inflate(R.menu.toolbar_settings, menu);
     }
 
 

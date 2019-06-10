@@ -30,27 +30,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * This file is part of Shosetsu.
+ * Shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Foobar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with Shosetsu.  If not, see https://www.gnu.org/licenses/ .
+ * ====================================================================
+ * Shosetsu
+ * 9 / June / 2019
+ *
+ * @author github.com/doomsdayrs
+ */
 public class CatalogueFragement extends Fragment {
     static Formatter formatter;
-
-    private SearchView searchView;
-    private Context context;
-
-
-
-
-
     private static ArrayList<NovelCard> libraryCards = new ArrayList<>();
     private static ArrayList<NovelCard> searchResults = new ArrayList<>();
-
-
+    private SearchView searchView;
+    private Context context;
     private boolean firstRun;
 
     private RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
-
-
 
 
     public CatalogueFragement() {
@@ -70,15 +78,14 @@ public class CatalogueFragement extends Fragment {
         library_view = view.findViewById(R.id.fragment_library_recycler);
         this.context = container.getContext();
         if (savedInstanceState == null) {
-            Log.d("Process","Loading up latest");
+            Log.d("Process", "Loading up latest");
             try {
-                if (firstRun){
+                if (firstRun) {
                     firstRun = false;
                     boolean b = new setLatest().execute().get();
                     if (b)
                         setLibraryCards(libraryCards);
-                }
-                else setLibraryCards(libraryCards);
+                } else setLibraryCards(libraryCards);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -112,6 +119,40 @@ public class CatalogueFragement extends Fragment {
         }
     }
 
+    static class querySearch extends AsyncTask<String, Void, ArrayList<NovelCard>> {
+        @Override
+        protected ArrayList<NovelCard> doInBackground(String... strings) {
+            ArrayList<NovelCard> result = new ArrayList<>();
+            try {
+                List<Novel> novels = formatter.search(strings[0]);
+                for (Novel novel : novels)
+                    result.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+    static class setLatest extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            try {
+                List<Novel> novels = formatter.parseLatest(formatter.getLatestURL(1));
+                for (Novel novel : novels)
+                    libraryCards.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
+
     private class SearchClose implements SearchView.OnCloseListener {
         @Override
         public boolean onClose() {
@@ -142,41 +183,6 @@ public class CatalogueFragement extends Fragment {
             recycleCards.removeIf(recycleCard -> !recycleCard.title.contains(newText));
             setLibraryCards(recycleCards);
             return recycleCards.size() != 0;
-        }
-    }
-
-    static class querySearch extends AsyncTask<String, Void, ArrayList<NovelCard>> {
-        @Override
-        protected ArrayList<NovelCard> doInBackground(String... strings) {
-            ArrayList<NovelCard> result = new ArrayList<>();
-            try {
-                List<Novel> novels = formatter.search(strings[0]);
-                for (Novel novel : novels)
-                    result.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
-    }
-
-
-    static class setLatest extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            try {
-                List<Novel> novels = formatter.parseLatest(formatter.getLatestURL(1));
-                for (Novel novel : novels)
-                    libraryCards.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            return false;
         }
     }
 }

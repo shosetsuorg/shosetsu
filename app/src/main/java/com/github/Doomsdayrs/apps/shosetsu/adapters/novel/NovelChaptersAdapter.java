@@ -11,25 +11,41 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * This file is part of Shosetsu.
+ * Shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Foobar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with Shosetsu.  If not, see https://www.gnu.org/licenses/ .
+ * ====================================================================
+ * Shosetsu
+ * 9 / June / 2019
+ *
+ * @author github.com/doomsdayrs
+ */
 public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdapter.ChaptersViewHolder> {
+    private static Formatter formatter;
     private FragmentManager fragmentManager;
     private List<NovelChapter> novelChapters;
-    private static Formatter formatter;
 
 
     public NovelChaptersAdapter(List<NovelChapter> novels, FragmentManager fragmentManager, Formatter formatter) {
         this.novelChapters = novels;
         this.fragmentManager = fragmentManager;
-        this.formatter = formatter;
+        NovelChaptersAdapter.formatter = formatter;
     }
 
 
@@ -53,6 +69,18 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
         return novelChapters.size();
     }
 
+    static class getNovel extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                return formatter.getNovelPassage(urls[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
     class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         NovelChapter novelChapter;
         FragmentManager fragmentManager;
@@ -74,7 +102,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
             dialog.setContentView(R.layout.fragment_novel_chapter_view);
             TextView textView = dialog.findViewById(R.id.fragment_novel_chapter_view_text);
             try {
-                textView.setText(new getNovel().execute(novelChapter.link).get().replaceAll("\n","\n\n"));
+                textView.setText(new getNovel().execute(novelChapter.link).get().replaceAll("\n", "\n\n"));
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -83,18 +111,6 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
             dialog.show();
 
             //fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, novelFragmentChapterView).commit();
-        }
-    }
-
-    static class getNovel extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                return formatter.getNovelPassage(urls[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
         }
     }
 }

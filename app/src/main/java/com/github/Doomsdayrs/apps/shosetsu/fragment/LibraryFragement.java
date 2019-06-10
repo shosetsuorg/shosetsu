@@ -16,17 +16,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
-import com.github.Doomsdayrs.apps.shosetsu.adapters.NovelCardsAdapter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
+import com.github.Doomsdayrs.apps.shosetsu.adapters.NovelCardsAdapter;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
 
 import java.util.ArrayList;
 
+/**
+ * This file is part of Shosetsu.
+ * Shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Foobar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with Shosetsu.  If not, see https://www.gnu.org/licenses/ .
+ * ====================================================================
+ * Shosetsu
+ * 9 / June / 2019
+ *
+ * @author github.com/doomsdayrs
+ */
 public class LibraryFragement extends Fragment {
+    private static ArrayList<RecycleCard> libraryCards = new ArrayList<>();
     private SearchView searchView;
     private Context context;
-
-    private static ArrayList<RecycleCard> libraryCards = new ArrayList<>();
     private RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
@@ -39,7 +56,7 @@ public class LibraryFragement extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreate","LibraryFragment");
+        Log.d("OnCreate", "LibraryFragment");
         libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "a"));
         libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "b"));
         libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "c"));
