@@ -22,7 +22,12 @@ android {
     }
     buildToolsVersion = '28.0.3'
 }
-
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        def appName = "shosetsu"
+        outputFileName = appName+"-${variant.versionName}.apk"
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
