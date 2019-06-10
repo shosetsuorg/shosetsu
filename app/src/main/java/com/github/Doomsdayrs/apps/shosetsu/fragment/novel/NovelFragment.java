@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class NovelFragment extends Fragment {
     static View view;
-    static FragmentManager fragmentManager;
+    static FragmentManager fragmentManager = null;
     static Formatter formatter;
     static String URL;
     static NovelPage novelPage;
@@ -67,13 +67,16 @@ public class NovelFragment extends Fragment {
         NovelFragment.URL = URL;
     }
 
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        NovelFragment.fragmentManager = fragmentManager;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreate", "NovelFragment");
         view = inflater.inflate(R.layout.fragment_novel, container, false);
         if (savedInstanceState == null) {
-            fragmentManager = getChildFragmentManager();
             new fillData().execute();
             setViewPager();
         } else setViewPager();
@@ -116,7 +119,7 @@ public class NovelFragment extends Fragment {
             try {
                 novelPage = formatter.parseNovel("http://novelfull.com" + URL);
                 NovelFragmentMain.novelPage = novelPage;
-                Log.d("Novel", novelPage.toString());
+                Log.d("Loaded Novel:", novelPage.title);
             } catch (IOException e) {
                 e.printStackTrace();
             }

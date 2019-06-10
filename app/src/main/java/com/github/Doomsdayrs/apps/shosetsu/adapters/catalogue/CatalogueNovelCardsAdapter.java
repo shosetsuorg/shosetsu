@@ -102,6 +102,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
             NovelFragment novelFragment = new NovelFragment();
             novelFragment.setFormatter(formatter);
             novelFragment.setURL(uri.getPath());
+            novelFragment.setFragmentManager(fragmentManager);
             fragmentManager.beginTransaction()
                     .addToBackStack("tag")
                     .replace(R.id.fragment_container, novelFragment)

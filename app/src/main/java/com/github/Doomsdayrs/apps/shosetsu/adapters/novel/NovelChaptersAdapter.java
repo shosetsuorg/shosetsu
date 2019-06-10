@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
+import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView;
 
 import java.io.IOException;
 import java.util.List;
@@ -94,11 +95,11 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
 
         @Override
         public void onClick(View v) {
-            //NovelFragmentChapterView novelFragmentChapterView = new NovelFragmentChapterView();
-            //novelFragmentChapterView.setFormatter(formatter);
-            //novelFragmentChapterView.setURL(novelChapter.link);
+            NovelFragmentChapterView novelFragmentChapterView = new NovelFragmentChapterView();
+            novelFragmentChapterView.setFormatter(formatter);
+            novelFragmentChapterView.setURL(novelChapter.link);
 
-            Dialog dialog = new Dialog(v.getContext());
+            /*Dialog dialog = new Dialog(v.getContext());
             dialog.setContentView(R.layout.fragment_novel_chapter_view);
             TextView textView = dialog.findViewById(R.id.fragment_novel_chapter_view_text);
             try {
@@ -109,8 +110,8 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
                 e.printStackTrace();
             }
             dialog.show();
-
-            //fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, novelFragmentChapterView).commit();
+*/
+            fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, novelFragmentChapterView).commit();
         }
     }
 }
