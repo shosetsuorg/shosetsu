@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.novel_full.NovelFull;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
@@ -24,6 +25,7 @@ import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.NovelChaptersAdapter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -110,13 +112,18 @@ public class NovelFragmentChapters extends Fragment {
         protected Boolean doInBackground(Integer... integers) {
             if (novelFragmentChapters.formatter.isIncrementingChapterList())
                 try {
+
                     NovelPage novelPage;
                     if (integers.length == 0)
                         novelPage = novelFragmentChapters.formatter.parseNovel("http://novelfull.com/" + novelFragmentChapters.novelURL);
                     else
                         novelPage = novelFragmentChapters.formatter.parseNovel("http://novelfull.com" + novelFragmentChapters.novelURL, integers[0]);
-                    if (novelPage.novelChapters.get(novelPage.novelChapters.size() - 1).link.equals(novelFragmentChapters.novelChapters.get(novelFragmentChapters.novelChapters.size() - 1).link))
+                    //TODO Difference calculation
+
+                    if (!novelPage.novelChapters.get(novelPage.novelChapters.size() - 1).link
+                            .equals(novelFragmentChapters.novelChapters.get(novelFragmentChapters.novelChapters.size() - 1).link))
                         novelFragmentChapters.novelChapters.addAll(novelPage.novelChapters);
+
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -140,7 +147,15 @@ public class NovelFragmentChapters extends Fragment {
                 if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
                     running = true;
                     novelFragmentChapters.currentMaxPage++;
-                    new addMore(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage);
+                    try {
+                        if (new addMore(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage).get())
+                            novelFragmentChapters.setNovels(novelFragmentChapters.novelChapters);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    running = false;
                 }
         }
     }
