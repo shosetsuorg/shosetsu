@@ -1,4 +1,6 @@
 # shosetsu
+![Logo](https://imgur.com/a/LOzMiTE)
+
 An android application for reading novels
 
 ## Capabilities
