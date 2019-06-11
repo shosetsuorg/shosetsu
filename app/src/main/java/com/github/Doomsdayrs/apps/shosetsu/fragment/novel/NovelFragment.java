@@ -42,12 +42,12 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class NovelFragment extends Fragment {
-    static View view;
+    public View view;
     static FragmentManager fragmentManager = null;
     static Formatter formatter;
     static String URL;
     static NovelPage novelPage;
-    static SlidingNovelPageAdapter pagerAdapter;
+    SlidingNovelPageAdapter pagerAdapter;
     boolean incrementChapters;
     NovelFragmentMain novelFragmentMain;
     NovelFragmentChapters novelFragmentChapters;
@@ -75,6 +75,7 @@ public class NovelFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreate", "NovelFragment");
+
         view = inflater.inflate(R.layout.fragment_novel, container, false);
         if (savedInstanceState == null) {
             new fillData().execute();
@@ -89,7 +90,9 @@ public class NovelFragment extends Fragment {
     }
 
     void setViewPager() {
+        Log.d("ViewPager", "Loading");
         viewPager = view.findViewById(R.id.fragment_novel_viewpager);
+        Log.d("ViewPager", "Loaded:" + viewPager);
 
         List<Fragment> fragments = new ArrayList<>();
 
@@ -103,13 +106,15 @@ public class NovelFragment extends Fragment {
         novelFragmentMain.setFormatter(formatter);
         novelFragmentMain.setNovelFragmentChapters(novelFragmentChapters);
 
+        System.out.println(novelFragmentChapters);
+        System.out.println(novelFragmentMain);
 
+        Log.d("FragmentLoading", "Main");
         fragments.add(novelFragmentMain);
+        Log.d("FragmentLoading", "Chapters");
         fragments.add(novelFragmentChapters);
 
-        Log.d("Fragments", fragments.toString());
-
-        pagerAdapter = new SlidingNovelPageAdapter(fragmentManager, fragments);
+        pagerAdapter = new SlidingNovelPageAdapter(getChildFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
     }
 

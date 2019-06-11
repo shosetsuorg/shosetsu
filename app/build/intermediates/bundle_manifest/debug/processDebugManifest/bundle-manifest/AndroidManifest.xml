@@ -3,7 +3,7 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.github.Doomsdayrs.apps.shosetsu"
     android:versionCode="1"
-    android:versionName="v1.0.0-alpha" >
+    android:versionName="v1.0.1-alpha" >
 
     <uses-sdk
         android:minSdkVersion="24"
@@ -33,6 +33,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name="com.squareup.picasso.PicassoProvider"

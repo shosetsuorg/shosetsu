@@ -25,6 +25,7 @@ import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.NovelChaptersAdapter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -81,7 +82,8 @@ public class NovelFragmentChapters extends Fragment {
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         setNovels(novelChapters);
-        this.context = container.getContext();
+        this.context = Objects.requireNonNull(container).getContext();
+        Log.d("OnCreate","Complete");
         return view;
     }
 
@@ -105,7 +107,7 @@ public class NovelFragmentChapters extends Fragment {
     static class addMore extends AsyncTask<Integer, Void, Boolean> {
         NovelFragmentChapters novelFragmentChapters;
 
-        public addMore(NovelFragmentChapters novelFragmentChapters) {
+        addMore(NovelFragmentChapters novelFragmentChapters) {
             this.novelFragmentChapters = novelFragmentChapters;
         }
 
@@ -137,7 +139,7 @@ public class NovelFragmentChapters extends Fragment {
         NovelFragmentChapters novelFragmentChapters;
         boolean running = false;
 
-        public bottom(NovelFragmentChapters novelFragmentChapters) {
+        bottom(NovelFragmentChapters novelFragmentChapters) {
             this.novelFragmentChapters = novelFragmentChapters;
         }
 
@@ -146,6 +148,7 @@ public class NovelFragmentChapters extends Fragment {
 
             if (!running)
                 if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
+                    Log.d("NovelFragmentsScrollLoad","Loading...");
                     running = true;
                     novelFragmentChapters.currentMaxPage++;
                     try {
@@ -156,6 +159,7 @@ public class NovelFragmentChapters extends Fragment {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    Log.d("NovelFragmentsScrollLoad","Completed.");
                     running = false;
                 }
         }

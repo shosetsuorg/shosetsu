@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +65,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
         chaptersViewHolder.novelChapter = novelChapter;
         chaptersViewHolder.fragmentManager = fragmentManager;
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
+        chaptersViewHolder.novelChaptersAdapter = novelFragmentChapters;
     }
 
     @Override
@@ -89,6 +89,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
         NovelChapter novelChapter;
         FragmentManager fragmentManager;
         TextView library_card_title;
+        NovelFragmentChapters novelChaptersAdapter;
 
         ChaptersViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -98,15 +99,10 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
 
         @Override
         public void onClick(View v) {
-            NovelFragmentChapterView novelFragmentChapterView = new NovelFragmentChapterView();
-            novelFragmentChapterView.setFormatter(formatter);
-            novelFragmentChapterView.setURL(novelChapter.link);
-            Log.d("Transaction", "Chapters > chapter view");
-            fragmentManager.beginTransaction()
-                    .addToBackStack("tag")
-                    .replace(R.id.fragment_novel_chapters_recycler, novelFragmentChapterView)
-                    .commit();
-
+            Intent intent = new Intent(novelChaptersAdapter.getActivity(), NovelFragmentChapterView.class);
+            intent.putExtra("url", novelChapter.link);
+            intent.putExtra("formatter", 1);
+            novelChaptersAdapter.startActivity(intent);
 
             /*Dialog dialog = new Dialog(v.getContext());
             dialog.setContentView(R.layout.fragment_novel_chapter_view);
@@ -120,7 +116,6 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
             }
             dialog.show();
 */
-
         }
     }
 }
