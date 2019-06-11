@@ -1,4 +1,4 @@
-# ![logo](https://github.com/Doomsdayrs/shosetsu/raw/master/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png) Shosetsu
+# ![logo](https://github.com/Doomsdayrs/shosetsu/raw/master/app/src/main/res/mipmap-hdpi/ic_launcher.png) Shosetsu
 An android application for reading novels, Free and open source. And full of bugggs
 
 ## Capabilities
