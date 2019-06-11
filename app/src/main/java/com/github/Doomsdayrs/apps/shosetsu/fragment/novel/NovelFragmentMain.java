@@ -84,16 +84,15 @@ public class NovelFragmentMain extends Fragment {
         System.out.println("Completed.");
         try {
             Log.d("Novel info load", "Loading");
-            String u = new fillData().execute(this).get(40, TimeUnit.SECONDS);
+            String u = new fillData().execute(this).get();
+            Log.d("Novel info load", "ImageURL: " + u);
             Picasso.get()
-                    .load("http://novelfull.com" + u)
+                    .load(u)
                     .into(imageView);
             Log.d("Novel info load", "Loading complete");
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
             e.printStackTrace();
         }
         return view;
@@ -112,6 +111,7 @@ public class NovelFragmentMain extends Fragment {
             novelFragmentMains[0].title.setText(novelPage.title);
             novelFragmentMains[0].author.setText(Arrays.toString(novelPage.authors));
             novelFragmentMains[0].description.setText(novelPage.description);
+            System.out.println(novelPage.novelChapters);
             novelFragmentMains[0].novelFragmentChapters.novelChapters = novelPage.novelChapters;
             return novelPage.imageURL;
         }

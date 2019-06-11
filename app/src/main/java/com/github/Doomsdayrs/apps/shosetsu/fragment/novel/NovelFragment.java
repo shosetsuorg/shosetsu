@@ -122,7 +122,7 @@ public class NovelFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                novelPage = formatter.parseNovel("http://novelfull.com" + URL);
+                novelPage = formatter.parseNovel(URL);
                 NovelFragmentMain.novelPage = novelPage;
                 Log.d("Loaded Novel:", novelPage.title);
             } catch (IOException e) {
