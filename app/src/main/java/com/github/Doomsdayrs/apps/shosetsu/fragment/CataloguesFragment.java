@@ -64,10 +64,8 @@ public class CataloguesFragment extends Fragment {
         if (cards == null) {
             cards = new ArrayList<>();
             for (Formatter formatter : DefaultScrapers.formatters) {
-                String imageURL = formatter.getImageURL();
-                if (imageURL == null) {
-                    cards.add(new CatalogueCard(formatter));
-                }
+                cards.add(new CatalogueCard(formatter));
+
             }
         }
         fragmentManager = getFragmentManager();

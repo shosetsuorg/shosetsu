@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.novel_full.NovelFull;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
@@ -83,7 +82,7 @@ public class NovelFragmentChapters extends Fragment {
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         setNovels(novelChapters);
         this.context = Objects.requireNonNull(container).getContext();
-        Log.d("OnCreate","Complete");
+        Log.d("OnCreate", "Complete");
         return view;
     }
 
@@ -91,7 +90,7 @@ public class NovelFragmentChapters extends Fragment {
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(context);
 
-        adapter = new NovelChaptersAdapter(this,novels, fragmentManager, formatter);
+        adapter = new NovelChaptersAdapter(this, novels, fragmentManager, formatter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new bottom(this));
         recyclerView.setAdapter(adapter);
@@ -148,18 +147,18 @@ public class NovelFragmentChapters extends Fragment {
 
             if (!running)
                 if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
-                    Log.d("NovelFragmentsScrollLoad","Loading...");
+                    Log.d("NovelFragmentsScrollLoad", "Loading...");
                     running = true;
                     novelFragmentChapters.currentMaxPage++;
                     try {
                         if (new addMore(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage).get())
-                            novelFragmentChapters.adapter.notifyDataSetChanged();
+                            novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d("NovelFragmentsScrollLoad","Completed.");
+                    Log.d("NovelFragmentsScrollLoad", "Completed.");
                     running = false;
                 }
         }
