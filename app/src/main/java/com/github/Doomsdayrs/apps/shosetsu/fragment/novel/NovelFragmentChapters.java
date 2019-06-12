@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
@@ -23,6 +24,7 @@ import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.NovelChaptersAdapter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -47,6 +49,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class NovelFragmentChapters extends Fragment {
 
+
+    public boolean reversed;
     public List<NovelChapter> novelChapters;
     private Formatter formatter;
     private String novelURL;
@@ -80,6 +84,7 @@ public class NovelFragmentChapters extends Fragment {
         Log.d("OnCreate", "NovelFragmentChapters");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
+
         setNovels(novelChapters);
         this.context = Objects.requireNonNull(container).getContext();
         Log.d("OnCreate", "Complete");
@@ -96,10 +101,29 @@ public class NovelFragmentChapters extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    Button button;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.toolbar_chapters, menu);
+        button = (Button) menu.findItem(R.id.chapter_filter).getActionView();
+        button.setOnClickListener(new onFilter(this));
+    }
+
+
+    static class onFilter implements View.OnClickListener {
+        NovelFragmentChapters novelFragmentChapters;
+
+        public onFilter(NovelFragmentChapters novelFragmentChapters) {
+            this.novelFragmentChapters = novelFragmentChapters;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Collections.reverse(novelFragmentChapters.novelChapters);
+            novelFragmentChapters.reversed = true;
+            novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
+        }
     }
 
 
@@ -114,7 +138,6 @@ public class NovelFragmentChapters extends Fragment {
         protected Boolean doInBackground(Integer... integers) {
             if (novelFragmentChapters.formatter.isIncrementingChapterList())
                 try {
-
                     NovelPage novelPage;
                     if (integers.length == 0)
                         novelPage = novelFragmentChapters.formatter.parseNovel("http://novelfull.com/" + novelFragmentChapters.novelURL);
@@ -125,7 +148,6 @@ public class NovelFragmentChapters extends Fragment {
                     if (!novelPage.novelChapters.get(novelPage.novelChapters.size() - 1).link
                             .equals(novelFragmentChapters.novelChapters.get(novelFragmentChapters.novelChapters.size() - 1).link))
                         novelFragmentChapters.novelChapters.addAll(novelPage.novelChapters);
-
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -148,6 +170,8 @@ public class NovelFragmentChapters extends Fragment {
             if (!running)
                 if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
                     Log.d("NovelFragmentsScrollLoad", "Loading...");
+                    if (novelFragmentChapters.reversed)
+                        Collections.reverse(novelFragmentChapters.novelChapters);
                     running = true;
                     novelFragmentChapters.currentMaxPage++;
                     try {
@@ -160,6 +184,8 @@ public class NovelFragmentChapters extends Fragment {
                     }
                     Log.d("NovelFragmentsScrollLoad", "Completed.");
                     running = false;
+                    if (novelFragmentChapters.reversed)
+                        Collections.reverse(novelFragmentChapters.novelChapters);
                 }
         }
     }

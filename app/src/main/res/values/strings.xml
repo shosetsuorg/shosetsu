@@ -13,4 +13,5 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="search">Search</string>
     <string name="configure_parsers">configure_parsers</string>
+    <string name="filter">filter</string>
 </resources>
