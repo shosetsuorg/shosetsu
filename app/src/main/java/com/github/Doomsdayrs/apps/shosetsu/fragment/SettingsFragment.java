@@ -13,8 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.adapters.NovelCardsAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.Types;
+import com.github.Doomsdayrs.apps.shosetsu.adapters.SettingsAdapter;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
+import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.SettingsCard;
+import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
 
 import java.util.ArrayList;
 
@@ -37,7 +40,7 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class SettingsFragment extends Fragment {
-    private ArrayList<RecycleCard> cards = new ArrayList<>();
+    static ArrayList<SettingsCard> cards = new ArrayList<>();
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -52,20 +55,29 @@ public class SettingsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        cards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "download"));
-        cards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "view"));
-        cards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "advanced"));
-        cards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "credits"));
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         recyclerView = view.findViewById(R.id.fragment_settings_recycler);
+
+        if (savedInstanceState == null) {
+            cards.add(new SettingsCard(Types.DOWNLOAD));
+            cards.add(new SettingsCard(Types.VIEW));
+            cards.add(new SettingsCard(Types.ADVANCED));
+            cards.add(new SettingsCard(Types.CREDITS));
+        }
+        System.out.println(cards);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             layoutManager = new LinearLayoutManager(container.getContext());
-            adapter = new NovelCardsAdapter(cards);
+            adapter = new SettingsAdapter(cards);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
         }
@@ -73,3 +85,5 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 }
+
+

@@ -21,6 +21,7 @@ import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -65,18 +66,25 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         return true;
     }
 
+    public void setThemeMode() {
+        scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setTextColor(Settings.ReaderTextColor);
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.chapter_view_nightMode: {
                 if (!item.isChecked()) {
-                    scrollView.setBackgroundColor(Color.BLACK);
-                    textView.setBackgroundColor(Color.BLACK);
-                    textView.setTextColor(Color.WHITE);
+                    Settings.ReaderTextBackgroundColor = Color.BLACK;
+                    Settings.ReaderTextColor = Color.WHITE;
+                    setThemeMode();
                 } else {
-                    scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-                    textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-                    textView.setTextColor(Settings.ReaderTextColor);
+                    Settings.ReaderTextBackgroundColor = Color.WHITE;
+                    Settings.ReaderTextColor = Color.BLACK;
+                    setThemeMode();
                 }
                 item.setChecked(!item.isChecked());
                 return true;
@@ -101,8 +109,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             textView.setOnClickListener(new click(toolbar));
         }
 
-        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-        textView.setTextColor(Settings.ReaderTextColor);
+        setThemeMode();
 
         if (savedInstanceState != null) {
             URL = savedInstanceState.getString("url");
