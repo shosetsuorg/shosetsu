@@ -1,6 +1,5 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment.novel;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,9 +18,9 @@ import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
+import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -78,12 +77,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.chapter_view_nightMode: {
                 if (!item.isChecked()) {
-                    Settings.ReaderTextBackgroundColor = Color.BLACK;
-                    Settings.ReaderTextColor = Color.WHITE;
+                    SettingsController.swapReaderColor();
                     setThemeMode();
                 } else {
-                    Settings.ReaderTextBackgroundColor = Color.WHITE;
-                    Settings.ReaderTextColor = Color.BLACK;
+                    SettingsController.swapReaderColor();
                     setThemeMode();
                 }
                 item.setChecked(!item.isChecked());
