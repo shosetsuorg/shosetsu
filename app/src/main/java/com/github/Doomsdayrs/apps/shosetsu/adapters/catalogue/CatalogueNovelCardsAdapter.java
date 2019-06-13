@@ -100,9 +100,9 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         @Override
         public void onClick(View v) {
             NovelFragment novelFragment = new NovelFragment();
-            novelFragment.setFormatter(formatter);
-            novelFragment.setURL(uri.getPath());
-            novelFragment.setFragmentManager(fragmentManager);
+            novelFragment.formatter = formatter;
+            novelFragment.url = uri.getPath();
+            novelFragment.fragmentManager = fragmentManager;
             fragmentManager.beginTransaction()
                     .addToBackStack("tag")
                     .replace(R.id.fragment_container, novelFragment)

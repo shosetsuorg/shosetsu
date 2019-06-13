@@ -50,17 +50,17 @@ import java.util.concurrent.ExecutionException;
  * @author github.com/doomsdayrs
  */
 public class CatalogueFragement extends Fragment {
-    static Formatter formatter;
     public static ArrayList<NovelCard> libraryCards = new ArrayList<>();
+    static Formatter formatter;
     static ArrayList<NovelCard> searchResults = new ArrayList<>();
+    public SwipeRefreshLayout swipeRefreshLayout;
+    public RecyclerView library_view;
+    public int currentMaxPage = 1;
     private SearchView searchView;
     private Context context;
     private boolean firstRun;
-    public SwipeRefreshLayout swipeRefreshLayout;
-    public RecyclerView library_view;
     private RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
-    public int currentMaxPage = 1;
 
     public CatalogueFragement() {
         setHasOptionsMenu(true);

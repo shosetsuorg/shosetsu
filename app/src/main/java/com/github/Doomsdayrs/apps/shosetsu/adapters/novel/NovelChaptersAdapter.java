@@ -38,8 +38,8 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdapter.ChaptersViewHolder> {
-    private NovelFragmentChapters novelFragmentChapters;
     private static Formatter formatter;
+    private NovelFragmentChapters novelFragmentChapters;
     private FragmentManager fragmentManager;
     private List<NovelChapter> novelChapters;
 

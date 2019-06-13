@@ -1,27 +1,23 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment.novel;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * This file is part of Shosetsu.
@@ -42,12 +38,11 @@ import java.util.concurrent.TimeoutException;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentMain extends Fragment {
-    static NovelPage novelPage;
-    static Formatter formatter;
-    static String URL;
-    boolean incrementChapters;
-    NovelFragmentChapters novelFragmentChapters;
 
+
+    public Formatter formatter;
+    public String url;
+    NovelPage novelPage;
     ImageView imageView;
     TextView title;
     TextView author;
@@ -57,17 +52,13 @@ public class NovelFragmentMain extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    public void setFormatter(Formatter formatter) {
-        NovelFragmentMain.formatter = formatter;
-        incrementChapters = formatter.isIncrementingChapterList();
-    }
-
-    public void setURL(String URL) {
-        NovelFragmentMain.URL = URL;
-    }
-
-    public void setNovelFragmentChapters(NovelFragmentChapters novelFragmentChapters) {
-        this.novelFragmentChapters = novelFragmentChapters;
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("Saving Instance State", "NovelFragmentMain");
+        outState.putString("url", url);
+        outState.putInt("formatter", formatter.getID());
+        outState.putSerializable("page", novelPage);
     }
 
     @Nullable
@@ -75,44 +66,29 @@ public class NovelFragmentMain extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreate", "NovelFragmentMain");
         View view = inflater.inflate(R.layout.fragment_novel_main, container, false);
-        System.out.println("Loading view...");
-        imageView = view.findViewById(R.id.fragment_novel_image);
-        title = view.findViewById(R.id.fragment_novel_title);
-        author = view.findViewById(R.id.fragment_novel_author);
-        description = view.findViewById(R.id.fragment_novel_description);
-        System.out.println("Completed.");
-        try {
-            Log.d("Novel info load", "Loading");
-            String u = new fillData().execute(this).get();
-            Log.d("Novel info load", "ImageURL: " + u);
-            Picasso.get()
-                    .load(u)
-                    .into(imageView);
-            Log.d("Novel info load", "Loading complete");
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        {
+            imageView = view.findViewById(R.id.fragment_novel_image);
+            title = view.findViewById(R.id.fragment_novel_title);
+            author = view.findViewById(R.id.fragment_novel_author);
+            description = view.findViewById(R.id.fragment_novel_description);
         }
+
+        if (savedInstanceState != null) {
+            url = savedInstanceState.getString("url");
+            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
+            novelPage = (NovelPage) savedInstanceState.getSerializable("page");
+        }
+
+        {
+            title.setText(novelPage.title);
+            author.setText(Arrays.toString(novelPage.authors));
+            description.setText(novelPage.description);
+            NovelFragmentChapters.novelChapters = novelPage.novelChapters;
+        }
+        Picasso.get()
+                .load(novelPage.imageURL)
+                .into(imageView);
+        Log.d("OnCreate", "NovelFragmentMain Complete");
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-
-    static class fillData extends AsyncTask<NovelFragmentMain, Void, String> {
-        @Override
-        protected String doInBackground(NovelFragmentMain... novelFragmentMains) {
-            if (novelPage == null) return null;
-            novelFragmentMains[0].title.setText(novelPage.title);
-            novelFragmentMains[0].author.setText(Arrays.toString(novelPage.authors));
-            novelFragmentMains[0].description.setText(novelPage.description);
-            System.out.println(novelPage.novelChapters);
-            novelFragmentMains[0].novelFragmentChapters.novelChapters = novelPage.novelChapters;
-            return novelPage.imageURL;
-        }
     }
 }

@@ -3,7 +3,7 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.github.Doomsdayrs.apps.shosetsu"
     android:versionCode="1"
-    android:versionName="v1.0.3-alpha" >
+    android:versionName="v1.0.5-alpha" >
 
     <uses-sdk
         android:minSdkVersion="24"
@@ -23,7 +23,6 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:testOnly="true"
         android:theme="@style/lightTheme" >
         <activity
             android:name="com.github.Doomsdayrs.apps.shosetsu.MainActivity"
@@ -45,10 +44,6 @@
             android:name="com.squareup.picasso.PicassoProvider"
             android:authorities="com.github.Doomsdayrs.apps.shosetsu.com.squareup.picasso"
             android:exported="false" />
-        <provider
-            android:name="com.android.tools.ir.server.InstantRunContentProvider"
-            android:authorities="com.github.Doomsdayrs.apps.shosetsu.com.android.tools.ir.server.InstantRunContentProvider"
-            android:multiprocess="true" />
     </application>
 
 </manifest>

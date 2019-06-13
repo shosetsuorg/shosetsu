@@ -9,11 +9,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
@@ -22,6 +21,7 @@ import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.SlidingNovelPageAdapte
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -43,12 +43,11 @@ import java.util.List;
  */
 public class NovelFragment extends Fragment {
     public View view;
-    static FragmentManager fragmentManager = null;
-    static Formatter formatter;
-    static String URL;
-    static NovelPage novelPage;
+    public FragmentManager fragmentManager = null;
+    public Formatter formatter;
+    public String url;
+    NovelPage novelPage;
     SlidingNovelPageAdapter pagerAdapter;
-    boolean incrementChapters;
     NovelFragmentMain novelFragmentMain;
     NovelFragmentChapters novelFragmentChapters;
     ViewPager viewPager;
@@ -58,36 +57,47 @@ public class NovelFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    public void setFormatter(Formatter formatter) {
-        NovelFragment.formatter = formatter;
-        incrementChapters = formatter.isIncrementingChapterList();
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("Saving Instance State", "NovelFragment");
+        outState.putString("url", url);
+        outState.putInt("formatter", formatter.getID());
+        outState.putSerializable("page", novelPage);
     }
 
-    public void setURL(String URL) {
-        NovelFragment.URL = URL;
-    }
-
-    public void setFragmentManager(FragmentManager fragmentManager) {
-        NovelFragment.fragmentManager = fragmentManager;
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreate", "NovelFragment");
-
+        Log.d("OnCreate", "NovelFragment ###");
         view = inflater.inflate(R.layout.fragment_novel, container, false);
+        novelFragmentMain = new NovelFragmentMain();
+        novelFragmentChapters = new NovelFragmentChapters();
+
         if (savedInstanceState == null) {
-            new fillData().execute();
+            try {
+                boolean a = new fillData(this).execute().get();
+                if (a)
+                    setViewPager();
+                else System.exit(1);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            url = savedInstanceState.getString("url");
+            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
+            novelPage = (NovelPage) savedInstanceState.getSerializable("page");
+            Log.d("NovelPage", novelPage.toString());
             setViewPager();
-        } else setViewPager();
+        }
+        Log.d("OnCreate", "NovelFragment Completed ###");
         return view;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
 
     void setViewPager() {
         Log.d("ViewPager", "Loading");
@@ -95,40 +105,45 @@ public class NovelFragment extends Fragment {
         Log.d("ViewPager", "Loaded:" + viewPager);
 
         List<Fragment> fragments = new ArrayList<>();
+        // Sets the data
+        {
+            novelFragmentChapters.setFormatter(formatter);
+            novelFragmentChapters.setNovelURL(url);
+            novelFragmentChapters.setFragmentManager(fragmentManager);
 
-        novelFragmentChapters = new NovelFragmentChapters();
-        novelFragmentChapters.setFormatter(formatter);
-        novelFragmentChapters.setNovelURL(URL);
-        novelFragmentChapters.setFragmentManager(fragmentManager);
-
-        novelFragmentMain = new NovelFragmentMain();
-        novelFragmentMain.setURL(URL);
-        novelFragmentMain.setFormatter(formatter);
-        novelFragmentMain.setNovelFragmentChapters(novelFragmentChapters);
-
-        System.out.println(novelFragmentChapters);
-        System.out.println(novelFragmentMain);
-
-        Log.d("FragmentLoading", "Main");
-        fragments.add(novelFragmentMain);
-        Log.d("FragmentLoading", "Chapters");
-        fragments.add(novelFragmentChapters);
+            novelFragmentMain.url = url;
+            novelFragmentMain.formatter = formatter;
+        }
+        // Add the fragments
+        {
+            Log.d("FragmentLoading", "Main");
+            fragments.add(novelFragmentMain);
+            Log.d("FragmentLoading", "Chapters");
+            fragments.add(novelFragmentChapters);
+        }
 
         pagerAdapter = new SlidingNovelPageAdapter(getChildFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
     }
 
-    static class fillData extends AsyncTask<Void, Void, Void> {
+    static class fillData extends AsyncTask<Void, Void, Boolean> {
+        NovelFragment novelFragment;
+
+        fillData(NovelFragment novelFragment) {
+            this.novelFragment = novelFragment;
+        }
+
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
             try {
-                novelPage = formatter.parseNovel(URL);
-                NovelFragmentMain.novelPage = novelPage;
-                Log.d("Loaded Novel:", novelPage.title);
+                novelFragment.novelPage = novelFragment.formatter.parseNovel(novelFragment.url);
+                novelFragment.novelFragmentMain.novelPage = novelFragment.novelPage;
+                Log.d("Loaded Novel:", novelFragment.novelPage.title);
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return false;
         }
     }
 }

@@ -1,18 +1,24 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment.novel;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
+import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -37,36 +43,85 @@ import java.util.concurrent.ExecutionException;
  */
 public class NovelFragmentChapterView extends AppCompatActivity {
     Toolbar toolbar;
+    ScrollView scrollView;
     TextView textView;
     Formatter formatter;
     String URL;
     String text;
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("text", text);
+        outState.putString("url", URL);
+        outState.putInt("formatter", formatter.getID());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_chapter_view, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.chapter_view_nightMode: {
+                if (!item.isChecked()) {
+                    scrollView.setBackgroundColor(Color.BLACK);
+                    textView.setBackgroundColor(Color.BLACK);
+                    textView.setTextColor(Color.WHITE);
+                } else {
+                    scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+                    textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+                    textView.setTextColor(Settings.ReaderTextColor);
+                }
+                item.setChecked(!item.isChecked());
+                return true;
+            }
+            case R.id.chapter_view_textSize: {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_novel_chapter_view);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        URL = getIntent().getStringExtra("url");
-        formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
-        textView = findViewById(R.id.fragment_novel_chapter_view_text);
-        if (URL == null)
-            textView.setText(text);
-        else {
-            try {
-                textView.setText(new getNovel().execute(this).get().replaceAll("\n", "\n\n"));
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        {
+            toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
+            scrollView = findViewById(R.id.fragment_novel_scroll);
+            textView = findViewById(R.id.fragment_novel_chapter_view_text);
+            textView.setOnClickListener(new click(toolbar));
         }
 
-        System.out.println(toolbar);
-        textView.setOnClickListener(new click(toolbar));
+        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setTextColor(Settings.ReaderTextColor);
 
+        if (savedInstanceState != null) {
+            URL = savedInstanceState.getString("url");
+            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
+            text = savedInstanceState.getString("text");
+        } else URL = getIntent().getStringExtra("url");
+
+        if (text == null) {
+            if (URL != null) {
+                try {
+                    text = new getNovel().execute(this).get().replaceAll("\n", "\n\n");
+                    textView.setText(text);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else textView.setText(text);
     }
 
 
@@ -81,11 +136,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if (visible){
+            if (visible) {
                 toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
                 visible = !visible;
-            }
-            else {
+            } else {
                 toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
                 visible = !visible;
             }

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
@@ -50,15 +51,15 @@ import java.util.concurrent.ExecutionException;
 public class NovelFragmentChapters extends Fragment {
 
 
+    public static List<NovelChapter> novelChapters;
     public boolean reversed;
-    public List<NovelChapter> novelChapters;
+    public RecyclerView recyclerView;
+    public int currentMaxPage = 1;
+    Button button;
     private Formatter formatter;
     private String novelURL;
     private FragmentManager fragmentManager;
-    public RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
-    public int currentMaxPage = 1;
     private Context context;
 
     public NovelFragmentChapters() {
@@ -69,7 +70,6 @@ public class NovelFragmentChapters extends Fragment {
         this.formatter = formatter;
     }
 
-
     public void setFragmentManager(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
@@ -78,12 +78,25 @@ public class NovelFragmentChapters extends Fragment {
         this.novelURL = novelURL;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("url", novelURL);
+        outState.putInt("formatter", formatter.getID());
+        outState.putInt("maxPage", currentMaxPage);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreate", "NovelFragmentChapters");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
+        if (savedInstanceState != null) {
+            novelURL = savedInstanceState.getString("url");
+            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
+            currentMaxPage = savedInstanceState.getInt("maxPage");
+        }
 
         setNovels(novelChapters);
         this.context = Objects.requireNonNull(container).getContext();
@@ -93,15 +106,12 @@ public class NovelFragmentChapters extends Fragment {
 
     public void setNovels(List<NovelChapter> novels) {
         recyclerView.setHasFixedSize(false);
-        layoutManager = new LinearLayoutManager(context);
-
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         adapter = new NovelChaptersAdapter(this, novels, fragmentManager, formatter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new bottom(this));
         recyclerView.setAdapter(adapter);
     }
-
-    Button button;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -120,7 +130,7 @@ public class NovelFragmentChapters extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Collections.reverse(novelFragmentChapters.novelChapters);
+            Collections.reverse(novelChapters);
             novelFragmentChapters.reversed = true;
             novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
         }
@@ -146,8 +156,8 @@ public class NovelFragmentChapters extends Fragment {
                     //TODO Difference calculation
 
                     if (!novelPage.novelChapters.get(novelPage.novelChapters.size() - 1).link
-                            .equals(novelFragmentChapters.novelChapters.get(novelFragmentChapters.novelChapters.size() - 1).link))
-                        novelFragmentChapters.novelChapters.addAll(novelPage.novelChapters);
+                            .equals(novelChapters.get(novelChapters.size() - 1).link))
+                        novelChapters.addAll(novelPage.novelChapters);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -171,7 +181,7 @@ public class NovelFragmentChapters extends Fragment {
                 if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
                     Log.d("NovelFragmentsScrollLoad", "Loading...");
                     if (novelFragmentChapters.reversed)
-                        Collections.reverse(novelFragmentChapters.novelChapters);
+                        Collections.reverse(novelChapters);
                     running = true;
                     novelFragmentChapters.currentMaxPage++;
                     try {
@@ -185,7 +195,7 @@ public class NovelFragmentChapters extends Fragment {
                     Log.d("NovelFragmentsScrollLoad", "Completed.");
                     running = false;
                     if (novelFragmentChapters.reversed)
-                        Collections.reverse(novelFragmentChapters.novelChapters);
+                        Collections.reverse(novelChapters);
                 }
         }
     }
