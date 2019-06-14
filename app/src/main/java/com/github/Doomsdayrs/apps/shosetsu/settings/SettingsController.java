@@ -55,6 +55,7 @@ public class SettingsController {
 
     static boolean test = false;
 
+    //TODO Connect these to DB controllers
     public static boolean isBookMarked(String chapterURL) {
         return test;
     }
