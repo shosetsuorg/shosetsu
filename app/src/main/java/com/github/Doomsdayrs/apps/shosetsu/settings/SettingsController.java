@@ -2,6 +2,7 @@ package com.github.Doomsdayrs.apps.shosetsu.settings;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.util.Log;
 
 /**
  * This file is part of Shosetsu.
@@ -32,7 +33,7 @@ public class SettingsController {
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
     }
 
-    public static boolean isReaderLightMode(){
+    public static boolean isReaderLightMode() {
         return Settings.ReaderTextColor == Color.BLACK;
     }
 
@@ -50,5 +51,16 @@ public class SettingsController {
             setReaderColor(Color.WHITE, Color.BLACK);
         else
             setReaderColor(Color.BLACK, Color.WHITE);
+    }
+
+    static boolean test = false;
+
+    public static boolean isBookMarked(String chapterURL) {
+        return test;
+    }
+
+    public static boolean bookmarkChapter(String chapterURL, String text) {
+        test = !test;
+        return test;
     }
 }

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -55,7 +56,7 @@ public class NovelFragmentChapters extends Fragment {
     public boolean reversed;
     public RecyclerView recyclerView;
     public int currentMaxPage = 1;
-    Button button;
+    MenuItem button;
     private Formatter formatter;
     private String novelURL;
     private FragmentManager fragmentManager;
@@ -116,23 +117,22 @@ public class NovelFragmentChapters extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_chapters, menu);
-        button = (Button) menu.findItem(R.id.chapter_filter).getActionView();
-        button.setOnClickListener(new onFilter(this));
+        menu.findItem(R.id.chapter_filter).setOnMenuItemClickListener(new onFilter(this));
     }
 
 
-    static class onFilter implements View.OnClickListener {
+    static class onFilter implements MenuItem.OnMenuItemClickListener {
         NovelFragmentChapters novelFragmentChapters;
 
-        public onFilter(NovelFragmentChapters novelFragmentChapters) {
+        onFilter(NovelFragmentChapters novelFragmentChapters) {
             this.novelFragmentChapters = novelFragmentChapters;
         }
 
         @Override
-        public void onClick(View v) {
+        public boolean onMenuItemClick(MenuItem item) {
             Collections.reverse(novelChapters);
             novelFragmentChapters.reversed = true;
-            novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
+            return novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
         }
     }
 

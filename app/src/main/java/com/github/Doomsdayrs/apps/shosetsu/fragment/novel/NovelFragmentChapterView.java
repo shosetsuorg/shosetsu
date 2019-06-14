@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,6 +51,8 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     String text;
 
 
+    MenuItem bookmark;
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -62,7 +65,15 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_chapter_view, menu);
+        // Night mode
         menu.findItem(R.id.chapter_view_nightMode).setChecked(!SettingsController.isReaderLightMode());
+
+        // Bookmark
+        bookmark = menu.findItem(R.id.chapter_view_bookmark);
+
+        if (SettingsController.isBookMarked(URL))
+            bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
+
         return true;
     }
 
@@ -75,6 +86,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("item", item.getTitle().toString());
         switch (item.getItemId()) {
             case R.id.chapter_view_nightMode: {
                 if (!item.isChecked()) {
@@ -89,6 +101,12 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             }
             case R.id.chapter_view_textSize: {
                 return true;
+            }
+            case R.id.chapter_view_bookmark: {
+                Log.d("Marked", "m");
+                if (SettingsController.bookmarkChapter(URL, text))
+                    bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
+                else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
             }
         }
         return false;

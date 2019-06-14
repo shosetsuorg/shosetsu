@@ -18,4 +18,6 @@
     <string name="text_color">Text Color</string>
     <string name="text_size">Text Size</string>
     <string name="night_mode">Night Mode</string>
+    <string name="reader_night_mode">Reader Night Mode</string>
+    <string name="bookmark">Bookmark</string>
 </resources>

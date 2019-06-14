@@ -36,6 +36,7 @@ import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
+    NavigationView navigationView;
 
     private LibraryFragement libraryFragement = new LibraryFragement();
     private CataloguesFragment cataloguesFragment = new CataloguesFragment();
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        navigationView.setCheckedItem(menuItem);
         switch (menuItem.getItemId()) {
             case R.id.nav_library: {
                 Log.e("Nav", "Library selected");

@@ -6,13 +6,18 @@
         <item
             android:id="@+id/chapter_view_nightMode"
             android:checkable="true"
-            android:title="@string/night_mode"
-            app:actionViewClass="android.widget.Button" />
+            android:title="@string/night_mode" />
 
         <item
             android:id="@+id/chapter_view_textSize"
-            android:title="@string/text_size"
-            app:actionViewClass="android.widget.Button" />
+            android:title="@string/text_size" />
     </group>
+
+    <item
+        android:icon="@drawable/ic_bookmark_border_black_24dp"
+        android:id="@+id/chapter_view_bookmark"
+        android:title="@string/bookmark"
+        android:enabled="true"
+        app:showAsAction="always"/>
 
 </menu>
