@@ -62,6 +62,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_chapter_view, menu);
+        menu.findItem(R.id.chapter_view_nightMode).setChecked(!SettingsController.isReaderLightMode());
         return true;
     }
 

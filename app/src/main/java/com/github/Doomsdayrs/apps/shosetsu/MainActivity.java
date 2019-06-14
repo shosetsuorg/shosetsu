@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CataloguesFragment;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.LibraryFragement;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.SettingsFragment;
+import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
 /**
  * This file is part of Shosetsu.
@@ -43,6 +44,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SettingsController.view = getSharedPreferences("view", 0);
+        SettingsController.download = getSharedPreferences("download", 0);
+        SettingsController.advanced = getSharedPreferences("advanced", 0);
+        SettingsController.init();
+
         //Set the content view
         setContentView(R.layout.activity_main);
         //Sets the toolbar
