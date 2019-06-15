@@ -5,9 +5,10 @@ An android application for reading novels, Free and open source. And full of bug
 - [x] Parse a site and display novels
   - [x] Parse a novel and display
     - [x] parse a chapters of a novel and display
-    - [ ] iterate multiple pages of novels
-- [ ] Library saving
+    - [x] iterate multiple pages of novels
+- [x] Library saving
+- [ ] Downloading
 - [ ] Tracking
-- [ ] Multiple sources
-- [ ] A proper fucking reader
+- [x] Multiple sources
+- [x] A proper fucking reader
 - [ ] Actually efficent coding
