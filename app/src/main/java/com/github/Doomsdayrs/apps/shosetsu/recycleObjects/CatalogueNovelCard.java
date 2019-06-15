@@ -1,5 +1,7 @@
 package com.github.Doomsdayrs.apps.shosetsu.recycleObjects;
 
+import java.net.URI;
+
 /**
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
@@ -18,18 +20,20 @@ package com.github.Doomsdayrs.apps.shosetsu.recycleObjects;
  *
  * @author github.com/doomsdayrs
  */
-public class NovelCard {
+public class CatalogueNovelCard {
+    public String libraryImageResource;
     public String title;
-    public String novelURL;
-    public String imageURL;
-    public int formatterID;
+    public String URL;
 
-    public NovelCard(String title, String novelURL, String imageURL, int formatterID) {
+    public CatalogueNovelCard(String libraryImageResource, String title, URI URL) {
+        this.libraryImageResource = libraryImageResource;
         this.title = title;
-        this.novelURL = novelURL;
-        this.imageURL = imageURL;
-        this.formatterID = formatterID;
+        this.URL = URL.getPath();
     }
 
-
+    public CatalogueNovelCard(String title, URI URL) {
+        this.libraryImageResource = null;
+        this.title = title;
+        this.URL = URL.getPath();
+    }
 }

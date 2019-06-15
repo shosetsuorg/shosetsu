@@ -2,7 +2,9 @@ package com.github.Doomsdayrs.apps.shosetsu.settings;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.util.Log;
+
+import com.github.Doomsdayrs.apps.shosetsu.database.DBHelper;
+import com.github.Doomsdayrs.apps.shosetsu.database.Database;
 
 /**
  * This file is part of Shosetsu.
@@ -26,7 +28,6 @@ public class SettingsController {
     public static SharedPreferences download;
     public static SharedPreferences view;
     public static SharedPreferences advanced;
-
 
     public static void init() {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
@@ -53,15 +54,22 @@ public class SettingsController {
             setReaderColor(Color.BLACK, Color.WHITE);
     }
 
-    static boolean test = false;
-
     //TODO Connect these to DB controllers
     public static boolean isBookMarked(String chapterURL) {
-        return test;
+        return Database.isBookMarked(chapterURL);
     }
 
-    public static boolean bookmarkChapter(String chapterURL, String text) {
-        test = !test;
-        return test;
+    /**
+     * Toggles bookmark
+     * @param chapterURL imageURL of chapter
+     * @param savedPath where the chapter was saved
+     * @return if removed or not
+     */
+    public static boolean bookmarkChapter(String chapterURL, String savedPath) {
+        if (isBookMarked(chapterURL)) {
+            return !Database.removeBookMarked(chapterURL);
+        } else {
+            return Database.addBookMark(chapterURL, savedPath);
+        }
     }
 }

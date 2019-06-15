@@ -22,7 +22,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.catalogue.CatalogueNovelCardsAdapter;
-import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.NovelCard;
+import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueNovelCard;
 
 import java.io.IOException;
 import java.net.URI;
@@ -50,9 +50,9 @@ import java.util.concurrent.ExecutionException;
  * @author github.com/doomsdayrs
  */
 public class CatalogueFragement extends Fragment {
-    public static ArrayList<NovelCard> libraryCards = new ArrayList<>();
+    public static ArrayList<CatalogueNovelCard> libraryCards = new ArrayList<>();
     static Formatter formatter;
-    static ArrayList<NovelCard> searchResults = new ArrayList<>();
+    static ArrayList<CatalogueNovelCard> searchResults = new ArrayList<>();
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView library_view;
     public int currentMaxPage = 1;
@@ -111,7 +111,7 @@ public class CatalogueFragement extends Fragment {
     }
 
 
-    private void setLibraryCards(ArrayList<NovelCard> recycleCards) {
+    private void setLibraryCards(ArrayList<CatalogueNovelCard> recycleCards) {
         if (library_view != null) {
             library_view.setHasFixedSize(false);
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -125,14 +125,14 @@ public class CatalogueFragement extends Fragment {
         }
     }
 
-    static class querySearch extends AsyncTask<String, Void, ArrayList<NovelCard>> {
+    static class querySearch extends AsyncTask<String, Void, ArrayList<CatalogueNovelCard>> {
         @Override
-        protected ArrayList<NovelCard> doInBackground(String... strings) {
-            ArrayList<NovelCard> result = new ArrayList<>();
+        protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
+            ArrayList<CatalogueNovelCard> result = new ArrayList<>();
             try {
                 List<Novel> novels = formatter.search(strings[0]);
                 for (Novel novel : novels)
-                    result.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
+                    result.add(new CatalogueNovelCard(novel.imageURL, novel.title, new URI(novel.link)));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (URISyntaxException e) {
@@ -188,7 +188,7 @@ public class CatalogueFragement extends Fragment {
                 else novels = formatter.parseLatest(formatter.getLatestURL(integers[0]));
 
                 for (Novel novel : novels)
-                    libraryCards.add(new NovelCard(novel.imageURL, novel.title, new URI(novel.link)));
+                    libraryCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, new URI(novel.link)));
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -254,7 +254,7 @@ public class CatalogueFragement extends Fragment {
         @Override
         public boolean onQueryTextChange(String newText) {
             Log.d("Library search", newText);
-            ArrayList<NovelCard> recycleCards = new ArrayList<>(libraryCards);
+            ArrayList<CatalogueNovelCard> recycleCards = new ArrayList<>(libraryCards);
             recycleCards.removeIf(recycleCard -> !recycleCard.title.contains(newText));
             setLibraryCards(recycleCards);
             return recycleCards.size() != 0;

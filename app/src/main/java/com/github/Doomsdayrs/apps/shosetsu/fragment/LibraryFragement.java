@@ -17,8 +17,9 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.adapters.NovelCardsAdapter;
-import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
+import com.github.Doomsdayrs.apps.shosetsu.adapters.LibraryNovelCardsAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.database.Database;
+import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.NovelCard;
 
 import java.util.ArrayList;
 
@@ -41,7 +42,7 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class LibraryFragement extends Fragment {
-    private static ArrayList<RecycleCard> libraryCards = new ArrayList<>();
+    private static ArrayList<NovelCard> libraryCards = new ArrayList<>();
     private SearchView searchView;
     private Context context;
     private RecyclerView library_view;
@@ -57,13 +58,14 @@ public class LibraryFragement extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreate", "LibraryFragment");
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "a"));
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "b"));
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "c"));
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "d"));
-        libraryCards.add(new RecycleCard(R.drawable.ic_close_black_24dp, "e"));
+
+        if (savedInstanceState == null) {
+            libraryCards = Database.getLibrary();
+        }
+
         View view = inflater.inflate(R.layout.fragment_library, container, false);
         library_view = view.findViewById(R.id.fragment_library_recycler);
+
         this.context = container.getContext();
         setLibraryCards(libraryCards);
         return view;
@@ -80,14 +82,14 @@ public class LibraryFragement extends Fragment {
     }
 
 
-    private void setLibraryCards(ArrayList<RecycleCard> recycleCards) {
+    private void setLibraryCards(ArrayList<NovelCard> recycleCards) {
         if (library_view != null) {
             library_view.setHasFixedSize(false);
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
                 library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
             else
                 library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
-            library_Adapter = new NovelCardsAdapter(recycleCards);
+            library_Adapter = new LibraryNovelCardsAdapter(recycleCards, getFragmentManager());
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);
         }
@@ -110,8 +112,8 @@ public class LibraryFragement extends Fragment {
         @Override
         public boolean onQueryTextChange(String newText) {
             Log.d("Library search", newText);
-            ArrayList<RecycleCard> recycleCards = new ArrayList<>(libraryCards);
-            recycleCards.removeIf(recycleCard -> !recycleCard.libraryText.contains(newText));
+            ArrayList<NovelCard> recycleCards = new ArrayList<>(libraryCards);
+            recycleCards.removeIf(recycleCard -> !recycleCard.title.toLowerCase().contains(newText.toLowerCase()));
             setLibraryCards(recycleCards);
             return recycleCards.size() != 0;
         }

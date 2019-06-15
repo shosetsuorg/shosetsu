@@ -100,7 +100,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(novelChaptersAdapter.getActivity(), NovelFragmentChapterView.class);
-            intent.putExtra("url", novelChapter.link);
+            intent.putExtra("imageURL", novelChapter.link);
             intent.putExtra("formatter", formatter.getID());
             novelChaptersAdapter.startActivity(intent);
 

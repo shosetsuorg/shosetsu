@@ -1,24 +1,23 @@
-package com.github.Doomsdayrs.apps.shosetsu.adapters.catalogue;
+package com.github.Doomsdayrs.apps.shosetsu.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragment;
-import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueNovelCard;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.NovelCard;
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * This file is part of Shosetsu.
@@ -38,45 +37,34 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
-public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNovelCardsAdapter.NovelCardsViewHolder> {
-    private static List<CatalogueNovelCard> recycleCards;
+public class LibraryNovelCardsAdapter extends RecyclerView.Adapter<LibraryNovelCardsAdapter.NovelCardsViewHolder> {
+    private ArrayList<NovelCard> recycleCards;
     private FragmentManager fragmentManager;
-    private Formatter formatter;
 
-    public CatalogueNovelCardsAdapter(List<CatalogueNovelCard> recycleCards, FragmentManager fragmentManager, Formatter formatter) {
-        if (CatalogueNovelCardsAdapter.recycleCards != null && !CatalogueNovelCardsAdapter.recycleCards.containsAll(recycleCards)) {
-            CatalogueNovelCardsAdapter.recycleCards = null;
-            CatalogueNovelCardsAdapter.recycleCards = recycleCards;
-        } else if (CatalogueNovelCardsAdapter.recycleCards == null)
-            CatalogueNovelCardsAdapter.recycleCards = recycleCards;
-
+    public LibraryNovelCardsAdapter(ArrayList<NovelCard> recycleCards, FragmentManager fragmentManager) {
+        this.recycleCards = recycleCards;
         this.fragmentManager = fragmentManager;
-        this.formatter = formatter;
     }
 
     @NonNull
     @Override
     public NovelCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_card, viewGroup, false);
-        NovelCardsViewHolder novelCardsViewHolder = new NovelCardsViewHolder(view);
-        novelCardsViewHolder.fragmentManager = fragmentManager;
-        novelCardsViewHolder.formatter = formatter;
-        return novelCardsViewHolder;
+        return new NovelCardsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NovelCardsViewHolder novelCardsViewHolder, int i) {
-        CatalogueNovelCard recycleCard = recycleCards.get(i);
-        if (recycleCard != null) {
-            try {
-                novelCardsViewHolder.uri = new URI(recycleCard.URL);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            novelCardsViewHolder.library_card_title.setText(recycleCard.title);
-            Picasso.get().load(recycleCard.libraryImageResource).into(novelCardsViewHolder.library_card_image);
-        }
+        NovelCard recycleCard = recycleCards.get(i);
+        Log.d("ImageURL LOAD", recycleCard.imageURL);
+        Picasso.get()
+                .load(recycleCard.imageURL)
+                .into(novelCardsViewHolder.library_card_image);
+        novelCardsViewHolder.fragmentManager = fragmentManager;
+        novelCardsViewHolder.novelURL = recycleCard.novelURL;
+        novelCardsViewHolder.setFormatter(DefaultScrapers.formatters.get(recycleCard.formatterID - 1));
 
+        novelCardsViewHolder.library_card_title.setText(recycleCard.title);
     }
 
     @Override
@@ -85,11 +73,13 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
     }
 
     static class NovelCardsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        FragmentManager fragmentManager;
-        Formatter formatter;
         ImageView library_card_image;
         TextView library_card_title;
-        URI uri;
+
+
+        Formatter formatter;
+        FragmentManager fragmentManager;
+        String novelURL;
 
         NovelCardsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -98,11 +88,15 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
             itemView.setOnClickListener(this);
         }
 
+        public void setFormatter(Formatter formatter) {
+            this.formatter = formatter;
+        }
+
         @Override
         public void onClick(View v) {
             NovelFragment novelFragment = new NovelFragment();
             novelFragment.formatter = formatter;
-            novelFragment.url = uri.getPath();
+            novelFragment.url = novelURL;
             novelFragment.fragmentManager = fragmentManager;
             fragmentManager.beginTransaction()
                     .addToBackStack("tag")

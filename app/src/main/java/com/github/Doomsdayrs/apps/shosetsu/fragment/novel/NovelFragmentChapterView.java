@@ -57,7 +57,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("text", text);
-        outState.putString("url", URL);
+        outState.putString("imageURL", URL);
         outState.putInt("formatter", formatter.getID());
     }
 
@@ -103,10 +103,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
                 return true;
             }
             case R.id.chapter_view_bookmark: {
-                Log.d("Marked", "m");
-                if (SettingsController.bookmarkChapter(URL, text))
+                if (SettingsController.bookmarkChapter(URL, null))
                     bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
                 else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
+                return true;
             }
         }
         return false;
@@ -128,10 +128,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         setThemeMode();
 
         if (savedInstanceState != null) {
-            URL = savedInstanceState.getString("url");
+            URL = savedInstanceState.getString("imageURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             text = savedInstanceState.getString("text");
-        } else URL = getIntent().getStringExtra("url");
+        } else URL = getIntent().getStringExtra("imageURL");
 
         if (text == null) {
             if (URL != null) {

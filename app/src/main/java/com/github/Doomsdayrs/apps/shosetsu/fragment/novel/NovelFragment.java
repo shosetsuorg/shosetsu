@@ -61,7 +61,7 @@ public class NovelFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d("Saving Instance State", "NovelFragment");
-        outState.putString("url", url);
+        outState.putString("imageURL", url);
         outState.putInt("formatter", formatter.getID());
         outState.putSerializable("page", novelPage);
     }
@@ -88,7 +88,7 @@ public class NovelFragment extends Fragment {
             }
 
         } else {
-            url = savedInstanceState.getString("url");
+            url = savedInstanceState.getString("imageURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             novelPage = (NovelPage) savedInstanceState.getSerializable("page");
             Log.d("NovelPage", novelPage.toString());

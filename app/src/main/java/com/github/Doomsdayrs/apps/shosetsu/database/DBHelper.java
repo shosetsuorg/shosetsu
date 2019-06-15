@@ -18,30 +18,26 @@ import android.database.sqlite.SQLiteOpenHelper;
  * along with Shosetsu.  If not, see https://www.gnu.org/licenses/ .
  * ====================================================================
  * Shosetsu
- * 9 / June / 2019
+ * 14 / 06 / 2019
  *
  * @author github.com/doomsdayrs
  */
-public class database {
-    static boolean ready = false;
-    static SQLiteDatabase library;
+public class DBHelper extends SQLiteOpenHelper {
+    static final String DB_NAME = "database.db";
 
-    class Helper extends SQLiteOpenHelper {
-        public Helper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-            super(context, name, factory, version);
-            library = this.getWritableDatabase();
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            String create = "create table if not exists library (novelID integer not null primary key autoincrement, formatterID integer not null, offlineData text not null, userData text)";
-            library.execSQL(create);
-        }
+    public DBHelper(Context context) {
+        super(context, DB_NAME, null, 1);
+    }
 
 
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(Database.create);
+        db.execSQL(Database.create2);
+    }
 
-        }
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
     }
 }

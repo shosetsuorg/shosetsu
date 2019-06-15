@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.github.Doomsdayrs.apps.shosetsu.database.DBHelper;
+import com.github.Doomsdayrs.apps.shosetsu.database.Database;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CataloguesFragment;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.LibraryFragement;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.SettingsFragment;
@@ -35,6 +37,7 @@ import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
  * @author github.com/doomsdayrs
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    DBHelper helper;
     private DrawerLayout drawerLayout;
     NavigationView navigationView;
 
@@ -59,11 +62,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        // Sets up DB
+        helper = new DBHelper(this);
+        Database.library = helper.getWritableDatabase();
 
         //Prevent the frag from changing on rotation
         if (savedInstanceState == null) {

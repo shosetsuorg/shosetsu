@@ -64,7 +64,9 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
         catalogueHolder.setFormatter(catalogueCard.formatter);
 
         if (catalogueCard.formatter.getImageURL() != null && !catalogueCard.formatter.getImageURL().isEmpty())
-            Picasso.get().load(catalogueCard.formatter.getImageURL()).into(catalogueHolder.library_card_image);
+            Picasso.get()
+                    .load(catalogueCard.formatter.getImageURL())
+                    .into(catalogueHolder.library_card_image);
         else
             catalogueHolder.library_card_image.setImageResource(catalogueCard.libraryImageResource);
         catalogueHolder.library_card_title.setText(catalogueCard.libraryText);

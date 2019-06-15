@@ -16,7 +16,6 @@
 
     <item
         android:id="@+id/chapter_view_bookmark"
-        android:enabled="false"
         android:icon="@drawable/ic_bookmark_border_black_24dp"
         android:title="@string/bookmark"
         app:showAsAction="always" />

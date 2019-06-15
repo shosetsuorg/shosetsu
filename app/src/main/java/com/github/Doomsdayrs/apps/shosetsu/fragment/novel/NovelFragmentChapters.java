@@ -82,7 +82,7 @@ public class NovelFragmentChapters extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("url", novelURL);
+        outState.putString("imageURL", novelURL);
         outState.putInt("formatter", formatter.getID());
         outState.putInt("maxPage", currentMaxPage);
     }
@@ -94,7 +94,7 @@ public class NovelFragmentChapters extends Fragment {
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         if (savedInstanceState != null) {
-            novelURL = savedInstanceState.getString("url");
+            novelURL = savedInstanceState.getString("imageURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }

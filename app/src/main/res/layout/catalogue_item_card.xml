@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:padding="5dp">
 
-        <!--TODO Add parser url images to the interface-->
+        <!--TODO Add parser imageURL images to the interface-->
         <ImageView
             android:id="@+id/catalogue_item_card_image"
             android:layout_width="75dp"
