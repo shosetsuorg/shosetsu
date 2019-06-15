@@ -7,7 +7,7 @@ android {
         minSdkVersion var
         targetSdkVersion 28
         versionCode 1
-        versionName "v1.0.6-alpha"
+        versionName "v1.0.7-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
