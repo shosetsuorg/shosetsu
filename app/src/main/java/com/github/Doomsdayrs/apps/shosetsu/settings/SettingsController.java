@@ -54,7 +54,6 @@ public class SettingsController {
             setReaderColor(Color.BLACK, Color.WHITE);
     }
 
-    //TODO Connect these to DB controllers
     public static boolean isBookMarked(String chapterURL) {
         return Database.isBookMarked(chapterURL);
     }
