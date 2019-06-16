@@ -63,13 +63,13 @@ public class Database {
      * Adds a bookmark
      *
      * @param url       imageURL of the novel
-     * @param savedData saved paths
+     * @param savedData JSON object containing scroll position and others
      */
-    public static boolean addBookMark(String url, String savedData) {
+    public static boolean addBookMark(String url, JSONObject savedData) {
         if (library != null) {
-            library.execSQL("insert into " + TABLE_BOOKMARKS + " (url,savedData) values('" +
-                    url + "'," +
-                    savedData + ")"
+            library.execSQL("insert into " + TABLE_BOOKMARKS + " (" + COLUMN_URL + "," + COLUMN_SAVED_DATA + ") values('" +
+                    url + "','" +
+                    savedData.toString() + "')"
             );
             return true;
         } else {
@@ -113,6 +113,25 @@ public class Database {
             return false;
         }
     }
+
+    public static int getBookmarkObject(String chapterURL) {
+        Cursor cursor = library.query(TABLE_BOOKMARKS, new String[]{COLUMN_SAVED_DATA}, null, null, null, null, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return 0;
+        } else {
+            try {
+                cursor.moveToNext();
+                JSONObject jsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(COLUMN_SAVED_DATA)));
+                cursor.close();
+                return  jsonObject.getInt("y");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
 
     /**
      * adds novel to the library table
@@ -189,6 +208,7 @@ public class Database {
                     e.printStackTrace();
                 }
             }
+            cursor.close();
             return novelCards;
         }
     }

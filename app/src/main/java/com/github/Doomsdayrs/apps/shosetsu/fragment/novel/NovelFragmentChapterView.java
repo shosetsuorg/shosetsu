@@ -21,6 +21,9 @@ import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
 import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -71,9 +74,12 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         // Bookmark
         bookmark = menu.findItem(R.id.chapter_view_bookmark);
 
-        if (SettingsController.isBookMarked(URL))
+        if (SettingsController.isBookMarked(URL)) {
             bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
-
+            int y = SettingsController.getYBookmark(URL);
+            Log.d("Loaded Scroll", Integer.toString(y));
+            scrollView.setScrollY(y);
+        }
         return true;
     }
 
@@ -103,10 +109,21 @@ public class NovelFragmentChapterView extends AppCompatActivity {
                 return true;
             }
             case R.id.chapter_view_bookmark: {
-                if (SettingsController.bookmarkChapter(URL, null))
-                    bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
-                else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
-                return true;
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    int y = scrollView.getScrollY();
+
+                    Log.d("ScrollSave", Integer.toString(y));
+                    jsonObject.put("y", y);
+
+                    if (SettingsController.bookmarkChapter(URL, jsonObject))
+                        bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
+                    else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
+                    return true;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
         }
         return false;

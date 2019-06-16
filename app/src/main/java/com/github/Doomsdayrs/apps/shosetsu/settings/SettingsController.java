@@ -3,8 +3,9 @@ package com.github.Doomsdayrs.apps.shosetsu.settings;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
-import com.github.Doomsdayrs.apps.shosetsu.database.DBHelper;
 import com.github.Doomsdayrs.apps.shosetsu.database.Database;
+
+import org.json.JSONObject;
 
 /**
  * This file is part of Shosetsu.
@@ -59,23 +60,29 @@ public class SettingsController {
         return Database.isBookMarked(chapterURL);
     }
 
+    public static int getYBookmark(String chapterURL) {
+        return Database.getBookmarkObject(chapterURL);
+    }
+
     /**
      * Toggles bookmark
+     *
      * @param chapterURL imageURL of chapter
-     * @param savedPath where the chapter was saved
+     * @param saveData   JSON object containing scroll position and others
      * @return if removed or not
      */
-    public static boolean bookmarkChapter(String chapterURL, String savedPath) {
+    public static boolean bookmarkChapter(String chapterURL, JSONObject saveData) {
         if (isBookMarked(chapterURL)) {
             return !Database.removeBookMarked(chapterURL);
         } else {
-            return Database.addBookMark(chapterURL, savedPath);
+            return Database.addBookMark(chapterURL, saveData);
         }
     }
 
     public static boolean isTrackingEnabled() {
-        return tracking.getBoolean("enabled",false);
+        return tracking.getBoolean("enabled", false);
     }
 
-    public static void addTracker(){}
+    public static void addTracker() {
+    }
 }
