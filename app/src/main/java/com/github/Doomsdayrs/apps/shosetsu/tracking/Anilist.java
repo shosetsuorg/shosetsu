@@ -18,6 +18,7 @@ package com.github.Doomsdayrs.apps.shosetsu.tracking;
  *
  * @author github.com/doomsdayrs
  */
+//TODO add this shit
 public class Anilist {
     public static void main(String[] args) {
 

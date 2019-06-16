@@ -77,7 +77,8 @@ public class NovelFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_novel, container, false);
         novelFragmentMain = new NovelFragmentMain();
         novelFragmentChapters = new NovelFragmentChapters();
-        boolean track = SettingsController.isTrackingEnabled();
+        //TODO FINISH TRACKING
+        //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
             try {
