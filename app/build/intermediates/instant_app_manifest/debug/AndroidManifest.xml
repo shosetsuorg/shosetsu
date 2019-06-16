@@ -39,6 +39,7 @@
         </activity>
         <activity
             android:name="com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView"
+            android:parentActivityName="com.github.Doomsdayrs.apps.shosetsu.MainActivity"
             android:theme="@style/lightTheme.NoActionBar" />
 
         <provider

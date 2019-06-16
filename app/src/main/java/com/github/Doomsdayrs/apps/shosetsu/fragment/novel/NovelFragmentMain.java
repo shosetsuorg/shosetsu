@@ -85,17 +85,18 @@ public class NovelFragmentMain extends Fragment {
             floatingActionButton.setOnClickListener(new addToLibrary(this));
         }
 
-        if (Database.inLibrary(url))
-            inLibary();
-
-        if (inLibrary)
-            floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
 
         if (savedInstanceState != null) {
             url = savedInstanceState.getString("imageURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             novelPage = (NovelPage) savedInstanceState.getSerializable("page");
         }
+
+        if (Database.inLibrary(url))
+            inLibary();
+
+        if (inLibrary)
+            floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
 
         {
             if (novelPage == null)

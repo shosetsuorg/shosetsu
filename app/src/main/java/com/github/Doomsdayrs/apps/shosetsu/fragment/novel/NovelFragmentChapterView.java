@@ -95,7 +95,9 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("item", item.getTitle().toString());
+        if (item == null)
+            return false;
+        Log.d("item", item.toString());
         switch (item.getItemId()) {
             case R.id.chapter_view_nightMode: {
                 if (!item.isChecked()) {
@@ -140,6 +142,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             novelURL = getIntent().getStringExtra("novelURL");
             toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
             scrollView = findViewById(R.id.fragment_novel_scroll);
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
