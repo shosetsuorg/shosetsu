@@ -116,7 +116,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
                     Log.d("ScrollSave", Integer.toString(y));
                     jsonObject.put("y", y);
 
-                    if (SettingsController.bookmarkChapter(URL, jsonObject))
+                    if (SettingsController.toggleBookmarkChapter(URL, jsonObject))
                         bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
                     else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
                     return true;

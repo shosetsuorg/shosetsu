@@ -1,13 +1,13 @@
 package com.github.Doomsdayrs.apps.shosetsu.adapters.novel;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
@@ -15,8 +15,11 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapters;
+import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -66,6 +69,8 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
         chaptersViewHolder.fragmentManager = fragmentManager;
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
         chaptersViewHolder.novelChaptersAdapter = novelFragmentChapters;
+        if (SettingsController.isBookMarked(novelChapter.link))
+            chaptersViewHolder.bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
     }
 
     @Override
@@ -73,28 +78,34 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
         return novelChapters.size();
     }
 
-    static class getNovel extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                return formatter.getNovelPassage(urls[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
     class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         NovelChapter novelChapter;
         FragmentManager fragmentManager;
         TextView library_card_title;
+        ImageView bookmarked;
+        ImageView download;
+
         NovelFragmentChapters novelChaptersAdapter;
 
         ChaptersViewHolder(@NonNull View itemView) {
             super(itemView);
             library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
+            bookmarked = itemView.findViewById(R.id.recycler_novel_chapter_bookmarked);
+            download = itemView.findViewById(R.id.recycler_novel_chapter_download);
+
             itemView.setOnClickListener(this);
+            bookmarked.setOnClickListener(v -> {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("y", 0);
+                    if (SettingsController.toggleBookmarkChapter(novelChapter.link, jsonObject))
+                        bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
+                    else
+                        bookmarked.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         @Override
@@ -103,19 +114,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<NovelChaptersAdap
             intent.putExtra("imageURL", novelChapter.link);
             intent.putExtra("formatter", formatter.getID());
             novelChaptersAdapter.startActivity(intent);
-
-            /*Dialog dialog = new Dialog(v.getContext());
-            dialog.setContentView(R.layout.fragment_novel_chapter_view);
-            TextView textView = dialog.findViewById(R.id.fragment_novel_chapter_view_text);
-            try {
-                textView.setText(new getNovel().execute(novelChapter.link).get().replaceAll("\n", "\n\n"));
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            dialog.show();
-*/
         }
+
     }
 }

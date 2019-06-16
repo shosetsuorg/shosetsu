@@ -69,9 +69,9 @@ public class SettingsController {
      *
      * @param chapterURL imageURL of chapter
      * @param saveData   JSON object containing scroll position and others
-     * @return if removed or not
+     * @return true means added, false means removed
      */
-    public static boolean bookmarkChapter(String chapterURL, JSONObject saveData) {
+    public static boolean toggleBookmarkChapter(String chapterURL, JSONObject saveData) {
         if (isBookMarked(chapterURL)) {
             return !Database.removeBookMarked(chapterURL);
         } else {
