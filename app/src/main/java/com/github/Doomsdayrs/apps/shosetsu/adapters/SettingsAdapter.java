@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.Types;
+import com.github.Doomsdayrs.apps.shosetsu.enums.Types;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.SettingsCard;
 import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 

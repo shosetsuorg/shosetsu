@@ -17,8 +17,6 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.SlidingNovelPageAdapter;
-import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
-import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,6 +111,7 @@ public class NovelFragment extends Fragment {
         // Sets the data
         {
             novelFragmentChapters.setFormatter(formatter);
+            novelFragmentChapters.novelTitle = novelPage.title;
             novelFragmentChapters.setNovelURL(url);
             novelFragmentChapters.setFragmentManager(fragmentManager);
 

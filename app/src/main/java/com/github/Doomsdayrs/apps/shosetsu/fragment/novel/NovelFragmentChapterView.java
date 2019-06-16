@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
+import com.github.Doomsdayrs.apps.shosetsu.database.Database;
 import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
 import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
@@ -51,6 +52,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     TextView textView;
     Formatter formatter;
     String URL;
+    String novelURL;
     String text;
 
 
@@ -60,8 +62,9 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("text", text);
-        outState.putString("imageURL", URL);
+        outState.putString("url", URL);
         outState.putInt("formatter", formatter.getID());
+        outState.putString("novelURL", novelURL);
     }
 
     @Override
@@ -134,6 +137,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_novel_chapter_view);
         {
+            novelURL = getIntent().getStringExtra("novelURL");
             toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
@@ -145,23 +149,26 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         setThemeMode();
 
         if (savedInstanceState != null) {
-            URL = savedInstanceState.getString("imageURL");
+            URL = savedInstanceState.getString("url");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             text = savedInstanceState.getString("text");
-        } else URL = getIntent().getStringExtra("imageURL");
+        } else URL = getIntent().getStringExtra("url");
 
-        if (text == null) {
+
+        if (getIntent().getBooleanExtra("downloaded", false))
+            text = Database.getSaved(novelURL, URL).replaceAll("\n", "\n\n");
+        else if (text == null)
             if (URL != null) {
                 try {
                     text = new getNovel().execute(this).get().replaceAll("\n", "\n\n");
-                    textView.setText(text);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        } else textView.setText(text);
+
+        textView.setText(text);
     }
 
 

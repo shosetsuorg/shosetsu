@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.github.Doomsdayrs.apps.shosetsu.database.DBHelper;
 import com.github.Doomsdayrs.apps.shosetsu.database.Database;
+import com.github.Doomsdayrs.apps.shosetsu.download.Downloadmanager;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CataloguesFragment;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.LibraryFragement;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.SettingsFragment;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SettingsController.advanced = getSharedPreferences("advanced", 0);
         SettingsController.tracking = getSharedPreferences("tracking", 0);
         SettingsController.init();
-
+        Downloadmanager.context = this;
         //Set the content view
         setContentView(R.layout.activity_main);
         //Sets the toolbar

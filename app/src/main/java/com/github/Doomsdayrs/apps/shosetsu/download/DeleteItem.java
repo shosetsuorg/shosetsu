@@ -1,4 +1,6 @@
-package com.github.Doomsdayrs.apps.shosetsu;
+package com.github.Doomsdayrs.apps.shosetsu.download;
+
+import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 
 /**
  * This file is part of Shosetsu.
@@ -14,24 +16,22 @@ package com.github.Doomsdayrs.apps.shosetsu;
  * along with Shosetsu.  If not, see https://www.gnu.org/licenses/ .
  * ====================================================================
  * Shosetsu
- * 14 / June / 2019
+ * 16 / 06 / 2019
  *
  * @author github.com/doomsdayrs
  */
-public enum Types {
-    DOWNLOAD("download"),
-    VIEW("view"),
-    ADVANCED("advanced"),
-    CREDITS("credits");
+public class DeleteItem {
+    public final Formatter formatter;
+    public final String novelName;
+    public final String chapterName;
+    public final String novelURL;
+    public final String chapterURL;
 
-    final String name;
-
-    Types(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
+    public DeleteItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL) {
+        this.formatter = formatter;
+        this.novelName = novelName;
+        this.chapterName = chapterName;
+        this.novelURL = novelURL;
+        this.chapterURL = chapterURL;
     }
 }

@@ -58,7 +58,8 @@ public class NovelFragmentChapters extends Fragment {
     public int currentMaxPage = 1;
     MenuItem button;
     private Formatter formatter;
-    private String novelURL;
+    public String novelTitle;
+    public String novelURL;
     private FragmentManager fragmentManager;
     private RecyclerView.Adapter adapter;
     private Context context;
@@ -179,7 +180,7 @@ public class NovelFragmentChapters extends Fragment {
 
             if (!running)
                 if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
-                    Log.d("NovelFragmentsScrollLoad", "Loading...");
+                    Log.d("ScrollLoad", "Loading...");
                     if (novelFragmentChapters.reversed)
                         Collections.reverse(novelChapters);
                     running = true;
@@ -192,7 +193,7 @@ public class NovelFragmentChapters extends Fragment {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d("NovelFragmentsScrollLoad", "Completed.");
+                    Log.d("ScrollLoad", "Completed.");
                     running = false;
                     if (novelFragmentChapters.reversed)
                         Collections.reverse(novelChapters);

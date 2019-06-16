@@ -13,11 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.Doomsdayrs.apps.shosetsu.R;
-import com.github.Doomsdayrs.apps.shosetsu.Types;
+import com.github.Doomsdayrs.apps.shosetsu.enums.Types;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.SettingsAdapter;
-import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.RecycleCard;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.SettingsCard;
-import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
 
 import java.util.ArrayList;
 

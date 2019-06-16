@@ -5,7 +5,10 @@
     package="com.github.Doomsdayrs.apps.shosetsu">
 
     <dist:module dist:instant="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -28,10 +31,6 @@
 
         <activity
             android:name=".fragment.novel.NovelFragmentChapterView"
-            android:theme="@style/lightTheme.NoActionBar" />
-
-        <activity
-            android:name=".fragment.CatalogueFragement"
             android:theme="@style/lightTheme.NoActionBar" />
     </application>
 

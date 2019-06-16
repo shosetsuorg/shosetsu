@@ -3,6 +3,7 @@ package com.github.Doomsdayrs.apps.shosetsu.fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -213,9 +214,9 @@ public class CatalogueFragement extends Fragment {
 
             libraryCards = new ArrayList<>();
             try {
-                Log.d("CatalogueFragmentRefresh", "Refreshing catalogue data");
+                Log.d("FragmentRefresh", "Refreshing catalogue data");
                 if (new setLatest().execute().get()) {
-                    Log.d("CatalogueFragmentRefresh", "Complete");
+                    Log.d("FragmentRefresh", "Complete");
                     catalogueFragement.library_Adapter.notifyDataSetChanged();
                 }
             } catch (ExecutionException e) {
@@ -255,7 +256,15 @@ public class CatalogueFragement extends Fragment {
         public boolean onQueryTextChange(String newText) {
             Log.d("Library search", newText);
             ArrayList<CatalogueNovelCard> recycleCards = new ArrayList<>(libraryCards);
-            recycleCards.removeIf(recycleCard -> !recycleCard.title.contains(newText));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                recycleCards.removeIf(recycleCard -> !recycleCard.title.toLowerCase().contains(newText.toLowerCase()));
+            } else {
+                for (int x = recycleCards.size() - 1; x >= 0; x--) {
+                    if (!recycleCards.get(x).title.contains(newText)) {
+                        recycleCards.remove(x);
+                    }
+                }
+            }
             setLibraryCards(recycleCards);
             return recycleCards.size() != 0;
         }

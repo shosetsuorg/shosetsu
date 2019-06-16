@@ -1,7 +1,4 @@
-package com.github.Doomsdayrs.apps.shosetsu.recycleObjects;
-
-
-import com.github.Doomsdayrs.apps.shosetsu.enums.Types;
+package com.github.Doomsdayrs.apps.shosetsu.enums;
 
 /**
  * This file is part of Shosetsu.
@@ -21,11 +18,20 @@ import com.github.Doomsdayrs.apps.shosetsu.enums.Types;
  *
  * @author github.com/doomsdayrs
  */
-public class SettingsCard {
+public enum Types {
+    DOWNLOAD("download"),
+    VIEW("view"),
+    ADVANCED("advanced"),
+    CREDITS("credits");
 
-    public Types ID;
+    final String name;
 
-    public SettingsCard(Types ID) {
-        this.ID = ID;
+    Types(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
