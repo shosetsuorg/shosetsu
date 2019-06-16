@@ -1,6 +1,7 @@
 package com.github.Doomsdayrs.apps.shosetsu.settings;
 
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 
 /**
  * This file is part of Shosetsu.
@@ -24,5 +25,7 @@ public class Settings {
     public static float ReaderTextSize = 1;
     public static int ReaderTextColor = Color.BLACK;
     public static int ReaderTextBackgroundColor = Color.WHITE;
+    public static ConnectivityManager connectivityManager;
+
 
 }

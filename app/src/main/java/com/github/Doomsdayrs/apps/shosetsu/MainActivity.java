@@ -1,5 +1,7 @@
 package com.github.Doomsdayrs.apps.shosetsu;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -17,6 +19,7 @@ import com.github.Doomsdayrs.apps.shosetsu.download.Downloadmanager;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CataloguesFragment;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.LibraryFragement;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.SettingsFragment;
+import com.github.Doomsdayrs.apps.shosetsu.settings.Settings;
 import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
 /**
@@ -54,8 +57,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SettingsController.download = getSharedPreferences("download", 0);
         SettingsController.advanced = getSharedPreferences("advanced", 0);
         SettingsController.tracking = getSharedPreferences("tracking", 0);
+        Settings.connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         SettingsController.init();
         Downloadmanager.context = this;
+
         //Set the content view
         setContentView(R.layout.activity_main);
         //Sets the toolbar

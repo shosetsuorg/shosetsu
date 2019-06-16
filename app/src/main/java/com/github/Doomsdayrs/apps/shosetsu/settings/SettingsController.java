@@ -2,6 +2,8 @@ package com.github.Doomsdayrs.apps.shosetsu.settings;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.github.Doomsdayrs.apps.shosetsu.database.Database;
 
@@ -34,6 +36,13 @@ public class SettingsController {
     public static void init() {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
+    }
+
+    public static boolean isOnline() {
+        NetworkInfo activeNetwork = Settings.connectivityManager.getActiveNetworkInfo();
+        if (activeNetwork != null)
+            return activeNetwork.getType() == ConnectivityManager.TYPE_WIFI || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE;
+        return false;
     }
 
     public static boolean isReaderLightMode() {

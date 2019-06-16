@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.fragment.CatalogueFragement;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueCard;
+import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -99,13 +101,15 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
         @Override
         public void onClick(View v) {
             Log.d("ForrmatterSelection", formatter.getName());
-            CatalogueFragement catalogueFragement = new CatalogueFragement();
-            catalogueFragement.setFormatter(formatter);
-            setFormatter(formatter);
-            fragmentManager.beginTransaction()
-                    .addToBackStack("tag")
-                    .replace(R.id.fragment_container, catalogueFragement)
-                    .commit();
+            if (SettingsController.isOnline()) {
+                CatalogueFragement catalogueFragement = new CatalogueFragement();
+                catalogueFragement.setFormatter(formatter);
+                setFormatter(formatter);
+                fragmentManager.beginTransaction()
+                        .addToBackStack("tag")
+                        .replace(R.id.fragment_container, catalogueFragement)
+                        .commit();
+            } else Toast.makeText(v.getContext(), "You are not online", Toast.LENGTH_SHORT).show();
         }
     }
 }

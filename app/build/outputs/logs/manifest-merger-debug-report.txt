@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
-INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
-INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
-INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:2:1-11:12
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.support:gridlayout-v7:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/d3415b4df8ae78f3a1c14fcc8d329185/AndroidManifest.xml:17:1-22:12
@@ -38,16 +38,16 @@ MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /home/doomsdayrs/.gradle/ca
 MERGED from [android.arch.lifecycle:livedata:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/ea5adf78a0e37f6e1305e731e947b7f2/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/fbc7974910efe1b4fadbfb043498945d/AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.core:runtime:1.1.1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/71a8c6f4ce59d795565afb9ca5cb8ba8/AndroidManifest.xml:17:1-22:12
-INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
-INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
-INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
 	package
 		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:5:5-50
 		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml
 		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
 		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml
 	xmlns:tools
 		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:4:5-51
@@ -55,7 +55,7 @@ INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/
 		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:3:5-61
 	android:versionCode
 		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-37:12
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:1-38:12
 		INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:2:11-69
@@ -67,12 +67,16 @@ uses-permission#android.permission.INTERNET
 ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:9:5-67
 	android:name
 		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:9:22-64
-uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:10:5-81
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:10:5-79
 	android:name
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:10:22-78
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:10:22-76
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:11:5-81
+	android:name
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:11:22-78
 application
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:12:5-35:19
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:13:5-36:19
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:9:5-20
 MERGED from [com.android.support.constraint:constraint-layout:2.0.0-beta1] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/52dd9eee32f18d8be9a6d0124b4adaa9/AndroidManifest.xml:9:5-20
 MERGED from [com.android.support:design:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/b5afacf53c79d31d5d72c60a9abd3a95/AndroidManifest.xml:22:5-20
@@ -86,45 +90,45 @@ MERGED from [com.android.support:versionedparcelable:28.0.0] /home/doomsdayrs/.g
 	android:appComponentFactory
 		ADDED from [com.android.support:support-compat:28.0.0] /home/doomsdayrs/.gradle/caches/transforms-2/files-2.1/a4edf3c4f3bcb7055648019c13e82e48/AndroidManifest.xml:22:18-91
 	android:supportsRtl
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:19:9-35
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:20:9-35
 	android:label
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:16:9-41
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:17:9-41
 	android:fullBackupContent
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:14:9-41
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:15:9-41
 	tools:ignore
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:21:9-48
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:22:9-48
 	android:roundIcon
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:18:9-54
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:19:9-54
 	android:icon
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:15:9-43
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:16:9-43
 	android:allowBackup
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:13:9-35
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:14:9-35
 	android:theme
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:20:9-42
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:21:9-42
 	android:networkSecurityConfig
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:17:9-69
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:18:9-69
 activity#com.github.Doomsdayrs.apps.shosetsu.MainActivity
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:22:9-30:20
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:23:9-31:20
 	android:theme
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:24:13-58
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:25:13-58
 	android:name
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:23:13-41
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:24:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:25:13-29:29
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:26:13-30:29
 action#android.intent.action.MAIN
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:26:17-69
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:27:17-69
 	android:name
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:26:25-66
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:27:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:28:17-77
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:29:17-77
 	android:name
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:28:27-74
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:29:27-74
 activity#com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:32:9-34:61
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:33:9-35:61
 	android:theme
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:34:13-58
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:35:13-58
 	android:name
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:33:13-68
+		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:34:13-68
 uses-sdk
 INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml

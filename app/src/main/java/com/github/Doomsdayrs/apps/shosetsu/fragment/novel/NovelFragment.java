@@ -17,6 +17,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.SlidingNovelPageAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,17 +80,20 @@ public class NovelFragment extends Fragment {
         //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
-            try {
-                boolean a = new fillData(this).execute().get();
-                if (a)
-                    setViewPager();
-                else System.exit(1);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            if (SettingsController.isOnline()){
+                try {
+                    boolean a = new fillData(this).execute().get();
+                    if (a)
+                        setViewPager();
+                    else System.exit(1);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }else {
 
+            }
         } else {
             url = savedInstanceState.getString("imageURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
