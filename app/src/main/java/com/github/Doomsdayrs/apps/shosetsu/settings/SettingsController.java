@@ -88,6 +88,10 @@ public class SettingsController {
         }
     }
 
+    public static void setScroll(String chapterURL, JSONObject saveData) {
+        Database.updateBookMark(chapterURL, saveData);
+    }
+
     public static boolean isTrackingEnabled() {
         return tracking.getBoolean("enabled", false);
     }

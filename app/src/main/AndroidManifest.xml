@@ -33,7 +33,7 @@
         <activity
             android:name=".fragment.novel.NovelFragmentChapterView"
             android:theme="@style/lightTheme.NoActionBar"
-            android:parentActivityName=".MainActivity"/>
+           />
     </application>
 
 </manifest>

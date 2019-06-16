@@ -107,6 +107,10 @@ public class Database {
         }
     }
 
+    public static void updateBookMark(String url, JSONObject savedData) {
+        library.execSQL("update " + Tables.TABLE_BOOKMARKS + " set " + Columns.COLUMN_SAVED_DATA + "='" + savedData.toString() + "' where " + Columns.COLUMN_URL + "='" + url + "'");
+    }
+
     /**
      * Removes bookmark
      *

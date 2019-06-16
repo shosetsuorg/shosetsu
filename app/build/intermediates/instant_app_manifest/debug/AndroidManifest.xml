@@ -4,7 +4,7 @@
     package="com.github.Doomsdayrs.apps.shosetsu"
     android:targetSandboxVersion="2"
     android:versionCode="1"
-    android:versionName="v1.0.7-alpha" >
+    android:versionName="v1.0.8-alpha" >
 
     <uses-sdk
         android:minSdkVersion="23"

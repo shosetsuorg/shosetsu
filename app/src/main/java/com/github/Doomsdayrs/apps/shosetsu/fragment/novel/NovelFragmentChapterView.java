@@ -55,8 +55,11 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     String novelURL;
     String text;
 
-
     MenuItem bookmark;
+
+
+    int a = 0;
+    boolean bookmarked;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -76,8 +79,8 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
         // Bookmark
         bookmark = menu.findItem(R.id.chapter_view_bookmark);
-
-        if (SettingsController.isBookMarked(URL)) {
+        bookmarked = SettingsController.isBookMarked(URL);
+        if (bookmarked) {
             bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
             int y = SettingsController.getYBookmark(URL);
             Log.d("Loaded Scroll", Integer.toString(y));
@@ -117,11 +120,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     int y = scrollView.getScrollY();
-
                     Log.d("ScrollSave", Integer.toString(y));
                     jsonObject.put("y", y);
-
-                    if (SettingsController.toggleBookmarkChapter(URL, jsonObject))
+                    bookmarked = SettingsController.toggleBookmarkChapter(URL, jsonObject);
+                    if (bookmarked)
                         bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
                     else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
                     return true;
@@ -134,6 +136,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         return false;
     }
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,9 +145,23 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             novelURL = getIntent().getStringExtra("novelURL");
             toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
             scrollView = findViewById(R.id.fragment_novel_scroll);
+            scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                if (bookmarked)
+                if (a % 5 == 0) {
+                    int y = scrollView.getScrollY();
+                    JSONObject jsonObject = new JSONObject();
+                    Log.d("ScrollSave", Integer.toString(y));
+                    try {
+                        jsonObject.put("y", y);
+                        SettingsController.setScroll(URL, jsonObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else a++;
+            });
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
             textView.setOnClickListener(new click(toolbar));
         }
