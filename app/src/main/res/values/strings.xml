@@ -23,4 +23,5 @@
     <string name="novel_title">Novel Title</string>
     <string name="novel_author">Novel Author(s)</string>
     <string name="novel_description">Novel Description</string>
+    <string name="anilist">Anilist</string>
 </resources>

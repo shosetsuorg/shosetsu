@@ -34,7 +34,12 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
+    implementation 'com.graphql-java:graphql-java:11.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
     //noinspection GradleCompatible

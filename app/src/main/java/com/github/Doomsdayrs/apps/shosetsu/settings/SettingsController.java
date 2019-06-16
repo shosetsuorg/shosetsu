@@ -28,6 +28,7 @@ public class SettingsController {
     public static SharedPreferences download;
     public static SharedPreferences view;
     public static SharedPreferences advanced;
+    public static SharedPreferences tracking;
 
     public static void init() {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
@@ -71,4 +72,10 @@ public class SettingsController {
             return Database.addBookMark(chapterURL, savedPath);
         }
     }
+
+    public static boolean isTrackingEnabled() {
+        return tracking.getBoolean("enabled",false);
+    }
+
+    public static void addTracker(){}
 }

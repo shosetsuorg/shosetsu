@@ -48,9 +48,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Settings setup
         SettingsController.view = getSharedPreferences("view", 0);
         SettingsController.download = getSharedPreferences("download", 0);
         SettingsController.advanced = getSharedPreferences("advanced", 0);
+        SettingsController.tracking = getSharedPreferences("tracking", 0);
         SettingsController.init();
 
         //Set the content view
