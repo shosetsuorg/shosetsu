@@ -26,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     static final String DB_NAME = "database.db";
 
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, 2);
     }
 
 
@@ -34,10 +34,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Database.create);
         db.execSQL(Database.create2);
+        db.execSQL(Database.create3);
     }
 
+
+    // Library
+    // Drop novelID
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL(Database.create3);
+        db.execSQL("begin transaction create table library_backup("")");
     }
 }

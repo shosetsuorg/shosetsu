@@ -38,7 +38,8 @@ public class Database {
 
     public enum Tables {
         TABLE_LIBRARY("library"),
-        TABLE_BOOKMARKS("bookmarks");
+        TABLE_BOOKMARKS("bookmarks"),
+        TABLE_DOWNLOADS("downloads");
         final String TABLE;
 
         Tables(String table) {
@@ -53,6 +54,7 @@ public class Database {
 
     public enum Columns {
         COLUMN_URL("url"),
+        COLUMNS_NOVEL_URL("novelURL"),
         COLUMN_SAVED_DATA("savedData"),
         COLUMN_FORMATTER_ID("formatterID");
         final String COLUMN;
@@ -67,11 +69,7 @@ public class Database {
         }
     }
 
-    // > library
-    // novelID is an self affiliated ID for the novel in storage
-    // imageURL is the imageURL to the specific novel
-    // savedData is a json containing the title(s), author(s), artist(s), paths to downloaded chapters, and more
-    // userData includes read chapters, and others
+
     public static String create = "create TABLE if not exists " + Tables.TABLE_LIBRARY + " (" +
             "novelID integer not null primary key autoincrement, " +
             Columns.COLUMN_URL + " text not null unique, " +
@@ -79,12 +77,15 @@ public class Database {
             "savedData text not null, " +
             "userData text)";
 
-    // > bookmarks
     public static String create2 = "create TABLE if not exists " + Tables.TABLE_BOOKMARKS + "(" +
             "novelID integer not null primary key, " +
             Columns.COLUMN_URL + " text unique not null, " +
             Columns.COLUMN_SAVED_DATA + " text)";
 
+    public static String create3 = "create TABLE if not exists " + Tables.TABLE_DOWNLOADS + "(" +
+            Columns.COLUMNS_NOVEL_URL + " text not null"+
+            Columns.COLUMN_URL + " text not null unique primary key, " +
+            Columns.COLUMN_SAVED_DATA + " text)";
 
     // BOOKMARK CONTROLLERS
 
@@ -226,52 +227,42 @@ public class Database {
     }
 
 
+    /**
+     * Is the chapter saved
+     *
+     * @param novelURL
+     * @param chapterURL
+     * @return
+     */
     public static boolean isSaved(String novelURL, String chapterURL) {
-        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMN_URL + " = '" + novelURL + "'", null);
+        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_DOWNLOADS + " where " + Columns.COLUMN_URL + " = '" + novelURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
         } else {
-            try {
-                cursor.moveToNext();
-                int index = cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString());
-                if (index < 0)
-                    return false;
-                JSONObject savedData = new JSONObject(cursor.getString(index));
-                cursor.close();
-                if (savedData.has("chaptersSaved"))
-                    if (savedData.getJSONObject("chaptersSaved").has(chapterURL))
-                        return true;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            return true;
         }
         return false;
     }
 
+    /**
+     * Gets the novel from local storage
+     *
+     * @param novelURL   URL of the novel
+     * @param chapterURL URL of the chapter
+     * @return String of passage
+     */
     public static String getSaved(String novelURL, String chapterURL) {
-        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMN_URL + " = '" + novelURL + "'", null);
+        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_DOWNLOADS + " where " + Columns.COLUMN_URL + " = '" + novelURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return null;
         } else {
-            try {
-                cursor.moveToNext();
-                int index = cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString());
-                if (index < 0)
-                    return null;
-                JSONObject savedData = new JSONObject(cursor.getString(index));
-                cursor.close();
-                if (savedData.has("chaptersSaved"))
-                    if (savedData.getJSONObject("chaptersSaved").has(chapterURL)) {
-                        String path = savedData.getJSONObject("chaptersSaved").getString(chapterURL);
-                        return Downloadmanager.getText(path);
-                    } else return null;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            cursor.moveToNext();
+            String savedData = cursor.getString(cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString()));
+            cursor.close();
+            return Downloadmanager.getText(savedData);
         }
-        return null;
     }
 
     /**
@@ -284,16 +275,15 @@ public class Database {
      */
     public static boolean addToLibrary(int formatter, NovelPage novelPage, String novelURL, JSONObject data) {
         Log.d("addToLibrary imageURL", novelURL);
+
         try {
             data.put("title", novelPage.title.replaceAll("'", "\'"));
             data.put("authors", Arrays.toString(novelPage.authors).replaceAll("'", "\'"));
-            Log.d("IMAGEURL", novelPage.imageURL);
             data.put("imageURL", novelPage.imageURL);
         } catch (JSONException e) {
             Log.e("JSONException", e.getMessage());
             return false;
         }
-
 
         if (library != null) {
             library.execSQL("insert into " + Tables.TABLE_LIBRARY + "(" + Columns.COLUMN_URL + "," + Columns.COLUMN_SAVED_DATA + "," + Columns.COLUMN_FORMATTER_ID + ") values(" +
@@ -308,8 +298,13 @@ public class Database {
         }
     }
 
+    /**
+     * Removes a novel from the library
+     *
+     * @param novelURL novelURL
+     * @return if removed successfully
+     */
     public static boolean removeFromLibrary(String novelURL) {
-        Log.d("removeLibtem imageURL", novelURL);
         if (library != null)
             return library.delete(Tables.TABLE_LIBRARY.toString(), Columns.COLUMN_URL + "='" + novelURL + "'", null) > 0;
         else {
@@ -318,10 +313,15 @@ public class Database {
         }
     }
 
-    public static boolean inLibrary(String url) {
-        Log.d("inLibrary imageURL", url);
+    /**
+     * Is a novel in the library or not
+     *
+     * @param novelURL Novel URL
+     * @return yes or no
+     */
+    public static boolean inLibrary(String novelURL) {
         if (library != null) {
-            Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMN_URL + " ='" + url + "'", null);
+            Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMN_URL + " ='" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
@@ -334,6 +334,11 @@ public class Database {
         }
     }
 
+    /**
+     * Get's the entire library to be listed
+     *
+     * @return the library
+     */
     public static ArrayList<NovelCard> getLibrary() {
         Cursor cursor = library.query(Tables.TABLE_LIBRARY.toString(),
                 new String[]{Columns.COLUMN_URL.toString(), Columns.COLUMN_FORMATTER_ID.toString(), Columns.COLUMN_SAVED_DATA.toString()},
