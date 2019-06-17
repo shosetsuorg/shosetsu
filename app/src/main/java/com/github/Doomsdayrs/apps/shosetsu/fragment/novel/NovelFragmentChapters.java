@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
@@ -61,7 +60,7 @@ public class NovelFragmentChapters extends Fragment {
     public String novelTitle;
     public String novelURL;
     private FragmentManager fragmentManager;
-    private RecyclerView.Adapter adapter;
+    public RecyclerView.Adapter adapter;
     private Context context;
 
     public NovelFragmentChapters() {
@@ -110,6 +109,7 @@ public class NovelFragmentChapters extends Fragment {
         recyclerView.setHasFixedSize(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         adapter = new NovelChaptersAdapter(this, novels, fragmentManager, formatter);
+        adapter.setHasStableIds(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new bottom(this));
         recyclerView.setAdapter(adapter);
@@ -200,6 +200,7 @@ public class NovelFragmentChapters extends Fragment {
                 }
         }
     }
+
 
 
 }

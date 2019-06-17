@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
-import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.database.Database;
 
 import java.io.BufferedReader;
@@ -106,8 +105,8 @@ public class Downloadmanager {
                     fileOutputStream.write(passage.getBytes());
                     fileOutputStream.close();
                     Database.addSavedPath(downloadItem.novelURL, downloadItem.chapterURL, folder.getPath() + "/" + downloadItem.chapterName + ".txt");
-                    if (downloadItem.chaptersViewHolder != null) {
-                        downloadItem.chaptersViewHolder.download.setImageResource(R.drawable.ic_arrow_drop_down_circle_black_24dp);
+                    if (downloadItem.novelFragmentChapters != null) {
+                        downloadItem.novelFragmentChapters.recyclerView.post(() -> downloadItem.novelFragmentChapters.adapter.notifyDataSetChanged());
                     }
                     Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + downloadItem.chapterName);
                     urlsToDownload.remove(urlsToDownload.size() - 1);

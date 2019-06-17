@@ -2,6 +2,7 @@ package com.github.Doomsdayrs.apps.shosetsu.download;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.ChaptersViewHolder;
+import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapters;
 
 /**
  * This file is part of Shosetsu.
@@ -27,14 +28,14 @@ public class DownloadItem {
     public final String chapterName;
     public final String novelURL;
     public final String chapterURL;
-    public final ChaptersViewHolder chaptersViewHolder;
+    public final NovelFragmentChapters novelFragmentChapters;
 
-    public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL, ChaptersViewHolder chaptersViewHolder) {
+    public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL, NovelFragmentChapters novelFragmentChapters) {
         this.formatter = formatter;
         this.novelName = novelName;
         this.chapterName = chapterName;
         this.novelURL = novelURL;
         this.chapterURL = chapterURL;
-        this.chaptersViewHolder = chaptersViewHolder;
+        this.novelFragmentChapters = novelFragmentChapters;
     }
 }

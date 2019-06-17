@@ -124,9 +124,7 @@ ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app
 	android:name
 		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:29:27-74
 activity#com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView
-ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:33:9-36:57
-	android:parentActivityName
-		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:36:13-55
+ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:33:9-36:14
 	android:theme
 		ADDED from /mnt/40b88ecf-5660-4110-b4c1-b6105e528191/SourceCode/git/shosetsu/app/src/main/AndroidManifest.xml:35:13-58
 	android:name

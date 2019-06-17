@@ -150,17 +150,17 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             scrollView = findViewById(R.id.fragment_novel_scroll);
             scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                 if (bookmarked)
-                if (a % 5 == 0) {
-                    int y = scrollView.getScrollY();
-                    JSONObject jsonObject = new JSONObject();
-                    Log.d("ScrollSave", Integer.toString(y));
-                    try {
-                        jsonObject.put("y", y);
-                        SettingsController.setScroll(URL, jsonObject);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else a++;
+                    if (a % 5 == 0) {
+                        int y = scrollView.getScrollY();
+                        JSONObject jsonObject = new JSONObject();
+                        Log.d("ScrollSave", Integer.toString(y));
+                        try {
+                            jsonObject.put("y", y);
+                            SettingsController.setScroll(URL, jsonObject);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else a++;
             });
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
             textView.setOnClickListener(new click(toolbar));
@@ -173,7 +173,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             text = savedInstanceState.getString("text");
         } else URL = getIntent().getStringExtra("url");
-
+        Log.d("URL", URL);
 
         if (getIntent().getBooleanExtra("downloaded", false))
             text = Database.getSaved(novelURL, URL).replaceAll("\n", "\n\n");
@@ -224,4 +224,6 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             return null;
         }
     }
+
+
 }

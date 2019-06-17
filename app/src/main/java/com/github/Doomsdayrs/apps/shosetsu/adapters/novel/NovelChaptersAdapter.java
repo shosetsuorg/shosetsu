@@ -3,6 +3,7 @@ package com.github.Doomsdayrs.apps.shosetsu.adapters.novel;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,19 +61,19 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
     @Override
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
         NovelChapter novelChapter = novelChapters.get(i);
+
         chaptersViewHolder.novelChapter = novelChapter;
         chaptersViewHolder.fragmentManager = fragmentManager;
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
-
         if (SettingsController.isBookMarked(novelChapter.link))
             chaptersViewHolder.bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
 
         if (Database.isSaved(novelFragmentChapters.novelURL, novelChapter.link)) {
+            Log.d("In Storage", novelFragmentChapters.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.download.setImageResource(R.drawable.ic_arrow_drop_down_circle_black_24dp);
             chaptersViewHolder.downloaded = true;
         }
-
     }
 
     @Override
@@ -80,5 +81,13 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
         return novelChapters.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }
