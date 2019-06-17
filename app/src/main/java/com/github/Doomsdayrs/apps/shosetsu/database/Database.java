@@ -227,7 +227,7 @@ public class Database {
         }
         library.execSQL("insert into " + Tables.TABLE_LIBRARY + "(" + Columns.COLUMNS_NOVEL_URL + "," + Columns.COLUMN_SAVED_DATA + "," + Columns.COLUMN_FORMATTER_ID + ") values('" +
                 novelURL + "','" +
-                data.toString() + "'," +
+                data.toString().replaceAll("'","") + "'," +
                 formatter + ")"
         );
         return true;
