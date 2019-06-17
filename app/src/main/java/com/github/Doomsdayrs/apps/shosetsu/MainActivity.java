@@ -98,6 +98,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         navigationView.setCheckedItem(menuItem);
         switch (menuItem.getItemId()) {

@@ -49,18 +49,15 @@ import java.util.concurrent.ExecutionException;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentChapters extends Fragment {
-
-
     public static List<NovelChapter> novelChapters;
     public boolean reversed;
     public RecyclerView recyclerView;
     public int currentMaxPage = 1;
-    MenuItem button;
     private Formatter formatter;
     public String novelTitle;
     public String novelURL;
     private FragmentManager fragmentManager;
-    public RecyclerView.Adapter adapter;
+    public NovelChaptersAdapter adapter;
     private Context context;
 
     public NovelFragmentChapters() {
@@ -121,7 +118,6 @@ public class NovelFragmentChapters extends Fragment {
         menu.findItem(R.id.chapter_filter).setOnMenuItemClickListener(new onFilter(this));
     }
 
-
     static class onFilter implements MenuItem.OnMenuItemClickListener {
         NovelFragmentChapters novelFragmentChapters;
 
@@ -151,9 +147,9 @@ public class NovelFragmentChapters extends Fragment {
                 try {
                     NovelPage novelPage;
                     if (integers.length == 0)
-                        novelPage = novelFragmentChapters.formatter.parseNovel("http://novelfull.com/" + novelFragmentChapters.novelURL);
+                        novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL);
                     else
-                        novelPage = novelFragmentChapters.formatter.parseNovel("http://novelfull.com" + novelFragmentChapters.novelURL, integers[0]);
+                        novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0]);
                     //TODO Difference calculation
 
                     if (!novelPage.novelChapters.get(novelPage.novelChapters.size() - 1).link
@@ -200,7 +196,6 @@ public class NovelFragmentChapters extends Fragment {
                 }
         }
     }
-
 
 
 }

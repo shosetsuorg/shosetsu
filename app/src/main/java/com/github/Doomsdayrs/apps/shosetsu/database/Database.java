@@ -53,7 +53,7 @@ public class Database {
     }
 
     public enum Columns {
-        COLUMN_URL("url"),
+        COLUMN_CHAPTER_URL("chapterURL"),
         COLUMNS_NOVEL_URL("novelURL"),
         COLUMN_SAVED_DATA("savedData"),
         COLUMN_FORMATTER_ID("formatterID");
@@ -71,20 +71,17 @@ public class Database {
 
 
     public static String create = "create TABLE if not exists " + Tables.TABLE_LIBRARY + " (" +
-            "novelID integer not null primary key autoincrement, " +
-            Columns.COLUMN_URL + " text not null unique, " +
+            Columns.COLUMNS_NOVEL_URL + " text not null unique, " +
             Columns.COLUMN_FORMATTER_ID + " integer not null, " +
-            "savedData text not null, " +
-            "userData text)";
+            Columns.COLUMN_SAVED_DATA + " text not null)";
 
     public static String create2 = "create TABLE if not exists " + Tables.TABLE_BOOKMARKS + "(" +
-            "novelID integer not null primary key, " +
-            Columns.COLUMN_URL + " text unique not null, " +
+            Columns.COLUMN_CHAPTER_URL + " text unique not null, " +
             Columns.COLUMN_SAVED_DATA + " text)";
 
     public static String create3 = "create TABLE if not exists " + Tables.TABLE_DOWNLOADS + "(" +
-            Columns.COLUMNS_NOVEL_URL + " text not null"+
-            Columns.COLUMN_URL + " text not null unique primary key, " +
+            Columns.COLUMNS_NOVEL_URL + " text not null," +
+            Columns.COLUMN_CHAPTER_URL + " text not null, " +
             Columns.COLUMN_SAVED_DATA + " text)";
 
     // BOOKMARK CONTROLLERS
@@ -92,24 +89,19 @@ public class Database {
     /**
      * Adds a bookmark
      *
-     * @param url       imageURL of the novel
-     * @param savedData JSON object containing scroll position and others
+     * @param chapterURL imageURL of the novel
+     * @param savedData  JSON object containing scroll position and others
      */
-    public static boolean addBookMark(String url, JSONObject savedData) {
-        if (library != null) {
-            library.execSQL("insert into " + Tables.TABLE_BOOKMARKS + " (" + Columns.COLUMN_URL + "," + Columns.COLUMN_SAVED_DATA + ") values('" +
-                    url + "','" +
-                    savedData.toString() + "')"
-            );
-            return true;
-        } else {
-            Log.e("Database", "isNULL");
-            return false;
-        }
+    public static boolean addBookMark(String chapterURL, JSONObject savedData) {
+        library.execSQL("insert into " + Tables.TABLE_BOOKMARKS + " (" + Columns.COLUMN_CHAPTER_URL + "," + Columns.COLUMN_SAVED_DATA + ") values('" +
+                chapterURL + "','" +
+                savedData.toString() + "')"
+        );
+        return true;
     }
 
-    public static void updateBookMark(String url, JSONObject savedData) {
-        library.execSQL("update " + Tables.TABLE_BOOKMARKS + " set " + Columns.COLUMN_SAVED_DATA + "='" + savedData.toString() + "' where " + Columns.COLUMN_URL + "='" + url + "'");
+    public static void updateBookMark(String chapterURL, JSONObject savedData) {
+        library.execSQL("update " + Tables.TABLE_BOOKMARKS + " set " + Columns.COLUMN_SAVED_DATA + "='" + savedData.toString() + "' where " + Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "'");
     }
 
     /**
@@ -119,12 +111,7 @@ public class Database {
      * @return if removed properly
      */
     public static boolean removeBookMarked(String url) {
-        if (library != null)
-            return library.delete(Tables.TABLE_BOOKMARKS.toString(), Columns.COLUMN_URL + "='" + url + "'", null) > 0;
-        else {
-            Log.e("Database", "isNULL");
-            return false;
-        }
+        return library.delete(Tables.TABLE_BOOKMARKS.toString(), Columns.COLUMN_CHAPTER_URL + "='" + url + "'", null) > 0;
     }
 
     /**
@@ -134,96 +121,53 @@ public class Database {
      * @return if bookmarked?
      */
     public static boolean isBookMarked(String url) {
-        if (library != null) {
-            Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_BOOKMARKS + " where " + Columns.COLUMN_URL + " = '" + url + "'", null);
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return false;
-            }
-            cursor.close();
-            return true;
-        } else {
-            Log.e("Database", "isNULL");
-            return false;
-        }
-    }
-
-    public static int getBookmarkObject(String chapterURL) {
-        Cursor cursor = library.query(Tables.TABLE_BOOKMARKS.toString(), new String[]{Columns.COLUMN_SAVED_DATA.toString()}, null, null, null, null, null);
+        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_BOOKMARKS + " where " + Columns.COLUMN_CHAPTER_URL + " = '" + url + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
-            return 0;
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
+    /**
+     * Gets the bookmark object from the savedData column
+     *
+     * @param chapterURL Chapter to retrieve bookmark from
+     * @return JSONObject of saved data
+     */
+    public static JSONObject getBookmarkObject(String chapterURL) {
+        Cursor cursor = library.rawQuery("select " + Columns.COLUMN_SAVED_DATA + " from " + Tables.TABLE_BOOKMARKS + " where " + Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "'", null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return null;
         } else {
             try {
                 cursor.moveToNext();
                 JSONObject jsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString())));
                 cursor.close();
-                return jsonObject.getInt("y");
+                return jsonObject;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return 0;
+        return null;
     }
 
 
     // LIBRARY CONTROLLERS
 
     public static boolean removePath(String novelURL, String chapterURL) {
-        Cursor cursor = library.rawQuery("SELECT " + Columns.COLUMN_SAVED_DATA + " from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMN_URL + " = '" + novelURL + "'", null);
-        if (cursor.getCount() <= 0) {
-            cursor.close();
-            return false;
-        } else {
-            cursor.moveToNext();
-            String string = cursor.getString(cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString()));
-            cursor.close();
-            if (string != null) {
-                try {
-                    JSONObject savedData = new JSONObject(string);
-                    if (!savedData.has("chaptersSaved")) {
-                        savedData.put("chaptersSaved", new JSONObject());
-                    }
-                    JSONObject chaptersSaved = savedData.getJSONObject("chaptersSaved");
-                    chaptersSaved.remove(chapterURL);
-                    savedData.put("chaptersSaved", chaptersSaved);
-                    library.execSQL("update " + Tables.TABLE_LIBRARY + " set " + Columns.COLUMN_SAVED_DATA + "='" + savedData.toString() + "' where " + Columns.COLUMN_URL + "='" + novelURL + "'");
-                    return true;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
+        return library.delete(Tables.TABLE_DOWNLOADS.toString(), Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "' and " + Columns.COLUMNS_NOVEL_URL + "='" + novelURL + "'", null) > 0;
     }
 
     public static boolean addSavedPath(String novelURL, String chapterURL, String chapterPath) {
-
-        Cursor cursor = library.rawQuery("SELECT " + Columns.COLUMN_SAVED_DATA + " from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMN_URL + " = '" + novelURL + "'", null);
-        if (cursor.getCount() <= 0) {
-            cursor.close();
-            return false;
-        } else {
-            cursor.moveToNext();
-            String string = cursor.getString(cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString()));
-            cursor.close();
-            if (string != null) {
-                try {
-                    JSONObject savedData = new JSONObject(string);
-                    if (!savedData.has("chaptersSaved")) {
-                        savedData.put("chaptersSaved", new JSONObject());
-                    }
-                    JSONObject chaptersSaved = savedData.getJSONObject("chaptersSaved");
-                    chaptersSaved.put(chapterURL, chapterPath);
-                    savedData.put("chaptersSaved", chaptersSaved);
-                    library.execSQL("update " + Tables.TABLE_LIBRARY + " set " + Columns.COLUMN_SAVED_DATA + "='" + savedData.toString() + "' where " + Columns.COLUMN_URL + "='" + novelURL + "'");
-                    return true;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
+        library.execSQL("insert into " + Tables.TABLE_DOWNLOADS + " (" + Columns.COLUMNS_NOVEL_URL + "," + Columns.COLUMN_CHAPTER_URL + "," + Columns.COLUMN_SAVED_DATA + ") values('" +
+                novelURL + "','" +
+                chapterURL + "','" +
+                chapterPath + "')"
+        );
+        return true;
     }
 
 
@@ -235,14 +179,13 @@ public class Database {
      * @return
      */
     public static boolean isSaved(String novelURL, String chapterURL) {
-        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_DOWNLOADS + " where " + Columns.COLUMN_URL + " = '" + novelURL + "'", null);
+        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_DOWNLOADS + " where " + Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "' and " + Columns.COLUMNS_NOVEL_URL + "='" + novelURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
-        } else {
-            return true;
         }
-        return false;
+        cursor.close();
+        return true;
     }
 
     /**
@@ -253,7 +196,7 @@ public class Database {
      * @return String of passage
      */
     public static String getSaved(String novelURL, String chapterURL) {
-        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_DOWNLOADS + " where " + Columns.COLUMN_URL + " = '" + novelURL + "'", null);
+        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_DOWNLOADS + " where " + Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "' and " + Columns.COLUMNS_NOVEL_URL + "='" + novelURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return null;
@@ -274,8 +217,6 @@ public class Database {
      * @return if successful
      */
     public static boolean addToLibrary(int formatter, NovelPage novelPage, String novelURL, JSONObject data) {
-        Log.d("addToLibrary imageURL", novelURL);
-
         try {
             data.put("title", novelPage.title.replaceAll("'", "\'"));
             data.put("authors", Arrays.toString(novelPage.authors).replaceAll("'", "\'"));
@@ -284,18 +225,12 @@ public class Database {
             Log.e("JSONException", e.getMessage());
             return false;
         }
-
-        if (library != null) {
-            library.execSQL("insert into " + Tables.TABLE_LIBRARY + "(" + Columns.COLUMN_URL + "," + Columns.COLUMN_SAVED_DATA + "," + Columns.COLUMN_FORMATTER_ID + ") values(" +
-                    "'" + novelURL + "','" +
-                    data.toString() + "'," +
-                    formatter + ")"
-            );
-            return true;
-        } else {
-            Log.e("Database", "isNULL");
-            return false;
-        }
+        library.execSQL("insert into " + Tables.TABLE_LIBRARY + "(" + Columns.COLUMNS_NOVEL_URL + "," + Columns.COLUMN_SAVED_DATA + "," + Columns.COLUMN_FORMATTER_ID + ") values('" +
+                novelURL + "','" +
+                data.toString() + "'," +
+                formatter + ")"
+        );
+        return true;
     }
 
     /**
@@ -305,12 +240,7 @@ public class Database {
      * @return if removed successfully
      */
     public static boolean removeFromLibrary(String novelURL) {
-        if (library != null)
-            return library.delete(Tables.TABLE_LIBRARY.toString(), Columns.COLUMN_URL + "='" + novelURL + "'", null) > 0;
-        else {
-            Log.e("Database", "isNULL");
-            return false;
-        }
+        return library.delete(Tables.TABLE_LIBRARY.toString(), Columns.COLUMNS_NOVEL_URL + "='" + novelURL + "'", null) > 0;
     }
 
     /**
@@ -320,18 +250,13 @@ public class Database {
      * @return yes or no
      */
     public static boolean inLibrary(String novelURL) {
-        if (library != null) {
-            Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMN_URL + " ='" + novelURL + "'", null);
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return false;
-            }
+        Cursor cursor = library.rawQuery("SELECT " + Columns.COLUMN_FORMATTER_ID + " from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMNS_NOVEL_URL + " ='" + novelURL + "'", null);
+        if (cursor.getCount() <= 0) {
             cursor.close();
-            return true;
-        } else {
-            Log.e("Database", "isNULL");
             return false;
         }
+        cursor.close();
+        return true;
     }
 
     /**
@@ -341,7 +266,7 @@ public class Database {
      */
     public static ArrayList<NovelCard> getLibrary() {
         Cursor cursor = library.query(Tables.TABLE_LIBRARY.toString(),
-                new String[]{Columns.COLUMN_URL.toString(), Columns.COLUMN_FORMATTER_ID.toString(), Columns.COLUMN_SAVED_DATA.toString()},
+                new String[]{Columns.COLUMNS_NOVEL_URL.toString(), Columns.COLUMN_FORMATTER_ID.toString(), Columns.COLUMN_SAVED_DATA.toString()},
                 null, null, null, null, null);
         ArrayList<NovelCard> novelCards = new ArrayList<>();
         if (cursor.getCount() <= 0) {
@@ -351,7 +276,14 @@ public class Database {
             while (cursor.moveToNext()) {
                 try {
                     JSONObject jsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString())));
-                    novelCards.add(new NovelCard(jsonObject.getString("title"), cursor.getString(cursor.getColumnIndex(Columns.COLUMN_URL.toString())), jsonObject.getString("imageURL"), cursor.getInt(cursor.getColumnIndex(Columns.COLUMN_FORMATTER_ID.toString()))));
+                    novelCards.add(
+                            new NovelCard(
+                                    jsonObject.getString("title"),
+                                    cursor.getString(cursor.getColumnIndex(Columns.COLUMNS_NOVEL_URL.toString())),
+                                    jsonObject.getString("imageURL"),
+                                    cursor.getInt(cursor.getColumnIndex(Columns.COLUMN_FORMATTER_ID.toString()))
+                            )
+                    );
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

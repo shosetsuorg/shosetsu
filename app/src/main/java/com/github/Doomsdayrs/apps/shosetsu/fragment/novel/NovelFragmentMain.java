@@ -15,11 +15,14 @@ import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.database.Database;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -123,7 +126,24 @@ public class NovelFragmentMain extends Fragment {
         @Override
         public void onClick(View v) {
             if (!novelFragmentMain.inLibrary) {
-                if (Database.addToLibrary(novelFragmentMain.formatter.getID(), novelFragmentMain.novelPage, novelFragmentMain.url, new JSONObject())) {
+
+                JSONObject savedData = new JSONObject();
+                try {
+                    JSONArray chapters = new JSONArray();
+                    for (NovelChapter novelChapter : NovelFragmentChapters.novelChapters) {
+                        JSONObject chapter = new JSONObject();
+                        {
+                            chapter.put("link", novelChapter.link);
+                            chapter.put("chapterNum", novelChapter.chapterNum);
+                        }
+                        chapters.put(chapter);
+                    }
+                    savedData.put("chapters", chapters);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (Database.addToLibrary(novelFragmentMain.formatter.getID(), novelFragmentMain.novelPage, novelFragmentMain.url, savedData)) {
                     novelFragmentMain.inLibrary = true;
                     novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
                 } else

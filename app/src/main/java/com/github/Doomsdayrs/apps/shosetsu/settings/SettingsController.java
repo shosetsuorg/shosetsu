@@ -6,7 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.github.Doomsdayrs.apps.shosetsu.database.Database;
+import com.github.Doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapters;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -70,7 +72,16 @@ public class SettingsController {
     }
 
     public static int getYBookmark(String chapterURL) {
-        return Database.getBookmarkObject(chapterURL);
+        JSONObject jsonObject = Database.getBookmarkObject(chapterURL);
+        if (jsonObject == null)
+            return 0;
+
+        try {
+            return jsonObject.getInt("y");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /**
@@ -81,6 +92,7 @@ public class SettingsController {
      * @return true means added, false means removed
      */
     public static boolean toggleBookmarkChapter(String chapterURL, JSONObject saveData) {
+
         if (isBookMarked(chapterURL)) {
             return !Database.removeBookMarked(chapterURL);
         } else {

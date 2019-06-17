@@ -38,9 +38,13 @@ import java.util.List;
 public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
     public static Formatter formatter;
+
+
     private NovelFragmentChapters novelFragmentChapters;
     private FragmentManager fragmentManager;
-    private List<NovelChapter> novelChapters;
+
+    //Reference to the the NovelFragmentChapters array
+    public List<NovelChapter> novelChapters;
 
 
     public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters, List<NovelChapter> novels, FragmentManager fragmentManager, Formatter formatter) {

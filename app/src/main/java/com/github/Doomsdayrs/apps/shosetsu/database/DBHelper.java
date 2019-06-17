@@ -38,11 +38,17 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    // Library
-    // Drop novelID
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(Database.create3);
-        db.execSQL("begin transaction create table library_backup("")");
+        if (oldVersion == 1) {
+            db.execSQL("drop table if exists " + Database.Tables.TABLE_LIBRARY);
+            db.execSQL("drop table if exists " + Database.Tables.TABLE_BOOKMARKS);
+        }
+
+        if (newVersion == 2) {
+            db.execSQL(Database.create);
+            db.execSQL(Database.create2);
+            db.execSQL(Database.create3);
+        }
     }
 }
