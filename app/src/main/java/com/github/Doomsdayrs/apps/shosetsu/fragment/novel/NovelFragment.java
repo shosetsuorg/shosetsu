@@ -1,6 +1,5 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment.novel;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,18 +10,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.SlidingNovelPageAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.async.NovelLoader;
 import com.github.Doomsdayrs.apps.shosetsu.settings.SettingsController;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -47,12 +46,13 @@ public class NovelFragment extends Fragment {
     public FragmentManager fragmentManager = null;
     public Formatter formatter;
     public String url;
-    NovelPage novelPage;
+    public NovelPage novelPage;
     SlidingNovelPageAdapter pagerAdapter;
-    NovelFragmentMain novelFragmentMain;
-    NovelFragmentChapters novelFragmentChapters;
-    NovelFragmentTracking novelFragmentTracking;
+    public NovelFragmentMain novelFragmentMain;
+    public NovelFragmentChapters novelFragmentChapters;
+    public NovelFragmentTracking novelFragmentTracking;
     ViewPager viewPager;
+    public ProgressBar progressBar;
 
 
     public NovelFragment() {
@@ -68,31 +68,24 @@ public class NovelFragment extends Fragment {
         outState.putSerializable("page", novelPage);
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreate", "NovelFragment ###");
         view = inflater.inflate(R.layout.fragment_novel, container, false);
+        progressBar = view.findViewById(R.id.fragment_novel_progress);
         novelFragmentMain = new NovelFragmentMain();
         novelFragmentChapters = new NovelFragmentChapters();
         //TODO FINISH TRACKING
         //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
-            if (SettingsController.isOnline()){
-                try {
-                    boolean a = new fillData(this).execute().get();
-                    if (a)
-                        setViewPager();
-                    else System.exit(1);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }else {
+            if (SettingsController.isOnline()) {
+                setViewPager();
 
+                new NovelLoader(this).execute(getActivity());
+            } else {
+                //TODO, Offline data loading
             }
         } else {
             url = savedInstanceState.getString("imageURL");
@@ -115,12 +108,13 @@ public class NovelFragment extends Fragment {
         // Sets the data
         {
             novelFragmentChapters.setFormatter(formatter);
-            novelFragmentChapters.novelTitle = novelPage.title;
+            novelFragmentChapters.novelPage = novelPage;
             novelFragmentChapters.setNovelURL(url);
             novelFragmentChapters.setFragmentManager(fragmentManager);
 
             novelFragmentMain.url = url;
             novelFragmentMain.formatter = formatter;
+            novelFragmentMain.novelFragmentChapters = novelFragmentChapters;
         }
         // Add the fragments
         {
@@ -134,24 +128,4 @@ public class NovelFragment extends Fragment {
         viewPager.setAdapter(pagerAdapter);
     }
 
-    static class fillData extends AsyncTask<Void, Void, Boolean> {
-        NovelFragment novelFragment;
-
-        fillData(NovelFragment novelFragment) {
-            this.novelFragment = novelFragment;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            try {
-                novelFragment.novelPage = novelFragment.formatter.parseNovel(novelFragment.url);
-                novelFragment.novelFragmentMain.novelPage = novelFragment.novelPage;
-                Log.d("Loaded Novel:", novelFragment.novelPage.title);
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-    }
 }

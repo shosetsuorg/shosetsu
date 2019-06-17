@@ -48,12 +48,14 @@ import java.util.Arrays;
 public class NovelFragmentMain extends Fragment {
     public Formatter formatter;
     public String url;
-    NovelPage novelPage;
+    public NovelPage novelPage;
     ImageView imageView;
     TextView title;
     TextView author;
     TextView description;
-    FloatingActionButton floatingActionButton;
+    TextView formatterName;
+    public FloatingActionButton floatingActionButton;
+    public NovelFragmentChapters novelFragmentChapters;
 
     boolean inLibrary = false;
 
@@ -84,10 +86,11 @@ public class NovelFragmentMain extends Fragment {
             title = view.findViewById(R.id.fragment_novel_title);
             author = view.findViewById(R.id.fragment_novel_author);
             description = view.findViewById(R.id.fragment_novel_description);
+            formatterName = view.findViewById(R.id.fragment_novel_formatter);
             floatingActionButton = view.findViewById(R.id.fragment_novel_add);
             floatingActionButton.setOnClickListener(new addToLibrary(this));
         }
-
+        floatingActionButton.hide();
 
         if (savedInstanceState != null) {
             url = savedInstanceState.getString("imageURL");
@@ -95,25 +98,30 @@ public class NovelFragmentMain extends Fragment {
             novelPage = (NovelPage) savedInstanceState.getSerializable("page");
         }
 
+
         if (Database.inLibrary(url))
             inLibary();
 
         if (inLibrary)
             floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
 
-        {
-            if (novelPage == null)
-                System.exit(1);
-            title.setText(novelPage.title);
-            author.setText(Arrays.toString(novelPage.authors));
-            description.setText(novelPage.description);
-            NovelFragmentChapters.novelChapters = novelPage.novelChapters;
-        }
+        if (novelPage != null)
+            setData();
+
+        Log.d("OnCreate", "NovelFragmentMain Complete");
+        return view;
+    }
+
+    public void setData() {
+        title.setText(novelPage.title);
+        author.setText(Arrays.toString(novelPage.authors));
+        description.setText(novelPage.description);
+        NovelFragmentChapters.novelChapters = novelPage.novelChapters;
         Picasso.get()
                 .load(novelPage.imageURL)
                 .into(imageView);
-        Log.d("OnCreate", "NovelFragmentMain Complete");
-        return view;
+        floatingActionButton.show();
+        formatterName.setText(formatter.getName());
     }
 
     static class addToLibrary implements FloatingActionButton.OnClickListener {

@@ -1,7 +1,6 @@
 package com.github.Doomsdayrs.apps.shosetsu.fragment.novel;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
@@ -23,12 +23,12 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.novel.NovelChaptersAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.async.NovelChaptersLoader;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -49,16 +49,17 @@ import java.util.concurrent.ExecutionException;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentChapters extends Fragment {
-    public static List<NovelChapter> novelChapters;
+    public static List<NovelChapter> novelChapters = new ArrayList<>();
     public boolean reversed;
     public RecyclerView recyclerView;
     public int currentMaxPage = 1;
-    private Formatter formatter;
-    public String novelTitle;
+    public Formatter formatter;
+    public NovelPage novelPage;
     public String novelURL;
     private FragmentManager fragmentManager;
     public NovelChaptersAdapter adapter;
     private Context context;
+    public ProgressBar progressBar;
 
     public NovelFragmentChapters() {
         setHasOptionsMenu(true);
@@ -90,12 +91,12 @@ public class NovelFragmentChapters extends Fragment {
         Log.d("OnCreate", "NovelFragmentChapters");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
+        progressBar = view.findViewById(R.id.fragment_novel_chapters_progress);
         if (savedInstanceState != null) {
             novelURL = savedInstanceState.getString("imageURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }
-
         setNovels(novelChapters);
         this.context = Objects.requireNonNull(container).getContext();
         Log.d("OnCreate", "Complete");
@@ -127,41 +128,12 @@ public class NovelFragmentChapters extends Fragment {
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            Collections.reverse(novelChapters);
+            Collections.reverse(novelFragmentChapters.novelChapters);
             novelFragmentChapters.reversed = true;
             return novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
         }
     }
 
-
-    static class addMore extends AsyncTask<Integer, Void, Boolean> {
-        NovelFragmentChapters novelFragmentChapters;
-
-        addMore(NovelFragmentChapters novelFragmentChapters) {
-            this.novelFragmentChapters = novelFragmentChapters;
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... integers) {
-            if (novelFragmentChapters.formatter.isIncrementingChapterList())
-                try {
-                    NovelPage novelPage;
-                    if (integers.length == 0)
-                        novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL);
-                    else
-                        novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0]);
-                    //TODO Difference calculation
-
-                    if (!novelPage.novelChapters.get(novelPage.novelChapters.size() - 1).link
-                            .equals(novelChapters.get(novelChapters.size() - 1).link))
-                        novelChapters.addAll(novelPage.novelChapters);
-                    return true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            return false;
-        }
-    }
 
     static class bottom extends RecyclerView.OnScrollListener {
         NovelFragmentChapters novelFragmentChapters;
@@ -178,21 +150,14 @@ public class NovelFragmentChapters extends Fragment {
                 if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
                     Log.d("ScrollLoad", "Loading...");
                     if (novelFragmentChapters.reversed)
-                        Collections.reverse(novelChapters);
+                        Collections.reverse(novelFragmentChapters.novelChapters);
                     running = true;
                     novelFragmentChapters.currentMaxPage++;
-                    try {
-                        if (new addMore(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage).get())
-                            novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new NovelChaptersLoader(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage);
                     Log.d("ScrollLoad", "Completed.");
                     running = false;
                     if (novelFragmentChapters.reversed)
-                        Collections.reverse(novelChapters);
+                        Collections.reverse(novelFragmentChapters.novelChapters);
                 }
         }
     }

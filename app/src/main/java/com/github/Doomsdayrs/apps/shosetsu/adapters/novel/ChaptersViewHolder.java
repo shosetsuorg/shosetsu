@@ -57,11 +57,11 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         itemView.setOnClickListener(this);
         download.setOnClickListener(v -> {
             if (!downloaded) {
-                DownloadItem downloadItem = new DownloadItem(NovelChaptersAdapter.formatter, novelFragmentChapters.novelTitle, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link, novelFragmentChapters);
+                DownloadItem downloadItem = new DownloadItem(NovelChaptersAdapter.formatter, novelFragmentChapters.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link, novelFragmentChapters);
                 Downloadmanager.addToDownload(downloadItem);
                 downloaded = true;
             } else {
-                if (Downloadmanager.delete(new DeleteItem(NovelChaptersAdapter.formatter, novelFragmentChapters.novelTitle, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link)))
+                if (Downloadmanager.delete(new DeleteItem(NovelChaptersAdapter.formatter, novelFragmentChapters.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link)))
                     download.setImageResource(R.drawable.ic_outline_arrow_drop_down_circle_24px);
                 downloaded = false;
             }

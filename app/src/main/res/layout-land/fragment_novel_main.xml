@@ -35,17 +35,23 @@
 
     <TextView
         android:id="@+id/fragment_novel_author"
-        android:text="@string/novel_author"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="116dp"
+        android:text="@string/novel_author"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
         app:layout_constraintTop_toBottomOf="@+id/fragment_novel_title" />
+
+    <TextView
+        android:id="@+id/fragment_novel_formatter"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_novel_author" />
 
     <ScrollView
         android:id="@+id/scrollView2"

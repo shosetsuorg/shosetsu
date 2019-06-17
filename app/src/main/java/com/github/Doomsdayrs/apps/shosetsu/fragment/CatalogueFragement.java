@@ -17,12 +17,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.apps.shosetsu.R;
 import com.github.Doomsdayrs.apps.shosetsu.adapters.catalogue.CatalogueNovelCardsAdapter;
+import com.github.Doomsdayrs.apps.shosetsu.async.CataloguePageLoader;
 import com.github.Doomsdayrs.apps.shosetsu.recycleObjects.CatalogueNovelCard;
 
 import java.io.IOException;
@@ -60,8 +62,9 @@ public class CatalogueFragement extends Fragment {
     private SearchView searchView;
     private Context context;
     private boolean firstRun;
-    private RecyclerView.Adapter library_Adapter;
+    public RecyclerView.Adapter library_Adapter;
     private RecyclerView.LayoutManager library_layoutManager;
+    public ProgressBar progressBar;
 
     public CatalogueFragement() {
         setHasOptionsMenu(true);
@@ -80,23 +83,16 @@ public class CatalogueFragement extends Fragment {
         library_view = view.findViewById(R.id.fragment_catalogue_recycler);
         swipeRefreshLayout = view.findViewById(R.id.fragment_catalogue_refresh);
         swipeRefreshLayout.setOnRefreshListener(new refresh(this));
-
+        progressBar = view.findViewById(R.id.fragment_catalogue_progress);
 
         this.context = container.getContext();
         if (savedInstanceState == null) {
             Log.d("Process", "Loading up latest");
-            try {
-                if (firstRun) {
-                    firstRun = false;
-                    boolean b = new setLatest().execute().get();
-                    if (b)
-                        setLibraryCards(libraryCards);
-                } else setLibraryCards(libraryCards);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            if (firstRun) {
+                firstRun = false;
+                setLibraryCards(libraryCards);
+                new CataloguePageLoader(this, formatter, libraryCards).execute();
+            } else setLibraryCards(libraryCards);
         } else setLibraryCards(libraryCards);
         return view;
     }
@@ -112,7 +108,7 @@ public class CatalogueFragement extends Fragment {
     }
 
 
-    private void setLibraryCards(ArrayList<CatalogueNovelCard> recycleCards) {
+    public void setLibraryCards(ArrayList<CatalogueNovelCard> recycleCards) {
         if (library_view != null) {
             library_view.setHasFixedSize(false);
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -143,11 +139,11 @@ public class CatalogueFragement extends Fragment {
         }
     }
 
-    static class bottom extends RecyclerView.OnScrollListener {
+    class bottom extends RecyclerView.OnScrollListener {
         CatalogueFragement catalogueFragement;
         boolean running = false;
 
-        public bottom(CatalogueFragement catalogueFragement) {
+        bottom(CatalogueFragement catalogueFragement) {
             this.catalogueFragement = catalogueFragement;
         }
 
@@ -160,7 +156,7 @@ public class CatalogueFragement extends Fragment {
                     running = true;
                     catalogueFragement.currentMaxPage++;
                     try {
-                        if (new setLatest().execute(catalogueFragement.currentMaxPage).get()) {
+                        if (new CataloguePageLoader(catalogueFragement, formatter, libraryCards).execute(catalogueFragement.currentMaxPage).get()) {
                             catalogueFragement.library_view.post(() -> {
                                 catalogueFragement.library_Adapter.notifyDataSetChanged();
                                 catalogueFragement.library_view.addOnScrollListener(this);
@@ -179,27 +175,6 @@ public class CatalogueFragement extends Fragment {
         }
     }
 
-    static class setLatest extends AsyncTask<Integer, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Integer... integers) {
-            try {
-                List<Novel> novels;
-                if (integers.length == 0)
-                    novels = formatter.parseLatest(formatter.getLatestURL(1));
-                else novels = formatter.parseLatest(formatter.getLatestURL(integers[0]));
-
-                for (Novel novel : novels)
-                    libraryCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, new URI(novel.link)));
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-    }
-
 
     class refresh implements SwipeRefreshLayout.OnRefreshListener {
         CatalogueFragement catalogueFragement;
@@ -215,7 +190,7 @@ public class CatalogueFragement extends Fragment {
             libraryCards = new ArrayList<>();
             try {
                 Log.d("FragmentRefresh", "Refreshing catalogue data");
-                if (new setLatest().execute().get()) {
+                if (new CataloguePageLoader(catalogueFragement, formatter, libraryCards).execute().get()) {
                     Log.d("FragmentRefresh", "Complete");
                     catalogueFragement.library_Adapter.notifyDataSetChanged();
                 }
