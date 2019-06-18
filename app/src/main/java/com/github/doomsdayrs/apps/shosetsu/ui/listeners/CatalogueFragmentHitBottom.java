@@ -33,7 +33,6 @@ public class CatalogueFragmentHitBottom extends RecyclerView.OnScrollListener {
         this.catalogueFragment = catalogueFragment;
     }
 
-    //TODO async the loading of the next page
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         if (!running)
