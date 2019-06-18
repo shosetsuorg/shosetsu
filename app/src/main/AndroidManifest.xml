@@ -32,7 +32,7 @@
         </activity>
 
         <activity
-            android:name="com.github.doomsdayrs.apps.shosetsu.fragment.novel.NovelFragmentChapterView"
+            android:name=".ui.novel.NovelFragmentChapterView"
             android:theme="@style/lightTheme.NoActionBar"
            />
     </application>

@@ -15,13 +15,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.github.doomsdayrs.apps.shosetsu.database.DBHelper;
-import com.github.doomsdayrs.apps.shosetsu.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.fragment.CataloguesFragment;
-import com.github.doomsdayrs.apps.shosetsu.fragment.LibraryFragment;
-import com.github.doomsdayrs.apps.shosetsu.fragment.SettingsFragment;
-import com.github.doomsdayrs.apps.shosetsu.settings.Settings;
-import com.github.doomsdayrs.apps.shosetsu.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.CataloguesFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.SettingsFragment;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 
 /**
  * This file is part of Shosetsu.
