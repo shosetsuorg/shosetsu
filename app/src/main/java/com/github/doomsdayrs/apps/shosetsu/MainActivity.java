@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
     public final CataloguesFragment cataloguesFragment = new CataloguesFragment();
     public final SettingsFragment settingsFragment = new SettingsFragment();
 
+    /**
+     * Main activity
+     * @param savedInstanceState savedData from rotation
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Set the content view
         setContentView(R.layout.activity_main);
+
         //Sets the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -89,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * When the back button while drawer is open, close it.
+     */
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START))

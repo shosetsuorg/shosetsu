@@ -58,6 +58,7 @@ public class CatalogueFragment extends Fragment {
     private boolean firstRun;
     public RecyclerView.Adapter library_Adapter;
     public ProgressBar progressBar;
+    public ProgressBar bottomProgressBar;
 
     public CatalogueFragment() {
         setHasOptionsMenu(true);
@@ -77,6 +78,7 @@ public class CatalogueFragment extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.fragment_catalogue_refresh);
         swipeRefreshLayout.setOnRefreshListener(new CatalogueRefresh(this));
         progressBar = view.findViewById(R.id.fragment_catalogue_progress);
+        bottomProgressBar = view.findViewById(R.id.fragment_catalogue_progress_bottom);
 
         this.context = Objects.requireNonNull(container).getContext();
         if (savedInstanceState == null) {
@@ -84,7 +86,7 @@ public class CatalogueFragment extends Fragment {
             if (firstRun) {
                 firstRun = false;
                 setLibraryCards(catalogueNovelCards);
-                new CataloguePageLoader(this, formatter, catalogueNovelCards).execute();
+                new CataloguePageLoader(this).execute();
             } else setLibraryCards(catalogueNovelCards);
         } else setLibraryCards(catalogueNovelCards);
         return view;

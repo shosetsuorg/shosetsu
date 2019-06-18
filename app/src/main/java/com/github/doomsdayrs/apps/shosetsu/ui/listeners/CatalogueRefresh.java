@@ -42,7 +42,7 @@ public class CatalogueRefresh implements SwipeRefreshLayout.OnRefreshListener {
         catalogueFragment.currentMaxPage = 1;
         try {
             Log.d("FragmentRefresh", "Refreshing catalogue data");
-            if (new CataloguePageLoader(catalogueFragment, CatalogueFragment.formatter, CatalogueFragment.catalogueNovelCards).execute().get()) {
+            if (new CataloguePageLoader(catalogueFragment).execute().get()) {
                 Log.d("FragmentRefresh", "Complete");
                 catalogueFragment.library_Adapter.notifyDataSetChanged();
             }

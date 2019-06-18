@@ -7,8 +7,6 @@ import android.util.Log;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CataloguePageLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
@@ -28,37 +26,22 @@ import java.util.concurrent.ExecutionException;
  * @author github.com/doomsdayrs
  */
 public class CatalogueFragmentHitBottom extends RecyclerView.OnScrollListener {
-    final CatalogueFragment catalogueFragment;
-    boolean running = false;
+    private final CatalogueFragment catalogueFragment;
+    public boolean running = false;
 
     public CatalogueFragmentHitBottom(CatalogueFragment catalogueFragment) {
         this.catalogueFragment = catalogueFragment;
     }
 
+    //TODO async the loading of the next page
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-
         if (!running)
             if (!catalogueFragment.library_view.canScrollVertically(1)) {
                 Log.d("CatalogueFragmentLoad", "Getting next page");
                 running = true;
                 catalogueFragment.currentMaxPage++;
-                try {
-                    if (new CataloguePageLoader(catalogueFragment, CatalogueFragment.formatter, CatalogueFragment.catalogueNovelCards).execute(catalogueFragment.currentMaxPage).get()) {
-                        catalogueFragment.library_view.post(() -> {
-                            catalogueFragment.library_Adapter.notifyDataSetChanged();
-                            catalogueFragment.library_view.addOnScrollListener(this);
-                        });
-
-                        running = false;
-                        Log.d("CatalogueFragmentLoad", "Completed");
-                    }
-
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                new CataloguePageLoader(catalogueFragment, this).execute(catalogueFragment.currentMaxPage);
             }
     }
 }

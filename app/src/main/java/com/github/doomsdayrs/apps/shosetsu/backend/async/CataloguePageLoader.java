@@ -4,15 +4,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
+import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueFragmentHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,28 +34,55 @@ import java.util.List;
  */
 public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
     private final CatalogueFragment catalogueFragment;
-    private final Formatter formatter;
-    private final ArrayList<CatalogueNovelCard> catalogueNovelCards;
+    private final CatalogueFragmentHitBottom catalogueFragmentHitBottom;
 
-    public CataloguePageLoader(CatalogueFragment catalogueFragment, Formatter formatter, ArrayList<CatalogueNovelCard> catalogueNovelCards) {
+    /**
+     * Constructor
+     *
+     * @param catalogueFragment the fragment this is assigned to (reference to parent)
+     */
+    public CataloguePageLoader(CatalogueFragment catalogueFragment) {
         this.catalogueFragment = catalogueFragment;
-        this.formatter = formatter;
-        this.catalogueNovelCards = catalogueNovelCards;
+        catalogueFragmentHitBottom = null;
     }
 
+    /**
+     * @param catalogueFragment          the fragment this is assigned to (reference to parent)
+     * @param catalogueFragmentHitBottom The listener to update once new page is loaded
+     */
+    public CataloguePageLoader(CatalogueFragment catalogueFragment, CatalogueFragmentHitBottom catalogueFragmentHitBottom) {
+        this.catalogueFragment = catalogueFragment;
+        this.catalogueFragmentHitBottom = catalogueFragmentHitBottom;
+    }
+
+    /**
+     * Loads up the category
+     *
+     * @param integers if length = 0, loads first page otherwise loads the page # correlated to the integer
+     * @return if this was completed or not
+     */
     @Override
     protected Boolean doInBackground(Integer... integers) {
         Log.d("Loading", "Catalogue");
         try {
             List<Novel> novels;
             if (integers.length == 0)
-                novels = formatter.parseLatest(formatter.getLatestURL(1));
-            else novels = formatter.parseLatest(formatter.getLatestURL(integers[0]));
-
+                novels = CatalogueFragment.formatter.parseLatest(CatalogueFragment.formatter.getLatestURL(1));
+            else {
+                novels = CatalogueFragment.formatter.parseLatest(CatalogueFragment.formatter.getLatestURL(integers[0]));
+            }
             for (Novel novel : novels)
-                catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, new URI(novel.link)));
+                CatalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, new URI(novel.link)));
             catalogueFragment.library_view.post(() -> catalogueFragment.library_Adapter.notifyDataSetChanged());
 
+            if (catalogueFragmentHitBottom != null) {
+                catalogueFragment.library_view.post(() -> {
+                    catalogueFragment.library_Adapter.notifyDataSetChanged();
+                    catalogueFragment.library_view.addOnScrollListener(catalogueFragmentHitBottom);
+                });
+                catalogueFragmentHitBottom.running = false;
+                Log.d("CatalogueFragmentLoad", "Completed");
+            }
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,11 +99,15 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        catalogueFragment.progressBar.setVisibility(View.VISIBLE);
+        if (catalogueFragmentHitBottom == null)
+            catalogueFragment.progressBar.setVisibility(View.VISIBLE);
+        else catalogueFragment.bottomProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        catalogueFragment.progressBar.setVisibility(View.GONE);
+        if (catalogueFragmentHitBottom == null)
+            catalogueFragment.progressBar.setVisibility(View.GONE);
+        else catalogueFragment.bottomProgressBar.setVisibility(View.GONE);
     }
 }
