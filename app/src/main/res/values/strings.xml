@@ -7,10 +7,9 @@
     <string name="header_text">Novel reading right on your phone!</string>
     <string name="todo">TODO</string>
 
-
-    <!--Navigation drawer toggle for actionbartoggle-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="search">Search</string>
     <string name="configure_parsers">configure_parsers</string>
     <string name="filter">filter</string>
@@ -26,4 +25,5 @@
     <string name="anilist">Anilist</string>
     <string name="more">more</string>
     <string name="download">download</string>
+    <string name="myanimelist">Myanimelist</string>
 </resources>

@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
-        applicationId "com.github.Doomsdayrs.apps.shosetsu"
-        minSdkVersion 23
-        targetSdkVersion 28
+        applicationId "com.github.doomsdayrs.apps.shosetsu"
+        minSdkVersion 22
+        targetSdkVersion 29
         versionCode 1
         versionName "v1.1.1-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
