@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,9 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -20,16 +17,16 @@ import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewHideBar;
+import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewLoad;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -51,11 +48,12 @@ import java.util.concurrent.ExecutionException;
  */
 public class NovelFragmentChapterView extends AppCompatActivity {
     private ScrollView scrollView;
-    private TextView textView;
-    private Formatter formatter;
-    private String URL;
+    public TextView textView;
+    public ProgressBar progressBar;
+    public Formatter formatter;
+    public String URL;
     private String novelURL;
-    private String text;
+    public String text = null;
 
     private MenuItem bookmark;
 
@@ -143,6 +141,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         Log.d("OnCreate", "NovelFragmentChapterView");
         setContentView(R.layout.fragment_novel_chapter_view);
         {
+            progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);
             novelURL = getIntent().getStringExtra("novelURL");
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -181,7 +180,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
                 });
             }
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
-            textView.setOnClickListener(new click(toolbar));
+            textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
         }
 
         setThemeMode();
@@ -197,51 +196,9 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             text = Objects.requireNonNull(Database.getSaved(novelURL, URL)).replaceAll("\n", "\n\n");
         else if (text == null)
             if (URL != null) {
-                try {
-                    text = new getNovel().execute(this).get().replaceAll("\n", "\n\n");
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                new NovelFragmentChapterViewLoad(progressBar).execute(this);
             }
 
         textView.setText(text);
     }
-
-
-    static class click implements View.OnClickListener {
-        final Toolbar toolbar;
-        boolean visible = true;
-
-
-        click(Toolbar toolbar) {
-            this.toolbar = toolbar;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (visible) {
-                toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
-                visible = !visible;
-            } else {
-                toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
-                visible = !visible;
-            }
-        }
-    }
-
-    static class getNovel extends AsyncTask<NovelFragmentChapterView, Void, String> {
-        @Override
-        protected String doInBackground(NovelFragmentChapterView... novelFragmentChapterViews) {
-            try {
-                return novelFragmentChapterViews[0].formatter.getNovelPassage(novelFragmentChapterViews[0].URL);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-
 }

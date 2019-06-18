@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -22,10 +21,10 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
-import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelChaptersLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersHitBottom;
+import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,9 +48,9 @@ import java.util.Objects;
  */
 public class NovelFragmentChapters extends Fragment {
     public static List<NovelChapter> novelChapters = new ArrayList<>();
-    private boolean reversed;
+    public boolean reversed;
     public RecyclerView recyclerView;
-    private int currentMaxPage = 1;
+    public int currentMaxPage = 1;
     public Formatter formatter;
     public String novelURL;
     private FragmentManager fragmentManager;
@@ -106,58 +105,13 @@ public class NovelFragmentChapters extends Fragment {
         adapter = new NovelChaptersAdapter(this, novels, fragmentManager, formatter);
         adapter.setHasStableIds(true);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addOnScrollListener(new bottom(this));
+        recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_chapters, menu);
-        menu.findItem(R.id.chapter_filter).setOnMenuItemClickListener(new onFilter(this));
+        menu.findItem(R.id.chapter_filter).setOnMenuItemClickListener(new NovelFragmentChaptersOnFilter(this));
     }
-
-    static class onFilter implements MenuItem.OnMenuItemClickListener {
-        final NovelFragmentChapters novelFragmentChapters;
-
-        onFilter(NovelFragmentChapters novelFragmentChapters) {
-            this.novelFragmentChapters = novelFragmentChapters;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            Collections.reverse(novelChapters);
-            novelFragmentChapters.reversed = true;
-            return novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
-        }
-    }
-
-
-    static class bottom extends RecyclerView.OnScrollListener {
-        final NovelFragmentChapters novelFragmentChapters;
-        boolean running = false;
-
-        bottom(NovelFragmentChapters novelFragmentChapters) {
-            this.novelFragmentChapters = novelFragmentChapters;
-        }
-
-        @Override
-        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-
-            if (!running)
-                if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
-                    Log.d("ScrollLoad", "Loading...");
-                    if (novelFragmentChapters.reversed)
-                        Collections.reverse(novelChapters);
-                    running = true;
-                    novelFragmentChapters.currentMaxPage++;
-                    new NovelChaptersLoader(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage);
-                    Log.d("ScrollLoad", "Completed.");
-                    running = false;
-                    if (novelFragmentChapters.reversed)
-                        Collections.reverse(novelChapters);
-                }
-        }
-    }
-
-
 }
