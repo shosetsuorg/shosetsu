@@ -16,10 +16,10 @@ import android.widget.TextView;
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelFragmentChapterViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewHideBar;
-import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelFragmentChapterViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,13 +54,15 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     public String URL;
     private String novelURL;
     public String text = null;
-
     private MenuItem bookmark;
-
-
     private int a = 0;
     private boolean bookmarked;
 
+    /**
+     * Save data of view before destroyed
+     *
+     * @param outState output save
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -70,6 +72,12 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         outState.putString("novelURL", novelURL);
     }
 
+    /**
+     * Creates the option menu (on the top toolbar)
+     *
+     * @param menu Menu reference to fill
+     * @return if made
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -79,7 +87,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
         // Bookmark
         bookmark = menu.findItem(R.id.chapter_view_bookmark);
-        bookmarked = SettingsController.isBookMarked(URL);
+        bookmarked = Database.isBookMarked(URL);
         if (bookmarked) {
             bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
             int y = SettingsController.getYBookmark(URL);
@@ -89,6 +97,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Changes the theme of the reader
+     * TODO change the scroll position bars color
+     */
     private void setThemeMode() {
         scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
         textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
@@ -96,6 +108,12 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     }
 
 
+    /**
+     * What to do when an menu item is selected
+     *
+     * @param item item selected
+     * @return true if processed
+     */
     @Override
     public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         Log.d("item", item.toString());
@@ -135,6 +153,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     }
 
 
+    /**
+     * Create method
+     * @param savedInstanceState save object
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +170,12 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
             scrollView = findViewById(R.id.fragment_novel_scroll);
+
+            /**
+             * Chooses the way the way to save the scroll position
+             * the before marshmallow version is untested
+             * TODO test pre marshmallow version
+             */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     if (bookmarked)
@@ -190,7 +218,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             text = savedInstanceState.getString("text");
         } else URL = getIntent().getStringExtra("url");
-        Log.d("URL", Objects.requireNonNull(URL));
+        Log.d("novelURL", Objects.requireNonNull(URL));
 
         if (getIntent().getBooleanExtra("downloaded", false))
             text = Objects.requireNonNull(Database.getSaved(novelURL, URL)).replaceAll("\n", "\n\n");

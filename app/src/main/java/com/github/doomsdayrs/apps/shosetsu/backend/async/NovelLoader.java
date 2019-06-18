@@ -73,7 +73,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         novelFragment.progressBar.setVisibility(View.GONE);
         if (aBoolean) {
             activity.runOnUiThread(() -> novelFragment.novelFragmentMain.setData());
-            activity.runOnUiThread(() -> novelFragment.novelFragmentChapters.setNovels(NovelFragmentChapters.novelChapters));
+            activity.runOnUiThread(() -> novelFragment.novelFragmentChapters.setNovels());
         }
     }
 }

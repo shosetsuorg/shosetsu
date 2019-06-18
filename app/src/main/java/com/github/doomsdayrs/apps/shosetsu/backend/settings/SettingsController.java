@@ -35,11 +35,19 @@ public class SettingsController {
     public static SharedPreferences advanced;
     public static SharedPreferences tracking;
 
+    /**
+     * Initializes the settings
+     */
     public static void init() {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
     }
 
+    /**
+     * Checks if online
+     *
+     * @return true if so, otherwise false
+     */
     public static boolean isOnline() {
         NetworkInfo activeNetwork = Settings.connectivityManager.getActiveNetworkInfo();
         if (activeNetwork != null)
@@ -47,10 +55,21 @@ public class SettingsController {
         return false;
     }
 
+    /**
+     * Is reader in night mode
+     *
+     * @return true if so, otherwise false
+     */
     public static boolean isReaderLightMode() {
         return Settings.ReaderTextColor == Color.BLACK;
     }
 
+    /**
+     * Sets the reader color
+     *
+     * @param text       Color of text
+     * @param background Color of background
+     */
     private static void setReaderColor(int text, int background) {
         Settings.ReaderTextColor = text;
         Settings.ReaderTextBackgroundColor = background;
@@ -60,6 +79,9 @@ public class SettingsController {
                 .apply();
     }
 
+    /**
+     * Swaps the reader colors
+     */
     public static void swapReaderColor() {
         if (isReaderLightMode())
             setReaderColor(Color.WHITE, Color.BLACK);
@@ -67,10 +89,14 @@ public class SettingsController {
             setReaderColor(Color.BLACK, Color.WHITE);
     }
 
-    public static boolean isBookMarked(String chapterURL) {
-        return Database.isBookMarked(chapterURL);
-    }
 
+    /**
+     * Gets y position of a bookmark
+     * TODO Add novelURL as data to search with
+     *
+     * @param chapterURL chapter URL
+     * @return y position
+     */
     public static int getYBookmark(String chapterURL) {
         JSONObject jsonObject = Database.getBookmarkObject(chapterURL);
         if (jsonObject == null)
@@ -93,7 +119,7 @@ public class SettingsController {
      */
     public static boolean toggleBookmarkChapter(String chapterURL, JSONObject saveData) {
 
-        if (isBookMarked(chapterURL)) {
+        if (Database.isBookMarked(chapterURL)) {
             return !Database.removeBookMarked(chapterURL);
         } else {
             Database.addBookMark(chapterURL, saveData);
@@ -101,9 +127,18 @@ public class SettingsController {
         }
     }
 
+    /**
+     * Updates scroll position
+     * TODO Novel URL as well as parameter
+     *
+     * @param chapterURL URL of chapter
+     * @param saveData   saveData to set
+     */
     public static void setScroll(String chapterURL, JSONObject saveData) {
         Database.updateBookMark(chapterURL, saveData);
     }
+
+    //Methods below when tracking system setup
 
     @SuppressWarnings({"EmptyMethod", "unused"})
     public static boolean isTrackingEnabled() {

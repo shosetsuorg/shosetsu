@@ -25,11 +25,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
+    /**
+     * Constructor
+     *
+     * @param context main context
+     */
     public DBHelper(Context context) {
         super(context, DB_NAME, null, 2);
     }
 
 
+    /**
+     * Creates DB things
+     * @param db db to fill
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Database.create);
@@ -37,7 +46,12 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(Database.create3);
     }
 
-
+    /**
+     * Upgrades database
+     * @param db database to alter
+     * @param oldVersion previous version ID
+     * @param newVersion new version ID
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion == 1) {

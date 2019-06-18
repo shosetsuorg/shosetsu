@@ -38,10 +38,8 @@ public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<Cata
         try {
             List<Novel> novels = CatalogueFragment.formatter.search(strings[0]);
             for (Novel novel : novels)
-                result.add(new CatalogueNovelCard(novel.imageURL, novel.title, new URI(novel.link)));
+                result.add(new CatalogueNovelCard(novel.imageURL, novel.title, novel.link));
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         return result;

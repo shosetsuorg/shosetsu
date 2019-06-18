@@ -26,12 +26,23 @@ public enum Types {
     ADVANCED("advanced"),
     CREDITS("credits");
 
+    /**
+     * Type name
+     */
     private final String name;
 
+    /**
+     * Constructor
+     * @param name name of type
+     */
     Types(String name) {
         this.name = name;
     }
 
+    /**
+     * toString overriding method
+     * @return name of type
+     */
     @NotNull
     @Override
     public String toString() {

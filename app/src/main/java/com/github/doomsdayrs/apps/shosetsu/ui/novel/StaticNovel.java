@@ -21,5 +21,8 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPag
  * @author github.com/doomsdayrs
  */
 public class StaticNovel {
+    /**
+     * Global variable of the current loaded novel
+     */
     public static NovelPage novelPage;
 }

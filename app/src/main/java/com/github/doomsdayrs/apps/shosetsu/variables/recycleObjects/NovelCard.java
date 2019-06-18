@@ -18,14 +18,30 @@ package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
  *
  * @author github.com/doomsdayrs
  */
-public class NovelCard {
-    public final String title;
+public class NovelCard extends RecycleCard {
+    /**
+     * NovelURL
+     */
     public final String novelURL;
+    /**
+     * ImageURL
+     */
     public final String imageURL;
+    /**
+     * ID of formatter
+     */
     public final int formatterID;
 
+    /**
+     * Constructor
+     *
+     * @param title       title
+     * @param novelURL    novelURL
+     * @param imageURL    imageURL
+     * @param formatterID id of formatter
+     */
     public NovelCard(String title, String novelURL, String imageURL, int formatterID) {
-        this.title = title;
+        super(title);
         this.novelURL = novelURL;
         this.imageURL = imageURL;
         this.formatterID = formatterID;

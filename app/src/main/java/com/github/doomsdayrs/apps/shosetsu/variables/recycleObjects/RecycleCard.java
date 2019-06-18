@@ -21,12 +21,24 @@ import com.github.doomsdayrs.apps.shosetsu.R;
  * @author github.com/doomsdayrs
  */
 public class RecycleCard {
+    /**
+     * If there isnt an image loaded in, this will be the image
+     */
     public final int libraryImageResource;
-    public final String libraryText;
 
-    RecycleCard(String libraryText) {
+    /**
+     * Text of the card
+     */
+    public final String title;
+
+    /**
+     * Constructor
+     *
+     * @param title text of card
+     */
+    RecycleCard(String title) {
         this.libraryImageResource = R.drawable.ic_close_black_24dp;
-        this.libraryText = libraryText;
+        this.title = title;
     }
 
 

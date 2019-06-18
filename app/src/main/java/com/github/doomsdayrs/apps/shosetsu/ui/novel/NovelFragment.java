@@ -15,9 +15,9 @@ import android.widget.ProgressBar;
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.SlidingNovelPageAdapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.SlidingNovelPageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,8 +97,8 @@ public class NovelFragment extends Fragment {
         List<Fragment> fragments = new ArrayList<>();
         // Sets the data
         {
-            novelFragmentChapters.setFormatter(formatter);
-            novelFragmentChapters.setNovelURL(url);
+            novelFragmentChapters.formatter = formatter;
+            novelFragmentChapters.novelURL = url;
             novelFragmentChapters.setFragmentManager(fragmentManager);
 
             novelFragmentMain.url = url;

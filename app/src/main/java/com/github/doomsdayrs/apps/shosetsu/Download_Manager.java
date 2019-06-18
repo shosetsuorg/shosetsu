@@ -1,10 +1,12 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.download;
+package com.github.doomsdayrs.apps.shosetsu;
 
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
+import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
 
 import java.io.BufferedReader;
 import java.io.File;

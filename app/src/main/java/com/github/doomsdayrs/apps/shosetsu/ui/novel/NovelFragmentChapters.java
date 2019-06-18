@@ -58,22 +58,27 @@ public class NovelFragmentChapters extends Fragment {
     private Context context;
     public ProgressBar progressBar;
 
+    /**
+     * Constructor
+     */
     public NovelFragmentChapters() {
         setHasOptionsMenu(true);
     }
 
-    public void setFormatter(Formatter formatter) {
-        this.formatter = formatter;
-    }
-
+    /**
+     * Sets the fragment manager
+     * @param fragmentManager fragment manager
+     */
     public void setFragmentManager(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
 
-    public void setNovelURL(String novelURL) {
-        this.novelURL = novelURL;
-    }
 
+    /**
+     * Save data of view before destroyed
+     *
+     * @param outState output save
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -82,6 +87,14 @@ public class NovelFragmentChapters extends Fragment {
         outState.putInt("maxPage", currentMaxPage);
     }
 
+    /**
+     * Creates view
+     *
+     * @param inflater           inflater to retrieve objects
+     * @param container          container of this fragment
+     * @param savedInstanceState save
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -94,21 +107,30 @@ public class NovelFragmentChapters extends Fragment {
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }
-        setNovels(novelChapters);
+        setNovels();
         this.context = Objects.requireNonNull(container).getContext();
         return view;
     }
 
-    public void setNovels(List<NovelChapter> novels) {
+    /**
+     * Sets the novel chapters down
+     */
+    public void setNovels() {
         recyclerView.setHasFixedSize(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        adapter = new NovelChaptersAdapter(this, novels, fragmentManager, formatter);
+        adapter = new NovelChaptersAdapter(this, novelChapters, fragmentManager, formatter);
         adapter.setHasStableIds(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Creates the option menu (on the top toolbar)
+     *
+     * @param menu     Menu reference to fill
+     * @param inflater Object to inflate the menu
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_chapters, menu);

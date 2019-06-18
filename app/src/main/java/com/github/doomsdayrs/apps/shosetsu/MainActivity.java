@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Main activity
-     * @param savedInstanceState savedData from rotation
+     * @param savedInstanceState savedData from destruction
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

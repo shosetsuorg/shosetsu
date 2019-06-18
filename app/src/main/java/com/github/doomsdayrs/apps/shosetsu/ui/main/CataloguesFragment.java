@@ -43,7 +43,9 @@ import java.util.Objects;
  */
 public class CataloguesFragment extends Fragment {
     private ArrayList<CatalogueCard> cards = null;
-
+    /**
+     * Constructor
+     */
     public CataloguesFragment() {
         setHasOptionsMenu(true);
     }
@@ -53,6 +55,14 @@ public class CataloguesFragment extends Fragment {
         inflater.inflate(R.menu.toolbar_catalogues, menu);
     }
 
+    /**
+     * Creates view
+     *
+     * @param inflater           inflates layouts and shiz
+     * @param container          container of this fragment
+     * @param savedInstanceState save file
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

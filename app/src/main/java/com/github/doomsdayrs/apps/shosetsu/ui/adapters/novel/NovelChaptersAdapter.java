@@ -69,7 +69,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
         chaptersViewHolder.novelChapter = novelChapter;
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
-        if (SettingsController.isBookMarked(novelChapter.link))
+        if (Database.isBookMarked(novelChapter.link))
             chaptersViewHolder.bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
 
         if (Database.isSaved(novelFragmentChapters.novelURL, novelChapter.link)) {

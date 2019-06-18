@@ -68,12 +68,12 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         CatalogueNovelCard recycleCard = recycleCards.get(i);
         if (recycleCard != null) {
             try {
-                novelCardsViewHolder.uri = new URI(recycleCard.URL);
+                novelCardsViewHolder.uri = new URI(recycleCard.novelURL);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
             novelCardsViewHolder.library_card_title.setText(recycleCard.title);
-            Picasso.get().load(recycleCard.libraryImageResource).into(novelCardsViewHolder.library_card_image);
+            Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.library_card_image);
         }
 
     }

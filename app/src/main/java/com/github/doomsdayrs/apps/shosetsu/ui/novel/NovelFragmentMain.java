@@ -11,19 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -54,17 +48,27 @@ public class NovelFragmentMain extends Fragment {
     private TextView description;
     private TextView formatterName;
     public FloatingActionButton floatingActionButton;
-
     public boolean inLibrary = false;
 
+    /**
+     * Constructor
+     */
     public NovelFragmentMain() {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Tells this file that it is already in the library
+     */
     private void inLibrary() {
         this.inLibrary = true;
     }
 
+    /**
+     * Save data of view before destroyed
+     *
+     * @param outState output save
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -106,11 +110,14 @@ public class NovelFragmentMain extends Fragment {
         return view;
     }
 
+    /**
+     * Sets the data of this page
+     */
     public void setData() {
         title.setText(StaticNovel.novelPage.title);
         author.setText(Arrays.toString(StaticNovel.novelPage.authors));
         description.setText(StaticNovel.novelPage.description);
-        NovelFragmentChapters.novelChapters =StaticNovel. novelPage.novelChapters;
+        NovelFragmentChapters.novelChapters = StaticNovel.novelPage.novelChapters;
         Picasso.get()
                 .load(StaticNovel.novelPage.imageURL)
                 .into(imageView);

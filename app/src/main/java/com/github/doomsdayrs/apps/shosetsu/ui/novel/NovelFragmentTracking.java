@@ -30,6 +30,14 @@ import android.view.ViewGroup;
 @SuppressWarnings("unused")
 public class NovelFragmentTracking extends Fragment {
 
+    /**
+     * Not yet implemented
+     *
+     * @param inflater           TODO
+     * @param container          TODO
+     * @param savedInstanceState TODO
+     * @return TODO
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

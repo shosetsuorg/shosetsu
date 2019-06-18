@@ -40,15 +40,32 @@ import java.util.Objects;
 public class SettingsFragment extends Fragment {
     private static final ArrayList<SettingsCard> cards = new ArrayList<>();
 
+    /**
+     * Constructor
+     * TODO, Create custom option menu for settings to search specific ones
+     */
     public SettingsFragment() {
         // setHasOptionsMenu(true);
     }
 
+    /**
+     * Save data of view before destroyed
+     *
+     * @param outState output save
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Creates view
+     *
+     * @param inflater           inflates layouts and shiz
+     * @param container          container of this fragment
+     * @param savedInstanceState save file
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

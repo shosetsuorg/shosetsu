@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
@@ -175,8 +175,8 @@ public class Database {
     /**
      * Is the chapter saved
      *
-     * @param novelURL URL of the novel
-     * @param chapterURL URL of the chapter
+     * @param novelURL novelURL of the novel
+     * @param chapterURL novelURL of the chapter
      * @return true if saved, false otherwise
      */
     public static boolean isSaved(String novelURL, String chapterURL) {
@@ -192,8 +192,8 @@ public class Database {
     /**
      * Gets the novel from local storage
      *
-     * @param novelURL   URL of the novel
-     * @param chapterURL URL of the chapter
+     * @param novelURL   novelURL of the novel
+     * @param chapterURL novelURL of the chapter
      * @return String of passage
      */
     public static String getSaved(String novelURL, String chapterURL) {
@@ -247,7 +247,7 @@ public class Database {
     /**
      * Is a novel in the library or not
      *
-     * @param novelURL Novel URL
+     * @param novelURL Novel novelURL
      * @return yes or no
      */
     public static boolean inLibrary(String novelURL) {

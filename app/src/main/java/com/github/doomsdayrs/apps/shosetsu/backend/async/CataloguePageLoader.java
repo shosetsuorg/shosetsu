@@ -72,7 +72,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
                 novels = CatalogueFragment.formatter.parseLatest(CatalogueFragment.formatter.getLatestURL(integers[0]));
             }
             for (Novel novel : novels)
-                CatalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, new URI(novel.link)));
+                CatalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title,  novel.link));
             catalogueFragment.library_view.post(() -> catalogueFragment.library_Adapter.notifyDataSetChanged());
 
             if (catalogueFragmentHitBottom != null) {
@@ -85,8 +85,6 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
             }
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         return false;

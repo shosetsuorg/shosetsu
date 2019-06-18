@@ -60,6 +60,9 @@ public class CatalogueFragment extends Fragment {
     public ProgressBar progressBar;
     public ProgressBar bottomProgressBar;
 
+    /**
+     * Constructor
+     */
     public CatalogueFragment() {
         setHasOptionsMenu(true);
         firstRun = true;
@@ -69,6 +72,14 @@ public class CatalogueFragment extends Fragment {
         CatalogueFragment.formatter = formatter;
     }
 
+    /**
+     * Creates view
+     *
+     * @param inflater           inflates layouts and shiz
+     * @param container          container of this fragment
+     * @param savedInstanceState save file
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

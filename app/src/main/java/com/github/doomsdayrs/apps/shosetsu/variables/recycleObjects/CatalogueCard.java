@@ -21,8 +21,16 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
  * @author github.com/doomsdayrs
  */
 public class CatalogueCard extends RecycleCard {
+    /**
+     * Formatter
+     */
     public final Formatter formatter;
 
+    /**
+     * Constructor
+     *
+     * @param formatter the formatter
+     */
     public CatalogueCard(Formatter formatter) {
         super(formatter.getName());
         this.formatter = formatter;

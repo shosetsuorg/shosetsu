@@ -49,10 +49,21 @@ public class LibraryFragment extends Fragment {
     private RecyclerView library_view;
 
 
+    /**
+     * Constructor
+     */
     public LibraryFragment() {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Creates view
+     *
+     * @param inflater           inflates layouts and shiz
+     * @param container          container of this fragment
+     * @param savedInstanceState save file
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,11 +77,18 @@ public class LibraryFragment extends Fragment {
         library_view = view.findViewById(R.id.fragment_library_recycler);
 
         this.context = Objects.requireNonNull(container).getContext();
+
+
         setLibraryCards(libraryNovelCards);
         return view;
     }
 
 
+    /**
+     * Creates the option menu
+     * @param menu menu to fill
+     * @param inflater inflater of layouts and shiz
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
@@ -83,7 +101,10 @@ public class LibraryFragment extends Fragment {
         });
     }
 
-
+    /**
+     * Sets the cards to display
+     * @param recycleCards
+     */
     public void setLibraryCards(ArrayList<NovelCard> recycleCards) {
         if (library_view != null) {
             library_view.setHasFixedSize(false);

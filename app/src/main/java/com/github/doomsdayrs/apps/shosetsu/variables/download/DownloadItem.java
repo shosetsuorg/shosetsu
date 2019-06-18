@@ -21,20 +21,11 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
  *
  * @author github.com/doomsdayrs
  */
-public class DownloadItem {
-    public final Formatter formatter;
-    public final String novelName;
-    public final String chapterName;
-    public final String novelURL;
-    public final String chapterURL;
+public class DownloadItem extends DeleteItem {
     public final NovelFragmentChapters novelFragmentChapters;
 
     public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL, NovelFragmentChapters novelFragmentChapters) {
-        this.formatter = formatter;
-        this.novelName = novelName;
-        this.chapterName = chapterName;
-        this.novelURL = novelURL;
-        this.chapterURL = chapterURL;
+        super(formatter, novelName, chapterName, novelURL, chapterURL);
         this.novelFragmentChapters = novelFragmentChapters;
     }
 }

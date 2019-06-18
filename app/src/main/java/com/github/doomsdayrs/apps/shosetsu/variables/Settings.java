@@ -22,10 +22,25 @@ import android.net.ConnectivityManager;
  * @author github.com/doomsdayrs
  */
 public class Settings {
+    /**
+     * Reader text size
+     */
     @SuppressWarnings("unused")
     public static float ReaderTextSize = 1;
+
+    /**
+     * Reader text color
+     */
     public static int ReaderTextColor = Color.BLACK;
+
+    /**
+     * Reader background color
+     */
     public static int ReaderTextBackgroundColor = Color.WHITE;
+
+    /**
+     * global connectivity manager variable
+     */
     public static ConnectivityManager connectivityManager;
 
 

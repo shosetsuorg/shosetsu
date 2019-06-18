@@ -21,10 +21,19 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
  *
  * @author github.com/doomsdayrs
  */
+
 public class SettingsCard {
 
+    /**
+     * What kind of settings card this is
+     */
     public final Types ID;
 
+    /**
+     * Constructor
+     *
+     * @param ID card type
+     */
     public SettingsCard(Types ID) {
         this.ID = ID;
     }
