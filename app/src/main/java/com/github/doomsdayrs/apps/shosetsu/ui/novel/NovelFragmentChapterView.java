@@ -19,7 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewHideBar;
-import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewLoad;
+import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelFragmentChapterViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
 import org.jetbrains.annotations.NotNull;

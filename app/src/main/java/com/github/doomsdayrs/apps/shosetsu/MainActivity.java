@@ -5,23 +5,21 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.ui.listeners.MainActivityNavSwapFrag;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.CataloguesFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 
 /**
  * This file is part of Shosetsu.
@@ -42,13 +40,13 @@ import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
  * @author github.com/doomsdayrs
  */
 @SuppressWarnings("EmptyMethod")
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+public class MainActivity extends AppCompatActivity {
+    public DrawerLayout drawerLayout;
+    public NavigationView navigationView;
 
-    private final LibraryFragment libraryFragment = new LibraryFragment();
-    private final CataloguesFragment cataloguesFragment = new CataloguesFragment();
-    private final SettingsFragment settingsFragment = new SettingsFragment();
+    public final LibraryFragment libraryFragment = new LibraryFragment();
+    public final CataloguesFragment cataloguesFragment = new CataloguesFragment();
+    public final SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(new MainActivityNavSwapFrag(this));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -96,40 +94,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawer(GravityCompat.START);
         else super.onBackPressed();
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        navigationView.setCheckedItem(menuItem);
-        switch (menuItem.getItemId()) {
-            case R.id.nav_library: {
-                Log.e("Nav", "Library selected");
-                getSupportFragmentManager().beginTransaction()
-                        .addToBackStack("tag")
-                        .replace(R.id.fragment_container, libraryFragment)
-                        .commit();
-            }
-            break;
-            case R.id.nav_catalogue: {
-                Log.e("Nav", "Catalogue selected");
-                getSupportFragmentManager().beginTransaction()
-                        .addToBackStack("tag")
-                        .replace(R.id.fragment_container, cataloguesFragment)
-                        .commit();
-            }
-            break;
-            case R.id.nav_settings: {
-                Log.e("Nav", "Settings selected");
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack("tag")
-                        .replace(R.id.fragment_container, settingsFragment)
-                        .commit();
-            }
-            break;
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-
-        return true;
     }
 }

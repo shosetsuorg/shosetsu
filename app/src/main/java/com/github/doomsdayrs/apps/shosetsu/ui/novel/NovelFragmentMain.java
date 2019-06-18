@@ -18,6 +18,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -52,9 +53,9 @@ public class NovelFragmentMain extends Fragment {
     private TextView author;
     private TextView description;
     private TextView formatterName;
-    private FloatingActionButton floatingActionButton;
+    public FloatingActionButton floatingActionButton;
 
-    private boolean inLibrary = false;
+    public boolean inLibrary = false;
 
     public NovelFragmentMain() {
         setHasOptionsMenu(true);
@@ -84,7 +85,7 @@ public class NovelFragmentMain extends Fragment {
             description = view.findViewById(R.id.fragment_novel_description);
             formatterName = view.findViewById(R.id.fragment_novel_formatter);
             floatingActionButton = view.findViewById(R.id.fragment_novel_add);
-            floatingActionButton.setOnClickListener(new addToLibrary(this));
+            floatingActionButton.setOnClickListener(new NovelFragmentMainAddToLibrary(this));
         }
         floatingActionButton.hide();
 
@@ -117,46 +118,4 @@ public class NovelFragmentMain extends Fragment {
         formatterName.setText(formatter.getName());
     }
 
-    static class addToLibrary implements FloatingActionButton.OnClickListener {
-        final NovelFragmentMain novelFragmentMain;
-
-        addToLibrary(NovelFragmentMain novelFragmentMain) {
-            this.novelFragmentMain = novelFragmentMain;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (!novelFragmentMain.inLibrary) {
-
-                JSONObject savedData = new JSONObject();
-                try {
-                    JSONArray chapters = new JSONArray();
-                    for (NovelChapter novelChapter : NovelFragmentChapters.novelChapters) {
-                        JSONObject chapter = new JSONObject();
-                        {
-                            chapter.put("link", novelChapter.link);
-                            chapter.put("chapterNum", novelChapter.chapterNum);
-                        }
-                        chapters.put(chapter);
-                    }
-                    savedData.put("chapters", chapters);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                if (Database.addToLibrary(novelFragmentMain.formatter.getID(), StaticNovel.novelPage, novelFragmentMain.url, savedData)) {
-                    novelFragmentMain.inLibrary = true;
-                    novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
-                } else
-                    Toast.makeText(v.getContext(), "Error adding to library", Toast.LENGTH_LONG).show();
-
-            } else {
-                if (!Database.removeFromLibrary(novelFragmentMain.url)) {
-                    novelFragmentMain.inLibrary = false;
-                    novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
-                } else
-                    Toast.makeText(v.getContext(), "Error removing from library", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 }
