@@ -42,9 +42,9 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(Database.create);
-        db.execSQL(Database.create2);
-        db.execSQL(Database.create3);
+        db.execSQL(Database.libraryCreate);
+        db.execSQL(Database.bookmarksCreate);
+        db.execSQL(Database.downloadsCreate);
     }
 
     /**
@@ -56,16 +56,19 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL(Database.libraryCreate);
+        db.execSQL(Database.bookmarksCreate);
+        db.execSQL(Database.downloadsCreate);
+
         if (oldVersion < 2) {
-            db.execSQL("drop table if exists " + Database.Tables.TABLE_LIBRARY);
-            db.execSQL("drop table if exists " + Database.Tables.TABLE_BOOKMARKS);
-            db.execSQL(Database.create);
-            db.execSQL(Database.create2);
-            db.execSQL(Database.create3);
+            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
+            db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
+            db.execSQL(Database.libraryCreate);
+            db.execSQL(Database.bookmarksCreate);
         }
 
-        if (oldVersion < 3){
-
+        if (oldVersion < 3) {
+            db.execSQL(Database.chaptersCreate);
         }
 
     }

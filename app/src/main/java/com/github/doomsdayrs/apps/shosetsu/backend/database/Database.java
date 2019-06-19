@@ -38,9 +38,10 @@ public class Database {
     public static SQLiteDatabase library;
 
     public enum Tables {
-        TABLE_LIBRARY("library"),
-        TABLE_BOOKMARKS("bookmarks"),
-        TABLE_DOWNLOADS("downloads");
+        LIBRARY("library"),
+        BOOKMARKS("bookmarks"),
+        DOWNLOADS("downloads"),
+        CHAPTERS("chapters");
         final String TABLE;
 
         Tables(String table) {
@@ -55,10 +56,13 @@ public class Database {
     }
 
     public enum Columns {
-        COLUMN_CHAPTER_URL("chapterURL"),
-        COLUMNS_NOVEL_URL("novelURL"),
-        COLUMN_SAVED_DATA("savedData"),
-        COLUMN_FORMATTER_ID("formatterID");
+        CHAPTER_URL("chapterURL"),
+        NOVEL_URL("novelURL"),
+        SAVED_DATA("savedData"),
+        FORMATTER_ID("formatterID"),
+        Y("y"),
+        IS_SAVED("isSaved"),
+        SAVE_PATH("savePath");
         final String COLUMN;
 
         Columns(String column) {
@@ -72,20 +76,43 @@ public class Database {
         }
     }
 
+    //TODO Figure out a legitimate way to structure all this data
 
-    public static final String create = "create TABLE if not exists " + Tables.TABLE_LIBRARY + " (" +
-            Columns.COLUMNS_NOVEL_URL + " text not null unique, " +
-            Columns.COLUMN_FORMATTER_ID + " integer not null, " +
-            Columns.COLUMN_SAVED_DATA + " text not null)";
+    // Library that the user has saved their novels to
+    static final String libraryCreate = "create TABLE if not exists " + Tables.LIBRARY + " (" +
+            Columns.NOVEL_URL + " text not null unique, " +
+            Columns.FORMATTER_ID + " integer not null, " +
+            Columns.SAVED_DATA + " text not null)";
 
-    public static final String create2 = "create TABLE if not exists " + Tables.TABLE_BOOKMARKS + "(" +
-            Columns.COLUMN_CHAPTER_URL + " text unique not null, " +
-            Columns.COLUMN_SAVED_DATA + " text)";
+    // If the user bookmarks a chapter, it is saved here
+    // TODO merge with Tables.CHAPTERS, assign bool value
+    static final String bookmarksCreate = "create TABLE if not exists " + Tables.BOOKMARKS + "(" +
+            Columns.CHAPTER_URL + " text unique not null, " +
+            Columns.SAVED_DATA + " text)";
 
-    public static final String create3 = "create TABLE if not exists " + Tables.TABLE_DOWNLOADS + "(" +
-            Columns.COLUMNS_NOVEL_URL + " text not null," +
-            Columns.COLUMN_CHAPTER_URL + " text not null, " +
-            Columns.COLUMN_SAVED_DATA + " text)";
+    // If a user downloads a chapter, it is saved here
+    // TODO, assign as columns for Tables.CHAPTERS
+    static final String downloadsCreate = "create TABLE if not exists " + Tables.DOWNLOADS + "(" +
+            Columns.NOVEL_URL + " text not null," +
+            Columns.CHAPTER_URL + " text not null, " +
+            Columns.SAVED_DATA + " text)";
+
+    // Will be to new master table for chapters
+    // TODO Convert this class to use this instead of the above
+    static final String chaptersCreate = "create table if not exists " + Tables.CHAPTERS + "(" +
+            // The chapter URL
+            Columns.CHAPTER_URL + " text not null unique," +
+
+            // Unsure if i should keep this or not
+            Columns.SAVED_DATA + " text" +
+
+            // Scroll position, either 0 for top, or X for the position
+            Columns.Y + " integer not null," +
+
+            // If is saved, save path will have the file path
+            Columns.IS_SAVED + " integer not null" +
+            Columns.SAVE_PATH + " text)";
+
 
     // BOOKMARK CONTROLLERS
 
@@ -96,14 +123,14 @@ public class Database {
      * @param savedData  JSON object containing scroll position and others
      */
     public static void addBookMark(String chapterURL, JSONObject savedData) {
-        library.execSQL("insert into " + Tables.TABLE_BOOKMARKS + " (" + Columns.COLUMN_CHAPTER_URL + "," + Columns.COLUMN_SAVED_DATA + ") values('" +
+        library.execSQL("insert into " + Tables.BOOKMARKS + " (" + Columns.CHAPTER_URL + "," + Columns.SAVED_DATA + ") values('" +
                 chapterURL + "','" +
                 savedData.toString() + "')"
         );
     }
 
     public static void updateBookMark(String chapterURL, JSONObject savedData) {
-        library.execSQL("update " + Tables.TABLE_BOOKMARKS + " set " + Columns.COLUMN_SAVED_DATA + "='" + savedData.toString() + "' where " + Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "'");
+        library.execSQL("update " + Tables.BOOKMARKS + " set " + Columns.SAVED_DATA + "='" + savedData.toString() + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
     }
 
     /**
@@ -113,7 +140,7 @@ public class Database {
      * @return if removed properly
      */
     public static boolean removeBookMarked(String url) {
-        return library.delete(Tables.TABLE_BOOKMARKS.toString(), Columns.COLUMN_CHAPTER_URL + "='" + url + "'", null) > 0;
+        return library.delete(Tables.BOOKMARKS.toString(), Columns.CHAPTER_URL + "='" + url + "'", null) > 0;
     }
 
     /**
@@ -123,7 +150,7 @@ public class Database {
      * @return if bookmarked?
      */
     public static boolean isBookMarked(String url) {
-        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_BOOKMARKS + " where " + Columns.COLUMN_CHAPTER_URL + " = '" + url + "'", null);
+        Cursor cursor = library.rawQuery("SELECT * from " + Tables.BOOKMARKS + " where " + Columns.CHAPTER_URL + " = '" + url + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
@@ -139,14 +166,14 @@ public class Database {
      * @return JSONObject of saved data
      */
     public static JSONObject getBookmarkObject(String chapterURL) {
-        Cursor cursor = library.rawQuery("select " + Columns.COLUMN_SAVED_DATA + " from " + Tables.TABLE_BOOKMARKS + " where " + Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "'", null);
+        Cursor cursor = library.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.BOOKMARKS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return null;
         } else {
             try {
                 cursor.moveToNext();
-                JSONObject jsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString())));
+                JSONObject jsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString())));
                 cursor.close();
                 return jsonObject;
             } catch (JSONException e) {
@@ -160,11 +187,11 @@ public class Database {
     // LIBRARY CONTROLLERS
 
     public static boolean removePath(String novelURL, String chapterURL) {
-        return library.delete(Tables.TABLE_DOWNLOADS.toString(), Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "' and " + Columns.COLUMNS_NOVEL_URL + "='" + novelURL + "'", null) > 0;
+        return library.delete(Tables.DOWNLOADS.toString(), Columns.CHAPTER_URL + "='" + chapterURL + "' and " + Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
     }
 
     public static void addSavedPath(String novelURL, String chapterURL, String chapterPath) {
-        library.execSQL("insert into " + Tables.TABLE_DOWNLOADS + " (" + Columns.COLUMNS_NOVEL_URL + "," + Columns.COLUMN_CHAPTER_URL + "," + Columns.COLUMN_SAVED_DATA + ") values('" +
+        library.execSQL("insert into " + Tables.DOWNLOADS + " (" + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.SAVED_DATA + ") values('" +
                 novelURL + "','" +
                 chapterURL + "','" +
                 chapterPath + "')"
@@ -175,12 +202,12 @@ public class Database {
     /**
      * Is the chapter saved
      *
-     * @param novelURL novelURL of the novel
+     * @param novelURL   novelURL of the novel
      * @param chapterURL novelURL of the chapter
      * @return true if saved, false otherwise
      */
     public static boolean isSaved(String novelURL, String chapterURL) {
-        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_DOWNLOADS + " where " + Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "' and " + Columns.COLUMNS_NOVEL_URL + "='" + novelURL + "'", null);
+        Cursor cursor = library.rawQuery("SELECT * from " + Tables.DOWNLOADS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "' and " + Columns.NOVEL_URL + "='" + novelURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
@@ -197,13 +224,13 @@ public class Database {
      * @return String of passage
      */
     public static String getSaved(String novelURL, String chapterURL) {
-        Cursor cursor = library.rawQuery("SELECT * from " + Tables.TABLE_DOWNLOADS + " where " + Columns.COLUMN_CHAPTER_URL + "='" + chapterURL + "' and " + Columns.COLUMNS_NOVEL_URL + "='" + novelURL + "'", null);
+        Cursor cursor = library.rawQuery("SELECT * from " + Tables.DOWNLOADS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "' and " + Columns.NOVEL_URL + "='" + novelURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return null;
         } else {
             cursor.moveToNext();
-            String savedData = cursor.getString(cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString()));
+            String savedData = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
             cursor.close();
             return Download_Manager.getText(savedData);
         }
@@ -226,7 +253,7 @@ public class Database {
             Log.e("JSONException", Objects.requireNonNull(e.getMessage()));
             return false;
         }
-        library.execSQL("insert into " + Tables.TABLE_LIBRARY + "(" + Columns.COLUMNS_NOVEL_URL + "," + Columns.COLUMN_SAVED_DATA + "," + Columns.COLUMN_FORMATTER_ID + ") values('" +
+        library.execSQL("insert into " + Tables.LIBRARY + "(" + Columns.NOVEL_URL + "," + Columns.SAVED_DATA + "," + Columns.FORMATTER_ID + ") values('" +
                 novelURL + "','" +
                 data.toString().replaceAll("'", "") + "'," +
                 formatter + ")"
@@ -241,7 +268,7 @@ public class Database {
      * @return if removed successfully
      */
     public static boolean removeFromLibrary(String novelURL) {
-        return library.delete(Tables.TABLE_LIBRARY.toString(), Columns.COLUMNS_NOVEL_URL + "='" + novelURL + "'", null) > 0;
+        return library.delete(Tables.LIBRARY.toString(), Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
     }
 
     /**
@@ -251,7 +278,7 @@ public class Database {
      * @return yes or no
      */
     public static boolean inLibrary(String novelURL) {
-        Cursor cursor = library.rawQuery("SELECT " + Columns.COLUMN_FORMATTER_ID + " from " + Tables.TABLE_LIBRARY + " where " + Columns.COLUMNS_NOVEL_URL + " ='" + novelURL + "'", null);
+        Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.LIBRARY + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
@@ -266,8 +293,8 @@ public class Database {
      * @return the library
      */
     public static ArrayList<NovelCard> getLibrary() {
-        Cursor cursor = library.query(Tables.TABLE_LIBRARY.toString(),
-                new String[]{Columns.COLUMNS_NOVEL_URL.toString(), Columns.COLUMN_FORMATTER_ID.toString(), Columns.COLUMN_SAVED_DATA.toString()},
+        Cursor cursor = library.query(Tables.LIBRARY.toString(),
+                new String[]{Columns.NOVEL_URL.toString(), Columns.FORMATTER_ID.toString(), Columns.SAVED_DATA.toString()},
                 null, null, null, null, null);
         ArrayList<NovelCard> novelCards = new ArrayList<>();
         if (cursor.getCount() <= 0) {
@@ -276,13 +303,13 @@ public class Database {
         } else {
             while (cursor.moveToNext()) {
                 try {
-                    JSONObject jsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(Columns.COLUMN_SAVED_DATA.toString())));
+                    JSONObject jsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString())));
                     novelCards.add(
                             new NovelCard(
                                     jsonObject.getString("title"),
-                                    cursor.getString(cursor.getColumnIndex(Columns.COLUMNS_NOVEL_URL.toString())),
+                                    cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())),
                                     jsonObject.getString("imageURL"),
-                                    cursor.getInt(cursor.getColumnIndex(Columns.COLUMN_FORMATTER_ID.toString()))
+                                    cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
                             )
                     );
                 } catch (JSONException e) {
