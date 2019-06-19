@@ -57,4 +57,6 @@ dependencies {
     implementation 'com.github.Doomsdayrs:novelreader-services:1.0.9'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'org.jetbrains:annotations:17.0.0'
+    //TODO GITHUB signin to save backup data to cloud
+    implementation 'com.github.kohsuke:github-api:github-api-1.95'
 }

@@ -60,7 +60,9 @@ public class Database {
         NOVEL_URL("novelURL"),
         SAVED_DATA("savedData"),
         FORMATTER_ID("formatterID"),
+        READ_CHAPTERS("readChapters"),
         Y("y"),
+        BOOKMARKED("bookmarked"),
         IS_SAVED("isSaved"),
         SAVE_PATH("savePath");
         final String COLUMN;
@@ -100,16 +102,22 @@ public class Database {
     // Will be to new master table for chapters
     // TODO Convert this class to use this instead of the above
     static final String chaptersCreate = "create table if not exists " + Tables.CHAPTERS + "(" +
+            Columns.NOVEL_URL + " text not null" +
             // The chapter URL
             Columns.CHAPTER_URL + " text not null unique," +
 
             // Unsure if i should keep this or not
             Columns.SAVED_DATA + " text" +
 
-            // Scroll position, either 0 for top, or X for the position
+            // Saved Data
+            // > Scroll position, either 0 for top, or X for the position
             Columns.Y + " integer not null," +
+            // > Either 0 for none, or an incremented count
+            Columns.READ_CHAPTERS + " integer not null" +
+            // > Either 0 for false or 1 for true.
+            Columns.BOOKMARKED + " integer not null" +
 
-            // If is saved, save path will have the file path
+            // If 1 then true and SAVE_PATH has data, false otherwise
             Columns.IS_SAVED + " integer not null" +
             Columns.SAVE_PATH + " text)";
 
@@ -117,30 +125,45 @@ public class Database {
     // BOOKMARK CONTROLLERS
 
     /**
-     * Adds a bookmark
+     * Updates the Y coordinate
+     * Precondition is the chapter is already in the database.
      *
-     * @param chapterURL imageURL of the novel
-     * @param savedData  JSON object containing scroll position and others
+     * @param chapterURL url to update
+     * @param y          integer value scroll
      */
-    public static void addBookMark(String chapterURL, JSONObject savedData) {
-        library.execSQL("insert into " + Tables.BOOKMARKS + " (" + Columns.CHAPTER_URL + "," + Columns.SAVED_DATA + ") values('" +
-                chapterURL + "','" +
-                savedData.toString() + "')"
-        );
-    }
-
-    public static void updateBookMark(String chapterURL, JSONObject savedData) {
-        library.execSQL("update " + Tables.BOOKMARKS + " set " + Columns.SAVED_DATA + "='" + savedData.toString() + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+    public static void updateY(String chapterURL, int y) {
+        library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
     }
 
     /**
-     * Removes bookmark
+     * returns Y coordinate
+     * Precondition is the chapter is already in the database
      *
      * @param url imageURL to the chapter
-     * @return if removed properly
+     * @return if bookmarked?
      */
-    public static boolean removeBookMarked(String url) {
-        return library.delete(Tables.BOOKMARKS.toString(), Columns.CHAPTER_URL + "='" + url + "'", null) > 0;
+    public static int getY(String url) {
+        Cursor cursor = library.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + url + "'", null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return 0;
+        } else {
+            cursor.moveToNext();
+            int y = cursor.getInt(cursor.getColumnIndex(Columns.Y.toString()));
+            cursor.close();
+            return y;
+        }
+    }
+
+    /**
+     * Sets bookmark true or false (1 for true, 0 is false)
+     *
+     * @param chapterURL chapter URL
+     * @param b          1 is true, 0 is false
+     */
+    private static void setBookMark(String chapterURL, int b) {
+        library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.BOOKMARKED + "=" + b + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+
     }
 
     /**
@@ -150,52 +173,25 @@ public class Database {
      * @return if bookmarked?
      */
     public static boolean isBookMarked(String url) {
-        Cursor cursor = library.rawQuery("SELECT * from " + Tables.BOOKMARKS + " where " + Columns.CHAPTER_URL + " = '" + url + "'", null);
+        Cursor cursor = library.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + url + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
-        }
-        cursor.close();
-        return true;
-    }
-
-    /**
-     * Gets the bookmark object from the savedData column
-     *
-     * @param chapterURL Chapter to retrieve bookmark from
-     * @return JSONObject of saved data
-     */
-    public static JSONObject getBookmarkObject(String chapterURL) {
-        Cursor cursor = library.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.BOOKMARKS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'", null);
-        if (cursor.getCount() <= 0) {
-            cursor.close();
-            return null;
         } else {
-            try {
-                cursor.moveToNext();
-                JSONObject jsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString())));
-                cursor.close();
-                return jsonObject;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            cursor.moveToNext();
+            int y = cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString()));
+            cursor.close();
+            return y == 1;
         }
-        return null;
+
     }
 
-
-    // LIBRARY CONTROLLERS
-
-    public static boolean removePath(String novelURL, String chapterURL) {
-        return library.delete(Tables.DOWNLOADS.toString(), Columns.CHAPTER_URL + "='" + chapterURL + "' and " + Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
+    public static void removePath(String chapterURL) {
+        library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=null," + Columns.IS_SAVED + "=0 where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
     }
 
-    public static void addSavedPath(String novelURL, String chapterURL, String chapterPath) {
-        library.execSQL("insert into " + Tables.DOWNLOADS + " (" + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.SAVED_DATA + ") values('" +
-                novelURL + "','" +
-                chapterURL + "','" +
-                chapterPath + "')"
-        );
+    public static void addSavedPath(String chapterURL, String chapterPath) {
+        library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=" + chapterPath + "," + Columns.IS_SAVED + "=1 where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
     }
 
 

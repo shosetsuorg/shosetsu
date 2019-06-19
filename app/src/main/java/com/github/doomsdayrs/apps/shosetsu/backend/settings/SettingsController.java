@@ -135,7 +135,7 @@ public class SettingsController {
      * @param saveData   saveData to set
      */
     public static void setScroll(String chapterURL, JSONObject saveData) {
-        Database.updateBookMark(chapterURL, saveData);
+        Database.updateY(chapterURL, saveData);
     }
 
     //Methods below when tracking system setup

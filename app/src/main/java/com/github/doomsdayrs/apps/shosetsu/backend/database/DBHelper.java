@@ -1,8 +1,16 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * This file is part of Shosetsu.
@@ -54,11 +62,11 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param oldVersion previous version ID
      * @param newVersion new version ID
      */
+    //TODO Actually save data between db versions
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(Database.libraryCreate);
-        db.execSQL(Database.bookmarksCreate);
-        db.execSQL(Database.downloadsCreate);
+        db.execSQL(Database.chaptersCreate);
 
         if (oldVersion < 2) {
             db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
@@ -68,8 +76,8 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         if (oldVersion < 3) {
-            db.execSQL(Database.chaptersCreate);
+            db.execSQL("drop table if exists " + Database.Tables.DOWNLOADS);
+            db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
         }
-
     }
 }
