@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu;
+package com.github.doomsdayrs.apps.shosetsu.backend;
 
 import android.os.AsyncTask;
 import android.os.Environment;

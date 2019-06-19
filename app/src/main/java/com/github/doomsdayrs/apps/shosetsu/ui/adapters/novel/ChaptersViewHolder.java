@@ -11,7 +11,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
-import com.github.doomsdayrs.apps.shosetsu.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
