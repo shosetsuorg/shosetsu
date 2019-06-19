@@ -58,7 +58,7 @@ public class NovelFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d("Saving Instance State", "NovelFragment");
-        outState.putString("imageURL", url);
+        outState.putString("url", url);
         outState.putInt("formatter", formatter.getID());
     }
 
@@ -81,7 +81,7 @@ public class NovelFragment extends Fragment {
                 //TODO, Offline data loading
             }
         } else {
-            url = savedInstanceState.getString("imageURL");
+            url = savedInstanceState.getString("url");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             setViewPager();
         }

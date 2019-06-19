@@ -15,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -67,11 +66,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
     public void onBindViewHolder(@NonNull NovelCardsViewHolder novelCardsViewHolder, int i) {
         CatalogueNovelCard recycleCard = recycleCards.get(i);
         if (recycleCard != null) {
-            try {
-                novelCardsViewHolder.uri = new URI(recycleCard.novelURL);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+            novelCardsViewHolder.url = recycleCard.novelURL;
             novelCardsViewHolder.library_card_title.setText(recycleCard.title);
             Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.library_card_image);
         }
@@ -88,7 +83,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         Formatter formatter;
         final ImageView library_card_image;
         final TextView library_card_title;
-        URI uri;
+        String url;
 
         NovelCardsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -101,7 +96,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         public void onClick(View v) {
             NovelFragment novelFragment = new NovelFragment();
             novelFragment.formatter = formatter;
-            novelFragment.url = uri.getPath();
+            novelFragment.url = url;
             novelFragment.fragmentManager = fragmentManager;
             fragmentManager.beginTransaction()
                     .addToBackStack("tag")

@@ -37,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Creates DB things
+     *
      * @param db db to fill
      */
     @Override
@@ -48,21 +49,24 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Upgrades database
-     * @param db database to alter
+     *
+     * @param db         database to alter
      * @param oldVersion previous version ID
      * @param newVersion new version ID
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1) {
+        if (oldVersion < 2) {
             db.execSQL("drop table if exists " + Database.Tables.TABLE_LIBRARY);
             db.execSQL("drop table if exists " + Database.Tables.TABLE_BOOKMARKS);
-        }
-
-        if (newVersion == 2) {
             db.execSQL(Database.create);
             db.execSQL(Database.create2);
             db.execSQL(Database.create3);
         }
+
+        if (oldVersion < 3){
+
+        }
+
     }
 }
