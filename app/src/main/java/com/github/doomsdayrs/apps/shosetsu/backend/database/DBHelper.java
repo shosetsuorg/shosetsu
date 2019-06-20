@@ -1,16 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * This file is part of Shosetsu.
@@ -39,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 2);
+        super(context, DB_NAME, null, 3);
     }
 
 
@@ -51,8 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Database.libraryCreate);
-        db.execSQL(Database.bookmarksCreate);
-        db.execSQL(Database.downloadsCreate);
+        db.execSQL(Database.chaptersCreate);
     }
 
     /**
@@ -72,12 +63,13 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
             db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
             db.execSQL(Database.libraryCreate);
-            db.execSQL(Database.bookmarksCreate);
         }
 
         if (oldVersion < 3) {
             db.execSQL("drop table if exists " + Database.Tables.DOWNLOADS);
             db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
+            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
+            db.execSQL(Database.libraryCreate);
         }
     }
 }

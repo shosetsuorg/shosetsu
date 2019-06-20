@@ -38,7 +38,7 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
     @Override
     protected String doInBackground(NovelFragmentChapterView... novelFragmentChapterViews) {
         try {
-            novelFragmentChapterViews[0].text = novelFragmentChapterViews[0].formatter.getNovelPassage(novelFragmentChapterViews[0].URL).replaceAll("\n", "\n\n");
+            novelFragmentChapterViews[0].text = novelFragmentChapterViews[0].formatter.getNovelPassage(novelFragmentChapterViews[0].chapterURL).replaceAll("\n", "\n\n");
             novelFragmentChapterViews[0].runOnUiThread(() -> novelFragmentChapterViews[0].textView.setText(novelFragmentChapterViews[0].text));
         } catch (IOException e) {
             e.printStackTrace();

@@ -13,7 +13,6 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 
 import java.util.List;
 
@@ -69,10 +68,14 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
         chaptersViewHolder.novelChapter = novelChapter;
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
+
+        if (!Database.inChapters(novelChapter.link))
+            Database.addToChapters(novelFragmentChapters.novelURL, novelChapter.link);
+
         if (Database.isBookMarked(novelChapter.link))
             chaptersViewHolder.bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
 
-        if (Database.isSaved(novelFragmentChapters.novelURL, novelChapter.link)) {
+        if (Database.isSaved(novelChapter.link)) {
             Log.d("In Storage", novelFragmentChapters.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.download.setImageResource(R.drawable.ic_arrow_drop_down_circle_black_24dp);
             chaptersViewHolder.downloaded = true;

@@ -8,9 +8,6 @@ import android.net.NetworkInfo;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
@@ -94,48 +91,39 @@ public class SettingsController {
      * Gets y position of a bookmark
      * TODO Add novelURL as data to search with
      *
-     * @param chapterURL chapter URL
+     * @param chapterURL chapter chapterURL
      * @return y position
      */
     public static int getYBookmark(String chapterURL) {
-        JSONObject jsonObject = Database.getBookmarkObject(chapterURL);
-        if (jsonObject == null)
-            return 0;
-
-        try {
-            return jsonObject.getInt("y");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return 0;
+        return Database.getY(chapterURL);
     }
 
     /**
      * Toggles bookmark
      *
      * @param chapterURL imageURL of chapter
-     * @param saveData   JSON object containing scroll position and others
      * @return true means added, false means removed
      */
-    public static boolean toggleBookmarkChapter(String chapterURL, JSONObject saveData) {
+    public static boolean toggleBookmarkChapter(String chapterURL) {
 
         if (Database.isBookMarked(chapterURL)) {
-            return !Database.removeBookMarked(chapterURL);
+            Database.setBookMark(chapterURL, 0);
+            return false;
         } else {
-            Database.addBookMark(chapterURL, saveData);
+            Database.setBookMark(chapterURL, 1);
             return true;
         }
     }
 
     /**
      * Updates scroll position
-     * TODO Novel URL as well as parameter
+     * TODO Novel chapterURL as well as parameter
      *
-     * @param chapterURL URL of chapter
-     * @param saveData   saveData to set
+     * @param chapterURL chapterURL of chapter
+     * @param y          y integer
      */
-    public static void setScroll(String chapterURL, JSONObject saveData) {
-        Database.updateY(chapterURL, saveData);
+    public static void setScroll(String chapterURL, int y) {
+        Database.updateY(chapterURL, y);
     }
 
     //Methods below when tracking system setup

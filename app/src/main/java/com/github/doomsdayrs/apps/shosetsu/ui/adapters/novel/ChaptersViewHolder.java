@@ -70,7 +70,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("y", 0);
-                if (SettingsController.toggleBookmarkChapter(novelChapter.link, jsonObject))
+                if (SettingsController.toggleBookmarkChapter(novelChapter.link))
                     bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
                 else
                     bookmarked.setImageResource(R.drawable.ic_bookmark_border_black_24dp);

@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,7 +52,8 @@ public class Download_Manager {
         File file = new File(downloadDir + "/Shosetsu/" + deleteItem.formatter.getID() + "/" + deleteItem.novelName + "/" + deleteItem.chapterName + ".txt");
         if (file.exists()) {
             if (file.delete()) {
-                return Database.removePath(deleteItem.novelURL, deleteItem.chapterURL);
+                Database.removePath(deleteItem.chapterURL);
+                return true;
             }
         }
         return false;
@@ -92,12 +93,12 @@ public class Download_Manager {
 
                     String passage = downloadItem.formatter.getNovelPassage(downloadItem.chapterURL);
                     FileOutputStream fileOutputStream = new FileOutputStream(
-                            (folder.getPath() + "/" + downloadItem.chapterName + ".txt")
+                            (folder.getPath() + "/" + (downloadItem.chapterName.replaceAll("/", "")) + ".txt")
                     );
 
                     fileOutputStream.write(passage.getBytes());
                     fileOutputStream.close();
-                    Database.addSavedPath(downloadItem.novelURL, downloadItem.chapterURL, folder.getPath() + "/" + downloadItem.chapterName + ".txt");
+                    Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + downloadItem.chapterName + ".txt");
                     if (downloadItem.novelFragmentChapters != null) {
                         downloadItem.novelFragmentChapters.recyclerView.post(() -> downloadItem.novelFragmentChapters.adapter.notifyDataSetChanged());
                     }

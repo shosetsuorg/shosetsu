@@ -32,7 +32,7 @@ public class CatalogueNovelCard extends RecycleCard {
     /**
      * Constructor
      *
-     * @param imageURL image URL
+     * @param imageURL image chapterURL
      * @param title    title
      * @param novelURL novelURL
      */

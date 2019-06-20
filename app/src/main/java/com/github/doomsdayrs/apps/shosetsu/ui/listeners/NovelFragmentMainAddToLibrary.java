@@ -4,16 +4,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.Toast;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * This file is part of Shosetsu.
@@ -43,29 +37,9 @@ public class NovelFragmentMainAddToLibrary implements FloatingActionButton.OnCli
     @Override
     public void onClick(View v) {
         if (!novelFragmentMain.inLibrary) {
-
-            JSONObject savedData = new JSONObject();
-            try {
-                JSONArray chapters = new JSONArray();
-                for (NovelChapter novelChapter : NovelFragmentChapters.novelChapters) {
-                    JSONObject chapter = new JSONObject();
-                    {
-                        chapter.put("link", novelChapter.link);
-                        chapter.put("chapterNum", novelChapter.chapterNum);
-                    }
-                    chapters.put(chapter);
-                }
-                savedData.put("chapters", chapters);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            if (Database.addToLibrary(novelFragmentMain.formatter.getID(), StaticNovel.novelPage, novelFragmentMain.url, savedData)) {
-                novelFragmentMain.inLibrary = true;
-                novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
-            } else
-                Toast.makeText(v.getContext(), "Error adding to library", Toast.LENGTH_LONG).show();
-
+            Database.addToLibrary(novelFragmentMain.formatter.getID(), StaticNovel.novelPage, novelFragmentMain.url);
+            novelFragmentMain.inLibrary = true;
+            novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
         } else {
             if (!Database.removeFromLibrary(novelFragmentMain.url)) {
                 novelFragmentMain.inLibrary = false;
