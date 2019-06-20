@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -50,11 +50,9 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         try {
             StaticNovel.novelPage = novelFragment.formatter.parseNovel(novelFragment.url);
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
-
             return true;
         } catch (SocketTimeoutException e) {
             activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,6 +70,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         novelFragment.progressBar.setVisibility(View.GONE);
         if (aBoolean) {
+            Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
             activity.runOnUiThread(() -> novelFragment.novelFragmentMain.setData());
             activity.runOnUiThread(() -> novelFragment.novelFragmentChapters.setNovels());
         }

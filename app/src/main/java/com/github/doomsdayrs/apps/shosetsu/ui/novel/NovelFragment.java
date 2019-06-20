@@ -18,6 +18,8 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.SlidingNovelPageAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.util.ArrayList;
 import java.util.List;

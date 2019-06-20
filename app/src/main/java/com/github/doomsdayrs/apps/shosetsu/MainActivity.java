@@ -20,6 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.CataloguesFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 /**
  * This file is part of Shosetsu.
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         //Sets the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        Statics.mainActionBar = getSupportActionBar();
         //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);

@@ -47,6 +47,7 @@ import java.util.Objects;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentChapterView extends AppCompatActivity {
+    private String title;
     private ScrollView scrollView;
     public TextView textView;
     public ProgressBar progressBar;
@@ -70,6 +71,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         outState.putString("url", chapterURL);
         outState.putInt("formatter", formatter.getID());
         outState.putString("novelURL", novelURL);
+        outState.putString("title", title);
     }
 
     /**
@@ -81,6 +83,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+
         inflater.inflate(R.menu.toolbar_chapter_view, menu);
         // Night mode
         menu.findItem(R.id.chapter_view_nightMode).setChecked(!SettingsController.isReaderLightMode());
@@ -166,6 +169,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         {
             progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);
             novelURL = getIntent().getStringExtra("novelURL");
+            title = getIntent().getStringExtra("title");
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -203,6 +207,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         setThemeMode();
 
         if (savedInstanceState != null) {
+            title = savedInstanceState.getString("title");
             chapterURL = savedInstanceState.getString("url");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             text = savedInstanceState.getString("text");
@@ -215,7 +220,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             if (chapterURL != null) {
                 new NovelFragmentChapterViewLoad(progressBar).execute(this);
             }
-
+        getSupportActionBar().setTitle(title);
         textView.setText(text);
     }
 }

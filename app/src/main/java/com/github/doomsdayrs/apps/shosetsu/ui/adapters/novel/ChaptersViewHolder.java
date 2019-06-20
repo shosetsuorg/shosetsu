@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,6 +83,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(novelFragmentChapters.getActivity(), NovelFragmentChapterView.class);
+        intent.putExtra("title", novelChapter.chapterNum);
         intent.putExtra("url", novelChapter.link);
         intent.putExtra("novelURL", novelFragmentChapters.novelURL);
         intent.putExtra("formatter", NovelChaptersAdapter.formatter.getID());

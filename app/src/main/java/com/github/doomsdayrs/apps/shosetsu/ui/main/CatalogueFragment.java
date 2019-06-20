@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue.CatalogueNovelC
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueFragmentHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueRefresh;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueSearchQuery;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
 import java.util.ArrayList;
@@ -55,7 +58,7 @@ public class CatalogueFragment extends Fragment {
     public RecyclerView library_view;
     public int currentMaxPage = 1;
     private Context context;
-    private boolean firstRun;
+
     public RecyclerView.Adapter library_Adapter;
     public ProgressBar progressBar;
     public ProgressBar bottomProgressBar;
@@ -65,11 +68,20 @@ public class CatalogueFragment extends Fragment {
      */
     public CatalogueFragment() {
         setHasOptionsMenu(true);
-        firstRun = true;
     }
 
     public void setFormatter(Formatter formatter) {
         CatalogueFragment.formatter = formatter;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     /**
@@ -85,24 +97,22 @@ public class CatalogueFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "CatalogueFragment");
         View view = inflater.inflate(R.layout.fragment_catalogue, container, false);
+        Statics.mainActionBar.setTitle(formatter.getName());
         library_view = view.findViewById(R.id.fragment_catalogue_recycler);
         swipeRefreshLayout = view.findViewById(R.id.fragment_catalogue_refresh);
         swipeRefreshLayout.setOnRefreshListener(new CatalogueRefresh(this));
         progressBar = view.findViewById(R.id.fragment_catalogue_progress);
         bottomProgressBar = view.findViewById(R.id.fragment_catalogue_progress_bottom);
-
         this.context = Objects.requireNonNull(container).getContext();
         if (savedInstanceState == null) {
             Log.d("Process", "Loading up latest");
-            if (firstRun) {
-                firstRun = false;
-                setLibraryCards(catalogueNovelCards);
-                new CataloguePageLoader(this).execute();
-            } else setLibraryCards(catalogueNovelCards);
-        } else setLibraryCards(catalogueNovelCards);
+            setLibraryCards(catalogueNovelCards);
+            new CataloguePageLoader(this).execute();
+        } else {
+            setLibraryCards(catalogueNovelCards);
+        }
         return view;
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

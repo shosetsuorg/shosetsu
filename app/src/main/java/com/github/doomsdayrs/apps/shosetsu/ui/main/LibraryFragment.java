@@ -20,6 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.LibraryNovelCardsAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.LibrarySearchQuery;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class LibraryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Statics.mainActionBar.setTitle("Library");
         Log.d("OnCreate", "LibraryFragment");
 
         if (savedInstanceState == null) {

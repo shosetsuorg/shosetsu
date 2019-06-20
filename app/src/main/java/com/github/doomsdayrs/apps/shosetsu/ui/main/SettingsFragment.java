@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.SettingsAdapter;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsCard;
 
@@ -70,6 +71,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "SettingsFragment");
+        Statics.mainActionBar.setTitle("Settings");
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.fragment_settings_recycler);
 

@@ -18,6 +18,7 @@ import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue.CatalogueCardsAdapter;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class CataloguesFragment extends Fragment {
         inflater.inflate(R.menu.toolbar_catalogues, menu);
     }
 
+
     /**
      * Creates view
      *
@@ -67,6 +69,7 @@ public class CataloguesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "CataloguesFragment");
+        Statics.mainActionBar.setTitle("Catalogues");
         //TODO Conditional for turning formatter on and off
         //TODO Conditional for languages
         //TODO Conditional for categories, maybe
