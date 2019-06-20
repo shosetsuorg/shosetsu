@@ -123,16 +123,7 @@ public class SettingsController {
         }
     }
 
-    /**
-     * Updates scroll position
-     * TODO Novel chapterURL as well as parameter
-     *
-     * @param chapterURL chapterURL of chapter
-     * @param y          y integer
-     */
-    public static void setScroll(String chapterURL, int y) {
-        Database.updateY(chapterURL, y);
-    }
+
 
     //Methods below when tracking system setup
 

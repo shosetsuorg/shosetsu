@@ -2,9 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -166,6 +164,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         }
 
         public void performFileSearch() {
+            Toast.makeText(getContext(), "Please make sure this is on the main stroage, SD card storage is not functional yet", Toast.LENGTH_LONG).show();
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             i.addCategory(Intent.CATEGORY_DEFAULT);
             startActivityForResult(Intent.createChooser(i, "Choose directory"), 42);
@@ -182,7 +181,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                 if (data != null) {
                     String path = data.getData().getPath();
                     Log.i("Selected Folder", "Uri: " + path);
-                    setDir(path.substring(path.indexOf(":")+1));
+                    setDir(path.substring(path.indexOf(":") + 1));
                 }
             }
 

@@ -40,7 +40,12 @@ import java.util.Objects;
  */
 public class SettingsFragment extends Fragment {
     private static final ArrayList<SettingsCard> cards = new ArrayList<>();
-
+    static{
+        cards.add(new SettingsCard(Types.DOWNLOAD));
+        cards.add(new SettingsCard(Types.VIEW));
+        cards.add(new SettingsCard(Types.ADVANCED));
+        cards.add(new SettingsCard(Types.CREDITS));
+    }
     /**
      * Constructor
      * TODO, Create custom option menu for settings to search specific ones
@@ -75,13 +80,6 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.fragment_settings_recycler);
 
-        if (savedInstanceState == null) {
-            cards.add(new SettingsCard(Types.DOWNLOAD));
-            cards.add(new SettingsCard(Types.VIEW));
-            cards.add(new SettingsCard(Types.ADVANCED));
-            cards.add(new SettingsCard(Types.CREDITS));
-        }
-        System.out.println(cards);
 
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);

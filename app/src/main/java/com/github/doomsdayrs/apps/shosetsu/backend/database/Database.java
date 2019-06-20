@@ -5,10 +5,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +60,7 @@ public class Database {
         AUTHORS("authors"),
         SAVED_DATA("savedData"),
         FORMATTER_ID("formatterID"),
-        READ_CHAPTERS("readChapters"),
+        READ_CHAPTER("read"),
         Y("y"),
         BOOKMARKED("bookmarked"),
         IS_SAVED("isSaved"),
@@ -115,7 +115,7 @@ public class Database {
             // > Scroll position, either 0 for top, or X for the position
             Columns.Y + " integer not null," +
             // > Either 0 for none, or an incremented count
-            Columns.READ_CHAPTERS + " integer not null," +
+            Columns.READ_CHAPTER + " integer not null," +
             // > Either 0 for false or 1 for true.
             Columns.BOOKMARKED + " integer not null," +
 
@@ -137,15 +137,39 @@ public class Database {
         library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
     }
 
+
+    public static Status isRead(String chapterURL) {
+        Cursor cursor = library.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + chapterURL + "'", null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return Status.UNREAD;
+        } else {
+            cursor.moveToNext();
+            int y = cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString()));
+            cursor.close();
+            if (y == 0)
+                return Status.UNREAD;
+            else if (y == 1)
+                return Status.READING;
+            else
+                return Status.READ;
+        }
+    }
+
+
+    public static void setChapterStatus(String chapterURL, Status status) {
+        library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+    }
+
     /**
      * returns Y coordinate
      * Precondition is the chapter is already in the database
      *
-     * @param url imageURL to the chapter
+     * @param chapterURL imageURL to the chapter
      * @return if bookmarked?
      */
-    public static int getY(String url) {
-        Cursor cursor = library.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + url + "'", null);
+    public static int getY(String chapterURL) {
+        Cursor cursor = library.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + chapterURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
             return 0;
@@ -236,7 +260,7 @@ public class Database {
     }
 
 
-    public static boolean inChapters(String chapterURL){
+    public static boolean inChapters(String chapterURL) {
         Cursor cursor = library.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
         if (cursor.getCount() <= 0) {
             cursor.close();
@@ -245,12 +269,13 @@ public class Database {
         cursor.close();
         return true;
     }
+
     public static void addToChapters(String novelURL, String chapterURL) {
         library.execSQL("insert into " + Tables.CHAPTERS + "(" +
                 Columns.NOVEL_URL + "," +
                 Columns.CHAPTER_URL + "," +
                 Columns.Y + "," +
-                Columns.READ_CHAPTERS + "," +
+                Columns.READ_CHAPTER + "," +
                 Columns.BOOKMARKED + "," +
                 Columns.IS_SAVED + ") values ('" +
                 novelURL + "','" +
@@ -328,7 +353,7 @@ public class Database {
         }
     }
 
-    public static void backupDatabase(){
+    public static void backupDatabase() {
 
     }
 }

@@ -105,7 +105,7 @@ public class NovelFragmentMain extends Fragment {
         if (inLibrary)
             floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
 
-        if (StaticNovel.novelPage != null)
+        if (StaticNovel.novelPage != null && title != null)
             setData();
         return view;
     }

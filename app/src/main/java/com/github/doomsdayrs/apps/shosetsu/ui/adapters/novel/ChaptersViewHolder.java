@@ -10,12 +10,14 @@ import android.widget.TextView;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +45,9 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     NovelChapter novelChapter;
     final TextView library_card_title;
     final ImageView bookmarked;
+    final TextView status;
+    final TextView read;
+    final TextView readTag;
     public final ImageView download;
     boolean downloaded;
 
@@ -53,6 +58,11 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
         bookmarked = itemView.findViewById(R.id.recycler_novel_chapter_bookmarked);
         download = itemView.findViewById(R.id.recycler_novel_chapter_download);
+        status = itemView.findViewById(R.id.recycler_novel_chapter_status);
+        read = itemView.findViewById(R.id.recycler_novel_chapter_read);
+        readTag = itemView.findViewById(R.id.recycler_novel_chapter_read_tag);
+
+
         itemView.setOnClickListener(this);
         download.setOnClickListener(v -> {
             if (!downloaded) {
@@ -66,6 +76,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
             }
 
         });
+
         bookmarked.setOnClickListener(v -> {
             JSONObject jsonObject = new JSONObject();
             try {
@@ -82,6 +93,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View v) {
+        Database.setChapterStatus(novelChapter.link, Status.READING);
         Intent intent = new Intent(novelFragmentChapters.getActivity(), NovelFragmentChapterView.class);
         intent.putExtra("title", novelChapter.chapterNum);
         intent.putExtra("url", novelChapter.link);

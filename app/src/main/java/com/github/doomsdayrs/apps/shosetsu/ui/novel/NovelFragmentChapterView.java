@@ -21,6 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewHideBar;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -176,28 +177,30 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
             scrollView = findViewById(R.id.fragment_novel_scroll);
 
+
             /**
              * Chooses the way the way to save the scroll position
              * the before marshmallow version is untested
-             * TODO test pre marshmallow version
              */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    if (bookmarked)
+                    if (scrollView.canScrollVertically(1))
                         if (a % 5 == 0) {
                             int y = scrollView.getScrollY();
                             Log.d("ScrollSave", Integer.toString(y));
-                            SettingsController.setScroll(chapterURL, y);
+                            Database.updateY(chapterURL, y);
                         } else a++;
+                    else Database.setChapterStatus(chapterURL, Status.READ);
                 });
             } else {
                 scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-                    if (bookmarked)
+                    if (scrollView.canScrollVertically(1))
                         if (a % 5 == 0) {
                             int y = scrollView.getScrollY();
                             Log.d("ScrollSave", Integer.toString(y));
-                            SettingsController.setScroll(chapterURL, y);
+                            Database.updateY(chapterURL, y);
                         } else a++;
+                    else Database.setChapterStatus(chapterURL, Status.READ);
                 });
             }
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
