@@ -24,7 +24,8 @@ public enum Types {
     DOWNLOAD("download"),
     VIEW("view"),
     ADVANCED("advanced"),
-    CREDITS("credits");
+    CREDITS("credits"),
+    BACKUP("backup");
 
     /**
      * Type name

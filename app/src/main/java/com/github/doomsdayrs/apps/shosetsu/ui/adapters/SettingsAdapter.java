@@ -12,12 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsCard;
@@ -115,6 +117,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                     fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new downloadSettings()).commit();
                 }
                 break;
+                case BACKUP:{
+                    Toast.makeText(v.getContext(), "Backup", Toast.LENGTH_SHORT).show();
+                    fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new backupSettings()).commit();
+                }
+                break;
                 default: {
                 }
             }
@@ -139,6 +146,23 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         }
     }
 
+    public static class backupSettings extends Fragment {
+        Button button;
+
+        public backupSettings() {
+        }
+
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            Log.d("OnCreateView", "BackupSettings");
+            View view = inflater.inflate(R.layout.fragment_settings_backup, container, false);
+            button = view.findViewById(R.id.fragment_settings_backup_now);
+            button.setOnClickListener(view1 -> Database.backupDatabase());
+            return view;
+        }
+    }
+
     public static class downloadSettings extends Fragment {
 
         TextView textView;
@@ -149,7 +173,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            Log.d("OnCreateView", "ViewSettings");
+            Log.d("OnCreateView", "DownloadSettings");
             View view = inflater.inflate(R.layout.fragment_settings_download, container, false);
             textView = view.findViewById(R.id.fragment_settings_download_dir);
             textView.setText(Download_Manager.shoDir);

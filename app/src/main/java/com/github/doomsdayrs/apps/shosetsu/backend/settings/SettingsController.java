@@ -40,11 +40,6 @@ public class SettingsController {
     public static void init() {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
-        if (!backup.getBoolean("firstRun", false)) {
-            backup.edit()
-                    .putBoolean("firstRun", true)
-                    .apply();
-        }
         Download_Manager.shoDir = download.getString("dir", "/storage/emulated/0/Shosetsu/");
     }
 

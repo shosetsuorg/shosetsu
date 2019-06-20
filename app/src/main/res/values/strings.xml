@@ -28,4 +28,5 @@
     <string name="myanimelist">Myanimelist</string>
     <string name="download_directory">Download directory</string>
     <string name="position">Position:</string>
+    <string name="backup_now">Backup Now</string>
 </resources>

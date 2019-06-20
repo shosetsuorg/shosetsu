@@ -2,16 +2,27 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.os.AsyncTask;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * This file is part of Shosetsu.
@@ -353,7 +364,97 @@ public class Database {
         }
     }
 
+
+    //TODO Restore backup
+    // > If entry exists, simply update the data
+
     public static void backupDatabase() {
+        new backUP().execute();
+    }
+
+    static class backUP extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                // Master object for database
+                JSONObject master = new JSONObject();
+
+                // Library backup
+                {
+                    JSONArray libraryArray = new JSONArray();
+                    Cursor cursor = library.rawQuery("select * from " + Tables.LIBRARY, null);
+                    if (!(cursor.getCount() <= 0))
+                        while (cursor.moveToNext()) {
+                            JSONObject a = new JSONObject();
+                            a.put("novelURL", cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())));
+                            a.put("title", cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString().replace("\"", "\\\""))));
+                            a.put("imageURL", cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())));
+                            a.put("authors", cursor.getString(cursor.getColumnIndex(Columns.AUTHORS.toString())));
+                            a.put("formatterID", cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_ID.toString())));
+                            libraryArray.put(a);
+                        }
+                    master.put("library", libraryArray);
+                    cursor.close();
+                }
+
+                // Chapter backup
+                {
+                    JSONArray chapterArray = new JSONArray();
+                    Cursor cursor = library.rawQuery("select * from " + Tables.CHAPTERS, null);
+                    if (!(cursor.getCount() <= 0))
+                        while (cursor.moveToNext()) {
+                            JSONObject a = new JSONObject();
+                            a.put("novelURL", cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())));
+                            a.put("chapterURL", cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString().replace("\"", "\\\""))));
+                            a.put("savedData", cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString())));
+                            a.put("Y", cursor.getInt(cursor.getColumnIndex(Columns.Y.toString())));
+                            a.put("readChapter", cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString())));
+                            a.put("bookmarked", cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
+                            a.put("isSaved", cursor.getString(cursor.getColumnIndex(Columns.IS_SAVED.toString())));
+                            a.put("savePath", cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString())));
+                            chapterArray.put(a);
+                        }
+                    master.put("chapters", chapterArray);
+                    cursor.close();
+                }
+
+                // Settings Backup
+                {
+                    JSONObject settingObject = new JSONObject();
+                    // View
+                    {
+                        JSONObject viewSettings = new JSONObject();
+                        viewSettings.put("textColor", SettingsController.view.getInt("ReaderTextColor", Color.BLACK));
+                        viewSettings.put("backgroundColor", SettingsController.view.getInt("ReaderBackgroundColor", Color.WHITE));
+                        settingObject.put("view", viewSettings);
+                    }
+                    // Download
+                    {
+                        JSONObject downloadSettings = new JSONObject();
+                        downloadSettings.put("path", SettingsController.download.getString("dir", "/storage/emulated/0/Shosetsu/"));
+                    }
+                    master.put("settings", settingObject);
+                }
+                File folder = new File(Download_Manager.shoDir + "/backup/");
+                if (!folder.exists())
+                    if (!folder.mkdirs()) {
+                        throw new IOException("Failed to mkdirs");
+                    }
+                FileOutputStream fileOutputStream = new FileOutputStream(
+                        (folder.getPath() + "/backup-" + (new Date().toString()) + ".txt")
+                );
+                fileOutputStream.write(master.toString().getBytes());
+                fileOutputStream.close();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
     }
 }

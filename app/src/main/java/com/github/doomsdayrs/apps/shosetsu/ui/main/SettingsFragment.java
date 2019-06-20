@@ -40,12 +40,15 @@ import java.util.Objects;
  */
 public class SettingsFragment extends Fragment {
     private static final ArrayList<SettingsCard> cards = new ArrayList<>();
-    static{
+
+    static {
         cards.add(new SettingsCard(Types.DOWNLOAD));
         cards.add(new SettingsCard(Types.VIEW));
         cards.add(new SettingsCard(Types.ADVANCED));
         cards.add(new SettingsCard(Types.CREDITS));
+        cards.add(new SettingsCard(Types.BACKUP));
     }
+
     /**
      * Constructor
      * TODO, Create custom option menu for settings to search specific ones
