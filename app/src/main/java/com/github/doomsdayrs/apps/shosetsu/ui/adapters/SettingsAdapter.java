@@ -3,9 +3,12 @@ package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsCard;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 
 import java.util.ArrayList;
 
@@ -109,6 +113,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                 break;
                 case DOWNLOAD: {
                     Toast.makeText(v.getContext(), "Download", Toast.LENGTH_SHORT).show();
+                    fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new downloadSettings()).commit();
                 }
                 break;
                 default: {
@@ -123,11 +128,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         public viewSettings() {
         }
 
-        @Override
-        public void onSaveInstanceState(@NonNull Bundle outState) {
-            super.onSaveInstanceState(outState);
-        }
-
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -137,6 +137,44 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
             checkBox.setChecked(!SettingsController.isReaderLightMode());
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsController.swapReaderColor());
             return view;
+        }
+    }
+
+    public static class downloadSettings extends Fragment {
+
+        TextInputEditText textInputEditText;
+
+        public downloadSettings() {
+        }
+
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            Log.d("OnCreateView", "ViewSettings");
+            View view = inflater.inflate(R.layout.fragment_settings_download, container, false);
+            textInputEditText = view.findViewById(R.id.fragment_settings_download_dir);
+            textInputEditText.setText(Download_Manager.shoDir);
+            textInputEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+            return view;
+        }
+
+        private void setDir(String dir) {
+            SettingsController.download.edit().putString("dir", dir).apply();
+            Download_Manager.shoDir = dir;
         }
     }
 }

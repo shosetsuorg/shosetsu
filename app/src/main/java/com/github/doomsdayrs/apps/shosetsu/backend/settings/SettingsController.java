@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
@@ -31,6 +32,7 @@ public class SettingsController {
     public static SharedPreferences view;
     public static SharedPreferences advanced;
     public static SharedPreferences tracking;
+    public static SharedPreferences backup;
 
     /**
      * Initializes the settings
@@ -38,6 +40,14 @@ public class SettingsController {
     public static void init() {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
+        if (!backup.getBoolean("firstRun", false)) {
+            backup.edit()
+                    .putBoolean("firstRun", true)
+                    .apply();
+        }
+        String dir = download.getString("dir", null);
+        if (dir != null)
+            Download_Manager.shoDir = dir;
     }
 
     /**

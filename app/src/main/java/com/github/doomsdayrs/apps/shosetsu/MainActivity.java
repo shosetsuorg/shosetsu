@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Main activity
+     *
      * @param savedInstanceState savedData from destruction
      */
     @Override
@@ -59,10 +60,13 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
         // Settings setup
+
         SettingsController.view = getSharedPreferences("view", 0);
         SettingsController.download = getSharedPreferences("download", 0);
         SettingsController.advanced = getSharedPreferences("advanced", 0);
         SettingsController.tracking = getSharedPreferences("tracking", 0);
+        SettingsController.backup = getSharedPreferences("backup", 0);
+
         Settings.connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         SettingsController.init();
 

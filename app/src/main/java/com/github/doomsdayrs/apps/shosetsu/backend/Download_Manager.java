@@ -36,7 +36,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class Download_Manager {
 
-    private static final String downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+    //TODO, make this a variable that can be changed in settings
+    public static final String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+    public static String shoDir = "/Shosetsu/";
 
 
     private static final ArrayList<DownloadItem> urlsToDownload = new ArrayList<>();
@@ -49,7 +51,7 @@ public class Download_Manager {
     }
 
     public static boolean delete(DeleteItem deleteItem) {
-        File file = new File(downloadDir + "/Shosetsu/" + deleteItem.formatter.getID() + "/" + deleteItem.novelName + "/" + deleteItem.chapterName + ".txt");
+        File file = new File(baseDir + shoDir + "download/" + deleteItem.formatter.getID() + "/" + deleteItem.novelName + "/" + deleteItem.chapterName + ".txt");
         if (file.exists()) {
             if (file.delete()) {
                 Database.removePath(deleteItem.chapterURL);
@@ -83,8 +85,8 @@ public class Download_Manager {
             while (urlsToDownload.size() > 0) {
                 DownloadItem downloadItem = urlsToDownload.get(urlsToDownload.size() - 1);
                 try {
-                    Log.d("Dir", downloadDir);
-                    File folder = new File(downloadDir + "/Shosetsu/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
+                    Log.d("Dir", baseDir + shoDir + "download/");
+                    File folder = new File(baseDir + shoDir + "download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
                     Log.d("Des", folder.toString());
                     if (!folder.exists())
                         if (!folder.mkdirs()) {

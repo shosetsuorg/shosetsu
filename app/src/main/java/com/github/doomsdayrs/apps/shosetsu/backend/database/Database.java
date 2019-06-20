@@ -8,6 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -325,5 +326,9 @@ public class Database {
             cursor.close();
             return novelCards;
         }
+    }
+
+    public static void backupDatabase(){
+
     }
 }
