@@ -1,14 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,7 +143,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
 
     public static class downloadSettings extends Fragment {
 
-        TextInputEditText textInputEditText;
+        TextView textView;
 
         public downloadSettings() {
         }
@@ -152,29 +153,41 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             Log.d("OnCreateView", "ViewSettings");
             View view = inflater.inflate(R.layout.fragment_settings_download, container, false);
-            textInputEditText = view.findViewById(R.id.fragment_settings_download_dir);
-            textInputEditText.setText(Download_Manager.shoDir);
-            textInputEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-
-                }
-            });
+            textView = view.findViewById(R.id.fragment_settings_download_dir);
+            textView.setText(Download_Manager.shoDir);
+            textView.setOnClickListener(view1 -> performFileSearch());
             return view;
         }
 
         private void setDir(String dir) {
             SettingsController.download.edit().putString("dir", dir).apply();
             Download_Manager.shoDir = dir;
+            textView.setText(dir);
+        }
+
+        public void performFileSearch() {
+            Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            i.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivityForResult(Intent.createChooser(i, "Choose directory"), 42);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 42 && resultCode == Activity.RESULT_OK) {
+                // The document selected by the user won't be returned in the intent.
+                // Instead, a URI to that document will be contained in the return intent
+                // provided to this method as a parameter.
+                // Pull that URI using resultData.getData().
+                if (data != null) {
+                    String path = data.getData().getPath();
+                    Log.i("Selected Folder", "Uri: " + path);
+                    setDir(path.substring(path.indexOf(":")+1));
+                }
+            }
+
         }
     }
+
+
 }

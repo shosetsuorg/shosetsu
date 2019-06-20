@@ -45,9 +45,7 @@ public class SettingsController {
                     .putBoolean("firstRun", true)
                     .apply();
         }
-        String dir = download.getString("dir", null);
-        if (dir != null)
-            Download_Manager.shoDir = dir;
+        Download_Manager.shoDir = download.getString("dir", "/storage/emulated/0/Shosetsu/");
     }
 
     /**

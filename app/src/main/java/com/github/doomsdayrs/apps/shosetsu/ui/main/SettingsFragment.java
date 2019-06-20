@@ -82,6 +82,7 @@ public class SettingsFragment extends Fragment {
             cards.add(new SettingsCard(Types.CREDITS));
         }
         System.out.println(cards);
+
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(Objects.requireNonNull(container).getContext());
