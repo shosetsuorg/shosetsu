@@ -46,7 +46,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     protected Boolean doInBackground(Activity... voids) {
         this.activity = voids[0];
         StaticNovel.novelPage = null;
-        Log.d("Loading", "Novel");
+        Log.d("Loading", novelFragment.url);
         try {
             StaticNovel.novelPage = novelFragment.formatter.parseNovel(novelFragment.url);
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
