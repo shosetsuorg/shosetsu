@@ -1,7 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.backend;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
@@ -48,15 +50,15 @@ public class Download_Manager {
             new downloading().execute();
     }
 
-    public static boolean delete(DeleteItem deleteItem) {
+    public static boolean delete(Context context, DeleteItem deleteItem) {
         File file = new File(shoDir + "/download/" + deleteItem.formatter.getID() + "/" + deleteItem.novelName + "/" + deleteItem.chapterName + ".txt");
-        if (file.exists()) {
-            if (file.delete()) {
-                Database.removePath(deleteItem.chapterURL);
-                return true;
-            }
-        }
-        return false;
+        Database.removePath(deleteItem.chapterURL);
+        if (file.exists())
+            if (!file.delete())
+                Toast.makeText(context, "Failed to delete, next download will correct", Toast.LENGTH_LONG).show();
+
+
+        return true;
     }
 
     public static String getText(String path) {
@@ -90,19 +92,20 @@ public class Download_Manager {
                         if (!folder.mkdirs()) {
                             throw new IOException("Failed to mkdirs");
                         }
+                    String formattedName = downloadItem.chapterName.replaceAll("/", "");
 
                     String passage = downloadItem.formatter.getNovelPassage(downloadItem.chapterURL);
                     FileOutputStream fileOutputStream = new FileOutputStream(
-                            (folder.getPath() + "/" + (downloadItem.chapterName.replaceAll("/", "")) + ".txt")
+                            (folder.getPath() + "/" + (formattedName) + ".txt")
                     );
 
                     fileOutputStream.write(passage.getBytes());
                     fileOutputStream.close();
-                    Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + downloadItem.chapterName + ".txt");
+                    Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
                     if (downloadItem.novelFragmentChapters != null) {
                         downloadItem.novelFragmentChapters.recyclerView.post(() -> downloadItem.novelFragmentChapters.adapter.notifyDataSetChanged());
                     }
-                    Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + downloadItem.chapterName);
+                    Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
                     urlsToDownload.remove(urlsToDownload.size() - 1);
                     try {
                         TimeUnit.MILLISECONDS.sleep(10);
