@@ -6,7 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import java.io.BufferedReader;
@@ -39,20 +39,28 @@ public class Download_Manager {
 
     //TODO, make this a variable that can be changed in settings
     public static String shoDir = "/Shosetsu/";
-
+    private static Downloading download = new Downloading();
 
     private static final ArrayList<DownloadItem> urlsToDownload = new ArrayList<>();
+    private static final int downloadCount = 0;
 
+    public static void init() {
+        if (downloadCount >= 1)
+            if (download.isCancelled()) {
+                download = new Downloading();
+                download.execute();
+            }
+    }
 
     public static void addToDownload(DownloadItem downloadItem) {
         urlsToDownload.add(0, downloadItem);
         if (urlsToDownload.size() == 1)
-            new downloading().execute();
+            new Downloading().execute();
     }
 
-    public static boolean delete(Context context, DeleteItem deleteItem) {
-        File file = new File(shoDir + "/download/" + deleteItem.formatter.getID() + "/" + deleteItem.novelName + "/" + deleteItem.chapterName + ".txt");
-        Database.removePath(deleteItem.chapterURL);
+    public static boolean delete(Context context, DownloadItem downloadItem) {
+        File file = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt");
+        Database.removePath(downloadItem.chapterURL);
         if (file.exists())
             if (!file.delete())
                 Toast.makeText(context, "Failed to delete, next download will correct", Toast.LENGTH_LONG).show();
@@ -79,7 +87,7 @@ public class Download_Manager {
     }
 
 
-    static class downloading extends AsyncTask<Void, Void, Void> {
+    static class Downloading extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             while (urlsToDownload.size() > 0) {
@@ -102,9 +110,10 @@ public class Download_Manager {
                     fileOutputStream.write(passage.getBytes());
                     fileOutputStream.close();
                     Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
-                    if (downloadItem.novelFragmentChapters != null) {
-                        downloadItem.novelFragmentChapters.recyclerView.post(() -> downloadItem.novelFragmentChapters.adapter.notifyDataSetChanged());
-                    }
+
+                    if (NovelFragmentChapters.recyclerView != null && NovelFragmentChapters.adapter != null)
+                        NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+
                     Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
                     urlsToDownload.remove(urlsToDownload.size() - 1);
                     try {
@@ -117,6 +126,7 @@ public class Download_Manager {
                     System.exit(1);
                 }
             }
+            download.cancel(true);
             return null;
         }
     }

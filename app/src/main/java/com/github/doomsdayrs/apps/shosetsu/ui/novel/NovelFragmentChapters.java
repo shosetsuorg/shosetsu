@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -49,12 +50,13 @@ import java.util.Objects;
 public class NovelFragmentChapters extends Fragment {
     public static List<NovelChapter> novelChapters = new ArrayList<>();
     public boolean reversed;
-    public RecyclerView recyclerView;
+    @SuppressLint("StaticFieldLeak")
+    public static RecyclerView recyclerView;
     public int currentMaxPage = 1;
     public Formatter formatter;
     public String novelURL;
     private FragmentManager fragmentManager;
-    public NovelChaptersAdapter adapter;
+    public static NovelChaptersAdapter adapter;
     private Context context;
     public ProgressBar progressBar;
 
@@ -78,6 +80,13 @@ public class NovelFragmentChapters extends Fragment {
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        recyclerView = null;
+        adapter = null;
     }
 
     /**

@@ -15,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DeleteItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
@@ -66,11 +65,11 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         itemView.setOnClickListener(this);
         download.setOnClickListener(v -> {
             if (!downloaded) {
-                DownloadItem downloadItem = new DownloadItem(NovelChaptersAdapter.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link, novelFragmentChapters);
+                DownloadItem downloadItem = new DownloadItem(NovelChaptersAdapter.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link);
                 Download_Manager.addToDownload(downloadItem);
                 downloaded = true;
             } else {
-                if (Download_Manager.delete(itemView.getContext(),new DeleteItem(NovelChaptersAdapter.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link)))
+                if (Download_Manager.delete(itemView.getContext(),new DownloadItem(NovelChaptersAdapter.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link)))
                     download.setImageResource(R.drawable.ic_outline_arrow_drop_down_circle_24px);
                 downloaded = false;
             }

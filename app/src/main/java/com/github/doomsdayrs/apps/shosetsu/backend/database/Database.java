@@ -75,7 +75,9 @@ public class Database {
         Y("y"),
         BOOKMARKED("bookmarked"),
         IS_SAVED("isSaved"),
-        SAVE_PATH("savePath");
+        SAVE_PATH("savePath"),
+        NOVEL_NAME("novelName"),
+        CHAPTER_NAME("chapterName");
         final String COLUMN;
 
         Columns(String column) {
@@ -108,9 +110,11 @@ public class Database {
     // If a user downloads a chapter, it is saved here
     // TODO, assign as columns for Tables.CHAPTERS
     static final String downloadsCreate = "create TABLE if not exists " + Tables.DOWNLOADS + "(" +
+            Columns.FORMATTER_ID + " integer not null," +
             Columns.NOVEL_URL + " text not null," +
-            Columns.CHAPTER_URL + " text not null, " +
-            Columns.SAVED_DATA + " text)";
+            Columns.CHAPTER_URL + " text not null," +
+            Columns.NOVEL_NAME + " text not null," +
+            Columns.CHAPTER_URL + " text not null)";
 
     // Will be to new master table for chapters
     // TODO Convert this class to use this instead of the above
@@ -148,7 +152,6 @@ public class Database {
         library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
     }
 
-
     public static Status isRead(String chapterURL) {
         Cursor cursor = library.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + chapterURL + "'", null);
         if (cursor.getCount() <= 0) {
@@ -166,7 +169,6 @@ public class Database {
                 return Status.READ;
         }
     }
-
 
     public static void setChapterStatus(String chapterURL, Status status) {
         library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");

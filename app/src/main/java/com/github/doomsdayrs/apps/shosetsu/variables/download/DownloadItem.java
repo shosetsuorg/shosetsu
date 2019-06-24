@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.download;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 
 /**
  * This file is part of Shosetsu.
@@ -21,11 +20,19 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
  *
  * @author github.com/doomsdayrs
  */
-public class DownloadItem extends DeleteItem {
-    public final NovelFragmentChapters novelFragmentChapters;
+public class DownloadItem {
 
-    public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL, NovelFragmentChapters novelFragmentChapters) {
-        super(formatter, novelName, chapterName, novelURL, chapterURL);
-        this.novelFragmentChapters = novelFragmentChapters;
+    public final Formatter formatter;
+    public final String novelName;
+    public final String chapterName;
+    public final String novelURL;
+    public final String chapterURL;
+
+    public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL) {
+        this.formatter = formatter;
+        this.novelName = novelName;
+        this.chapterName = chapterName;
+        this.novelURL = novelURL;
+        this.chapterURL = chapterURL;
     }
 }
