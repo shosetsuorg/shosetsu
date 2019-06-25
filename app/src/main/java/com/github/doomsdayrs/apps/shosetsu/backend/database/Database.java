@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This file is part of Shosetsu.
@@ -144,6 +145,23 @@ public class Database {
 
 
     // BOOKMARK CONTROLLERS
+
+    public static List<DownloadItem> getDownloadList() {
+        ArrayList<DownloadItem> downloadItems = new ArrayList<>();
+        Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + ";", null);
+        while (cursor.moveToNext()) {
+            String nURL = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
+            String cURL = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString()));
+            String nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
+            String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
+            int formatter = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+
+            downloadItems.add(new DownloadItem(DefaultScrapers.formatters.get(formatter - 1), nName, cName, nURL, cURL));
+        }
+        cursor.close();
+
+        return downloadItems;
+    }
 
     public static DownloadItem getFirstDownload() {
         Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + " LIMIT 1;", null);

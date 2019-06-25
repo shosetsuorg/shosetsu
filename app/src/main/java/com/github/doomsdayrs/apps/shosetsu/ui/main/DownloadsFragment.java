@@ -11,11 +11,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.DownloadAdapter;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import java.util.ArrayList;
@@ -44,7 +49,7 @@ public class DownloadsFragment extends Fragment {
     public static List<DownloadItem> downloadItems = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static RecyclerView recyclerView;
-    public static RecyclerView.Adapter adapter;
+    public static DownloadAdapter adapter;
 
     /**
      * Constructor
@@ -76,6 +81,18 @@ public class DownloadsFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+
+    public static void removeDownloads(DownloadItem downloadItem) {
+        for (int x = 0; x < downloadItems.size(); x++)
+            if (downloadItems.get(x).chapterURL.equals(downloadItem.chapterURL)) {
+                downloadItems.remove(x);
+                return;
+            }
+        if (DownloadAdapter.downloadsFragment != null)
+            if (DownloadAdapter.downloadsFragment.getActivity() != null)
+                DownloadAdapter.downloadsFragment.getActivity().runOnUiThread(() ->adapter.notifyDataSetChanged());
+    }
+
     /**
      * Creates view
      *
@@ -88,9 +105,9 @@ public class DownloadsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "NovelFragmentChapters");
-        View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
-        recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
-
+        View view = inflater.inflate(R.layout.fragment_downloads, container, false);
+        recyclerView = view.findViewById(R.id.fragment_downloads_recycler);
+        downloadItems = Database.getDownloadList();
         setDownloads();
         return view;
     }
@@ -101,11 +118,12 @@ public class DownloadsFragment extends Fragment {
     public void setDownloads() {
         recyclerView.setHasFixedSize(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        adapter = new DownloadAdapter(downloadItems);
+        adapter = new DownloadAdapter(downloadItems, this);
         adapter.setHasStableIds(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
+
 
     /**
      * Creates the option menu (on the top toolbar)
@@ -115,6 +133,21 @@ public class DownloadsFragment extends Fragment {
      */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.toolbar_chapters, menu);
+        inflater.inflate(R.menu.toolbar_downloads, menu);
+        MenuItem menuItem = menu.findItem(R.id.toolbar_downloads_pause);
+        if (Settings.downloadPaused)
+            menuItem.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
+
+        menuItem.setOnMenuItemClickListener(a -> {
+            if (SettingsController.togglePause())
+                a.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
+            else {
+                a.setIcon(R.drawable.ic_pause_circle_outline_black_24dp);
+                Download_Manager.init();
+            }
+            return true;
+        });
+
     }
+
 }

@@ -1,22 +1,17 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.ChaptersViewHolder;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,24 +36,56 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemViewHolder
 
     //Reference to the the NovelFragmentChapters array
     private final List<DownloadItem> downloadItems;
+    public static List<DownloadItemViewHolder> downloadItemViewHolders = new ArrayList<>();
 
+    @SuppressLint("StaticFieldLeak")
+    public static DownloadsFragment downloadsFragment;
 
-    public DownloadAdapter(List<DownloadItem> downloadItems) {
+    public DownloadAdapter(List<DownloadItem> downloadItems, DownloadsFragment downloadsFragmentA) {
         this.downloadItems = downloadItems;
+        downloadsFragment = downloadsFragmentA;
     }
 
 
     @NonNull
     @Override
     public DownloadItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_chapter, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_download_card, viewGroup, false);
         return new DownloadItemViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DownloadItemViewHolder downloadItemViewHolder, int i) {
         DownloadItem downloadItem = downloadItems.get(i);
+        downloadItemViewHolder.downloadItem = downloadItem;
+        downloadItemViewHolder.textView.setText(downloadItem.chapterURL);
 
+        if (!contains(downloadItem))
+            downloadItemViewHolders.add(downloadItemViewHolder);
+    }
+
+    public static boolean contains(DownloadItem downloadItem) {
+        for (DownloadItemViewHolder downloadItemViewHolder : downloadItemViewHolders)
+            if (downloadItemViewHolder.downloadItem.chapterURL.equals(downloadItem.chapterURL))
+                return true;
+        return false;
+    }
+
+    public static DownloadItemViewHolder getHolder(DownloadItem downloadItem) {
+        for (DownloadItemViewHolder downloadItemViewHolder : downloadItemViewHolders)
+            if (downloadItemViewHolder.downloadItem.chapterURL.equals(downloadItem.chapterURL))
+                return downloadItemViewHolder;
+        return null;
+    }
+
+    public static void progressToggle(DownloadItemViewHolder downloadItemViewHolder) {
+        if (downloadsFragment != null)
+            if (downloadsFragment.getActivity() != null)
+                downloadsFragment.getActivity().runOnUiThread(() -> {
+                    if (downloadItemViewHolder.progressBar.getVisibility() == View.VISIBLE)
+                        downloadItemViewHolder.progressBar.setVisibility(View.GONE);
+                    else downloadItemViewHolder.progressBar.setVisibility(View.VISIBLE);
+                });
     }
 
     @Override

@@ -1,26 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * This file is part of Shosetsu.
@@ -40,14 +27,15 @@ import org.json.JSONObject;
  *
  * @author github.com/doomsdayrs
  */
-public class DownloadItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class DownloadItemViewHolder extends RecyclerView.ViewHolder {
+    TextView textView;
+    public ProgressBar progressBar;
+
+    public DownloadItem downloadItem;
 
     DownloadItemViewHolder(@NonNull View itemView) {
         super(itemView);
-        itemView.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
+        textView = itemView.findViewById(R.id.recycler_download_card_title);
+        progressBar = itemView.findViewById(R.id.recycler_download_card_progress);
     }
 }

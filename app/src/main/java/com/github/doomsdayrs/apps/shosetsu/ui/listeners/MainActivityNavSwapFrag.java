@@ -40,7 +40,7 @@ public class MainActivityNavSwapFrag implements NavigationView.OnNavigationItemS
         mainActivity.navigationView.setCheckedItem(menuItem);
         switch (menuItem.getItemId()) {
             case R.id.nav_library: {
-                Log.e("Nav", "Library selected");
+                Log.d("Nav", "Library selected");
                 mainActivity.getSupportFragmentManager().beginTransaction()
                         .addToBackStack("tag")
                         .replace(R.id.fragment_container, mainActivity.libraryFragment)
@@ -48,7 +48,7 @@ public class MainActivityNavSwapFrag implements NavigationView.OnNavigationItemS
             }
             break;
             case R.id.nav_catalogue: {
-                Log.e("Nav", "Catalogue selected");
+                Log.d("Nav", "Catalogue selected");
                 mainActivity.getSupportFragmentManager().beginTransaction()
                         .addToBackStack("tag")
                         .replace(R.id.fragment_container, mainActivity.cataloguesFragment)
@@ -56,11 +56,20 @@ public class MainActivityNavSwapFrag implements NavigationView.OnNavigationItemS
             }
             break;
             case R.id.nav_settings: {
-                Log.e("Nav", "Settings selected");
+                Log.d("Nav", "Settings selected");
                 mainActivity.getSupportFragmentManager()
                         .beginTransaction()
                         .addToBackStack("tag")
                         .replace(R.id.fragment_container, mainActivity.settingsFragment)
+                        .commit();
+            }
+            break;
+            case R.id.nav_downloads: {
+                Log.d("Nav", "Downloads Selected");
+                mainActivity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack("tag")
+                        .replace(R.id.fragment_container, mainActivity.downloadsFragment)
                         .commit();
             }
             break;

@@ -14,6 +14,11 @@
             android:icon="@drawable/ic_view_module"
             android:title="@string/catalogue" />
         <item
+            android:id="@+id/nav_downloads"
+            android:icon="@drawable/ic_file_download"
+            android:title="@string/download"
+            />
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"
             android:title="@string/settings" />

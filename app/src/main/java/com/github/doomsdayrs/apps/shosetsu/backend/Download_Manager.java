@@ -1,12 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.backend;
 
-import android.app.Notification;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.DownloadAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.DownloadItemViewHolder;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
@@ -44,8 +46,10 @@ public class Download_Manager {
 
 
     public static void init() {
+        if (download.isCancelled())
+            download = new Downloading();
         download.execute();
-   }
+    }
 
     public static void addToDownload(DownloadItem downloadItem) {
         Database.addToDownloads(downloadItem);
@@ -91,6 +95,12 @@ public class Download_Manager {
         protected Void doInBackground(Void... voids) {
             while (Database.getDownloadCount() >= 1 && !Settings.downloadPaused) {
                 DownloadItem downloadItem = Database.getFirstDownload();
+
+                if (DownloadAdapter.contains(downloadItem)) {
+                    DownloadItemViewHolder viewHolder = DownloadAdapter.getHolder(downloadItem);
+                    if (viewHolder != null)
+                        DownloadAdapter.progressToggle(viewHolder);
+                }
                 if (downloadItem != null)
                     try {
                         Log.d("Dir", shoDir + "download/");
@@ -116,6 +126,14 @@ public class Download_Manager {
 
                         Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
                         Database.removeDownload(downloadItem);
+
+
+                        if (DownloadAdapter.contains(downloadItem)) {
+                            DownloadItemViewHolder viewHolder = DownloadAdapter.getHolder(downloadItem);
+                            if (viewHolder != null)
+                                DownloadAdapter.progressToggle(viewHolder);
+                        }
+                        DownloadsFragment.removeDownloads(downloadItem);
 
                         try {
                             TimeUnit.MILLISECONDS.sleep(10);

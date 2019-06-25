@@ -44,6 +44,12 @@ public class SettingsController {
         Settings.downloadPaused = download.getBoolean("paused", false);
     }
 
+    public static boolean togglePause(){
+        download.edit().putBoolean("paused",true).apply();
+        Settings.downloadPaused = !Settings.downloadPaused;
+        return Settings.downloadPaused;
+    }
+
     /**
      * Checks if online
      *
@@ -109,7 +115,6 @@ public class SettingsController {
      * @return true means added, false means removed
      */
     public static boolean toggleBookmarkChapter(String chapterURL) {
-
         if (Database.isBookMarked(chapterURL)) {
             Database.setBookMark(chapterURL, 0);
             return false;
