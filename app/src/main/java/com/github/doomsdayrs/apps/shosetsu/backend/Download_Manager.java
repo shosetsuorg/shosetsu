@@ -7,9 +7,9 @@ import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.DownloadAdapter;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.DownloadItemViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
+import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.DownloadItemViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,16 +49,19 @@ public class Download_Manager {
     public static void init() {
         if (download.isCancelled())
             download = new Downloading();
-        download.execute();
+        if (download.getStatus().equals(AsyncTask.Status.FINISHED) || download.getStatus().equals(AsyncTask.Status.PENDING))
+            download.execute();
     }
 
     public static void addToDownload(DownloadItem downloadItem) {
-        Database.addToDownloads(downloadItem);
-        if (download.isCancelled())
-            if (Database.getDownloadCount() >= 1) {
-                download = new Downloading();
-                download.execute();
-            }
+        if (!Database.inDownloads(downloadItem)) {
+            Database.addToDownloads(downloadItem);
+            if (download.isCancelled())
+                if (Database.getDownloadCount() >= 1) {
+                    download = new Downloading();
+                    download.execute();
+                }
+        }
     }
 
 
@@ -139,6 +143,12 @@ public class Download_Manager {
                             TimeUnit.MILLISECONDS.sleep(10);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
+                        }
+                    } catch (SocketTimeoutException e) {
+                        if (DownloadAdapter.contains(downloadItem)) {
+                            DownloadItemViewHolder viewHolder = DownloadAdapter.getHolder(downloadItem);
+                            if (viewHolder != null)
+                                DownloadAdapter.progressToggle(viewHolder);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

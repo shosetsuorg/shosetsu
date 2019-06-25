@@ -88,6 +88,7 @@ public class DownloadsFragment extends Fragment {
                 downloadItems.remove(x);
                 return;
             }
+
         if (DownloadAdapter.downloadsFragment != null)
             if (DownloadAdapter.downloadsFragment.getActivity() != null)
                 DownloadAdapter.downloadsFragment.getActivity().runOnUiThread(() ->adapter.notifyDataSetChanged());

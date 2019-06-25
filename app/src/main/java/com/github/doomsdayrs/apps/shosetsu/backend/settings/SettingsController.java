@@ -45,8 +45,10 @@ public class SettingsController {
     }
 
     public static boolean togglePause(){
-        download.edit().putBoolean("paused",true).apply();
         Settings.downloadPaused = !Settings.downloadPaused;
+        download.edit()
+                .putBoolean("paused",Settings.downloadPaused)
+                .apply();
         return Settings.downloadPaused;
     }
 

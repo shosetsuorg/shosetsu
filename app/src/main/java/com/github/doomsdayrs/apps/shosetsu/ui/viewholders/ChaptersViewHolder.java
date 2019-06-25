@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel;
+package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
@@ -41,18 +42,18 @@ import org.json.JSONObject;
  */
 public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    NovelChapter novelChapter;
-    final TextView library_card_title;
-    final ImageView bookmarked;
-    final TextView status;
-    final TextView read;
-    final TextView readTag;
+    public NovelChapter novelChapter;
+    public final TextView library_card_title;
+    public final ImageView bookmarked;
+    public final TextView status;
+    public final TextView read;
+    public final TextView readTag;
     public final ImageView download;
-    boolean downloaded;
+    public boolean downloaded;
 
-    NovelFragmentChapters novelFragmentChapters;
+    public NovelFragmentChapters novelFragmentChapters;
 
-    ChaptersViewHolder(@NonNull View itemView) {
+    public ChaptersViewHolder(@NonNull View itemView) {
         super(itemView);
         library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
         bookmarked = itemView.findViewById(R.id.recycler_novel_chapter_bookmarked);
@@ -69,7 +70,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                 Download_Manager.addToDownload(downloadItem);
                 downloaded = true;
             } else {
-                if (Download_Manager.delete(itemView.getContext(),new DownloadItem(NovelChaptersAdapter.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link)))
+                if (Download_Manager.delete(itemView.getContext(), new DownloadItem(NovelChaptersAdapter.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link)))
                     download.setImageResource(R.drawable.ic_outline_arrow_drop_down_circle_24px);
                 downloaded = false;
             }

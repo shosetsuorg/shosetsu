@@ -131,13 +131,15 @@ public class NovelFragmentChapters extends Fragment {
      * Sets the novel chapters down
      */
     public void setNovels() {
-        recyclerView.setHasFixedSize(false);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        adapter = new NovelChaptersAdapter(this, novelChapters, fragmentManager, formatter);
-        adapter.setHasStableIds(true);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
-        recyclerView.setAdapter(adapter);
+        if (recyclerView!=null){
+            recyclerView.setHasFixedSize(false);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            adapter = new NovelChaptersAdapter(this, novelChapters, fragmentManager, formatter);
+            adapter.setHasStableIds(true);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     /**

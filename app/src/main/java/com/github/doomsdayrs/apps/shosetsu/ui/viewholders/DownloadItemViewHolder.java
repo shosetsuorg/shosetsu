@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
+package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -28,12 +28,12 @@ import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
  * @author github.com/doomsdayrs
  */
 public class DownloadItemViewHolder extends RecyclerView.ViewHolder {
-    TextView textView;
     public ProgressBar progressBar;
 
+    public TextView textView;
     public DownloadItem downloadItem;
 
-    DownloadItemViewHolder(@NonNull View itemView) {
+    public DownloadItemViewHolder(@NonNull View itemView) {
         super(itemView);
         textView = itemView.findViewById(R.id.recycler_download_card_title);
         progressBar = itemView.findViewById(R.id.recycler_download_card_progress);

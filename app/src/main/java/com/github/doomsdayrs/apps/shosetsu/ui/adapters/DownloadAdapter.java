@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.DownloadItemViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import java.util.ArrayList;
@@ -46,24 +47,6 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemViewHolder
         downloadsFragment = downloadsFragmentA;
     }
 
-
-    @NonNull
-    @Override
-    public DownloadItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_download_card, viewGroup, false);
-        return new DownloadItemViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull DownloadItemViewHolder downloadItemViewHolder, int i) {
-        DownloadItem downloadItem = downloadItems.get(i);
-        downloadItemViewHolder.downloadItem = downloadItem;
-        downloadItemViewHolder.textView.setText(downloadItem.chapterURL);
-
-        if (!contains(downloadItem))
-            downloadItemViewHolders.add(downloadItemViewHolder);
-    }
-
     public static boolean contains(DownloadItem downloadItem) {
         for (DownloadItemViewHolder downloadItemViewHolder : downloadItemViewHolders)
             if (downloadItemViewHolder.downloadItem.chapterURL.equals(downloadItem.chapterURL))
@@ -86,6 +69,28 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemViewHolder
                         downloadItemViewHolder.progressBar.setVisibility(View.GONE);
                     else downloadItemViewHolder.progressBar.setVisibility(View.VISIBLE);
                 });
+    }
+
+
+
+
+
+
+    @NonNull
+    @Override
+    public DownloadItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_download_card, viewGroup, false);
+        return new DownloadItemViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull DownloadItemViewHolder downloadItemViewHolder, int i) {
+        DownloadItem downloadItem = downloadItems.get(i);
+        downloadItemViewHolder.downloadItem = downloadItem;
+        downloadItemViewHolder.textView.setText(downloadItem.chapterURL);
+
+        if (!contains(downloadItem))
+            downloadItemViewHolders.add(downloadItemViewHolder);
     }
 
     @Override

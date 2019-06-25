@@ -190,6 +190,17 @@ public class Database {
                 "values (" + downloadItem.formatter.getID() + ",'" + downloadItem.novelURL + "','" + downloadItem.chapterURL + "','" + DownloadItem.cleanse(downloadItem.novelName) + "','" + DownloadItem.cleanse(downloadItem.chapterName) + "')");
     }
 
+    public static boolean inDownloads(DownloadItem downloadItem) {
+        Cursor cursor = library.rawQuery("SELECT " + Columns.CHAPTER_URL + " from " + Tables.DOWNLOADS + " where " + Columns.CHAPTER_URL + " = '" + downloadItem.chapterURL + "'", null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        } else {
+            cursor.close();
+            return true;
+        }
+    }
+
     public static int getDownloadCount() {
         Cursor cursor = library.rawQuery("select " + Columns.FORMATTER_ID + " from " + Tables.DOWNLOADS, null);
         return cursor.getCount();
