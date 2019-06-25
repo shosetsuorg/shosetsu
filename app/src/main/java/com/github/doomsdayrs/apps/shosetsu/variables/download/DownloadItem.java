@@ -30,9 +30,16 @@ public class DownloadItem {
 
     public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL) {
         this.formatter = formatter;
-        this.novelName = novelName;
-        this.chapterName = chapterName;
+        this.novelName = cleanse(novelName);
+        this.chapterName = cleanse(chapterName);
         this.novelURL = novelURL;
         this.chapterURL = chapterURL;
+    }
+
+    public static String cleanse(String s) {
+        //Log.d("Cleaning", s);
+        s = s.replaceAll("'", "_").replaceAll("\"", "_");
+        // Log.d("Cleaned", s);
+        return s;
     }
 }

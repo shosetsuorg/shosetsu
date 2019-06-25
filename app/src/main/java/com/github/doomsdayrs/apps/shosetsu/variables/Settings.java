@@ -43,5 +43,8 @@ public class Settings {
      */
     public static ConnectivityManager connectivityManager;
 
-
+    /**
+     * If download is paused
+     */
+    public static boolean downloadPaused;
 }

@@ -5,9 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 
+import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
@@ -44,6 +46,7 @@ import java.util.Date;
  */
 public class Database {
     public static SQLiteDatabase library;
+
 
     public enum Tables {
         LIBRARY("library"),
@@ -113,8 +116,9 @@ public class Database {
             Columns.FORMATTER_ID + " integer not null," +
             Columns.NOVEL_URL + " text not null," +
             Columns.CHAPTER_URL + " text not null," +
+
             Columns.NOVEL_NAME + " text not null," +
-            Columns.CHAPTER_URL + " text not null)";
+            Columns.CHAPTER_NAME + " text not null)";
 
     // Will be to new master table for chapters
     // TODO Convert this class to use this instead of the above
@@ -140,6 +144,38 @@ public class Database {
 
 
     // BOOKMARK CONTROLLERS
+
+    public static DownloadItem getFirstDownload() {
+        Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + " LIMIT 1;", null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return null;
+        } else {
+            cursor.moveToNext();
+
+            String nURL = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
+            String cURL = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString()));
+            String nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
+            String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
+            int formatter = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+            cursor.close();
+            return new DownloadItem(DefaultScrapers.formatters.get(formatter - 1), nName, cName, nURL, cURL);
+        }
+    }
+
+    public static boolean removeDownload(DownloadItem downloadItem) {
+        return library.delete(Tables.DOWNLOADS.toString(), Columns.CHAPTER_URL + "='" + downloadItem.chapterURL + "'", null) > 0;
+    }
+
+    public static void addToDownloads(DownloadItem downloadItem) {
+        library.execSQL("insert into " + Tables.DOWNLOADS + " (" + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + ") " +
+                "values (" + downloadItem.formatter.getID() + ",'" + downloadItem.novelURL + "','" + downloadItem.chapterURL + "','" + DownloadItem.cleanse(downloadItem.novelName) + "','" + DownloadItem.cleanse(downloadItem.chapterName) + "')");
+    }
+
+    public static int getDownloadCount() {
+        Cursor cursor = library.rawQuery("select " + Columns.FORMATTER_ID + " from " + Tables.DOWNLOADS, null);
+        return cursor.getCount();
+    }
 
     /**
      * Updates the Y coordinate

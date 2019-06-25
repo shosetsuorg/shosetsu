@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public final LibraryFragment libraryFragment = new LibraryFragment();
     public final CataloguesFragment cataloguesFragment = new CataloguesFragment();
     public final SettingsFragment settingsFragment = new SettingsFragment();
+
 
     /**
      * Main activity
@@ -90,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
         // Sets up DB
         DBHelper helper = new DBHelper(this);
         Database.library = helper.getWritableDatabase();
+
+        Download_Manager.init();
 
         //Prevent the frag from changing on rotation
         if (savedInstanceState == null) {

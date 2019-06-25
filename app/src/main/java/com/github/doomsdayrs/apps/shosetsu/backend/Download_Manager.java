@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend;
 
+import android.app.Notification;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import java.io.BufferedReader;
@@ -14,7 +16,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,22 +42,20 @@ public class Download_Manager {
     public static String shoDir = "/Shosetsu/";
     private static Downloading download = new Downloading();
 
-    private static final ArrayList<DownloadItem> urlsToDownload = new ArrayList<>();
-    private static final int downloadCount = 0;
 
     public static void init() {
-        if (downloadCount >= 1)
-            if (download.isCancelled()) {
+        download.execute();
+   }
+
+    public static void addToDownload(DownloadItem downloadItem) {
+        Database.addToDownloads(downloadItem);
+        if (download.isCancelled())
+            if (Database.getDownloadCount() >= 1) {
                 download = new Downloading();
                 download.execute();
             }
     }
 
-    public static void addToDownload(DownloadItem downloadItem) {
-        urlsToDownload.add(0, downloadItem);
-        if (urlsToDownload.size() == 1)
-            new Downloading().execute();
-    }
 
     public static boolean delete(Context context, DownloadItem downloadItem) {
         File file = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt");
@@ -90,41 +89,43 @@ public class Download_Manager {
     static class Downloading extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            while (urlsToDownload.size() > 0) {
-                DownloadItem downloadItem = urlsToDownload.get(urlsToDownload.size() - 1);
-                try {
-                    Log.d("Dir", shoDir + "download/");
-                    File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
-                    Log.d("Des", folder.toString());
-                    if (!folder.exists())
-                        if (!folder.mkdirs()) {
-                            throw new IOException("Failed to mkdirs");
-                        }
-                    String formattedName = downloadItem.chapterName.replaceAll("/", "");
-
-                    String passage = downloadItem.formatter.getNovelPassage(downloadItem.chapterURL);
-                    FileOutputStream fileOutputStream = new FileOutputStream(
-                            (folder.getPath() + "/" + (formattedName) + ".txt")
-                    );
-
-                    fileOutputStream.write(passage.getBytes());
-                    fileOutputStream.close();
-                    Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
-
-                    if (NovelFragmentChapters.recyclerView != null && NovelFragmentChapters.adapter != null)
-                        NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-
-                    Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
-                    urlsToDownload.remove(urlsToDownload.size() - 1);
+            while (Database.getDownloadCount() >= 1 && !Settings.downloadPaused) {
+                DownloadItem downloadItem = Database.getFirstDownload();
+                if (downloadItem != null)
                     try {
-                        TimeUnit.MILLISECONDS.sleep(10);
-                    } catch (InterruptedException e) {
+                        Log.d("Dir", shoDir + "download/");
+                        File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
+                        Log.d("Des", folder.toString());
+                        if (!folder.exists())
+                            if (!folder.mkdirs()) {
+                                throw new IOException("Failed to mkdirs");
+                            }
+                        String formattedName = downloadItem.chapterName.replaceAll("/", "");
+
+                        String passage = downloadItem.formatter.getNovelPassage(downloadItem.chapterURL);
+                        FileOutputStream fileOutputStream = new FileOutputStream(
+                                (folder.getPath() + "/" + (formattedName) + ".txt")
+                        );
+
+                        fileOutputStream.write(passage.getBytes());
+                        fileOutputStream.close();
+                        Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
+
+                        if (NovelFragmentChapters.recyclerView != null && NovelFragmentChapters.adapter != null)
+                            NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+
+                        Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
+                        Database.removeDownload(downloadItem);
+
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
                         e.printStackTrace();
+                        System.exit(1);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
             }
             download.cancel(true);
             return null;

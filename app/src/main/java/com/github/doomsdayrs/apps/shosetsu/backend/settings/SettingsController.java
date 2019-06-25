@@ -41,6 +41,7 @@ public class SettingsController {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
         Download_Manager.shoDir = download.getString("dir", "/storage/emulated/0/Shosetsu/");
+        Settings.downloadPaused = download.getBoolean("paused", false);
     }
 
     /**
@@ -117,7 +118,6 @@ public class SettingsController {
             return true;
         }
     }
-
 
 
     //Methods below when tracking system setup
