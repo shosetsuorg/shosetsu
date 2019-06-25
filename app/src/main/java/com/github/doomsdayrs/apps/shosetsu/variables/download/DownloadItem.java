@@ -28,12 +28,24 @@ public class DownloadItem {
     public final String novelURL;
     public final String chapterURL;
 
+    //Variables only for download manager
+
+    private String status = "Pending";
+
     public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL) {
         this.formatter = formatter;
         this.novelName = cleanse(novelName);
         this.chapterName = cleanse(chapterName);
         this.novelURL = novelURL;
         this.chapterURL = chapterURL;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public static String cleanse(String s) {

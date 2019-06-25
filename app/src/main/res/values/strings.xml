@@ -29,4 +29,7 @@
     <string name="download_directory">Download directory</string>
     <string name="position">Position:</string>
     <string name="backup_now">Backup Now</string>
+    <string name="pending">Pending</string>
+    <string name="error">Error occurred</string>
+    <string name="downloading">Downloading</string>
 </resources>

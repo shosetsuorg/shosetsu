@@ -6,10 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.DownloadAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
-import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.DownloadItemViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
@@ -100,43 +98,38 @@ public class Download_Manager {
             while (Database.getDownloadCount() >= 1 && !Settings.downloadPaused) {
                 DownloadItem downloadItem = Database.getFirstDownload();
 
-                if (DownloadAdapter.contains(downloadItem)) {
-                    DownloadItemViewHolder viewHolder = DownloadAdapter.getHolder(downloadItem);
-                    if (viewHolder != null)
-                        DownloadAdapter.progressToggle(viewHolder);
-                }
+                DownloadsFragment.toggleProcess(downloadItem);
+
                 if (downloadItem != null)
                     try {
-                        Log.d("Dir", shoDir + "download/");
-                        File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
-                        Log.d("Des", folder.toString());
-                        if (!folder.exists())
-                            if (!folder.mkdirs()) {
-                                throw new IOException("Failed to mkdirs");
-                            }
-                        String formattedName = downloadItem.chapterName.replaceAll("/", "");
 
-                        String passage = downloadItem.formatter.getNovelPassage(downloadItem.chapterURL);
-                        FileOutputStream fileOutputStream = new FileOutputStream(
-                                (folder.getPath() + "/" + (formattedName) + ".txt")
-                        );
+                        {
+                            Log.d("Dir", shoDir + "download/");
+                            File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
+                            Log.d("Des", folder.toString());
+                            if (!folder.exists())
+                                if (!folder.mkdirs()) {
+                                    throw new IOException("Failed to mkdirs");
+                                }
+                            String formattedName = downloadItem.chapterName.replaceAll("/", "");
 
-                        fileOutputStream.write(passage.getBytes());
-                        fileOutputStream.close();
-                        Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
+                            String passage = downloadItem.formatter.getNovelPassage(downloadItem.chapterURL);
+                            FileOutputStream fileOutputStream = new FileOutputStream(
+                                    (folder.getPath() + "/" + (formattedName) + ".txt")
+                            );
 
-                        if (NovelFragmentChapters.recyclerView != null && NovelFragmentChapters.adapter != null)
-                            NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                            fileOutputStream.write(passage.getBytes());
+                            fileOutputStream.close();
+                            Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
 
-                        Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
-                        Database.removeDownload(downloadItem);
+                            if (NovelFragmentChapters.recyclerView != null && NovelFragmentChapters.adapter != null)
+                                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
 
-
-                        if (DownloadAdapter.contains(downloadItem)) {
-                            DownloadItemViewHolder viewHolder = DownloadAdapter.getHolder(downloadItem);
-                            if (viewHolder != null)
-                                DownloadAdapter.progressToggle(viewHolder);
+                            Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
                         }
+
+                        Database.removeDownload(downloadItem);
+                        DownloadsFragment.toggleProcess(downloadItem);
                         DownloadsFragment.removeDownloads(downloadItem);
 
                         try {
@@ -144,12 +137,9 @@ public class Download_Manager {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+
                     } catch (SocketTimeoutException e) {
-                        if (DownloadAdapter.contains(downloadItem)) {
-                            DownloadItemViewHolder viewHolder = DownloadAdapter.getHolder(downloadItem);
-                            if (viewHolder != null)
-                                DownloadAdapter.progressToggle(viewHolder);
-                        }
+                        DownloadsFragment.markErrored(downloadItem);
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.exit(1);

@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.DownloadItemViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,46 +33,13 @@ import java.util.List;
  */
 public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemViewHolder> {
 
-    //Reference to the the NovelFragmentChapters array
-    private final List<DownloadItem> downloadItems;
-    public static List<DownloadItemViewHolder> downloadItemViewHolders = new ArrayList<>();
+    // This references a static variable
 
-    @SuppressLint("StaticFieldLeak")
-    public static DownloadsFragment downloadsFragment;
+    public DownloadsFragment downloadsFragment;
 
-    public DownloadAdapter(List<DownloadItem> downloadItems, DownloadsFragment downloadsFragmentA) {
-        this.downloadItems = downloadItems;
+    public DownloadAdapter(DownloadsFragment downloadsFragmentA) {
         downloadsFragment = downloadsFragmentA;
     }
-
-    public static boolean contains(DownloadItem downloadItem) {
-        for (DownloadItemViewHolder downloadItemViewHolder : downloadItemViewHolders)
-            if (downloadItemViewHolder.downloadItem.chapterURL.equals(downloadItem.chapterURL))
-                return true;
-        return false;
-    }
-
-    public static DownloadItemViewHolder getHolder(DownloadItem downloadItem) {
-        for (DownloadItemViewHolder downloadItemViewHolder : downloadItemViewHolders)
-            if (downloadItemViewHolder.downloadItem.chapterURL.equals(downloadItem.chapterURL))
-                return downloadItemViewHolder;
-        return null;
-    }
-
-    public static void progressToggle(DownloadItemViewHolder downloadItemViewHolder) {
-        if (downloadsFragment != null)
-            if (downloadsFragment.getActivity() != null)
-                downloadsFragment.getActivity().runOnUiThread(() -> {
-                    if (downloadItemViewHolder.progressBar.getVisibility() == View.VISIBLE)
-                        downloadItemViewHolder.progressBar.setVisibility(View.GONE);
-                    else downloadItemViewHolder.progressBar.setVisibility(View.VISIBLE);
-                });
-    }
-
-
-
-
-
 
     @NonNull
     @Override
@@ -85,17 +50,14 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull DownloadItemViewHolder downloadItemViewHolder, int i) {
-        DownloadItem downloadItem = downloadItems.get(i);
-        downloadItemViewHolder.downloadItem = downloadItem;
-        downloadItemViewHolder.textView.setText(downloadItem.chapterURL);
-
-        if (!contains(downloadItem))
-            downloadItemViewHolders.add(downloadItemViewHolder);
+        DownloadItem downloadItem = DownloadsFragment.downloadItems.get(i);
+        downloadItemViewHolder.title.setText(downloadItem.chapterURL);
+        downloadItemViewHolder.status.setText(downloadItem.getStatus());
     }
 
     @Override
     public int getItemCount() {
-        return downloadItems.size();
+        return DownloadsFragment.downloadItems.size();
     }
 
     @Override

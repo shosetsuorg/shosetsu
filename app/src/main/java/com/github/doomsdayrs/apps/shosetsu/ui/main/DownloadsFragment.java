@@ -47,6 +47,7 @@ import java.util.List;
 //TODO add this as a main fragment
 public class DownloadsFragment extends Fragment {
     public static List<DownloadItem> downloadItems = new ArrayList<>();
+
     @SuppressLint("StaticFieldLeak")
     public static RecyclerView recyclerView;
     public static DownloadAdapter adapter;
@@ -57,6 +58,40 @@ public class DownloadsFragment extends Fragment {
     public DownloadsFragment() {
         setHasOptionsMenu(true);
     }
+
+
+    public static void refreshList() {
+        if (DownloadsFragment.adapter.downloadsFragment != null)
+            if (DownloadsFragment.adapter.downloadsFragment.getActivity() != null)
+                DownloadsFragment.adapter.downloadsFragment.getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+    }
+
+    public static void removeDownloads(DownloadItem downloadItem) {
+        for (int x = 0; x < downloadItems.size(); x++)
+            if (downloadItems.get(x).chapterURL.equals(downloadItem.chapterURL)) {
+                downloadItems.remove(x);
+                return;
+            }
+
+        refreshList();
+    }
+
+    public static void markErrored(DownloadItem d) {
+        for (DownloadItem downloadItem : downloadItems)
+            if (downloadItem.chapterURL.equals(d.chapterURL))
+                d.setStatus("Error");
+        refreshList();
+    }
+
+    public static void toggleProcess(DownloadItem d) {
+        for (DownloadItem downloadItem : downloadItems)
+            if (downloadItem.chapterURL.equals(d.chapterURL))
+                if (downloadItem.getStatus().equals("Pending") || downloadItem.getStatus().equals("Error"))
+                    downloadItem.setStatus("Downloading");
+                else downloadItem.setStatus("Pending");
+        refreshList();
+    }
+
 
     @Override
     public void onResume() {
@@ -79,19 +114,6 @@ public class DownloadsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-
-    public static void removeDownloads(DownloadItem downloadItem) {
-        for (int x = 0; x < downloadItems.size(); x++)
-            if (downloadItems.get(x).chapterURL.equals(downloadItem.chapterURL)) {
-                downloadItems.remove(x);
-                return;
-            }
-
-        if (DownloadAdapter.downloadsFragment != null)
-            if (DownloadAdapter.downloadsFragment.getActivity() != null)
-                DownloadAdapter.downloadsFragment.getActivity().runOnUiThread(() ->adapter.notifyDataSetChanged());
     }
 
     /**
@@ -119,12 +141,11 @@ public class DownloadsFragment extends Fragment {
     public void setDownloads() {
         recyclerView.setHasFixedSize(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        adapter = new DownloadAdapter(downloadItems, this);
+        adapter = new DownloadAdapter(this);
         adapter.setHasStableIds(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
-
 
     /**
      * Creates the option menu (on the top toolbar)
