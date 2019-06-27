@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 
+import com.fasterxml.jackson.databind.ser.std.SerializableSerializer;
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -45,6 +47,7 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
+//TODO Finish reconstruction and use serialized java objects into DB
 public class Database {
     public static SQLiteDatabase library;
 
@@ -70,9 +73,7 @@ public class Database {
     public enum Columns {
         CHAPTER_URL("chapterURL"),
         NOVEL_URL("novelURL"),
-        TITLE("title"),
-        IMAGE_URL("imageURL"),
-        AUTHORS("authors"),
+        NOVEL_PAGE("novelPage"),
         SAVED_DATA("savedData"),
         FORMATTER_ID("formatterID"),
         READ_CHAPTER("read"),
@@ -81,7 +82,8 @@ public class Database {
         IS_SAVED("isSaved"),
         SAVE_PATH("savePath"),
         NOVEL_NAME("novelName"),
-        CHAPTER_NAME("chapterName");
+        CHAPTER_NAME("chapterName"),
+        PAUSED("paused");
         final String COLUMN;
 
         Columns(String column) {
@@ -100,9 +102,7 @@ public class Database {
     // Library that the user has saved their novels to
     static final String libraryCreate = "create TABLE if not exists " + Tables.LIBRARY + " (" +
             Columns.NOVEL_URL + " text not null unique, " +
-            Columns.TITLE + " text not null," +
-            Columns.IMAGE_URL + " text not null," +
-            Columns.AUTHORS + " text not null," +
+            Columns.NOVEL_PAGE + " text not null," +
             Columns.FORMATTER_ID + " integer not null)";
 
     // If the user bookmarks a chapter, it is saved here
@@ -119,7 +119,8 @@ public class Database {
             Columns.CHAPTER_URL + " text not null," +
 
             Columns.NOVEL_NAME + " text not null," +
-            Columns.CHAPTER_NAME + " text not null)";
+            Columns.CHAPTER_NAME + " text not null," +
+            Columns.PAUSED + " integer not null)";
 
     // Will be to new master table for chapters
     // TODO Convert this class to use this instead of the above
@@ -369,12 +370,11 @@ public class Database {
      * @return if successful
      */
     public static void addToLibrary(int formatter, NovelPage novelPage, String novelURL) {
-        library.execSQL("insert into " + Tables.LIBRARY + "('" + Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.TITLE + "," + Columns.IMAGE_URL + "," + Columns.AUTHORS + ") values(" +
+
+        library.execSQL("insert into " + Tables.LIBRARY + "('" + Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.NOVEL_PAGE+ ") values(" +
                 "'" + novelURL + "'," +
                 "'" + formatter + "'," +
-                "'" + novelPage.title.replaceAll("'", "") + "'," +
-                "'" + novelPage.imageURL + "'," +
-                "'" + Arrays.toString(novelPage.authors).replaceAll("'", "") + " ')"
+                novelPage" ')"
         );
     }
 

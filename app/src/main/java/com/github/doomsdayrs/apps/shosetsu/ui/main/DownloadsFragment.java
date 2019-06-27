@@ -44,7 +44,6 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
-//TODO add this as a main fragment
 public class DownloadsFragment extends Fragment {
     public static List<DownloadItem> downloadItems = new ArrayList<>();
 

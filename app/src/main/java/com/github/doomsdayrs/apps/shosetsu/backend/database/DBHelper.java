@@ -31,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 4);
+        super(context, DB_NAME, null, 1);
     }
 
 
@@ -42,9 +42,9 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(Database.libraryCreate);
-        db.execSQL(Database.chaptersCreate);
         db.execSQL(Database.downloadsCreate);
+        db.execSQL(Database.chaptersCreate);
+        db.execSQL(Database.libraryCreate);
     }
 
     /**
@@ -57,27 +57,12 @@ public class DBHelper extends SQLiteOpenHelper {
     //TODO Actually save data between db versions
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        if (oldVersion < 2) {
-            db.execSQL(Database.libraryCreate);
-            db.execSQL(Database.bookmarksCreate);
-            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
-            db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
-            db.execSQL(Database.libraryCreate);
-        }
-
-        if (oldVersion < 3) {
-            db.execSQL(Database.libraryCreate);
-            db.execSQL(Database.downloadsCreate);
-            db.execSQL("drop table if exists " + Database.Tables.DOWNLOADS);
-            db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
-            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
-            db.execSQL(Database.libraryCreate);
-            db.execSQL(Database.chaptersCreate);
-        }
-
-        if (oldVersion < 4) {
-            db.execSQL(Database.downloadsCreate);
-        }
+        db.execSQL("drop table if exists " + Database.Tables.DOWNLOADS);
+        db.execSQL("drop table if exists " + Database.Tables.CHAPTERS);
+        db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
+        db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
+        db.execSQL(Database.downloadsCreate);
+        db.execSQL(Database.chaptersCreate);
+        db.execSQL(Database.libraryCreate);
     }
 }
