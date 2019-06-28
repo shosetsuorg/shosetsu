@@ -9,6 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This file is part of Shosetsu.
@@ -55,6 +56,7 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
                         }
                     }
                     if (!foundDif) {
+                        TimeUnit.MILLISECONDS.sleep(100);
                         novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0] + increment);
                         novelFragmentChapters.currentMaxPage++;
                         increment++;
@@ -63,6 +65,8 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
 
                 return true;
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         return false;
