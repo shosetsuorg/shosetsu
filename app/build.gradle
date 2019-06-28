@@ -7,7 +7,7 @@ android {
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
-        versionName "v1.1.3-alpha"
+        versionName "v1.1.4-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -45,7 +45,7 @@ repositories {
 dependencies {
     implementation 'com.graphql-java:graphql-java:2019-06-12T04-51-56-e994f41'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta2'
     //noinspection GradleCompatible
     implementation 'com.android.support:design:28.0.0'
     testImplementation 'junit:junit:4.13-beta-3'
