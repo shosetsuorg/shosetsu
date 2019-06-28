@@ -96,7 +96,7 @@ public class LibraryNovelCardsAdapter extends RecyclerView.Adapter<LibraryNovelC
         public void onClick(View v) {
             NovelFragment novelFragment = new NovelFragment();
             novelFragment.formatter = formatter;
-            novelFragment.url = novelURL;
+            novelFragment.novelURL = novelURL;
             novelFragment.fragmentManager = fragmentManager;
             fragmentManager.beginTransaction()
                     .addToBackStack("tag")

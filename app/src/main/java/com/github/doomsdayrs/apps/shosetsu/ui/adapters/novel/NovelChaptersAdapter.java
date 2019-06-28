@@ -12,6 +12,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.ChaptersViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
@@ -71,24 +72,24 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
 
-        if (!Database.inChapters(novelChapter.link))
-            Database.addToChapters(novelFragmentChapters.novelURL, novelChapter.link);
+        if (!Database.DatabaseChapter.inChapters(novelChapter.link))
+            Database.DatabaseChapter.addToChapters(novelFragmentChapters.novelURL, novelChapter);
 
-        if (Database.isBookMarked(novelChapter.link))
+        if (Database.DatabaseChapter.isBookMarked(novelChapter.link))
             chaptersViewHolder.bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
 
-        if (Database.isSaved(novelChapter.link)) {
+        if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
             Log.d("In Storage", novelFragmentChapters.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.download.setImageResource(R.drawable.ic_arrow_drop_down_circle_black_24dp);
             chaptersViewHolder.downloaded = true;
         }
 
-        switch (Database.isRead(novelChapter.link)) {
+        switch (Database.DatabaseChapter.isRead(novelChapter.link)) {
             case READING:
                 chaptersViewHolder.status.setText(Status.READING.getStatus());
                 chaptersViewHolder.readTag.setVisibility(View.VISIBLE);
                 chaptersViewHolder.read.setVisibility(View.VISIBLE);
-                chaptersViewHolder.read.setText(String.valueOf(Database.getY(novelChapter.link)));
+                chaptersViewHolder.read.setText(String.valueOf(Database.DatabaseChapter.getY(novelChapter.link)));
                 break;
 
             case READ:

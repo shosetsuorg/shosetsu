@@ -7,7 +7,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.async.CataloguePageLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This file is part of Shosetsu.
@@ -40,17 +39,9 @@ public class CatalogueRefresh implements SwipeRefreshLayout.OnRefreshListener {
 
         CatalogueFragment.catalogueNovelCards = new ArrayList<>();
         catalogueFragment.currentMaxPage = 1;
-        try {
-            Log.d("FragmentRefresh", "Refreshing catalogue data");
-            if (new CataloguePageLoader(catalogueFragment).execute().get()) {
-                Log.d("FragmentRefresh", "Complete");
-                catalogueFragment.library_Adapter.notifyDataSetChanged();
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        catalogueFragment.swipeRefreshLayout.setRefreshing(false);
+        Log.d("FragmentRefresh", "Refreshing catalogue data");
+        new CataloguePageLoader(catalogueFragment).execute();
+
+
     }
 }

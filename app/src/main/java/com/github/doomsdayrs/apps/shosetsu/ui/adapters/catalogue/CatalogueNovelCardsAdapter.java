@@ -15,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 import com.squareup.picasso.Picasso;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -96,7 +95,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         public void onClick(View v) {
             NovelFragment novelFragment = new NovelFragment();
             novelFragment.formatter = formatter;
-            novelFragment.url = url;
+            novelFragment.novelURL = url;
             novelFragment.fragmentManager = fragmentManager;
             fragmentManager.beginTransaction()
                     .addToBackStack("tag")

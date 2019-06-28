@@ -93,10 +93,10 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View v) {
-        Database.setChapterStatus(novelChapter.link, Status.READING);
+        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
         Intent intent = new Intent(novelFragmentChapters.getActivity(), NovelFragmentChapterView.class);
         intent.putExtra("title", novelChapter.chapterNum);
-        intent.putExtra("url", novelChapter.link);
+        intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelURL", novelFragmentChapters.novelURL);
         intent.putExtra("formatter", NovelChaptersAdapter.formatter.getID());
         intent.putExtra("downloaded", downloaded);

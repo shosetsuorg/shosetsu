@@ -46,13 +46,13 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     protected Boolean doInBackground(Activity... voids) {
         this.activity = voids[0];
         StaticNovel.novelPage = null;
-        Log.d("Loading", novelFragment.url);
+        Log.d("Loading", novelFragment.novelURL);
         try {
-            StaticNovel.novelPage = novelFragment.formatter.parseNovel(novelFragment.url);
+            StaticNovel.novelPage = novelFragment.formatter.parseNovel(novelFragment.novelURL);
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
         } catch (SocketTimeoutException e) {
-            activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
+                activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
         } catch (IOException e) {
             e.printStackTrace();
         }

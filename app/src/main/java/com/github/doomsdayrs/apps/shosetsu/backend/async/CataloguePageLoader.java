@@ -10,8 +10,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -72,7 +70,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
                 novels = CatalogueFragment.formatter.parseLatest(CatalogueFragment.formatter.getLatestURL(integers[0]));
             }
             for (Novel novel : novels)
-                CatalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title,  novel.link));
+                CatalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, novel.link));
             catalogueFragment.library_view.post(() -> catalogueFragment.library_Adapter.notifyDataSetChanged());
 
             if (catalogueFragmentHitBottom != null) {
@@ -83,6 +81,14 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
                 catalogueFragmentHitBottom.running = false;
                 Log.d("CatalogueFragmentLoad", "Completed");
             }
+            Log.d("FragmentRefresh", "Complete");
+
+            if (catalogueFragment.getActivity() != null)
+                catalogueFragment.getActivity().runOnUiThread(() -> {
+                    catalogueFragment.library_Adapter.notifyDataSetChanged();
+                    catalogueFragment.swipeRefreshLayout.setRefreshing(false);
+                });
+
             return true;
         } catch (IOException e) {
             e.printStackTrace();

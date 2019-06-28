@@ -16,9 +16,9 @@ import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.SlidingNovelPageAdapter;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class NovelFragment extends Fragment {
     private View view;
     public FragmentManager fragmentManager = null;
     public Formatter formatter;
-    public String url;
+    public String novelURL;
     public NovelFragmentMain novelFragmentMain;
     public NovelFragmentChapters novelFragmentChapters;
     public ProgressBar progressBar;
@@ -60,7 +60,7 @@ public class NovelFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d("Saving Instance State", "NovelFragment");
-        outState.putString("url", url);
+        outState.putString("novelURL", novelURL);
         outState.putInt("formatter", formatter.getID());
     }
 
@@ -76,14 +76,16 @@ public class NovelFragment extends Fragment {
         //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
-            if (SettingsController.isOnline()) {
+            if (SettingsController.isOnline() && !Database.DatabaseLibrary.inLibrary(novelURL)) {
                 setViewPager();
                 new NovelLoader(this).execute(getActivity());
             } else {
-                //TODO, Offline data loading
+                StaticNovel.novelPage = Database.DatabaseLibrary.getNovelPage(novelURL);
+                Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
+                setViewPager();
             }
         } else {
-            url = savedInstanceState.getString("url");
+            novelURL = savedInstanceState.getString("novelURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             setViewPager();
         }
@@ -100,11 +102,12 @@ public class NovelFragment extends Fragment {
         // Sets the data
         {
             novelFragmentChapters.formatter = formatter;
-            novelFragmentChapters.novelURL = url;
+            novelFragmentChapters.novelURL = novelURL;
             novelFragmentChapters.setFragmentManager(fragmentManager);
 
-            novelFragmentMain.url = url;
+            novelFragmentMain.url = novelURL;
             novelFragmentMain.formatter = formatter;
+
         }
         // Add the fragments
         {
@@ -116,6 +119,7 @@ public class NovelFragment extends Fragment {
 
         SlidingNovelPageAdapter pagerAdapter = new SlidingNovelPageAdapter(getChildFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
+
     }
 
 }

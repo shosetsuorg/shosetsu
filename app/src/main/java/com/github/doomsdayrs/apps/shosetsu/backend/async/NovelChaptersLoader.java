@@ -3,7 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.backend.async;
 import android.os.AsyncTask;
 import android.view.View;
 
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 
 import java.io.IOException;
@@ -43,10 +45,22 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
                 else
                     novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0]);
                 //TODO Difference calculation
+                boolean foundDif = false;
+                int increment = 1;
+                while (!foundDif) {
+                    for (NovelChapter novelChapter : novelPage.novelChapters) {
+                        if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                            NovelFragmentChapters.novelChapters.add(novelChapter);
+                            foundDif = true;
+                        }
+                    }
+                    if (!foundDif) {
+                        novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0] + increment);
+                        novelFragmentChapters.currentMaxPage++;
+                        increment++;
+                    }
+                }
 
-                if (!novelPage.novelChapters.get(novelPage.novelChapters.size() - 1).link
-                        .equals(NovelFragmentChapters.novelChapters.get(NovelFragmentChapters.novelChapters.size() - 1).link))
-                    NovelFragmentChapters.novelChapters.addAll(novelPage.novelChapters);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -70,6 +84,8 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         novelFragmentChapters.progressBar.setVisibility(View.GONE);
         if (aBoolean)
-            novelFragmentChapters.recyclerView.post(() -> novelFragmentChapters.adapter.notifyDataSetChanged());
+            if (NovelFragmentChapters.recyclerView != null)
+                if (NovelFragmentChapters.adapter != null)
+                    NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
     }
 }

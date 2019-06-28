@@ -16,11 +16,14 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
@@ -97,7 +100,7 @@ public class NovelFragmentChapters extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("url", novelURL);
+        outState.putString("novelURL", novelURL);
         outState.putInt("formatter", formatter.getID());
         outState.putInt("maxPage", currentMaxPage);
     }
@@ -118,7 +121,7 @@ public class NovelFragmentChapters extends Fragment {
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         progressBar = view.findViewById(R.id.fragment_novel_chapters_progress);
         if (savedInstanceState != null) {
-            novelURL = savedInstanceState.getString("url");
+            novelURL = savedInstanceState.getString("novelURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }
@@ -131,13 +134,27 @@ public class NovelFragmentChapters extends Fragment {
      * Sets the novel chapters down
      */
     public void setNovels() {
-        if (recyclerView!=null){
+        if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            if (Database.DatabaseLibrary.inLibrary(novelURL)){
+                novelChapters = Database.DatabaseChapter.getChapters(novelURL);
+            }
             adapter = new NovelChaptersAdapter(this, novelChapters, fragmentManager, formatter);
             adapter.setHasStableIds(true);
             recyclerView.setLayoutManager(layoutManager);
-            recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
+
+            if (SettingsController.isOnline())
+                recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
+
+            else recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    if (!recyclerView.canScrollVertically(1))
+                        Toast.makeText(getContext(), "You are offline, impossible to load more", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             recyclerView.setAdapter(adapter);
         }
     }

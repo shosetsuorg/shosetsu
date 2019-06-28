@@ -72,7 +72,7 @@ public class LibraryFragment extends Fragment {
         Log.d("OnCreate", "LibraryFragment");
 
         if (savedInstanceState == null) {
-            libraryNovelCards = Database.getLibrary();
+            libraryNovelCards = Database.DatabaseLibrary.getLibrary();
         }
 
         View view = inflater.inflate(R.layout.fragment_library, container, false);

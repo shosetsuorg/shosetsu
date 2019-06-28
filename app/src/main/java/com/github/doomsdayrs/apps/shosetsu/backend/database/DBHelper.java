@@ -25,13 +25,58 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
+
+    static final String chaptersCreate = "create table if not exists " + Database.Tables.CHAPTERS + "(" +
+            Database.Columns.NOVEL_URL + " text not null," +
+            // The chapter chapterURL
+            Database.Columns.CHAPTER_URL + " text not null unique," +
+
+            // Unsure if i should keep this or not
+            Database.Columns.SAVED_DATA + " text," +
+
+            // Saved Data
+            // > Scroll position, either 0 for top, or X for the position
+            Database.Columns.Y + " integer not null," +
+            // > Either 0 for none, or an incremented count
+            Database.Columns.READ_CHAPTER + " integer not null," +
+            // > Either 0 for false or 1 for true.
+            Database.Columns.BOOKMARKED + " integer not null," +
+
+            // If 1 then true and SAVE_PATH has data, false otherwise
+            Database.Columns.IS_SAVED + " integer not null," +
+            Database.Columns.SAVE_PATH + " text)";
+
+    //TODO Figure out a legitimate way to structure all this data
+
+    // Library that the user has saved their novels to
+    static final String libraryCreate = "create TABLE if not exists " + Database.Tables.LIBRARY + " (" +
+            Database.Columns.NOVEL_URL + " text not null unique, " +
+            Database.Columns.NOVEL_PAGE + " text not null," +
+            Database.Columns.FORMATTER_ID + " integer not null)";
+
+    @Deprecated
+    static final String bookmarksCreate = "create TABLE if not exists " + Database.Tables.BOOKMARKS + "(" +
+            Database.Columns.CHAPTER_URL + " text unique not null, " +
+            Database.Columns.SAVED_DATA + " text)";
+
+    // Watches download listing
+    static final String downloadsCreate = "create TABLE if not exists " + Database.Tables.DOWNLOADS + "(" +
+            Database.Columns.FORMATTER_ID + " integer not null," +
+            Database.Columns.NOVEL_URL + " text not null," +
+            Database.Columns.CHAPTER_URL + " text not null," +
+
+            Database.Columns.NOVEL_NAME + " text not null," +
+            Database.Columns.CHAPTER_NAME + " text not null," +
+            Database.Columns.PAUSED + " integer not null)";
+
+
     /**
      * Constructor
      *
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, 4);
     }
 
 
@@ -42,9 +87,9 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(Database.downloadsCreate);
-        db.execSQL(Database.chaptersCreate);
-        db.execSQL(Database.libraryCreate);
+        db.execSQL(libraryCreate);
+        db.execSQL(downloadsCreate);
+        db.execSQL(chaptersCreate);
     }
 
     /**
@@ -57,12 +102,32 @@ public class DBHelper extends SQLiteOpenHelper {
     //TODO Actually save data between db versions
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists " + Database.Tables.DOWNLOADS);
-        db.execSQL("drop table if exists " + Database.Tables.CHAPTERS);
-        db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
-        db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
-        db.execSQL(Database.downloadsCreate);
-        db.execSQL(Database.chaptersCreate);
-        db.execSQL(Database.libraryCreate);
+
+        if (oldVersion < 2) {
+            db.execSQL(libraryCreate);
+            db.execSQL(bookmarksCreate);
+            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
+            db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
+            db.execSQL(libraryCreate);
+        }
+
+        if (oldVersion < 3) {
+            db.execSQL(libraryCreate);
+            db.execSQL(downloadsCreate);
+            db.execSQL("drop table if exists " + Database.Tables.DOWNLOADS);
+            db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
+            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
+            db.execSQL(libraryCreate);
+            db.execSQL(chaptersCreate);
+        }
+
+        if (oldVersion < 4) {
+            db.execSQL(downloadsCreate);
+            db.execSQL("drop table if exists " + Database.Tables.CHAPTERS);
+            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
+
+            db.execSQL(libraryCreate);
+            db.execSQL(chaptersCreate);
+        }
     }
 }

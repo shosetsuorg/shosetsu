@@ -1,7 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -74,14 +72,12 @@ public class CatalogueFragment extends Fragment {
         CatalogueFragment.formatter = formatter;
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
+        catalogueNovelCards = new ArrayList<>();
+        formatter = null;
     }
 
     /**

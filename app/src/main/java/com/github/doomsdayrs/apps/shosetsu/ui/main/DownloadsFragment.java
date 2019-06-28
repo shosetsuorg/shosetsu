@@ -60,9 +60,10 @@ public class DownloadsFragment extends Fragment {
 
 
     public static void refreshList() {
-        if (DownloadsFragment.adapter.downloadsFragment != null)
-            if (DownloadsFragment.adapter.downloadsFragment.getActivity() != null)
-                DownloadsFragment.adapter.downloadsFragment.getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+        if (DownloadsFragment.adapter != null)
+            if (DownloadsFragment.adapter.downloadsFragment != null)
+                if (DownloadsFragment.adapter.downloadsFragment.getActivity() != null)
+                    DownloadsFragment.adapter.downloadsFragment.getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
 
     public static void removeDownloads(DownloadItem downloadItem) {
@@ -129,7 +130,7 @@ public class DownloadsFragment extends Fragment {
         Log.d("OnCreateView", "NovelFragmentChapters");
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
         recyclerView = view.findViewById(R.id.fragment_downloads_recycler);
-        downloadItems = Database.getDownloadList();
+        downloadItems = Database.DatabaseDownloads.getDownloadList();
         setDownloads();
         return view;
     }

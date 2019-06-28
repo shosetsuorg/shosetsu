@@ -40,6 +40,7 @@ import java.util.Arrays;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentMain extends Fragment {
+    public boolean inDB = false;
     public Formatter formatter;
     public String url;
     private ImageView imageView;
@@ -99,7 +100,7 @@ public class NovelFragmentMain extends Fragment {
         }
 
 
-        if (Database.inLibrary(url))
+        if (Database.DatabaseLibrary.inLibrary(url))
             inLibrary();
 
         if (inLibrary)
@@ -107,6 +108,7 @@ public class NovelFragmentMain extends Fragment {
 
         if (StaticNovel.novelPage != null && title != null)
             setData();
+
         return view;
     }
 

@@ -69,7 +69,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("text", text);
-        outState.putString("url", chapterURL);
+        outState.putString("novelURL", chapterURL);
         outState.putInt("formatter", formatter.getID());
         outState.putString("novelURL", novelURL);
         outState.putString("title", title);
@@ -91,7 +91,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
         // Bookmark
         bookmark = menu.findItem(R.id.chapter_view_bookmark);
-        bookmarked = Database.isBookMarked(chapterURL);
+        bookmarked = Database.DatabaseChapter.isBookMarked(chapterURL);
         if (bookmarked) {
             bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
             int y = SettingsController.getYBookmark(chapterURL);
@@ -188,9 +188,9 @@ public class NovelFragmentChapterView extends AppCompatActivity {
                         if (a % 5 == 0) {
                             int y = scrollView.getScrollY();
                             Log.d("ScrollSave", Integer.toString(y));
-                            Database.updateY(chapterURL, y);
+                            Database.DatabaseChapter.updateY(chapterURL, y);
                         } else a++;
-                    else Database.setChapterStatus(chapterURL, Status.READ);
+                    else Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
                 });
             } else {
                 scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
@@ -198,11 +198,12 @@ public class NovelFragmentChapterView extends AppCompatActivity {
                         if (a % 5 == 0) {
                             int y = scrollView.getScrollY();
                             Log.d("ScrollSave", Integer.toString(y));
-                            Database.updateY(chapterURL, y);
+                            Database.DatabaseChapter.updateY(chapterURL, y);
                         } else a++;
-                    else Database.setChapterStatus(chapterURL, Status.READ);
+                    else Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
                 });
             }
+
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
             textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
         }
@@ -211,14 +212,14 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             title = savedInstanceState.getString("title");
-            chapterURL = savedInstanceState.getString("url");
+            chapterURL = savedInstanceState.getString("novelURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             text = savedInstanceState.getString("text");
-        } else chapterURL = getIntent().getStringExtra("url");
+        } else chapterURL = getIntent().getStringExtra("chapterURL");
         Log.d("novelURL", Objects.requireNonNull(chapterURL));
 
         if (getIntent().getBooleanExtra("downloaded", false))
-            text = Objects.requireNonNull(Database.getSaved(chapterURL)).replaceAll("\n", "\n\n");
+            text = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterURL)).replaceAll("\n", "\n\n");
         else if (text == null)
             if (chapterURL != null) {
                 new NovelFragmentChapterViewLoad(progressBar).execute(this);

@@ -52,10 +52,10 @@ public class Download_Manager {
     }
 
     public static void addToDownload(DownloadItem downloadItem) {
-        if (!Database.inDownloads(downloadItem)) {
-            Database.addToDownloads(downloadItem);
+        if (!Database.DatabaseDownloads.inDownloads(downloadItem)) {
+            Database.DatabaseDownloads.addToDownloads(downloadItem);
             if (download.isCancelled())
-                if (Database.getDownloadCount() >= 1) {
+                if (Database.DatabaseDownloads.getDownloadCount() >= 1) {
                     download = new Downloading();
                     download.execute();
                 }
@@ -65,7 +65,7 @@ public class Download_Manager {
 
     public static boolean delete(Context context, DownloadItem downloadItem) {
         File file = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt");
-        Database.removePath(downloadItem.chapterURL);
+        Database.DatabaseChapter.removePath(downloadItem.chapterURL);
         if (file.exists())
             if (!file.delete())
                 Toast.makeText(context, "Failed to delete, next download will correct", Toast.LENGTH_LONG).show();
@@ -95,8 +95,8 @@ public class Download_Manager {
     static class Downloading extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            while (Database.getDownloadCount() >= 1 && !Settings.downloadPaused) {
-                DownloadItem downloadItem = Database.getFirstDownload();
+            while (Database.DatabaseDownloads.getDownloadCount() >= 1 && !Settings.downloadPaused) {
+                DownloadItem downloadItem = Database.DatabaseDownloads.getFirstDownload();
 
                 DownloadsFragment.toggleProcess(downloadItem);
 
@@ -120,7 +120,7 @@ public class Download_Manager {
 
                             fileOutputStream.write(passage.getBytes());
                             fileOutputStream.close();
-                            Database.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
+                            Database.DatabaseChapter.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
 
                             if (NovelFragmentChapters.recyclerView != null && NovelFragmentChapters.adapter != null)
                                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
@@ -128,7 +128,7 @@ public class Download_Manager {
                             Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
                         }
 
-                        Database.removeDownload(downloadItem);
+                        Database.DatabaseDownloads.removeDownload(downloadItem);
                         DownloadsFragment.toggleProcess(downloadItem);
                         DownloadsFragment.removeDownloads(downloadItem);
 

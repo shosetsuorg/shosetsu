@@ -107,7 +107,7 @@ public class SettingsController {
      * @return y position
      */
     public static int getYBookmark(String chapterURL) {
-        return Database.getY(chapterURL);
+        return Database.DatabaseChapter.getY(chapterURL);
     }
 
     /**
@@ -117,11 +117,11 @@ public class SettingsController {
      * @return true means added, false means removed
      */
     public static boolean toggleBookmarkChapter(String chapterURL) {
-        if (Database.isBookMarked(chapterURL)) {
-            Database.setBookMark(chapterURL, 0);
+        if (Database.DatabaseChapter.isBookMarked(chapterURL)) {
+            Database.DatabaseChapter.setBookMark(chapterURL, 0);
             return false;
         } else {
-            Database.setBookMark(chapterURL, 1);
+            Database.DatabaseChapter.setBookMark(chapterURL, 1);
             return true;
         }
     }
