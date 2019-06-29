@@ -12,13 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.SlidingNovelPageAdapter;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.util.ArrayList;
@@ -81,7 +81,8 @@ public class NovelFragment extends Fragment {
                 new NovelLoader(this).execute(getActivity());
             } else {
                 StaticNovel.novelPage = Database.DatabaseLibrary.getNovelPage(novelURL);
-                Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
+                if (StaticNovel.novelPage != null)
+                    Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
                 setViewPager();
             }
         } else {

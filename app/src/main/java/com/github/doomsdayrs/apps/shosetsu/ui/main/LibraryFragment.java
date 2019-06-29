@@ -63,7 +63,7 @@ public class LibraryFragment extends Fragment {
      * @param inflater           inflates layouts and shiz
      * @param container          container of this fragment
      * @param savedInstanceState save file
-     * @return
+     * @return View
      */
     @Nullable
     @Override
@@ -105,7 +105,7 @@ public class LibraryFragment extends Fragment {
 
     /**
      * Sets the cards to display
-     * @param recycleCards
+     * @param recycleCards recycle cards to set
      */
     public void setLibraryCards(ArrayList<NovelCard> recycleCards) {
         if (library_view != null) {

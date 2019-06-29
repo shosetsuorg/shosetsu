@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class CatalogueRefresh implements SwipeRefreshLayout.OnRefreshListener {
-    final CatalogueFragment catalogueFragment;
+    private final CatalogueFragment catalogueFragment;
 
     public CatalogueRefresh(CatalogueFragment catalogueFragment) {
         this.catalogueFragment = catalogueFragment;

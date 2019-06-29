@@ -13,13 +13,13 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelFragmentChapterViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewHideBar;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
@@ -51,7 +51,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     private String title;
     private ScrollView scrollView;
     public TextView textView;
-    public ProgressBar progressBar;
+    private ProgressBar progressBar;
     public Formatter formatter;
     public String chapterURL;
     private String novelURL;
@@ -178,7 +178,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             scrollView = findViewById(R.id.fragment_novel_scroll);
 
 
-            /**
+            /*
              * Chooses the way the way to save the scroll position
              * the before marshmallow version is untested
              */
@@ -224,7 +224,8 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             if (chapterURL != null) {
                 new NovelFragmentChapterViewLoad(progressBar).execute(this);
             }
-        getSupportActionBar().setTitle(title);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(title);
         textView.setText(text);
     }
 }

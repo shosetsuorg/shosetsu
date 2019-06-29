@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
  * @author github.com/doomsdayrs
  */
 public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
-    CatalogueFragment catalogueFragment;
+    private final CatalogueFragment catalogueFragment;
 
     public CatalogueSearchQuery(CatalogueFragment catalogueFragment) {
         this.catalogueFragment = catalogueFragment;

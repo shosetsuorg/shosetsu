@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class LibrarySearchQuery implements SearchView.OnQueryTextListener {
-    LibraryFragment libraryFragment;
+    private final LibraryFragment libraryFragment;
 
     public LibrarySearchQuery(LibraryFragment libraryFragment) {
         this.libraryFragment = libraryFragment;

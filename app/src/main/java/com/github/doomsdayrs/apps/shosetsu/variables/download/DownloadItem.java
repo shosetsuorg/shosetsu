@@ -56,7 +56,7 @@ public class DownloadItem {
     /**
      * Returns the status
      *
-     * @return
+     * @return Status
      */
     public String getStatus() {
         return status;
@@ -65,7 +65,7 @@ public class DownloadItem {
     /**
      * Sets the status of the download item
      *
-     * @param status
+     * @param status status to set
      */
     public void setStatus(String status) {
         this.status = status;

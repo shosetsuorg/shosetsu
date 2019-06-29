@@ -12,11 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -40,7 +40,6 @@ import java.util.Arrays;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentMain extends Fragment {
-    public boolean inDB = false;
     public Formatter formatter;
     public String url;
     private ImageView imageView;

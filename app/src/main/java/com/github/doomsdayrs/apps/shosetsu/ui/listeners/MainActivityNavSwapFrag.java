@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
  */
 public class MainActivityNavSwapFrag implements NavigationView.OnNavigationItemSelectedListener {
 
-    private MainActivity mainActivity;
+    private final MainActivity mainActivity;
 
     public MainActivityNavSwapFrag(MainActivity mainActivity) {
         this.mainActivity = mainActivity;

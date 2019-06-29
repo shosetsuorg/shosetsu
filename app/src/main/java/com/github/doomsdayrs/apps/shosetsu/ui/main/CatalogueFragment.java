@@ -86,7 +86,7 @@ public class CatalogueFragment extends Fragment {
      * @param inflater           inflates layouts and shiz
      * @param container          container of this fragment
      * @param savedInstanceState save file
-     * @return
+     * @return View
      */
     @Nullable
     @Override

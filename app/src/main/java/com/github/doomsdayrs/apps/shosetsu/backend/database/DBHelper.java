@@ -26,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
 
-    static final String chaptersCreate = "create table if not exists " + Database.Tables.CHAPTERS + "(" +
+    private static final String chaptersCreate = "create table if not exists " + Database.Tables.CHAPTERS + "(" +
             // Novel URL this chapter belongs to
             Database.Columns.NOVEL_URL + " text not null," +
             // The chapter chapterURL
@@ -50,7 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //TODO Figure out a legitimate way to structure all this data
 
     // Library that the user has saved their novels to
-    static final String libraryCreate = "create TABLE if not exists " + Database.Tables.LIBRARY + " (" +
+    private static final String libraryCreate = "create TABLE if not exists " + Database.Tables.LIBRARY + " (" +
             // URL of this novel
             Database.Columns.NOVEL_URL + " text not null unique, " +
             // Saved DATA of the novel
@@ -66,7 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Database.Columns.SAVED_DATA + " text)";
 
     // Watches download listing
-    static final String downloadsCreate = "create TABLE if not exists " + Database.Tables.DOWNLOADS + "(" +
+    private static final String downloadsCreate = "create TABLE if not exists " + Database.Tables.DOWNLOADS + "(" +
             Database.Columns.FORMATTER_ID + " integer not null," +
             Database.Columns.NOVEL_URL + " text not null," +
             Database.Columns.CHAPTER_URL + " text not null," +

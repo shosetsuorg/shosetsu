@@ -48,8 +48,8 @@ public class DownloadsFragment extends Fragment {
     public static List<DownloadItem> downloadItems = new ArrayList<>();
 
     @SuppressLint("StaticFieldLeak")
-    public static RecyclerView recyclerView;
-    public static DownloadAdapter adapter;
+    private static RecyclerView recyclerView;
+    private static DownloadAdapter adapter;
 
     /**
      * Constructor
@@ -59,7 +59,7 @@ public class DownloadsFragment extends Fragment {
     }
 
 
-    public static void refreshList() {
+    private static void refreshList() {
         if (DownloadsFragment.adapter != null)
             if (DownloadsFragment.adapter.downloadsFragment != null)
                 if (DownloadsFragment.adapter.downloadsFragment.getActivity() != null)
@@ -76,7 +76,7 @@ public class DownloadsFragment extends Fragment {
         refreshList();
     }
 
-    public static void markErrored(DownloadItem d) {
+    public static void markError(DownloadItem d) {
         for (DownloadItem downloadItem : downloadItems)
             if (downloadItem.chapterURL.equals(d.chapterURL))
                 d.setStatus("Error");
@@ -122,7 +122,7 @@ public class DownloadsFragment extends Fragment {
      * @param inflater           inflater to retrieve objects
      * @param container          container of this fragment
      * @param savedInstanceState save
-     * @return
+     * @return View
      */
     @Nullable
     @Override
@@ -138,7 +138,7 @@ public class DownloadsFragment extends Fragment {
     /**
      * Sets the novel chapters down
      */
-    public void setDownloads() {
+    private void setDownloads() {
         recyclerView.setHasFixedSize(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         adapter = new DownloadAdapter(this);

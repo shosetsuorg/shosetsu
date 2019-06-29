@@ -5,11 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 
-import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
@@ -243,7 +243,9 @@ public class Database {
          */
         public static int getDownloadCount() {
             Cursor cursor = library.rawQuery("select " + Columns.FORMATTER_ID + " from " + Tables.DOWNLOADS, null);
-            return cursor.getCount();
+            int a = cursor.getCount();
+            cursor.close();
+            return a;
         }
     }
 
@@ -411,12 +413,9 @@ public class Database {
          */
         public static boolean inChapters(String chapterURL) {
             Cursor cursor = library.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return false;
-            }
+            int a = cursor.getCount();
             cursor.close();
-            return true;
+            return !(a <= 0);
         }
 
         /**
@@ -482,7 +481,6 @@ public class Database {
          *
          * @param novelPage novelPage
          * @param novelURL  novelURL of the novel
-         * @return if successful
          */
         public static void addToLibrary(int formatter, NovelPage novelPage, String novelURL) {
             try {

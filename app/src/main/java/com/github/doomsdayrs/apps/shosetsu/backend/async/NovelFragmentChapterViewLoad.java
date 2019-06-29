@@ -32,6 +32,7 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
      * Reference to the progress bar
      */
     @SuppressLint("StaticFieldLeak")
+    private final
     ProgressBar progressBar;
 
     /**

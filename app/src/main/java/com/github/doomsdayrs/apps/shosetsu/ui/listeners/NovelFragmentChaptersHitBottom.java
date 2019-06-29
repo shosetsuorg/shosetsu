@@ -28,8 +28,8 @@ import java.util.Collections;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentChaptersHitBottom extends RecyclerView.OnScrollListener {
-    final NovelFragmentChapters novelFragmentChapters;
-    boolean running = false;
+    private final NovelFragmentChapters novelFragmentChapters;
+    private boolean running = false;
 
     public NovelFragmentChaptersHitBottom(NovelFragmentChapters novelFragmentChapters) {
         this.novelFragmentChapters = novelFragmentChapters;
@@ -39,7 +39,7 @@ public class NovelFragmentChaptersHitBottom extends RecyclerView.OnScrollListene
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 
         if (!running)
-            if (!novelFragmentChapters.recyclerView.canScrollVertically(1)) {
+            if (!NovelFragmentChapters.recyclerView.canScrollVertically(1)) {
                 Log.d("ScrollLoad", "Loading...");
                 if (novelFragmentChapters.reversed)
                     Collections.reverse(NovelFragmentChapters.novelChapters);

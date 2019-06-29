@@ -14,10 +14,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue.CatalogueCardsAdapter;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 
@@ -63,7 +63,7 @@ public class CataloguesFragment extends Fragment {
      * @param inflater           inflates layouts and shiz
      * @param container          container of this fragment
      * @param savedInstanceState save file
-     * @return
+     * @return View
      */
     @Nullable
     @Override

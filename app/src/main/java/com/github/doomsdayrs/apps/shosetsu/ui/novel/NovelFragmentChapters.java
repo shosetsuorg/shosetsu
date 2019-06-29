@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.github.Doomsdayrs.api.novelreader_core.main.DefaultScrapers;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -27,6 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +111,7 @@ public class NovelFragmentChapters extends Fragment {
      * @param inflater           inflater to retrieve objects
      * @param container          container of this fragment
      * @param savedInstanceState save
-     * @return
+     * @return View
      */
     @Nullable
     @Override
@@ -137,10 +137,10 @@ public class NovelFragmentChapters extends Fragment {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-            if (Database.DatabaseLibrary.inLibrary(novelURL)){
+            if (Database.DatabaseLibrary.inLibrary(novelURL)) {
                 novelChapters = Database.DatabaseChapter.getChapters(novelURL);
             }
-            adapter = new NovelChaptersAdapter(this, novelChapters, fragmentManager, formatter);
+            adapter = new NovelChaptersAdapter(this, novelChapters, formatter);
             adapter.setHasStableIds(true);
             recyclerView.setLayoutManager(layoutManager);
 

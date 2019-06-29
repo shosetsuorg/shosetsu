@@ -25,6 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsCard;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /*
  * This file is part of Shosetsu.
@@ -187,8 +188,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
             textView.setText(dir);
         }
 
-        public void performFileSearch() {
-            Toast.makeText(getContext(), "Please make sure this is on the main stroage, SD card storage is not functional yet", Toast.LENGTH_LONG).show();
+        void performFileSearch() {
+            Toast.makeText(getContext(), "Please make sure this is on the main storage, SD card storage is not functional yet", Toast.LENGTH_LONG).show();
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             i.addCategory(Intent.CATEGORY_DEFAULT);
             startActivityForResult(Intent.createChooser(i, "Choose directory"), 42);
@@ -203,9 +204,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                 // provided to this method as a parameter.
                 // Pull that URI using resultData.getData().
                 if (data != null) {
-                    String path = data.getData().getPath();
+                    String path = Objects.requireNonNull(data.getData()).getPath();
                     Log.i("Selected Folder", "Uri: " + path);
-                    setDir(path.substring(path.indexOf(":") + 1));
+                    setDir(path.substring(Objects.requireNonNull(path).indexOf(":") + 1));
                 }
             }
 

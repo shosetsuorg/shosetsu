@@ -42,16 +42,14 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
 
 
     private final NovelFragmentChapters novelFragmentChapters;
-    private final FragmentManager fragmentManager;
 
     //Reference to the the NovelFragmentChapters array
     private final List<NovelChapter> novelChapters;
 
 
-    public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters, List<NovelChapter> novels, FragmentManager fragmentManager, Formatter formatter) {
+    public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters, List<NovelChapter> novels, Formatter formatter) {
         this.novelFragmentChapters = novelFragmentChapters;
         this.novelChapters = novels;
-        this.fragmentManager = fragmentManager;
         NovelChaptersAdapter.formatter = formatter;
     }
 

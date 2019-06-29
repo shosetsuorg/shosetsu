@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 /*
  * This file is part of Shosetsu.
@@ -28,8 +27,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
  */
 public class DownloadItemViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView title;
-    public TextView status;
+    public final TextView title;
+    public final TextView status;
 
     public DownloadItemViewHolder(@NonNull View itemView) {
         super(itemView);

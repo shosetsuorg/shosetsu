@@ -11,8 +11,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.DownloadItemViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
-import java.util.List;
-
 /*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
@@ -35,7 +33,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemViewHolder
 
     // This references a static variable
 
-    public DownloadsFragment downloadsFragment;
+    public final DownloadsFragment downloadsFragment;
 
     public DownloadAdapter(DownloadsFragment downloadsFragmentA) {
         downloadsFragment = downloadsFragmentA;

@@ -22,7 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
  */
 public class RecycleCard {
     /**
-     * If there isnt an image loaded in, this will be the image
+     * If there isn't an image loaded in, this will be the image
      */
     public final int libraryImageResource;
 

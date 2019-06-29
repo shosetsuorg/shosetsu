@@ -163,7 +163,7 @@ public class Download_Manager {
 
                     } catch (SocketTimeoutException e) {
                         // Mark download as faulted
-                        DownloadsFragment.markErrored(downloadItem);
+                        DownloadsFragment.markError(downloadItem);
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.exit(1);

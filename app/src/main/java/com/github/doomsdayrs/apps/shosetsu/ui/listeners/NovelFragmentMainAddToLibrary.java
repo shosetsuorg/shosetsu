@@ -28,7 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentMainAddToLibrary implements FloatingActionButton.OnClickListener {
-    final NovelFragmentMain novelFragmentMain;
+    private final NovelFragmentMain novelFragmentMain;
 
     public NovelFragmentMainAddToLibrary(NovelFragmentMain novelFragmentMain) {
         this.novelFragmentMain = novelFragmentMain;
