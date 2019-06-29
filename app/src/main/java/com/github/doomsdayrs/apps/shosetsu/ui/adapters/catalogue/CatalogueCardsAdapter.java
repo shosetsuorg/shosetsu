@@ -38,7 +38,6 @@ import java.util.ArrayList;
  *
  * @author github.com/doomsdayrs
  */
-
 public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.CatalogueHolder> {
     private final ArrayList<CatalogueCard> recycleCards;
     private final FragmentManager fragmentManager;

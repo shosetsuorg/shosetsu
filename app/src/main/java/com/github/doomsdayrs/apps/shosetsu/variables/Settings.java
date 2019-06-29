@@ -21,6 +21,10 @@ import android.net.ConnectivityManager;
  *
  * @author github.com/doomsdayrs
  */
+
+/**
+ * Setting variables to work with
+ */
 public class Settings {
     /**
      * Reader text size
@@ -44,7 +48,7 @@ public class Settings {
     public static ConnectivityManager connectivityManager;
 
     /**
-     * If download is paused
+     * If download manager is paused
      */
     public static boolean downloadPaused;
 }

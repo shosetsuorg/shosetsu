@@ -38,7 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // Saved Data
             // > Scroll position, either 0 for top, or X for the position
             Database.Columns.Y + " integer not null," +
-            // > Either 0 for none, or an incremented count
+            // > Either 0 for none, or an incremented count (Status)
             Database.Columns.READ_CHAPTER + " integer not null," +
             // > Either 0 for false or 1 for true.
             Database.Columns.BOOKMARKED + " integer not null," +
@@ -56,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // Saved DATA of the novel
             Database.Columns.NOVEL_PAGE + " text not null," +
             // Formatter this novel comes from
+            // TODO add status column
             Database.Columns.FORMATTER_ID + " integer not null)";
 
     // Remove in beta release
@@ -74,7 +75,8 @@ public class DBHelper extends SQLiteOpenHelper {
             Database.Columns.CHAPTER_NAME + " text not null," +
 
             // If this novel should be skipped over
-            //TODO Put this into use in Download_Manager
+            // TODO Put this into use in Download_Manager
+            // TODO put status as a column here
             Database.Columns.PAUSED + " integer not null)";
 
 

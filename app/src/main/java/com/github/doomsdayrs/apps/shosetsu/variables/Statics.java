@@ -20,6 +20,10 @@ import android.support.v7.app.ActionBar;
  *
  * @author github.com/doomsdayrs
  */
+
+/**
+ * Static variables to work with
+ */
 public class Statics {
     public static ActionBar mainActionBar;
 }

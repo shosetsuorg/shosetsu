@@ -18,6 +18,10 @@ package com.github.doomsdayrs.apps.shosetsu.variables.enums;
  *
  * @author github.com/doomsdayrs
  */
+
+/**
+ * Status of novel/Chapter
+ */
 public enum Status {
     // Novels and chapters
     UNREAD(0, "Unread"),

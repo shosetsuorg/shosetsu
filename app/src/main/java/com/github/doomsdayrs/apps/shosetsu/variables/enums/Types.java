@@ -20,6 +20,10 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author github.com/doomsdayrs
  */
+
+/**
+ * Used for setting fragments
+ */
 public enum Types {
     DOWNLOAD("download"),
     VIEW("view"),
@@ -34,6 +38,7 @@ public enum Types {
 
     /**
      * Constructor
+     *
      * @param name name of type
      */
     Types(String name) {
@@ -42,6 +47,7 @@ public enum Types {
 
     /**
      * toString overriding method
+     *
      * @return name of type
      */
     @NotNull

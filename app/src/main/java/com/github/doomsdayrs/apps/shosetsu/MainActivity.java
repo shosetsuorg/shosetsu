@@ -42,7 +42,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
  *
  * @author github.com/doomsdayrs
  */
-@SuppressWarnings("EmptyMethod")
+
 public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     public NavigationView navigationView;

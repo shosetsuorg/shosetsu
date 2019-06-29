@@ -20,6 +20,10 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
  *
  * @author github.com/doomsdayrs
  */
+
+/**
+ * These items symbolize download items and their data
+ */
 public class DownloadItem {
 
     public final Formatter formatter;
@@ -32,6 +36,15 @@ public class DownloadItem {
 
     private String status = "Pending";
 
+    /**
+     * Constructor
+     *
+     * @param formatter   formatter to work with
+     * @param novelName   name of the novel
+     * @param chapterName name of the chapter
+     * @param novelURL    NovelURL
+     * @param chapterURL  ChapterURL
+     */
     public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL) {
         this.formatter = formatter;
         this.novelName = cleanse(novelName);
@@ -40,14 +53,31 @@ public class DownloadItem {
         this.chapterURL = chapterURL;
     }
 
+    /**
+     * Returns the status
+     *
+     * @return
+     */
     public String getStatus() {
         return status;
     }
 
+    /**
+     * Sets the status of the download item
+     *
+     * @param status
+     */
     public void setStatus(String status) {
         this.status = status;
     }
 
+
+    /**
+     * Cleans up the names to be functional in file system and DB
+     *
+     * @param s string to clean
+     * @return cleaned string
+     */
     public static String cleanse(String s) {
         //Log.d("Cleaning", s);
         s = s.replaceAll("'", "_").replaceAll("\"", "_");
