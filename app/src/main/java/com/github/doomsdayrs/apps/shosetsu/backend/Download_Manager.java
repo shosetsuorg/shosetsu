@@ -39,11 +39,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class Download_Manager {
 
-    //TODO, make this a variable that can be changed in settings
     public static String shoDir = "/Shosetsu/";
     private static Downloading download = new Downloading();
 
-
+    /**
+     * Initializes download manager
+     */
     public static void init() {
         if (download.isCancelled())
             download = new Downloading();
@@ -51,6 +52,11 @@ public class Download_Manager {
             download.execute();
     }
 
+    /**
+     * Adds to download list
+     *
+     * @param downloadItem download item to add
+     */
     public static void addToDownload(DownloadItem downloadItem) {
         if (!Database.DatabaseDownloads.inDownloads(downloadItem)) {
             Database.DatabaseDownloads.addToDownloads(downloadItem);
@@ -62,18 +68,29 @@ public class Download_Manager {
         }
     }
 
-
+    /**
+     * delete downloaded chapter
+     *
+     * @param context      context to work with
+     * @param downloadItem download item to remove
+     * @return if downloaded
+     */
     public static boolean delete(Context context, DownloadItem downloadItem) {
         File file = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt");
         Database.DatabaseChapter.removePath(downloadItem.chapterURL);
         if (file.exists())
             if (!file.delete())
-                Toast.makeText(context, "Failed to delete, next download will correct", Toast.LENGTH_LONG).show();
-
-
+                if (context != null)
+                    Toast.makeText(context, "Failed to delete, next download will correct", Toast.LENGTH_LONG).show();
         return true;
     }
 
+    /**
+     * Get saved text
+     *
+     * @param path path of saved chapter
+     * @return Passage of saved chapter
+     */
     public static String getText(String path) {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             StringBuilder sb = new StringBuilder();
@@ -92,17 +109,21 @@ public class Download_Manager {
     }
 
 
+    /**
+     * Download loop controller
+     * TODO Notification of download progress (( What is being downloaded
+     * TODO Skip over paused chapters or move them to the bottom of the list
+     */
     static class Downloading extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             while (Database.DatabaseDownloads.getDownloadCount() >= 1 && !Settings.downloadPaused) {
+
                 DownloadItem downloadItem = Database.DatabaseDownloads.getFirstDownload();
-
+                // Starts up
                 DownloadsFragment.toggleProcess(downloadItem);
-
                 if (downloadItem != null)
                     try {
-
                         {
                             Log.d("Dir", shoDir + "download/");
                             File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
@@ -128,10 +149,12 @@ public class Download_Manager {
                             Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
                         }
 
+                        // Clean up
                         Database.DatabaseDownloads.removeDownload(downloadItem);
                         DownloadsFragment.toggleProcess(downloadItem);
                         DownloadsFragment.removeDownloads(downloadItem);
 
+                        // Rate limiting
                         try {
                             TimeUnit.MILLISECONDS.sleep(10);
                         } catch (InterruptedException e) {
@@ -139,6 +162,7 @@ public class Download_Manager {
                         }
 
                     } catch (SocketTimeoutException e) {
+                        // Mark download as faulted
                         DownloadsFragment.markErrored(downloadItem);
                     } catch (IOException e) {
                         e.printStackTrace();

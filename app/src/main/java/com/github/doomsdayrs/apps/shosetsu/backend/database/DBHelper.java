@@ -27,6 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     static final String chaptersCreate = "create table if not exists " + Database.Tables.CHAPTERS + "(" +
+            // Novel URL this chapter belongs to
             Database.Columns.NOVEL_URL + " text not null," +
             // The chapter chapterURL
             Database.Columns.CHAPTER_URL + " text not null unique," +
@@ -50,10 +51,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Library that the user has saved their novels to
     static final String libraryCreate = "create TABLE if not exists " + Database.Tables.LIBRARY + " (" +
+            // URL of this novel
             Database.Columns.NOVEL_URL + " text not null unique, " +
+            // Saved DATA of the novel
             Database.Columns.NOVEL_PAGE + " text not null," +
+            // Formatter this novel comes from
             Database.Columns.FORMATTER_ID + " integer not null)";
 
+    // Remove in beta release
     @Deprecated
     static final String bookmarksCreate = "create TABLE if not exists " + Database.Tables.BOOKMARKS + "(" +
             Database.Columns.CHAPTER_URL + " text unique not null, " +
@@ -67,6 +72,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
             Database.Columns.NOVEL_NAME + " text not null," +
             Database.Columns.CHAPTER_NAME + " text not null," +
+
+            // If this novel should be skipped over
+            //TODO Put this into use in Download_Manager
             Database.Columns.PAUSED + " integer not null)";
 
 

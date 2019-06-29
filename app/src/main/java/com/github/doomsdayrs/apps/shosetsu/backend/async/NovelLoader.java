@@ -49,9 +49,10 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
 
     /**
-     * Background process 
-     * @param voids
-     * @return
+     * Background process
+     *
+     * @param voids activity to work with
+     * @return if completed
      */
     @Override
     protected Boolean doInBackground(Activity... voids) {
@@ -70,13 +71,19 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         return false;
     }
 
+    /**
+     * Show progress bar
+     */
     @Override
     protected void onPreExecute() {
         novelFragment.progressBar.setVisibility(View.VISIBLE);
-        super.onPreExecute();
-
     }
 
+    /**
+     * Hides progress and sets data
+     *
+     * @param aBoolean if completed
+     */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         novelFragment.progressBar.setVisibility(View.GONE);

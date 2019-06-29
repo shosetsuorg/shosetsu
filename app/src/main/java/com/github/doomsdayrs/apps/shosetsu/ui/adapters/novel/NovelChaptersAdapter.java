@@ -12,7 +12,6 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.ChaptersViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
@@ -84,7 +83,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
             chaptersViewHolder.downloaded = true;
         }
 
-        switch (Database.DatabaseChapter.isRead(novelChapter.link)) {
+        switch (Database.DatabaseChapter.getStatus(novelChapter.link)) {
             case READING:
                 chaptersViewHolder.status.setText(Status.READING.getStatus());
                 chaptersViewHolder.readTag.setVisibility(View.VISIBLE);

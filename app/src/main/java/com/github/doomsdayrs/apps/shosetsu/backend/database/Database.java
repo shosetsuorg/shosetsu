@@ -10,7 +10,6 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
@@ -53,9 +52,15 @@ import java.util.List;
  */
 //TODO Finish reconstruction and use serialized java objects into DB
 public class Database {
+    /**
+     * SQLITEDatabase
+     */
     public static SQLiteDatabase library;
 
 
+    /**
+     * Tables to work with
+     */
     public enum Tables {
         LIBRARY("library"),
         BOOKMARKS("bookmarks"),
@@ -74,6 +79,9 @@ public class Database {
         }
     }
 
+    /**
+     * Columns to work with
+     */
     public enum Columns {
         MAX_PAGE("maxPage"),
         CHAPTER_URL("chapterURL"),
@@ -102,6 +110,13 @@ public class Database {
         }
     }
 
+    /**
+     * Serialize object to string
+     *
+     * @param object object serialize
+     * @return Serialised string
+     * @throws IOException exception
+     */
     private static String serialize(Object object) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -110,6 +125,14 @@ public class Database {
         return Base64.encodeBase64String(bytes);
     }
 
+    /**
+     * Deserialize a string to the object
+     *
+     * @param string serialized string
+     * @return Object from string
+     * @throws IOException            exception
+     * @throws ClassNotFoundException exception
+     */
     private static Object deserialize(String string) throws IOException, ClassNotFoundException {
         byte[] bytes = Base64.decodeBase64(string);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
@@ -118,7 +141,15 @@ public class Database {
     }
 
 
+    /**
+     * Download control
+     */
     public static class DatabaseDownloads {
+        /**
+         * Gets downloads that are stored
+         *
+         * @return DownloadItems to download
+         */
         public static List<DownloadItem> getDownloadList() {
             ArrayList<DownloadItem> downloadItems = new ArrayList<>();
             Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + ";", null);
@@ -136,6 +167,11 @@ public class Database {
             return downloadItems;
         }
 
+        /**
+         * Gets the first download item
+         *
+         * @return DownloadItem to download
+         */
         public static DownloadItem getFirstDownload() {
             Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + " LIMIT 1;", null);
             if (cursor.getCount() <= 0) {
@@ -154,12 +190,22 @@ public class Database {
             }
         }
 
+        /**
+         * Removes download item
+         *
+         * @param downloadItem download item to remove
+         * @return if removed
+         */
         public static boolean removeDownload(DownloadItem downloadItem) {
             return library.delete(Tables.DOWNLOADS.toString(), Columns.CHAPTER_URL + "='" + downloadItem.chapterURL + "'", null) > 0;
         }
 
+        /**
+         * Adds to download list
+         *
+         * @param downloadItem Download item to add
+         */
         public static void addToDownloads(DownloadItem downloadItem) {
-
             library.execSQL("insert into " + Tables.DOWNLOADS + " (" +
                     Columns.FORMATTER_ID + "," +
                     Columns.NOVEL_URL + "," +
@@ -175,6 +221,12 @@ public class Database {
                     DownloadItem.cleanse(downloadItem.chapterName) + "'," + 0 + ")");
         }
 
+        /**
+         * Checks if is in download list
+         *
+         * @param downloadItem download item to check
+         * @return if is in list
+         */
         public static boolean inDownloads(DownloadItem downloadItem) {
             Cursor cursor = library.rawQuery("SELECT " + Columns.CHAPTER_URL + " from " + Tables.DOWNLOADS + " where " + Columns.CHAPTER_URL + " = '" + downloadItem.chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
@@ -186,12 +238,18 @@ public class Database {
             }
         }
 
+        /**
+         * @return count of download items
+         */
         public static int getDownloadCount() {
             Cursor cursor = library.rawQuery("select " + Columns.FORMATTER_ID + " from " + Tables.DOWNLOADS, null);
             return cursor.getCount();
         }
     }
 
+    /**
+     * Chapter control
+     */
     public static class DatabaseChapter {
         /**
          * Updates the Y coordinate
@@ -204,7 +262,12 @@ public class Database {
             library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
 
-        public static Status isRead(String chapterURL) {
+
+        /**
+         * @param chapterURL chapter to check
+         * @return returns chapter status
+         */
+        public static Status getStatus(String chapterURL) {
             Cursor cursor = library.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
@@ -222,6 +285,12 @@ public class Database {
             }
         }
 
+        /**
+         * Sets chapter status
+         *
+         * @param chapterURL chapter to be set
+         * @param status     status to be set
+         */
         public static void setChapterStatus(String chapterURL, Status status) {
             library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
@@ -277,14 +346,24 @@ public class Database {
 
         }
 
+        /**
+         * Removes save path from chapter
+         *
+         * @param chapterURL chapter to remove save path of
+         */
         public static void removePath(String chapterURL) {
             library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=null," + Columns.IS_SAVED + "=0 where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
 
+        /**
+         * Adds save path
+         *
+         * @param chapterURL  chapter to update
+         * @param chapterPath save path to set
+         */
         public static void addSavedPath(String chapterURL, String chapterPath) {
             library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "='" + chapterPath + "'," + Columns.IS_SAVED + "=1 where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
-
 
         /**
          * Is the chapter saved
@@ -324,7 +403,12 @@ public class Database {
             }
         }
 
-
+        /**
+         * If the chapter URL is present or not
+         *
+         * @param chapterURL chapter url
+         * @return if present
+         */
         public static boolean inChapters(String chapterURL) {
             Cursor cursor = library.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
@@ -335,6 +419,12 @@ public class Database {
             return true;
         }
 
+        /**
+         * Adds chapter to database
+         *
+         * @param novelURL     novelURL
+         * @param novelChapter chapterURL
+         */
         public static void addToChapters(String novelURL, NovelChapter novelChapter) {
             try {
                 library.execSQL("insert into " + Tables.CHAPTERS + "(" +
@@ -355,6 +445,12 @@ public class Database {
         }
 
 
+        /**
+         * Gets chapters of a novel
+         *
+         * @param novelURL novel to retrieve from
+         * @return List of chapters saved of novel
+         */
         public static List<NovelChapter> getChapters(String novelURL) {
             Cursor cursor = library.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
@@ -462,8 +558,13 @@ public class Database {
             }
         }
 
+        /**
+         * Gets saved novelPage
+         *
+         * @param novelURL novelURL to retrieve
+         * @return Saved novelPage
+         */
         public static NovelPage getNovelPage(String novelURL) {
-
             Cursor cursor = library.rawQuery("SELECT " + Columns.NOVEL_PAGE + " from " + Tables.LIBRARY + " where " + Columns.NOVEL_URL + "='" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
@@ -486,11 +587,19 @@ public class Database {
 
     //TODO Restore backup
     // > If entry exists, simply update the data
+    // > Popup window of restoring progress and errors
 
+    /**
+     * Backs up database
+     * TODO Popup window of progress
+     */
     public static void backupDatabase() {
         new backUP().execute();
     }
 
+    /**
+     * Async progress of backup
+     */
     static class backUP extends AsyncTask<Void, Void, Void> {
 
         @Override

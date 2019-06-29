@@ -28,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
  * @author github.com/doomsdayrs
  */
 public class SettingsController {
+    // Preference objects
     public static SharedPreferences download;
     public static SharedPreferences view;
     public static SharedPreferences advanced;
@@ -44,10 +45,15 @@ public class SettingsController {
         Settings.downloadPaused = download.getBoolean("paused", false);
     }
 
-    public static boolean togglePause(){
+    /**
+     * Toggles paused downloads
+     *
+     * @return if paused or not
+     */
+    public static boolean togglePause() {
         Settings.downloadPaused = !Settings.downloadPaused;
         download.edit()
-                .putBoolean("paused",Settings.downloadPaused)
+                .putBoolean("paused", Settings.downloadPaused)
                 .apply();
         return Settings.downloadPaused;
     }
@@ -127,6 +133,7 @@ public class SettingsController {
     }
 
 
+    //TODO Online Trackers
     //Methods below when tracking system setup
 
     @SuppressWarnings({"EmptyMethod", "unused"})

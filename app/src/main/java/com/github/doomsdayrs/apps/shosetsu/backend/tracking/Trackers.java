@@ -48,4 +48,5 @@ public enum Trackers {
                 "name='" + name + '\'' +
                 ", id=" + id +
                 '}';
-    }}
+    }
+}
