@@ -22,7 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

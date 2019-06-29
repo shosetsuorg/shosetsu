@@ -9,7 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

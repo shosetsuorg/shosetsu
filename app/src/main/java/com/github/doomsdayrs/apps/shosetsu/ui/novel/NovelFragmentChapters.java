@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

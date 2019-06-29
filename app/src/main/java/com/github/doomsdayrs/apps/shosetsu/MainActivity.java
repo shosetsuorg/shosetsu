@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

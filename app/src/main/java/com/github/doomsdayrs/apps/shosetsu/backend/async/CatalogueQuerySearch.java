@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,11 @@ import java.util.List;
  */
 public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<CatalogueNovelCard>> {
 
+    /**
+     * Search catalogue
+     * @param strings ignored
+     * @return List of results
+     */
     @Override
     protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
         ArrayList<CatalogueNovelCard> result = new ArrayList<>();

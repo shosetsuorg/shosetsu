@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,24 @@ import java.util.concurrent.TimeUnit;
  * @author github.com/doomsdayrs
  */
 public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
+    // Reference
     private final NovelFragmentChapters novelFragmentChapters;
 
+    /**
+     * Constructor
+     *
+     * @param novelFragmentChapters reference
+     */
     public NovelChaptersLoader(NovelFragmentChapters novelFragmentChapters) {
         this.novelFragmentChapters = novelFragmentChapters;
     }
 
+    /**
+     * Loads chapters of a novel
+     *
+     * @param integers position 0 is the page to load
+     * @return if completed
+     */
     @Override
     protected Boolean doInBackground(Integer... integers) {
         if (novelFragmentChapters.formatter.isIncrementingChapterList())
@@ -45,9 +57,10 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
                     novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL);
                 else
                     novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0]);
-                //TODO Difference calculation
                 boolean foundDif = false;
                 int increment = 1;
+
+                // Loops till there is a difference (this is for the fact that chapters are loaded if there
                 while (!foundDif) {
                     for (NovelChapter novelChapter : novelPage.novelChapters) {
                         if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
@@ -72,18 +85,29 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
         return false;
     }
 
+    /**
+     * Ends progress bar
+     */
     @Override
     protected void onCancelled() {
         novelFragmentChapters.progressBar.setVisibility(View.GONE);
         super.onCancelled();
     }
 
+    /**
+     * Starts the loading action
+     */
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         novelFragmentChapters.progressBar.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Once done remove progress bar
+     *
+     * @param aBoolean result of doInBackground
+     */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         novelFragmentChapters.progressBar.setVisibility(View.GONE);

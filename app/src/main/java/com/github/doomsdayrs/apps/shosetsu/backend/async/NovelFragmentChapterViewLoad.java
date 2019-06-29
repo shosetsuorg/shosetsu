@@ -9,7 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 
 import java.io.IOException;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,17 @@ import java.io.IOException;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapterView, Void, String> {
+    /**
+     * Reference to the progress bar
+     */
     @SuppressLint("StaticFieldLeak")
     ProgressBar progressBar;
 
+    /**
+     * Constructor
+     *
+     * @param progressBar progress bar to change
+     */
     public NovelFragmentChapterViewLoad(ProgressBar progressBar) {
         this.progressBar = progressBar;
     }
@@ -46,15 +54,24 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
         return null;
     }
 
+    /**
+     * Show progress before start
+     */
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressBar.setVisibility(View.VISIBLE);
+        if (progressBar != null)
+            progressBar.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Once complete hide progress
+     * @param s null
+     */
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        progressBar.setVisibility(View.GONE);
+        if (progressBar != null)
+            progressBar.setVisibility(View.GONE);
     }
 }

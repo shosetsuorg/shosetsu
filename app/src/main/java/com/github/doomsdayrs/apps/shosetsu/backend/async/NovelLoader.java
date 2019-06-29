@@ -14,7 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,26 @@ import java.net.SocketTimeoutException;
  * @author github.com/doomsdayrs
  */
 public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
+    // References
     private final NovelFragment novelFragment;
     @SuppressLint("StaticFieldLeak")
     private Activity activity;
 
+    /**
+     * Constructor
+     *
+     * @param novelFragment reference to the fragment
+     */
     public NovelLoader(NovelFragment novelFragment) {
         this.novelFragment = novelFragment;
     }
 
 
+    /**
+     * Background process 
+     * @param voids
+     * @return
+     */
     @Override
     protected Boolean doInBackground(Activity... voids) {
         this.activity = voids[0];
@@ -52,7 +63,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
         } catch (SocketTimeoutException e) {
-                activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
+            activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
         } catch (IOException e) {
             e.printStackTrace();
         }

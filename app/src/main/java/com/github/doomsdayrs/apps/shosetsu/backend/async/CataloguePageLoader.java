@@ -12,7 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNov
 import java.io.IOException;
 import java.util.List;
 
-/**
+/*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
+    // References to objects
     private final CatalogueFragment catalogueFragment;
     private final CatalogueFragmentHitBottom catalogueFragmentHitBottom;
 
@@ -64,11 +65,14 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
         Log.d("Loading", "Catalogue");
         try {
             List<Novel> novels;
+
+            // Loads novel list
             if (integers.length == 0)
                 novels = CatalogueFragment.formatter.parseLatest(CatalogueFragment.formatter.getLatestURL(1));
             else {
                 novels = CatalogueFragment.formatter.parseLatest(CatalogueFragment.formatter.getLatestURL(integers[0]));
             }
+
             for (Novel novel : novels)
                 CatalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, novel.link));
             catalogueFragment.library_view.post(() -> catalogueFragment.library_Adapter.notifyDataSetChanged());
@@ -96,11 +100,17 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
         return false;
     }
 
+    /**
+     * Ends progress bar
+     */
     @Override
     protected void onCancelled() {
         catalogueFragment.progressBar.setVisibility(View.GONE);
     }
 
+    /**
+     * Starts the loading action
+     */
     @Override
     protected void onPreExecute() {
         if (catalogueFragmentHitBottom == null)
@@ -108,6 +118,10 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
         else catalogueFragment.bottomProgressBar.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Once done remove progress bar
+     * @param aBoolean result of doInBackground
+     */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         if (catalogueFragmentHitBottom == null)
