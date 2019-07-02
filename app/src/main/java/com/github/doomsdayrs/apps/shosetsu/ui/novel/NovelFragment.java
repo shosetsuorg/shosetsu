@@ -45,7 +45,6 @@ import java.util.List;
 public class NovelFragment extends Fragment {
     private View view;
     public FragmentManager fragmentManager = null;
-    public Formatter formatter;
     public String novelURL;
     public NovelFragmentMain novelFragmentMain;
     public NovelFragmentChapters novelFragmentChapters;
@@ -61,7 +60,6 @@ public class NovelFragment extends Fragment {
         super.onSaveInstanceState(outState);
         Log.d("Saving Instance State", "NovelFragment");
         outState.putString("novelURL", novelURL);
-        outState.putInt("formatter", formatter.getID());
     }
 
     @Nullable
@@ -87,7 +85,6 @@ public class NovelFragment extends Fragment {
             }
         } else {
             novelURL = savedInstanceState.getString("novelURL");
-            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             setViewPager();
         }
         return view;
@@ -102,12 +99,8 @@ public class NovelFragment extends Fragment {
         List<Fragment> fragments = new ArrayList<>();
         // Sets the data
         {
-            novelFragmentChapters.formatter = formatter;
             novelFragmentChapters.novelURL = novelURL;
-            novelFragmentChapters.setFragmentManager(fragmentManager);
-
             novelFragmentMain.url = novelURL;
-            novelFragmentMain.formatter = formatter;
 
         }
         // Add the fragments

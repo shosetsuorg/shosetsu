@@ -7,6 +7,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -50,13 +51,13 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
      */
     @Override
     protected Boolean doInBackground(Integer... integers) {
-        if (novelFragmentChapters.formatter.isIncrementingChapterList())
+        if ( StaticNovel.formatter.isIncrementingChapterList())
             try {
                 NovelPage novelPage;
                 if (integers.length == 0)
-                    novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL);
+                    novelPage =  StaticNovel.formatter.parseNovel(novelFragmentChapters.novelURL);
                 else
-                    novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0]);
+                    novelPage =  StaticNovel.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0]);
                 boolean foundDif = false;
                 int increment = 1;
 
@@ -70,7 +71,7 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
                     }
                     if (!foundDif) {
                         TimeUnit.MILLISECONDS.sleep(100);
-                        novelPage = novelFragmentChapters.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0] + increment);
+                        novelPage =  StaticNovel.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0] + increment);
                         novelFragmentChapters.currentMaxPage++;
                         increment++;
                     }

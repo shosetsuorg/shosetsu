@@ -12,11 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -45,7 +43,7 @@ import java.util.Arrays;
  * TODO Swipe from top of screen downwards to update the data of this novel
  */
 public class NovelFragmentMain extends Fragment {
-    public Formatter formatter;
+
     public String url;
     private ImageView imageView;
     private TextView title;
@@ -79,7 +77,6 @@ public class NovelFragmentMain extends Fragment {
         super.onSaveInstanceState(outState);
         Log.d("Saving Instance State", "NovelFragmentMain");
         outState.putString("imageURL", url);
-        outState.putInt("formatter", formatter.getID());
     }
 
     @Nullable
@@ -100,7 +97,6 @@ public class NovelFragmentMain extends Fragment {
 
         if (savedInstanceState != null) {
             url = savedInstanceState.getString("imageURL");
-            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
         }
 
 
@@ -128,7 +124,7 @@ public class NovelFragmentMain extends Fragment {
                 .load(StaticNovel.novelPage.imageURL)
                 .into(imageView);
         floatingActionButton.show();
-        formatterName.setText(formatter.getName());
+        formatterName.setText(StaticNovel.formatter.getName());
     }
 
 }

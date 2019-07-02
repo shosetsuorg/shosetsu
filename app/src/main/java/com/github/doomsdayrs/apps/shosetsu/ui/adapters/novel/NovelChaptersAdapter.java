@@ -1,14 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -38,8 +36,6 @@ import java.util.List;
  */
 public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
-    public static Formatter formatter;
-
 
     private final NovelFragmentChapters novelFragmentChapters;
 
@@ -47,10 +43,9 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
     private final List<NovelChapter> novelChapters;
 
 
-    public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters, List<NovelChapter> novels, Formatter formatter) {
+    public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters, List<NovelChapter> novels) {
         this.novelFragmentChapters = novelFragmentChapters;
         this.novelChapters = novels;
-        NovelChaptersAdapter.formatter = formatter;
     }
 
 

@@ -66,11 +66,11 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         itemView.setOnClickListener(this);
         download.setOnClickListener(v -> {
             if (!downloaded) {
-                DownloadItem downloadItem = new DownloadItem(NovelChaptersAdapter.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link);
+                DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link);
                 Download_Manager.addToDownload(downloadItem);
                 downloaded = true;
             } else {
-                if (Download_Manager.delete(itemView.getContext(), new DownloadItem(NovelChaptersAdapter.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link)))
+                if (Download_Manager.delete(itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, novelFragmentChapters.novelURL, novelChapter.link)))
                     download.setImageResource(R.drawable.ic_outline_arrow_drop_down_circle_24px);
                 downloaded = false;
             }
@@ -98,7 +98,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         intent.putExtra("title", novelChapter.chapterNum);
         intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelURL", novelFragmentChapters.novelURL);
-        intent.putExtra("formatter", NovelChaptersAdapter.formatter.getID());
+        intent.putExtra("formatter", StaticNovel.formatter.getID());
         intent.putExtra("downloaded", downloaded);
         novelFragmentChapters.startActivity(intent);
     }

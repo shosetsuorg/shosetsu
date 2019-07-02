@@ -62,9 +62,7 @@ public class NovelFragmentChapters extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static RecyclerView recyclerView;
     public int currentMaxPage = 1;
-    public Formatter formatter;
     public String novelURL;
-    private FragmentManager fragmentManager;
     public static NovelChaptersAdapter adapter;
     private Context context;
     public ProgressBar progressBar;
@@ -76,14 +74,6 @@ public class NovelFragmentChapters extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    /**
-     * Sets the fragment manager
-     *
-     * @param fragmentManager fragment manager
-     */
-    public void setFragmentManager(FragmentManager fragmentManager) {
-        this.fragmentManager = fragmentManager;
-    }
 
     @Override
     public void onResume() {
@@ -107,7 +97,6 @@ public class NovelFragmentChapters extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("novelURL", novelURL);
-        outState.putInt("formatter", formatter.getID());
         outState.putInt("maxPage", currentMaxPage);
     }
 
@@ -128,7 +117,6 @@ public class NovelFragmentChapters extends Fragment {
         progressBar = view.findViewById(R.id.fragment_novel_chapters_progress);
         if (savedInstanceState != null) {
             novelURL = savedInstanceState.getString("novelURL");
-            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }
         setNovels();
@@ -146,21 +134,22 @@ public class NovelFragmentChapters extends Fragment {
             if (Database.DatabaseLibrary.inLibrary(novelURL)) {
                 novelChapters = Database.DatabaseChapter.getChapters(novelURL);
             }
-            adapter = new NovelChaptersAdapter(this, novelChapters, formatter);
+            adapter = new NovelChaptersAdapter(this, novelChapters);
             adapter.setHasStableIds(true);
             recyclerView.setLayoutManager(layoutManager);
 
-            if (SettingsController.isOnline())
-                recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
+            if (StaticNovel.formatter.isIncrementingChapterList()){
+                if (SettingsController.isOnline())
+                    recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
 
-            else recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    if (!recyclerView.canScrollVertically(1))
-                        Toast.makeText(getContext(), "You are offline, impossible to load more", Toast.LENGTH_SHORT).show();
-                }
-            });
-
+                else recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        if (!recyclerView.canScrollVertically(1))
+                            Toast.makeText(getContext(), "You are offline, impossible to load more", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
             recyclerView.setAdapter(adapter);
         }
     }

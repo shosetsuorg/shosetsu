@@ -37,7 +37,7 @@ public class NovelFragmentMainAddToLibrary implements FloatingActionButton.OnCli
     @Override
     public void onClick(View v) {
         if (!novelFragmentMain.inLibrary) {
-            Database.DatabaseLibrary.addToLibrary(novelFragmentMain.formatter.getID(), StaticNovel.novelPage, novelFragmentMain.url);
+            Database.DatabaseLibrary.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, novelFragmentMain.url);
             novelFragmentMain.inLibrary = true;
             novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
         } else {

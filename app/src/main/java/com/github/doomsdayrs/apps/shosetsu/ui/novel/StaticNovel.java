@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
+import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 
 /*
@@ -25,4 +26,5 @@ public class StaticNovel {
      * Global variable of the current loaded novel
      */
     public static NovelPage novelPage;
+    public static Formatter formatter;
 }

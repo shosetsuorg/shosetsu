@@ -66,7 +66,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         StaticNovel.novelPage = null;
         Log.d("Loading", novelFragment.novelURL);
         try {
-            StaticNovel.novelPage = novelFragment.formatter.parseNovel(novelFragment.novelURL);
+            StaticNovel.novelPage =  StaticNovel.formatter.parseNovel(novelFragment.novelURL);
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
         } catch (SocketTimeoutException e) {

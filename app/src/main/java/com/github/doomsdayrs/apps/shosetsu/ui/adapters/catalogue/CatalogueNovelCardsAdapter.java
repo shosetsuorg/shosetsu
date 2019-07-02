@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 import com.squareup.picasso.Picasso;
 
@@ -94,7 +95,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         @Override
         public void onClick(View v) {
             NovelFragment novelFragment = new NovelFragment();
-            novelFragment.formatter = formatter;
+            StaticNovel.formatter = formatter;
             novelFragment.novelURL = url;
             novelFragment.fragmentManager = fragmentManager;
             fragmentManager.beginTransaction()
