@@ -32,6 +32,10 @@ import java.net.SocketTimeoutException;
  *
  * @author github.com/doomsdayrs
  */
+
+/**
+ * This task loads a novel for the novel fragment
+ */
 public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     // References
     private final NovelFragment novelFragment;
@@ -53,6 +57,8 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
      *
      * @param voids activity to work with
      * @return if completed
+     * TODO Split chapter loading off to another task
+     * TODO On the other task mentioned above, load all the chapters for this novel.
      */
     @Override
     protected Boolean doInBackground(Activity... voids) {
