@@ -69,7 +69,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("text", text);
-        outState.putString("novelURL", chapterURL);
+        outState.putString("chapterURL", chapterURL);
         outState.putInt("formatter", formatter.getID());
         outState.putString("novelURL", novelURL);
         outState.putString("title", title);
@@ -212,7 +212,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             title = savedInstanceState.getString("title");
-            chapterURL = savedInstanceState.getString("novelURL");
+            chapterURL = savedInstanceState.getString("chapterURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             text = savedInstanceState.getString("text");
         } else chapterURL = getIntent().getStringExtra("chapterURL");
