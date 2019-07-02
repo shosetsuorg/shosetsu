@@ -50,6 +50,12 @@ import java.util.Objects;
  *
  * @author github.com/doomsdayrs
  */
+
+/**
+ * Displays the chapters the novel contains
+ * TODO Add scroll bar to quickly slide downwards
+ * TODO Check filesystem if the chapter is saved, even if not in DB.
+ */
 public class NovelFragmentChapters extends Fragment {
     public static List<NovelChapter> novelChapters = new ArrayList<>();
     public boolean reversed;

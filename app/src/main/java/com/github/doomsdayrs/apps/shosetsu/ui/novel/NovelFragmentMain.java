@@ -39,6 +39,11 @@ import java.util.Arrays;
  *
  * @author github.com/doomsdayrs
  */
+
+/**
+ * The page you see when you select a novel
+ * TODO Swipe from top of screen downwards to update the data of this novel
+ */
 public class NovelFragmentMain extends Fragment {
     public Formatter formatter;
     public String url;
