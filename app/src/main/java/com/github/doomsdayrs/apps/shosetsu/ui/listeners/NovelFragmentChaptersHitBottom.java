@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelChaptersLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 
 import java.util.Collections;
 
@@ -42,14 +43,14 @@ public class NovelFragmentChaptersHitBottom extends RecyclerView.OnScrollListene
             if (!NovelFragmentChapters.recyclerView.canScrollVertically(1)) {
                 Log.d("ScrollLoad", "Loading...");
                 if (novelFragmentChapters.reversed)
-                    Collections.reverse(NovelFragmentChapters.novelChapters);
+                    Collections.reverse(StaticNovel.novelChapters);
                 running = true;
                 novelFragmentChapters.currentMaxPage++;
                 new NovelChaptersLoader(novelFragmentChapters).execute(novelFragmentChapters.currentMaxPage);
                 Log.d("ScrollLoad", "Completed.");
                 running = false;
                 if (novelFragmentChapters.reversed)
-                    Collections.reverse(NovelFragmentChapters.novelChapters);
+                    Collections.reverse(StaticNovel.novelChapters);
             }
     }
 }

@@ -44,6 +44,7 @@ import java.util.Objects;
  */
 public class CataloguesFragment extends Fragment {
     private ArrayList<CatalogueCard> cards = null;
+
     /**
      * Constructor
      */
@@ -55,7 +56,6 @@ public class CataloguesFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_catalogues, menu);
     }
-
 
     /**
      * Creates view

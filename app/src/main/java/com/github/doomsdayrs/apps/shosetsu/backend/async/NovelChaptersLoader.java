@@ -55,9 +55,9 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
             try {
                 NovelPage novelPage;
                 if (integers.length == 0)
-                    novelPage =  StaticNovel.formatter.parseNovel(novelFragmentChapters.novelURL);
+                    novelPage =  StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
                 else
-                    novelPage =  StaticNovel.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0]);
+                    novelPage =  StaticNovel.formatter.parseNovel(StaticNovel.novelURL, integers[0]);
                 boolean foundDif = false;
                 int increment = 1;
 
@@ -65,13 +65,13 @@ public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
                 while (!foundDif) {
                     for (NovelChapter novelChapter : novelPage.novelChapters) {
                         if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
-                            NovelFragmentChapters.novelChapters.add(novelChapter);
+                            StaticNovel.novelChapters.add(novelChapter);
                             foundDif = true;
                         }
                     }
                     if (!foundDif) {
                         TimeUnit.MILLISECONDS.sleep(100);
-                        novelPage =  StaticNovel.formatter.parseNovel(novelFragmentChapters.novelURL, integers[0] + increment);
+                        novelPage =  StaticNovel.formatter.parseNovel(StaticNovel.novelURL, integers[0] + increment);
                         novelFragmentChapters.currentMaxPage++;
                         increment++;
                     }

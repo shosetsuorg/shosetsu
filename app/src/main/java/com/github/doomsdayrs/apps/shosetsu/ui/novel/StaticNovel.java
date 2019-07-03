@@ -1,7 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * This file is part of Shosetsu.
@@ -25,6 +30,10 @@ public class StaticNovel {
     /**
      * Global variable of the current loaded novel
      */
+    public static String novelURL;
     public static NovelPage novelPage;
+    public static List<NovelChapter> novelChapters = new ArrayList<>();
     public static Formatter formatter;
+    public static int maxPage = 0;
+    public static Status status = Status.UNREAD;
 }

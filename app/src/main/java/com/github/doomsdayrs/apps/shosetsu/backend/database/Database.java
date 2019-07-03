@@ -96,7 +96,8 @@ public class Database {
         SAVE_PATH("savePath"),
         NOVEL_NAME("novelName"),
         CHAPTER_NAME("chapterName"),
-        PAUSED("paused");
+        PAUSED("paused"),
+        STATUS("status");
         final String COLUMN;
 
         Columns(String column) {
@@ -482,12 +483,15 @@ public class Database {
          * @param novelPage novelPage
          * @param novelURL  novelURL of the novel
          */
-        public static void addToLibrary(int formatter, NovelPage novelPage, String novelURL) {
+        public static void addToLibrary(int formatter, NovelPage novelPage, String novelURL, int maxPage, int status) {
             try {
-                library.execSQL("insert into " + Tables.LIBRARY + "('" + Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.NOVEL_PAGE + ") values(" +
+                library.execSQL("insert into " + Tables.LIBRARY + "('" +
+                        Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.NOVEL_PAGE + "," + Columns.MAX_PAGE + "," + Columns.STATUS + ") values(" +
                         "'" + novelURL + "'," +
                         "'" + formatter + "','" +
-                        serialize(novelPage) + "')"
+                        serialize(novelPage) + "," +
+                        maxPage + "," +
+                        status + "')"
                 );
             } catch (IOException e) {
                 e.printStackTrace();
@@ -580,6 +584,44 @@ public class Database {
                 }
             }
             return null;
+        }
+
+        public static int getMaxPage(String novelURL) {
+            Cursor cursor = library.rawQuery("SELECT " + Columns.MAX_PAGE + " from " + Tables.LIBRARY + " where " + Columns.NOVEL_URL + "='" + novelURL + "'", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return 0;
+            } else {
+                cursor.moveToNext();
+                int page = cursor.getInt(cursor.getColumnIndex(Columns.MAX_PAGE.toString()));
+                cursor.close();
+                return page;
+            }
+        }
+
+        public static void setStatus(String novelURL, Status status) {
+            library.execSQL("update " + Tables.LIBRARY + " set " + Columns.STATUS + "=" + status + " where " + Columns.NOVEL_URL + "='" + novelURL + "'");
+        }
+
+        public static Status getStatus(String novelURL) {
+            Cursor cursor = library.rawQuery("SELECT " + Columns.STATUS + " from " + Tables.LIBRARY + " where " + Columns.NOVEL_URL + " = '" + novelURL + "'", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return Status.UNREAD;
+            } else {
+                cursor.moveToNext();
+                int y = cursor.getInt(cursor.getColumnIndex(Columns.STATUS.toString()));
+                cursor.close();
+                if (y == 0)
+                    return Status.UNREAD;
+                else if (y == 1)
+                    return Status.READING;
+                else if (y == 2)
+                    return Status.READ;
+                else if (y == 3)
+                    return Status.ONHOLD;
+                else return Status.DROPPED;
+            }
         }
     }
 

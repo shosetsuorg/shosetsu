@@ -7,12 +7,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
 
 /*
  * This file is part of Shosetsu.
@@ -64,9 +67,45 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     protected Boolean doInBackground(Activity... voids) {
         this.activity = voids[0];
         StaticNovel.novelPage = null;
-        Log.d("Loading", novelFragment.novelURL);
+        Log.d("Loading", StaticNovel.novelURL);
         try {
-            StaticNovel.novelPage =  StaticNovel.formatter.parseNovel(novelFragment.novelURL);
+            StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
+            StaticNovel.novelChapters.addAll(StaticNovel.novelPage.novelChapters);
+            int page = Database.DatabaseLibrary.getMaxPage(StaticNovel.novelURL);
+
+            if (page == 0) {
+                page += 2;
+            }
+            if (StaticNovel.formatter.isIncrementingChapterList()) {
+                boolean foundDif = false;
+
+                while (!foundDif) {
+                    StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
+                    int a = 0;
+                    for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
+                        if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                            a++;
+                            System.out.println("Adding #" + a + ": " + novelChapter.link);
+                            StaticNovel.novelChapters.add(novelChapter);
+                            Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+                        }
+
+                    if (a == 0) {
+                        System.out.println("Completed loading chapters");
+                        foundDif = true;
+                    }
+
+                    if (a > 0) {
+                        a = 0;
+                        page++;
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
         } catch (SocketTimeoutException e) {

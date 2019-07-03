@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.listeners;
 import android.view.MenuItem;
 
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 
 import java.util.Collections;
 
@@ -33,8 +34,10 @@ public class NovelFragmentChaptersOnFilter implements MenuItem.OnMenuItemClickLi
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        Collections.reverse(NovelFragmentChapters.novelChapters);
+        Collections.reverse(StaticNovel.novelChapters);
         novelFragmentChapters.reversed = !novelFragmentChapters.reversed;
-        return NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+        return NovelFragmentChapters.recyclerView.post(() -> {
+            NovelFragmentChapters.adapter.notifyDataSetChanged();
+        });
     }
 }

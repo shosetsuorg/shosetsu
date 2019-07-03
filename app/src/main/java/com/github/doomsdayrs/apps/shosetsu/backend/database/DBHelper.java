@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -56,8 +57,9 @@ public class DBHelper extends SQLiteOpenHelper {
             // Saved DATA of the novel
             Database.Columns.NOVEL_PAGE + " text not null," +
             // Formatter this novel comes from
-            // TODO add status column
-            Database.Columns.FORMATTER_ID + " integer not null)";
+            Database.Columns.FORMATTER_ID + " integer not null," +
+            Database.Columns.MAX_PAGE + " integer not null," +
+            Database.Columns.STATUS + " integer not null" + ")";
 
     // Remove in beta release
     @Deprecated
@@ -79,6 +81,8 @@ public class DBHelper extends SQLiteOpenHelper {
             // TODO put status as a column here
             Database.Columns.PAUSED + " integer not null)";
 
+    //TODO Update table for all the updates
+
 
     /**
      * Constructor
@@ -86,7 +90,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 4);
+        super(context, DB_NAME, null, 5);
     }
 
 
@@ -138,6 +142,56 @@ public class DBHelper extends SQLiteOpenHelper {
 
             db.execSQL(libraryCreate);
             db.execSQL(chaptersCreate);
+        }
+
+        if (oldVersion < 5) {
+            // in between
+            db.execSQL("create TABLE if not exists libraryNext (" +
+                    // URL of this novel
+                    Database.Columns.NOVEL_URL + " text not null unique, " +
+                    // Saved DATA of the novel
+                    Database.Columns.NOVEL_PAGE + " text not null," +
+                    // Formatter this novel comes from
+                    // TODO add status column
+                    Database.Columns.FORMATTER_ID + " integer not null," +
+                    Database.Columns.MAX_PAGE + " integer not null," +
+                    Database.Columns.STATUS + " integer not null" + ")");
+
+            // Move data to middle
+            Cursor cursor = db.rawQuery("select * from library", null);
+            while (cursor.moveToNext()) {
+                db.execSQL("insert into libraryNext (" +
+                        Database.Columns.NOVEL_URL + "," +
+                        Database.Columns.NOVEL_PAGE + "," +
+                        Database.Columns.FORMATTER_ID + "," +
+                        Database.Columns.MAX_PAGE + "," +
+                        Database.Columns.STATUS + ") values ('" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString())) + "','" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())) + "'," +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString())) + "," +
+                        0 + "," +
+                        0 + ")");
+            }
+            cursor.close();
+            // Drop old table
+            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
+            db.execSQL(libraryCreate);
+
+            // Move middle to new
+            cursor = db.rawQuery("select * from libraryNext", null);
+            while (cursor.moveToNext()) {
+                db.execSQL("insert into library (" +
+                        Database.Columns.NOVEL_URL + "," +
+                        Database.Columns.NOVEL_PAGE + "," +
+                        Database.Columns.FORMATTER_ID + "," +
+                        Database.Columns.MAX_PAGE + "," +
+                        Database.Columns.STATUS + ") values ('" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString())) + "','" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())) + "'," +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString())) + "," +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.MAX_PAGE.toString())) + "," +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())) + ")");
+            }
         }
     }
 }

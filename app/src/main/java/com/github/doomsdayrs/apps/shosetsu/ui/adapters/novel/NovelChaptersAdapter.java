@@ -11,6 +11,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.ChaptersViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
@@ -39,13 +40,10 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
 
     private final NovelFragmentChapters novelFragmentChapters;
 
-    //Reference to the the NovelFragmentChapters array
-    private final List<NovelChapter> novelChapters;
 
 
-    public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters, List<NovelChapter> novels) {
+    public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters) {
         this.novelFragmentChapters = novelFragmentChapters;
-        this.novelChapters = novels;
     }
 
 
@@ -58,20 +56,20 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
-        NovelChapter novelChapter = novelChapters.get(i);
+        NovelChapter novelChapter = StaticNovel.novelChapters.get(i);
 
         chaptersViewHolder.novelChapter = novelChapter;
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
 
         if (!Database.DatabaseChapter.inChapters(novelChapter.link))
-            Database.DatabaseChapter.addToChapters(novelFragmentChapters.novelURL, novelChapter);
+            Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
 
         if (Database.DatabaseChapter.isBookMarked(novelChapter.link))
             chaptersViewHolder.bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
 
         if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
-            Log.d("In Storage", novelFragmentChapters.novelURL + " " + novelChapter.link + " " + i);
+            Log.d("In Storage", StaticNovel.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.download.setImageResource(R.drawable.ic_arrow_drop_down_circle_black_24dp);
             chaptersViewHolder.downloaded = true;
         }
@@ -96,7 +94,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
 
     @Override
     public int getItemCount() {
-        return novelChapters.size();
+        return StaticNovel.novelChapters.size();
     }
 
     @Override

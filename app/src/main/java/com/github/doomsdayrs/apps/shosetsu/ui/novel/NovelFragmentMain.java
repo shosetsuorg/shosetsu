@@ -44,7 +44,7 @@ import java.util.Arrays;
  */
 public class NovelFragmentMain extends Fragment {
 
-    public String url;
+
     private ImageView imageView;
     private TextView title;
     private TextView author;
@@ -76,7 +76,7 @@ public class NovelFragmentMain extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d("Saving Instance State", "NovelFragmentMain");
-        outState.putString("imageURL", url);
+
     }
 
     @Nullable
@@ -95,12 +95,8 @@ public class NovelFragmentMain extends Fragment {
         }
         floatingActionButton.hide();
 
-        if (savedInstanceState != null) {
-            url = savedInstanceState.getString("imageURL");
-        }
 
-
-        if (Database.DatabaseLibrary.inLibrary(url))
+        if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL))
             inLibrary();
 
         if (inLibrary)
@@ -119,7 +115,6 @@ public class NovelFragmentMain extends Fragment {
         title.setText(StaticNovel.novelPage.title);
         author.setText(Arrays.toString(StaticNovel.novelPage.authors));
         description.setText(StaticNovel.novelPage.description);
-        NovelFragmentChapters.novelChapters = StaticNovel.novelPage.novelChapters;
         Picasso.get()
                 .load(StaticNovel.novelPage.imageURL)
                 .into(imageView);

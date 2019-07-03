@@ -78,6 +78,7 @@ public class CatalogueFragment extends Fragment {
         super.onDestroy();
         catalogueNovelCards = new ArrayList<>();
         formatter = null;
+        library_Adapter.notifyDataSetChanged();
     }
 
     /**
@@ -101,8 +102,13 @@ public class CatalogueFragment extends Fragment {
         bottomProgressBar = view.findViewById(R.id.fragment_catalogue_progress_bottom);
         this.context = Objects.requireNonNull(container).getContext();
         if (savedInstanceState == null) {
+
             Log.d("Process", "Loading up latest");
             setLibraryCards(catalogueNovelCards);
+            if (catalogueNovelCards.size() > 0) {
+                catalogueNovelCards = new ArrayList<>();
+                library_Adapter.notifyDataSetChanged();
+            }
             new CataloguePageLoader(this).execute();
         } else {
             setLibraryCards(catalogueNovelCards);
