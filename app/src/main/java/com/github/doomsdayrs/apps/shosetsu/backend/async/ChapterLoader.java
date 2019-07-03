@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
 
 /*
  * This file is part of Shosetsu.
@@ -35,10 +36,11 @@ import java.net.SocketTimeoutException;
  * @author github.com/doomsdayrs
  */
 
+
 /**
  * This task loads a novel for the novel fragment
  */
-public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
+public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     // References
     private final NovelFragment novelFragment;
     @SuppressLint("StaticFieldLeak")
@@ -49,7 +51,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
      *
      * @param novelFragment reference to the fragment
      */
-    public NovelLoader(NovelFragment novelFragment) {
+    public ChapterLoader(NovelFragment novelFragment) {
         this.novelFragment = novelFragment;
     }
 
@@ -66,17 +68,46 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     protected Boolean doInBackground(Activity... voids) {
         this.activity = voids[0];
         StaticNovel.novelPage = null;
-        Log.d("Loading", StaticNovel.novelURL);
+        Log.d("ChapLoad", StaticNovel.novelURL);
         try {
-            StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
+            int page = Database.DatabaseLibrary.getMaxPage(StaticNovel.novelURL);
 
-            for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
-                if (Database.DatabaseChapter.inChapters(novelChapter.link))
-                    Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+            if (page == 0) {
+                page += 2;
+            }
+            if (StaticNovel.formatter.isIncrementingChapterList()) {
+                boolean foundDif = false;
 
-            StaticNovel.novelChapters.addAll(StaticNovel.novelPage.novelChapters);
+                while (!foundDif) {
+                    StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
+                    int a = 0;
+                    for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
+                        if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                            a++;
+                            System.out.println("Adding #" + a + ": " + novelChapter.link);
+                            StaticNovel.novelChapters.add(novelChapter);
+                            Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+                        }
 
-            Log.d("Loaded Novel:", StaticNovel.novelPage.title);
+                    if (a == 0) {
+                        System.out.println("Completed loading chapters");
+                        foundDif = true;
+                    }
+
+                    if (a > 0) {
+                        a = 0;
+                        page++;
+                        if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL))
+                            Database.DatabaseLibrary.setMaxPage(StaticNovel.novelURL, page);
+
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
             return true;
         } catch (SocketTimeoutException e) {
             activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
@@ -103,9 +134,8 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         novelFragment.progressBar.setVisibility(View.GONE);
         if (aBoolean) {
-            Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
             activity.runOnUiThread(() -> novelFragment.novelFragmentMain.setData());
-            activity.runOnUiThread(() -> new ChapterLoader(novelFragment).execute(activity));
+            activity.runOnUiThread(() -> novelFragment.novelFragmentChapters.setNovels());
         }
     }
 }

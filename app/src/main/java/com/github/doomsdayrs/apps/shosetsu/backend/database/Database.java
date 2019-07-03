@@ -489,9 +489,9 @@ public class Database {
                         Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.NOVEL_PAGE + "," + Columns.MAX_PAGE + "," + Columns.STATUS + ") values(" +
                         "'" + novelURL + "'," +
                         "'" + formatter + "','" +
-                        serialize(novelPage) + "," +
+                        serialize(novelPage) + "'," +
                         maxPage + "," +
-                        status + "')"
+                        status + ")"
                 );
             } catch (IOException e) {
                 e.printStackTrace();
@@ -597,6 +597,10 @@ public class Database {
                 cursor.close();
                 return page;
             }
+        }
+
+        public static void setMaxPage(String novelURL, int max) {
+            library.execSQL("update " + Tables.LIBRARY + " set " + Columns.MAX_PAGE + "=" + max + " where " + Columns.NOVEL_URL + "='" + novelURL + "'");
         }
 
         public static void setStatus(String novelURL, Status status) {
