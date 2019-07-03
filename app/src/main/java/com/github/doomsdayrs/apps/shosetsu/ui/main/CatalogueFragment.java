@@ -25,6 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue.CatalogueNovelC
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueFragmentHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueRefresh;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueSearchQuery;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
@@ -50,8 +51,9 @@ import java.util.Objects;
  * @author github.com/doomsdayrs
  */
 public class CatalogueFragment extends Fragment {
-    public static ArrayList<CatalogueNovelCard> catalogueNovelCards = new ArrayList<>();
-    public static Formatter formatter;
+    //TODO Figure out ghosting lists
+    public ArrayList<CatalogueNovelCard> catalogueNovelCards = new ArrayList<>();
+    public Formatter formatter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView library_view;
     public int currentMaxPage = 1;
@@ -69,16 +71,14 @@ public class CatalogueFragment extends Fragment {
     }
 
     public void setFormatter(Formatter formatter) {
-        CatalogueFragment.formatter = formatter;
+        this.formatter = formatter;
     }
 
-
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        catalogueNovelCards = new ArrayList<>();
-        formatter = null;
-        library_Adapter.notifyDataSetChanged();
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("list", catalogueNovelCards);
+        outState.putInt("formatter", formatter.getID() - 1);
     }
 
     /**
@@ -93,6 +93,10 @@ public class CatalogueFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "CatalogueFragment");
+        if (savedInstanceState != null) {
+            catalogueNovelCards = (ArrayList<CatalogueNovelCard>) savedInstanceState.getSerializable("list");
+            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter"));
+        }
         View view = inflater.inflate(R.layout.fragment_catalogue, container, false);
         Statics.mainActionBar.setTitle(formatter.getName());
         library_view = view.findViewById(R.id.fragment_catalogue_recycler);
@@ -101,8 +105,9 @@ public class CatalogueFragment extends Fragment {
         progressBar = view.findViewById(R.id.fragment_catalogue_progress);
         bottomProgressBar = view.findViewById(R.id.fragment_catalogue_progress_bottom);
         this.context = Objects.requireNonNull(container).getContext();
-        if (savedInstanceState == null) {
 
+
+        if (savedInstanceState == null) {
             Log.d("Process", "Loading up latest");
             setLibraryCards(catalogueNovelCards);
             if (catalogueNovelCards.size() > 0) {
@@ -110,9 +115,9 @@ public class CatalogueFragment extends Fragment {
                 library_Adapter.notifyDataSetChanged();
             }
             new CataloguePageLoader(this).execute();
-        } else {
+        } else
             setLibraryCards(catalogueNovelCards);
-        }
+
         return view;
     }
 

@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
 
+import java.io.Serializable;
+
 /*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
@@ -18,7 +20,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
  *
  * @author github.com/doomsdayrs
  */
-public class CatalogueNovelCard extends RecycleCard {
+public class CatalogueNovelCard extends RecycleCard implements Serializable {
     /**
      * Image novelURL
      */

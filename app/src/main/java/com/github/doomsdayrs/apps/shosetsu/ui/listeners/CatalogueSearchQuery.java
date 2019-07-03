@@ -39,7 +39,7 @@ public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
     @Override
     public boolean onQueryTextSubmit(String query) {
         try {
-            ArrayList<CatalogueNovelCard> searchResults = new CatalogueQuerySearch().execute(query).get();
+            ArrayList<CatalogueNovelCard> searchResults = new CatalogueQuerySearch(catalogueFragment).execute(query).get();
             catalogueFragment.setLibraryCards(searchResults);
             return true;
         } catch (ExecutionException e) {
@@ -53,7 +53,7 @@ public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
     @Override
     public boolean onQueryTextChange(String newText) {
         Log.d("Library search", newText);
-        ArrayList<CatalogueNovelCard> recycleCards = new ArrayList<>(CatalogueFragment.catalogueNovelCards);
+        ArrayList<CatalogueNovelCard> recycleCards = new ArrayList<>(catalogueFragment.catalogueNovelCards);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             recycleCards.removeIf(recycleCard -> !recycleCard.title.toLowerCase().contains(newText.toLowerCase()));
         } else {

@@ -29,6 +29,11 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<CatalogueNovelCard>> {
+    private CatalogueFragment catalogueFragment;
+
+    public CatalogueQuerySearch(CatalogueFragment catalogueFragment) {
+        this.catalogueFragment = catalogueFragment;
+    }
 
     /**
      * Search catalogue
@@ -39,7 +44,7 @@ public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<Cata
     protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
         ArrayList<CatalogueNovelCard> result = new ArrayList<>();
         try {
-            List<Novel> novels = CatalogueFragment.formatter.search(strings[0]);
+            List<Novel> novels = catalogueFragment.formatter.search(strings[0]);
             for (Novel novel : novels)
                 result.add(new CatalogueNovelCard(novel.imageURL, novel.title, novel.link));
         } catch (IOException e) {

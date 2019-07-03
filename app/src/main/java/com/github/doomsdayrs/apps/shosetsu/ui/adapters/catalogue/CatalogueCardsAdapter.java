@@ -39,11 +39,11 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.CatalogueHolder> {
-    private final ArrayList<CatalogueCard> recycleCards;
+    private final ArrayList<CatalogueCard> catalogues;
     private final FragmentManager fragmentManager;
 
-    public CatalogueCardsAdapter(ArrayList<CatalogueCard> recycleCards, FragmentManager fragmentManager) {
-        this.recycleCards = recycleCards;
+    public CatalogueCardsAdapter(ArrayList<CatalogueCard> catalogues, FragmentManager fragmentManager) {
+        this.catalogues = catalogues;
         this.fragmentManager = fragmentManager;
     }
 
@@ -58,7 +58,7 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
     @Override
     public void onBindViewHolder(@NonNull CatalogueHolder catalogueHolder, int i) {
 
-        CatalogueCard catalogueCard = recycleCards.get(i);
+        CatalogueCard catalogueCard = catalogues.get(i);
         catalogueHolder.setFormatter(catalogueCard.formatter);
 
         if (catalogueCard.formatter.getImageURL() != null && !catalogueCard.formatter.getImageURL().isEmpty())
@@ -72,7 +72,7 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
 
     @Override
     public int getItemCount() {
-        return recycleCards.size();
+        return catalogues.size();
     }
 
     static class CatalogueHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
