@@ -3,8 +3,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
@@ -12,15 +14,11 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /*
  * This file is part of Shosetsu.
@@ -43,12 +41,18 @@ import org.json.JSONObject;
 public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public NovelChapter novelChapter;
+    public final ImageView moreOptions;
+
     public final TextView library_card_title;
-    public final ImageView bookmarked;
     public final TextView status;
     public final TextView read;
     public final TextView readTag;
-    public final ImageView download;
+    public final TextView downloadTag;
+
+
+    public PopupMenu popupMenu;
+
+
     public boolean downloaded;
 
     public NovelFragmentChapters novelFragmentChapters;
@@ -56,39 +60,48 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     public ChaptersViewHolder(@NonNull View itemView) {
         super(itemView);
         library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
-        bookmarked = itemView.findViewById(R.id.recycler_novel_chapter_bookmarked);
-        download = itemView.findViewById(R.id.recycler_novel_chapter_download);
+        moreOptions = itemView.findViewById(R.id.recycler_novel_chapter_options);
         status = itemView.findViewById(R.id.recycler_novel_chapter_status);
         read = itemView.findViewById(R.id.recycler_novel_chapter_read);
         readTag = itemView.findViewById(R.id.recycler_novel_chapter_read_tag);
-
-
+        downloadTag = itemView.findViewById(R.id.recycler_novel_chapter_download);
         itemView.setOnClickListener(this);
-        download.setOnClickListener(v -> {
-            if (!downloaded) {
-                DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
-                Download_Manager.addToDownload(downloadItem);
-                downloaded = true;
-            } else {
-                if (Download_Manager.delete(itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link)))
-                    download.setImageResource(R.drawable.ic_outline_arrow_drop_down_circle_24px);
-                downloaded = false;
-            }
+        moreOptions.setOnClickListener(this::showPopup);
+    }
 
-        });
+    private void showPopup(View itemView) {
+        popupMenu = new PopupMenu(itemView.getContext(), itemView);
 
-        bookmarked.setOnClickListener(v -> {
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("y", 0);
-                if (SettingsController.toggleBookmarkChapter(novelChapter.link))
-                    bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
-                else
-                    bookmarked.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            Log.d("ItemClicked", "" + menuItem.getOrder());
+
+            switch (menuItem.getItemId()) {
+                case R.id.popup_chapter_menu_bookmark:
+                    if (SettingsController.toggleBookmarkChapter(novelChapter.link))
+                        library_card_title.setTextColor(itemView.getResources().getColor(R.color.bookmarked));
+                    else
+                        library_card_title.setTextColor(itemView.getResources().getColor(R.color.black));
+                    return true;
+
+                case R.id.popup_chapter_menu_download:
+                    if (!downloaded) {
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
+                        Download_Manager.addToDownload(downloadItem);
+                        downloaded = true;
+                    } else {
+                        if (Download_Manager.delete(itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link))) {
+                            downloadTag.setVisibility(View.INVISIBLE);
+                            downloaded = false;
+                        }
+                    }
+                    return true;
+
+                default:
+                    return false;
             }
         });
+        popupMenu.inflate(R.menu.popup_chapter_menu);
+        popupMenu.show();
     }
 
     @Override

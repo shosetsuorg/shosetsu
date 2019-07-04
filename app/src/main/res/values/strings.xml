@@ -18,7 +18,6 @@
     <string name="text_size">Text Size</string>
     <string name="night_mode">Night Mode</string>
     <string name="reader_night_mode">Reader Night Mode</string>
-    <string name="bookmark">Bookmark</string>
     <string name="novel_title">Novel Title</string>
     <string name="novel_author">Novel Author(s)</string>
     <string name="novel_description">Novel Description</string>
@@ -32,4 +31,6 @@
     <string name="pending">Pending</string>
     <string name="error">Error occurred</string>
     <string name="downloading">Downloading</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="bookmark">Bookmark</string>
 </resources>

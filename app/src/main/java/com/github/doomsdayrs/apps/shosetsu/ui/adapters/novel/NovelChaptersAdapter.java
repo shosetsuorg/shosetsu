@@ -15,8 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.ChaptersViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
-import java.util.List;
-
 /*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
@@ -39,7 +37,6 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
 
 
     private final NovelFragmentChapters novelFragmentChapters;
-
 
 
     public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters) {
@@ -65,12 +62,15 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
         if (!Database.DatabaseChapter.inChapters(novelChapter.link))
             Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
 
-        if (Database.DatabaseChapter.isBookMarked(novelChapter.link))
-            chaptersViewHolder.bookmarked.setImageResource(R.drawable.ic_bookmark_black_24dp);
+        if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
+            chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
+        //    chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("UnBookmark");
+        }
 
         if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
             Log.d("In Storage", StaticNovel.novelURL + " " + novelChapter.link + " " + i);
-            chaptersViewHolder.download.setImageResource(R.drawable.ic_arrow_drop_down_circle_black_24dp);
+            chaptersViewHolder.downloadTag.setVisibility(View.VISIBLE);
+         //   chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Delete");
             chaptersViewHolder.downloaded = true;
         }
 
