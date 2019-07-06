@@ -47,6 +47,7 @@ import java.util.Objects;
 /**
  * Displays the chapters the novel contains
  * TODO Check filesystem if the chapter is saved, even if not in DB.
+ * TODO Selection mechanic
  */
 public class NovelFragmentChapters extends Fragment {
 
