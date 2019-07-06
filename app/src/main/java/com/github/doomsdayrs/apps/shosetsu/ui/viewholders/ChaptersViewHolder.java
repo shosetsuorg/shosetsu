@@ -67,14 +67,17 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         downloadTag = itemView.findViewById(R.id.recycler_novel_chapter_download);
         itemView.setOnClickListener(this);
         moreOptions.setOnClickListener(this::showPopup);
+        if (popupMenu == null) {
+            popupMenu = new PopupMenu(moreOptions.getContext(), moreOptions);
+            if (popupMenu.getMenu().size()<=0){
+                popupMenu.getMenu().add(1, R.id.popup_chapter_menu_bookmark, 1, R.string.bookmark);
+                popupMenu.getMenu().add(1, R.id.popup_chapter_menu_download, 2, R.string.download);
+            }
+        }
     }
 
     private void showPopup(View itemView) {
-        popupMenu = new PopupMenu(itemView.getContext(), itemView);
-
         popupMenu.setOnMenuItemClickListener(menuItem -> {
-            Log.d("ItemClicked", "" + menuItem.getOrder());
-
             switch (menuItem.getItemId()) {
                 case R.id.popup_chapter_menu_bookmark:
                     if (SettingsController.toggleBookmarkChapter(novelChapter.link))
@@ -82,7 +85,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     else
                         library_card_title.setTextColor(itemView.getResources().getColor(R.color.black));
                     return true;
-
                 case R.id.popup_chapter_menu_download:
                     if (!downloaded) {
                         DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
@@ -95,7 +97,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                         }
                     }
                     return true;
-
                 default:
                     return false;
             }

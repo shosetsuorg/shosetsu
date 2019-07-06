@@ -48,6 +48,7 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
     @Override
     public ChaptersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_chapter, viewGroup, false);
+
         return new ChaptersViewHolder(view);
     }
 
@@ -64,14 +65,16 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
 
         if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
-        //    chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("UnBookmark");
+            chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("UnBookmark");
+            //    chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("UnBookmark");
         }
 
         if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
             Log.d("In Storage", StaticNovel.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.downloadTag.setVisibility(View.VISIBLE);
-         //   chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Delete");
+            //   chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Delete");
             chaptersViewHolder.downloaded = true;
+            chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Delete");
         }
 
         switch (Database.DatabaseChapter.getStatus(novelChapter.link)) {
