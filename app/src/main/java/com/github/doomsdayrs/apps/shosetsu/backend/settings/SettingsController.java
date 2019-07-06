@@ -43,6 +43,7 @@ public class SettingsController {
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
         Download_Manager.shoDir = download.getString("dir", "/storage/emulated/0/Shosetsu/");
         Settings.downloadPaused = download.getBoolean("paused", false);
+        Settings.ReaderTextSize = view.getInt("ReaderTextSize", 14);
     }
 
     /**
@@ -132,6 +133,13 @@ public class SettingsController {
         }
     }
 
+
+    public static void setTextSize(int size) {
+        Settings.ReaderTextSize = size;
+        view.edit()
+                .putInt("ReaderTextSize", size)
+                .apply();
+    }
 
     //TODO Online Trackers
     //Methods below when tracking system setup

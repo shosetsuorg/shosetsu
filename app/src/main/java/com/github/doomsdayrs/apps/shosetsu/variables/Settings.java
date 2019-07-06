@@ -30,7 +30,7 @@ public class Settings {
      * Reader text size
      */
     @SuppressWarnings("unused")
-    public static float ReaderTextSize = 1;
+    public static float ReaderTextSize = 14;
 
     /**
      * Reader text color

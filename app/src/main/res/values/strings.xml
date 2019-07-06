@@ -33,4 +33,7 @@
     <string name="downloading">Downloading</string>
     <string name="downloaded">Downloaded</string>
     <string name="bookmark">Bookmark</string>
+    <string name="large">Large</string>
+    <string name="medium">Medium</string>
+    <string name="small">Small</string>
 </resources>

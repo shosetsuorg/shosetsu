@@ -40,6 +40,7 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
+//TODO Add refresh layout
 public class NovelFragment extends Fragment {
     private View view;
     public FragmentManager fragmentManager = null;

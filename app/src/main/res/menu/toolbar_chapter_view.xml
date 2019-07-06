@@ -2,23 +2,39 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    
+
     <group>
         <item
             android:id="@+id/chapter_view_nightMode"
             android:checkable="true"
-            android:title="@string/night_mode" />
+            android:title="@string/night_mode"
+            app:showAsAction="never"/>
 
         <item
-            android:enabled="false"
             android:id="@+id/chapter_view_textSize"
-            android:title="@string/text_size" />
+            android:title="@string/text_size"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/chapter_view_textSize_small"
+                    android:checkable="true"
+                    android:title="@string/small" />
+                <item
+                    android:id="@+id/chapter_view_textSize_medium"
+                    android:checkable="true"
+                    android:title="@string/medium" />
+                <item
+                    android:id="@+id/chapter_view_textSize_large"
+                    android:checkable="true"
+                    android:title="@string/large" />
+            </menu>
+        </item>
     </group>
 
     <item
         android:id="@+id/chapter_view_bookmark"
         android:icon="@drawable/ic_bookmark_border_black_24dp"
         android:title="@string/bookmark"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 </menu>

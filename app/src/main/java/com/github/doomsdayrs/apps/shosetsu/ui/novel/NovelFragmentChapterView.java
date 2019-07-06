@@ -24,8 +24,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Objects;
 
@@ -57,6 +55,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     private String novelURL;
     public String text = null;
     private MenuItem bookmark;
+
+    private MenuItem small;
+    private MenuItem medium;
+    private MenuItem large;
     private int a = 0;
     private boolean bookmarked;
 
@@ -91,6 +93,23 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
         // Bookmark
         bookmark = menu.findItem(R.id.chapter_view_bookmark);
+
+        small = menu.findItem(R.id.chapter_view_textSize_small);
+        medium = menu.findItem(R.id.chapter_view_textSize_medium);
+        large = menu.findItem(R.id.chapter_view_textSize_large);
+
+        switch ((int) Settings.ReaderTextSize) {
+            case 14:
+                small.setChecked(true);
+                break;
+            case 17:
+                medium.setChecked(true);
+                break;
+            case 20:
+                large.setChecked(true);
+                break;
+        }
+
         bookmarked = Database.DatabaseChapter.isBookMarked(chapterURL);
         if (bookmarked) {
             bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
@@ -105,10 +124,11 @@ public class NovelFragmentChapterView extends AppCompatActivity {
      * Changes the theme of the reader
      * TODO change the scroll position bars color
      */
-    private void setThemeMode() {
+    private void setUpReader() {
         scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
         textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
         textView.setTextColor(Settings.ReaderTextColor);
+        textView.setTextSize(Settings.ReaderTextSize);
     }
 
 
@@ -121,37 +141,54 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         Log.d("item", item.toString());
+        System.out.println("Text size" + textView.getTextSize());
         switch (item.getItemId()) {
-            case R.id.chapter_view_nightMode: {
+            case R.id.chapter_view_nightMode:
                 if (!item.isChecked()) {
                     SettingsController.swapReaderColor();
-                    setThemeMode();
+                    setUpReader();
                 } else {
                     SettingsController.swapReaderColor();
-                    setThemeMode();
+                    setUpReader();
                 }
                 item.setChecked(!item.isChecked());
                 return true;
-            }
-            case R.id.chapter_view_textSize: {
+
+            case R.id.chapter_view_bookmark:
+
+                int y = scrollView.getScrollY();
+                Log.d("ScrollSave", Integer.toString(y));
+
+                bookmarked = SettingsController.toggleBookmarkChapter(chapterURL);
+                if (bookmarked)
+                    bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
+                else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
                 return true;
-            }
-            case R.id.chapter_view_bookmark: {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    int y = scrollView.getScrollY();
-                    Log.d("ScrollSave", Integer.toString(y));
-                    jsonObject.put("y", y);
-                    bookmarked = SettingsController.toggleBookmarkChapter(chapterURL);
-                    if (bookmarked)
-                        bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
-                    else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
-                    return true;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
+
+            case R.id.chapter_view_textSize_small:
+                SettingsController.setTextSize(14);
+                setUpReader();
+
+                item.setChecked(true);
+                medium.setChecked(false);
+                large.setChecked(false);
+                return true;
+            case R.id.chapter_view_textSize_medium:
+                SettingsController.setTextSize(17);
+                setUpReader();
+
+                item.setChecked(true);
+                small.setChecked(false);
+                large.setChecked(false);
+                return true;
+            case R.id.chapter_view_textSize_large:
+                SettingsController.setTextSize(20);
+                setUpReader();
+
+                item.setChecked(true);
+                small.setChecked(false);
+                medium.setChecked(false);
+                return true;
         }
         return false;
     }
@@ -208,7 +245,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
         }
 
-        setThemeMode();
+        setUpReader();
 
         if (savedInstanceState != null) {
             title = savedInstanceState.getString("title");
@@ -224,6 +261,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             if (chapterURL != null) {
                 new NovelFragmentChapterViewLoad(progressBar).execute(this);
             }
+
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(title);
         textView.setText(text);

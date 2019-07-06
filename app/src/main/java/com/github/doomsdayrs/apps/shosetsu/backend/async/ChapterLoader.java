@@ -11,7 +11,6 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -72,9 +71,6 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         try {
             int page = Database.DatabaseLibrary.getMaxPage(StaticNovel.novelURL);
 
-            if (page == 0) {
-                page += 2;
-            }
             if (StaticNovel.formatter.isIncrementingChapterList()) {
                 boolean foundDif = false;
 
@@ -122,7 +118,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPreExecute() {
-        novelFragment.progressBar.setVisibility(View.VISIBLE);
+        novelFragment.novelFragmentChapters.progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -132,7 +128,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        novelFragment.progressBar.setVisibility(View.GONE);
+        novelFragment.novelFragmentChapters.progressBar.setVisibility(View.GONE);
         if (aBoolean) {
             activity.runOnUiThread(() -> novelFragment.novelFragmentMain.setData());
             activity.runOnUiThread(() -> novelFragment.novelFragmentChapters.setNovels());

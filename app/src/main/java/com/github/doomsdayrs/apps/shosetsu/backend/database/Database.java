@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
-//TODO Finish reconstruction and use serialized java objects into DB
+//TODO Remove MAX_Page
 public class Database {
     /**
      * SQLITEDatabase

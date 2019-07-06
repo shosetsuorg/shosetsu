@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,6 +21,9 @@
             android:id="@+id/fragment_novel_chapters_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:scrollbarSize="5dp"
+            android:scrollbarStyle="insideOverlay"
             tools:layout_conversion_absoluteHeight="731dp"
             tools:layout_conversion_absoluteWidth="411dp"
             tools:layout_editor_absoluteX="0dp"
