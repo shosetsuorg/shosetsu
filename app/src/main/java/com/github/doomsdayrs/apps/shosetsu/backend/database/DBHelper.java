@@ -152,7 +152,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     // Saved DATA of the novel
                     Database.Columns.NOVEL_PAGE + " text not null," +
                     // Formatter this novel comes from
-                    // TODO add status column
                     Database.Columns.FORMATTER_ID + " integer not null," +
                     Database.Columns.MAX_PAGE + " integer not null," +
                     Database.Columns.STATUS + " integer not null" + ")");

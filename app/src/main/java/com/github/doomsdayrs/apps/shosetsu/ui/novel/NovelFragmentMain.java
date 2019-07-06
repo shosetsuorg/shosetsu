@@ -42,7 +42,6 @@ import java.util.Arrays;
 
 /**
  * The page you see when you select a novel
- * TODO Swipe from top of screen downwards to update the data of this novel
  */
 public class NovelFragmentMain extends Fragment {
 
