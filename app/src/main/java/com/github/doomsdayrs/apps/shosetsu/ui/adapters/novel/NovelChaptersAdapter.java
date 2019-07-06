@@ -66,16 +66,18 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
         if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
             chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("UnBookmark");
-            //    chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("UnBookmark");
-        }
+        } else
+            chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("Bookmark");
+
 
         if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
             Log.d("In Storage", StaticNovel.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.downloadTag.setVisibility(View.VISIBLE);
-            //   chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Delete");
             chaptersViewHolder.downloaded = true;
             chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Delete");
-        }
+        } else
+            chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Download");
+
 
         switch (Database.DatabaseChapter.getStatus(novelChapter.link)) {
             case READING:
