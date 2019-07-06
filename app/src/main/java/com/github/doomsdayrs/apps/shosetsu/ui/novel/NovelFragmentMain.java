@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
+import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentUpdate;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -50,6 +52,8 @@ public class NovelFragmentMain extends Fragment {
     private TextView author;
     private TextView description;
     private TextView formatterName;
+    public SwipeRefreshLayout swipeRefreshLayout;
+
     public FloatingActionButton floatingActionButton;
     public boolean inLibrary = false;
 
@@ -91,8 +95,10 @@ public class NovelFragmentMain extends Fragment {
             description = view.findViewById(R.id.fragment_novel_description);
             formatterName = view.findViewById(R.id.fragment_novel_formatter);
             floatingActionButton = view.findViewById(R.id.fragment_novel_add);
-            floatingActionButton.setOnClickListener(new NovelFragmentMainAddToLibrary(this));
+
+            swipeRefreshLayout = view.findViewById(R.id.fragment_novel_main_refresh);
         }
+
         floatingActionButton.hide();
 
 
@@ -104,6 +110,9 @@ public class NovelFragmentMain extends Fragment {
 
         if (StaticNovel.novelPage != null && title != null)
             setData();
+
+        floatingActionButton.setOnClickListener(new NovelFragmentMainAddToLibrary(this));
+        swipeRefreshLayout.setOnRefreshListener(new NovelFragmentUpdate(this));
 
         return view;
     }

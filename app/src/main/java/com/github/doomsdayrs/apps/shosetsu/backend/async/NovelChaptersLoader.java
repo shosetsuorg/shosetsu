@@ -30,6 +30,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author github.com/doomsdayrs
  */
+//TODO Remove this
+@Deprecated
 public class NovelChaptersLoader extends AsyncTask<Integer, Void, Boolean> {
     // Reference
     private final NovelFragmentChapters novelFragmentChapters;

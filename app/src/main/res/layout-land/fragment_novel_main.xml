@@ -1,90 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_novel_main_refresh"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/fragment_novel_image"
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/todo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_novel_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/fragment_novel_title"
-        android:text="@string/novel_title"
-        android:layout_width="0dp"
-        android:layout_height="26dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_novel_author"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/fragment_novel_author"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/novel_author"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_novel_title" />
-
-    <TextView
-        android:id="@+id/fragment_novel_formatter"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_novel_author" />
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_novel_author">
+        <ImageView
+            android:id="@+id/fragment_novel_image"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/todo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/fragment_novel_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/fragment_novel_description"
-            android:layout_width="match_parent"
+            android:id="@+id/fragment_novel_title"
+            android:layout_width="0dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/novel_title"
+            app:layout_constraintBottom_toTopOf="@+id/fragment_novel_author"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/fragment_novel_author"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="@string/novel_description" />
-    </ScrollView>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/novel_author"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_novel_title" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fragment_novel_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="276dp"
-        android:layout_marginEnd="16dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fragment_novel_author"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_novel_title"
-        app:srcCompat="@drawable/ic_add_circle_outline_black_24dp"
-        android:focusable="true" />
+        <TextView
+            android:id="@+id/fragment_novel_formatter"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_novel_author" />
 
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_novel_author">
 
-</android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/fragment_novel_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/novel_description" />
+        </ScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fragment_novel_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="276dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fragment_novel_author"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_novel_title"
+            app:srcCompat="@drawable/ic_add_circle_outline_black_24dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

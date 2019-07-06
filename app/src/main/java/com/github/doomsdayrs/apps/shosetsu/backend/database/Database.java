@@ -498,7 +498,6 @@ public class Database {
             }
         }
 
-
         /**
          * Removes a novel from the library
          *
@@ -626,6 +625,10 @@ public class Database {
                     return Status.ONHOLD;
                 else return Status.DROPPED;
             }
+        }
+
+        public static void updateData(String novelURL, NovelPage novelPage) throws IOException {
+            library.execSQL("update " + Tables.LIBRARY + " set " + Columns.NOVEL_PAGE + "='" + serialize(novelPage) + "' where " + Columns.NOVEL_URL + "='" + novelURL + "'");
         }
     }
 

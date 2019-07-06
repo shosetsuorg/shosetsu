@@ -69,7 +69,7 @@ public class NovelFragment extends Fragment {
         if (savedInstanceState == null) {
             if (SettingsController.isOnline() && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 setViewPager();
-                new NovelLoader(this).execute(getActivity());
+                new NovelLoader(this, true).execute(getActivity());
             } else {
                 StaticNovel.novelPage = Database.DatabaseLibrary.getNovelPage(StaticNovel.novelURL);
                 StaticNovel.maxPage = Database.DatabaseLibrary.getMaxPage(StaticNovel.novelURL);

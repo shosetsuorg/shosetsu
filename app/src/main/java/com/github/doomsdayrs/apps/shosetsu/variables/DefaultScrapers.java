@@ -82,6 +82,21 @@ public enum DefaultScrapers implements Formatter {
         return formatter.isIncrementingChapterList();
     }
 
+    @Override
+    public boolean isIncrementingPassagePage() {
+        return formatter.isIncrementingPassagePage();
+    }
+
+    @Override
+    public Ordering chapterOrder() {
+        return formatter.chapterOrder();
+    }
+
+    @Override
+    public Ordering latestOrder() {
+        return formatter.latestOrder();
+    }
+
     public String getNovelPassage(String URL) throws IOException {
         return formatter.getNovelPassage(URL);
     }

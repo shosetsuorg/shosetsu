@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
@@ -41,16 +42,27 @@ import java.net.SocketTimeoutException;
 public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     // References
     private final NovelFragment novelFragment;
+    private final NovelFragmentMain novelFragmentMain;
+
     @SuppressLint("StaticFieldLeak")
     private Activity activity;
+    private boolean loadAll;
 
     /**
      * Constructor
      *
      * @param novelFragment reference to the fragment
      */
-    public NovelLoader(NovelFragment novelFragment) {
+    public NovelLoader(NovelFragment novelFragment, boolean loadAll) {
         this.novelFragment = novelFragment;
+        this.loadAll = loadAll;
+        this.novelFragmentMain = null;
+    }
+
+    public NovelLoader(NovelFragmentMain novelFragmentMain, boolean loadAll) {
+        this.novelFragment = null;
+        this.loadAll = loadAll;
+        this.novelFragmentMain = novelFragmentMain;
     }
 
 
@@ -59,10 +71,9 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
      *
      * @param voids activity to work with
      * @return if completed
-     * TODO Split chapter loading off to another task
-     * TODO On the other task mentioned above, load all the chapters for this novel.
      */
     @Override
+
     protected Boolean doInBackground(Activity... voids) {
         this.activity = voids[0];
         StaticNovel.novelPage = null;
@@ -71,7 +82,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
 
             for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
-                if (Database.DatabaseChapter.inChapters(novelChapter.link))
+                if (!Database.DatabaseChapter.inChapters(novelChapter.link))
                     Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
 
             StaticNovel.novelChapters.addAll(StaticNovel.novelPage.novelChapters);
@@ -79,7 +90,14 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
         } catch (SocketTimeoutException e) {
-            activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
+            if (novelFragment != null)
+                activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
+            else
+                activity.runOnUiThread(() -> {
+                    assert novelFragmentMain != null;
+                    Toast.makeText(novelFragmentMain.getContext(), "Timeout", Toast.LENGTH_SHORT).show();
+                });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,7 +109,24 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPreExecute() {
-        novelFragment.progressBar.setVisibility(View.VISIBLE);
+        if (loadAll) {
+            assert novelFragment != null;
+            novelFragment.progressBar.setVisibility(View.VISIBLE);
+        } else {
+            assert novelFragmentMain != null;
+            novelFragmentMain.swipeRefreshLayout.setRefreshing(true);
+        }
+    }
+
+    @Override
+    protected void onCancelled() {
+        if (loadAll) {
+            assert novelFragment != null;
+            novelFragment.progressBar.setVisibility(View.GONE);
+        } else {
+            assert novelFragmentMain != null;
+            novelFragmentMain.swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     /**
@@ -101,11 +136,34 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        novelFragment.progressBar.setVisibility(View.GONE);
+        if (loadAll) {
+            assert novelFragment != null;
+            novelFragment.progressBar.setVisibility(View.GONE);
+        } else {
+            assert novelFragmentMain != null;
+            novelFragmentMain.swipeRefreshLayout.setRefreshing(false);
+            if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
+                try {
+                    Database.DatabaseLibrary.updateData(StaticNovel.novelURL, StaticNovel.novelPage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         if (aBoolean) {
             Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
-            activity.runOnUiThread(() -> novelFragment.novelFragmentMain.setData());
-            activity.runOnUiThread(() -> new ChapterLoader(novelFragment).execute(activity));
+            activity.runOnUiThread(() -> {
+                assert novelFragment != null;
+                if (loadAll)
+                    novelFragment.novelFragmentMain.setData();
+                else {
+                    assert novelFragmentMain != null;
+                    novelFragmentMain.setData();
+                }
+            });
+            if (loadAll)
+                activity.runOnUiThread(() -> new ChapterLoader(novelFragment).execute(activity));
         }
     }
 }

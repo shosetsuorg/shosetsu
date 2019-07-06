@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
@@ -55,6 +57,7 @@ public class NovelFragmentChapters extends Fragment {
     public static NovelChaptersAdapter adapter;
     private Context context;
     public ProgressBar progressBar;
+    public SwipeRefreshLayout swipeRefreshLayout;
 
     /**
      * Constructor
@@ -103,6 +106,10 @@ public class NovelFragmentChapters extends Fragment {
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         progressBar = view.findViewById(R.id.fragment_novel_chapters_progress);
+        swipeRefreshLayout = view.findViewById(R.id.fragment_novel_chapters_refresh);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> new ChapterLoader(this).execute(getActivity()));
+
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }
