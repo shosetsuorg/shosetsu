@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,7 +49,6 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
     @Override
     public ChaptersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_chapter, viewGroup, false);
-
         return new ChaptersViewHolder(view);
     }
 
@@ -68,6 +68,21 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
             chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("UnBookmark");
         } else
             chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("Bookmark");
+
+
+
+        if (NovelFragmentChapters.contains(novelChapter)) {
+            Log.d("SelectedStatus", "Novel Selected: " + novelChapter.link);
+            chaptersViewHolder.cardView.setCardBackgroundColor(Color.BLUE);
+            chaptersViewHolder.checkBox.setChecked(true);
+        } else {
+            chaptersViewHolder.cardView.setCardBackgroundColor(Color.WHITE);
+            chaptersViewHolder.checkBox.setChecked(false);
+        }
+
+        if (NovelFragmentChapters.selectedChapters.size() > 0) {
+            chaptersViewHolder.checkBox.setVisibility(View.VISIBLE);
+        } else chaptersViewHolder.checkBox.setVisibility(View.GONE);
 
 
         if (Database.DatabaseChapter.isSaved(novelChapter.link)) {

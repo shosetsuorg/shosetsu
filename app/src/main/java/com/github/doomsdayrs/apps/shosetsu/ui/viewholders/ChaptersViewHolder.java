@@ -2,8 +2,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -40,8 +43,10 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public NovelChapter novelChapter;
-    public final ImageView moreOptions;
 
+    public final ImageView moreOptions;
+    public final CardView cardView;
+    public final CheckBox checkBox;
     public final TextView library_card_title;
     public final TextView status;
     public final TextView read;
@@ -58,13 +63,28 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     public ChaptersViewHolder(@NonNull View itemView) {
         super(itemView);
+        cardView = itemView.findViewById(R.id.recycler_novel_chapter_card);
+        checkBox = itemView.findViewById(R.id.recycler_novel_chapter_selectCheck);
+
         library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
         moreOptions = itemView.findViewById(R.id.recycler_novel_chapter_options);
         status = itemView.findViewById(R.id.recycler_novel_chapter_status);
         read = itemView.findViewById(R.id.recycler_novel_chapter_read);
         readTag = itemView.findViewById(R.id.recycler_novel_chapter_read_tag);
         downloadTag = itemView.findViewById(R.id.recycler_novel_chapter_download);
+
         itemView.setOnClickListener(this);
+
+        //TODO Create XML layouts for selected systems
+        // > On select add to SelectedChapters in NovelFragmentMain, then do a refresh of the list
+
+        System.out.println(NovelFragmentChapters.selectedChapters.toString());
+        itemView.setOnLongClickListener(view -> {
+            addToSelect();
+            return true;
+        });
+
+
         moreOptions.setOnClickListener(view -> popupMenu.show());
         if (popupMenu == null) {
             popupMenu = new PopupMenu(moreOptions.getContext(), moreOptions);
@@ -73,6 +93,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                 popupMenu.getMenu().add(1, R.id.popup_chapter_menu_download, 2, R.string.download);
             }
         }
+        checkBox.setOnClickListener(view -> addToSelect());
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
@@ -102,7 +123,29 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         });
     }
 
+    private void addToSelect() {
+        Log.d("SelectedStatus", "Novel Selecting: " + novelChapter.link);
+        if (!NovelFragmentChapters.contains(novelChapter))
+            NovelFragmentChapters.selectedChapters.add(novelChapter);
+        else
+            removeFromSelect();
 
+        if (NovelFragmentChapters.selectedChapters.size() == 1 || NovelFragmentChapters.selectedChapters.size() <= 0)
+            novelFragmentChapters.onCreateOptionsMenu(novelFragmentChapters.menu, novelFragmentChapters.getInflater());
+
+        NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+        System.out.println(NovelFragmentChapters.selectedChapters.toString());
+    }
+
+    private void removeFromSelect() {
+        Log.d("SelectedStatus", "Novel Removing: " + novelChapter.link);
+        if (NovelFragmentChapters.contains(novelChapter))
+            for (int x = 0; x < NovelFragmentChapters.selectedChapters.size(); x++)
+                if (NovelFragmentChapters.selectedChapters.get(x).link.equalsIgnoreCase(novelChapter.link)) {
+                    NovelFragmentChapters.selectedChapters.remove(x);
+                    return;
+                }
+    }
 
     @Override
     public void onClick(View v) {

@@ -17,12 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /*
@@ -50,6 +52,15 @@ import java.util.Objects;
  * TODO Selection mechanic
  */
 public class NovelFragmentChapters extends Fragment {
+    public static ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
+
+    public static boolean contains(NovelChapter novelChapter) {
+        for (NovelChapter n : selectedChapters)
+            if (n.link.equalsIgnoreCase(novelChapter.link))
+                return true;
+        return false;
+    }
+
 
     public boolean reversed;
     @SuppressLint("StaticFieldLeak")
@@ -149,6 +160,12 @@ public class NovelFragmentChapters extends Fragment {
         }
     }
 
+    public Menu menu;
+
+    public MenuInflater getInflater() {
+        return new MenuInflater(getContext());
+    }
+
     /**
      * Creates the option menu (on the top toolbar)
      *
@@ -157,7 +174,16 @@ public class NovelFragmentChapters extends Fragment {
      */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.toolbar_chapters, menu);
-        menu.findItem(R.id.chapter_filter).setOnMenuItemClickListener(new NovelFragmentChaptersOnFilter(this));
+        this.menu = menu;
+        menu.clear();
+        //TODO Delete all, Delete Selected titles
+        //TODO Fix menu items not being full actions
+        //TODO give menu items listeners
+
+        if (selectedChapters.size() <= 0) {
+            inflater.inflate(R.menu.toolbar_chapters, menu);
+            menu.findItem(R.id.chapter_filter).setOnMenuItemClickListener(new NovelFragmentChaptersOnFilter(this));
+        } else inflater.inflate(R.menu.toolbar_chapters_selected, menu);
+
     }
 }
