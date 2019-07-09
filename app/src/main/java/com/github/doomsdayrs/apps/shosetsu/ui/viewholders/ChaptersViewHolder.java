@@ -21,6 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+import com.google.android.material.card.MaterialCardView;
 
 /*
  * This file is part of Shosetsu.
@@ -45,7 +46,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     public NovelChapter novelChapter;
 
     public final ImageView moreOptions;
-    public final CardView cardView;
+    public final MaterialCardView cardView;
     public final CheckBox checkBox;
     public final TextView library_card_title;
     public final TextView status;

@@ -18,12 +18,12 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/lightTheme"
+        android:theme="@style/Theme.MaterialComponents"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
         <activity
             android:name="com.github.doomsdayrs.apps.shosetsu.MainActivity"
-            android:theme="@style/lightTheme.NoActionBar">
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,8 +33,7 @@
 
         <activity
             android:name=".ui.novel.NovelFragmentChapterView"
-            android:theme="@style/lightTheme.NoActionBar"
-           />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
     </application>
 
 </manifest>

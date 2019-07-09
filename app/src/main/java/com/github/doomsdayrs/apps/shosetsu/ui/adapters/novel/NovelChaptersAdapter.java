@@ -73,10 +73,10 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
 
         if (NovelFragmentChapters.contains(novelChapter)) {
             Log.d("SelectedStatus", "Novel Selected: " + novelChapter.link);
-            chaptersViewHolder.cardView.setCardBackgroundColor(Color.BLUE);
+            chaptersViewHolder.cardView.setStrokeColor(Color.BLUE);
             chaptersViewHolder.checkBox.setChecked(true);
         } else {
-            chaptersViewHolder.cardView.setCardBackgroundColor(Color.WHITE);
+            chaptersViewHolder.cardView.setStrokeColor(Color.WHITE);
             chaptersViewHolder.checkBox.setChecked(false);
         }
 
