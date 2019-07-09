@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
@@ -376,18 +375,18 @@ public class Database {
          * @return true if saved, false otherwise
          */
         public static boolean isSaved(String chapterURL) {
-            Log.d("CheckSave", chapterURL);
+            //   Log.d("CheckSave", chapterURL);
             Cursor cursor = library.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                Log.d("CheckSave", chapterURL + " FALSE");
+                //   Log.d("CheckSave", chapterURL + " FALSE");
                 return false;
             } else {
                 cursor.moveToNext();
                 int y = cursor.getInt(cursor.getColumnIndex(Columns.IS_SAVED.toString()));
                 cursor.close();
-                if (y == 1)
-                    Log.d("CheckSave", chapterURL + " TRUE");
+                //         if (y == 1)
+                //          Log.d("CheckSave", chapterURL + " TRUE");
                 return y == 1;
             }
         }
