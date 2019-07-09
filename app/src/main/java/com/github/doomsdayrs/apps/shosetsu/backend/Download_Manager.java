@@ -76,6 +76,7 @@ public class Download_Manager {
      * @return if downloaded
      */
     public static boolean delete(Context context, DownloadItem downloadItem) {
+        Log.d("DeletingChapter", downloadItem.toString());
         File file = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt");
         Database.DatabaseChapter.removePath(downloadItem.chapterURL);
         if (file.exists())

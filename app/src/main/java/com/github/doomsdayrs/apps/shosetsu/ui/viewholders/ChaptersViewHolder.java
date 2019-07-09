@@ -57,9 +57,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     public PopupMenu popupMenu;
 
-
-    public boolean downloaded;
-
     public NovelFragmentChapters novelFragmentChapters;
 
     public ChaptersViewHolder(@NonNull View itemView) {
@@ -102,14 +99,12 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
                     return true;
                 case R.id.popup_chapter_menu_download:
-                    if (!downloaded) {
+                    if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
                         DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
                         Download_Manager.addToDownload(downloadItem);
-                        downloaded = true;
                     } else {
                         if (Download_Manager.delete(itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link))) {
                             downloadTag.setVisibility(View.INVISIBLE);
-                            downloaded = false;
                         }
                     }
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
@@ -147,7 +142,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelURL", StaticNovel.novelURL);
         intent.putExtra("formatter", StaticNovel.formatter.getID());
-        intent.putExtra("downloaded", downloaded);
         novelFragmentChapters.startActivity(intent);
     }
 }

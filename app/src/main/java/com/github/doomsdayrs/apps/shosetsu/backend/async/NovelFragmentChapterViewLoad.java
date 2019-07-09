@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 /*
  * This file is part of Shosetsu.
@@ -49,9 +50,12 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
         try {
             novelFragmentChapterViews[0].text = novelFragmentChapterViews[0].formatter.getNovelPassage(novelFragmentChapterViews[0].chapterURL).replaceAll("\n", "\n\n");
             novelFragmentChapterViews[0].runOnUiThread(() -> novelFragmentChapterViews[0].textView.setText(novelFragmentChapterViews[0].text));
+        } catch (SocketTimeoutException e) {
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
@@ -67,6 +71,7 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
 
     /**
      * Once complete hide progress
+     *
      * @param s null
      */
     @Override

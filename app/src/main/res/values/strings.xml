@@ -41,4 +41,6 @@
     <string name="delete_all">Delete All</string>
     <string name="delete_selected">Delete Selected</string>
     <string name="deselect_all">Deselect All</string>
+    <string name="download_selected">Download Selected</string>
+    <string name="retry">Retry</string>
 </resources>

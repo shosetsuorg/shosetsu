@@ -2,16 +2,18 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -61,6 +63,12 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     private MenuItem large;
     private int a = 0;
     private boolean bookmarked;
+
+
+    // ERROR SCREEN
+    //TODO Handle ERRORs on loading, EVERYWHERE
+    private TextView errorMessage;
+    private Button errorButton;
 
     /**
      * Save data of view before destroyed
@@ -255,7 +263,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         } else chapterURL = getIntent().getStringExtra("chapterURL");
         Log.d("novelURL", Objects.requireNonNull(chapterURL));
 
-        if (getIntent().getBooleanExtra("downloaded", false))
+        if (Database.DatabaseChapter.isSaved(chapterURL))
             text = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterURL)).replaceAll("\n", "\n\n");
         else if (text == null)
             if (chapterURL != null) {

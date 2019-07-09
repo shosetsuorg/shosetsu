@@ -10,7 +10,7 @@
     <item
         android:id="@+id/chapter_download_selected"
         android:icon="@drawable/ic_file_download"
-        android:title="@string/download_all"
+        android:title="@string/download_selected"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/chapter_delete_selected"

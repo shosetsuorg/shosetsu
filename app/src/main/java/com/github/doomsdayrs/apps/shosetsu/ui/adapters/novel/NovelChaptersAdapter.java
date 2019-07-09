@@ -1,12 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel;
 
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -70,7 +71,6 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
             chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("Bookmark");
 
 
-
         if (NovelFragmentChapters.contains(novelChapter)) {
             Log.d("SelectedStatus", "Novel Selected: " + novelChapter.link);
             chaptersViewHolder.cardView.setStrokeColor(Color.BLUE);
@@ -88,11 +88,11 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
         if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
             Log.d("In Storage", StaticNovel.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.downloadTag.setVisibility(View.VISIBLE);
-            chaptersViewHolder.downloaded = true;
             chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Delete");
-        } else
+        } else {
             chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Download");
-
+            chaptersViewHolder.downloadTag.setVisibility(View.INVISIBLE);
+        }
 
         switch (Database.DatabaseChapter.getStatus(novelChapter.link)) {
             case READING:
