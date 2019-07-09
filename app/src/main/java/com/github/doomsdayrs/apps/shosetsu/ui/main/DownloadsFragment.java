@@ -44,6 +44,7 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
+//TODO selection mechanic with options to delete,  pause,  and more
 public class DownloadsFragment extends Fragment {
     public static List<DownloadItem> downloadItems = new ArrayList<>();
 
