@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables;
 
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 
 /*
  * This file is part of Shosetsu.

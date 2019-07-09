@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.listeners;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
 import android.util.Log;
 import android.view.MenuItem;
 

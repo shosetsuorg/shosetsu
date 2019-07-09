@@ -3,12 +3,12 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -139,9 +139,9 @@ public class CatalogueFragment extends Fragment {
             library_view.setHasFixedSize(false);
             RecyclerView.LayoutManager library_layoutManager;
             if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-                library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
+                library_layoutManager = new GridLayoutManager(context, 2, RecyclerView.VERTICAL, false);
             else
-                library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
+                library_layoutManager = new GridLayoutManager(context, 4, RecyclerView.VERTICAL, false);
             library_Adapter = new CatalogueNovelCardsAdapter(recycleCards, getFragmentManager(), formatter);
             library_view.setLayoutManager(library_layoutManager);
             library_view.addOnScrollListener(new CatalogueFragmentHitBottom(this));

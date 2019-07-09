@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.listeners;
 
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;

@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.listeners;
 
-import android.support.design.widget.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.View;
 import android.widget.Toast;
 

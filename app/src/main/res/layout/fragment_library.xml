@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.github.doomsdayrs.apps.shosetsu.MainActivity">
 
-    <android.support.v7.widget.GridLayout
+    <androidx.gridlayout.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.GridLayout>
+    </androidx.gridlayout.widget.GridLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_library_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
