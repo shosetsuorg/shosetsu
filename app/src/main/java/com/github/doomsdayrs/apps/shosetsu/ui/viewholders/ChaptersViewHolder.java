@@ -75,15 +75,11 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
         itemView.setOnClickListener(this);
 
-        //TODO Create XML layouts for selected systems
-        // > On select add to SelectedChapters in NovelFragmentMain, then do a refresh of the list
 
-        System.out.println(NovelFragmentChapters.selectedChapters.toString());
         itemView.setOnLongClickListener(view -> {
             addToSelect();
             return true;
         });
-
 
         moreOptions.setOnClickListener(view -> popupMenu.show());
         if (popupMenu == null) {
@@ -124,21 +120,16 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     }
 
     private void addToSelect() {
-        Log.d("SelectedStatus", "Novel Selecting: " + novelChapter.link);
         if (!NovelFragmentChapters.contains(novelChapter))
             NovelFragmentChapters.selectedChapters.add(novelChapter);
         else
             removeFromSelect();
-
         if (NovelFragmentChapters.selectedChapters.size() == 1 || NovelFragmentChapters.selectedChapters.size() <= 0)
             novelFragmentChapters.onCreateOptionsMenu(novelFragmentChapters.menu, novelFragmentChapters.getInflater());
-
         NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-        System.out.println(NovelFragmentChapters.selectedChapters.toString());
     }
 
     private void removeFromSelect() {
-        Log.d("SelectedStatus", "Novel Removing: " + novelChapter.link);
         if (NovelFragmentChapters.contains(novelChapter))
             for (int x = 0; x < NovelFragmentChapters.selectedChapters.size(); x++)
                 if (NovelFragmentChapters.selectedChapters.get(x).link.equalsIgnoreCase(novelChapter.link)) {

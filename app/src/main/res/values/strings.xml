@@ -39,4 +39,6 @@
     <string name="select_all">Select All</string>
     <string name="download_all">Download All</string>
     <string name="delete_all">Delete All</string>
+    <string name="delete_selected">Delete Selected</string>
+    <string name="deselect_all">Deselect All</string>
 </resources>

@@ -19,10 +19,12 @@ import android.widget.ProgressBar;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
+import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -183,7 +185,37 @@ public class NovelFragmentChapters extends Fragment {
         if (selectedChapters.size() <= 0) {
             inflater.inflate(R.menu.toolbar_chapters, menu);
             menu.findItem(R.id.chapter_filter).setOnMenuItemClickListener(new NovelFragmentChaptersOnFilter(this));
-        } else inflater.inflate(R.menu.toolbar_chapters_selected, menu);
+        } else {
+            inflater.inflate(R.menu.toolbar_chapters_selected, menu);
+            menu.findItem(R.id.chapter_select_all).setOnMenuItemClickListener(menuItem -> {
+                for (NovelChapter novelChapter : StaticNovel.novelChapters)
+                    if (!contains(novelChapter))
+                        selectedChapters.add(novelChapter);
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+            });
+            menu.findItem(R.id.chapter_download_selected).setOnMenuItemClickListener(menuItem -> {
+                for (NovelChapter novelChapter : StaticNovel.novelChapters)
+                    if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
+                        Download_Manager.addToDownload(downloadItem);
+                    }
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+            });
+            menu.findItem(R.id.chapter_delete_selected).setOnMenuItemClickListener(menuItem -> {
+                for (NovelChapter novelChapter : StaticNovel.novelChapters)
+                    if (!Database.DatabaseChapter.isSaved(novelChapter.link))
+                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link));
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+            });
+            menu.findItem(R.id.chapter_deselect_all).setOnMenuItemClickListener(menuItem -> {
+                selectedChapters = new ArrayList<>();
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+            });
+        }
 
     }
 }
