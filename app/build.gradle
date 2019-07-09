@@ -43,7 +43,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.graphql-java:graphql-java:2019-06-12T04-51-56-e994f41'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
+    implementation 'com.graphql-java:graphql-java:2019-07-01T00-55-49-7d393f2'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta2'
     //noinspection GradleCompatible
@@ -52,7 +53,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support:gridlayout-v7:28.0.0'
-    implementation 'com.github.Doomsdayrs:novelreader-extensions:v1.1.2'
+    implementation 'com.github.Doomsdayrs:novelreader-extensions:1.1.2'
     implementation 'com.github.Doomsdayrs:novelreader-services:1.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'org.jetbrains:annotations:17.0.0'
