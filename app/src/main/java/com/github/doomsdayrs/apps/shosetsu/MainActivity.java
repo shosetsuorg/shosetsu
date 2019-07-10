@@ -24,6 +24,12 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GHUser;
+import org.kohsuke.github.GitHub;
+
+import java.io.IOException;
+
 /*
  * This file is part of Shosetsu.
  * Shosetsu is free software: you can redistribute it and/or modify
@@ -61,20 +67,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
-        // Settings setup
-
         SettingsController.view = getSharedPreferences("view", 0);
         SettingsController.download = getSharedPreferences("download", 0);
         SettingsController.advanced = getSharedPreferences("advanced", 0);
         SettingsController.tracking = getSharedPreferences("tracking", 0);
         SettingsController.backup = getSharedPreferences("backup", 0);
-
-        Settings.connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         SettingsController.init();
+
+        switch (Settings.themeMode){
+            case 0:setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
+            break;
+            case 1: setTheme(R.style.Theme_MaterialComponents_NoActionBar);
+            break;
+            case 2: setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
+        }
+
+        try {
+            GitHub gitHub = GitHub.connect();
+            GHRepository ghRepository = gitHub.getRepository("shosetsu");
+            System.out.println(ghRepository.getUrl());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+        // Settings setup
+        Settings.connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         //Set the content view
         setContentView(R.layout.activity_main);

@@ -211,6 +211,13 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("OnCreate", "NovelFragmentChapterView");
+        switch (Settings.themeMode){
+            case 0:setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
+                break;
+            case 1: setTheme(R.style.Theme_MaterialComponents_NoActionBar);
+                break;
+            case 2: setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
+        }
         setContentView(R.layout.fragment_novel_chapter_view);
         {
             progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);

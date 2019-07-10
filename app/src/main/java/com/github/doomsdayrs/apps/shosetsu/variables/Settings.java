@@ -51,4 +51,13 @@ public class Settings {
      * If download manager is paused
      */
     public static boolean downloadPaused;
+
+    /**
+     * Current theme to use
+     * <p>
+     * 0: Light mode
+     * 1: Night mode
+     * 2: Dark mode
+     */
+    public static int themeMode;
 }

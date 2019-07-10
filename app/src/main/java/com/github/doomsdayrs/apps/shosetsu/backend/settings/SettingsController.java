@@ -1,10 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.settings;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
@@ -44,7 +46,30 @@ public class SettingsController {
         Download_Manager.shoDir = download.getString("dir", "/storage/emulated/0/Shosetsu/");
         Settings.downloadPaused = download.getBoolean("paused", false);
         Settings.ReaderTextSize = view.getInt("ReaderTextSize", 14);
+        Settings.themeMode = advanced.getInt("themeMode", 0);
     }
+
+
+    public static void changeMode(Activity activity, int newMode) {
+        if (!(newMode >= 0 && newMode <= 2))
+            throw new IndexOutOfBoundsException("Non valid int passed");
+        Settings.themeMode = newMode;
+        advanced.edit()
+                .putInt("themeMode", newMode)
+                .apply();
+
+        switch (Settings.themeMode) {
+            case 0:
+                activity.setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
+                break;
+            case 1:
+                activity.setTheme(R.style.Theme_MaterialComponents_NoActionBar);
+                break;
+            case 2:
+                activity.setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
+        }
+    }
+
 
     /**
      * Toggles paused downloads

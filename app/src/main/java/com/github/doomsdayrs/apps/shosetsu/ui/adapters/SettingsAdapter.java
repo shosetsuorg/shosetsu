@@ -7,8 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +26,12 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsCard;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /*
@@ -221,7 +226,15 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
 
     //TODO Add text size options
     public static class advancedSettings extends Fragment {
-        CheckBox checkBox;
+        static final List<String> strings = new ArrayList<>();
+
+        static {
+            strings.add("Light");
+            strings.add("Dark");
+            strings.add("Night");
+        }
+
+        Spinner spinner;
 
         public advancedSettings() {
         }
@@ -230,10 +243,28 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             Log.d("OnCreateView", "ViewSettings");
-            View view = inflater.inflate(R.layout.fragment_settings_view, container, false);
-            checkBox = view.findViewById(R.id.reader_nightMode_checkbox);
-            checkBox.setChecked(!SettingsController.isReaderLightMode());
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsController.swapReaderColor());
+            View view = inflater.inflate(R.layout.fragment_settings_advanced, container, false);
+            spinner = view.findViewById(R.id.fragment_settings_advanced_spinner);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (i >= 0 && i <= 2) {
+                        SettingsController.changeMode(getActivity(),i);
+                        adapterView.setSelection(i);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
+
+            // Creating adapter for spinner
+            if (getContext() != null) {
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, strings);
+                spinner.setAdapter(dataAdapter);
+                spinner.setSelection(Settings.themeMode);
+            }
             return view;
         }
     }
