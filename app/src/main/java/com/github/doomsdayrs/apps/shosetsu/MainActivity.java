@@ -5,12 +5,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
@@ -23,9 +24,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
+import com.google.android.material.navigation.NavigationView;
 
 import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 
 import java.io.IOException;
@@ -74,14 +75,17 @@ public class MainActivity extends AppCompatActivity {
         SettingsController.backup = getSharedPreferences("backup", 0);
         SettingsController.init();
 
-        switch (Settings.themeMode){
-            case 0:setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
-            break;
-            case 1: setTheme(R.style.Theme_MaterialComponents_NoActionBar);
-            break;
-            case 2: setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
+        switch (Settings.themeMode) {
+            case 0:
+                setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
+                break;
+            case 1:
+                setTheme(R.style.Theme_MaterialComponents_NoActionBar);
+                break;
+            case 2:
+                setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
         }
-
+        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         try {
             GitHub gitHub = GitHub.connect();
             GHRepository ghRepository = gitHub.getRepository("shosetsu");

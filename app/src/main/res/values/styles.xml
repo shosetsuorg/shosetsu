@@ -1,34 +1,16 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="lightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/textColorLight</item>
-        <item name="colorPrimary">@color/colorLightPrimary</item>
-        <item name="colorPrimaryDark">@color/colorLightPrimaryDark</item>
-        <item name="colorAccent">@color/colorLightAccent</item>
-        <!--<item name="android:background">@color/colorLightBackground</item>-->
-    </style>
-
-    <style name="darkTheme">
-        <item name="android:textColor">@color/textColorDark</item>
-        <item name="colorPrimary">@color/colorDarkPrimary</item>
-        <item name="colorPrimaryDark">@color/colorDarkPrimaryDark</item>
+    <style name="dark_mode" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorAccent">@color/colorDarkAccent</item>
-        <!-- <item name="android:background">@color/colorDarkBackground</item>-->
     </style>
 
-    <style name="nightTheme">
-        <item name="android:textColor">@color/textColorDark</item>
-        <item name="colorPrimary">@color/colorNightPrimary</item>
-        <item name="colorPrimaryDark">@color/colorNightPrimaryDark</item>
+    <style name="light_mode" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorAccent">@color/colorLightAccent</item>
+    </style>
+
+    <style name="night_mode" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorAccent">@color/colorNightAccent</item>
-        <!-- <item name="android:background">@color/colorNightBackground</item>-->
     </style>
 
-    <style name="lightTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
 </resources>

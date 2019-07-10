@@ -245,11 +245,17 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
             Log.d("OnCreateView", "ViewSettings");
             View view = inflater.inflate(R.layout.fragment_settings_advanced, container, false);
             spinner = view.findViewById(R.id.fragment_settings_advanced_spinner);
+            // Creating adapter for spinner
+            if (getContext() != null) {
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, strings);
+                spinner.setAdapter(dataAdapter);
+                spinner.setSelection(Settings.themeMode);
+            }
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     if (i >= 0 && i <= 2) {
-                        SettingsController.changeMode(getActivity(),i);
+                        SettingsController.changeMode(getActivity(), i);
                         adapterView.setSelection(i);
                     }
                 }
@@ -258,13 +264,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                 public void onNothingSelected(AdapterView<?> adapterView) {
                 }
             });
-
-            // Creating adapter for spinner
-            if (getContext() != null) {
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, strings);
-                spinner.setAdapter(dataAdapter);
-                spinner.setSelection(Settings.themeMode);
-            }
             return view;
         }
     }
