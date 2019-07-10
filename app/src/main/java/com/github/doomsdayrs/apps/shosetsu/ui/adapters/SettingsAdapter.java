@@ -115,6 +115,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                 break;
                 case ADVANCED: {
                     Toast.makeText(v.getContext(), "Advanced", Toast.LENGTH_SHORT).show();
+                    fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new advancedSettings()).commit();
                 }
                 break;
                 case DOWNLOAD: {
@@ -218,5 +219,23 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         }
     }
 
+    //TODO Add text size options
+    public static class advancedSettings extends Fragment {
+        CheckBox checkBox;
+
+        public advancedSettings() {
+        }
+
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            Log.d("OnCreateView", "ViewSettings");
+            View view = inflater.inflate(R.layout.fragment_settings_view, container, false);
+            checkBox = view.findViewById(R.id.reader_nightMode_checkbox);
+            checkBox.setChecked(!SettingsController.isReaderLightMode());
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsController.swapReaderColor());
+            return view;
+        }
+    }
 
 }
