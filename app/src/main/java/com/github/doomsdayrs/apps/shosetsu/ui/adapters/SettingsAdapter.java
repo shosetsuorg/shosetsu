@@ -3,11 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +11,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
@@ -74,16 +76,18 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
 
     static class SettingsCardViewHolder extends RecyclerView.ViewHolder {
         final TextView library_card_title;
+        final CardView cardView;
         final FragmentManager fragmentManager;
 
         SettingsCardViewHolder(@NonNull View itemView, FragmentManager fragmentManager) {
             super(itemView);
             library_card_title = itemView.findViewById(R.id.recycler_settings_title);
+            cardView = itemView.findViewById(R.id.settings_card);
             this.fragmentManager = fragmentManager;
         }
 
         void setType(Types type) {
-            library_card_title.setOnClickListener(new onSettingsClick(type, fragmentManager));
+            cardView.setOnClickListener(new onSettingsClick(type, fragmentManager));
             library_card_title.setText(type.toString());
         }
     }
@@ -118,7 +122,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                     fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new downloadSettings()).commit();
                 }
                 break;
-                case BACKUP:{
+                case BACKUP: {
                     Toast.makeText(v.getContext(), "Backup", Toast.LENGTH_SHORT).show();
                     fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new backupSettings()).commit();
                 }
@@ -129,6 +133,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         }
     }
 
+    //TODO Add text size options
     public static class viewSettings extends Fragment {
         CheckBox checkBox;
 
