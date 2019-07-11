@@ -175,7 +175,9 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             StringBuilder replaceSpacing = new StringBuilder("\n");
             for (int x = 0; x < Settings.paragraphSpacing; x++)
                 replaceSpacing.append("\n");
-            text = unformattedText.replaceAll("\n", replaceSpacing.toString());
+
+            //TODO make indent size dynamically sized
+            text = unformattedText.replaceAll("\n", replaceSpacing.toString() + "\t\t");
             textView.setText(text);
         }
     }
@@ -311,9 +313,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
              * the before marshmallow version is untested
              */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    bottom();
-                });
+                scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottom());
             } else {
                 scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
             }
