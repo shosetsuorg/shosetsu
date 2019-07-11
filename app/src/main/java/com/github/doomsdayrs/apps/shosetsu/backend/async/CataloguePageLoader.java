@@ -105,7 +105,9 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
      */
     @Override
     protected void onCancelled() {
-        catalogueFragment.progressBar.setVisibility(View.GONE);
+        if (catalogueFragmentHitBottom != null)
+            catalogueFragment.bottomProgressBar.setVisibility(View.INVISIBLE);
+        else catalogueFragment.swipeRefreshLayout.setRefreshing(false);
     }
 
     /**
@@ -113,19 +115,20 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
      */
     @Override
     protected void onPreExecute() {
-        if (catalogueFragmentHitBottom == null)
-            catalogueFragment.progressBar.setVisibility(View.VISIBLE);
-        else catalogueFragment.bottomProgressBar.setVisibility(View.VISIBLE);
+        if (catalogueFragmentHitBottom != null)
+            catalogueFragment.bottomProgressBar.setVisibility(View.VISIBLE);
+        else catalogueFragment.swipeRefreshLayout.setRefreshing(true);
     }
 
     /**
      * Once done remove progress bar
+     *
      * @param aBoolean result of doInBackground
      */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if (catalogueFragmentHitBottom == null)
-            catalogueFragment.progressBar.setVisibility(View.GONE);
-        else catalogueFragment.bottomProgressBar.setVisibility(View.GONE);
+        if (catalogueFragmentHitBottom != null)
+            catalogueFragment.bottomProgressBar.setVisibility(View.GONE);
+        else catalogueFragment.swipeRefreshLayout.setRefreshing(false);
     }
 }
