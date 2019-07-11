@@ -25,11 +25,11 @@ import org.jetbrains.annotations.NotNull;
  * Used for setting fragments
  */
 public enum Types {
-    DOWNLOAD("download"),
-    VIEW("view"),
-    ADVANCED("advanced"),
-    CREDITS("credits"),
-    BACKUP("backup");
+    DOWNLOAD("Download"),
+    VIEW("View"),
+    ADVANCED("Advanced"),
+    CREDITS("Credits"),
+    BACKUP("Backup");
 
     /**
      * Type name
