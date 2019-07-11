@@ -211,12 +211,15 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("OnCreate", "NovelFragmentChapterView");
-        switch (Settings.themeMode){
-            case 0:setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
+        switch (Settings.themeMode) {
+            case 0:
+                setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
                 break;
-            case 1: setTheme(R.style.Theme_MaterialComponents_NoActionBar);
+            case 1:
+                setTheme(R.style.Theme_MaterialComponents_NoActionBar);
                 break;
-            case 2: setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
+            case 2:
+                setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
         }
         setContentView(R.layout.fragment_novel_chapter_view);
         {
@@ -236,24 +239,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
              */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    if (scrollView.canScrollVertically(1))
-                        if (a % 5 == 0) {
-                            int y = scrollView.getScrollY();
-                            Log.d("ScrollSave", Integer.toString(y));
-                            Database.DatabaseChapter.updateY(chapterURL, y);
-                        } else a++;
-                    else Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
+                    bottom();
                 });
             } else {
-                scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-                    if (scrollView.canScrollVertically(1))
-                        if (a % 5 == 0) {
-                            int y = scrollView.getScrollY();
-                            Log.d("ScrollSave", Integer.toString(y));
-                            Database.DatabaseChapter.updateY(chapterURL, y);
-                        } else a++;
-                    else Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
-                });
+                scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
             }
 
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
@@ -280,5 +269,18 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(title);
         textView.setText(text);
+    }
+
+    public void bottom() {
+        if (scrollView.canScrollVertically(1))
+            if (a % 5 == 0) {
+                int y = scrollView.getScrollY();
+                Log.d("ScrollSave", Integer.toString(y));
+                Database.DatabaseChapter.updateY(chapterURL, y);
+            } else a++;
+        else {
+            Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
+            //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
+        }
     }
 }
