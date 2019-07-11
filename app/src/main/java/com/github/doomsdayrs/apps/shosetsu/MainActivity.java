@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
       //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         Log.d("Updater", "Start");
-        //TODO
+        //TODO Figure out this
         AppUpdater appUpdater = new AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.XML)
                 .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
