@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;

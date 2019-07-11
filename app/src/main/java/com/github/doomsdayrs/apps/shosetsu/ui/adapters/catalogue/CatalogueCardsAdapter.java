@@ -15,7 +15,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

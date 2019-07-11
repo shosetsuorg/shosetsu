@@ -16,7 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.MainActivityNavSwapFrag;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.CataloguesFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;

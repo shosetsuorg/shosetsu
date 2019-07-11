@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.settings;
+package com.github.doomsdayrs.apps.shosetsu.backend;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
@@ -47,6 +46,12 @@ public class SettingsController {
         Settings.downloadPaused = download.getBoolean("paused", false);
         Settings.ReaderTextSize = view.getInt("ReaderTextSize", 14);
         Settings.themeMode = advanced.getInt("themeMode", 0);
+        Settings.paragraphSpacing = view.getInt("paragraphSpacing", 1);
+    }
+
+    public static void changeParagraphSpacing(int newSpacing) {
+        Settings.paragraphSpacing = newSpacing;
+        view.edit().putInt("paragraphSpacing", newSpacing).apply();
     }
 
 

@@ -8,7 +8,7 @@
             android:id="@+id/chapter_view_nightMode"
             android:checkable="true"
             android:title="@string/night_mode"
-            app:showAsAction="never"/>
+            app:showAsAction="never" />
 
         <item
             android:id="@+id/chapter_view_textSize"
@@ -25,6 +25,28 @@
                     android:title="@string/medium" />
                 <item
                     android:id="@+id/chapter_view_textSize_large"
+                    android:checkable="true"
+                    android:title="@string/large" />
+            </menu>
+        </item>
+        <item
+            android:title="@string/spacing"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/chapter_view_paragraphSpace_none"
+                    android:checkable="true"
+                    android:title="@string/no_change" />
+                <item
+                    android:id="@+id/chapter_view_paragraphSpace_small"
+                    android:checkable="true"
+                    android:title="@string/small" />
+                <item
+                    android:id="@+id/chapter_view_paragraphSpace_medium"
+                    android:checkable="true"
+                    android:title="@string/medium" />
+                <item
+                    android:id="@+id/chapter_view_paragraphSpace_large"
                     android:checkable="true"
                     android:title="@string/large" />
             </menu>

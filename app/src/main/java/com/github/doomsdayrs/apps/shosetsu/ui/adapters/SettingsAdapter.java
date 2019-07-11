@@ -24,8 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsCard;
@@ -141,7 +141,23 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
 
     //TODO Add text size options
     public static class viewSettings extends Fragment {
-        CheckBox checkBox;
+        static final List<String> textSizes = new ArrayList<>();
+        static final List<String> paragraphSpaces = new ArrayList<>();
+
+        static {
+            textSizes.add("Small");
+            textSizes.add("Medium");
+            textSizes.add("Large");
+
+            paragraphSpaces.add("None");
+            paragraphSpaces.add("Small");
+            paragraphSpaces.add("Medium");
+            paragraphSpaces.add("Large");
+        }
+
+        CheckBox nightMode;
+        Spinner paragraphSpacing;
+        Spinner textSize;
 
         public viewSettings() {
         }
@@ -151,9 +167,111 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             Log.d("OnCreateView", "ViewSettings");
             View view = inflater.inflate(R.layout.fragment_settings_view, container, false);
-            checkBox = view.findViewById(R.id.reader_nightMode_checkbox);
-            checkBox.setChecked(!SettingsController.isReaderLightMode());
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsController.swapReaderColor());
+            nightMode = view.findViewById(R.id.reader_nightMode_checkbox);
+            paragraphSpacing = view.findViewById(R.id.reader_paragraphSpacing);
+            textSize = view.findViewById(R.id.reader_textSize);
+
+            nightMode.setChecked(!SettingsController.isReaderLightMode());
+            nightMode.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsController.swapReaderColor());
+
+            if (getContext() != null) {
+                {
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, textSizes);
+                    textSize.setAdapter(dataAdapter);
+                    switch ((int) Settings.ReaderTextSize) {
+                        default:
+                        case 14:
+                            textSize.setSelection(0);
+                            break;
+                        case 17:
+                            textSize.setSelection(1);
+                            break;
+                        case 20:
+                            textSize.setSelection(2);
+                            break;
+                    }
+
+                    textSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            if (i >= 0 && i <= 2) {
+                                int size = 14;
+                                switch (i) {
+                                    case 0:
+                                        break;
+                                    case 1:
+                                        size = 17;
+                                        break;
+                                    case 2:
+                                        size = 20;
+                                        break;
+                                }
+                                SettingsController.setTextSize(size);
+                                adapterView.setSelection(i);
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                        }
+                    });
+                }
+                {
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, paragraphSpaces);
+                    //TODO figure out why the itemSelectedListner runs without being selected
+                    int spaceBack = Settings.paragraphSpacing;
+
+                    switch (Settings.paragraphSpacing) {
+                        case 0:
+                            paragraphSpacing.setSelection(0);
+                            break;
+                        case 1:
+                            paragraphSpacing.setSelection(1);
+                            break;
+                        case 2:
+                            paragraphSpacing.setSelection(2);
+                            break;
+                        case 3:
+                            paragraphSpacing.setSelection(3);
+                            break;
+                    }
+
+                    paragraphSpacing.setAdapter(dataAdapter);
+
+                    paragraphSpacing.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            if (i >= 0 && i <= 3) {
+                                SettingsController.changeParagraphSpacing(i);
+                                adapterView.setSelection(i);
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+                    Settings.paragraphSpacing = spaceBack;
+                    SettingsController.changeParagraphSpacing(spaceBack);
+                    switch (Settings.paragraphSpacing) {
+                        case 0:
+                            paragraphSpacing.setSelection(0);
+                            break;
+                        case 1:
+                            paragraphSpacing.setSelection(1);
+                            break;
+                        case 2:
+                            paragraphSpacing.setSelection(2);
+                            break;
+                        case 3:
+                            paragraphSpacing.setSelection(3);
+                            break;
+                    }
+
+                }
+            }
+
             return view;
         }
     }

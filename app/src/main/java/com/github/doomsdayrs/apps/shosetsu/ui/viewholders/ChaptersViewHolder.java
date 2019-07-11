@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
@@ -15,7 +14,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;

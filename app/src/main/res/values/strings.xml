@@ -49,4 +49,6 @@
     <string name="read">READ</string>
     <string name="unread">UNREAD</string>
     <string name="reading">READING</string>
+    <string name="spacing">Paragraph Spacing</string>
+    <string name="no_change">No change</string>
 </resources>

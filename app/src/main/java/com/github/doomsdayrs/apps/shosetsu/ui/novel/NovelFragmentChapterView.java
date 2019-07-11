@@ -17,9 +17,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelFragmentChapterViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.settings.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewHideBar;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
@@ -55,12 +55,19 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     public Formatter formatter;
     public String chapterURL;
     private String novelURL;
+    public String unformattedText = null;
     public String text = null;
     private MenuItem bookmark;
 
-    private MenuItem small;
-    private MenuItem medium;
-    private MenuItem large;
+    private MenuItem textSmall;
+    private MenuItem textMedium;
+    private MenuItem textLarge;
+
+    private MenuItem spaceNone;
+    private MenuItem spaceSmall;
+    private MenuItem spaceMedium;
+    private MenuItem spaceLarge;
+
     private int a = 0;
     private boolean bookmarked;
 
@@ -76,8 +83,9 @@ public class NovelFragmentChapterView extends AppCompatActivity {
      * @param outState output save
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString("unformattedText", text);
         outState.putString("text", text);
         outState.putString("chapterURL", chapterURL);
         outState.putInt("formatter", formatter.getID());
@@ -101,21 +109,46 @@ public class NovelFragmentChapterView extends AppCompatActivity {
 
         // Bookmark
         bookmark = menu.findItem(R.id.chapter_view_bookmark);
+        {
+            textSmall = menu.findItem(R.id.chapter_view_textSize_small);
+            textMedium = menu.findItem(R.id.chapter_view_textSize_medium);
+            textLarge = menu.findItem(R.id.chapter_view_textSize_large);
 
-        small = menu.findItem(R.id.chapter_view_textSize_small);
-        medium = menu.findItem(R.id.chapter_view_textSize_medium);
-        large = menu.findItem(R.id.chapter_view_textSize_large);
+            switch ((int) Settings.ReaderTextSize) {
+                default:
+                    SettingsController.setTextSize(14);
+                case 14:
+                    textSmall.setChecked(true);
+                    break;
+                case 17:
+                    textMedium.setChecked(true);
+                    break;
+                case 20:
+                    textLarge.setChecked(true);
+                    break;
+            }
+        }
+        {
+            spaceNone = menu.findItem(R.id.chapter_view_paragraphSpace_none);
+            spaceSmall = menu.findItem(R.id.chapter_view_paragraphSpace_small);
+            spaceMedium = menu.findItem(R.id.chapter_view_paragraphSpace_medium);
+            spaceLarge = menu.findItem(R.id.chapter_view_paragraphSpace_large);
 
-        switch ((int) Settings.ReaderTextSize) {
-            case 14:
-                small.setChecked(true);
-                break;
-            case 17:
-                medium.setChecked(true);
-                break;
-            case 20:
-                large.setChecked(true);
-                break;
+            switch (Settings.paragraphSpacing) {
+                case 0:
+                    spaceNone.setChecked(true);
+                    break;
+                case 1:
+                    spaceSmall.setChecked(true);
+                    break;
+                case 2:
+                    spaceMedium.setChecked(true);
+                    break;
+                case 3:
+                    spaceLarge.setChecked(true);
+                    break;
+            }
+
         }
 
         bookmarked = Database.DatabaseChapter.isBookMarked(chapterURL);
@@ -132,11 +165,19 @@ public class NovelFragmentChapterView extends AppCompatActivity {
      * Changes the theme of the reader
      * TODO change the scroll position bars color
      */
-    private void setUpReader() {
+    public void setUpReader() {
         scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
         textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
         textView.setTextColor(Settings.ReaderTextColor);
         textView.setTextSize(Settings.ReaderTextSize);
+
+        if (unformattedText != null) {
+            StringBuilder replaceSpacing = new StringBuilder("\n");
+            for (int x = 0; x < Settings.paragraphSpacing; x++)
+                replaceSpacing.append("\n");
+            text = unformattedText.replaceAll("\n", replaceSpacing.toString());
+            textView.setText(text);
+        }
     }
 
 
@@ -178,24 +219,56 @@ public class NovelFragmentChapterView extends AppCompatActivity {
                 setUpReader();
 
                 item.setChecked(true);
-                medium.setChecked(false);
-                large.setChecked(false);
+                textMedium.setChecked(false);
+                textLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_textSize_medium:
                 SettingsController.setTextSize(17);
                 setUpReader();
 
                 item.setChecked(true);
-                small.setChecked(false);
-                large.setChecked(false);
+                textSmall.setChecked(false);
+                textLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_textSize_large:
                 SettingsController.setTextSize(20);
                 setUpReader();
-
                 item.setChecked(true);
-                small.setChecked(false);
-                medium.setChecked(false);
+                textSmall.setChecked(false);
+                textMedium.setChecked(false);
+                return true;
+
+            case R.id.chapter_view_paragraphSpace_none:
+                SettingsController.changeParagraphSpacing(0);
+                setUpReader();
+                spaceNone.setChecked(true);
+                spaceSmall.setChecked(false);
+                spaceMedium.setChecked(false);
+                spaceLarge.setChecked(false);
+                return true;
+            case R.id.chapter_view_paragraphSpace_small:
+                SettingsController.changeParagraphSpacing(1);
+                setUpReader();
+                spaceNone.setChecked(false);
+                spaceSmall.setChecked(true);
+                spaceMedium.setChecked(false);
+                spaceLarge.setChecked(false);
+                return true;
+            case R.id.chapter_view_paragraphSpace_medium:
+                SettingsController.changeParagraphSpacing(2);
+                setUpReader();
+                spaceNone.setChecked(false);
+                spaceSmall.setChecked(false);
+                spaceMedium.setChecked(true);
+                spaceLarge.setChecked(false);
+                return true;
+            case R.id.chapter_view_paragraphSpace_large:
+                SettingsController.changeParagraphSpacing(3);
+                setUpReader();
+                spaceNone.setChecked(false);
+                spaceSmall.setChecked(false);
+                spaceMedium.setChecked(false);
+                spaceLarge.setChecked(true);
                 return true;
         }
         return false;
@@ -252,23 +325,27 @@ public class NovelFragmentChapterView extends AppCompatActivity {
         setUpReader();
 
         if (savedInstanceState != null) {
+            unformattedText = savedInstanceState.getString("unformattedText");
             title = savedInstanceState.getString("title");
             chapterURL = savedInstanceState.getString("chapterURL");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
             text = savedInstanceState.getString("text");
         } else chapterURL = getIntent().getStringExtra("chapterURL");
+
         Log.d("novelURL", Objects.requireNonNull(chapterURL));
 
-        if (Database.DatabaseChapter.isSaved(chapterURL))
-            text = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterURL)).replaceAll("\n", "\n\n");
-        else if (text == null)
+        if (Database.DatabaseChapter.isSaved(chapterURL)) {
+            unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterURL));
+
+        } else if (text == null)
             if (chapterURL != null) {
                 new NovelFragmentChapterViewLoad(progressBar).execute(this);
             }
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(title);
-        textView.setText(text);
+
+        setUpReader();
     }
 
     public void bottom() {

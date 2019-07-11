@@ -60,4 +60,6 @@ public class Settings {
      * 2: Dark mode
      */
     public static int themeMode;
+
+    public static int paragraphSpacing;
 }

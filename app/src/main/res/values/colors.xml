@@ -2,7 +2,7 @@
 <resources>
     <color name="textColorLight">#000</color>
 
-    <color name="textColorDark">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
 
 
     <color name="colorLightPrimary">#80FFEB3B</color>
