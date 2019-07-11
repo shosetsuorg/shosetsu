@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +15,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.MainActivityNavSwapFrag;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.CataloguesFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
@@ -84,17 +85,17 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
         }
-        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+      //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
-
+        Log.d("Updater", "Start");
         AppUpdater appUpdater = new AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.GITHUB)
-                .setGitHubUserAndRepo("Doomsdyars", "shosetsu")
+                .setUpdateFrom(UpdateFrom.XML)
+                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
                 .setDisplay(Display.DIALOG)
                 .setDisplay(Display.NOTIFICATION)
                 .setDisplay(Display.SNACKBAR);
-
         appUpdater.start();
+        Log.d("Updater", "Completed construction");
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

@@ -1,6 +1,15 @@
 <AppUpdater>
 
     <update>
+        <latestVersion>FAKE</latestVersion>
+        <latestVersionCode>16</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - JUST TO CHECK THIS SHIT IS WORKING
+        </releaseNotes>
+    </update>
+
+    <update>
         <latestVersion>1.1.5-alpha</latestVersion>
         <latestVersionCode>15</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
