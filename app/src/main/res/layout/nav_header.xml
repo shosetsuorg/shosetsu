@@ -22,7 +22,12 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
     <TextView
+        android:linksClickable="true"
+        android:autoLink="all"
+        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/email"/>
+        android:text="@string/github"
+        android:focusable="true"
+        android:textSize="12sp"/>
 </LinearLayout>
