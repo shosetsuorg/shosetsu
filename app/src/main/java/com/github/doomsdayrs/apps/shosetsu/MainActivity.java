@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
       //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         Log.d("Updater", "Start");
+        //TODO
         AppUpdater appUpdater = new AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.XML)
                 .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 .setDisplay(Display.NOTIFICATION)
                 .setDisplay(Display.SNACKBAR);
         appUpdater.start();
+
         Log.d("Updater", "Completed construction");
 
 
