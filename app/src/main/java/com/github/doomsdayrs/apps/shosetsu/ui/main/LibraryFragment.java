@@ -112,9 +112,9 @@ public class LibraryFragment extends Fragment {
             library_view.setHasFixedSize(false);
             RecyclerView.LayoutManager library_layoutManager;
             if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-                library_layoutManager = new GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false);
+                library_layoutManager = new GridLayoutManager(context, 2, RecyclerView.VERTICAL, false);
             else
-                library_layoutManager = new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false);
+                library_layoutManager = new GridLayoutManager(context, 4, RecyclerView.VERTICAL, false);
             RecyclerView.Adapter library_Adapter = new LibraryNovelCardsAdapter(recycleCards, getFragmentManager());
             library_view.setLayoutManager(library_layoutManager);
             library_view.setAdapter(library_Adapter);

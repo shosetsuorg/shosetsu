@@ -1,13 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -37,17 +38,12 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNovelCardsAdapter.NovelCardsViewHolder> {
-    private static List<CatalogueNovelCard> recycleCards;
+    private List<CatalogueNovelCard> recycleCards;
     private final FragmentManager fragmentManager;
     private final Formatter formatter;
 
     public CatalogueNovelCardsAdapter(List<CatalogueNovelCard> recycleCards, FragmentManager fragmentManager, Formatter formatter) {
-        if (CatalogueNovelCardsAdapter.recycleCards != null && !CatalogueNovelCardsAdapter.recycleCards.containsAll(recycleCards)) {
-            CatalogueNovelCardsAdapter.recycleCards = null;
-            CatalogueNovelCardsAdapter.recycleCards = recycleCards;
-        } else if (CatalogueNovelCardsAdapter.recycleCards == null)
-            CatalogueNovelCardsAdapter.recycleCards = recycleCards;
-
+        this.recycleCards = recycleCards;
         this.fragmentManager = fragmentManager;
         this.formatter = formatter;
     }

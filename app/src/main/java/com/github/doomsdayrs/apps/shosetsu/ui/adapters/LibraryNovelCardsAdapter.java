@@ -1,8 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +7,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
+import com.google.android.material.chip.Chip;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import graphql.language.StringValue;
 
 /*
  * This file is part of Shosetsu.
@@ -64,8 +69,12 @@ public class LibraryNovelCardsAdapter extends RecyclerView.Adapter<LibraryNovelC
         novelCardsViewHolder.fragmentManager = fragmentManager;
         novelCardsViewHolder.novelURL = recycleCard.novelURL;
         novelCardsViewHolder.setFormatter(DefaultScrapers.formatters.get(recycleCard.formatterID - 1));
-
         novelCardsViewHolder.library_card_title.setText(recycleCard.title);
+        int count = Database.DatabaseChapter.getCountOfChaptersUnread(recycleCard.novelURL);
+        if (count != 0) {
+            novelCardsViewHolder.chip.setVisibility(View.VISIBLE);
+            novelCardsViewHolder.chip.setText(String.valueOf(count));
+        } else novelCardsViewHolder.chip.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -76,7 +85,7 @@ public class LibraryNovelCardsAdapter extends RecyclerView.Adapter<LibraryNovelC
     static class NovelCardsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final ImageView library_card_image;
         final TextView library_card_title;
-
+        final Chip chip;
 
         Formatter formatter;
         FragmentManager fragmentManager;
@@ -86,6 +95,8 @@ public class LibraryNovelCardsAdapter extends RecyclerView.Adapter<LibraryNovelC
             super(itemView);
             library_card_image = itemView.findViewById(R.id.novel_item_image);
             library_card_title = itemView.findViewById(R.id.textView);
+            chip = itemView.findViewById(R.id.novel_item_left_to_read);
+
             itemView.setOnClickListener(this);
         }
 

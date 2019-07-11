@@ -254,6 +254,26 @@ public class Database {
      * Chapter control
      */
     public static class DatabaseChapter {
+
+
+        /**
+         * @param novelURL
+         * @return Count of chapters left to read
+         */
+        public static int getCountOfChaptersUnread(String novelURL) {
+            Cursor cursor = library.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + "='" + novelURL + "'" + " and " + Columns.READ_CHAPTER + "!=" + Status.READ, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return 0;
+            } else {
+                cursor.moveToNext();
+                int count = cursor.getCount();
+                cursor.close();
+                return count;
+            }
+        }
+
+
         /**
          * Updates the Y coordinate
          * Precondition is the chapter is already in the database.
