@@ -6,17 +6,21 @@
         android:id="@+id/chapter_select_all"
         android:icon="@drawable/ic_select_all_black_24dp"
         android:title="@string/select_all"
+        android:tooltipText="@string/select_all"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/chapter_download_selected"
         android:icon="@drawable/ic_file_download"
         android:title="@string/download_selected"
+        android:tooltipText="@string/download_selected"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/chapter_delete_selected"
         android:icon="@drawable/ic_delete_black_24dp"
         android:title="@string/delete_selected"
+        android:tooltipText="@string/delete_selected"
         app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/chapter_deselect_all"
         android:title="@string/deselect_all"

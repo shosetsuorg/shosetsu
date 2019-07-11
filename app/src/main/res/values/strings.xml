@@ -43,4 +43,10 @@
     <string name="deselect_all">Deselect All</string>
     <string name="download_selected">Download Selected</string>
     <string name="retry">Retry</string>
+    <string name="mark_all_read">Mark All Read</string>
+    <string name="mark_all_unread">Mark All Unread</string>
+    <string name="mark_as">Mark As</string>
+    <string name="read">READ</string>
+    <string name="unread">UNREAD</string>
+    <string name="reading">READING</string>
 </resources>

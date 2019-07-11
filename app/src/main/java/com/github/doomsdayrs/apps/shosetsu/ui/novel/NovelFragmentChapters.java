@@ -26,6 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -215,6 +216,30 @@ public class NovelFragmentChapters extends Fragment {
                 selectedChapters = new ArrayList<>();
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 onCreateOptionsMenu(menu, inflater);
+                return true;
+            });
+            menu.findItem(R.id.chapter_mark_read).setOnMenuItemClickListener(menuItem -> {
+                for (NovelChapter novelChapter : selectedChapters)
+                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 2)
+                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READ);
+
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+            });
+
+            menu.findItem(R.id.chapter_mark_unread).setOnMenuItemClickListener(menuItem -> {
+                for (NovelChapter novelChapter : selectedChapters)
+                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
+                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.UNREAD);
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+            });
+
+            menu.findItem(R.id.chapter_mark_reading).setOnMenuItemClickListener(menuItem -> {
+                for (NovelChapter novelChapter : selectedChapters)
+                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
+                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
             });
         }
