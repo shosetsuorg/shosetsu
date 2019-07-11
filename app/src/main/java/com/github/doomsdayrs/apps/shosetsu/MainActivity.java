@@ -24,12 +24,10 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
+import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.enums.Display;
+import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import com.google.android.material.navigation.NavigationView;
-
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
-
-import java.io.IOException;
 
 /*
  * This file is part of Shosetsu.
@@ -86,13 +84,18 @@ public class MainActivity extends AppCompatActivity {
                 setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
         }
         getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        try {
-            GitHub gitHub = GitHub.connect();
-            GHRepository ghRepository = gitHub.getRepository("shosetsu");
-            System.out.println(ghRepository.getUrl());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
+        AppUpdater appUpdater = new AppUpdater(this)
+                .setUpdateFrom(UpdateFrom.GITHUB)
+                .setGitHubUserAndRepo("Doomsdyars", "shosetsu")
+                .setDisplay(Display.DIALOG)
+                .setDisplay(Display.NOTIFICATION)
+                .setDisplay(Display.SNACKBAR);
+
+        appUpdater.start();
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
