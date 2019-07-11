@@ -15,6 +15,5 @@
         android:id="@+id/fragment_library_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical" />
 </RelativeLayout>
