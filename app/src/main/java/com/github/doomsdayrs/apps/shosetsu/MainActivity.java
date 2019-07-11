@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //
         super.onCreate(savedInstanceState);
         SettingsController.view = getSharedPreferences("view", 0);
         SettingsController.download = getSharedPreferences("download", 0);
