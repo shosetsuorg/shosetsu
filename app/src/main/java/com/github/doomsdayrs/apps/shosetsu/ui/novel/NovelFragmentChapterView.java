@@ -63,11 +63,18 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     private MenuItem textMedium;
     private MenuItem textLarge;
 
-    private MenuItem spaceNone;
-    private MenuItem spaceSmall;
-    private MenuItem spaceMedium;
-    private MenuItem spaceLarge;
+    private MenuItem pspaceNon;
+    private MenuItem pspaceSmall;
+    private MenuItem pspaceMedium;
+    private MenuItem pspaceLarge;
 
+
+
+    private MenuItem ispaceNon;
+    private MenuItem ispaceSmall;
+    private MenuItem ispaceMedium;
+    private MenuItem ispaceLarge;
+    
     private int a = 0;
     private boolean bookmarked;
 
@@ -129,26 +136,46 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             }
         }
         {
-            spaceNone = menu.findItem(R.id.chapter_view_paragraphSpace_none);
-            spaceSmall = menu.findItem(R.id.chapter_view_paragraphSpace_small);
-            spaceMedium = menu.findItem(R.id.chapter_view_paragraphSpace_medium);
-            spaceLarge = menu.findItem(R.id.chapter_view_paragraphSpace_large);
+            pspaceNon = menu.findItem(R.id.chapter_view_paragraphSpace_none);
+            pspaceSmall = menu.findItem(R.id.chapter_view_paragraphSpace_small);
+            pspaceMedium = menu.findItem(R.id.chapter_view_paragraphSpace_medium);
+            pspaceLarge = menu.findItem(R.id.chapter_view_paragraphSpace_large);
 
             switch (Settings.paragraphSpacing) {
                 case 0:
-                    spaceNone.setChecked(true);
+                    pspaceNon.setChecked(true);
                     break;
                 case 1:
-                    spaceSmall.setChecked(true);
+                    pspaceSmall.setChecked(true);
                     break;
                 case 2:
-                    spaceMedium.setChecked(true);
+                    pspaceMedium.setChecked(true);
                     break;
                 case 3:
-                    spaceLarge.setChecked(true);
+                    pspaceLarge.setChecked(true);
                     break;
             }
+        }
+        {
+            ispaceNon = menu.findItem(R.id.chapter_view_indent_none);
+            ispaceSmall = menu.findItem(R.id.chapter_view_indent_small);
+            ispaceMedium = menu.findItem(R.id.chapter_view_indent_medium);
+            ispaceLarge = menu.findItem(R.id.chapter_view_indent_large);
 
+            switch (Settings.indentSize) {
+                case 0:
+                    ispaceNon.setChecked(true);
+                    break;
+                case 1:
+                    ispaceSmall.setChecked(true);
+                    break;
+                case 2:
+                    ispaceMedium.setChecked(true);
+                    break;
+                case 3:
+                    ispaceLarge.setChecked(true);
+                    break;
+            }
         }
 
         bookmarked = Database.DatabaseChapter.isBookMarked(chapterURL);
@@ -176,8 +203,10 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             for (int x = 0; x < Settings.paragraphSpacing; x++)
                 replaceSpacing.append("\n");
 
-            //TODO make indent size dynamically sized
-            text = unformattedText.replaceAll("\n", replaceSpacing.toString() + "\t\t");
+            for (int x = 0; x < Settings.indentSize; x++)
+                replaceSpacing.append("\t");
+            
+            text = unformattedText.replaceAll("\n", replaceSpacing.toString());
             textView.setText(text);
         }
     }
@@ -243,34 +272,68 @@ public class NovelFragmentChapterView extends AppCompatActivity {
             case R.id.chapter_view_paragraphSpace_none:
                 SettingsController.changeParagraphSpacing(0);
                 setUpReader();
-                spaceNone.setChecked(true);
-                spaceSmall.setChecked(false);
-                spaceMedium.setChecked(false);
-                spaceLarge.setChecked(false);
+                pspaceNon.setChecked(true);
+                pspaceSmall.setChecked(false);
+                pspaceMedium.setChecked(false);
+                pspaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_paragraphSpace_small:
                 SettingsController.changeParagraphSpacing(1);
                 setUpReader();
-                spaceNone.setChecked(false);
-                spaceSmall.setChecked(true);
-                spaceMedium.setChecked(false);
-                spaceLarge.setChecked(false);
+                pspaceNon.setChecked(false);
+                pspaceSmall.setChecked(true);
+                pspaceMedium.setChecked(false);
+                pspaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_paragraphSpace_medium:
                 SettingsController.changeParagraphSpacing(2);
                 setUpReader();
-                spaceNone.setChecked(false);
-                spaceSmall.setChecked(false);
-                spaceMedium.setChecked(true);
-                spaceLarge.setChecked(false);
+                pspaceNon.setChecked(false);
+                pspaceSmall.setChecked(false);
+                pspaceMedium.setChecked(true);
+                pspaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_paragraphSpace_large:
                 SettingsController.changeParagraphSpacing(3);
                 setUpReader();
-                spaceNone.setChecked(false);
-                spaceSmall.setChecked(false);
-                spaceMedium.setChecked(false);
-                spaceLarge.setChecked(true);
+                pspaceNon.setChecked(false);
+                pspaceSmall.setChecked(false);
+                pspaceMedium.setChecked(false);
+                pspaceLarge.setChecked(true);
+                return true;
+
+
+            case R.id.chapter_view_indent_none:
+                SettingsController.changeIndentSize(0);
+                setUpReader();
+                ispaceNon.setChecked(true);
+                ispaceSmall.setChecked(false);
+                ispaceMedium.setChecked(false);
+                ispaceLarge.setChecked(false);
+                return true;
+            case R.id.chapter_view_indent_small:
+                SettingsController.changeIndentSize(1);
+                setUpReader();
+                ispaceNon.setChecked(false);
+                ispaceSmall.setChecked(true);
+                ispaceMedium.setChecked(false);
+                ispaceLarge.setChecked(false);
+                return true;
+            case R.id.chapter_view_indent_medium:
+                SettingsController.changeIndentSize(2);
+                setUpReader();
+                ispaceNon.setChecked(false);
+                ispaceSmall.setChecked(false);
+                ispaceMedium.setChecked(true);
+                ispaceLarge.setChecked(false);
+                return true;
+            case R.id.chapter_view_indent_large:
+                SettingsController.changeIndentSize(3);
+                setUpReader();
+                ispaceNon.setChecked(false);
+                ispaceSmall.setChecked(false);
+                ispaceMedium.setChecked(false);
+                ispaceLarge.setChecked(true);
                 return true;
         }
         return false;

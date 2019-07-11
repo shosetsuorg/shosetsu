@@ -139,10 +139,10 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         }
     }
 
-    //TODO Add text size options
     public static class viewSettings extends Fragment {
         static final List<String> textSizes = new ArrayList<>();
         static final List<String> paragraphSpaces = new ArrayList<>();
+        static final List<String> indentSizes = new ArrayList<>();
 
         static {
             textSizes.add("Small");
@@ -153,11 +153,17 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
             paragraphSpaces.add("Small");
             paragraphSpaces.add("Medium");
             paragraphSpaces.add("Large");
+
+            indentSizes.add("None");
+            indentSizes.add("Small");
+            indentSizes.add("Medium");
+            indentSizes.add("Large");
         }
 
         CheckBox nightMode;
         Spinner paragraphSpacing;
         Spinner textSize;
+        Spinner indentSize;
 
         public viewSettings() {
         }
@@ -170,6 +176,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
             nightMode = view.findViewById(R.id.reader_nightMode_checkbox);
             paragraphSpacing = view.findViewById(R.id.reader_paragraphSpacing);
             textSize = view.findViewById(R.id.reader_textSize);
+            indentSize = view.findViewById(R.id.reader_indentSize);
 
             nightMode.setChecked(!SettingsController.isReaderLightMode());
             nightMode.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsController.swapReaderColor());
@@ -252,7 +259,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
 
                         }
                     });
-                    Settings.paragraphSpacing = spaceBack;
+
                     SettingsController.changeParagraphSpacing(spaceBack);
                     switch (Settings.paragraphSpacing) {
                         case 0:
@@ -269,6 +276,30 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                             break;
                     }
 
+                }
+
+                {
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, indentSizes);
+                    //TODO figure out why the itemSelectedListner runs without being selected
+                    int spaceBack = Settings.indentSize;
+                    indentSize.setSelection(Settings.indentSize);
+                    indentSize.setAdapter(dataAdapter);
+                    indentSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            if (i >= 0 && i <= 3) {
+                                SettingsController.changeIndentSize(i);
+                                adapterView.setSelection(i);
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+                    SettingsController.changeIndentSize(spaceBack);
+                    indentSize.setSelection(Settings.indentSize);
                 }
             }
 

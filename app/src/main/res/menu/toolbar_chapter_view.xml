@@ -51,6 +51,29 @@
                     android:title="@string/large" />
             </menu>
         </item>
+
+        <item
+            android:title="@string/indent_size"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/chapter_view_indent_none"
+                    android:checkable="true"
+                    android:title="@string/no_change" />
+                <item
+                    android:id="@+id/chapter_view_indent_small"
+                    android:checkable="true"
+                    android:title="@string/small" />
+                <item
+                    android:id="@+id/chapter_view_indent_medium"
+                    android:checkable="true"
+                    android:title="@string/medium" />
+                <item
+                    android:id="@+id/chapter_view_indent_large"
+                    android:checkable="true"
+                    android:title="@string/large" />
+            </menu>
+        </item>
     </group>
 
     <item

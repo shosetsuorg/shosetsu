@@ -62,4 +62,5 @@ public class Settings {
     public static int themeMode;
 
     public static int paragraphSpacing;
+    public static int indentSize;
 }

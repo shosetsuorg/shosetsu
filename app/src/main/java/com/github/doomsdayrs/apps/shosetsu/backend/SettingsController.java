@@ -47,6 +47,12 @@ public class SettingsController {
         Settings.ReaderTextSize = view.getInt("ReaderTextSize", 14);
         Settings.themeMode = advanced.getInt("themeMode", 0);
         Settings.paragraphSpacing = view.getInt("paragraphSpacing", 1);
+        Settings.indentSize = view.getInt("indentSize", 1);
+    }
+
+    public static void changeIndentSize(int newIndent){
+        Settings.indentSize = newIndent;
+        view.edit().putInt("indentSize", newIndent).apply();
     }
 
     public static void changeParagraphSpacing(int newSpacing) {
