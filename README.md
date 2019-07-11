@@ -1,7 +1,7 @@
 # ![logo](https://github.com/Doomsdayrs/shosetsu/raw/master/app/src/main/res/mipmap-hdpi/ic_launcher.png) Shosetsu
 An android application for reading novels, Free and open source. And full of bugs
 
-[Discord Server](https://discordapp.com/api/webhooks/598958939006173204/PPju08GiqvrKHUexKnxb5E_MIh8ImesrQkgMkE2ZOjgNfdzwi9y_sOwbXx6K6zvCLb1q)
+[Discord Server](https://discord.gg/ttSX7gB)
 
 ## Capabilities
 - [x] Parse a site and display novels
