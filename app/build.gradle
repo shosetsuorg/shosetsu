@@ -60,4 +60,6 @@ dependencies {
     //TODO GITHUB sign in to save backup data to cloud
     implementation 'com.github.kohsuke:github-api:github-api-1.95'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
+
+   // implementation 'com.squareup.duktape:duktape-android:1.2.0'
 }
