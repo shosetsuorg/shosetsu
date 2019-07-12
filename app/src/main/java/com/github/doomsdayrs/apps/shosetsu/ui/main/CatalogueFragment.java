@@ -3,12 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -63,6 +64,8 @@ public class CatalogueFragment extends Fragment {
     public ProgressBar progressBar;
     public ProgressBar bottomProgressBar;
 
+    public static boolean dontRefresh = false;
+
     /**
      * Constructor
      */
@@ -79,6 +82,25 @@ public class CatalogueFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putSerializable("list", catalogueNovelCards);
         outState.putInt("formatter", formatter.getID() - 1);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Resume", "HERE");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("Pause", "HERE");
+        dontRefresh = true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dontRefresh = false;
     }
 
     /**
@@ -107,7 +129,7 @@ public class CatalogueFragment extends Fragment {
         this.context = Objects.requireNonNull(container).getContext();
 
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null && !dontRefresh) {
             Log.d("Process", "Loading up latest");
             setLibraryCards(catalogueNovelCards);
             if (catalogueNovelCards.size() > 0) {

@@ -141,7 +141,7 @@ public class NovelFragmentMain extends Fragment {
 
         status.setText(StaticNovel.status.getStatus());
 
-        if (StaticNovel.novelPage.genres != null) {
+        if (StaticNovel.novelPage.genres != null && getContext() != null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             for (String string : StaticNovel.novelPage.genres) {
                 Chip chip = (Chip) layoutInflater.inflate(R.layout.genre_chip, null, false);

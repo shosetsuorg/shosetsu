@@ -21,6 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.DownloadAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import java.util.ArrayList;
@@ -129,6 +130,7 @@ public class DownloadsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "NovelFragmentChapters");
+        Statics.mainActionBar.setTitle("Downloads");
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
         recyclerView = view.findViewById(R.id.fragment_downloads_recycler);
         downloadItems = Database.DatabaseDownloads.getDownloadList();
