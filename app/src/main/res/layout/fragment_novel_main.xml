@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_novel_main_refresh"
 
     android:layout_width="match_parent"
@@ -123,6 +122,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
             app:layout_constraintTop_toBottomOf="@+id/fragment_novel_artists" />
+
+        <TextView
+            android:id="@+id/fragment_novel_publish"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fragment_novel_image"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_novel_status" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
