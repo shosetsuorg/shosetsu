@@ -1,6 +1,22 @@
 <AppUpdater>
 
     <update>
+        <latestVersion>1.1.6-alpha</latestVersion>
+        <latestVersionCode>15</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Novel fragment has tab view on top
+            - NovelPage data is now used and parsed better
+            - Updater? Maybe?? They should work??
+            - Genres in novel page using chips
+            - Library novels have a chip on the top right that tells the remaining chapters
+            - Catalogues don't constantly refresh after returning from opening a novel
+            - Publishing status planned for later
+            - Improvements of code and other shiz
+        </releaseNotes>
+    </update>
+
+    <update>
         <latestVersion>1.1.5-alpha</latestVersion>
         <latestVersionCode>15</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
