@@ -47,6 +47,7 @@ import java.util.Objects;
  *
  * @author github.com/doomsdayrs
  */
+//TODO MarkDown support
 public class NovelFragmentChapterView extends AppCompatActivity {
     private String title;
     private ScrollView scrollView;
