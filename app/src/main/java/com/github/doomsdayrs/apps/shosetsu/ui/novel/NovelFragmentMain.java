@@ -1,11 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +8,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentUpdate;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -44,13 +47,16 @@ import java.util.Arrays;
  * The page you see when you select a novel
  */
 public class NovelFragmentMain extends Fragment {
-
+    //TODO add tags to identify different data types
 
     private ImageView imageView;
     private TextView title;
-    private TextView author;
+    private TextView authors;
+    private TextView artists;
     private TextView description;
     private TextView formatterName;
+    private TextView status;
+    private ChipGroup genres;
     public SwipeRefreshLayout swipeRefreshLayout;
 
     public FloatingActionButton floatingActionButton;
@@ -90,10 +96,13 @@ public class NovelFragmentMain extends Fragment {
         {
             imageView = view.findViewById(R.id.fragment_novel_image);
             title = view.findViewById(R.id.fragment_novel_title);
-            author = view.findViewById(R.id.fragment_novel_author);
+            authors = view.findViewById(R.id.fragment_novel_author);
+            artists = view.findViewById(R.id.fragment_novel_artists);
+            genres = view.findViewById(R.id.fragment_novel_genres);
             description = view.findViewById(R.id.fragment_novel_description);
             formatterName = view.findViewById(R.id.fragment_novel_formatter);
             floatingActionButton = view.findViewById(R.id.fragment_novel_add);
+            status = view.findViewById(R.id.fragment_novel_status);
 
             swipeRefreshLayout = view.findViewById(R.id.fragment_novel_main_refresh);
         }
@@ -121,8 +130,20 @@ public class NovelFragmentMain extends Fragment {
      */
     public void setData() {
         title.setText(StaticNovel.novelPage.title);
-        author.setText(Arrays.toString(StaticNovel.novelPage.authors));
+        authors.setText(Arrays.toString(StaticNovel.novelPage.authors));
         description.setText(StaticNovel.novelPage.description);
+        artists.setText(Arrays.toString(StaticNovel.novelPage.artists));
+        status.setText(StaticNovel.status.getStatus());
+
+        if (StaticNovel.novelPage.genres!=null){
+            LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+            for (String string : StaticNovel.novelPage.genres) {
+                Chip chip = (Chip) layoutInflater.inflate(R.layout.genre_chip, null, false);
+                chip.setText(string);
+                genres.addView(chip);
+            }
+        }
+
         Picasso.get()
                 .load(StaticNovel.novelPage.imageURL)
                 .into(imageView);
