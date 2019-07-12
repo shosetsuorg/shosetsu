@@ -130,23 +130,30 @@ public class NovelFragmentMain extends Fragment {
      */
     public void setData() {
         title.setText(StaticNovel.novelPage.title);
-        authors.setText(Arrays.toString(StaticNovel.novelPage.authors));
+
+        if (StaticNovel.novelPage.authors != null && StaticNovel.novelPage.authors.length > 0)
+            authors.setText(Arrays.toString(StaticNovel.novelPage.authors));
+
         description.setText(StaticNovel.novelPage.description);
-        artists.setText(Arrays.toString(StaticNovel.novelPage.artists));
+
+        if (StaticNovel.novelPage.artists != null && StaticNovel.novelPage.artists.length > 0)
+            artists.setText(Arrays.toString(StaticNovel.novelPage.artists));
+
         status.setText(StaticNovel.status.getStatus());
 
-        if (StaticNovel.novelPage.genres!=null){
+        if (StaticNovel.novelPage.genres != null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             for (String string : StaticNovel.novelPage.genres) {
                 Chip chip = (Chip) layoutInflater.inflate(R.layout.genre_chip, null, false);
                 chip.setText(string);
                 genres.addView(chip);
             }
-        }
+        } else genres.setVisibility(View.GONE);
 
         Picasso.get()
                 .load(StaticNovel.novelPage.imageURL)
                 .into(imageView);
+
         floatingActionButton.show();
         formatterName.setText(StaticNovel.formatter.getName());
     }
