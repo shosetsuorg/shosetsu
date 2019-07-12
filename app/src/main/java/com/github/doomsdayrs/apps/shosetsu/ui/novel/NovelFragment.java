@@ -1,23 +1,25 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
+
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.SlidingNovelPageAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +43,15 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class NovelFragment extends Fragment {
-    private View view;
+
     public FragmentManager fragmentManager = null;
 
     public NovelFragmentMain novelFragmentMain;
     public NovelFragmentChapters novelFragmentChapters;
     public ProgressBar progressBar;
+
+    private TabLayout tabLayout;
+    public ViewPager viewPager;
 
 
     public NovelFragment() {
@@ -58,8 +63,10 @@ public class NovelFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "NovelFragment");
-        view = inflater.inflate(R.layout.fragment_novel, container, false);
+        View view = inflater.inflate(R.layout.fragment_novel, container, false);
         progressBar = view.findViewById(R.id.fragment_novel_progress);
+        viewPager = view.findViewById(R.id.fragment_novel_viewpager);
+        tabLayout = view.findViewById(R.id.fragment_novel_tabLayout);
         novelFragmentMain = new NovelFragmentMain();
         novelFragmentChapters = new NovelFragmentChapters();
         //TODO FINISH TRACKING
@@ -86,12 +93,7 @@ public class NovelFragment extends Fragment {
 
 
     private void setViewPager() {
-        Log.d("ViewPager", "Loading");
-        ViewPager viewPager = view.findViewById(R.id.fragment_novel_viewpager);
-        Log.d("ViewPager", "Loaded:" + viewPager);
-
         List<Fragment> fragments = new ArrayList<>();
-
         {
             Log.d("FragmentLoading", "Main");
             fragments.add(novelFragmentMain);
@@ -101,7 +103,24 @@ public class NovelFragment extends Fragment {
 
         SlidingNovelPageAdapter pagerAdapter = new SlidingNovelPageAdapter(getChildFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        tabLayout.post(() -> tabLayout.setupWithViewPager(viewPager));
     }
 
 }

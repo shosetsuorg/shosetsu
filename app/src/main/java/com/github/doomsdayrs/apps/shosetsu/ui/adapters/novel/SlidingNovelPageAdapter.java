@@ -1,9 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel;
 
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import android.util.Log;
 
 import java.util.List;
 
@@ -27,10 +29,18 @@ import java.util.List;
  */
 public class SlidingNovelPageAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragments;
+    private String[] titles = {"Info", "Chapters"};
 
     public SlidingNovelPageAdapter(FragmentManager fm, List<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
+    }
+
+    //TODO with tracker use this instead the of the above
+    public SlidingNovelPageAdapter(FragmentManager fm, List<Fragment> fragments, boolean ignored) {
+        super(fm);
+        this.fragments = fragments;
+        titles = new String[]{titles[0], titles[1], "Tracker"};
     }
 
     @Override
@@ -42,5 +52,11 @@ public class SlidingNovelPageAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return fragments.size();
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles[position];
     }
 }
