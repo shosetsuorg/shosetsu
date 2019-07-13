@@ -57,4 +57,5 @@
     <string name="author_tag">Author:</string>
     <string name="author">Doomsdayrs</string>
     <string name="theme">Theme:</string>
+    <string name="select_in_between">Select in between</string>
 </resources>

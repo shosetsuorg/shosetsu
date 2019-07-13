@@ -28,6 +28,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnF
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -65,6 +67,23 @@ public class NovelFragmentChapters extends Fragment {
         return false;
     }
 
+    public static int findMinPosition() {
+        int min = StaticNovel.novelChapters.size();
+        for (int x = 0; x < StaticNovel.novelChapters.size(); x++)
+            if (contains(StaticNovel.novelChapters.get(x)))
+                if (x < min)
+                    min = x;
+        return min;
+    }
+
+    public static int findMaxPosition() {
+        int max = -1;
+        for (int x = StaticNovel.novelChapters.size() - 1; x >= 0; x--)
+            if (contains(StaticNovel.novelChapters.get(x)))
+                if (x > max)
+                    max = x;
+        return max;
+    }
 
     public boolean reversed;
     @SuppressLint("StaticFieldLeak")
@@ -177,7 +196,7 @@ public class NovelFragmentChapters extends Fragment {
      * @param inflater Object to inflate the menu
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
         this.menu = menu;
         menu.clear();
         //TODO Delete all, Delete Selected titles
@@ -239,6 +258,18 @@ public class NovelFragmentChapters extends Fragment {
                 for (NovelChapter novelChapter : selectedChapters)
                     if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
                         Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+            });
+
+            menu.findItem(R.id.chapter_select_in_between).setOnMenuItemClickListener(menuItem -> {
+                int min = findMinPosition();
+                int max = findMaxPosition();
+                for (int x = min; x < max; x++)
+                    if (!contains(StaticNovel.novelChapters.get(x)))
+                        selectedChapters.add(StaticNovel.novelChapters.get(x));
+
+
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
             });

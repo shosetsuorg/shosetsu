@@ -25,6 +25,10 @@
         android:id="@+id/chapter_deselect_all"
         android:title="@string/deselect_all"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/chapter_select_in_between"
+        android:title="@string/select_in_between"
+        app:showAsAction="never" />
 
     <item android:title="@string/mark_as">
         <menu>
