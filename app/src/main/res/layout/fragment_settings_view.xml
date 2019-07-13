@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/spacing"
-            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <Spinner
@@ -42,7 +41,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/text_size"
-            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <Spinner
