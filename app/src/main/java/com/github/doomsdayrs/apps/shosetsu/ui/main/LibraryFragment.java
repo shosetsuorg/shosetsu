@@ -3,11 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,12 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.LibraryNovelCardsAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.LibraryNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.LibrarySearchQuery;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -46,9 +49,19 @@ import java.util.Objects;
  */
 public class LibraryFragment extends Fragment {
     public static ArrayList<NovelCard> libraryNovelCards = new ArrayList<>();
-    private Context context;
-    private RecyclerView library_view;
+    public static ArrayList<NovelCard> selectedNovels = new ArrayList<>();
 
+    public static boolean contains(NovelCard novelCard) {
+        for (NovelCard n : selectedNovels)
+            if (n.novelURL.equalsIgnoreCase(novelCard.novelURL))
+                return true;
+        return false;
+    }
+
+
+    private Context context;
+    public RecyclerView recyclerView;
+    public LibraryNovelAdapter libraryNovelCardsAdapter;
 
     /**
      * Constructor
@@ -76,49 +89,54 @@ public class LibraryFragment extends Fragment {
         }
 
         View view = inflater.inflate(R.layout.fragment_library, container, false);
-        library_view = view.findViewById(R.id.fragment_library_recycler);
+        recyclerView = view.findViewById(R.id.fragment_library_recycler);
 
         this.context = Objects.requireNonNull(container).getContext();
 
 
-        setLibraryCards(libraryNovelCards);
+        setLibraryCards(LibraryFragment.libraryNovelCards);
         return view;
     }
 
-
+    public Menu menu;
     /**
      * Creates the option menu
      * @param menu menu to fill
      * @param inflater inflater of layouts and shiz
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
+        this.menu = menu;
         menu.clear();
         inflater.inflate(R.menu.toolbar_library, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.library_search).getActionView();
-        searchView.setOnQueryTextListener(new LibrarySearchQuery(this));
-        searchView.setOnCloseListener(() -> {
-            setLibraryCards(libraryNovelCards);
-            return false;
-        });
+        if (searchView != null) {
+            searchView.setOnQueryTextListener(new LibrarySearchQuery(this));
+            searchView.setOnCloseListener(() -> {
+                setLibraryCards(LibraryFragment.libraryNovelCards);
+                return false;
+            });
+        }
     }
 
     /**
      * Sets the cards to display
-     * @param recycleCards recycle cards to set
      */
-    public void setLibraryCards(ArrayList<NovelCard> recycleCards) {
-        if (library_view != null) {
-            library_view.setHasFixedSize(false);
+    public void setLibraryCards(ArrayList<NovelCard> novelCards) {
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager library_layoutManager;
             if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
                 library_layoutManager = new GridLayoutManager(context, 2, RecyclerView.VERTICAL, false);
             else
                 library_layoutManager = new GridLayoutManager(context, 4, RecyclerView.VERTICAL, false);
-            RecyclerView.Adapter library_Adapter = new LibraryNovelCardsAdapter(recycleCards, getFragmentManager());
-            library_view.setLayoutManager(library_layoutManager);
-            library_view.setAdapter(library_Adapter);
+            libraryNovelCardsAdapter = new LibraryNovelAdapter(novelCards, this);
+            recyclerView.setLayoutManager(library_layoutManager);
+            recyclerView.setAdapter(libraryNovelCardsAdapter);
         }
     }
 
+    public MenuInflater getInflater() {
+        return new MenuInflater(getContext());
+    }
 }
