@@ -23,7 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelChaptersAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
@@ -70,7 +70,7 @@ public class NovelFragmentChapters extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static RecyclerView recyclerView;
     public int currentMaxPage = 1;
-    public static NovelChaptersAdapter adapter;
+    public static ChaptersAdapter adapter;
     private Context context;
     public ProgressBar progressBar;
     public SwipeRefreshLayout swipeRefreshLayout;
@@ -144,7 +144,7 @@ public class NovelFragmentChapters extends Fragment {
             if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(StaticNovel.novelURL);
             }
-            adapter = new NovelChaptersAdapter(this);
+            adapter = new ChaptersAdapter(this);
             adapter.setHasStableIds(true);
             recyclerView.setLayoutManager(layoutManager);
 

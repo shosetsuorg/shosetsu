@@ -35,13 +35,13 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
  *
  * @author github.com/doomsdayrs
  */
-public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
+public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
 
     private final NovelFragmentChapters novelFragmentChapters;
 
 
-    public NovelChaptersAdapter(NovelFragmentChapters novelFragmentChapters) {
+    public ChaptersAdapter(NovelFragmentChapters novelFragmentChapters) {
         this.novelFragmentChapters = novelFragmentChapters;
     }
 
@@ -66,9 +66,9 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
 
         if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
-            chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("UnBookmark");
+            chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("UnBookmark");
         } else
-            chaptersViewHolder.popupMenu.getMenu().getItem(0).setTitle("Bookmark");
+            chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("Bookmark");
 
 
         if (NovelFragmentChapters.contains(novelChapter)) {
@@ -88,9 +88,9 @@ public class NovelChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolde
         if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
             Log.d("In Storage", StaticNovel.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.downloadTag.setVisibility(View.VISIBLE);
-            chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Delete");
+            chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_download).setTitle("Delete");
         } else {
-            chaptersViewHolder.popupMenu.getMenu().getItem(1).setTitle("Download");
+            chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_download).setTitle("Download");
             chaptersViewHolder.downloadTag.setVisibility(View.INVISIBLE);
         }
 

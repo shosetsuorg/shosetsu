@@ -27,17 +27,17 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
-public class SlidingNovelPageAdapter extends FragmentPagerAdapter {
+public class NovelPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragments;
     private String[] titles = {"Info", "Chapters"};
 
-    public SlidingNovelPageAdapter(FragmentManager fm, List<Fragment> fragments) {
+    public NovelPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
     }
 
     //TODO with tracker use this instead the of the above
-    public SlidingNovelPageAdapter(FragmentManager fm, List<Fragment> fragments, boolean ignored) {
+    public NovelPagerAdapter(FragmentManager fm, List<Fragment> fragments, boolean ignored) {
         super(fm);
         this.fragments = fragments;
         titles = new String[]{titles[0], titles[1], "Tracker"};

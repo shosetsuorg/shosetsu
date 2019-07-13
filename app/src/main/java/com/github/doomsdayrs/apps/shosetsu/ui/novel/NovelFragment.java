@@ -17,7 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.SlidingNovelPageAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelPagerAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.google.android.material.tabs.TabLayout;
 
@@ -101,7 +101,7 @@ public class NovelFragment extends Fragment {
             fragments.add(novelFragmentChapters);
         }
 
-        SlidingNovelPageAdapter pagerAdapter = new SlidingNovelPageAdapter(getChildFragmentManager(), fragments);
+        NovelPagerAdapter pagerAdapter = new NovelPagerAdapter(getChildFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

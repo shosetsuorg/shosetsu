@@ -1,21 +1,21 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
@@ -60,33 +60,21 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     public ChaptersViewHolder(@NonNull View itemView) {
         super(itemView);
-        cardView = itemView.findViewById(R.id.recycler_novel_chapter_card);
-        checkBox = itemView.findViewById(R.id.recycler_novel_chapter_selectCheck);
+        {
+            cardView = itemView.findViewById(R.id.recycler_novel_chapter_card);
+            checkBox = itemView.findViewById(R.id.recycler_novel_chapter_selectCheck);
+            library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
+            moreOptions = itemView.findViewById(R.id.recycler_novel_chapter_options);
+            status = itemView.findViewById(R.id.recycler_novel_chapter_status);
+            read = itemView.findViewById(R.id.recycler_novel_chapter_read);
+            readTag = itemView.findViewById(R.id.recycler_novel_chapter_read_tag);
+            downloadTag = itemView.findViewById(R.id.recycler_novel_chapter_download);
+        }
 
-        library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
-        moreOptions = itemView.findViewById(R.id.recycler_novel_chapter_options);
-        status = itemView.findViewById(R.id.recycler_novel_chapter_status);
-        read = itemView.findViewById(R.id.recycler_novel_chapter_read);
-        readTag = itemView.findViewById(R.id.recycler_novel_chapter_read_tag);
-        downloadTag = itemView.findViewById(R.id.recycler_novel_chapter_download);
-
-        itemView.setOnClickListener(this);
-
-
-        itemView.setOnLongClickListener(view -> {
-            addToSelect();
-            return true;
-        });
-
-        moreOptions.setOnClickListener(view -> popupMenu.show());
         if (popupMenu == null) {
             popupMenu = new PopupMenu(moreOptions.getContext(), moreOptions);
-            if (popupMenu.getMenu().size() <= 0) {
-                popupMenu.getMenu().add(1, R.id.popup_chapter_menu_bookmark, 1, R.string.bookmark);
-                popupMenu.getMenu().add(1, R.id.popup_chapter_menu_download, 2, R.string.download);
-            }
+            popupMenu.inflate(R.menu.popup_chapter_menu);
         }
-        checkBox.setOnClickListener(view -> addToSelect());
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
@@ -108,10 +96,32 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     }
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
                     return true;
+
+                case R.id.popup_chapter_menu_mark_read:
+                    Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READ);
+                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
+                case R.id.popup_chapter_menu_mark_unread:
+                    Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.UNREAD);
+                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
+                case R.id.popup_chapter_menu_mark_reading:
+                    Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
+                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
                 default:
                     return false;
             }
         });
+
+
+        itemView.setOnClickListener(this);
+        itemView.setOnLongClickListener(view -> {
+            addToSelect();
+            return true;
+        });
+        moreOptions.setOnClickListener(view -> popupMenu.show());
+        checkBox.setOnClickListener(view -> addToSelect());
     }
 
     private void addToSelect() {
@@ -136,7 +146,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View v) {
         Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
-        Intent intent = new Intent(novelFragmentChapters.getActivity(), NovelFragmentChapterView.class);
+        Intent intent = new Intent(novelFragmentChapters.getActivity(), NovelFragmentChapterReader.class);
         intent.putExtra("title", novelChapter.chapterNum);
         intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelURL", StaticNovel.novelURL);

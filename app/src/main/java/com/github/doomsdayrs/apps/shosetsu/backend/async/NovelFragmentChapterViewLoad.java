@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterView;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -28,7 +28,7 @@ import java.net.SocketTimeoutException;
  *
  * @author github.com/doomsdayrs
  */
-public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapterView, Void, String> {
+public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapterReader, Void, String> {
     /**
      * Reference to the progress bar
      */
@@ -46,10 +46,10 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
     }
 
     @Override
-    protected String doInBackground(NovelFragmentChapterView... novelFragmentChapterViews) {
+    protected String doInBackground(NovelFragmentChapterReader... novelFragmentChapterReaders) {
         try {
-            novelFragmentChapterViews[0].unformattedText = novelFragmentChapterViews[0].formatter.getNovelPassage(novelFragmentChapterViews[0].chapterURL);
-            novelFragmentChapterViews[0].runOnUiThread(() -> novelFragmentChapterViews[0].setUpReader());
+            novelFragmentChapterReaders[0].unformattedText = novelFragmentChapterReaders[0].formatter.getNovelPassage(novelFragmentChapterReaders[0].chapterURL);
+            novelFragmentChapterReaders[0].runOnUiThread(() -> novelFragmentChapterReaders[0].setUpReader());
         } catch (SocketTimeoutException ignored) {
             // TODO Add error management here
         } catch (IOException e) {

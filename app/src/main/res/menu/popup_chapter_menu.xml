@@ -7,4 +7,17 @@
     <item
         android:id="@+id/popup_chapter_menu_download"
         android:title="@string/download" />
+    <item android:title="@string/mark_as">
+        <menu>
+            <item
+                android:id="@+id/popup_chapter_menu_mark_read"
+                android:title="@string/read" />
+            <item
+                android:id="@+id/popup_chapter_menu_mark_unread"
+                android:title="@string/unread" />
+            <item
+                android:id="@+id/popup_chapter_menu_mark_reading"
+                android:title="@string/reading" />
+        </menu>
+    </item>
 </menu>

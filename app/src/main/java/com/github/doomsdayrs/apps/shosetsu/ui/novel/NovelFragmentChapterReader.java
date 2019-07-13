@@ -48,7 +48,7 @@ import java.util.Objects;
  * @author github.com/doomsdayrs
  */
 //TODO MarkDown support
-public class NovelFragmentChapterView extends AppCompatActivity {
+public class NovelFragmentChapterReader extends AppCompatActivity {
     private String title;
     private ScrollView scrollView;
     public TextView textView;
@@ -349,7 +349,7 @@ public class NovelFragmentChapterView extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("OnCreate", "NovelFragmentChapterView");
+        Log.d("OnCreate", "NovelFragmentChapterReader");
         switch (Settings.themeMode) {
             case 0:
                 setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
