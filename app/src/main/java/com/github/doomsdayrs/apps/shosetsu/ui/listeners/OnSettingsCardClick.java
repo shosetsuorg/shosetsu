@@ -19,7 +19,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.listeners;
  */
 
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
 
@@ -44,28 +43,28 @@ public class OnSettingsCardClick implements View.OnClickListener {
     public void onClick(View v) {
         switch (type) {
             case VIEW: {
-                Toast.makeText(v.getContext(), "View", Toast.LENGTH_SHORT).show();
+                //   Toast.makeText(v.getContext(), "View", Toast.LENGTH_SHORT).show();
                 fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new ViewSettings()).commit();
             }
             break;
             case CREDITS: {
-                Toast.makeText(v.getContext(), "Credits", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(v.getContext(), "Credits", Toast.LENGTH_SHORT).show();
                 fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new CreditsSettings()).commit();
 
             }
             break;
             case ADVANCED: {
-                Toast.makeText(v.getContext(), "Advanced", Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(v.getContext(), "Advanced", Toast.LENGTH_SHORT).show();
                 fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new AdvancedSettings()).commit();
             }
             break;
             case DOWNLOAD: {
-                Toast.makeText(v.getContext(), "Download", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(v.getContext(), "Download", Toast.LENGTH_SHORT).show();
                 fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new DownloadSettings()).commit();
             }
             break;
             case BACKUP: {
-                Toast.makeText(v.getContext(), "Backup", Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(v.getContext(), "Backup", Toast.LENGTH_SHORT).show();
                 fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new BackupSettings()).commit();
             }
             break;
