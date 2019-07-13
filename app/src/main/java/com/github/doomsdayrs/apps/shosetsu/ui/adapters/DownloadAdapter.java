@@ -1,15 +1,16 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.DownloadItemViewHolder;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 
 /*
  * This file is part of Shosetsu.

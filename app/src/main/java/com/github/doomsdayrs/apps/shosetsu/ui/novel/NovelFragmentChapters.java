@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import java.util.ArrayList;

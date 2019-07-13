@@ -18,7 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.card.MaterialCardView;
 

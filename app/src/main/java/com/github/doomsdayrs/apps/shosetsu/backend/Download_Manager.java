@@ -8,8 +8,8 @@ import android.widget.Toast;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
+import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
 
 import java.io.BufferedReader;
 import java.io.File;

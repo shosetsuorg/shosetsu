@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.download;
+package com.github.doomsdayrs.apps.shosetsu.variables;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 

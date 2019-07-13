@@ -10,7 +10,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPag
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
-import com.github.doomsdayrs.apps.shosetsu.variables.download.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
