@@ -262,7 +262,7 @@ public class NovelFragmentChapters extends Fragment {
                 return true;
             });
 
-            menu.findItem(R.id.chapter_select_in_between).setOnMenuItemClickListener(menuItem -> {
+            menu.findItem(R.id.chapter_select_between).setOnMenuItemClickListener(menuItem -> {
                 int min = findMinPosition();
                 int max = findMaxPosition();
                 for (int x = min; x < max; x++)
