@@ -110,6 +110,10 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
                 chaptersViewHolder.status.setText(Status.UNREAD.getStatus());
                 break;
         }
+
+        if (NovelFragmentChapters.selectedChapters.size() <= 0)
+            chaptersViewHolder.itemView.setOnClickListener(chaptersViewHolder);
+        else chaptersViewHolder.itemView.setOnClickListener(view -> chaptersViewHolder.addToSelect());
     }
 
     @Override

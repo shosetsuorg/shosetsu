@@ -268,8 +268,6 @@ public class NovelFragmentChapters extends Fragment {
                 for (int x = min; x < max; x++)
                     if (!contains(StaticNovel.novelChapters.get(x)))
                         selectedChapters.add(StaticNovel.novelChapters.get(x));
-
-
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
             });

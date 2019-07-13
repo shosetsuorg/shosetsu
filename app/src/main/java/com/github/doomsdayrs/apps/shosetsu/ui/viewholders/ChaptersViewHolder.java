@@ -115,7 +115,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         });
 
 
-        itemView.setOnClickListener(this);
         itemView.setOnLongClickListener(view -> {
             addToSelect();
             return true;
@@ -124,7 +123,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         checkBox.setOnClickListener(view -> addToSelect());
     }
 
-    private void addToSelect() {
+    public void addToSelect() {
         if (!NovelFragmentChapters.contains(novelChapter))
             NovelFragmentChapters.selectedChapters.add(novelChapter);
         else
