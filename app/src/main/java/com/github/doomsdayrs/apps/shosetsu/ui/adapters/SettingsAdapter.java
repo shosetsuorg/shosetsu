@@ -116,6 +116,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
                 break;
                 case CREDITS: {
                     Toast.makeText(v.getContext(), "Credits", Toast.LENGTH_SHORT).show();
+                    fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new credits()).commit();
+
                 }
                 break;
                 case ADVANCED: {
@@ -172,7 +174,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             Log.d("OnCreateView", "ViewSettings");
-            View view = inflater.inflate(R.layout.fragment_settings_view, container, false);
+            View view = inflater.inflate(R.layout.settings_view, container, false);
             nightMode = view.findViewById(R.id.reader_nightMode_checkbox);
             paragraphSpacing = view.findViewById(R.id.reader_paragraphSpacing);
             textSize = view.findViewById(R.id.reader_textSize);
@@ -317,8 +319,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             Log.d("OnCreateView", "BackupSettings");
-            View view = inflater.inflate(R.layout.fragment_settings_backup, container, false);
-            button = view.findViewById(R.id.fragment_settings_backup_now);
+            View view = inflater.inflate(R.layout.settings_backup, container, false);
+            button = view.findViewById(R.id.settings_backup_now);
             button.setOnClickListener(view1 -> Database.backupDatabase());
             return view;
         }
@@ -335,8 +337,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             Log.d("OnCreateView", "DownloadSettings");
-            View view = inflater.inflate(R.layout.fragment_settings_download, container, false);
-            textView = view.findViewById(R.id.fragment_settings_download_dir);
+            View view = inflater.inflate(R.layout.settings_download, container, false);
+            textView = view.findViewById(R.id.settings_download_dir);
             textView.setText(Download_Manager.shoDir);
             textView.setOnClickListener(view1 -> performFileSearch());
             return view;
@@ -392,8 +394,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             Log.d("OnCreateView", "ViewSettings");
-            View view = inflater.inflate(R.layout.fragment_settings_advanced, container, false);
-            spinner = view.findViewById(R.id.fragment_settings_advanced_spinner);
+            View view = inflater.inflate(R.layout.settings_advanced, container, false);
+            spinner = view.findViewById(R.id.settings_advanced_spinner);
             // Creating adapter for spinner
             if (getContext() != null) {
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, strings);
@@ -417,4 +419,15 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Settin
         }
     }
 
+
+    //TODO Add text size options
+    public static class credits extends Fragment {
+
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            Log.d("OnCreateView", "ViewSettings");
+            return inflater.inflate(R.layout.settings_credits, container, false);
+        }
+    }
 }

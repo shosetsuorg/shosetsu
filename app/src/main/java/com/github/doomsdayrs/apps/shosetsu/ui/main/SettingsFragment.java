@@ -80,8 +80,8 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "SettingsFragment");
         Statics.mainActionBar.setTitle("Settings");
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.fragment_settings_recycler);
+        View view = inflater.inflate(R.layout.settings, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.settings_recycler);
 
 
         if (recyclerView != null) {
