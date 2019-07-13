@@ -360,7 +360,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             case 2:
                 setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
         }
-        setContentView(R.layout.fragment_novel_chapter_view);
+        setContentView(R.layout.fragment_novel_chapter_reader);
         {
             progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);
             novelURL = getIntent().getStringExtra("novelURL");
