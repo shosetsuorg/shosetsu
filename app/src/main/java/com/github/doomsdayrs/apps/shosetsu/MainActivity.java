@@ -117,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
                 .withListener(new AppUpdaterUtils.UpdateListener() {
                     @Override
                     public void onSuccess(Update update, Boolean isUpdateAvailable) {
-                        Log.d("Latest Version Code", update.getLatestVersion());
+                        Log.d("Latest Version", String.valueOf(isUpdateAvailable));
+                        Log.d("Latest Version", update.getLatestVersion());
+                        Log.d("Latest Version", String.valueOf(update.getLatestVersionCode()));
                     }
 
                     @Override

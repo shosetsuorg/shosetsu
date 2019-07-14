@@ -1,4 +1,5 @@
 <AppUpdater>
+
     <update>
         <latestVersion>1.1.7-alpha</latestVersion>
         <latestVersionCode>16</latestVersionCode>
@@ -7,6 +8,196 @@
             - HOPEFULLY you all got an update notification for this
             - Added new parser
             - Bug fixes and improvements
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.1.6-alpha</latestVersion>
+        <latestVersionCode>15</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Novel fragment has tab view on top
+            - NovelPage data is now used and parsed better
+            - Updater? Maybe?? They should work??
+            - Genres in novel page using chips
+            - Library novels have a chip on the top right that tells the remaining chapters
+            - Catalogues don't constantly refresh after returning from opening a novel
+            - Publishing status planned for later
+            - Improvements of code and other shiz
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.1.5-alpha</latestVersion>
+        <latestVersionCode>15</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Selection mechanisms for chapters
+            - Loading of novel data and chapters are separated. IncrementingChapterList sites will take longer to load chapters as it will load EVERYTHING
+            - Reader text sizes added
+            - Settings low listens to each distinctive card properly, not the title for input
+            - Fixed rotation issues in some places
+            - DB structure is better? i think?
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.1.4-alpha</latestVersion>
+        <latestVersionCode>14</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Offline mode
+            - Page incremental system is better
+            - Backup is still useless
+            - Minor bug fixes and improvements
+            - Download manager
+            - If i can work out every single bug ill release the first version of this application
+            soon
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.1.3-alpha</latestVersion>
+        <latestVersionCode>13</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Added progress tracking
+            - On the above note, always tracks now
+            - Bookmarks still are book marks :P
+            - Backup feature
+            - Simplified and redesigned database, all previous data will be lost.
+            - Restore feature in plans
+            - Dir path added (NO SDCARD SUPPORT)
+            - Planning to add github backup
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.1.2-alpha</latestVersion>
+        <latestVersionCode>12</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Added more async
+            - More supportive features i suppose
+            - Idea for kitkat support dropped
+            - Lowest support version is 5.1, no testing yet for such
+            - Signed APKS
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.1.1-alpha</latestVersion>
+        <latestVersionCode>11</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Async loading
+            - Loading icons
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.9-alpha</latestVersion>
+        <latestVersionCode>9</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Everything of v1.0.9 but fixed a small error
+            - Reset database
+            - working downloader
+            - Minor imporvements
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.8-alpha</latestVersion>
+        <latestVersionCode>8</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Downloading feature
+            - Bookmarking = saving last position for now
+            - Improvements and improvements
+            - Very likely to be slowish on older devices
+            - ###WARNING, Downloader can DOWNLOAD. But there will be errors on a 'fake' downloaded
+            icon. You'll understand once it starts crashing. triple press the download button on the
+            chapter that crashes your device. And it fix things.
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.7-alpha</latestVersion>
+        <latestVersionCode>7</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Added library saving functionality
+            - Improved landscape mode for novel view
+            - added database
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.6-alpha</latestVersion>
+        <latestVersionCode>6</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Bookmarking structure
+            - basic settings added: View only so far.
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.5-alpha</latestVersion>
+        <latestVersionCode>5</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - More customization options, will be adding full fledged settings very soon
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.4-alpha</latestVersion>
+        <latestVersionCode>4</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - New filter features and shiz
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.3-alpha</latestVersion>
+        <latestVersionCode>3</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            -Box novel site formatted
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.2-alpha</latestVersion>
+        <latestVersionCode>2</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - New colors
+            - Unsigned still
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.1-alpha</latestVersion>
+        <latestVersionCode>1</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Fullscreen reader
+            - Back and forth with ease
+            - DO NOT ROTATE SCREEN. That does not work yet.
+        </releaseNotes>
+    </update>
+
+    <update>
+        <latestVersion>1.0.0-alpha</latestVersion>
+        <latestVersionCode>0</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - Initial release
+            - Unsigned for now
         </releaseNotes>
     </update>
 </AppUpdater>
