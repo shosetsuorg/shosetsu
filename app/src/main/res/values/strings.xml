@@ -59,4 +59,5 @@
     <string name="theme">Theme:</string>
     <string name="select_between">Select between</string>
     <string name="selection_options">Selection options</string>
+    <string name="remove">Remove</string>
 </resources>

@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,6 +71,30 @@ public class LibraryFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    private void readFromDB() {
+        libraryNovelCards = Database.DatabaseLibrary.getLibrary();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            libraryNovelCards.sort((novelCard, t1) -> novelCard.title.compareTo(t1.title));
+        } else {
+            bubbleSortA_Z();
+        }
+    }
+
+    private void bubbleSortA_Z() {
+        for (int i = libraryNovelCards.size() - 1; i > 1; i--) {
+            for (int j = 0; j < i; j++) {
+                if (libraryNovelCards.get(j).title.compareTo(libraryNovelCards.get(j + 1).title) > 0)
+                    swapValues(j, j + 1);
+            }
+        }
+    }
+
+    private void swapValues(int indexOne, int indexTwo) {
+        NovelCard novelCard = libraryNovelCards.get(indexOne);
+        libraryNovelCards.set(indexOne, libraryNovelCards.get(indexTwo));
+        libraryNovelCards.set(indexTwo, novelCard);
+    }
+
     /**
      * Creates view
      *
@@ -84,9 +109,9 @@ public class LibraryFragment extends Fragment {
         Statics.mainActionBar.setTitle("Library");
         Log.d("OnCreate", "LibraryFragment");
 
-        if (savedInstanceState == null) {
-            libraryNovelCards = Database.DatabaseLibrary.getLibrary();
-        }
+        if (savedInstanceState == null)
+            readFromDB();
+
 
         View view = inflater.inflate(R.layout.fragment_library, container, false);
         recyclerView = view.findViewById(R.id.fragment_library_recycler);
@@ -108,15 +133,42 @@ public class LibraryFragment extends Fragment {
     public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
         this.menu = menu;
         menu.clear();
-        inflater.inflate(R.menu.toolbar_library, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.library_search).getActionView();
-        if (searchView != null) {
-            searchView.setOnQueryTextListener(new LibrarySearchQuery(this));
-            searchView.setOnCloseListener(() -> {
-                setLibraryCards(LibraryFragment.libraryNovelCards);
-                return false;
+        if (selectedNovels.size() <= 0) {
+            inflater.inflate(R.menu.toolbar_library, menu);
+            SearchView searchView = (SearchView) menu.findItem(R.id.library_search).getActionView();
+            if (searchView != null) {
+                searchView.setOnQueryTextListener(new LibrarySearchQuery(this));
+                searchView.setOnCloseListener(() -> {
+                    setLibraryCards(LibraryFragment.libraryNovelCards);
+                    return false;
+                });
+            }
+        } else {
+            inflater.inflate(R.menu.toolbar_library_selected, menu);
+            menu.findItem(R.id.chapter_select_all).setOnMenuItemClickListener(menuItem -> {
+                for (NovelCard novelChapter : libraryNovelCards)
+                    if (!contains(novelChapter))
+                        selectedNovels.add(novelChapter);
+                recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
+                return true;
+            });
+            menu.findItem(R.id.chapter_deselect_all).setOnMenuItemClickListener(menuItem -> {
+                selectedNovels = new ArrayList<>();
+                recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
+                onCreateOptionsMenu(menu, inflater);
+                return true;
+            });
+            menu.findItem(R.id.remove_from_library).setOnMenuItemClickListener(menuItem -> {
+                for (NovelCard novelCard : selectedNovels) {
+                    Database.DatabaseLibrary.removeFromLibrary(novelCard.novelURL);
+                    libraryNovelCards.remove(novelCard);
+                }
+                selectedNovels = new ArrayList<>();
+                recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
+                return true;
             });
         }
+
     }
 
     /**

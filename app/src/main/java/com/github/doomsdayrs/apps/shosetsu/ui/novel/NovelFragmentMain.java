@@ -129,6 +129,11 @@ public class NovelFragmentMain extends Fragment {
      * Sets the data of this page
      */
     public void setData() {
+        if (StaticNovel.novelPage == null) {
+            Log.e("NULL", "Invalid novel page");
+            return;
+        }
+
         title.setText(StaticNovel.novelPage.title);
 
         if (StaticNovel.novelPage.authors != null && StaticNovel.novelPage.authors.length > 0)

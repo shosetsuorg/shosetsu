@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/remove_from_library"
+        android:title="@string/remove" />
+
+    <item android:title="@string/selection_options">
+        <menu>
+
+            <item
+                android:id="@+id/chapter_deselect_all"
+                android:title="@string/deselect_all"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/chapter_select_all"
+                android:icon="@drawable/ic_select_all_black_24dp"
+                android:title="@string/select_all"
+                app:showAsAction="ifRoom" />
+        </menu>
+    </item>
+
+</menu>
