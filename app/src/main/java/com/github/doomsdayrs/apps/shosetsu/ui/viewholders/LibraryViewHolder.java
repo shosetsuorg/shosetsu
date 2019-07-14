@@ -52,7 +52,7 @@ public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.O
         library_card_title = itemView.findViewById(R.id.textView);
         chip = itemView.findViewById(R.id.novel_item_left_to_read);
 
-        itemView.setOnClickListener(this);
+
         itemView.setOnLongClickListener(view -> {
             addToSelect();
             return true;

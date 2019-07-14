@@ -79,6 +79,12 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
             System.out.println("Is selected");
             libraryViewHolder.materialCardView.setStrokeColor(Color.WHITE);
         }
+
+        if (LibraryFragment.selectedNovels.size() > 0) {
+            libraryViewHolder.itemView.setOnClickListener(view -> libraryViewHolder.addToSelect());
+        } else {
+            libraryViewHolder.itemView.setOnClickListener(libraryViewHolder);
+        }
     }
 
     @Override

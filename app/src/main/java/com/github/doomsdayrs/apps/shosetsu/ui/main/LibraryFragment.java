@@ -108,17 +108,11 @@ public class LibraryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Statics.mainActionBar.setTitle("Library");
         Log.d("OnCreate", "LibraryFragment");
-
         if (savedInstanceState == null)
             readFromDB();
-
-
         View view = inflater.inflate(R.layout.fragment_library, container, false);
         recyclerView = view.findViewById(R.id.fragment_library_recycler);
-
         this.context = Objects.requireNonNull(container).getContext();
-
-
         setLibraryCards(LibraryFragment.libraryNovelCards);
         return view;
     }

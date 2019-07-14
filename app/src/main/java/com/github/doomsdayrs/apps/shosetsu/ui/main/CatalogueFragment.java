@@ -61,7 +61,6 @@ public class CatalogueFragment extends Fragment {
     private Context context;
 
     public RecyclerView.Adapter library_Adapter;
-    public ProgressBar progressBar;
     public ProgressBar bottomProgressBar;
 
     public static boolean dontRefresh = false;
@@ -124,7 +123,6 @@ public class CatalogueFragment extends Fragment {
         library_view = view.findViewById(R.id.fragment_catalogue_recycler);
         swipeRefreshLayout = view.findViewById(R.id.fragment_catalogue_refresh);
         swipeRefreshLayout.setOnRefreshListener(new CatalogueRefresh(this));
-        progressBar = view.findViewById(R.id.fragment_catalogue_progress);
         bottomProgressBar = view.findViewById(R.id.fragment_catalogue_progress_bottom);
         this.context = Objects.requireNonNull(container).getContext();
 
