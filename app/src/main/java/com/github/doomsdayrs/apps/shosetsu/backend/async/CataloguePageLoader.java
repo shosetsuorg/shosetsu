@@ -75,11 +75,11 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
 
             for (Novel novel : novels)
                 catalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, novel.link));
-            catalogueFragment.library_view.post(() -> catalogueFragment.library_Adapter.notifyDataSetChanged());
+            catalogueFragment.library_view.post(() -> catalogueFragment.catalogueNovelCardsAdapter.notifyDataSetChanged());
 
             if (catalogueFragmentHitBottom != null) {
                 catalogueFragment.library_view.post(() -> {
-                    catalogueFragment.library_Adapter.notifyDataSetChanged();
+                    catalogueFragment.catalogueNovelCardsAdapter.notifyDataSetChanged();
                     catalogueFragment.library_view.addOnScrollListener(catalogueFragmentHitBottom);
                 });
                 catalogueFragmentHitBottom.running = false;
@@ -89,7 +89,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
 
             if (catalogueFragment.getActivity() != null)
                 catalogueFragment.getActivity().runOnUiThread(() -> {
-                    catalogueFragment.library_Adapter.notifyDataSetChanged();
+                    catalogueFragment.catalogueNovelCardsAdapter.notifyDataSetChanged();
                     catalogueFragment.swipeRefreshLayout.setRefreshing(false);
                 });
 

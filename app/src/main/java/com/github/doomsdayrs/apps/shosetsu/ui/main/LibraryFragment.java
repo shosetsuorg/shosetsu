@@ -154,7 +154,7 @@ public class LibraryFragment extends Fragment {
             });
             menu.findItem(R.id.remove_from_library).setOnMenuItemClickListener(menuItem -> {
                 for (NovelCard novelCard : selectedNovels) {
-                    Database.DatabaseLibrary.removeFromLibrary(novelCard.novelURL);
+                    Database.DatabaseLibrary.unBookmark(novelCard.novelURL);
                     libraryNovelCards.remove(novelCard);
                 }
                 selectedNovels = new ArrayList<>();

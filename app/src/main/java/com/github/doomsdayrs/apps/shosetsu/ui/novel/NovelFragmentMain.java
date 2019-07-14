@@ -110,7 +110,7 @@ public class NovelFragmentMain extends Fragment {
         floatingActionButton.hide();
 
 
-        if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL))
+        if (Database.DatabaseLibrary.isBookmarked(StaticNovel.novelURL))
             inLibrary();
 
         if (inLibrary)

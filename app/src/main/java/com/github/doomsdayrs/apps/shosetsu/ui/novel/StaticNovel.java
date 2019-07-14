@@ -27,6 +27,7 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class StaticNovel {
+    //TODO fix error with chapters here
     /**
      * Global variable of the current loaded novel
      */
@@ -34,6 +35,5 @@ public class StaticNovel {
     public static NovelPage novelPage;
     public static List<NovelChapter> novelChapters = new ArrayList<>();
     public static Formatter formatter;
-    public static int maxPage = 0;
     public static Status status = Status.UNREAD;
 }

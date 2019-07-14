@@ -25,10 +25,6 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 //TODO
 // > Drop MAX_PAGE from table 'library'
-// > Rename table 'library' > 'novels'
-// > Add integer 'inLibrary'  to table 'novels'
-// > Nuke version to 10, everything below 5 has everything dropped.
-// > Cache every novel opened into this DB
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
@@ -57,14 +53,15 @@ public class DBHelper extends SQLiteOpenHelper {
     //TODO Figure out a legitimate way to structure all this data
 
     // Library that the user has saved their novels to
-    private static final String libraryCreate = "create TABLE if not exists " + Database.Tables.LIBRARY + " (" +
+    private static final String libraryCreate = "create TABLE if not exists " + Database.Tables.NOVELS + " (" +
+            // If in the library
+            Database.Columns.BOOKMARKED + " integer not null," +
             // URL of this novel
             Database.Columns.NOVEL_URL + " text not null unique, " +
             // Saved DATA of the novel
             Database.Columns.NOVEL_PAGE + " text not null," +
             // Formatter this novel comes from
             Database.Columns.FORMATTER_ID + " integer not null," +
-            Database.Columns.MAX_PAGE + " integer not null," +
             Database.Columns.STATUS + " integer not null" + ")";
 
 
@@ -91,7 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 5);
+        super(context, DB_NAME, null, 6);
     }
 
 
@@ -122,7 +119,15 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("drop table if exists bookmarks");
             db.execSQL("drop table if exists downloads");
             db.execSQL("drop table if exists chapters");
-            db.execSQL(libraryCreate);
+            db.execSQL("create TABLE if not exists library (" +
+                    // URL of this novel
+                    Database.Columns.NOVEL_URL + " text not null unique, " +
+                    // Saved DATA of the novel
+                    Database.Columns.NOVEL_PAGE + " text not null," +
+                    // Formatter this novel comes from
+                    Database.Columns.FORMATTER_ID + " integer not null," +
+                    Database.Columns.MAX_PAGE + " integer not null," +
+                    Database.Columns.STATUS + " integer not null" + ")");
             db.execSQL(downloadsCreate);
             db.execSQL(chaptersCreate);
         }
@@ -156,8 +161,8 @@ public class DBHelper extends SQLiteOpenHelper {
             }
             cursor.close();
             // Drop old table
-            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
-            db.execSQL("create TABLE if not exists " + Database.Tables.LIBRARY + " (" +
+            db.execSQL("drop table if exists library");
+            db.execSQL("create TABLE if not exists library (" +
                     // URL of this novel
                     Database.Columns.NOVEL_URL + " text not null unique, " +
                     // Saved DATA of the novel
@@ -182,9 +187,70 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(Database.Columns.MAX_PAGE.toString())) + "," +
                         cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())) + ")");
             }
+            db.execSQL("drop table if exists libraryNext");
         }
-        if (oldVersion<10){
+        if (oldVersion < 6) {
+            db.execSQL("drop table if exists libraryNext");
+            // in between
+            db.execSQL("create TABLE if not exists libraryNext (" +
+                    //If in library
+                    Database.Columns.BOOKMARKED + " text not null, " +
+                    // URL of this novel
+                    Database.Columns.NOVEL_URL + " text not null unique, " +
+                    // Saved DATA of the novel
+                    Database.Columns.NOVEL_PAGE + " text not null," +
+                    // Formatter this novel comes from
+                    Database.Columns.FORMATTER_ID + " integer not null," +
+                    Database.Columns.STATUS + " integer not null" + ")");
 
+            // Move data to middle
+            Cursor cursor = db.rawQuery("select * from library", null);
+
+            while (cursor.moveToNext()) {
+                db.execSQL("insert into libraryNext (" +
+                        Database.Columns.BOOKMARKED + "," +
+                        Database.Columns.NOVEL_URL + "," +
+                        Database.Columns.NOVEL_PAGE + "," +
+                        Database.Columns.FORMATTER_ID + "," +
+                        Database.Columns.STATUS + ") values (" +
+                        1 + ",'" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString())) + "','" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())) + "'," +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString())) + "," +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())) + ")");
+            }
+            cursor.close();
+
+            // Drop old table
+            db.execSQL("drop table if exists library");
+            db.execSQL("create TABLE if not exists " + Database.Tables.NOVELS + " (" +
+                    // If in library
+                    Database.Columns.BOOKMARKED + " integer not null, " +
+                    // URL of this novel
+                    Database.Columns.NOVEL_URL + " text not null unique, " +
+                    // Saved DATA of the novel
+                    Database.Columns.NOVEL_PAGE + " text not null," +
+                    // Formatter this novel comes from
+                    Database.Columns.FORMATTER_ID + " integer not null," +
+                    Database.Columns.STATUS + " integer not null" + ")");
+
+            // Move middle to new
+            cursor = db.rawQuery("select * from libraryNext", null);
+            while (cursor.moveToNext()) {
+                db.execSQL("insert into novels (" +
+                        Database.Columns.BOOKMARKED + "," +
+                        Database.Columns.NOVEL_URL + "," +
+                        Database.Columns.NOVEL_PAGE + "," +
+                        Database.Columns.FORMATTER_ID + "," +
+                        Database.Columns.STATUS + ") values (" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())) + ",'" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString())) + "','" +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())) + "'," +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString())) + "," +
+                        cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())) + ")");
+            }
+            cursor.close();
+            db.execSQL("drop table if exists libraryNext");
         }
     }
 }

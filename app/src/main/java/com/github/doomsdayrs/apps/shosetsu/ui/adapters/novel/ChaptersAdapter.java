@@ -118,7 +118,9 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
     @Override
     public int getItemCount() {
-        return StaticNovel.novelChapters.size();
+        if (StaticNovel.novelChapters != null)
+            return StaticNovel.novelChapters.size();
+        else return 0;
     }
 
     @Override

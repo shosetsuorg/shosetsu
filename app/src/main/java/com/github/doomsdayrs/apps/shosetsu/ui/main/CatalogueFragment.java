@@ -51,8 +51,8 @@ import java.util.Objects;
  *
  * @author github.com/doomsdayrs
  */
+//TODO fix issue with not loading
 public class CatalogueFragment extends Fragment {
-    //TODO Figure out ghosting lists
     public ArrayList<CatalogueNovelCard> catalogueNovelCards = new ArrayList<>();
     public Formatter formatter;
     public SwipeRefreshLayout swipeRefreshLayout;
@@ -60,7 +60,7 @@ public class CatalogueFragment extends Fragment {
     public int currentMaxPage = 1;
     private Context context;
 
-    public RecyclerView.Adapter library_Adapter;
+    public CatalogueNovelCardsAdapter catalogueNovelCardsAdapter;
     public ProgressBar bottomProgressBar;
 
     public static boolean dontRefresh = false;
@@ -132,7 +132,7 @@ public class CatalogueFragment extends Fragment {
             setLibraryCards(catalogueNovelCards);
             if (catalogueNovelCards.size() > 0) {
                 catalogueNovelCards = new ArrayList<>();
-                library_Adapter.notifyDataSetChanged();
+                catalogueNovelCardsAdapter.notifyDataSetChanged();
             }
             new CataloguePageLoader(this).execute();
         } else
@@ -162,10 +162,10 @@ public class CatalogueFragment extends Fragment {
                 library_layoutManager = new GridLayoutManager(context, 2, RecyclerView.VERTICAL, false);
             else
                 library_layoutManager = new GridLayoutManager(context, 4, RecyclerView.VERTICAL, false);
-            library_Adapter = new CatalogueNovelCardsAdapter(recycleCards, getFragmentManager(), formatter);
+            catalogueNovelCardsAdapter = new CatalogueNovelCardsAdapter(recycleCards, getFragmentManager(), formatter);
             library_view.setLayoutManager(library_layoutManager);
             library_view.addOnScrollListener(new CatalogueFragmentHitBottom(this));
-            library_view.setAdapter(library_Adapter);
+            library_view.setAdapter(catalogueNovelCardsAdapter);
         }
     }
 }

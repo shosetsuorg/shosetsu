@@ -20,7 +20,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.List;
 
 /*
@@ -122,12 +121,17 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
             protected Void doInBackground(View... views) {
                 try {
                     if (!Database.DatabaseLibrary.inLibrary(novelCardsViewHolder.url)) {
-                        Database.DatabaseLibrary.addToLibrary(novelCardsViewHolder.formatter.getID(), novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url), novelCardsViewHolder.url, 0, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
+                        Database.DatabaseLibrary.addToLibrary(novelCardsViewHolder.formatter.getID(), novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
                         if (views[0] != null)
                             views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());
-                    } else {
+                    }
+                    if (Database.DatabaseLibrary.isBookmarked(novelCardsViewHolder.url)) {
                         if (views[0] != null)
                             views[0].post(() -> Toast.makeText(views[0].getContext(), "Already in the library", Toast.LENGTH_SHORT).show());
+                    } else {
+                        Database.DatabaseLibrary.bookMark(novelCardsViewHolder.url);
+                        if (views[0] != null)
+                            views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());
                     }
                 } catch (Exception e) {
                     if (views[0] != null)

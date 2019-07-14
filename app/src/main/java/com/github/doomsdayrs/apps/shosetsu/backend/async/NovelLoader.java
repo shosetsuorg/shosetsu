@@ -80,7 +80,9 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         Log.d("Loading", StaticNovel.novelURL);
         try {
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
-
+            if (!Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
+                Database.DatabaseLibrary.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
+            }
             for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
                 if (!Database.DatabaseChapter.inChapters(novelChapter.link))
                     Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
@@ -90,7 +92,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
         } catch (SocketTimeoutException e) {
-            if (novelFragment != null)
+            if (novelFragment != null && activity != null)
                 activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
             else
                 activity.runOnUiThread(() -> {

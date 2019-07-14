@@ -1,13 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.listeners;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.View;
-import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /*
  * This file is part of Shosetsu.
@@ -37,15 +36,16 @@ public class NovelFragmentMainAddToLibrary implements FloatingActionButton.OnCli
     @Override
     public void onClick(View v) {
         if (!novelFragmentMain.inLibrary) {
-            Database.DatabaseLibrary.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, StaticNovel.maxPage, StaticNovel.status.getA());
+            if (!Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL))
+                Database.DatabaseLibrary.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, StaticNovel.status.getA());
+            Database.DatabaseLibrary.bookMark(StaticNovel.novelURL);
             novelFragmentMain.inLibrary = true;
             novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
         } else {
-            if (!Database.DatabaseLibrary.removeFromLibrary(StaticNovel.novelURL)) {
+            Database.DatabaseLibrary.unBookmark(StaticNovel.novelURL);
                 novelFragmentMain.inLibrary = false;
                 novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
-            } else
-                Toast.makeText(v.getContext(), "Error removing from library", Toast.LENGTH_LONG).show();
+
         }
     }
 }
