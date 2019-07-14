@@ -67,11 +67,6 @@ public class DBHelper extends SQLiteOpenHelper {
             Database.Columns.MAX_PAGE + " integer not null," +
             Database.Columns.STATUS + " integer not null" + ")";
 
-    // Remove in beta release
-    @Deprecated
-    static final String bookmarksCreate = "create TABLE if not exists " + Database.Tables.BOOKMARKS + "(" +
-            Database.Columns.CHAPTER_URL + " text unique not null, " +
-            Database.Columns.SAVED_DATA + " text)";
 
     // Watches download listing
     private static final String downloadsCreate = "create TABLE if not exists " + Database.Tables.DOWNLOADS + "(" +
@@ -122,34 +117,15 @@ public class DBHelper extends SQLiteOpenHelper {
     //TODO Actually save data between db versions
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        if (oldVersion < 2) {
-            db.execSQL(libraryCreate);
-            db.execSQL(bookmarksCreate);
-            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
-            db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
-            db.execSQL(libraryCreate);
-        }
-
-        if (oldVersion < 3) {
-            db.execSQL(libraryCreate);
-            db.execSQL(downloadsCreate);
-            db.execSQL("drop table if exists " + Database.Tables.DOWNLOADS);
-            db.execSQL("drop table if exists " + Database.Tables.BOOKMARKS);
-            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
-            db.execSQL(libraryCreate);
-            db.execSQL(chaptersCreate);
-        }
-
         if (oldVersion < 4) {
-            db.execSQL(downloadsCreate);
-            db.execSQL("drop table if exists " + Database.Tables.CHAPTERS);
-            db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
-
+            db.execSQL("drop table if exists library");
+            db.execSQL("drop table if exists bookmarks");
+            db.execSQL("drop table if exists downloads");
+            db.execSQL("drop table if exists chapters");
             db.execSQL(libraryCreate);
+            db.execSQL(downloadsCreate);
             db.execSQL(chaptersCreate);
         }
-
         if (oldVersion < 5) {
             // in between
             db.execSQL("create TABLE if not exists libraryNext (" +
@@ -164,6 +140,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             // Move data to middle
             Cursor cursor = db.rawQuery("select * from library", null);
+
             while (cursor.moveToNext()) {
                 db.execSQL("insert into libraryNext (" +
                         Database.Columns.NOVEL_URL + "," +
@@ -180,7 +157,15 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
             // Drop old table
             db.execSQL("drop table if exists " + Database.Tables.LIBRARY);
-            db.execSQL(libraryCreate);
+            db.execSQL("create TABLE if not exists " + Database.Tables.LIBRARY + " (" +
+                    // URL of this novel
+                    Database.Columns.NOVEL_URL + " text not null unique, " +
+                    // Saved DATA of the novel
+                    Database.Columns.NOVEL_PAGE + " text not null," +
+                    // Formatter this novel comes from
+                    Database.Columns.FORMATTER_ID + " integer not null," +
+                    Database.Columns.MAX_PAGE + " integer not null," +
+                    Database.Columns.STATUS + " integer not null" + ")");
 
             // Move middle to new
             cursor = db.rawQuery("select * from libraryNext", null);
@@ -197,6 +182,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(Database.Columns.MAX_PAGE.toString())) + "," +
                         cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())) + ")");
             }
+        }
+        if (oldVersion<10){
+
         }
     }
 }
