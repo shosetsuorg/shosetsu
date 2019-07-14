@@ -61,10 +61,13 @@ public class NovelFragmentMain extends Fragment {
     public FloatingActionButton floatingActionButton;
     public boolean inLibrary = false;
 
+    public NovelFragment novelFragment;
+
     /**
      * Constructor
      */
-    public NovelFragmentMain() {
+    public NovelFragmentMain(NovelFragment novelFragment) {
+        this.novelFragment = novelFragment;
         setHasOptionsMenu(true);
     }
 

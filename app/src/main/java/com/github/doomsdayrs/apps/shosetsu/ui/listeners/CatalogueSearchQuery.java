@@ -38,6 +38,7 @@ public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        catalogueFragment.isQuery = false;
         try {
             ArrayList<CatalogueNovelCard> searchResults = new CatalogueQuerySearch(catalogueFragment).execute(query).get();
             catalogueFragment.setLibraryCards(searchResults);
@@ -53,12 +54,14 @@ public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
     @Override
     public boolean onQueryTextChange(String newText) {
         Log.d("Library search", newText);
+        catalogueFragment.isQuery = true;
         ArrayList<CatalogueNovelCard> recycleCards = new ArrayList<>(catalogueFragment.catalogueNovelCards);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             recycleCards.removeIf(recycleCard -> !recycleCard.title.toLowerCase().contains(newText.toLowerCase()));
         } else {
             for (int x = recycleCards.size() - 1; x >= 0; x--) {
-                if (!recycleCards.get(x).title.contains(newText)) {
+                if (!recycleCards.get(x).title.toLowerCase().contains(newText.toLowerCase())) {
                     recycleCards.remove(x);
                 }
             }
@@ -66,4 +69,6 @@ public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
         catalogueFragment.setLibraryCards(recycleCards);
         return recycleCards.size() != 0;
     }
+
+
 }

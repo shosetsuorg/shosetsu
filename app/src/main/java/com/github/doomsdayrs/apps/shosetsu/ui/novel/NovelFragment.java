@@ -79,8 +79,8 @@ public class NovelFragment extends Fragment {
             errorMessage = view.findViewById(R.id.error_message);
             errorButton = view.findViewById(R.id.error_button);
         }
-        novelFragmentMain = new NovelFragmentMain();
-        novelFragmentChapters = new NovelFragmentChapters();
+        novelFragmentMain = new NovelFragmentMain(this);
+        novelFragmentChapters = new NovelFragmentChapters(this);
         //TODO FINISH TRACKING
         //boolean track = SettingsController.isTrackingEnabled();
 

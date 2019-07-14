@@ -76,8 +76,14 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         this.activity = voids[0];
         StaticNovel.novelPage = null;
         Log.d("Loading", StaticNovel.novelURL);
-        if (novelFragment != null && novelFragment.getActivity() != null)
-            novelFragment.getActivity().runOnUiThread(() -> novelFragment.errorView.setVisibility(View.GONE));
+        if (loadAll) {
+            if (novelFragment != null && novelFragment.getActivity() != null)
+                novelFragment.getActivity().runOnUiThread(() -> novelFragment.errorView.setVisibility(View.GONE));
+
+        } else if (novelFragmentMain != null && novelFragmentMain.getActivity() != null)
+            novelFragmentMain.getActivity().runOnUiThread(() -> novelFragmentMain.novelFragment.errorView.setVisibility(View.GONE));
+
+
 
         try {
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
@@ -93,7 +99,21 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
         } catch (Exception e) {
-            //TODO Exception
+            if (loadAll) {
+                if (novelFragment != null && novelFragment.getActivity() != null)
+                    novelFragment.getActivity().runOnUiThread(() -> {
+                        novelFragment.errorView.setVisibility(View.VISIBLE);
+                        novelFragment.errorMessage.setText(e.getMessage());
+                        novelFragment.errorButton.setOnClickListener(view -> new NovelLoader(novelFragment, loadAll).execute(voids));
+                    });
+            } else if (novelFragmentMain != null && novelFragmentMain.getActivity() != null)
+                novelFragmentMain.getActivity().runOnUiThread(() -> {
+                    novelFragmentMain.novelFragment.errorView.setVisibility(View.VISIBLE);
+                    novelFragmentMain.novelFragment.errorMessage.setText(e.getMessage());
+                    novelFragmentMain.novelFragment.errorButton.setOnClickListener(view -> new NovelLoader(novelFragmentMain, loadAll).execute(voids));
+                });
+
+
         }
         return false;
     }

@@ -67,6 +67,7 @@ public class CatalogueFragment extends Fragment {
     public ProgressBar bottomProgressBar;
 
     private boolean dontRefresh = false;
+    public boolean isQuery = false;
 
     public  ConstraintLayout errorView;
     public  TextView errorMessage;
@@ -161,6 +162,7 @@ public class CatalogueFragment extends Fragment {
         SearchView searchView = (SearchView) menu.findItem(R.id.library_search).getActionView();
         searchView.setOnQueryTextListener(new CatalogueSearchQuery(this));
         searchView.setOnCloseListener(() -> {
+            isQuery = false;
             setLibraryCards(catalogueNovelCards);
             return true;
         });

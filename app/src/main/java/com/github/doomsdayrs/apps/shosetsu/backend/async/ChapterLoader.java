@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -13,8 +12,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -75,6 +72,13 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         this.activity = voids[0];
         StaticNovel.novelPage = null;
         Log.d("ChapLoad", StaticNovel.novelURL);
+        if (novelFragment != null) {
+            if (novelFragment.getActivity() != null)
+                novelFragment.getActivity().runOnUiThread(() -> novelFragment.errorView.setVisibility(View.GONE));
+        } else if (novelFragmentChapters != null)
+            if (novelFragmentChapters.getActivity() != null)
+                novelFragmentChapters.getActivity().runOnUiThread(() -> novelFragmentChapters.novelFragment.errorView.setVisibility(View.GONE));
+
         try {
             if (StaticNovel.novelChapters == null)
                 StaticNovel.novelChapters = new ArrayList<>();
@@ -97,7 +101,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                     page++;
 
                     try {
-                        TimeUnit.MILLISECONDS.sleep(100);
+                        TimeUnit.MILLISECONDS.sleep(300);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -105,7 +109,21 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
             }
             return true;
         } catch (Exception e) {
-            // TODO exception
+            if (novelFragment != null) {
+                if (novelFragment.getActivity() != null)
+                    novelFragment.getActivity().runOnUiThread(() -> {
+                        novelFragment.errorView.setVisibility(View.VISIBLE);
+                        novelFragment.errorMessage.setText(e.getMessage());
+                        novelFragment.errorButton.setOnClickListener(view -> new ChapterLoader(novelFragment).execute(voids));
+                    });
+            } else if (novelFragmentChapters != null)
+                if (novelFragmentChapters.getActivity() != null)
+                    novelFragmentChapters.getActivity().runOnUiThread(() -> {
+                        novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
+                        novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
+                        novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> new ChapterLoader(novelFragmentChapters).execute(voids));
+                    });
+
         }
         return false;
     }

@@ -92,12 +92,13 @@ public class NovelFragmentChapters extends Fragment {
     private Context context;
     public ProgressBar progressBar;
     public SwipeRefreshLayout swipeRefreshLayout;
-
+    public NovelFragment novelFragment;
     /**
      * Constructor
      */
-    public NovelFragmentChapters() {
+    public NovelFragmentChapters(NovelFragment novelFragment) {
         setHasOptionsMenu(true);
+        this.novelFragment = novelFragment;
     }
 
 
