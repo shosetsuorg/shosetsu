@@ -1,6 +1,17 @@
 <AppUpdater>
 
     <update>
+        <latestVersion>1.1.7-alpha</latestVersion>
+        <latestVersionCode>16</latestVersionCode>
+        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <releaseNotes>
+            - HOPEFULLY you all got an update notification for this
+            - Added new parser
+            - Bug fixes and improvements
+        </releaseNotes>
+    </update>
+
+    <update>
         <latestVersion>1.1.6-alpha</latestVersion>
         <latestVersionCode>15</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
