@@ -35,7 +35,7 @@ import java.util.List;
  * Contains functional novels and their IDs
  */
 // TODO Make this full dynamic, not needing to be predefined
-// TODO Make IDs built into the formatter
+// > Make IDs built into the formatter
 public enum DefaultScrapers implements Formatter {
     NOVELFULL(new NovelFull(1)),
     BOXNOVEL(new BoxNovel(2));

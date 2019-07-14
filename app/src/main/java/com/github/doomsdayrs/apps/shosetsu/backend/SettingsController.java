@@ -144,7 +144,6 @@ public class SettingsController {
 
     /**
      * Gets y position of a bookmark
-     * TODO Add novelURL as data to search with
      *
      * @param chapterURL chapter chapterURL
      * @return y position

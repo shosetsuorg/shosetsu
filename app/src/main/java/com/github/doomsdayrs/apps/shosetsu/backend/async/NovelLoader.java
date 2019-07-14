@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -15,7 +14,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 
 /*
  * This file is part of Shosetsu.
@@ -78,6 +76,9 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         this.activity = voids[0];
         StaticNovel.novelPage = null;
         Log.d("Loading", StaticNovel.novelURL);
+        if (novelFragment != null && novelFragment.getActivity() != null)
+            novelFragment.getActivity().runOnUiThread(() -> novelFragment.errorView.setVisibility(View.GONE));
+
         try {
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
             if (!Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
@@ -86,22 +87,13 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
                 if (!Database.DatabaseChapter.inChapters(novelChapter.link))
                     Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
-
+            System.out.println(StaticNovel.novelChapters);
             StaticNovel.novelChapters.addAll(StaticNovel.novelPage.novelChapters);
 
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
-        } catch (SocketTimeoutException e) {
-            if (novelFragment != null && activity != null)
-                activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
-            else
-                activity.runOnUiThread(() -> {
-                    assert novelFragmentMain != null;
-                    Toast.makeText(novelFragmentMain.getContext(), "Timeout", Toast.LENGTH_SHORT).show();
-                });
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            //TODO Exception
         }
         return false;
     }

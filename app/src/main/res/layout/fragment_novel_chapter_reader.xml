@@ -17,13 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        layout="@layout/network_error"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="match_parent" />
+
     <ScrollView
         android:id="@+id/fragment_novel_scroll"
         android:layout_width="match_parent"
@@ -45,8 +39,6 @@
             tools:ignore="ScrollViewSize" />
     </ScrollView>
 
-
-
     <ProgressBar
         android:id="@+id/fragment_novel_chapter_view_progress"
         android:layout_width="71dp"
@@ -57,5 +49,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <include
+        layout="@layout/network_error"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

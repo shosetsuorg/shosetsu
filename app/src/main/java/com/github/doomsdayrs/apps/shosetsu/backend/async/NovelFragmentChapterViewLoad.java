@@ -3,12 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend.async;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 
 /*
  * This file is part of Shosetsu.
@@ -34,26 +30,28 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
      */
     @SuppressLint("StaticFieldLeak")
     private final
-    ProgressBar progressBar;
+    NovelFragmentChapterReader novelFragmentChapterReader;
 
     /**
      * Constructor
-     *
-     * @param progressBar progress bar to change
      */
-    public NovelFragmentChapterViewLoad(ProgressBar progressBar) {
-        this.progressBar = progressBar;
+    public NovelFragmentChapterViewLoad(NovelFragmentChapterReader novelFragmentChapterReader) {
+        this.novelFragmentChapterReader = novelFragmentChapterReader;
     }
 
     @Override
     protected String doInBackground(NovelFragmentChapterReader... novelFragmentChapterReaders) {
+        novelFragmentChapterReader.runOnUiThread(() -> novelFragmentChapterReader.errorView.setVisibility(View.GONE));
         try {
-            novelFragmentChapterReaders[0].unformattedText = novelFragmentChapterReaders[0].formatter.getNovelPassage(novelFragmentChapterReaders[0].chapterURL);
-            novelFragmentChapterReaders[0].runOnUiThread(() -> novelFragmentChapterReaders[0].setUpReader());
-        } catch (SocketTimeoutException ignored) {
-            // TODO Add error management here
-        } catch (IOException e) {
-            e.printStackTrace();
+            novelFragmentChapterReader.unformattedText = novelFragmentChapterReader.formatter.getNovelPassage(novelFragmentChapterReader.chapterURL);
+            novelFragmentChapterReader.runOnUiThread(novelFragmentChapterReader::setUpReader);
+        } catch (Exception e) {
+            novelFragmentChapterReader.runOnUiThread(() -> {
+                novelFragmentChapterReader.errorView.setVisibility(View.VISIBLE);
+                novelFragmentChapterReader.errorMessage.setText(e.getMessage());
+                novelFragmentChapterReader.errorButton.setOnClickListener(view -> new NovelFragmentChapterViewLoad(novelFragmentChapterReader).execute());
+            });
+
         }
 
         return null;
@@ -65,8 +63,8 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (progressBar != null)
-            progressBar.setVisibility(View.VISIBLE);
+        if (novelFragmentChapterReader != null)
+            novelFragmentChapterReader.progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -77,7 +75,7 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        if (progressBar != null)
-            progressBar.setVisibility(View.GONE);
+        if (novelFragmentChapterReader.progressBar != null)
+            novelFragmentChapterReader.progressBar.setVisibility(View.GONE);
     }
 }

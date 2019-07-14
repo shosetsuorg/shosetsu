@@ -71,8 +71,8 @@ public class CataloguesFragment extends Fragment {
         Log.d("OnCreateView", "CataloguesFragment");
         Statics.mainActionBar.setTitle("Catalogues");
         //TODO Conditional for turning formatter on and off
-        //TODO Conditional for languages
-        //TODO Conditional for categories, maybe
+        // > Conditional for languages
+        // > Conditional for categories, maybe
         if (cards == null) {
             cards = new ArrayList<>();
             for (Formatter formatter : DefaultScrapers.formatters) {

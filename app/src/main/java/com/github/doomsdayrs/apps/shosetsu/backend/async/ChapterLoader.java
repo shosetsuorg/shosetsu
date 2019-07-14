@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -75,6 +76,9 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         StaticNovel.novelPage = null;
         Log.d("ChapLoad", StaticNovel.novelURL);
         try {
+            if (StaticNovel.novelChapters == null)
+                StaticNovel.novelChapters = new ArrayList<>();
+
             int page = 1;
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
             if (StaticNovel.formatter.isIncrementingChapterList()) {
@@ -86,6 +90,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                         if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
                             mangaCount++;
                             System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+
                             StaticNovel.novelChapters.add(novelChapter);
                             Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
                         }
@@ -99,18 +104,8 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                 }
             }
             return true;
-        } catch (SocketTimeoutException e) {
-            if (novelFragment != null)
-                activity.runOnUiThread(() -> Toast.makeText(novelFragment.getContext(), "Timeout", Toast.LENGTH_SHORT).show());
-            else
-                activity.runOnUiThread(() -> {
-                    assert novelFragmentChapters != null;
-                    Toast.makeText(novelFragmentChapters.getContext(), "Timeout", Toast.LENGTH_SHORT).show();
-                });
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO exception
         }
         return false;
     }

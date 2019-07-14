@@ -25,7 +25,6 @@
 
 
 
-
         <androidx.gridlayout.widget.GridLayout
             android:id="@+id/gridLayout"
             android:layout_width="0dp"
@@ -43,6 +42,16 @@
                 app:layout_column="1"
                 app:layout_row="0" />
         </androidx.gridlayout.widget.GridLayout>
+
+        <include
+            layout="@layout/network_error"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/gridLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

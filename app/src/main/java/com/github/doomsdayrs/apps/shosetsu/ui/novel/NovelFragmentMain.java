@@ -47,7 +47,6 @@ import java.util.Arrays;
  * The page you see when you select a novel
  */
 public class NovelFragmentMain extends Fragment {
-    //TODO add tags to identify different data types
 
     private ImageView imageView;
     private TextView title;

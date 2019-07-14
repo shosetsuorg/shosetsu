@@ -9,11 +9,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,7 +66,11 @@ public class CatalogueFragment extends Fragment {
     public CatalogueNovelCardsAdapter catalogueNovelCardsAdapter;
     public ProgressBar bottomProgressBar;
 
-    public static boolean dontRefresh = false;
+    private boolean dontRefresh = false;
+
+    public  ConstraintLayout errorView;
+    public  TextView errorMessage;
+    public  Button errorButton;
 
     /**
      * Constructor
@@ -114,16 +121,22 @@ public class CatalogueFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "CatalogueFragment");
+        View view = inflater.inflate(R.layout.fragment_catalogue, container, false);
+        {
+            library_view = view.findViewById(R.id.fragment_catalogue_recycler);
+            swipeRefreshLayout = view.findViewById(R.id.fragment_catalogue_refresh);
+            bottomProgressBar = view.findViewById(R.id.fragment_catalogue_progress_bottom);
+            errorView = view.findViewById(R.id.network_error);
+            errorMessage = view.findViewById(R.id.error_message);
+            errorButton = view.findViewById(R.id.error_button);
+        }
+
         if (savedInstanceState != null) {
             catalogueNovelCards = (ArrayList<CatalogueNovelCard>) savedInstanceState.getSerializable("list");
             formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter"));
         }
-        View view = inflater.inflate(R.layout.fragment_catalogue, container, false);
         Statics.mainActionBar.setTitle(formatter.getName());
-        library_view = view.findViewById(R.id.fragment_catalogue_recycler);
-        swipeRefreshLayout = view.findViewById(R.id.fragment_catalogue_refresh);
         swipeRefreshLayout.setOnRefreshListener(new CatalogueRefresh(this));
-        bottomProgressBar = view.findViewById(R.id.fragment_catalogue_progress_bottom);
         this.context = Objects.requireNonNull(container).getContext();
 
 

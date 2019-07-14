@@ -23,8 +23,6 @@ import android.database.sqlite.SQLiteOpenHelper;
  *
  * @author github.com/doomsdayrs
  */
-//TODO
-// > Drop MAX_PAGE from table 'library'
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
@@ -111,7 +109,6 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param oldVersion previous version ID
      * @param newVersion new version ID
      */
-    //TODO Actually save data between db versions
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 4) {

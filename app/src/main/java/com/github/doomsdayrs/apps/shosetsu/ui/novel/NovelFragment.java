@@ -5,10 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
@@ -53,6 +56,10 @@ public class NovelFragment extends Fragment {
     private TabLayout tabLayout;
     public ViewPager viewPager;
 
+    public ConstraintLayout errorView;
+    public TextView errorMessage;
+    public Button errorButton;
+
 
     public NovelFragment() {
         setHasOptionsMenu(true);
@@ -64,9 +71,14 @@ public class NovelFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "NovelFragment");
         View view = inflater.inflate(R.layout.fragment_novel, container, false);
-        progressBar = view.findViewById(R.id.fragment_novel_progress);
-        viewPager = view.findViewById(R.id.fragment_novel_viewpager);
-        tabLayout = view.findViewById(R.id.fragment_novel_tabLayout);
+        {
+            progressBar = view.findViewById(R.id.fragment_novel_progress);
+            viewPager = view.findViewById(R.id.fragment_novel_viewpager);
+            tabLayout = view.findViewById(R.id.fragment_novel_tabLayout);
+            errorView = view.findViewById(R.id.network_error);
+            errorMessage = view.findViewById(R.id.error_message);
+            errorButton = view.findViewById(R.id.error_button);
+        }
         novelFragmentMain = new NovelFragmentMain();
         novelFragmentChapters = new NovelFragmentChapters();
         //TODO FINISH TRACKING

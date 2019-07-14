@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -52,7 +53,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
     private String title;
     private ScrollView scrollView;
     public TextView textView;
-    private ProgressBar progressBar;
+    public ProgressBar progressBar;
     public Formatter formatter;
     public String chapterURL;
     private String novelURL;
@@ -82,8 +83,9 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
     // ERROR SCREEN
     //TODO Handle ERRORs on loading, EVERYWHERE
-    private TextView errorMessage;
-    private Button errorButton;
+    public ConstraintLayout errorView;
+    public TextView errorMessage;
+    public Button errorButton;
 
     /**
      * Save data of view before destroyed
@@ -362,16 +364,20 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
         }
         setContentView(R.layout.fragment_novel_chapter_reader);
         {
+            errorView = findViewById(R.id.network_error);
+            errorMessage = findViewById(R.id.error_message);
+            errorButton = findViewById(R.id.error_button);
             progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);
+            scrollView = findViewById(R.id.fragment_novel_scroll);
+        }
+
+        {
             novelURL = getIntent().getStringExtra("novelURL");
             title = getIntent().getStringExtra("title");
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
-            scrollView = findViewById(R.id.fragment_novel_scroll);
-
-
             /*
              * Chooses the way the way to save the scroll position
              * the before marshmallow version is untested
@@ -381,7 +387,6 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             } else {
                 scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
             }
-
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
             textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
         }
@@ -403,7 +408,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
         } else if (text == null)
             if (chapterURL != null) {
-                new NovelFragmentChapterViewLoad(progressBar).execute(this);
+                new NovelFragmentChapterViewLoad(this).execute();
             }
 
         if (getSupportActionBar() != null)

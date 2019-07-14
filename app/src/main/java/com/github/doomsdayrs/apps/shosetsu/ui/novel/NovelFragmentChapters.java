@@ -55,7 +55,6 @@ import java.util.Objects;
 /**
  * Displays the chapters the novel contains
  * TODO Check filesystem if the chapter is saved, even if not in DB.
- * TODO Selection mechanic
  */
 public class NovelFragmentChapters extends Fragment {
     public static ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
@@ -199,9 +198,6 @@ public class NovelFragmentChapters extends Fragment {
     public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
         this.menu = menu;
         menu.clear();
-        //TODO Delete all, Delete Selected titles
-        //TODO Fix menu items not being full actions
-        //TODO give menu items listeners
 
         if (selectedChapters.size() <= 0) {
             inflater.inflate(R.menu.toolbar_chapters, menu);

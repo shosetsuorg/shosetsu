@@ -51,7 +51,6 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
-//TODO Remove MAX_Page
 public class Database {
     /**
      * SQLITEDatabase

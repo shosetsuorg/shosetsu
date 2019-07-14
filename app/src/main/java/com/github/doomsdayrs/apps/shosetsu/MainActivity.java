@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public NavigationView navigationView;
 
     public final LibraryFragment libraryFragment = new LibraryFragment();
-    public final CataloguesFragment cataloguesFragment = new CataloguesFragment();
+
     public final SettingsFragment settingsFragment = new SettingsFragment();
     public final DownloadsFragment downloadsFragment = new DownloadsFragment();
 
@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
       //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         Log.d("Updater", "Start");
-        //TODO Figure out this
         AppUpdater appUpdater = new AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.XML)
                 .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
