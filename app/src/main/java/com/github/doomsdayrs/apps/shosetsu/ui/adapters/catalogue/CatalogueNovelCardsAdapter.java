@@ -1,10 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue;
 
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -12,11 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.List;
 
 /*
@@ -74,7 +78,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         return recycleCards.size();
     }
 
-    static class NovelCardsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class NovelCardsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         FragmentManager fragmentManager;
         Formatter formatter;
         final ImageView library_card_image;
@@ -86,6 +90,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
             library_card_image = itemView.findViewById(R.id.novel_item_image);
             library_card_title = itemView.findViewById(R.id.textView);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -99,5 +104,39 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
                     .replace(R.id.fragment_container, novelFragment)
                     .commit();
         }
+
+        @Override
+        public boolean onLongClick(View view) {
+            new add(this).execute(view);
+            return true;
+        }
+
+        static class add extends AsyncTask<View, Void, Void> {
+            NovelCardsViewHolder novelCardsViewHolder;
+
+            public add(NovelCardsViewHolder novelCardsViewHolder) {
+                this.novelCardsViewHolder = novelCardsViewHolder;
+            }
+
+            @Override
+            protected Void doInBackground(View... views) {
+                try {
+                    if (!Database.DatabaseLibrary.inLibrary(novelCardsViewHolder.url)) {
+                        Database.DatabaseLibrary.addToLibrary(novelCardsViewHolder.formatter.getID(), novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url), novelCardsViewHolder.url, 0, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
+                        if (views[0] != null)
+                            views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());
+                    } else {
+                        if (views[0] != null)
+                            views[0].post(() -> Toast.makeText(views[0].getContext(), "Already in the library", Toast.LENGTH_SHORT).show());
+                    }
+                } catch (IOException e) {
+                    if (views[0] != null)
+                        views[0].post(() -> Toast.makeText(views[0].getContext(), "Failed to add to library: " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_LONG).show());
+                }
+                return null;
+            }
+        }
+
     }
+
 }
