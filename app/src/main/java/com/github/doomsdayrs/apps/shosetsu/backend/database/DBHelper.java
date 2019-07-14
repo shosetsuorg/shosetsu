@@ -23,6 +23,12 @@ import android.database.sqlite.SQLiteOpenHelper;
  *
  * @author github.com/doomsdayrs
  */
+//TODO
+// > Drop MAX_PAGE from table 'library'
+// > Rename table 'library' > 'novels'
+// > Add integer 'inLibrary'  to table 'novels'
+// > Nuke version to 10, everything below 5 has everything dropped.
+// > Cache every novel opened into this DB
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
