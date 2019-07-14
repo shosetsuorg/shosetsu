@@ -66,9 +66,12 @@ public class NovelFragmentMain extends Fragment {
     /**
      * Constructor
      */
-    public NovelFragmentMain(NovelFragment novelFragment) {
-        this.novelFragment = novelFragment;
+    public NovelFragmentMain() {
         setHasOptionsMenu(true);
+    }
+
+    public void setNovelFragment(NovelFragment novelFragment) {
+        this.novelFragment = novelFragment;
     }
 
     /**

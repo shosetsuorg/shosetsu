@@ -96,11 +96,13 @@ public class NovelFragmentChapters extends Fragment {
     /**
      * Constructor
      */
-    public NovelFragmentChapters(NovelFragment novelFragment) {
+    public NovelFragmentChapters() {
         setHasOptionsMenu(true);
-        this.novelFragment = novelFragment;
     }
 
+    public void setNovelFragment(NovelFragment novelFragment) {
+        this.novelFragment = novelFragment;
+    }
 
     @Override
     public void onResume() {

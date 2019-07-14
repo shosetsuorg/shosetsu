@@ -84,7 +84,6 @@ public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.O
         NovelFragment novelFragment = new NovelFragment();
         StaticNovel.formatter = formatter;
         StaticNovel.novelURL = novelCard.novelURL;
-        novelFragment.fragmentManager = libraryFragment.getFragmentManager();
         assert libraryFragment.getFragmentManager() != null;
         libraryFragment.getFragmentManager().beginTransaction()
                 .addToBackStack("tag")

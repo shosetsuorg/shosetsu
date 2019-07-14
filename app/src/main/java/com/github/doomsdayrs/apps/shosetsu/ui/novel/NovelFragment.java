@@ -47,7 +47,7 @@ import java.util.List;
  */
 public class NovelFragment extends Fragment {
 
-    public FragmentManager fragmentManager = null;
+
 
     public NovelFragmentMain novelFragmentMain;
     public NovelFragmentChapters novelFragmentChapters;
@@ -79,8 +79,10 @@ public class NovelFragment extends Fragment {
             errorMessage = view.findViewById(R.id.error_message);
             errorButton = view.findViewById(R.id.error_button);
         }
-        novelFragmentMain = new NovelFragmentMain(this);
-        novelFragmentChapters = new NovelFragmentChapters(this);
+        novelFragmentMain = new NovelFragmentMain();
+        novelFragmentMain.setNovelFragment(this);
+        novelFragmentChapters = new NovelFragmentChapters();
+        novelFragmentChapters.setNovelFragment(this);
         //TODO FINISH TRACKING
         //boolean track = SettingsController.isTrackingEnabled();
 
