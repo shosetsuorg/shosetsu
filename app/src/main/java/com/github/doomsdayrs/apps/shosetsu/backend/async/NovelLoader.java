@@ -14,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /*
  * This file is part of Shosetsu.
@@ -94,11 +95,13 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
                 if (!Database.DatabaseChapter.inChapters(novelChapter.link))
                     Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
             System.out.println(StaticNovel.novelChapters);
+            if (StaticNovel.novelChapters == null)
+                StaticNovel.novelChapters = new ArrayList<>();
             StaticNovel.novelChapters.addAll(StaticNovel.novelPage.novelChapters);
 
             Log.d("Loaded Novel:", StaticNovel.novelPage.title);
             return true;
-        } catch (Exception e) {
+        } catch (IOException e) {
             if (loadAll) {
                 if (novelFragment != null && novelFragment.getActivity() != null)
                     novelFragment.getActivity().runOnUiThread(() -> {

@@ -12,6 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -108,7 +109,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                 }
             }
             return true;
-        } catch (Exception e) {
+        } catch (IOException e) {
             if (novelFragment != null) {
                 if (novelFragment.getActivity() != null)
                     novelFragment.getActivity().runOnUiThread(() -> {

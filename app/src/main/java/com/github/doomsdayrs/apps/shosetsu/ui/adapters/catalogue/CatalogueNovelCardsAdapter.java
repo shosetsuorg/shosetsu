@@ -67,7 +67,9 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         if (recycleCard != null) {
             novelCardsViewHolder.url = recycleCard.novelURL;
             novelCardsViewHolder.library_card_title.setText(recycleCard.title);
-            Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.library_card_image);
+            if (recycleCard.imageURL != null)
+                Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.library_card_image);
+            else novelCardsViewHolder.library_card_image.setVisibility(View.GONE);
         }
 
     }
@@ -142,5 +144,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         }
 
     }
+
+
 
 }

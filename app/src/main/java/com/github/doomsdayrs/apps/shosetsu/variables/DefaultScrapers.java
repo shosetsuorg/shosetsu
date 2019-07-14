@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables;
 
 import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.box_novel.BoxNovel;
 import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.novel_full.NovelFull;
+import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.syosetu.Syosetu;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelGenre;
@@ -38,13 +39,15 @@ import java.util.List;
 // > Make IDs built into the formatter
 public enum DefaultScrapers implements Formatter {
     NOVELFULL(new NovelFull(1)),
-    BOXNOVEL(new BoxNovel(2));
+    BOXNOVEL(new BoxNovel(2)),
+    SYOSETU(new Syosetu(3));
 
     public static final ArrayList<Formatter> formatters = new ArrayList<>();
 
     static {
         formatters.add(NOVELFULL);
         formatters.add(BOXNOVEL);
+        formatters.add(SYOSETU);
     }
 
     private final Formatter formatter;

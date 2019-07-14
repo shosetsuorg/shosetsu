@@ -9,6 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueFragmentHitBott
 import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
+import java.io.IOException;
 import java.util.List;
 
 /*
@@ -94,12 +95,16 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
                 });
 
             return true;
-        } catch (Exception e) {
+        } catch (IOException e) {
             if (catalogueFragment.getActivity() != null)
                 catalogueFragment.getActivity().runOnUiThread(() -> {
                     catalogueFragment.errorView.setVisibility(View.VISIBLE);
                         catalogueFragment.errorMessage.setText(e.getMessage());
-                    catalogueFragment.errorButton.setOnClickListener(view -> execute(integers[0]));
+                    if (catalogueFragmentHitBottom == null)
+                        catalogueFragment.errorButton.setOnClickListener(view -> new CataloguePageLoader(catalogueFragment).execute(integers));
+                    else
+                        catalogueFragment.errorButton.setOnClickListener(view -> new CataloguePageLoader(catalogueFragment, catalogueFragmentHitBottom).execute(integers));
+
                 });
 
         }
@@ -133,8 +138,11 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
      */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if (catalogueFragmentHitBottom != null)
+        if (catalogueFragmentHitBottom != null) {
             catalogueFragment.bottomProgressBar.setVisibility(View.GONE);
+            if (catalogueFragment.catalogueNovelCards.size() > 0)
+                catalogueFragment.empty.setVisibility(View.GONE);
+        }
         else catalogueFragment.swipeRefreshLayout.setRefreshing(false);
     }
 }

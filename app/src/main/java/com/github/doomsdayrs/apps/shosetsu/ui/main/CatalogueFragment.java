@@ -61,6 +61,7 @@ public class CatalogueFragment extends Fragment {
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView library_view;
     public int currentMaxPage = 1;
+    public boolean isInSearch = false;
     private Context context;
 
     public CatalogueNovelCardsAdapter catalogueNovelCardsAdapter;
@@ -72,7 +73,7 @@ public class CatalogueFragment extends Fragment {
     public  ConstraintLayout errorView;
     public  TextView errorMessage;
     public  Button errorButton;
-
+    public TextView empty;
     /**
      * Constructor
      */
@@ -130,6 +131,7 @@ public class CatalogueFragment extends Fragment {
             errorView = view.findViewById(R.id.network_error);
             errorMessage = view.findViewById(R.id.error_message);
             errorButton = view.findViewById(R.id.error_button);
+            empty = view.findViewById(R.id.fragment_catalogue_empty);
         }
 
         if (savedInstanceState != null) {
@@ -163,6 +165,7 @@ public class CatalogueFragment extends Fragment {
         searchView.setOnQueryTextListener(new CatalogueSearchQuery(this));
         searchView.setOnCloseListener(() -> {
             isQuery = false;
+            isInSearch = false;
             setLibraryCards(catalogueNovelCards);
             return true;
         });

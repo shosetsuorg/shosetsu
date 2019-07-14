@@ -39,6 +39,7 @@ public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
     @Override
     public boolean onQueryTextSubmit(String query) {
         catalogueFragment.isQuery = false;
+        catalogueFragment.isInSearch = true;
         try {
             ArrayList<CatalogueNovelCard> searchResults = new CatalogueQuerySearch(catalogueFragment).execute(query).get();
             catalogueFragment.setLibraryCards(searchResults);
