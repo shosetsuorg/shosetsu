@@ -18,19 +18,18 @@ package com.github.doomsdayrs.apps.shosetsu.variables;
  * @author github.com/doomsdayrs
  */
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.joda.time.DateTime;
 
 public class Update {
     public final String novelURL;
     public final String chapterURL;
     public final long timeMS;
-    public final String timeText;
+    public final DateTime dateTime;
 
     public Update(String novelURL, String chapterURL, long timeMS) {
         this.novelURL = novelURL;
         this.chapterURL = chapterURL;
         this.timeMS = timeMS;
-        timeText = new SimpleDateFormat("MMM dd,yyyy HH:mm").format(new Date(timeMS));
+        dateTime = new DateTime(timeMS);
     }
 }

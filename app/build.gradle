@@ -59,9 +59,11 @@ dependencies {
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'org.jetbrains:annotations:17.0.0'
+
     //TODO GITHUB sign in to save backup data to cloud
     implementation 'com.github.kohsuke:github-api:github-api-1.95'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'us.feras.mdv:markdownview:1.1.0'
+    implementation 'joda-time:joda-time:2.10.3'
    // implementation 'com.squareup.duktape:duktape-android:1.2.0'
 }

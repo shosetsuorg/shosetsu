@@ -82,7 +82,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     if (SettingsController.toggleBookmarkChapter(novelChapter.link))
                         library_card_title.setTextColor(itemView.getResources().getColor(R.color.bookmarked));
                     else
-                        library_card_title.setTextColor(itemView.getResources().getColor(R.color.black));
+                        library_card_title.setTextColor(itemView.getResources().getColor(R.color.design_default_color_surface));
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
                     return true;
                 case R.id.popup_chapter_menu_download:
