@@ -77,6 +77,11 @@ public class DBHelper extends SQLiteOpenHelper {
             // TODO put status as a column here
             Database.Columns.PAUSED + " integer not null)";
 
+    private static final String updateCreate = "create TABLE if not exists " + Database.Tables.UPDATES + "(" +
+            Database.Columns.NOVEL_URL + " text not null," +
+            Database.Columns.CHAPTER_URL + " text not null," +
+            Database.Columns.DATE+" text not null)";
+
     //TODO Update table for all the updates
 
 
@@ -100,6 +105,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(libraryCreate);
         db.execSQL(downloadsCreate);
         db.execSQL(chaptersCreate);
+        db.execSQL(updateCreate);
     }
 
     /**
@@ -248,6 +254,9 @@ public class DBHelper extends SQLiteOpenHelper {
             }
             cursor.close();
             db.execSQL("drop table if exists libraryNext");
+        }
+        if (oldVersion < 7) {
+            db.execSQL(updateCreate);
         }
     }
 }

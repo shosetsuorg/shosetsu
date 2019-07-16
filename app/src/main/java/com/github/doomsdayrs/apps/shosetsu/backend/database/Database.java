@@ -63,13 +63,15 @@ public class Database {
      */
     public enum Tables {
         NOVELS("novels"),
-        BOOKMARKS("bookmarks"),
+        UPDATES("updates"),
         DOWNLOADS("downloads"),
         CHAPTERS("chapters");
+
         final String TABLE;
 
         Tables(String table) {
             this.TABLE = table;
+            System.currentTimeMillis();
         }
 
         @NotNull
@@ -97,7 +99,9 @@ public class Database {
         NOVEL_NAME("novelName"),
         CHAPTER_NAME("chapterName"),
         PAUSED("paused"),
-        STATUS("status");
+        STATUS("status"),
+        //STORED AS MS
+        DATE("date");
         final String COLUMN;
 
         Columns(String column) {
