@@ -68,7 +68,7 @@ public class Database {
      */
     public enum Tables {
         NOVELS("novels"),
-        UPDATES("updates"),
+        UPDATES("chapterUpdates"),
         DOWNLOADS("downloads"),
         CHAPTERS("chapters");
 

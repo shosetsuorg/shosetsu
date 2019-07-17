@@ -103,6 +103,9 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
 
                             StaticNovel.novelChapters.add(novelChapter);
                             Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+                            if(novelFragmentChapters!=null){
+
+                            }
                         }
                     page++;
 

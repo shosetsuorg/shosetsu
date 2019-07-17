@@ -87,7 +87,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Database.Columns.CHAPTER_URL + " text not null," +
             Database.Columns.DATE+" text not null)";
 
-    //TODO Update table for all the updates
+    //TODO ChapterUpdate table for all the chapterUpdates
 
 
     /**

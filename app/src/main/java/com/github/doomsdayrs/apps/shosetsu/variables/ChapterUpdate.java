@@ -25,13 +25,13 @@ package com.github.doomsdayrs.apps.shosetsu.variables;
 
 import org.joda.time.DateTime;
 
-public class Update {
+public class ChapterUpdate {
     public final String novelURL;
     public final String chapterURL;
     public final long timeMS;
     public final DateTime dateTime;
 
-    public Update(String novelURL, String chapterURL, long timeMS) {
+    public ChapterUpdate(String novelURL, String chapterURL, long timeMS) {
         this.novelURL = novelURL;
         this.chapterURL = chapterURL;
         this.timeMS = timeMS;

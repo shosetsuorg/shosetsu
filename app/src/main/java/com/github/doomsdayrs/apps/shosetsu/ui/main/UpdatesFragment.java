@@ -23,10 +23,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main;
  * @author github.com/doomsdayrs
  */
 
-import com.github.doomsdayrs.apps.shosetsu.variables.Update;
+import com.github.doomsdayrs.apps.shosetsu.variables.ChapterUpdate;
 
 import java.util.ArrayList;
 
 public class UpdatesFragment {
-    public static ArrayList<Update> updates = new ArrayList<>();
+    public static ArrayList<ChapterUpdate> chapterUpdates = new ArrayList<>();
 }

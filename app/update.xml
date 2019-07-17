@@ -1,14 +1,14 @@
 <AppUpdater>
 
-    <update>
+    <chapterUpdate>
         <latestVersion>1.1.8-alpha</latestVersion>
         <latestVersionCode>17</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
         <releaseNotes>
-            - HOPEFULLY you all got an update notification for this
+            - HOPEFULLY you all got an chapterUpdate notification for this
             - Added new parser
             - Bug fixes and improvements
         </releaseNotes>
-    </update>
+    </chapterUpdate>
 
 </AppUpdater>

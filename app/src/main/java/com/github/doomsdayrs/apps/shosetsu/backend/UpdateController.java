@@ -1,8 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.async;
-
-import android.os.AsyncTask;
-
-/*
+package com.github.doomsdayrs.apps.shosetsu.backend;/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,19 +16,16 @@ import android.os.AsyncTask;
  * specific language governing permissions and limitations
  * under the License.
  * ====================================================================
- * Shosetsu
- * 02 / 07 / 2019
+ * shosetsu
+ * 17 / 07 / 2019
  *
  * @author github.com/doomsdayrs
  */
 
-/**
- * Updates the library on certain intervals
- */
-public class UpdateLibrary extends AsyncTask<Void, Void, Void> {
-    @Override
-    protected Void doInBackground(Void... voids) {
-        //TODO ChapterUpdate library async task
-        return null;
+import com.github.doomsdayrs.apps.shosetsu.variables.ChapterUpdate;
+
+public class UpdateController {
+    public static void addUpdate(ChapterUpdate chapterUpdate){
+
     }
 }
