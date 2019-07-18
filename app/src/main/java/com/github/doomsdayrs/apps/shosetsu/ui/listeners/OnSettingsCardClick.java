@@ -30,7 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.AdvancedSettings;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.BackupSettings;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.CreditsSettings;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.InfoSettings;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.DownloadSettings;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.ViewSettings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
@@ -52,10 +52,9 @@ public class OnSettingsCardClick implements View.OnClickListener {
                 fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new ViewSettings()).commit();
             }
             break;
-            case CREDITS: {
-                //  Toast.makeText(v.getContext(), "Credits", Toast.LENGTH_SHORT).show();
-                fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new CreditsSettings()).commit();
-
+            case INFO: {
+                //  Toast.makeText(v.getContext(), "Info", Toast.LENGTH_SHORT).show();
+                fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, new InfoSettings()).commit();
             }
             break;
             case ADVANCED: {

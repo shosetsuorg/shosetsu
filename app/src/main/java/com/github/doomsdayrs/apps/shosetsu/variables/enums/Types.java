@@ -33,7 +33,7 @@ public enum Types {
     DOWNLOAD("Download"),
     VIEW("View"),
     ADVANCED("Advanced"),
-    CREDITS("Credits"),
+    INFO("Info"),
     BACKUP("Backup");
 
     /**

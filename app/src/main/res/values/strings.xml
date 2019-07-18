@@ -54,8 +54,17 @@
     <string name="indent_size">Indent Size</string>
     <string name="download_speed">Download speed</string>
     <string name="settings_download_speed_hint">Sets the wait limit between novel downloading</string>
-    <string name="author_tag">Author:</string>
-    <string name="author">Doomsdayrs</string>
+
+    <!-- Settings Info -->
+    <string name="version">Version</string>
+    <string name="report_bug">Report Bug</string>
+    <string name="report_bug_link">https://github.com/Doomsdayrs/shosetsu/issues</string>
+    <string name="author">Author</string>
+    <string name="author_name">Doomsdayrs</string>
+    <string name="author_github">https://github.com/Doomsdayrs</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="license">License</string>
+
     <string name="theme">Theme:</string>
     <string name="select_between">Select between</string>
     <string name="selection_options">Selection options</string>
