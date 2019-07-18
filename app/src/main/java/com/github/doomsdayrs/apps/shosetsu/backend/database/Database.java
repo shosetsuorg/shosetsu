@@ -68,7 +68,6 @@ public class Database {
      */
     public enum Tables {
         NOVELS("novels"),
-        UPDATES("chapterUpdates"),
         DOWNLOADS("downloads"),
         CHAPTERS("chapters");
 
@@ -104,9 +103,7 @@ public class Database {
         NOVEL_NAME("novelName"),
         CHAPTER_NAME("chapterName"),
         PAUSED("paused"),
-        STATUS("status"),
-        //STORED AS MS
-        DATE("date");
+        STATUS("status");
         final String COLUMN;
 
         Columns(String column) {

@@ -50,7 +50,7 @@ public class SettingsFragment extends Fragment {
         cards.add(new SettingsCard(Types.DOWNLOAD));
         cards.add(new SettingsCard(Types.VIEW));
         cards.add(new SettingsCard(Types.ADVANCED));
-        cards.add(new SettingsCard(Types.CREDITS));
+        cards.add(new SettingsCard(Types.INFO));
         cards.add(new SettingsCard(Types.BACKUP));
     }
 
