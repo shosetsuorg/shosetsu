@@ -1,4 +1,3 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,29 +17,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
  * under the License.
  * ====================================================================
  * Shosetsu
- * 13 / 07 / 2019
+ * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.github.doomsdayrs.apps.shosetsu.R;
-
-public class CreditsSettings extends Fragment {
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreateView", "ViewSettings");
-        return inflater.inflate(R.layout.settings_credits, container, false);
-    }
-}
