@@ -58,8 +58,10 @@
     <!-- Settings Info -->
     <string name="version">Version</string>
     <string name="report_bug">Report Bug</string>
+    <string name="report_bug_link">https://github.com/Doomsdayrs/shosetsu/issues</string>
     <string name="author">Author</string>
     <string name="author_name">Doomsdayrs</string>
+    <string name="author_github">https://github.com/Doomsdayrs</string>
     <string name="disclaimer">Disclaimer</string>
     <string name="license">License</string>
 

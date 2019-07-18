@@ -23,6 +23,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
  * @author github.com/doomsdayrs
  */
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,23 +35,30 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig;
 import com.github.doomsdayrs.apps.shosetsu.R;
 
 public class InfoSettings extends Fragment {
 
     private void onClickAppVer(View v){
-        // TODO: Check for update
+         // TODO: Add the app version number after consultation
         Toast.makeText(v.getContext(), "AppVer", Toast.LENGTH_SHORT).show();
     }
 
     private void onClickReportBug(View v){
         // TODO: Display the link after consultation
         Toast.makeText(v.getContext(), "ReportBug", Toast.LENGTH_SHORT).show();
+        String bugReportLink = getString(R.string.report_bug_link);
+        Intent bugReportingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(bugReportLink));
+        startActivity(bugReportingIntent);
     }
 
     private void onClickAuthor(View v){
         // TODO: Add link to github
         Toast.makeText(v.getContext(), "Author", Toast.LENGTH_SHORT).show();
+        String authorGitHubLink = getString(R.string.author_github);
+        Intent authorGitHubIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorGitHubLink));
+        startActivity(authorGitHubIntent);
     }
 
     private void onClickDisclaimer(View v){
@@ -71,12 +80,13 @@ public class InfoSettings extends Fragment {
         // Setup App version
         SettingsItem appVerItem = new SettingsItem(settingsInfoView.findViewById(R.id.settings_info_app_version));
         appVerItem.setTitle(R.string.version);
+        appVerItem.setDesc(BuildConfig.VERSION_NAME);
         appVerItem.setOnClickListener(this::onClickAppVer);
-        // TODO: Add the app version number after consultation
 
         // Setup Report Bug
         SettingsItem reportBugItem = new SettingsItem(settingsInfoView.findViewById(R.id.settings_info_report_bug));
         reportBugItem.setTitle(R.string.report_bug);
+        reportBugItem.setDesc(R.string.report_bug_link);
         reportBugItem.setOnClickListener(this::onClickReportBug);
 
         // Setup Author
