@@ -8,7 +8,11 @@
         <item
             android:id="@+id/nav_library"
             android:icon="@drawable/ic_collections_bookmark"
-            android:title="@string/library" />
+            android:title="@string/my_library" />
+        <item
+            android:id="@+id/nav_updater"
+            android:icon="@drawable/ic_system_update_alt_black_24dp"
+            android:title="@string/library_updates" />
         <item
             android:id="@+id/nav_catalogue"
             android:icon="@drawable/ic_view_module"
