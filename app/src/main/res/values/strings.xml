@@ -20,9 +20,9 @@
     <string name="reader_night_mode">Night mode</string>
     <string name="on">On</string>
     <string name="off">Off</string>
-    <string name="text_size">Text Size</string>
-    <string name="spacing">Paragraph Spacing</string>
-    <string name="indent_size">Indent Size</string>
+    <string name="text_size">Text size</string>
+    <string name="spacing">Paragraph spacing</string>
+    <string name="indent_size">Paragraph indent</string>
 
     <string name="novel_title">Novel Title</string>
     <string name="novel_author">Novel Author(s)</string>
@@ -61,7 +61,7 @@
 
     <!-- Settings Info -->
     <string name="version">Version</string>
-    <string name="report_bug">Report Bug</string>
+    <string name="report_bug">Report bug</string>
     <string name="report_bug_link">https://github.com/Doomsdayrs/shosetsu/issues</string>
     <string name="author">Author</string>
     <string name="author_name">Doomsdayrs</string>
