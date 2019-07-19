@@ -10,6 +10,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/updater_now"
+        android:icon="@drawable/ic_refresh_black_24dp"
+        android:title="@string/update_now"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/source_migrate"
         android:title="@string/migrate_sources"
         app:showAsAction="never"/>

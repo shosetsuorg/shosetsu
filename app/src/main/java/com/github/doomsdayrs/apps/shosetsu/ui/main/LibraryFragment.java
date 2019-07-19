@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -143,6 +142,10 @@ public class LibraryFragment extends Fragment {
                     return false;
                 });
             }
+            menu.findItem(R.id.updater_now).setOnMenuItemClickListener(menuItem -> {
+                Toast.makeText(getContext(), "In the future this will start a checking of each novel in this library", Toast.LENGTH_SHORT).show();
+                return true;
+            });
             menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
                 Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
                 return true;
