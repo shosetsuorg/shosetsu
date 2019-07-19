@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +46,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Migrate to using PreferenceScreen and PreferenceGroup.
 public class ViewSettings extends Fragment {
     static final List<String> textSizes = new ArrayList<>();
     static final List<String> paragraphSpaces = new ArrayList<>();
@@ -66,13 +68,13 @@ public class ViewSettings extends Fragment {
         indentSizes.add("Large");
     }
 
-    CheckBox nightMode;
     Spinner paragraphSpacing;
     Spinner textSize;
     Spinner indentSize;
 
 
     private void onClickNIghtMode(View v){
+        SettingsItem nightMOdeItem = new SettingsItem(v);
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle(R.string.reader_night_mode);
         String[] states = {getString(R.string.on), getString(R.string.off)};
@@ -81,7 +83,10 @@ public class ViewSettings extends Fragment {
                     if (i == 0) SettingsController.setNightNode();
                     else SettingsController.unsetNightMode();
 
-                    v.invalidate();
+                    int nightModeStatus = SettingsController.isReaderNightMode()?
+                            R.string.on : R.string.off;
+                    nightMOdeItem.setDesc(nightModeStatus);
+                    nightMOdeItem.invalidate();
                 }
         );
         builder.show();
@@ -128,13 +133,10 @@ public class ViewSettings extends Fragment {
         paraIndentItem.setTitle(R.string.indent_size);
         // TODO: Get current Indent size
 
-        nightMode = settingsReaderView.findViewById(R.id.nightMode_checkbox);
         paragraphSpacing = settingsReaderView.findViewById(R.id.reader_paragraphSpacing);
         textSize = settingsReaderView.findViewById(R.id.reader_textSize);
         indentSize = settingsReaderView.findViewById(R.id.reader_indentSize);
 
-        nightMode.setChecked(SettingsController.isReaderNightMode());
-        nightMode.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsController.swapReaderColor());
 
         if (getContext() != null) {
             {
