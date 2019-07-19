@@ -20,21 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp">
-        <CheckBox
-            android:id="@+id/nightMode_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:checked="false"
-            android:padding="10dp"
-            android:text="@string/reader_night_mode"
-            android:textSize="20sp" />
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
