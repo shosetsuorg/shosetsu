@@ -26,6 +26,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -34,6 +35,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -69,20 +71,69 @@ public class ViewSettings extends Fragment {
     Spinner textSize;
     Spinner indentSize;
 
-    public ViewSettings() {
+
+    private void onClickNIghtMode(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle(R.string.reader_night_mode);
+        String[] states = {getString(R.string.on), getString(R.string.off)};
+        builder.setItems(states,
+                (dialogInterface, i) -> {
+                    if (i == 0) SettingsController.setNightNode();
+                    else SettingsController.unsetNightMode();
+
+                    v.invalidate();
+                }
+        );
+        builder.show();
+    }
+
+    private void onClickTextSize(View v){
+
+    }
+
+    private void onClickParaSpacing(View v){
+
+    }
+
+    private void onClickParaIndent(View v){
+
     }
 
     @Nullable
     @Override
-    public android.view.View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "ViewSettings");
-        android.view.View view = inflater.inflate(R.layout.settings_view, container, false);
-        nightMode = view.findViewById(R.id.reader_nightMode_checkbox);
-        paragraphSpacing = view.findViewById(R.id.reader_paragraphSpacing);
-        textSize = view.findViewById(R.id.reader_textSize);
-        indentSize = view.findViewById(R.id.reader_indentSize);
+        View settingsReaderView = inflater.inflate(R.layout.settings_view, container, false);
 
-        nightMode.setChecked(!SettingsController.isReaderLightMode());
+        // Setup Night Mode
+        SettingsItem nightModeItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_night_mode));
+        nightModeItem.setTitle(R.string.reader_night_mode);
+        int nightModeStatus = SettingsController.isReaderNightMode()?
+                R.string.on : R.string.off;
+        nightModeItem.setDesc(nightModeStatus);
+        nightModeItem.setOnClickListener(this::onClickNIghtMode);
+
+        // Setup Text size
+        SettingsItem textSizeItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_text_size));
+        textSizeItem.setTitle(R.string.text_size);
+        // TODO: Get current Text size
+
+        // Setup Paragraph Spacing
+        SettingsItem paraSpacingItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_para_spacing));
+        paraSpacingItem.setTitle(R.string.spacing);
+        // TODO: Get current Paragraph spacing
+
+        // Setup Indent Size
+        SettingsItem paraIndentItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_para_indent));
+        paraIndentItem.setTitle(R.string.indent_size);
+        // TODO: Get current Indent size
+
+        nightMode = settingsReaderView.findViewById(R.id.nightMode_checkbox);
+        paragraphSpacing = settingsReaderView.findViewById(R.id.reader_paragraphSpacing);
+        textSize = settingsReaderView.findViewById(R.id.reader_textSize);
+        indentSize = settingsReaderView.findViewById(R.id.reader_indentSize);
+
+        nightMode.setChecked(SettingsController.isReaderNightMode());
         nightMode.setOnCheckedChangeListener((buttonView, isChecked) -> SettingsController.swapReaderColor());
 
         if (getContext() != null) {
@@ -207,6 +258,6 @@ public class ViewSettings extends Fragment {
             }
         }
 
-        return view;
+        return settingsReaderView;
     }
 }
