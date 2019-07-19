@@ -15,9 +15,15 @@
     <string name="filter">filter</string>
     <string name="background_color">Background Color</string>
     <string name="text_color">Text Color</string>
+
+    <!-- Reader Settings -->
+    <string name="reader_night_mode">Night Mode</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
     <string name="text_size">Text Size</string>
-    <string name="night_mode">Night Mode</string>
-    <string name="reader_night_mode">Reader Night Mode</string>
+    <string name="spacing">Paragraph Spacing</string>
+    <string name="indent_size">Indent Size</string>
+
     <string name="novel_title">Novel Title</string>
     <string name="novel_author">Novel Author(s)</string>
     <string name="novel_description">Novel Description</string>
@@ -49,9 +55,7 @@
     <string name="read">READ</string>
     <string name="unread">UNREAD</string>
     <string name="reading">READING</string>
-    <string name="spacing">Paragraph Spacing</string>
     <string name="no_change">No change</string>
-    <string name="indent_size">Indent Size</string>
     <string name="download_speed">Download speed</string>
     <string name="settings_download_speed_hint">Sets the wait limit between novel downloading</string>
 
