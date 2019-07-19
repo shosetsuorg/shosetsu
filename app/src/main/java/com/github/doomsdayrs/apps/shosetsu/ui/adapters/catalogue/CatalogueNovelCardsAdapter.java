@@ -17,6 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 import com.squareup.picasso.Picasso;
 
@@ -72,11 +73,23 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
         if (recycleCard != null) {
             novelCardsViewHolder.url = recycleCard.novelURL;
             novelCardsViewHolder.library_card_title.setText(recycleCard.title);
-            if (recycleCard.imageURL != null)
+            if (recycleCard.imageURL != null) {
                 Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.library_card_image);
-            else novelCardsViewHolder.library_card_image.setVisibility(View.GONE);
-        }
+                Picasso.get()
+                        .load(recycleCard.imageURL)
+                        .into(novelCardsViewHolder.library_card_image);
+            } else novelCardsViewHolder.library_card_image.setVisibility(View.GONE);
 
+            switch (Settings.themeMode) {
+                case 0:
+                    novelCardsViewHolder.library_card_title.setBackgroundResource(R.color.white_trans);
+                    break;
+                case 1:
+                case 2:
+                    novelCardsViewHolder.library_card_title.setBackgroundResource(R.color.black_trans);
+                    break;
+            }
+        }
     }
 
     @Override
@@ -95,6 +108,7 @@ public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNo
             super(itemView);
             library_card_image = itemView.findViewById(R.id.novel_item_image);
             library_card_title = itemView.findViewById(R.id.textView);
+
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }

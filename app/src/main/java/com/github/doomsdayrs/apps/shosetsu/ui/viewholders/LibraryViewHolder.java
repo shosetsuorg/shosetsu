@@ -34,7 +34,6 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.google.android.material.card.MaterialCardView;
@@ -55,9 +54,8 @@ public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.O
         materialCardView = itemView.findViewById(R.id.novel_item_card);
         library_card_image = itemView.findViewById(R.id.novel_item_image);
         library_card_title = itemView.findViewById(R.id.textView);
+
         chip = itemView.findViewById(R.id.novel_item_left_to_read);
-
-
         itemView.setOnLongClickListener(view -> {
             addToSelect();
             return true;

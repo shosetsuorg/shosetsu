@@ -3,6 +3,10 @@
     <color name="textColorLight">#000</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <color name="white_trans">#CCFFFFFF</color>
+    <color name="black_trans">#CC000000</color>
 
 
     <color name="colorLightPrimary">#80FFEB3B</color>
@@ -21,5 +25,4 @@
     <color name="colorNightBackground">#000</color>
 
     <color name="bookmarked">#00A2FF</color>
-    <color name="black">#000000</color>
 </resources>

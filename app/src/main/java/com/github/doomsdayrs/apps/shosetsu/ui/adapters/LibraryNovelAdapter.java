@@ -13,6 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.LibraryViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.squareup.picasso.Picasso;
 
@@ -62,13 +63,23 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
         NovelCard novelCard = novelCards.get(i);
         //Sets values
         {
-        Picasso.get()
+            Picasso.get()
                 .load(novelCard.imageURL)
                 .into(libraryViewHolder.library_card_image);
             libraryViewHolder.libraryFragment = libraryFragment;
             libraryViewHolder.novelCard = novelCard;
             libraryViewHolder.formatter = DefaultScrapers.formatters.get(novelCard.formatterID - 1);
             libraryViewHolder.library_card_title.setText(novelCard.title);
+
+            switch (Settings.themeMode) {
+                case 0:
+                    libraryViewHolder.library_card_title.setBackgroundResource(R.color.white_trans);
+                    break;
+                case 1:
+                case 2:
+                    libraryViewHolder.library_card_title.setBackgroundResource(R.color.black_trans);
+                    break;
+            }
         }
 
         int count = Database.DatabaseChapter.getCountOfChaptersUnread(novelCard.novelURL);
