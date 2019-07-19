@@ -13,14 +13,15 @@
                 android:id="@+id/settings_item_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="26sp" />
+                android:textSize="20sp"
+                android:layout_marginStart="2sp"/>
 
             <TextView
                 android:id="@+id/settings_item_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:layout_marginLeft="6sp" />
+                android:textSize="12sp"
+                android:layout_marginStart="12sp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
