@@ -42,6 +42,10 @@ public class SettingsItem {
         }
     }
 
+    public void invalidate(){
+        itemView.invalidate();
+    }
+
     public void setTitle(int titleResid) {
         itemTitle.setText(titleResid);
     }
