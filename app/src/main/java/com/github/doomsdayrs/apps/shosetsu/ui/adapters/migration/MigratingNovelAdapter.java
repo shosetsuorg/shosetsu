@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -47,9 +46,6 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<MigratingNovelAd
         this.migrationView = migrationView;
     }
 
-    public void setNovels(ArrayList<Novel> novels) {
-        this.migrationView.novels = novels;
-    }
 
     @NonNull
     @Override
@@ -60,18 +56,20 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<MigratingNovelAd
 
     @Override
     public void onBindViewHolder(@NonNull CatalogueHolder catalogueHolder, int i) {
-        Novel novel = migrationView.novels.get(i);
+        NovelCard novel = migrationView.novels.get(i);
+        Log.d("BindingItem: ", novel.title);
         Picasso.get().load(novel.imageURL).into(catalogueHolder.image);
         catalogueHolder.title.setText(novel.title);
     }
 
     @Override
     public int getItemCount() {
+        System.out.println(migrationView.novels.size());
         return migrationView.novels.size();
     }
 
 
-    static class CatalogueHolder extends RecyclerView.ViewHolder {
+    static class CatalogueHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final ImageView image;
         final TextView title;
 
@@ -79,6 +77,12 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<MigratingNovelAd
             super(itemView);
             image = itemView.findViewById(R.id.novel_item_image);
             title = itemView.findViewById(R.id.textView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
     }
 }

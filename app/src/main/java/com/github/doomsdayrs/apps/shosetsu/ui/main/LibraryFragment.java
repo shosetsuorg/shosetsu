@@ -23,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.LibraryNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.LibrarySearchQuery;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
@@ -147,10 +148,7 @@ public class LibraryFragment extends Fragment {
                 Toast.makeText(getContext(), "In the future this will start a checking of each novel in this library", Toast.LENGTH_SHORT).show();
                 return true;
             });
-            menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
-                Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
-                return true;
-            });
+
         } else {
             inflater.inflate(R.menu.toolbar_library_selected, menu);
             menu.findItem(R.id.chapter_select_all).setOnMenuItemClickListener(menuItem -> {
@@ -173,6 +171,11 @@ public class LibraryFragment extends Fragment {
                 }
                 selectedNovels = new ArrayList<>();
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
+                return true;
+            });
+            menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
+                Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
+                new MigrationView(getContext(), selectedNovels, 1);
                 return true;
             });
         }

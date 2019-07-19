@@ -14,8 +14,6 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,16 +38,12 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class MigratingMapAdapter extends RecyclerView.Adapter<MigratingMapAdapter.CatalogueHolder> {
-    private ArrayList<Novel> novels;
+    private MigrationView migrationView;
 
-
-    public MigratingMapAdapter( @NonNull ArrayList<Novel> novels) {
-        this.novels = novels;
+    public MigratingMapAdapter(MigrationView migrationView) {
+        this.migrationView = migrationView;
     }
 
-    public void setNovels(ArrayList<Novel> novels) {
-        this.novels = novels;
-    }
 
     @NonNull
     @Override
@@ -60,14 +54,14 @@ public class MigratingMapAdapter extends RecyclerView.Adapter<MigratingMapAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CatalogueHolder catalogueHolder, int i) {
-        Novel novel = novels.get(i);
+        Novel novel = migrationView.novelResults.get(migrationView.selection).get(i);
         Picasso.get().load(novel.imageURL).into(catalogueHolder.image);
         catalogueHolder.title.setText(novel.title);
     }
 
     @Override
     public int getItemCount() {
-        return novels.size();
+        return migrationView.novelResults.get(migrationView.selection).size();
     }
 
 
@@ -77,8 +71,8 @@ public class MigratingMapAdapter extends RecyclerView.Adapter<MigratingMapAdapte
 
         CatalogueHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.novel_item_image);
-            title = itemView.findViewById(R.id.textView);
+            image = itemView.findViewById(R.id.catalogue_item_card_image);
+            title = itemView.findViewById(R.id.catalogue_item_card_text);
         }
     }
 }

@@ -23,22 +23,32 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel;/*
  */
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingMapAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingNovelAdapter;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MigrationView {
-    public ArrayList<Novel> novels = new ArrayList<>();
-    public Novel[][] novelResults = new Novel[][]{};
-    private Dialog dialog;
+    public ArrayList<NovelCard> novels = new ArrayList<>();
+    public ArrayList<ArrayList<Novel>> novelResults = new ArrayList<>();
+
+    private final Formatter targetFormat;
+    public int selection = 0;
+
+    public Dialog dialog;
+
 
     private RecyclerView selectedNovels;
     private RecyclerView.Adapter selectedNovelsAdapters;
@@ -47,13 +57,22 @@ public class MigrationView {
     private RecyclerView mappingNovels;
     private RecyclerView.Adapter mappingNovelsAdapter;
 
-    public MigrationView() {
+    public MigrationView(Context context, ArrayList<NovelCard> novels, int targetSite) {
+        this.novels = novels;
+        this.targetFormat = DefaultScrapers.formatters.get(targetSite);
+        dialog = new Dialog(context);
         dialog.setContentView(R.layout.migrate_source_view);
         selectedNovels = dialog.findViewById(R.id.selection_view);
         mappingNovels = dialog.findViewById(R.id.mapping_view);
+
+        for (int x = 0; x < novels.size(); x++)
+            novelResults.add(new ArrayList<>());
+
+        display();
+        fillData();
     }
 
-    public void setNovels(ArrayList<Novel> novels) {
+    public void setNovels(ArrayList<NovelCard> novels) {
         this.novels = novels;
     }
 
@@ -68,26 +87,20 @@ public class MigrationView {
     }
 
     public void fillData() {
-
+        new Load(this).execute();
     }
 
 
     private void setUpSelectedNovels() {
-        if (selectedNovels != null) {
-            selectedNovels.setHasFixedSize(true);
-            selectedNovelsAdapters = new MigratingNovelAdapter(this);
-            mappingNovels.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
-            selectedNovels.setAdapter(selectedNovelsAdapters);
-        }
+        selectedNovelsAdapters = new MigratingNovelAdapter(this);
+        mappingNovels.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
+        selectedNovels.setAdapter(selectedNovelsAdapters);
     }
 
     private void setUpMappingNovels() {
-        if (mappingNovels != null) {
-            mappingNovels.setHasFixedSize(true);
-            mappingNovelsAdapter = new MigratingMapAdapter(new ArrayList<>());
-            mappingNovels.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
-            mappingNovels.setAdapter(mappingNovelsAdapter);
-        }
+        mappingNovelsAdapter = new MigratingMapAdapter(this);
+        mappingNovels.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
+        mappingNovels.setAdapter(mappingNovelsAdapter);
     }
 
     static class Load extends AsyncTask<Void, Void, Void> {
@@ -100,10 +113,20 @@ public class MigrationView {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            migrationView.novelResults = new Novel[migrationView.novels.size()][];
-            for (int x = 0; x < migrationView.novels.size();x++) {
+            for (NovelCard novel : migrationView.novels) {
+                try {
+                    ArrayList<Novel> novels = (ArrayList<Novel>) migrationView.targetFormat.search(novel.title);
+                    migrationView.novelResults.set(migrationView.novels.indexOf(novel), novels);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
 
         @Override
