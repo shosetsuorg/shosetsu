@@ -20,7 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.MainActivityNavSwapFrag;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.SettingsFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.UpdatesFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;

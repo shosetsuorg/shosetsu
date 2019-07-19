@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
+package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
 // TODO: Change to new license/disclaimer.
 /*
  * This file is part of Shosetsu.

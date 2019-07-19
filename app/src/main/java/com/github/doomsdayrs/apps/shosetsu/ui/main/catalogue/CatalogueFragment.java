@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.main;
+package com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue;
 
 import android.content.Context;
 import android.content.res.Configuration;

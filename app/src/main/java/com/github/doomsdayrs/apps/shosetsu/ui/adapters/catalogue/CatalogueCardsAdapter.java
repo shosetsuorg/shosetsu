@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.squareup.picasso.Picasso;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.CatalogueHolder> {
-    private final ArrayList<CatalogueCard> catalogues;
+    public final ArrayList<CatalogueCard> catalogues;
     private final FragmentManager fragmentManager;
 
     public CatalogueCardsAdapter(ArrayList<CatalogueCard> catalogues, FragmentManager fragmentManager) {

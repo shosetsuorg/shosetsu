@@ -8,7 +8,7 @@ import androidx.core.view.GravityCompat;
 
 import com.github.doomsdayrs.apps.shosetsu.MainActivity;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.CataloguesFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CataloguesFragment;
 import com.google.android.material.navigation.NavigationView;
 
 /*
