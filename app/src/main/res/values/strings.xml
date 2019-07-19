@@ -17,7 +17,7 @@
     <string name="text_color">Text Color</string>
 
     <!-- Reader Settings -->
-    <string name="reader_night_mode">Night Mode</string>
+    <string name="reader_night_mode">Night mode</string>
     <string name="on">On</string>
     <string name="off">Off</string>
     <string name="text_size">Text Size</string>

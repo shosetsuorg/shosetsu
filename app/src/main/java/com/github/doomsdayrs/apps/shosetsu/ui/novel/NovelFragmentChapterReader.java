@@ -120,7 +120,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
         inflater.inflate(R.menu.toolbar_chapter_view, menu);
         // Night mode
-        menu.findItem(R.id.chapter_view_nightMode).setChecked(!SettingsController.isReaderLightMode());
+        menu.findItem(R.id.chapter_view_nightMode).setChecked(SettingsController.isReaderNightMode());
 
         // Bookmark
         bookmark = menu.findItem(R.id.chapter_view_bookmark);
