@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
@@ -65,5 +67,13 @@ dependencies {
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'us.feras.mdv:markdownview:1.1.0'
     implementation 'joda-time:joda-time:2.10.3'
-   // implementation 'com.squareup.duktape:duktape-android:1.2.0'
+    // implementation 'com.squareup.duktape:duktape-android:1.2.0'
+
+    // For Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.2.0-alpha02'
+
+    // For preferences
+    implementation 'androidx.preference:preference:1.1.0-rc01'
+    implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0'
 }
