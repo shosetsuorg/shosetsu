@@ -112,18 +112,27 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
                     novelFragment.getActivity().runOnUiThread(() -> {
                         novelFragment.errorView.setVisibility(View.VISIBLE);
                         novelFragment.errorMessage.setText(e.getMessage());
-                        novelFragment.errorButton.setOnClickListener(view -> new NovelLoader(novelFragment, loadAll).execute(voids));
+                        novelFragment.errorButton.setOnClickListener(this::refresh);
                     });
             } else if (novelFragmentMain != null && novelFragmentMain.getActivity() != null)
                 novelFragmentMain.getActivity().runOnUiThread(() -> {
                     novelFragmentMain.novelFragment.errorView.setVisibility(View.VISIBLE);
                     novelFragmentMain.novelFragment.errorMessage.setText(e.getMessage());
-                    novelFragmentMain.novelFragment.errorButton.setOnClickListener(view -> new NovelLoader(novelFragmentMain, loadAll).execute(voids));
+                    novelFragmentMain.novelFragment.errorButton.setOnClickListener(this::refresh);
                 });
 
 
         }
         return false;
+    }
+
+    private void refresh(View view) {
+        if (StaticNovel.novelLoader != null && StaticNovel.novelLoader.isCancelled())
+            StaticNovel.novelLoader.cancel(true);
+
+        if (StaticNovel.novelLoader == null || StaticNovel.novelLoader.isCancelled())
+            StaticNovel.novelLoader = new NovelLoader(novelFragmentMain, loadAll);
+        StaticNovel.novelLoader.execute(activity);
     }
 
     /**
@@ -184,8 +193,14 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
                     novelFragmentMain.setData();
                 }
             });
-            if (loadAll)
-                activity.runOnUiThread(() -> new ChapterLoader(novelFragment).execute(activity));
+            if (loadAll) {
+                if (StaticNovel.chapterLoader != null && StaticNovel.chapterLoader.isCancelled())
+                    StaticNovel.chapterLoader.cancel(true);
+
+                if (StaticNovel.chapterLoader == null || StaticNovel.chapterLoader.isCancelled())
+                    StaticNovel.chapterLoader = new ChapterLoader(novelFragment);
+                activity.runOnUiThread(() -> StaticNovel.chapterLoader.execute(activity));
+            }
         }
     }
 }

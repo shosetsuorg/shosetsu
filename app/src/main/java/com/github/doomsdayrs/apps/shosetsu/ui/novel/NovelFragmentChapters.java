@@ -150,7 +150,14 @@ public class NovelFragmentChapters extends Fragment {
         progressBar = view.findViewById(R.id.fragment_novel_chapters_progress);
         swipeRefreshLayout = view.findViewById(R.id.fragment_novel_chapters_refresh);
 
-        swipeRefreshLayout.setOnRefreshListener(() -> new ChapterLoader(this).execute(getActivity()));
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (StaticNovel.chapterLoader != null && StaticNovel.chapterLoader.isCancelled())
+                StaticNovel.chapterLoader.cancel(true);
+
+            if (StaticNovel.chapterLoader == null || StaticNovel.chapterLoader.isCancelled())
+                StaticNovel.chapterLoader = new ChapterLoader(novelFragment);
+            StaticNovel.chapterLoader.execute(getActivity());
+        });
 
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage");
@@ -167,6 +174,7 @@ public class NovelFragmentChapters extends Fragment {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+
             if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(StaticNovel.novelURL);
             }
