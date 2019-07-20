@@ -54,6 +54,7 @@ import java.util.Arrays;
 public class NovelFragmentMain extends Fragment {
 
     private ImageView imageView;
+    private ImageView imageView_background;
     private TextView title;
     private TextView authors;
     private TextView artists;
@@ -105,6 +106,8 @@ public class NovelFragmentMain extends Fragment {
         View view = inflater.inflate(R.layout.fragment_novel_main, container, false);
         {
             imageView = view.findViewById(R.id.fragment_novel_image);
+            imageView_background = view.findViewById(R.id.fragment_novel_image_background);
+
             title = view.findViewById(R.id.fragment_novel_title);
             authors = view.findViewById(R.id.fragment_novel_author);
             artists = view.findViewById(R.id.fragment_novel_artists);
@@ -168,7 +171,9 @@ public class NovelFragmentMain extends Fragment {
         Picasso.get()
                 .load(StaticNovel.novelPage.imageURL)
                 .into(imageView);
-
+        Picasso.get()
+                .load(StaticNovel.novelPage.imageURL)
+                .into(imageView_background);
         floatingActionButton.show();
         formatterName.setText(StaticNovel.formatter.getName());
     }

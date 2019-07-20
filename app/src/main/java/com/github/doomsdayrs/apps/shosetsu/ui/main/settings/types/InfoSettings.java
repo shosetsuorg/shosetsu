@@ -47,7 +47,6 @@ public class InfoSettings extends Fragment {
     }
 
     private void onClickReportBug(View v){
-        // TODO: Display the link after consultation
         Toast.makeText(v.getContext(), "ReportBug", Toast.LENGTH_SHORT).show();
         String bugReportLink = getString(R.string.report_bug_link);
         Intent bugReportingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(bugReportLink));
@@ -55,7 +54,6 @@ public class InfoSettings extends Fragment {
     }
 
     private void onClickAuthor(View v){
-        // TODO: Add link to github
         Toast.makeText(v.getContext(), "Author", Toast.LENGTH_SHORT).show();
         String authorGitHubLink = getString(R.string.author_github);
         Intent authorGitHubIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorGitHubLink));

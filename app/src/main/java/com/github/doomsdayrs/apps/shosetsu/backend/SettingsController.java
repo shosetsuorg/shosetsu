@@ -117,8 +117,17 @@ public class SettingsController {
      *
      * @return true if so, otherwise false
      */
-    public static boolean isReaderLightMode() {
-        return Settings.ReaderTextColor == Color.BLACK;
+    public static boolean isReaderNightMode() {
+        //TODO: Check this also, this doesn't seem to be a nice way to do things.
+        return Settings.ReaderTextColor == Color.WHITE;
+    }
+
+    public static void setNightNode(){
+        setReaderColor(Color.WHITE, Color.BLACK);
+    }
+
+    public static void unsetNightMode(){
+        setReaderColor(Color.BLACK, Color.WHITE);
     }
 
     /**
@@ -140,10 +149,12 @@ public class SettingsController {
      * Swaps the reader colors
      */
     public static void swapReaderColor() {
-        if (isReaderLightMode())
-            setReaderColor(Color.WHITE, Color.BLACK);
-        else
+        if (isReaderNightMode()){
             setReaderColor(Color.BLACK, Color.WHITE);
+        }
+        else {
+            setReaderColor(Color.WHITE, Color.BLACK);
+        }
     }
 
 

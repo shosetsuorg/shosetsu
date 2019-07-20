@@ -19,7 +19,7 @@ Join us on our:
 - [x] A proper fucking reader
 - [ ] Actually efficient coding
 
-## ScreenShots 
+## ScreenShots *OUTDATED*
 <img src="https://i.imgur.com/qekNxth.png" width="30%"></img>
 <img src="https://i.imgur.com/jSTh0Wy.png" width="30%"></img>
 <img src="https://i.imgur.com/3JjnREL.png" width="30%"></img>

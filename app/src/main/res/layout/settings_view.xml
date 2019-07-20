@@ -4,20 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp">
-        <CheckBox
-            android:id="@+id/reader_nightMode_checkbox"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:checked="false"
-            android:padding="10dp"
-            android:text="@string/reader_night_mode"
-            android:textSize="20sp" />
+    <include layout="@layout/settings_item"
+        android:id="@+id/settings_reader_night_mode"/>
 
-    </androidx.cardview.widget.CardView>
+    <include layout="@layout/settings_item"
+        android:id="@+id/settings_reader_text_size"/>
+
+    <include layout="@layout/settings_item"
+        android:id="@+id/settings_reader_para_spacing"/>
+
+    <include layout="@layout/settings_item"
+        android:id="@+id/settings_reader_para_indent"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
