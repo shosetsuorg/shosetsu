@@ -1,13 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.listeners
 
-import android.util.Log
 import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 
 import com.github.doomsdayrs.apps.shosetsu.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CataloguesFragment
 import com.google.android.material.navigation.NavigationView
 
@@ -50,7 +48,7 @@ class MainActivityNavSwapFrag(private val mainActivity: MainActivity) : Navigati
             R.id.nav_library -> mainActivity.libraryFragment
             R.id.nav_updater -> mainActivity.updatesFragment
             R.id.nav_catalogue -> CataloguesFragment()
-            R.id.nav_settings -> mainActivity.settingsFragment
+            R.id.nav_settings -> mainActivity.settingsMainFragment
             R.id.nav_downloads -> mainActivity.downloadsFragment
             else -> throw Exception("Invalid navigation item selected.")
         }

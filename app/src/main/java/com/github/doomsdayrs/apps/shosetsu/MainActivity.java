@@ -20,7 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.MainActivityNavSwapFrag;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.SettingsFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.SettingsMainFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.UpdatesFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     public final LibraryFragment libraryFragment = new LibraryFragment();
     public final UpdatesFragment updatesFragment = new UpdatesFragment();
-    public final SettingsFragment settingsFragment = new SettingsFragment();
+    public final SettingsMainFragment settingsMainFragment = new SettingsMainFragment();
     public final DownloadsFragment downloadsFragment = new DownloadsFragment();
 
 
