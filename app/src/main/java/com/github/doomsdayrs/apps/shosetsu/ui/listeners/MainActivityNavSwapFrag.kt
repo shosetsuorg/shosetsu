@@ -41,6 +41,7 @@ class MainActivityNavSwapFrag(private val mainActivity: MainActivity) : Navigati
                 .beginTransaction()
                 .addToBackStack(name)
                 .replace(R.id.fragment_container, fragment)
+                .commit()
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
