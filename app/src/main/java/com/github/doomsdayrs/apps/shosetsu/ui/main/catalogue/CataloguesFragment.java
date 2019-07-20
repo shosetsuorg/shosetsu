@@ -47,6 +47,7 @@ import java.util.Objects;
  *
  * @author github.com/doomsdayrs
  */
+//TODO Searching mechanics here
 public class CataloguesFragment extends Fragment {
     private ArrayList<CatalogueCard> cards = null;
 
