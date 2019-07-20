@@ -42,6 +42,7 @@ import androidx.fragment.app.Fragment;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItem;
 
 import java.util.ArrayList;
 import java.util.List;

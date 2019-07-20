@@ -27,6 +27,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,11 +42,11 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MigrationView {
+public class MigrationView extends AppCompatActivity {
     public ArrayList<NovelCard> novels = new ArrayList<>();
     public ArrayList<ArrayList<Novel>> novelResults = new ArrayList<>();
 
-    private final Formatter targetFormat;
+    private Formatter targetFormat;
     public int selection = 0;
 
     public Dialog dialog;
@@ -61,6 +62,9 @@ public class MigrationView {
 
 
     private Load load = new Load(this);
+
+    public MigrationView() {
+    }
 
     public MigrationView(Context context, ArrayList<NovelCard> novels, int targetSite) {
         this.novels = novels;
