@@ -4,14 +4,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
+import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.CompressedHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.squareup.picasso.Picasso;
 
@@ -38,25 +37,24 @@ import com.squareup.picasso.Picasso;
  *
  * @author github.com/doomsdayrs
  */
-public class MigratingNovelAdapter extends RecyclerView.Adapter<MigratingNovelAdapter.CatalogueHolder> {
+public class MigratingNovelAdapter extends RecyclerView.Adapter<CompressedHolder> {
 
     private final MigrationView migrationView;
 
     public MigratingNovelAdapter(MigrationView migrationView) {
         this.migrationView = migrationView;
-        System.out.println(migrationView.novels);
     }
 
 
     @NonNull
     @Override
-    public CatalogueHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public CompressedHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.catalogue_item_card, viewGroup, false);
-        return new CatalogueHolder(view);
+        return new CompressedHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CatalogueHolder catalogueHolder, int i) {
+    public void onBindViewHolder(@NonNull CompressedHolder catalogueHolder, int i) {
         NovelCard novel = migrationView.novels.get(i);
         Log.d("BindingItem: ", novel.title);
         Picasso.get().load(novel.imageURL).into(catalogueHolder.image);
@@ -69,21 +67,4 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<MigratingNovelAd
         return migrationView.novels.size();
     }
 
-
-    static class CatalogueHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final ImageView image;
-        final TextView title;
-
-        CatalogueHolder(@NonNull View itemView) {
-            super(itemView);
-            image = itemView.findViewById(R.id.catalogue_item_card_image);
-            title = itemView.findViewById(R.id.catalogue_item_card_text);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-
-        }
-    }
 }

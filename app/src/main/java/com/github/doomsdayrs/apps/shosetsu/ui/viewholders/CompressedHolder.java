@@ -1,10 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
-
-import com.github.doomsdayrs.apps.shosetsu.R;
-
-import java.io.Serializable;
-
-/*
+package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,31 +16,28 @@ import java.io.Serializable;
  * specific language governing permissions and limitations
  * under the License.
  * ====================================================================
- * Shosetsu
- * 9 / June / 2019
+ * shosetsu
+ * 19 / 07 / 2019
  *
  * @author github.com/doomsdayrs
  */
-public class RecycleCard implements Serializable {
-    /**
-     * If there isn't an image loaded in, this will be the image
-     */
-    public final int libraryImageResource;
 
-    /**
-     * Text of the card
-     */
-    public final String title;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-    /**
-     * Constructor
-     *
-     * @param title text of card
-     */
-    RecycleCard(String title) {
-        this.libraryImageResource = R.drawable.ic_close_black_24dp;
-        this.title = title;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.github.doomsdayrs.apps.shosetsu.R;
+
+public class CompressedHolder extends RecyclerView.ViewHolder {
+    public final ImageView image;
+    public final TextView title;
+
+    public CompressedHolder(@NonNull View itemView) {
+        super(itemView);
+        image = itemView.findViewById(R.id.catalogue_item_card_image);
+        title = itemView.findViewById(R.id.catalogue_item_card_text);
     }
-
-
 }

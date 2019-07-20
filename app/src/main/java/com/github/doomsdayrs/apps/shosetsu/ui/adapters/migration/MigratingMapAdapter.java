@@ -3,8 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
+import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.CompressedHolder;
 import com.squareup.picasso.Picasso;
 
 /*
@@ -37,42 +36,29 @@ import com.squareup.picasso.Picasso;
  *
  * @author github.com/doomsdayrs
  */
-public class MigratingMapAdapter extends RecyclerView.Adapter<MigratingMapAdapter.CatalogueHolder> {
+public class MigratingMapAdapter extends RecyclerView.Adapter<CompressedHolder> {
     private MigrationView migrationView;
 
     public MigratingMapAdapter(MigrationView migrationView) {
         this.migrationView = migrationView;
     }
 
-
     @NonNull
     @Override
-    public CatalogueHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public CompressedHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.catalogue_item_card, viewGroup, false);
-        return new CatalogueHolder(view);
+        return new CompressedHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CatalogueHolder catalogueHolder, int i) {
-        Novel novel = migrationView.novelResults.get(migrationView.selection).get(i);
-        Picasso.get().load(novel.imageURL).into(catalogueHolder.image);
-        catalogueHolder.title.setText(novel.title);
+    public void onBindViewHolder(@NonNull CompressedHolder holder, int position) {
+        Novel novel = migrationView.novelResults.get(migrationView.selection).get(position);
+        Picasso.get().load(novel.imageURL).into(holder.image);
+        holder.title.setText(novel.title);
     }
 
     @Override
     public int getItemCount() {
         return migrationView.novelResults.get(migrationView.selection).size();
-    }
-
-
-    static class CatalogueHolder extends RecyclerView.ViewHolder {
-        final ImageView image;
-        final TextView title;
-
-        CatalogueHolder(@NonNull View itemView) {
-            super(itemView);
-            image = itemView.findViewById(R.id.catalogue_item_card_image);
-            title = itemView.findViewById(R.id.catalogue_item_card_text);
-        }
     }
 }
