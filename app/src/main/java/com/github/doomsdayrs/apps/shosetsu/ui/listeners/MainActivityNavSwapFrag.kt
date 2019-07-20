@@ -49,7 +49,7 @@ class MainActivityNavSwapFrag(private val mainActivity: MainActivity) : Navigati
         val nextFragment : Fragment = when (menuItem.itemId) {
             R.id.nav_library -> mainActivity.libraryFragment
             R.id.nav_updater -> mainActivity.updatesFragment
-            R.id.nav_catalogue -> CatalogueFragment()
+            R.id.nav_catalogue -> CataloguesFragment()
             R.id.nav_settings -> mainActivity.settingsFragment
             R.id.nav_downloads -> mainActivity.downloadsFragment
             else -> throw Exception("Invalid navigation item selected.")
