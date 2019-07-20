@@ -25,6 +25,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel;/*
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Button;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,37 +50,59 @@ public class MigrationView {
 
     public Dialog dialog;
 
-
     private RecyclerView selectedNovels;
     private RecyclerView.Adapter selectedNovelsAdapters;
-
 
     private RecyclerView mappingNovels;
     private RecyclerView.Adapter mappingNovelsAdapter;
 
+    private Button cancel;
+    private Button confirm;
+
+
+    private Load load = new Load(this);
+
     public MigrationView(Context context, ArrayList<NovelCard> novels, int targetSite) {
         this.novels = novels;
-        this.targetFormat = DefaultScrapers.formatters.get(targetSite);
-        dialog = new Dialog(context);
-        dialog.setContentView(R.layout.migrate_source_view);
-        selectedNovels = dialog.findViewById(R.id.selection_view);
-        mappingNovels = dialog.findViewById(R.id.mapping_view);
 
+        // Fills in dummy data
         for (int x = 0; x < novels.size(); x++)
             novelResults.add(new ArrayList<>());
 
-        display();
-        fillData();
-    }
+        this.targetFormat = DefaultScrapers.formatters.get(targetSite);
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.migrate_source_view);
 
-    public void setNovels(ArrayList<NovelCard> novels) {
-        this.novels = novels;
-    }
-
-    public void display() {
-        dialog.show();
+        // Sets selected novels
+        selectedNovels = dialog.findViewById(R.id.selection_view);
         setUpSelectedNovels();
+
+        // Sets the novels to map
+        mappingNovels = dialog.findViewById(R.id.mapping_view);
         setUpMappingNovels();
+
+        // Sets cancel button
+        cancel = dialog.findViewById(R.id.cancel);
+        cancel.setOnLongClickListener(view -> {
+            load.cancel(true);
+            dialog.cancel();
+            return true;
+        });
+
+        // Sets confirm button
+        confirm = dialog.findViewById(R.id.confirm);
+        confirm.setOnLongClickListener(view -> {
+            load.cancel(true);
+            dialog.cancel();
+            return true;
+        });
+
+        // Sets dismiss button
+        dialog.setOnCancelListener(dialogInterface -> load.cancel(true));
+
+        // Displays and loads
+        dialog.show();
+        fillData();
     }
 
     public Dialog getDialog() {
@@ -87,13 +110,16 @@ public class MigrationView {
     }
 
     public void fillData() {
-        new Load(this).execute();
+        if (load.isCancelled()) {
+            load = new Load(this);
+        }
+        load.execute();
     }
 
 
     private void setUpSelectedNovels() {
         selectedNovelsAdapters = new MigratingNovelAdapter(this);
-        mappingNovels.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
+        selectedNovels.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
         selectedNovels.setAdapter(selectedNovelsAdapters);
     }
 

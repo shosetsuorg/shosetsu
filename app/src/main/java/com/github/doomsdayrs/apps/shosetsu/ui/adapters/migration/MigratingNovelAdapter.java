@@ -44,6 +44,7 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<MigratingNovelAd
 
     public MigratingNovelAdapter(MigrationView migrationView) {
         this.migrationView = migrationView;
+        System.out.println(migrationView.novels);
     }
 
 
@@ -75,8 +76,8 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<MigratingNovelAd
 
         CatalogueHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.novel_item_image);
-            title = itemView.findViewById(R.id.textView);
+            image = itemView.findViewById(R.id.catalogue_item_card_image);
+            title = itemView.findViewById(R.id.catalogue_item_card_text);
             itemView.setOnClickListener(this);
         }
 
