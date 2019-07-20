@@ -43,7 +43,7 @@ import java.util.Objects;
  *
  * @author github.com/doomsdayrs
  */
-public class SettingsFragment extends Fragment {
+public class SettingsMainFragment extends Fragment {
     private static final ArrayList<SettingsCard> cards = new ArrayList<>();
 
     static {
@@ -58,7 +58,7 @@ public class SettingsFragment extends Fragment {
      * Constructor
      * TODO, Create custom option menu for settings to search specific ones
      */
-    public SettingsFragment() {
+    public SettingsMainFragment() {
         // setHasOptionsMenu(true);
     }
 
@@ -83,7 +83,7 @@ public class SettingsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreateView", "SettingsFragment");
+        Log.d("OnCreateView", "SettingsMainFragment");
         Statics.mainActionBar.setTitle("Settings");
         View view = inflater.inflate(R.layout.settings, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.settings_recycler);
