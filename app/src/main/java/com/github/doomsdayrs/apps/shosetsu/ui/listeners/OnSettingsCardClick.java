@@ -28,11 +28,11 @@ import android.view.View;
 import androidx.fragment.app.FragmentManager;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.types.AdvancedSettings;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.types.BackupSettings;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.types.InfoSettings;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.types.DownloadSettings;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.types.ViewSettings;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.AdvancedSettings;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.BackupSettings;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.InfoSettings;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.DownloadSettings;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.ViewSettings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 
 public class OnSettingsCardClick implements View.OnClickListener {

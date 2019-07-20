@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.main.settings.types;
+package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
