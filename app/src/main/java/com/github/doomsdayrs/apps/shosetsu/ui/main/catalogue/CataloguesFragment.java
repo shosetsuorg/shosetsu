@@ -88,15 +88,14 @@ public class CataloguesFragment extends Fragment {
         }
         FragmentManager fragmentManager = getFragmentManager();
 
-        View view = inflater.inflate(R.layout.settings, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.settings_recycler);
+        View view = inflater.inflate(R.layout.fragment_catalogues, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.catalogues_recycler);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(Objects.requireNonNull(container).getContext());
             RecyclerView.Adapter adapter = new CatalogueCardsAdapter(cards, fragmentManager);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
-
         }
         return view;
     }
