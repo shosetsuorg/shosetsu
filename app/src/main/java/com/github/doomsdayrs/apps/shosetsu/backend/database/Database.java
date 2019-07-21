@@ -124,7 +124,7 @@ public class Database {
      * @return Serialised string
      * @throws IOException exception
      */
-    private static String serialize(Object object) throws IOException {
+    public static String serialize(Object object) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(object);
@@ -140,7 +140,7 @@ public class Database {
      * @throws IOException            exception
      * @throws ClassNotFoundException exception
      */
-    private static Object deserialize(String string) throws IOException, ClassNotFoundException {
+    public static Object deserialize(String string) throws IOException, ClassNotFoundException {
         byte[] bytes = Base64.decode(string, Base64.NO_WRAP);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);

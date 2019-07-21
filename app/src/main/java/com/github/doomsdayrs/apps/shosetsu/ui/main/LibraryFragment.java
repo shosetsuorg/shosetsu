@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -175,7 +177,14 @@ public class LibraryFragment extends Fragment {
             });
             menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
                 Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
-                new MigrationView(getContext(), selectedNovels, 1);
+                Intent intent = new Intent(getActivity(), MigrationView.class);
+                try {
+                    intent.putExtra("selected", Database.serialize(selectedNovels));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("target", 1);
+                startActivity(intent);
                 return true;
             });
         }

@@ -50,6 +50,7 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<CompressedHolder
     @Override
     public CompressedHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.catalogue_item_card, viewGroup, false);
+        CompressedHolder compressedHolder = new CompressedHolder(view);
         return new CompressedHolder(view);
     }
 
@@ -59,6 +60,10 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<CompressedHolder
         Log.d("BindingItem: ", novel.title);
         Picasso.get().load(novel.imageURL).into(catalogueHolder.image);
         catalogueHolder.title.setText(novel.title);
+        catalogueHolder.itemView.setOnClickListener(view -> {
+            migrationView.selection = i;
+            migrationView.mappingNovels.post(migrationView.mappingNovelsAdapter::notifyDataSetChanged);
+        });
     }
 
     @Override

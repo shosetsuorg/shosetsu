@@ -22,11 +22,13 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel;/*
  * @author github.com/doomsdayrs
  */
 
-import android.app.Dialog;
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingMapAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
@@ -49,73 +52,73 @@ public class MigrationView extends AppCompatActivity {
     private Formatter targetFormat;
     public int selection = 0;
 
-    public Dialog dialog;
 
     private RecyclerView selectedNovels;
     private RecyclerView.Adapter selectedNovelsAdapters;
 
-    private RecyclerView mappingNovels;
-    private RecyclerView.Adapter mappingNovelsAdapter;
+    public RecyclerView mappingNovels;
+    public RecyclerView.Adapter mappingNovelsAdapter;
 
     private Button cancel;
     private Button confirm;
 
 
-    private Load load = new Load(this);
+    private Load load;
 
     public MigrationView() {
     }
 
-    public MigrationView(Context context, ArrayList<NovelCard> novels, int targetSite) {
-        this.novels = novels;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        try {
+            novels = (ArrayList<NovelCard>) Database.deserialize(intent.getStringExtra("selected"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        targetFormat = DefaultScrapers.formatters.get(intent.getIntExtra("target", 0));
+        setContentView(R.layout.migrate_source_view);
 
         // Fills in dummy data
         for (int x = 0; x < novels.size(); x++)
             novelResults.add(new ArrayList<>());
 
-        this.targetFormat = DefaultScrapers.formatters.get(targetSite);
-        dialog = new Dialog(context);
-        dialog.setContentView(R.layout.migrate_source_view);
-
         // Sets selected novels
-        selectedNovels = dialog.findViewById(R.id.selection_view);
+        selectedNovels = findViewById(R.id.selection_view);
         setUpSelectedNovels();
 
         // Sets the novels to map
-        mappingNovels = dialog.findViewById(R.id.mapping_view);
+        mappingNovels = findViewById(R.id.mapping_view);
         setUpMappingNovels();
 
         // Sets cancel button
-        cancel = dialog.findViewById(R.id.cancel);
+        cancel = findViewById(R.id.cancel);
         cancel.setOnLongClickListener(view -> {
             load.cancel(true);
-            dialog.cancel();
+            //TODO replace with close activity
             return true;
         });
 
         // Sets confirm button
-        confirm = dialog.findViewById(R.id.confirm);
+        confirm = findViewById(R.id.confirm);
         confirm.setOnLongClickListener(view -> {
             load.cancel(true);
-            dialog.cancel();
+            //TODO replace with close activity
             return true;
         });
 
-        // Sets dismiss button
-        dialog.setOnCancelListener(dialogInterface -> load.cancel(true));
-
-        // Displays and loads
-        dialog.show();
+        load = new Load(novels, targetFormat, novelResults, mappingNovels, mappingNovelsAdapter);
         fillData();
     }
 
-    public Dialog getDialog() {
-        return dialog;
-    }
+
 
     public void fillData() {
         if (load.isCancelled()) {
-            load = new Load(this);
+            load = new Load(novels, targetFormat, novelResults, mappingNovels, mappingNovelsAdapter);
         }
         load.execute();
     }
@@ -123,30 +126,44 @@ public class MigrationView extends AppCompatActivity {
 
     private void setUpSelectedNovels() {
         selectedNovelsAdapters = new MigratingNovelAdapter(this);
-        selectedNovels.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
+        selectedNovels.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         selectedNovels.setAdapter(selectedNovelsAdapters);
     }
 
     private void setUpMappingNovels() {
         mappingNovelsAdapter = new MigratingMapAdapter(this);
-        mappingNovels.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
+        mappingNovels.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mappingNovels.setAdapter(mappingNovelsAdapter);
     }
 
     static class Load extends AsyncTask<Void, Void, Void> {
 
-        MigrationView migrationView;
+        final ArrayList<NovelCard> novels;
+        final Formatter targetFormat;
+        final ArrayList<ArrayList<Novel>> novelResults;
 
-        public Load(MigrationView migrationView) {
-            this.migrationView = migrationView;
+        @SuppressLint("StaticFieldLeak")
+        final RecyclerView mappingNovels;
+        final RecyclerView.Adapter mappingNovelsAdapter;
+
+        Load(ArrayList<NovelCard> novels, Formatter targetFormat, ArrayList<ArrayList<Novel>> novelResults, RecyclerView mappingNovels, RecyclerView.Adapter mappingNovelsAdapter) {
+            this.novels = novels;
+            this.targetFormat = targetFormat;
+            this.novelResults = novelResults;
+            this.mappingNovels = mappingNovels;
+            this.mappingNovelsAdapter = mappingNovelsAdapter;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            for (NovelCard novel : migrationView.novels) {
+            for (int x = 0; x < novels.size(); x++) {
                 try {
-                    ArrayList<Novel> novels = (ArrayList<Novel>) migrationView.targetFormat.search(novel.title);
-                    migrationView.novelResults.set(migrationView.novels.indexOf(novel), novels);
+                    // Retrieves search results
+                    ArrayList<Novel> N = (ArrayList<Novel>) targetFormat.search(novels.get(x).title);
+
+                    // Sets the results
+                    novelResults.set(x, N);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -161,7 +178,7 @@ public class MigrationView extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            migrationView.mappingNovels.post(() -> migrationView.mappingNovelsAdapter.notifyDataSetChanged());
+            mappingNovels.post(mappingNovelsAdapter::notifyDataSetChanged);
         }
     }
 }
