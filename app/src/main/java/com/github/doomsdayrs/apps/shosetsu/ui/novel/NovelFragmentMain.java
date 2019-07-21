@@ -91,22 +91,19 @@ public class NovelFragmentMain extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_novel, menu);
-        menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getActivity(), MigrationView.class);
-                try {
-                    ArrayList<NovelCard> novelCards = new ArrayList<>();
-                    novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID() - 1));
-                    intent.putExtra("selected", Database.serialize(novelCards));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                intent.putExtra("target", 1);
-                startActivity(intent);
-                return false;
+        menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
+            Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getActivity(), MigrationView.class);
+            try {
+                ArrayList<NovelCard> novelCards = new ArrayList<>();
+                novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID() - 1));
+                intent.putExtra("selected", Database.serialize(novelCards));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            intent.putExtra("target", 1);
+            startActivity(intent);
+            return true;
         });
     }
 
