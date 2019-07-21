@@ -69,6 +69,13 @@ dependencies {
     implementation 'joda-time:joda-time:2.10.3'
     // implementation 'com.squareup.duktape:duktape-android:1.2.0'
 
+    // RxJava
+    //implementation 'io.reactivex:rxandroid:1.2.1'
+
+    // Kodein - For dependency Injection
+    implementation 'org.kodein.di:kodein-di-generic-jvm:6.3.3'
+    implementation 'org.kodein.di:kodein-di-framework-android-x:6.3.3'
+
     // For Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.2.0-alpha02'
