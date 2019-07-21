@@ -81,6 +81,7 @@
     <string name="confirm">Confirm</string>
     <string name="selection">Selection</string>
     <string name="map_to">Map to</string>
+    <string name="migrate_source">Migrate source</string>
 
 
 </resources>
