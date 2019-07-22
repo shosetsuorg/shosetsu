@@ -22,11 +22,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel;/*
  * @author github.com/doomsdayrs
  */
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
@@ -34,14 +31,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.async.MigrationViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue.MigrationViewCatalogueAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingMapAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingNovelAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigrationViewCatalogueAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
@@ -64,6 +63,7 @@ public class MigrationView extends AppCompatActivity {
     private RecyclerView selectedNovels;
     private RecyclerView.Adapter selectedNovelsAdapters;
 
+    public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView mappingNovels;
     public RecyclerView.Adapter mappingNovelsAdapter;
 
@@ -71,7 +71,7 @@ public class MigrationView extends AppCompatActivity {
     private Button confirm;
 
 
-    private Load load = null;
+    private MigrationViewLoad load = null;
 
     public MigrationView() {
     }
@@ -98,6 +98,7 @@ public class MigrationView extends AppCompatActivity {
         setUpSelectedNovels();
 
         // Sets the novels to map
+        swipeRefreshLayout = findViewById(R.id.mapping_view_refresh);
         mappingNovels = findViewById(R.id.mapping_view);
         setUpMappingNovels();
 
@@ -144,9 +145,9 @@ public class MigrationView extends AppCompatActivity {
 
     public void fillData() {
         if (load == null)
-            load = new Load(novels, selection, novelResults, mappingNovels, mappingNovelsAdapter);
+            load = new MigrationViewLoad(this);
         if (load.isCancelled()) {
-            load = new Load(novels, selection, novelResults, mappingNovels, mappingNovelsAdapter);
+            load = new MigrationViewLoad(this);
         }
         load.execute();
     }
@@ -164,50 +165,5 @@ public class MigrationView extends AppCompatActivity {
         mappingNovels.setAdapter(mappingNovelsAdapter);
     }
 
-    static class Load extends AsyncTask<Void, Void, Void> {
 
-        final ArrayList<NovelCard> novels;
-        final Formatter targetFormat;
-        final ArrayList<ArrayList<Novel>> novelResults;
-
-        @SuppressLint("StaticFieldLeak")
-        final RecyclerView mappingNovels;
-        final RecyclerView.Adapter mappingNovelsAdapter;
-
-        Load(ArrayList<NovelCard> novels, int targetFormat, ArrayList<ArrayList<Novel>> novelResults, RecyclerView mappingNovels, RecyclerView.Adapter mappingNovelsAdapter) {
-            this.novels = novels;
-            this.targetFormat = DefaultScrapers.formatters.get(targetFormat);
-            this.novelResults = novelResults;
-            this.mappingNovels = mappingNovels;
-            this.mappingNovelsAdapter = mappingNovelsAdapter;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Log.d("Searching with", targetFormat.getName());
-            for (int x = 0; x < novels.size(); x++) {
-                try {
-                    // Retrieves search results
-                    ArrayList<Novel> N = (ArrayList<Novel>) targetFormat.search(novels.get(x).title);
-
-                    // Sets the results
-                    novelResults.set(x, N);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mappingNovels.post(mappingNovelsAdapter::notifyDataSetChanged);
-        }
-    }
 }

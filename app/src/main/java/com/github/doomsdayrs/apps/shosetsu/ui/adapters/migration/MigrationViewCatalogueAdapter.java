@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue;
+package com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration;
 
 import android.util.Log;
 import android.view.LayoutInflater;
