@@ -26,10 +26,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,21 +39,27 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue.MigrationViewCatalogueAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingMapAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class MigrationView extends AppCompatActivity {
+    private ArrayList<CatalogueCard> catalogues = null;
+
+
     public ArrayList<NovelCard> novels = new ArrayList<>();
     public ArrayList<ArrayList<Novel>> novelResults = new ArrayList<>();
 
-    private Formatter targetFormat;
     public int selection = 0;
 
+    public ConstraintLayout targetSelection;
+    public ConstraintLayout migration;
 
     private RecyclerView selectedNovels;
     private RecyclerView.Adapter selectedNovelsAdapters;
@@ -63,7 +71,7 @@ public class MigrationView extends AppCompatActivity {
     private Button confirm;
 
 
-    private Load load;
+    private Load load = null;
 
     public MigrationView() {
     }
@@ -79,7 +87,6 @@ public class MigrationView extends AppCompatActivity {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        targetFormat = DefaultScrapers.formatters.get(intent.getIntExtra("target", 0));
         setContentView(R.layout.migrate_source_view);
 
         // Fills in dummy data
@@ -110,15 +117,36 @@ public class MigrationView extends AppCompatActivity {
             return true;
         });
 
-        load = new Load(novels, targetFormat, novelResults, mappingNovels, mappingNovelsAdapter);
-        fillData();
+
+        if (catalogues == null) {
+            catalogues = new ArrayList<>();
+            for (Formatter formatter : DefaultScrapers.formatters) {
+                catalogues.add(new CatalogueCard(formatter));
+
+            }
+        }
+
+        targetSelection = findViewById(R.id.target_selection);
+        migration = findViewById(R.id.migrating);
+
+        RecyclerView recyclerView = findViewById(R.id.catalogues_recycler);
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+            RecyclerView.Adapter adapter = new MigrationViewCatalogueAdapter(catalogues, this);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(adapter);
+        }
+        //fillData();
     }
 
 
 
     public void fillData() {
+        if (load == null)
+            load = new Load(novels, selection, novelResults, mappingNovels, mappingNovelsAdapter);
         if (load.isCancelled()) {
-            load = new Load(novels, targetFormat, novelResults, mappingNovels, mappingNovelsAdapter);
+            load = new Load(novels, selection, novelResults, mappingNovels, mappingNovelsAdapter);
         }
         load.execute();
     }
@@ -146,9 +174,9 @@ public class MigrationView extends AppCompatActivity {
         final RecyclerView mappingNovels;
         final RecyclerView.Adapter mappingNovelsAdapter;
 
-        Load(ArrayList<NovelCard> novels, Formatter targetFormat, ArrayList<ArrayList<Novel>> novelResults, RecyclerView mappingNovels, RecyclerView.Adapter mappingNovelsAdapter) {
+        Load(ArrayList<NovelCard> novels, int targetFormat, ArrayList<ArrayList<Novel>> novelResults, RecyclerView mappingNovels, RecyclerView.Adapter mappingNovelsAdapter) {
             this.novels = novels;
-            this.targetFormat = targetFormat;
+            this.targetFormat = DefaultScrapers.formatters.get(targetFormat);
             this.novelResults = novelResults;
             this.mappingNovels = mappingNovels;
             this.mappingNovelsAdapter = mappingNovelsAdapter;
@@ -156,6 +184,7 @@ public class MigrationView extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            Log.d("Searching with", targetFormat.getName());
             for (int x = 0; x < novels.size(); x++) {
                 try {
                     // Retrieves search results
