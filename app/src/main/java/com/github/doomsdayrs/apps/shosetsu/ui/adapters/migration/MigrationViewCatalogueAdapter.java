@@ -108,6 +108,14 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
                 migrationView.target = formatter.getID() - 1;
                 migrationView.targetSelection.setVisibility(View.GONE);
                 migrationView.migration.setVisibility(View.VISIBLE);
+
+                //TODO, popup window saying novels rejected because the formatter ID is the same.
+                for (int x = migrationView.novels.size() - 1; x >= 0; x--) {
+                    if (migrationView.novels.get(x).formatterID == formatter.getID()) {
+                        migrationView.novels.remove(x);
+                    }
+                }
+
                 migrationView.fillData();
             } else Toast.makeText(v.getContext(), "You are not online", Toast.LENGTH_SHORT).show();
         }

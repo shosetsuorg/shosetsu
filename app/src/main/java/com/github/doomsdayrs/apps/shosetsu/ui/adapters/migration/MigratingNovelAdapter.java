@@ -71,9 +71,9 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<CompressedHolder
         catalogueHolder.title.setText(novel.title);
         catalogueHolder.itemView.setOnClickListener(view -> {
             migrationView.selection = i;
+            migrationView.secondSelection = -1;
             Log.d("Current selection", String.valueOf(migrationView.selection));
-            migrationView.selectedNovels.post(migrationView.selectedNovelsAdapters::notifyDataSetChanged);
-            migrationView.mappingNovels.post(migrationView.mappingNovelsAdapter::notifyDataSetChanged);
+            migrationView.refresh();
         });
     }
 

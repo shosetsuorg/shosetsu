@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration;
 
-import android.util.Log;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +12,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.CompressedHolder;
+import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
 /*
@@ -56,26 +57,20 @@ public class MigratingMapAdapter extends RecyclerView.Adapter<CompressedHolder> 
         Novel novel = migrationView.novelResults.get(migrationView.selection).get(position);
         Picasso.get().load(novel.imageURL).into(holder.image);
         holder.title.setText(novel.title);
+        MaterialCardView materialCardView = holder.itemView.findViewById(R.id.materialCardView);
+
+        if (position == migrationView.secondSelection) {
+            materialCardView.setStrokeColor(Color.BLUE);
+            materialCardView.setStrokeWidth(2);
+        } else materialCardView.setStrokeWidth(0);
+
         holder.itemView.setOnClickListener(view -> {
-            migrationView.novelResults.remove(migrationView.selection);
-            migrationView.novels.remove(migrationView.selection);
-
-            if (migrationView.selection != migrationView.novels.size()) {
-                Log.d("Increment","Increase");
-                refresh();
-            } else if (migrationView.selection - 1 != -1) {
-                Log.d("Increment","Decrease");
-                migrationView.selection--;
-                refresh();
-            } else migrationView.finish();
-
+            migrationView.secondSelection = position;
+            migrationView.refresh();
         });
     }
 
-    private void refresh() {
-        migrationView.selectedNovels.post(migrationView.selectedNovelsAdapters::notifyDataSetChanged);
-        migrationView.mappingNovels.post(migrationView.mappingNovelsAdapter::notifyDataSetChanged);
-    }
+
     @Override
     public int getItemCount() {
         return migrationView.novelResults.get(migrationView.selection).size();

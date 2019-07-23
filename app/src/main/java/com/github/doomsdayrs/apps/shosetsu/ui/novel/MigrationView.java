@@ -24,7 +24,9 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel;/*
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,8 +57,11 @@ public class MigrationView extends AppCompatActivity {
     public ArrayList<NovelCard> novels = new ArrayList<>();
     public ArrayList<ArrayList<Novel>> novelResults = new ArrayList<>();
 
-    public int target;
+    private ArrayList<String[]> confirmedMappings = new ArrayList<>();
+
+    public int target = -1;
     public int selection = 0;
+    public int secondSelection = -1;
 
     public ConstraintLayout targetSelection;
     public ConstraintLayout migration;
@@ -105,6 +110,10 @@ public class MigrationView extends AppCompatActivity {
 
         // Sets cancel button
         cancel = findViewById(R.id.cancel);
+        cancel.setOnClickListener(view -> {
+            secondSelection = -1;
+            refresh();
+        });
         cancel.setOnLongClickListener(view -> {
             load.cancel(true);
             //TODO replace with close activity
@@ -113,6 +122,31 @@ public class MigrationView extends AppCompatActivity {
 
         // Sets confirm button
         confirm = findViewById(R.id.confirm);
+        confirm.setOnClickListener(view -> {
+            if (secondSelection != -1) {
+
+                //Adds mapping targets
+                {
+                    String[] map = new String[2];
+                    map[0] = novels.get(selection).novelURL;
+                    map[1] = novelResults.get(selection).get(secondSelection).link;
+                    confirmedMappings.add(map);
+                }
+                novelResults.remove(selection);
+                novels.remove(selection);
+
+                if (selection != novels.size()) {
+                    Log.d("Increment", "Increase");
+                    refresh();
+                } else if (selection - 1 != -1) {
+                    Log.d("Increment", "Decrease");
+                    selection--;
+                    refresh();
+                } else finish();
+                secondSelection = -1;
+            } else
+                Toast.makeText(getApplicationContext(), "You need to select something!", Toast.LENGTH_SHORT).show();
+        });
         confirm.setOnLongClickListener(view -> {
             load.cancel(true);
             //TODO replace with close activity
@@ -160,11 +194,24 @@ public class MigrationView extends AppCompatActivity {
         selectedNovels.setAdapter(selectedNovelsAdapters);
     }
 
+
+    public void refresh() {
+        selectedNovels.post(selectedNovelsAdapters::notifyDataSetChanged);
+        mappingNovels.post(mappingNovelsAdapter::notifyDataSetChanged);
+    }
+
     private void setUpMappingNovels() {
         mappingNovelsAdapter = new MigratingMapAdapter(this);
         mappingNovels.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mappingNovels.setAdapter(mappingNovelsAdapter);
     }
 
+    //TODO load these mappings and convert
+    @Override
+    public void finish() {
+        for (String[] strings : confirmedMappings)
+            System.out.println(strings[0] + " > " + strings[1]);
 
+        super.finish();
+    }
 }
