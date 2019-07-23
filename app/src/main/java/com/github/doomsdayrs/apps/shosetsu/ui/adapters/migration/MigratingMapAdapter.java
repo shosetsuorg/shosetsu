@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,10 +56,30 @@ public class MigratingMapAdapter extends RecyclerView.Adapter<CompressedHolder> 
         Novel novel = migrationView.novelResults.get(migrationView.selection).get(position);
         Picasso.get().load(novel.imageURL).into(holder.image);
         holder.title.setText(novel.title);
+        holder.itemView.setOnClickListener(view -> {
+            migrationView.novelResults.remove(migrationView.selection);
+            migrationView.novels.remove(migrationView.selection);
+
+            if (migrationView.selection + 1 != migrationView.novels.size() - 1) {
+                Log.d("Increment","Increase");
+                migrationView.selection++;
+                refresh();
+            } else if (migrationView.selection - 1 != -1) {
+                Log.d("Increment","Decrease");
+                migrationView.selection--;
+                refresh();
+            } else migrationView.finish();
+
+        });
     }
 
+    private void refresh() {
+        migrationView.selectedNovels.post(migrationView.selectedNovelsAdapters::notifyDataSetChanged);
+        migrationView.mappingNovels.post(migrationView.mappingNovelsAdapter::notifyDataSetChanged);
+    }
     @Override
     public int getItemCount() {
         return migrationView.novelResults.get(migrationView.selection).size();
     }
+
 }

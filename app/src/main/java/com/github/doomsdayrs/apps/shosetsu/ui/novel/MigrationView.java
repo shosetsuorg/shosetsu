@@ -60,8 +60,8 @@ public class MigrationView extends AppCompatActivity {
     public ConstraintLayout targetSelection;
     public ConstraintLayout migration;
 
-    private RecyclerView selectedNovels;
-    private RecyclerView.Adapter selectedNovelsAdapters;
+    public RecyclerView selectedNovels;
+    public RecyclerView.Adapter selectedNovelsAdapters;
 
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView mappingNovels;
