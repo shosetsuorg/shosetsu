@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 import com.squareup.picasso.Picasso;
@@ -104,13 +103,9 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
         public void onClick(View v) {
             Log.d("FormatterSelection", formatter.getName());
             if (SettingsController.isOnline()) {
-                CatalogueFragment catalogueFragment = new CatalogueFragment();
-                catalogueFragment.setFormatter(formatter);
 
-                Log.d("Selection", String.valueOf(formatter.getID() - 1));
-                migrationView.selection = formatter.getID() - 1;
-                Log.d("Selection", String.valueOf(migrationView.selection));
-
+                Log.d("Target", String.valueOf(formatter.getID() - 1));
+                migrationView.target = formatter.getID() - 1;
                 migrationView.targetSelection.setVisibility(View.GONE);
                 migrationView.migration.setVisibility(View.VISIBLE);
                 migrationView.fillData();

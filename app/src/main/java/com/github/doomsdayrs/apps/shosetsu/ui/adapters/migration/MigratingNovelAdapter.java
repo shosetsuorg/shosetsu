@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.CompressedHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
+import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
 /*
@@ -58,11 +60,19 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<CompressedHolder
     public void onBindViewHolder(@NonNull CompressedHolder catalogueHolder, int i) {
         NovelCard novel = migrationView.novels.get(i);
         Log.d("BindingItem: ", novel.title);
+        MaterialCardView materialCardView = catalogueHolder.itemView.findViewById(R.id.materialCardView);
+
+        if (i == migrationView.selection) {
+            materialCardView.setStrokeColor(Color.BLUE);
+            materialCardView.setStrokeWidth(2);
+        } else materialCardView.setStrokeWidth(0);
+
         Picasso.get().load(novel.imageURL).into(catalogueHolder.image);
         catalogueHolder.title.setText(novel.title);
         catalogueHolder.itemView.setOnClickListener(view -> {
             migrationView.selection = i;
             Log.d("Current selection", String.valueOf(migrationView.selection));
+            migrationView.selectedNovels.post(migrationView.selectedNovelsAdapters::notifyDataSetChanged);
             migrationView.mappingNovels.post(migrationView.mappingNovelsAdapter::notifyDataSetChanged);
         });
     }

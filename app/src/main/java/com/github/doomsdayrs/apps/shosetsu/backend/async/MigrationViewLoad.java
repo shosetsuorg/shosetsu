@@ -43,7 +43,7 @@ public class MigrationViewLoad extends AsyncTask<Void, Void, Void> {
 
     public MigrationViewLoad(MigrationView migrationView) {
         this.migrationView = migrationView;
-        this.targetFormat = DefaultScrapers.formatters.get(migrationView.selection);
+        this.targetFormat = DefaultScrapers.formatters.get(migrationView.target);
     }
 
     @Override

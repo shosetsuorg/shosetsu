@@ -55,6 +55,7 @@ public class MigrationView extends AppCompatActivity {
     public ArrayList<NovelCard> novels = new ArrayList<>();
     public ArrayList<ArrayList<Novel>> novelResults = new ArrayList<>();
 
+    public int target;
     public int selection = 0;
 
     public ConstraintLayout targetSelection;

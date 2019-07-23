@@ -60,9 +60,8 @@ public class MigratingMapAdapter extends RecyclerView.Adapter<CompressedHolder> 
             migrationView.novelResults.remove(migrationView.selection);
             migrationView.novels.remove(migrationView.selection);
 
-            if (migrationView.selection + 1 != migrationView.novels.size() - 1) {
+            if (migrationView.selection != migrationView.novels.size()) {
                 Log.d("Increment","Increase");
-                migrationView.selection++;
                 refresh();
             } else if (migrationView.selection - 1 != -1) {
                 Log.d("Increment","Decrease");
