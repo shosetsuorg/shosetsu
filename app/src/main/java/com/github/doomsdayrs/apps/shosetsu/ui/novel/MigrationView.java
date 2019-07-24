@@ -22,10 +22,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel;/*
  * @author github.com/doomsdayrs
  */
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -134,7 +135,6 @@ public class MigrationView extends AppCompatActivity {
             confirm = findViewById(R.id.confirm);
             confirm.setOnClickListener(view -> {
                 if (secondSelection != -1) {
-
                     //Adds mapping targets
                     {
                         String[] map = new String[2];
@@ -147,15 +147,15 @@ public class MigrationView extends AppCompatActivity {
 
                     if (selection != novels.size()) {
                         Log.d("Increment", "Increase");
-                        refresh();
                     } else if (selection - 1 != -1) {
                         Log.d("Increment", "Decrease");
                         selection--;
-                        refresh();
-                    } else finish();
+                    } else new transfer(confirmedMappings, target, this).execute();
                     secondSelection = -1;
+                    refresh();
                 } else
                     Toast.makeText(getApplicationContext(), "You need to select something!", Toast.LENGTH_SHORT).show();
+
             });
             confirm.setOnLongClickListener(view -> {
                 load.cancel(true);
@@ -215,12 +215,33 @@ public class MigrationView extends AppCompatActivity {
         mappingNovels.setAdapter(mappingNovelsAdapter);
     }
 
-    //TODO load these mappings and convert
-    @Override
-    public void finish() {
-        for (String[] strings : confirmedMappings)
-            System.out.println(strings[0] + " > " + strings[1]);
 
-        super.finish();
+    static class transfer extends AsyncTask<Void, Void, Void> {
+        @SuppressLint("StaticFieldLeak")
+        MigrationView migrationView;
+
+        final ArrayList<String[]> strings;
+        final int target;
+
+        public transfer(ArrayList<String[]> strings, int target, MigrationView migrationView) {
+            this.strings = strings;
+            this.target = target;
+            this.migrationView = migrationView;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (String[] strings : strings) {
+                System.out.println(strings[0] + " > " + strings[1]);
+                try {
+                    Database.DatabaseLibrary.migrateNovel(strings[0], strings[1], target + 1, DefaultScrapers.formatters.get(target).parseNovel(strings[1]), Database.DatabaseLibrary.getStatus(strings[0]).getA());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (migrationView != null)
+                migrationView.finish();
+            return null;
+        }
     }
 }

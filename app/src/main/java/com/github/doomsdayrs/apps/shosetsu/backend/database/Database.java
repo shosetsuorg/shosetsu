@@ -665,6 +665,13 @@ public class Database {
         public static void updateData(String novelURL, NovelPage novelPage) throws IOException {
             library.execSQL("update " + Tables.NOVELS + " set " + Columns.NOVEL_PAGE + "='" + serialize(novelPage) + "' where " + Columns.NOVEL_URL + "='" + novelURL + "'");
         }
+
+        public static void migrateNovel(String oldURL, String newURL, int formatterID, NovelPage newNovel, int status) {
+            unBookmark(oldURL);
+            if (!Database.DatabaseLibrary.inLibrary(newURL))
+                addToLibrary(formatterID, newNovel, newURL, status);
+            bookMark(newURL);
+        }
     }
 
     //TODO Restore backup
