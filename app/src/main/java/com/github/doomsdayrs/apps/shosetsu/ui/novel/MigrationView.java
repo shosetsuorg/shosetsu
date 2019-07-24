@@ -25,6 +25,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel;/*
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -96,62 +97,72 @@ public class MigrationView extends AppCompatActivity {
         setContentView(R.layout.migrate_source_view);
 
         // Fills in dummy data
-        for (int x = 0; x < novels.size(); x++)
-            novelResults.add(new ArrayList<>());
+        {
+            for (int x = 0; x < novels.size(); x++)
+                novelResults.add(new ArrayList<>());
+        }
 
         // Sets selected novels
-        selectedNovels = findViewById(R.id.selection_view);
-        setUpSelectedNovels();
+        {
+            selectedNovels = findViewById(R.id.selection_view);
+            setUpSelectedNovels();
+        }
 
         // Sets the novels to map
-        swipeRefreshLayout = findViewById(R.id.mapping_view_refresh);
-        mappingNovels = findViewById(R.id.mapping_view);
-        setUpMappingNovels();
+        {
+            swipeRefreshLayout = findViewById(R.id.mapping_view_refresh);
+            mappingNovels = findViewById(R.id.mapping_view);
+            setUpMappingNovels();
+        }
 
         // Sets cancel button
-        cancel = findViewById(R.id.cancel);
-        cancel.setOnClickListener(view -> {
-            secondSelection = -1;
-            refresh();
-        });
-        cancel.setOnLongClickListener(view -> {
-            load.cancel(true);
-            //TODO replace with close activity
-            return true;
-        });
+        {
+            cancel = findViewById(R.id.cancel);
+            cancel.setOnClickListener(view -> {
+                secondSelection = -1;
+                refresh();
+            });
+            cancel.setOnLongClickListener(view -> {
+                load.cancel(true);
+                //TODO replace with close activity
+                return true;
+            });
+        }
 
         // Sets confirm button
-        confirm = findViewById(R.id.confirm);
-        confirm.setOnClickListener(view -> {
-            if (secondSelection != -1) {
+        {
+            confirm = findViewById(R.id.confirm);
+            confirm.setOnClickListener(view -> {
+                if (secondSelection != -1) {
 
-                //Adds mapping targets
-                {
-                    String[] map = new String[2];
-                    map[0] = novels.get(selection).novelURL;
-                    map[1] = novelResults.get(selection).get(secondSelection).link;
-                    confirmedMappings.add(map);
-                }
-                novelResults.remove(selection);
-                novels.remove(selection);
+                    //Adds mapping targets
+                    {
+                        String[] map = new String[2];
+                        map[0] = novels.get(selection).novelURL;
+                        map[1] = novelResults.get(selection).get(secondSelection).link;
+                        confirmedMappings.add(map);
+                    }
+                    novelResults.remove(selection);
+                    novels.remove(selection);
 
-                if (selection != novels.size()) {
-                    Log.d("Increment", "Increase");
-                    refresh();
-                } else if (selection - 1 != -1) {
-                    Log.d("Increment", "Decrease");
-                    selection--;
-                    refresh();
-                } else finish();
-                secondSelection = -1;
-            } else
-                Toast.makeText(getApplicationContext(), "You need to select something!", Toast.LENGTH_SHORT).show();
-        });
-        confirm.setOnLongClickListener(view -> {
-            load.cancel(true);
-            //TODO replace with close activity
-            return true;
-        });
+                    if (selection != novels.size()) {
+                        Log.d("Increment", "Increase");
+                        refresh();
+                    } else if (selection - 1 != -1) {
+                        Log.d("Increment", "Decrease");
+                        selection--;
+                        refresh();
+                    } else finish();
+                    secondSelection = -1;
+                } else
+                    Toast.makeText(getApplicationContext(), "You need to select something!", Toast.LENGTH_SHORT).show();
+            });
+            confirm.setOnLongClickListener(view -> {
+                load.cancel(true);
+                //TODO replace with close activity
+                return true;
+            });
+        }
 
 
         if (catalogues == null) {
@@ -164,15 +175,13 @@ public class MigrationView extends AppCompatActivity {
 
         targetSelection = findViewById(R.id.target_selection);
         migration = findViewById(R.id.migrating);
-
         RecyclerView recyclerView = findViewById(R.id.catalogues_recycler);
-        if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
             RecyclerView.Adapter adapter = new MigrationViewCatalogueAdapter(catalogues, this);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
-        }
+
         //fillData();
     }
 
