@@ -11,22 +11,16 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.preference.PreferencesHelper
-import rx.subscriptions.CompositeSubscription
 
 abstract class SettingsFragment : PreferenceFragmentCompat(){
 
     val preferences: PreferencesHelper? = null
 
-    private var subscriptions = CompositeSubscription()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (subscriptions.isUnsubscribed)
-            subscriptions = CompositeSubscription()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onDestroyView() {
-        subscriptions.unsubscribe()
         super.onDestroyView()
     }
 
