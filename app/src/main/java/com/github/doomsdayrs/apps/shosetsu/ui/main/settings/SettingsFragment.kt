@@ -11,10 +11,12 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.preference.PreferencesHelper
+import org.kodein.di.Kodein
+import org.kodein.di.generic.instance
 
-abstract class SettingsFragment : PreferenceFragmentCompat(){
+abstract class SettingsFragment(kodein: Kodein) : PreferenceFragmentCompat() {
 
-    val preferences: PreferencesHelper? = null
+    val preferences: PreferencesHelper by kodein.instance()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState)
