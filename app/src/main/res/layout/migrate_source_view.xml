@@ -119,6 +119,16 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_conversion_absoluteHeight="50dp"
             tools:layout_conversion_absoluteWidth="50dp" />
+
+        <TextView
+            android:id="@+id/console_output"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progress" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/target_selection"
             android:layout_width="match_parent"

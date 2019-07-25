@@ -59,6 +59,9 @@
     <string name="download_speed">Download speed</string>
     <string name="settings_download_speed_hint">Sets the wait limit between novel downloading</string>
 
+    <!-- Migration View -->
+    <string name="starting">Starting</string>
+
     <!-- Settings Info -->
     <string name="version">Version</string>
     <string name="report_bug">Report bug</string>

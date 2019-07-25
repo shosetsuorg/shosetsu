@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -72,6 +73,7 @@ public class MigrationView extends AppCompatActivity {
     public int secondSelection = -1;
 
     public ProgressBar progressBar;
+    public TextView output;
 
     public ConstraintLayout targetSelection;
     public ConstraintLayout migration;
@@ -173,6 +175,7 @@ public class MigrationView extends AppCompatActivity {
         }
 
         progressBar = findViewById(R.id.progress);
+        output = findViewById(R.id.console_output);
 
         if (catalogues == null) {
             catalogues = new ArrayList<>();
@@ -242,12 +245,15 @@ public class MigrationView extends AppCompatActivity {
         protected void onPreExecute() {
             migrationView.migration.setVisibility(View.GONE);
             migrationView.progressBar.setVisibility(View.VISIBLE);
+            migrationView.output.post(() -> migrationView.output.setText(migrationView.getResources().getText(R.string.starting)));
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             for (String[] strings : strings) {
-                System.out.println(strings[0] + " > " + strings[1]);
+                String s = strings[0] + "--->" + strings[1];
+                System.out.println(s);
+                migrationView.output.post(() -> migrationView.output.setText(s));
                 try {
                     Formatter formatter = DefaultScrapers.formatters.get(target);
 
