@@ -62,16 +62,16 @@ import java.util.Objects;
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
 public class NovelFragmentChapters extends Fragment {
-    public static ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
+    public ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
 
-    public static boolean contains(NovelChapter novelChapter) {
+    public boolean contains(NovelChapter novelChapter) {
         for (NovelChapter n : selectedChapters)
             if (n.link.equalsIgnoreCase(novelChapter.link))
                 return true;
         return false;
     }
 
-    public static int findMinPosition() {
+    public int findMinPosition() {
         int min = StaticNovel.novelChapters.size();
         for (int x = 0; x < StaticNovel.novelChapters.size(); x++)
             if (contains(StaticNovel.novelChapters.get(x)))
@@ -80,7 +80,7 @@ public class NovelFragmentChapters extends Fragment {
         return min;
     }
 
-    public static int findMaxPosition() {
+    public int findMaxPosition() {
         int max = -1;
         for (int x = StaticNovel.novelChapters.size() - 1; x >= 0; x--)
             if (contains(StaticNovel.novelChapters.get(x)))
@@ -109,6 +109,7 @@ public class NovelFragmentChapters extends Fragment {
         this.novelFragment = novelFragment;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -131,6 +132,7 @@ public class NovelFragmentChapters extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("maxPage", currentMaxPage);
+        outState.putSerializable("selChapter", selectedChapters);
     }
 
     /**
@@ -144,7 +146,10 @@ public class NovelFragmentChapters extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreateView", "NovelFragmentChapters");
+        if (savedInstanceState!=null){
+            selectedChapters = (ArrayList<NovelChapter>) savedInstanceState.getSerializable("selChapter");
+        }
+        Log.d("NovelFragmentChapters", "Creating");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         progressBar = view.findViewById(R.id.fragment_novel_chapters_progress);
