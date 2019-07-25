@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -98,6 +99,8 @@ public class NovelFragmentChapters extends Fragment {
     public ProgressBar progressBar;
     public SwipeRefreshLayout swipeRefreshLayout;
     public NovelFragment novelFragment;
+    public TextView pageCount;
+
     /**
      * Constructor
      */
@@ -119,8 +122,19 @@ public class NovelFragmentChapters extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("NFChapters", "Destroy");
         recyclerView = null;
         adapter = null;
+
+        if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {
+            StaticNovel.novelLoader.setC(false);
+            StaticNovel.novelLoader.cancel(true);
+        }
+
+        if (StaticNovel.chapterLoader != null && !StaticNovel.chapterLoader.isCancelled()) {
+            StaticNovel.chapterLoader.setC(false);
+            StaticNovel.chapterLoader.cancel(true);
+        }
     }
 
     /**
@@ -131,6 +145,7 @@ public class NovelFragmentChapters extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+
         outState.putInt("maxPage", currentMaxPage);
         outState.putSerializable("selChapter", selectedChapters);
     }
@@ -154,13 +169,11 @@ public class NovelFragmentChapters extends Fragment {
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         progressBar = view.findViewById(R.id.fragment_novel_chapters_progress);
         swipeRefreshLayout = view.findViewById(R.id.fragment_novel_chapters_refresh);
+        pageCount = view.findViewById(R.id.page_count);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            if (StaticNovel.chapterLoader != null && StaticNovel.chapterLoader.isCancelled())
-                StaticNovel.chapterLoader.cancel(true);
-
             if (StaticNovel.chapterLoader == null || StaticNovel.chapterLoader.isCancelled())
-                StaticNovel.chapterLoader = new ChapterLoader(novelFragment);
+                StaticNovel.chapterLoader = new ChapterLoader(this);
             StaticNovel.chapterLoader.execute(getActivity());
         });
 

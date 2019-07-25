@@ -47,6 +47,11 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     // References
     private final NovelFragment novelFragment;
     private final NovelFragmentMain novelFragmentMain;
+    private boolean C = true;
+
+    public void setC(boolean c) {
+        C = c;
+    }
 
     @SuppressLint("StaticFieldLeak")
     private Activity activity;
@@ -93,11 +98,11 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
         try {
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
-            if (!Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
+            if (C && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 Database.DatabaseLibrary.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
             }
             for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
-                if (!Database.DatabaseChapter.inChapters(novelChapter.link))
+                if (C && !Database.DatabaseChapter.inChapters(novelChapter.link))
                     Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
             System.out.println(StaticNovel.novelChapters);
             if (StaticNovel.novelChapters == null)
@@ -151,13 +156,8 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
-        if (loadAll) {
-            assert novelFragment != null;
-            novelFragment.progressBar.setVisibility(View.GONE);
-        } else {
-            assert novelFragmentMain != null;
-            novelFragmentMain.swipeRefreshLayout.setRefreshing(false);
-        }
+        C = false;
+        onPostExecute(false);
     }
 
     /**
