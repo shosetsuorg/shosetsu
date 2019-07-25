@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MigrationView extends AppCompatActivity {
+    transfer t;
+
     private ArrayList<CatalogueCard> catalogues = null;
 
 
@@ -74,6 +76,7 @@ public class MigrationView extends AppCompatActivity {
 
     public ProgressBar progressBar;
     public TextView output;
+    public TextView pageCount;
 
     public ConstraintLayout targetSelection;
     public ConstraintLayout migration;
@@ -92,6 +95,15 @@ public class MigrationView extends AppCompatActivity {
     private MigrationViewLoad load = null;
 
     public MigrationView() {
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (t != null) {
+            t.setC(false);
+            t.cancel(true);
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -159,7 +171,10 @@ public class MigrationView extends AppCompatActivity {
                     } else if (selection - 1 != -1) {
                         Log.d("Increment", "Decrease");
                         selection--;
-                    } else new transfer(confirmedMappings, target, this).execute();
+                    } else {
+                        t = new transfer(confirmedMappings, target, this);
+                        t.execute();
+                    }
                     secondSelection = -1;
                     refresh();
                 } else
@@ -175,6 +190,7 @@ public class MigrationView extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progress);
         output = findViewById(R.id.console_output);
+        pageCount = findViewById(R.id.page_count);
 
         if (catalogues == null) {
             catalogues = new ArrayList<>();
@@ -187,16 +203,14 @@ public class MigrationView extends AppCompatActivity {
         targetSelection = findViewById(R.id.target_selection);
         migration = findViewById(R.id.migrating);
         RecyclerView recyclerView = findViewById(R.id.catalogues_recycler);
-            recyclerView.setHasFixedSize(true);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-            RecyclerView.Adapter adapter = new MigrationViewCatalogueAdapter(catalogues, this);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.Adapter adapter = new MigrationViewCatalogueAdapter(catalogues, this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
 
         //fillData();
     }
-
-
 
     public void fillData() {
         if (load == null)
@@ -232,12 +246,23 @@ public class MigrationView extends AppCompatActivity {
         MigrationView migrationView;
 
         final ArrayList<String[]> strings;
-        final int target;
+        final Formatter formatter;
+        boolean C = true;
 
         public transfer(ArrayList<String[]> strings, int target, MigrationView migrationView) {
             this.strings = strings;
-            this.target = target;
             this.migrationView = migrationView;
+            formatter = DefaultScrapers.formatters.get(target);
+        }
+
+        public void setC(boolean c) {
+            C = c;
+        }
+
+        @Override
+        protected void onCancelled() {
+            C = false;
+            super.onCancelled();
         }
 
         @Override
@@ -245,25 +270,29 @@ public class MigrationView extends AppCompatActivity {
             migrationView.migration.setVisibility(View.GONE);
             migrationView.progressBar.setVisibility(View.VISIBLE);
             migrationView.output.post(() -> migrationView.output.setText(migrationView.getResources().getText(R.string.starting)));
+            if (formatter.isIncrementingChapterList())
+                migrationView.pageCount.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            for (String[] strings : strings) {
+            for (String[] strings : strings)
+                if (C) {
                 String s = strings[0] + "--->" + strings[1];
                 System.out.println(s);
                 migrationView.output.post(() -> migrationView.output.setText(s));
                 try {
-                    Formatter formatter = DefaultScrapers.formatters.get(target);
-
-                    NovelPage novelPage = DefaultScrapers.formatters.get(target).parseNovel(strings[1]);
+                    NovelPage novelPage = formatter.parseNovel(strings[1]);
                     if (formatter.isIncrementingChapterList()) {
                         int mangaCount = 0;
                         int page = 1;
-                        while (page <= novelPage.maxChapterPage) {
+                        while (page <= novelPage.maxChapterPage && C) {
+                            String p = "Page: " + page + "/" + novelPage.maxChapterPage;
+                            migrationView.pageCount.post(() -> migrationView.pageCount.setText(p));
+
                             novelPage = formatter.parseNovel(strings[1], page);
                             for (NovelChapter novelChapter : novelPage.novelChapters)
-                                if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                                if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
                                     mangaCount++;
                                     System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
 
@@ -274,32 +303,35 @@ public class MigrationView extends AppCompatActivity {
                             try {
                                 TimeUnit.MILLISECONDS.sleep(300);
                             } catch (InterruptedException e) {
-                                throw new IOException(e);
+                                if (e.getMessage() != null)
+                                    Log.e("Interrupt", e.getMessage());
                             }
                         }
                     } else {
                         int mangaCount = 0;
                         for (NovelChapter novelChapter : novelPage.novelChapters)
-                            if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                            if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
                                 mangaCount++;
                                 System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
                                 Database.DatabaseChapter.addToChapters(strings[1], novelChapter);
                             }
                     }
-
-                    Database.DatabaseLibrary.migrateNovel(strings[0], strings[1], target + 1, novelPage, Database.DatabaseLibrary.getStatus(strings[0]).getA());
+                    if (C) {
+                        migrationView.pageCount.post(() -> migrationView.pageCount.setText(""));
+                        Database.DatabaseLibrary.migrateNovel(strings[0], strings[1], formatter.getID(), novelPage, Database.DatabaseLibrary.getStatus(strings[0]).getA());
+                    }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (e.getMessage() != null)
+                        Log.e("Interrupt", e.getMessage());
                 }
             }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            LibraryFragment.changedData = true;
             if (migrationView != null) {
-                LibraryFragment.changedData = true;
                 migrationView.finish();
             }
         }

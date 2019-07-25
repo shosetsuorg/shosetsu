@@ -133,6 +133,7 @@ public class LibraryFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d("Library", "Paused");
+        selectedNovels = new ArrayList<>();
     }
 
     @Override
@@ -146,10 +147,11 @@ public class LibraryFragment extends Fragment {
         super.onResume();
         Log.d("Library", "Resumed");
         if (LibraryFragment.changedData) {
+            Log.d("Library", "Updating data");
             libraryNovelCards = Database.DatabaseLibrary.getLibrary();
-            libraryNovelCardsAdapter.notifyDataSetChanged();
             changedData = !changedData;
         }
+        libraryNovelCardsAdapter.notifyDataSetChanged();
     }
 
     @Override
