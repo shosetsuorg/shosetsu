@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -37,6 +36,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.Update;
 
 import java.util.ArrayList;
@@ -61,6 +61,9 @@ public class UpdatesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        Statics.mainActionBar.setTitle("Library");
+        View view = inflater.inflate(R.layout.fragment_update, container, false);
+
+        return view;
     }
 }

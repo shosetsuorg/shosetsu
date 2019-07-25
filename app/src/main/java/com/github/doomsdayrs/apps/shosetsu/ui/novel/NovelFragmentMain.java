@@ -92,7 +92,6 @@ public class NovelFragmentMain extends Fragment {
         inflater.inflate(R.menu.toolbar_novel, menu);
         if (Database.DatabaseLibrary.isBookmarked(StaticNovel.novelURL)) {
             menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
-                Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
                     ArrayList<NovelCard> novelCards = new ArrayList<>();

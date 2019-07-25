@@ -237,7 +237,6 @@ public class LibraryFragment extends Fragment {
                 return true;
             });
             menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
-                Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
                     intent.putExtra("selected", Database.serialize(selectedNovels));

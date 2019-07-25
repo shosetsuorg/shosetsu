@@ -85,6 +85,7 @@
     <string name="selection">Selection</string>
     <string name="map_to">Map to</string>
     <string name="migrate_source">Migrate source</string>
+    <string name="this_will_be_released_in_beta">This will be released in beta</string>
 
 
 </resources>
