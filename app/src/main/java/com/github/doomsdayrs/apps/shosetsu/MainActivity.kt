@@ -65,14 +65,16 @@ import org.kodein.di.generic.instance
  */
 
 class MainActivity : AppCompatActivity(), KodeinAware {
-    override val kodein: Kodein by kodein()
+    override val kodein by kodein()
 
     val preferences: PreferencesHelper by instance()
-    val libraryFragment = LibraryFragment()
-    val updatesFragment = UpdatesFragment()
-    val settingsMainFragment = SettingsMainFragment()
-    val downloadsFragment = DownloadsFragment()
-    val cataloguesFragment = CataloguesFragment()
+
+    // No need to load it upfront
+    val libraryFragment by lazy { LibraryFragment() }
+    val updatesFragment by lazy { UpdatesFragment() }
+    val settingsMainFragment by lazy { SettingsMainFragment(kodein) }
+    val downloadsFragment by lazy { DownloadsFragment() }
+    val cataloguesFragment by lazy { CataloguesFragment() }
 
 
     /**
