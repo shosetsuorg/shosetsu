@@ -1,10 +1,23 @@
 <resources>
     <string name="app_name">Shosetsu</string>
-    <string name="library">Library</string>
-    <string name="catalogue">Catalogue</string>
-    <string name="settings">Settings</string>
-    <string name="github">https://github.com/Doomsdayrs/shosetsu</string>
+
+    <!-- Navigation Sidebar -->
     <string name="header_text">Novel reading right on your phone!</string>
+    <string name="github">https://github.com/Doomsdayrs/shosetsu</string>
+    <string name="my_library">My library</string>
+    <string name="library_updates">Library updates</string>
+    <string name="catalogue">Catalogue</string>
+    <string name="download">Download</string>
+    <string name="settings">Settings</string>
+
+    <!-- Main Settings -->
+    <string name="setting_download">Download</string>
+    <string name="setting_view">View</string>
+    <string name="setting_advanced">Advanced</string>
+    <string name="setting_info">Info</string>
+    <string name="settings_backup">Backup</string>
+
+    <string name="library">Library</string>
     <string name="todo">TODO</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -29,7 +42,6 @@
     <string name="novel_description">Novel Description</string>
     <string name="anilist">Anilist</string>
     <string name="more">more</string>
-    <string name="download">Download</string>
     <string name="myanimelist">Myanimelist</string>
     <string name="download_directory">Download directory</string>
     <string name="position">Position:</string>
@@ -77,8 +89,6 @@
     <string name="selection_options">Selection options</string>
     <string name="remove">Remove</string>
     <string name="no_results_found">No results found!</string>
-    <string name="my_library">My library</string>
-    <string name="library_updates">Library updates</string>
     <string name="update_now">Update now</string>
     <string name="migrate_sources">Migrate sources</string>
     <string name="confirm">Confirm</string>
