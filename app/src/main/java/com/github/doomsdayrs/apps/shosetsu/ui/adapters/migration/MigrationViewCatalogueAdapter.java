@@ -102,7 +102,7 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
         @Override
         public void onClick(View v) {
             Log.d("FormatterSelection", formatter.getName());
-            if (SettingsController.isOnline()) {
+            if (SettingsController.INSTANCE.isOnline()) {
 
                 Log.d("Target", String.valueOf(formatter.getID() - 1));
                 migrationView.target = formatter.getID() - 1;

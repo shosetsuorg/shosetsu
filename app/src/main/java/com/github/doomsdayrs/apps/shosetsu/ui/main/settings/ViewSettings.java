@@ -81,10 +81,10 @@ public class ViewSettings extends Fragment {
         String[] states = {getString(R.string.on), getString(R.string.off)};
         builder.setItems(states,
                 (dialogInterface, i) -> {
-                    if (i == 0) SettingsController.setNightNode();
-                    else SettingsController.unsetNightMode();
+                    if (i == 0) SettingsController.INSTANCE.setNightNode();
+                    else SettingsController.INSTANCE.unsetNightMode();
 
-                    int nightModeStatus = SettingsController.isReaderNightMode()?
+                    int nightModeStatus = SettingsController.INSTANCE.isReaderNightMode()?
                             R.string.on : R.string.off;
                     nightMOdeItem.setDesc(nightModeStatus);
                     nightMOdeItem.invalidate();
@@ -114,7 +114,7 @@ public class ViewSettings extends Fragment {
         // Setup Night Mode
         SettingsItem nightModeItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_night_mode));
         nightModeItem.setTitle(R.string.reader_night_mode);
-        int nightModeStatus = SettingsController.isReaderNightMode()?
+        int nightModeStatus = SettingsController.INSTANCE.isReaderNightMode()?
                 R.string.on : R.string.off;
         nightModeItem.setDesc(nightModeStatus);
         nightModeItem.setOnClickListener(this::onClickNIghtMode);
@@ -171,7 +171,7 @@ public class ViewSettings extends Fragment {
                                     size = 20;
                                     break;
                             }
-                            SettingsController.setTextSize(size);
+                            SettingsController.INSTANCE.setTextSize(size);
                             adapterView.setSelection(i);
                         }
                     }
@@ -207,7 +207,7 @@ public class ViewSettings extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, android.view.View view, int i, long l) {
                         if (i >= 0 && i <= 3) {
-                            SettingsController.changeParagraphSpacing(i);
+                            SettingsController.INSTANCE.changeParagraphSpacing(i);
                             adapterView.setSelection(i);
                         }
                     }
@@ -218,7 +218,7 @@ public class ViewSettings extends Fragment {
                     }
                 });
 
-                SettingsController.changeParagraphSpacing(spaceBack);
+                SettingsController.INSTANCE.changeParagraphSpacing(spaceBack);
                 switch (Settings.paragraphSpacing) {
                     case 0:
                         paragraphSpacing.setSelection(0);
@@ -246,7 +246,7 @@ public class ViewSettings extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, android.view.View view, int i, long l) {
                         if (i >= 0 && i <= 3) {
-                            SettingsController.changeIndentSize(i);
+                            SettingsController.INSTANCE.changeIndentSize(i);
                             adapterView.setSelection(i);
                         }
                     }
@@ -256,7 +256,7 @@ public class ViewSettings extends Fragment {
 
                     }
                 });
-                SettingsController.changeIndentSize(spaceBack);
+                SettingsController.INSTANCE.changeIndentSize(spaceBack);
                 indentSize.setSelection(Settings.indentSize);
             }
         }

@@ -104,7 +104,7 @@ public class NovelFragment extends Fragment {
         //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
-            if (SettingsController.isOnline() && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
+            if (SettingsController.INSTANCE.isOnline() && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 setViewPager();
 
                 if (StaticNovel.novelLoader != null && StaticNovel.novelLoader.isCancelled())

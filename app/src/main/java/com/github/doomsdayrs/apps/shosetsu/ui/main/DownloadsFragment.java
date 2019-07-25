@@ -170,7 +170,7 @@ public class DownloadsFragment extends Fragment {
             menuItem.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
 
         menuItem.setOnMenuItemClickListener(a -> {
-            if (SettingsController.togglePause())
+            if (SettingsController.INSTANCE.togglePause())
                 a.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
             else {
                 a.setIcon(R.drawable.ic_pause_circle_outline_black_24dp);

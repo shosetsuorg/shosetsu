@@ -102,7 +102,7 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
         @Override
         public void onClick(View v) {
             Log.d("FormatterSelection", formatter.getName());
-            if (SettingsController.isOnline()) {
+            if (SettingsController.INSTANCE.isOnline()) {
                 CatalogueFragment catalogueFragment = new CatalogueFragment();
                 catalogueFragment.setFormatter(formatter);
                 setFormatter(formatter);

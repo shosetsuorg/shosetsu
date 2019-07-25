@@ -74,7 +74,7 @@ public class AdvancedSettings extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i >= 0 && i <= 2) {
-                    SettingsController.changeMode(getActivity(), i);
+                    SettingsController.INSTANCE.changeMode(getActivity(), i);
                     adapterView.setSelection(i);
                 }
             }

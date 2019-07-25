@@ -62,7 +62,7 @@ public class DownloadSettings extends Fragment {
     }
 
     private void setDir(String dir) {
-        SettingsController.download.edit().putString("dir", dir).apply();
+        SettingsController.INSTANCE.getDownload().edit().putString("dir", dir).apply();
         Download_Manager.shoDir = dir;
         textView.setText(dir);
     }
