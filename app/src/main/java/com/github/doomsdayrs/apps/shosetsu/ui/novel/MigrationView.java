@@ -49,6 +49,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingMapAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigratingNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.migration.MigrationViewCatalogueAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
@@ -293,6 +294,7 @@ public class MigrationView extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             if (migrationView != null) {
+                LibraryFragment.changedData = true;
                 migrationView.finish();
             }
         }

@@ -63,21 +63,21 @@ public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.O
     }
 
     public void addToSelect() {
-        if (!LibraryFragment.contains(novelCard))
-            LibraryFragment.selectedNovels.add(novelCard);
+        if (!libraryFragment.contains(novelCard))
+            libraryFragment.selectedNovels.add(novelCard);
         else
             removeFromSelect();
 
-        if (LibraryFragment.selectedNovels.size() == 1 || LibraryFragment.selectedNovels.size() <= 0)
+        if (libraryFragment.selectedNovels.size() == 1 || libraryFragment.selectedNovels.size() <= 0)
             libraryFragment.onCreateOptionsMenu(libraryFragment.menu, libraryFragment.getInflater());
         libraryFragment.recyclerView.post(() -> libraryFragment.libraryNovelCardsAdapter.notifyDataSetChanged());
     }
 
     private void removeFromSelect() {
-        if (LibraryFragment.contains(novelCard))
-            for (int x = 0; x < LibraryFragment.selectedNovels.size(); x++)
-                if (LibraryFragment.selectedNovels.get(x).novelURL.equalsIgnoreCase(novelCard.novelURL)) {
-                    LibraryFragment.selectedNovels.remove(x);
+        if (libraryFragment.contains(novelCard))
+            for (int x = 0; x < libraryFragment.selectedNovels.size(); x++)
+                if (libraryFragment.selectedNovels.get(x).novelURL.equalsIgnoreCase(novelCard.novelURL)) {
+                    libraryFragment.selectedNovels.remove(x);
                     return;
                 }
     }

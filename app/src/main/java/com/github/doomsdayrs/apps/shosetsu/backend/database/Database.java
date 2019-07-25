@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.util.Log;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
@@ -582,6 +583,7 @@ public class Database {
          * @return the library
          */
         public static ArrayList<NovelCard> getLibrary() {
+            Log.d("DL", "Getting");
             Cursor cursor = library.query(Tables.NOVELS.toString(),
                     new String[]{Columns.NOVEL_URL.toString(), Columns.FORMATTER_ID.toString(), Columns.NOVEL_PAGE.toString()},
                     Columns.BOOKMARKED + "=1", null, null, null, null);
