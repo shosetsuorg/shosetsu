@@ -136,11 +136,20 @@ public class LibraryFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        selectedNovels = new ArrayList<>();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         Log.d("Library", "Resumed");
-        if (LibraryFragment.changedData)
+        if (LibraryFragment.changedData) {
             libraryNovelCards = Database.DatabaseLibrary.getLibrary();
+            libraryNovelCardsAdapter.notifyDataSetChanged();
+            changedData = !changedData;
+        }
     }
 
     @Override

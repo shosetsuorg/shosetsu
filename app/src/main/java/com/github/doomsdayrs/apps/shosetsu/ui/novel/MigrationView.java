@@ -135,7 +135,6 @@ public class MigrationView extends AppCompatActivity {
             });
             cancel.setOnLongClickListener(view -> {
                 load.cancel(true);
-                //TODO replace with close activity
                 return true;
             });
         }
