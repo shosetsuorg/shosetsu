@@ -115,6 +115,20 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                         throw new IOException(e);
                     }
                 }
+            } else {
+                StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
+                int mangaCount = 0;
+                for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
+                    if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                        mangaCount++;
+                        System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+
+                        StaticNovel.novelChapters.add(novelChapter);
+                        Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+                        if (novelFragmentChapters != null) {
+                            //TODO figure out what i was doing here
+                        }
+                    }
             }
             return true;
         } catch (IOException e) {

@@ -39,6 +39,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.MigrationViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -51,6 +53,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MigrationView extends AppCompatActivity {
     private ArrayList<CatalogueCard> catalogues = null;
@@ -234,7 +237,40 @@ public class MigrationView extends AppCompatActivity {
             for (String[] strings : strings) {
                 System.out.println(strings[0] + " > " + strings[1]);
                 try {
-                    Database.DatabaseLibrary.migrateNovel(strings[0], strings[1], target + 1, DefaultScrapers.formatters.get(target).parseNovel(strings[1]), Database.DatabaseLibrary.getStatus(strings[0]).getA());
+                    Formatter formatter = DefaultScrapers.formatters.get(target);
+
+                    NovelPage novelPage = DefaultScrapers.formatters.get(target).parseNovel(strings[1]);
+                    if (formatter.isIncrementingChapterList()) {
+                        int mangaCount = 0;
+                        int page = 1;
+                        while (page <= novelPage.maxChapterPage) {
+                            novelPage = formatter.parseNovel(strings[1], page);
+                            for (NovelChapter novelChapter : novelPage.novelChapters)
+                                if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                                    mangaCount++;
+                                    System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+
+                                    Database.DatabaseChapter.addToChapters(strings[1], novelChapter);
+                                }
+                            page++;
+
+                            try {
+                                TimeUnit.MILLISECONDS.sleep(300);
+                            } catch (InterruptedException e) {
+                                throw new IOException(e);
+                            }
+                        }
+                    } else {
+                        int mangaCount = 0;
+                        for (NovelChapter novelChapter : novelPage.novelChapters)
+                            if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                                mangaCount++;
+                                System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+                                Database.DatabaseChapter.addToChapters(strings[1], novelChapter);
+                            }
+                    }
+
+                    Database.DatabaseLibrary.migrateNovel(strings[0], strings[1], target + 1, novelPage, Database.DatabaseLibrary.getStatus(strings[0]).getA());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
