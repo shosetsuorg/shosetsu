@@ -57,6 +57,10 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
+// TODO cache clearing
+//  >Library, remove all where bookmark = 0
+//  >Chapters, remove all that are not from a bookmarked library
+
 public class Database {
     /**
      * SQLITEDatabase
