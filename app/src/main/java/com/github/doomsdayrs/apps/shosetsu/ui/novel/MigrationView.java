@@ -27,7 +27,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -67,6 +69,8 @@ public class MigrationView extends AppCompatActivity {
     public int target = -1;
     public int selection = 0;
     public int secondSelection = -1;
+
+    public ProgressBar progressBar;
 
     public ConstraintLayout targetSelection;
     public ConstraintLayout migration;
@@ -167,6 +171,7 @@ public class MigrationView extends AppCompatActivity {
             });
         }
 
+        progressBar = findViewById(R.id.progress);
 
         if (catalogues == null) {
             catalogues = new ArrayList<>();
@@ -233,6 +238,12 @@ public class MigrationView extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            migrationView.migration.setVisibility(View.GONE);
+            migrationView.progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
             for (String[] strings : strings) {
                 System.out.println(strings[0] + " > " + strings[1]);
@@ -275,9 +286,15 @@ public class MigrationView extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            if (migrationView != null)
-                migrationView.finish();
+
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (migrationView != null) {
+                migrationView.finish();
+            }
         }
     }
 }
