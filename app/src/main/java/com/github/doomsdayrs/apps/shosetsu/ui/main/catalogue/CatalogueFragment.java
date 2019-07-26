@@ -75,10 +75,11 @@ public class CatalogueFragment extends Fragment {
     private boolean dontRefresh = false;
     public boolean isQuery = false;
 
-    public  ConstraintLayout errorView;
-    public  TextView errorMessage;
-    public  Button errorButton;
+    public ConstraintLayout errorView;
+    public TextView errorMessage;
+    public Button errorButton;
     public TextView empty;
+
     /**
      * Constructor
      */
@@ -90,11 +91,13 @@ public class CatalogueFragment extends Fragment {
         this.formatter = formatter;
     }
 
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("list", catalogueNovelCards);
-        outState.putInt("formatter", formatter.getID() - 1);
+        if (formatter != null)
+            outState.putInt("formatter", formatter.getID() - 1);
     }
 
     @Override

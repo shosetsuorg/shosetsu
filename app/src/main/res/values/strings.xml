@@ -86,6 +86,10 @@
     <string name="map_to">Map to</string>
     <string name="migrate_source">Migrate source</string>
     <string name="this_will_be_released_in_beta">This will be released in beta</string>
+    <string name="site">Site:</string>
+    <string name="artist_s">Artist(s):</string>
+    <string name="reading_status">Reading Status</string>
+    <string name="publishing_state">Publishing State:</string>
 
 
 </resources>
