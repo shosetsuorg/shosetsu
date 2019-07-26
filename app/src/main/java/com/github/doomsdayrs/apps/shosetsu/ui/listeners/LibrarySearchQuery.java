@@ -47,7 +47,7 @@ public class LibrarySearchQuery implements SearchView.OnQueryTextListener {
     @Override
     public boolean onQueryTextChange(String newText) {
         Log.d("Library search", newText);
-        ArrayList<NovelCard> recycleCards = new ArrayList<>(LibraryFragment.libraryNovelCards);
+        ArrayList<NovelCard> recycleCards = new ArrayList<>(libraryFragment.libraryNovelCards);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             recycleCards.removeIf(recycleCard -> !recycleCard.title.toLowerCase().contains(newText.toLowerCase()));
         }

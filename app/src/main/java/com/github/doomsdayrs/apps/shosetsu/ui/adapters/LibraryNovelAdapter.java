@@ -88,7 +88,7 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
             libraryViewHolder.chip.setText(String.valueOf(count));
         } else libraryViewHolder.chip.setVisibility(View.INVISIBLE);
 
-        if (LibraryFragment.contains(novelCard)) {
+        if (libraryFragment.contains(novelCard)) {
             System.out.println("Is selected");
             libraryViewHolder.materialCardView.setStrokeColor(Color.BLUE);
         } else {
@@ -96,7 +96,7 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
             libraryViewHolder.materialCardView.setStrokeColor(Color.WHITE);
         }
 
-        if (LibraryFragment.selectedNovels.size() > 0) {
+        if (libraryFragment.selectedNovels.size() > 0) {
             libraryViewHolder.itemView.setOnClickListener(view -> libraryViewHolder.addToSelect());
         } else {
             libraryViewHolder.itemView.setOnClickListener(libraryViewHolder);

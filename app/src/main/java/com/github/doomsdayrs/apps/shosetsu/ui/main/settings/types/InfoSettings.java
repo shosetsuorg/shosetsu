@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
+package com.github.doomsdayrs.apps.shosetsu.ui.main.settings.types;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -37,6 +37,7 @@ import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItem;
 
 public class InfoSettings extends Fragment {
 

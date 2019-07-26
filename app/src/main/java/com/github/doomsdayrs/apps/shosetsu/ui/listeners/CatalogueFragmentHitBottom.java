@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CataloguePageLoader;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CatalogueFragment;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

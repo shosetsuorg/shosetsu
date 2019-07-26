@@ -1,12 +1,16 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,11 +21,14 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentUpdate;
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /*
@@ -78,6 +85,27 @@ public class NovelFragmentMain extends Fragment {
 
     public void setNovelFragment(NovelFragment novelFragment) {
         this.novelFragment = novelFragment;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar_novel, menu);
+        if (Database.DatabaseLibrary.isBookmarked(StaticNovel.novelURL)) {
+            menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
+                Intent intent = new Intent(getActivity(), MigrationView.class);
+                try {
+                    ArrayList<NovelCard> novelCards = new ArrayList<>();
+                    novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID()));
+                    intent.putExtra("selected", Database.serialize(novelCards));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("target", 1);
+                startActivity(intent);
+                return true;
+            });
+        } else menu.findItem(R.id.source_migrate).setVisible(false);
+
     }
 
     /**

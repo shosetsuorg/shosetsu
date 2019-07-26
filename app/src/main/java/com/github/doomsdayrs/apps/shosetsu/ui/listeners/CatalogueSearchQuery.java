@@ -5,7 +5,7 @@ import android.util.Log;
 import android.widget.SearchView;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueQuerySearch;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
 import java.util.ArrayList;

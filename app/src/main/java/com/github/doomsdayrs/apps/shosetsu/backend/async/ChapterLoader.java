@@ -48,6 +48,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     // References
     private final NovelFragment novelFragment;
     private final NovelFragmentChapters novelFragmentChapters;
+    private boolean C = true;
 
     @SuppressLint("StaticFieldLeak")
     private Activity activity;
@@ -65,6 +66,10 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     public ChapterLoader(NovelFragmentChapters chapters) {
         novelFragment = null;
         novelFragmentChapters = chapters;
+    }
+
+    public void setC(boolean c) {
+        C = c;
     }
 
     /**
@@ -93,48 +98,74 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
             if (StaticNovel.formatter.isIncrementingChapterList()) {
                 int mangaCount = 0;
-
-                while (page <= StaticNovel.novelPage.maxChapterPage) {
+                while (page <= StaticNovel.novelPage.maxChapterPage && C) {
+                    if (novelFragmentChapters != null) {
+                        String s = "Page: " + page + "/" + StaticNovel.novelPage.maxChapterPage;
+                        novelFragmentChapters.pageCount.post(() -> novelFragmentChapters.pageCount.setText(s));
+                    }
                     StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
                     for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
-                        if (!Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                        if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
                             mangaCount++;
                             System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
 
                             StaticNovel.novelChapters.add(novelChapter);
                             Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
-                            if(novelFragmentChapters!=null){
-
-                            }
                         }
                     page++;
 
                     try {
                         TimeUnit.MILLISECONDS.sleep(300);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        if (e.getMessage() != null)
+                            Log.e("Error", e.getMessage());
                     }
                 }
+            } else {
+                StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
+                int mangaCount = 0;
+                for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
+                    if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                        mangaCount++;
+                        System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+
+                        StaticNovel.novelChapters.add(novelChapter);
+                        Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+                    }
             }
             return true;
         } catch (IOException e) {
-            if (novelFragment != null) {
-                if (novelFragment.getActivity() != null)
+            if (novelFragment != null && novelFragment.getActivity() != null) {
                     novelFragment.getActivity().runOnUiThread(() -> {
                         novelFragment.errorView.setVisibility(View.VISIBLE);
                         novelFragment.errorMessage.setText(e.getMessage());
-                        novelFragment.errorButton.setOnClickListener(view -> new ChapterLoader(novelFragment).execute(voids));
+                        novelFragment.errorButton.setOnClickListener(this::refresh);
                     });
             } else if (novelFragmentChapters != null)
                 if (novelFragmentChapters.getActivity() != null)
                     novelFragmentChapters.getActivity().runOnUiThread(() -> {
                         novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
                         novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
-                        novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> new ChapterLoader(novelFragmentChapters).execute(voids));
+                        novelFragmentChapters.novelFragment.errorButton.setOnClickListener(this::refresh);
                     });
 
         }
         return false;
+    }
+
+
+    private void refresh(View view) {
+        if (StaticNovel.chapterLoader != null && StaticNovel.chapterLoader.isCancelled())
+            StaticNovel.chapterLoader.cancel(true);
+
+        if (StaticNovel.chapterLoader == null || StaticNovel.chapterLoader.isCancelled())
+            if (novelFragment != null && novelFragment.getActivity() != null)
+                StaticNovel.chapterLoader = new ChapterLoader(novelFragment);
+            else if (novelFragmentChapters != null && novelFragmentChapters.getActivity() != null)
+                StaticNovel.chapterLoader = new ChapterLoader(novelFragmentChapters);
+            else throw new NullPointerException("WHEREI SSS ITTTT");
+
+        StaticNovel.chapterLoader.execute(activity);
     }
 
     /**
@@ -147,17 +178,23 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         else {
             assert novelFragmentChapters != null;
             novelFragmentChapters.swipeRefreshLayout.setRefreshing(true);
+            if (StaticNovel.formatter.isIncrementingChapterList())
+                novelFragmentChapters.pageCount.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
+    protected void onCancelled(Boolean aBoolean) {
+        Log.d("ChapterLoader", "Cancel");
+        C = false;
+        onPostExecute(false);
+    }
+
+    @Override
     protected void onCancelled() {
-        if (novelFragment != null)
-            novelFragment.novelFragmentChapters.progressBar.setVisibility(View.GONE);
-        else {
-            assert novelFragmentChapters != null;
-            novelFragmentChapters.swipeRefreshLayout.setRefreshing(false);
-        }
+        Log.d("ChapterLoader", "Cancel");
+        C = false;
+        onPostExecute(false);
     }
 
     /**
@@ -172,6 +209,8 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         else {
             assert novelFragmentChapters != null;
             novelFragmentChapters.swipeRefreshLayout.setRefreshing(false);
+            if (StaticNovel.formatter.isIncrementingChapterList())
+                novelFragmentChapters.pageCount.setVisibility(View.GONE);
         }
         if (aBoolean) {
             if (novelFragment != null) {

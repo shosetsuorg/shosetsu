@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,11 +24,13 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.LibraryNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.LibrarySearchQuery;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -55,10 +58,12 @@ import java.util.Objects;
  * @author github.com/doomsdayrs
  */
 public class LibraryFragment extends Fragment {
-    public static ArrayList<NovelCard> libraryNovelCards = new ArrayList<>();
-    public static ArrayList<NovelCard> selectedNovels = new ArrayList<>();
+    public ArrayList<NovelCard> libraryNovelCards = new ArrayList<>();
+    public ArrayList<NovelCard> selectedNovels = new ArrayList<>();
+    public static boolean changedData = false;
 
-    public static boolean contains(NovelCard novelCard) {
+
+    public boolean contains(NovelCard novelCard) {
         for (NovelCard n : selectedNovels)
             if (n.novelURL.equalsIgnoreCase(novelCard.novelURL))
                 return true;
@@ -69,6 +74,8 @@ public class LibraryFragment extends Fragment {
     private Context context;
     public RecyclerView recyclerView;
     public LibraryNovelAdapter libraryNovelCardsAdapter;
+    public Menu menu;
+
 
     /**
      * Constructor
@@ -102,6 +109,59 @@ public class LibraryFragment extends Fragment {
     }
 
     /**
+     * Sets the cards to display
+     */
+    public void setLibraryCards(ArrayList<NovelCard> novelCards) {
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(false);
+            RecyclerView.LayoutManager library_layoutManager;
+            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                library_layoutManager = new GridLayoutManager(context, 2, RecyclerView.VERTICAL, false);
+            else
+                library_layoutManager = new GridLayoutManager(context, 4, RecyclerView.VERTICAL, false);
+            libraryNovelCardsAdapter = new LibraryNovelAdapter(novelCards, this);
+            recyclerView.setLayoutManager(library_layoutManager);
+            recyclerView.setAdapter(libraryNovelCardsAdapter);
+        }
+    }
+
+    public MenuInflater getInflater() {
+        return new MenuInflater(getContext());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("Library", "Paused");
+        selectedNovels = new ArrayList<>();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        selectedNovels = new ArrayList<>();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Library", "Resumed");
+        if (LibraryFragment.changedData) {
+            Log.d("Library", "Updating data");
+            libraryNovelCards = Database.DatabaseLibrary.getLibrary();
+            changedData = !changedData;
+        }
+        libraryNovelCardsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("selected", selectedNovels);
+        outState.putSerializable("lib", libraryNovelCards);
+    }
+
+    /**
      * Creates view
      *
      * @param inflater           inflates layouts and shiz
@@ -113,17 +173,21 @@ public class LibraryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Statics.mainActionBar.setTitle("Library");
-        Log.d("OnCreate", "LibraryFragment");
+        Log.d("Library", "creating");
         if (savedInstanceState == null)
             readFromDB();
+        else {
+            this.selectedNovels = (ArrayList<NovelCard>) savedInstanceState.getSerializable("selected");
+            this.libraryNovelCards = (ArrayList<NovelCard>) savedInstanceState.getSerializable("lib");
+        }
         View view = inflater.inflate(R.layout.fragment_library, container, false);
         recyclerView = view.findViewById(R.id.fragment_library_recycler);
         this.context = Objects.requireNonNull(container).getContext();
-        setLibraryCards(LibraryFragment.libraryNovelCards);
+        setLibraryCards(libraryNovelCards);
         return view;
     }
 
-    public Menu menu;
+
     /**
      * Creates the option menu
      * @param menu menu to fill
@@ -139,14 +203,15 @@ public class LibraryFragment extends Fragment {
             if (searchView != null) {
                 searchView.setOnQueryTextListener(new LibrarySearchQuery(this));
                 searchView.setOnCloseListener(() -> {
-                    setLibraryCards(LibraryFragment.libraryNovelCards);
+                    setLibraryCards(libraryNovelCards);
                     return false;
                 });
             }
-            menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
-                Toast.makeText(getContext(), "In the future this will allow you to migrate between sources", Toast.LENGTH_LONG).show();
+            menu.findItem(R.id.updater_now).setOnMenuItemClickListener(menuItem -> {
+                Toast.makeText(getContext(), "In the future this will start a checking of each novel in this library", Toast.LENGTH_SHORT).show();
                 return true;
             });
+
         } else {
             inflater.inflate(R.menu.toolbar_library_selected, menu);
             menu.findItem(R.id.chapter_select_all).setOnMenuItemClickListener(menuItem -> {
@@ -171,28 +236,20 @@ public class LibraryFragment extends Fragment {
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
                 return true;
             });
+            menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
+                Intent intent = new Intent(getActivity(), MigrationView.class);
+                try {
+                    intent.putExtra("selected", Database.serialize(selectedNovels));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("target", 1);
+                startActivity(intent);
+                return true;
+            });
         }
 
     }
 
-    /**
-     * Sets the cards to display
-     */
-    public void setLibraryCards(ArrayList<NovelCard> novelCards) {
-        if (recyclerView != null) {
-            recyclerView.setHasFixedSize(false);
-            RecyclerView.LayoutManager library_layoutManager;
-            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-                library_layoutManager = new GridLayoutManager(context, 2, RecyclerView.VERTICAL, false);
-            else
-                library_layoutManager = new GridLayoutManager(context, 4, RecyclerView.VERTICAL, false);
-            libraryNovelCardsAdapter = new LibraryNovelAdapter(novelCards, this);
-            recyclerView.setLayoutManager(library_layoutManager);
-            recyclerView.setAdapter(libraryNovelCardsAdapter);
-        }
-    }
 
-    public MenuInflater getInflater() {
-        return new MenuInflater(getContext());
-    }
 }

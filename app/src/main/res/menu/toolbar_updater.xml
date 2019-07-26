@@ -3,17 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/library_search"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="@string/search"
-        app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/updater_now"
         android:icon="@drawable/ic_refresh_black_24dp"
         android:title="@string/update_now"
         app:showAsAction="ifRoom" />
-
-
 </menu>

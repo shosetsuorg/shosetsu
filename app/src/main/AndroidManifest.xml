@@ -33,6 +33,8 @@
         <activity
             android:name=".ui.novel.NovelFragmentChapterReader"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity android:name=".ui.novel.MigrationView"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
     </application>
 
 </manifest>

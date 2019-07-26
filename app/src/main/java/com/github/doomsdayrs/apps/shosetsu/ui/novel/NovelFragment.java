@@ -70,6 +70,19 @@ public class NovelFragment extends Fragment {
     }
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (StaticNovel.chapterLoader != null)
+            StaticNovel.chapterLoader.cancel(true);
+        if (StaticNovel.novelLoader != null)
+            StaticNovel.novelLoader.cancel(true);
+
+        StaticNovel.chapterLoader = null;
+        StaticNovel.novelLoader = null;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -93,7 +106,14 @@ public class NovelFragment extends Fragment {
         if (savedInstanceState == null) {
             if (SettingsController.isOnline() && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 setViewPager();
-                new NovelLoader(this, true).execute(getActivity());
+
+                if (StaticNovel.novelLoader != null && StaticNovel.novelLoader.isCancelled())
+                    StaticNovel.novelLoader.cancel(true);
+
+                if (StaticNovel.novelLoader == null || StaticNovel.novelLoader.isCancelled())
+                    StaticNovel.novelLoader = new NovelLoader(this, true);
+
+                StaticNovel.novelLoader.execute(getActivity());
             } else {
                 StaticNovel.novelPage = Database.DatabaseLibrary.getNovelPage(StaticNovel.novelURL);
                 StaticNovel.status = Database.DatabaseLibrary.getStatus(StaticNovel.novelURL);

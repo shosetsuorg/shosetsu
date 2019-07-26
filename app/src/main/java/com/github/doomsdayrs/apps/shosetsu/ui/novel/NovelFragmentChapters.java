@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,16 +63,16 @@ import java.util.Objects;
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
 public class NovelFragmentChapters extends Fragment {
-    public static ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
+    public ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
 
-    public static boolean contains(NovelChapter novelChapter) {
+    public boolean contains(NovelChapter novelChapter) {
         for (NovelChapter n : selectedChapters)
             if (n.link.equalsIgnoreCase(novelChapter.link))
                 return true;
         return false;
     }
 
-    public static int findMinPosition() {
+    public int findMinPosition() {
         int min = StaticNovel.novelChapters.size();
         for (int x = 0; x < StaticNovel.novelChapters.size(); x++)
             if (contains(StaticNovel.novelChapters.get(x)))
@@ -80,7 +81,7 @@ public class NovelFragmentChapters extends Fragment {
         return min;
     }
 
-    public static int findMaxPosition() {
+    public int findMaxPosition() {
         int max = -1;
         for (int x = StaticNovel.novelChapters.size() - 1; x >= 0; x--)
             if (contains(StaticNovel.novelChapters.get(x)))
@@ -98,6 +99,8 @@ public class NovelFragmentChapters extends Fragment {
     public ProgressBar progressBar;
     public SwipeRefreshLayout swipeRefreshLayout;
     public NovelFragment novelFragment;
+    public TextView pageCount;
+
     /**
      * Constructor
      */
@@ -109,6 +112,7 @@ public class NovelFragmentChapters extends Fragment {
         this.novelFragment = novelFragment;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -118,8 +122,19 @@ public class NovelFragmentChapters extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("NFChapters", "Destroy");
         recyclerView = null;
         adapter = null;
+
+        if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {
+            StaticNovel.novelLoader.setC(false);
+            StaticNovel.novelLoader.cancel(true);
+        }
+
+        if (StaticNovel.chapterLoader != null && !StaticNovel.chapterLoader.isCancelled()) {
+            StaticNovel.chapterLoader.setC(false);
+            StaticNovel.chapterLoader.cancel(true);
+        }
     }
 
     /**
@@ -130,7 +145,9 @@ public class NovelFragmentChapters extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+
         outState.putInt("maxPage", currentMaxPage);
+        outState.putSerializable("selChapter", selectedChapters);
     }
 
     /**
@@ -144,13 +161,21 @@ public class NovelFragmentChapters extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreateView", "NovelFragmentChapters");
+        if (savedInstanceState!=null){
+            selectedChapters = (ArrayList<NovelChapter>) savedInstanceState.getSerializable("selChapter");
+        }
+        Log.d("NovelFragmentChapters", "Creating");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         progressBar = view.findViewById(R.id.fragment_novel_chapters_progress);
         swipeRefreshLayout = view.findViewById(R.id.fragment_novel_chapters_refresh);
+        pageCount = view.findViewById(R.id.page_count);
 
-        swipeRefreshLayout.setOnRefreshListener(() -> new ChapterLoader(this).execute(getActivity()));
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (StaticNovel.chapterLoader == null || StaticNovel.chapterLoader.isCancelled())
+                StaticNovel.chapterLoader = new ChapterLoader(this);
+            StaticNovel.chapterLoader.execute(getActivity());
+        });
 
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage");
@@ -167,6 +192,7 @@ public class NovelFragmentChapters extends Fragment {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+
             if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(StaticNovel.novelURL);
             }

@@ -1,9 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
-
-import com.github.doomsdayrs.apps.shosetsu.R;
-
-import java.io.Serializable;
-
+package com.github.doomsdayrs.apps.shosetsu.variables;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,31 +17,24 @@ import java.io.Serializable;
  * specific language governing permissions and limitations
  * under the License.
  * ====================================================================
- * Shosetsu
- * 9 / June / 2019
+ * shosetsu
+ * 15 / 07 / 2019
  *
  * @author github.com/doomsdayrs
  */
-public class RecycleCard implements Serializable {
-    /**
-     * If there isn't an image loaded in, this will be the image
-     */
-    public final int libraryImageResource;
 
-    /**
-     * Text of the card
-     */
-    public final String title;
+import org.joda.time.DateTime;
 
-    /**
-     * Constructor
-     *
-     * @param title text of card
-     */
-    RecycleCard(String title) {
-        this.libraryImageResource = R.drawable.ic_close_black_24dp;
-        this.title = title;
+public class Update {
+    public final String novelURL;
+    public final String chapterURL;
+    public final long timeMS;
+    public final DateTime dateTime;
+
+    public Update(String novelURL, String chapterURL, long timeMS) {
+        this.novelURL = novelURL;
+        this.chapterURL = chapterURL;
+        this.timeMS = timeMS;
+        dateTime = new DateTime(timeMS);
     }
-
-
 }

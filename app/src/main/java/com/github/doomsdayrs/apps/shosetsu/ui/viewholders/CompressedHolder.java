@@ -1,5 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
-/*
+package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,39 +16,28 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
  * specific language governing permissions and limitations
  * under the License.
  * ====================================================================
- * Shosetsu
- * 13 / 07 / 2019
+ * shosetsu
+ * 19 / 07 / 2019
  *
  * @author github.com/doomsdayrs
  */
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 
-public class BackupSettings extends Fragment {
-    Button button;
+public class CompressedHolder extends RecyclerView.ViewHolder {
+    public final ImageView image;
+    public final TextView title;
 
-    public BackupSettings() {
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreateView", "BackupSettings");
-        View view = inflater.inflate(R.layout.settings_backup, container, false);
-        button = view.findViewById(R.id.settings_backup_now);
-        button.setOnClickListener(view1 -> Database.backupDatabase());
-        return view;
+    public CompressedHolder(@NonNull View itemView) {
+        super(itemView);
+        image = itemView.findViewById(R.id.catalogue_item_card_image);
+        title = itemView.findViewById(R.id.catalogue_item_card_text);
     }
 }

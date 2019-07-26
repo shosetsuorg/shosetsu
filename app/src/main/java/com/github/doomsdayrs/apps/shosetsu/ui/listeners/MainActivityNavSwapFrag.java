@@ -1,16 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.listeners;
 
-import androidx.annotation.NonNull;
-
-import com.github.doomsdayrs.apps.shosetsu.ui.main.CatalogueFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.CataloguesFragment;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
 import android.util.Log;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
+
 import com.github.doomsdayrs.apps.shosetsu.MainActivity;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CataloguesFragment;
+import com.google.android.material.navigation.NavigationView;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -78,6 +77,15 @@ public class MainActivityNavSwapFrag implements NavigationView.OnNavigationItemS
                         .beginTransaction()
                         .addToBackStack("tag")
                         .replace(R.id.fragment_container, mainActivity.downloadsFragment)
+                        .commit();
+            }
+            break;
+            case R.id.nav_updater: {
+                Log.d("Nav", "Updater Selected");
+                mainActivity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack("tag")
+                        .replace(R.id.fragment_container, mainActivity.updatesFragment)
                         .commit();
             }
             break;

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.util.Log;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
@@ -56,6 +57,10 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
+// TODO cache clearing
+//  >Library, remove all where bookmark = 0
+//  >Chapters, remove all that are not from a bookmarked library
+
 public class Database {
     /**
      * SQLITEDatabase
@@ -124,7 +129,7 @@ public class Database {
      * @return Serialised string
      * @throws IOException exception
      */
-    private static String serialize(Object object) throws IOException {
+    public static String serialize(Object object) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(object);
@@ -140,7 +145,7 @@ public class Database {
      * @throws IOException            exception
      * @throws ClassNotFoundException exception
      */
-    private static Object deserialize(String string) throws IOException, ClassNotFoundException {
+    public static Object deserialize(String string) throws IOException, ClassNotFoundException {
         byte[] bytes = Base64.decode(string, Base64.NO_WRAP);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
@@ -582,6 +587,7 @@ public class Database {
          * @return the library
          */
         public static ArrayList<NovelCard> getLibrary() {
+            Log.d("DL", "Getting");
             Cursor cursor = library.query(Tables.NOVELS.toString(),
                     new String[]{Columns.NOVEL_URL.toString(), Columns.FORMATTER_ID.toString(), Columns.NOVEL_PAGE.toString()},
                     Columns.BOOKMARKED + "=1", null, null, null, null);
@@ -664,6 +670,13 @@ public class Database {
 
         public static void updateData(String novelURL, NovelPage novelPage) throws IOException {
             library.execSQL("update " + Tables.NOVELS + " set " + Columns.NOVEL_PAGE + "='" + serialize(novelPage) + "' where " + Columns.NOVEL_URL + "='" + novelURL + "'");
+        }
+
+        public static void migrateNovel(String oldURL, String newURL, int formatterID, NovelPage newNovel, int status) {
+            unBookmark(oldURL);
+            if (!Database.DatabaseLibrary.inLibrary(newURL))
+                addToLibrary(formatterID, newNovel, newURL, status);
+            bookMark(newURL);
         }
     }
 

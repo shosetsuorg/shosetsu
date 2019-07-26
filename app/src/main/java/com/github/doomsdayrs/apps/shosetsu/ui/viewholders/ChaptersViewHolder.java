@@ -129,20 +129,20 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     }
 
     public void addToSelect() {
-        if (!NovelFragmentChapters.contains(novelChapter))
-            NovelFragmentChapters.selectedChapters.add(novelChapter);
+        if (!novelFragmentChapters.contains(novelChapter))
+            novelFragmentChapters.selectedChapters.add(novelChapter);
         else
             removeFromSelect();
-        if (NovelFragmentChapters.selectedChapters.size() == 1 || NovelFragmentChapters.selectedChapters.size() <= 0)
+        if (novelFragmentChapters.selectedChapters.size() == 1 || novelFragmentChapters.selectedChapters.size() <= 0)
             novelFragmentChapters.onCreateOptionsMenu(novelFragmentChapters.menu, novelFragmentChapters.getInflater());
         NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
     }
 
     private void removeFromSelect() {
-        if (NovelFragmentChapters.contains(novelChapter))
-            for (int x = 0; x < NovelFragmentChapters.selectedChapters.size(); x++)
-                if (NovelFragmentChapters.selectedChapters.get(x).link.equalsIgnoreCase(novelChapter.link)) {
-                    NovelFragmentChapters.selectedChapters.remove(x);
+        if (novelFragmentChapters.contains(novelChapter))
+            for (int x = 0; x < novelFragmentChapters.selectedChapters.size(); x++)
+                if (novelFragmentChapters.selectedChapters.get(x).link.equalsIgnoreCase(novelChapter.link)) {
+                    novelFragmentChapters.selectedChapters.remove(x);
                     return;
                 }
     }

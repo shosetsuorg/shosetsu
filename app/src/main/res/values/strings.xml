@@ -59,6 +59,9 @@
     <string name="download_speed">Download speed</string>
     <string name="settings_download_speed_hint">Sets the wait limit between novel downloading</string>
 
+    <!-- Migration View -->
+    <string name="starting">Starting</string>
+
     <!-- Settings Info -->
     <string name="version">Version</string>
     <string name="report_bug">Report bug</string>
@@ -74,8 +77,17 @@
     <string name="selection_options">Selection options</string>
     <string name="remove">Remove</string>
     <string name="no_results_found">No results found!</string>
+    <string name="my_library">My library</string>
+    <string name="library_updates">Library updates</string>
+    <string name="update_now">Update now</string>
     <string name="migrate_sources">Migrate sources</string>
     <string name="confirm">Confirm</string>
     <string name="selection">Selection</string>
     <string name="map_to">Map to</string>
+    <string name="migrate_source">Migrate source</string>
+    <string name="this_will_be_released_in_beta">This will be released in beta</string>
+
+
 </resources>
+
+
