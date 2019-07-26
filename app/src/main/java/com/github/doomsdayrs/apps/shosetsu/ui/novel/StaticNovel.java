@@ -45,4 +45,35 @@ public class StaticNovel {
     public static Status status = Status.UNREAD;
     public static NovelLoader novelLoader = null;
     public static ChapterLoader chapterLoader = null;
+
+    public static void destroy() {
+        formatter = null;
+        novelChapters = null;
+        novelURL = null;
+        novelPage = null;
+
+        if (novelLoader != null) {
+            if (!novelLoader.isCancelled()) {
+                novelLoader.setC(false);
+                novelLoader.cancel(true);
+            }
+            novelLoader = null;
+        }
+        if (novelLoader != null) {
+            if (!novelLoader.isCancelled()) {
+                novelLoader.setC(false);
+                novelLoader.cancel(true);
+            }
+            novelLoader = null;
+        }
+
+        if (chapterLoader != null) {
+            if (!chapterLoader.isCancelled()) {
+                chapterLoader.setC(false);
+                chapterLoader.cancel(true);
+            }
+            chapterLoader = null;
+        }
+        status = Status.UNREAD;
+    }
 }

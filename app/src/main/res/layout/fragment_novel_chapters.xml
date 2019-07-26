@@ -36,24 +36,10 @@
                 tools:layout_editor_absoluteY="0dp" />
         </LinearLayout>
 
-        <ProgressBar
-            android:id="@+id/fragment_novel_chapters_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_conversion_absoluteHeight="50dp"
-            tools:layout_conversion_absoluteWidth="50dp" />
-
-        <TextView
+        <com.google.android.material.chip.Chip
             android:id="@+id/page_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="64dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"

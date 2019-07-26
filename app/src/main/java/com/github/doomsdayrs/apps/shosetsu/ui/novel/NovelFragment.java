@@ -73,14 +73,7 @@ public class NovelFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (StaticNovel.chapterLoader != null)
-            StaticNovel.chapterLoader.cancel(true);
-        if (StaticNovel.novelLoader != null)
-            StaticNovel.novelLoader.cancel(true);
-
-        StaticNovel.chapterLoader = null;
-        StaticNovel.novelLoader = null;
+        StaticNovel.destroy();
     }
 
     @Nullable
