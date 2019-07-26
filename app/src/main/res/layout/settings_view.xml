@@ -7,14 +7,14 @@
     <include layout="@layout/settings_item"
         android:id="@+id/settings_reader_night_mode"/>
 
-    <include layout="@layout/settings_item"
+    <!--<include layout="@layout/settings_item"
         android:id="@+id/settings_reader_text_size"/>
 
     <include layout="@layout/settings_item"
         android:id="@+id/settings_reader_para_spacing"/>
 
     <include layout="@layout/settings_item"
-        android:id="@+id/settings_reader_para_indent"/>
+        android:id="@+id/settings_reader_para_indent"/>-->
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

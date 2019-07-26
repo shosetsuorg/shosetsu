@@ -30,9 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -120,18 +118,18 @@ public class ViewSettings extends Fragment {
         nightModeItem.setOnClickListener(this::onClickNIghtMode);
 
         // Setup Text size
-        SettingsItem textSizeItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_text_size));
-        textSizeItem.setTitle(R.string.text_size);
+        // SettingsItem textSizeItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_text_size));
+        // textSizeItem.setTitle(R.string.text_size);
         // TODO: Get current Text size
 
         // Setup Paragraph Spacing
-        SettingsItem paraSpacingItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_para_spacing));
-        paraSpacingItem.setTitle(R.string.spacing);
+        // SettingsItem paraSpacingItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_para_spacing));
+        // paraSpacingItem.setTitle(R.string.spacing);
         // TODO: Get current Paragraph spacing
 
         // Setup Indent Size
-        SettingsItem paraIndentItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_para_indent));
-        paraIndentItem.setTitle(R.string.indent_size);
+        // SettingsItem paraIndentItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_para_indent));
+        // paraIndentItem.setTitle(R.string.indent_size);
         // TODO: Get current Indent size
 
         paragraphSpacing = settingsReaderView.findViewById(R.id.reader_paragraphSpacing);
