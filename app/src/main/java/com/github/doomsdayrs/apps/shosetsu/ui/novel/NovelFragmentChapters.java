@@ -124,7 +124,15 @@ public class NovelFragmentChapters extends Fragment {
         Log.d("NFChapters", "Destroy");
         recyclerView = null;
         adapter = null;
-        super.onDestroy();
+        if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {
+            StaticNovel.novelLoader.setC(false);
+            StaticNovel.novelLoader.cancel(true);
+        }
+
+        if (StaticNovel.chapterLoader != null && !StaticNovel.chapterLoader.isCancelled()) {
+            StaticNovel.chapterLoader.setC(false);
+            StaticNovel.chapterLoader.cancel(true);
+        }
     }
 
     /**
