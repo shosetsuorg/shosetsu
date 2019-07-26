@@ -52,6 +52,7 @@ import java.util.Objects;
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
 //TODO MarkDown support
 public class NovelFragmentChapterReader extends AppCompatActivity {

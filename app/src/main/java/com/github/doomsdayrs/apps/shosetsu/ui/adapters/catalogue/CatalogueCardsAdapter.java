@@ -42,6 +42,7 @@ import java.util.ArrayList;
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
 public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.CatalogueHolder> {
     public final ArrayList<CatalogueCard> catalogues;

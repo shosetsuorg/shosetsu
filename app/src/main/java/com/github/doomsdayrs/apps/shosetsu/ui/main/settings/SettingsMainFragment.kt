@@ -27,11 +27,12 @@ import org.kodein.di.Kodein
  * Shosetsu
  * 9 / June / 2019
  *
- * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
+
 /**
  * Constructor
- * TODO, Create custom option menu for settings to search specific ones
+ * TODO: Create custom option menu for settings to search specific ones
  */
 class SettingsMainFragment(kodein: Kodein) : SettingsFragment(kodein) {
 

@@ -32,7 +32,9 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings
  * 14 / June / 2019
  *
  * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
+
 object SettingsController {
     // Preference objects
     var download: SharedPreferences? = null

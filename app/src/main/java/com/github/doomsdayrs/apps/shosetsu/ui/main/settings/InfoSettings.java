@@ -21,6 +21,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
 
 import android.content.Intent;

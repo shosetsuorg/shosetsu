@@ -44,6 +44,7 @@ import com.google.android.material.card.MaterialCardView;
  * 16 / 06 / 2019
  *
  * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
 public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

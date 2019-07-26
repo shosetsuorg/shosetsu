@@ -16,7 +16,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
  * Shosetsu
  * 13 / 07 / 2019
  *
- * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
 
 import androidx.annotation.NonNull;

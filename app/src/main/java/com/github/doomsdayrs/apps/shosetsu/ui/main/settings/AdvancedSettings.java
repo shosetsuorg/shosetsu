@@ -21,6 +21,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main.settings;
  * 13 / 07 / 2019
  *
  * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
 
 import android.os.Bundle;

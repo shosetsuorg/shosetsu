@@ -48,6 +48,7 @@ import java.util.List;
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
+ * @author github.com/hXtreme
  */
 public class NovelFragment extends Fragment {
 
