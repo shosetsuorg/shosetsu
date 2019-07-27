@@ -1,6 +1,6 @@
 <AppUpdater>
 
-    <chapterUpdate>
+    <update>
         <latestVersion>1.1.9-alpha</latestVersion>
         <latestVersionCode>18</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
@@ -12,6 +12,6 @@
             - Primitive migration, and. GOSH. It can handle multiple novels, might be slow tho. and be patient for loadings
             - Known issue: rotating often in chapter view then swapping back to a catalogue breaks the catalogue.
         </releaseNotes>
-    </chapterUpdate>
+    </update>
 
 </AppUpdater>
