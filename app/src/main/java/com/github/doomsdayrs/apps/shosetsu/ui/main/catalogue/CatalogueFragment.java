@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +36,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNov
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoOfColumns;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -184,10 +187,9 @@ public class CatalogueFragment extends Fragment {
         if (library_view != null) {
             library_view.setHasFixedSize(false);
             RecyclerView.LayoutManager library_layoutManager;
-            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-                library_layoutManager = new GridLayoutManager(context, 2, RecyclerView.VERTICAL, false);
-            else
-                library_layoutManager = new GridLayoutManager(context, 4, RecyclerView.VERTICAL, false);
+
+            library_layoutManager = new GridLayoutManager(context, calculateNoOfColumns(getContext(), 200), RecyclerView.VERTICAL, false);
+
             catalogueNovelCardsAdapter = new CatalogueNovelCardsAdapter(recycleCards, getFragmentManager(), formatter);
             library_view.setLayoutManager(library_layoutManager);
             library_view.addOnScrollListener(new CatalogueFragmentHitBottom(this));

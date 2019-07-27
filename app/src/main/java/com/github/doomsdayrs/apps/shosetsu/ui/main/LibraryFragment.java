@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoOfColumns;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -115,10 +117,8 @@ public class LibraryFragment extends Fragment {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager library_layoutManager;
-            if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-                library_layoutManager = new GridLayoutManager(context, 2, RecyclerView.VERTICAL, false);
-            else
-                library_layoutManager = new GridLayoutManager(context, 4, RecyclerView.VERTICAL, false);
+            library_layoutManager = new GridLayoutManager(context, calculateNoOfColumns(getContext(), 200), RecyclerView.VERTICAL, false);
+
             libraryNovelCardsAdapter = new LibraryNovelAdapter(novelCards, this);
             recyclerView.setLayoutManager(library_layoutManager);
             recyclerView.setAdapter(libraryNovelCardsAdapter);
@@ -190,7 +190,8 @@ public class LibraryFragment extends Fragment {
 
     /**
      * Creates the option menu
-     * @param menu menu to fill
+     *
+     * @param menu     menu to fill
      * @param inflater inflater of layouts and shiz
      */
     @Override

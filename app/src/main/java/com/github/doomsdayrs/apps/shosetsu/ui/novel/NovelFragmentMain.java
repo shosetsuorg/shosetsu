@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Stati;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
@@ -68,6 +69,7 @@ public class NovelFragmentMain extends Fragment {
     private TextView description;
     private TextView formatterName;
     private TextView status;
+    private TextView pStat;
     private ChipGroup genres;
     public SwipeRefreshLayout swipeRefreshLayout;
 
@@ -144,6 +146,7 @@ public class NovelFragmentMain extends Fragment {
             formatterName = view.findViewById(R.id.fragment_novel_formatter);
             floatingActionButton = view.findViewById(R.id.fragment_novel_add);
             status = view.findViewById(R.id.fragment_novel_status);
+            pStat = view.findViewById(R.id.fragment_novel_publish);
 
             swipeRefreshLayout = view.findViewById(R.id.fragment_novel_main_refresh);
         }
@@ -186,7 +189,26 @@ public class NovelFragmentMain extends Fragment {
             artists.setText(Arrays.toString(StaticNovel.novelPage.artists));
 
         status.setText(StaticNovel.status.getStatus());
-
+        if (StaticNovel.novelPage.status != null) {
+            String s = "unknown";
+            switch (StaticNovel.novelPage.status) {
+                case PAUSED:
+                    pStat.setText(R.string.paused);
+                    s = "Paused";
+                    break;
+                case COMPLETED:
+                    pStat.setText(R.string.completed);
+                    s = "Completed";
+                    break;
+                case PUBLISHING:
+                    pStat.setText(R.string.publishing);
+                    s = "Publishing";
+                    break;
+                default:
+                    pStat.setText(R.string.unknown);
+            }
+            System.out.println("PS: " + s);
+        }
         if (StaticNovel.novelPage.genres != null && getContext() != null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             for (String string : StaticNovel.novelPage.genres) {

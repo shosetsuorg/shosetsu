@@ -4,14 +4,14 @@
     android:id="@+id/novel_item_card"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:layout_margin="4dp"
     app:cardElevation="1dp"
     app:contentPadding="1dp"
     app:strokeWidth="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="180dp"
+        android:layout_width="190dp"
         android:layout_height="wrap_content">
 
 
@@ -41,6 +41,8 @@
             android:id="@+id/novel_item_left_to_read"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:visibility="gone"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"

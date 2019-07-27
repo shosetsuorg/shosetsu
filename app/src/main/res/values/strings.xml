@@ -91,6 +91,11 @@
     <string name="reading_status">Reading Status</string>
     <string name="publishing_state">Publishing State:</string>
 
+    <!-- Publishing status-->
+    <string name="paused">Paused</string>
+    <string name="completed">Completed</string>
+    <string name="publishing">Publishing</string>
+    <string name="unknown">Unknown</string>
 
 </resources>
 

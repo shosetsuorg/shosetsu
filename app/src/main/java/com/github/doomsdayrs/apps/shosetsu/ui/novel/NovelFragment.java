@@ -52,7 +52,6 @@ import java.util.List;
 public class NovelFragment extends Fragment {
 
 
-
     public NovelFragmentMain novelFragmentMain;
     public NovelFragmentChapters novelFragmentChapters;
     public ProgressBar progressBar;
@@ -106,11 +105,11 @@ public class NovelFragment extends Fragment {
             if (SettingsController.isOnline() && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 setViewPager();
 
-                if (StaticNovel.novelLoader != null && StaticNovel.novelLoader.isCancelled())
+                if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {
+                    StaticNovel.novelLoader.setC(false);
                     StaticNovel.novelLoader.cancel(true);
-
-                if (StaticNovel.novelLoader == null || StaticNovel.novelLoader.isCancelled())
-                    StaticNovel.novelLoader = new NovelLoader(this, true);
+                }
+                StaticNovel.novelLoader = new NovelLoader(this, true);
 
                 StaticNovel.novelLoader.execute(getActivity());
             } else {
