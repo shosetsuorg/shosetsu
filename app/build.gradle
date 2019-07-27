@@ -6,8 +6,8 @@ android {
         applicationId "com.github.doomsdayrs.apps.shosetsu"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 17
-        versionName "v1.1.8-alpha"
+        versionCode 18
+        versionName "v1.1.9-alpha"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

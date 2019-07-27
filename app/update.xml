@@ -1,13 +1,16 @@
 <AppUpdater>
 
     <chapterUpdate>
-        <latestVersion>1.1.8-alpha</latestVersion>
-        <latestVersionCode>17</latestVersionCode>
+        <latestVersion>1.1.9-alpha</latestVersion>
+        <latestVersionCode>18</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
         <releaseNotes>
-            - HOPEFULLY you all got an chapterUpdate notification for this
-            - Added new parser
-            - Bug fixes and improvements
+            - Still hoping you got an update :D
+            - If you are from uptodown, use uptodown to get your update at https://shosetsu.en.uptodown.com/android
+            - Lots of bug fixes and performance improvements
+            - Added bases for many new features to come
+            - Primitive migration, and. GOSH. It can handle multiple novels, might be slow tho. and be patient for loadings
+            - Known issue: rotating often in chapter view then swapping back to a catalogue breaks the catalogue.
         </releaseNotes>
     </chapterUpdate>
 
