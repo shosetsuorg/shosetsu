@@ -152,7 +152,6 @@ public class Database {
         return objectInputStream.readObject();
     }
 
-
     /**
      * Download control
      */
@@ -266,6 +265,14 @@ public class Database {
      */
     public static class DatabaseChapter {
 
+        // TODO This will remove all chapter data
+        public static void purgeCache(){
+
+        }
+
+        //TODO purge not needed cache
+        public static void purgeUneededCache(){
+        }
 
         /**
          * @param novelURL

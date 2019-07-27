@@ -109,6 +109,8 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
             case READ:
                 chaptersViewHolder.status.setText(Status.READ.getStatus());
+                chaptersViewHolder.readTag.setVisibility(View.GONE);
+                chaptersViewHolder.read.setVisibility(View.GONE);
                 break;
 
             case UNREAD:
