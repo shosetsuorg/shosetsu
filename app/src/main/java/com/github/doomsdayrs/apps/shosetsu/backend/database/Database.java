@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -11,8 +12,13 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Chapter;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Download;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Library;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.SUPERSERIALZIED;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
@@ -21,11 +27,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -152,6 +162,16 @@ public class Database {
         return objectInputStream.readObject();
     }
 
+    public static boolean intToBoolean(int a) {
+        return a == 1;
+    }
+
+    public static int booleanToInt(boolean a) {
+        if (a)
+            return 1;
+        else return 0;
+    }
+
     /**
      * Download control
      */
@@ -266,12 +286,12 @@ public class Database {
     public static class DatabaseChapter {
 
         // TODO This will remove all chapter data
-        public static void purgeCache(){
+        public static void purgeCache() {
 
         }
 
         //TODO purge not needed cache
-        public static void purgeUneededCache(){
+        public static void purgeUneededCache() {
         }
 
         /**
@@ -476,7 +496,8 @@ public class Database {
                         Columns.Y + "," +
                         Columns.READ_CHAPTER + "," +
                         Columns.BOOKMARKED + "," +
-                        Columns.IS_SAVED + ") values ('" +
+                        Columns.IS_SAVED + ") " +
+                        "values ('" +
                         novelURL + "','" +
                         novelChapter.link + "','" +
                         serialize(novelChapter) + "'," +
@@ -523,7 +544,8 @@ public class Database {
 
         /**
          * Bookmarks the novel
-         * @param novelURL  novelURL of the novel
+         *
+         * @param novelURL novelURL of the novel
          */
         public static void bookMark(String novelURL) {
             library.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.NOVEL_URL + "='" + novelURL + "'");
@@ -571,6 +593,7 @@ public class Database {
         public static boolean removeFromLibrary(String novelURL) {
             return library.delete(Tables.NOVELS.toString(), Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
         }
+
         /**
          * Is a novel in the library or not
          *
@@ -691,94 +714,225 @@ public class Database {
     // > If entry exists, simply update the data
     // > Popup window of restoring progress and errors
 
-    /**
-     * Backs up database
-     * TODO Popup window of progress
-     */
-    public static void backupDatabase() {
-        new backUP().execute();
+
+
+ public    static class restore extends AsyncTask<Void, Void, Void> {
+        String file_path;
+        Context context;
+
+        restore(String file_path, Context context) {
+            this.file_path = file_path;
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Log.i("Progress", "Started restore");
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.i("Progress", "Completed restore");
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            File file = new File("" + file_path);
+            if (file.exists()) {
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+
+                    StringBuilder string = new StringBuilder();
+                    {
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            string.append(line);
+                        }
+                        bufferedReader.close();
+                    }
+                    SUPERSERIALZIED superserialzied = (SUPERSERIALZIED) deserialize(string.toString());
+
+                    Log.i("Progress", "Restoring downloads");
+                    for (Download download : superserialzied.downloads) {
+                        DownloadItem downloadItem = new DownloadItem(DefaultScrapers.formatters.get(download.FORMATTER_ID - 1), download.NOVEL_NAME, download.CHAPTER_NAME, download.NOVEL_URL, download.CHAPTER_URL);
+                        if (!DatabaseDownloads.inDownloads(downloadItem))
+                            DatabaseDownloads.addToDownloads(downloadItem);
+                    }
+
+                    Log.i("Progress", "Restoring libraries");
+                    for (Library library : superserialzied.libraries) {
+                        if (!DatabaseLibrary.inLibrary(library.NOVEL_URL))
+                            DatabaseLibrary.addToLibrary(library.FORMATTER_ID, (NovelPage) deserialize(library.NOVEL_PAGE), library.NOVEL_URL, library.STATUS);
+
+                        com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
+                        switch (library.STATUS) {
+                            case 0:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD;
+                                break;
+                            case 1:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READING;
+                                break;
+                            case 2:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READ;
+                                break;
+                            case 3:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.ONHOLD;
+                                break;
+                            case 4:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.DROPPED;
+                                break;
+                            default:
+                                status = null;
+                                break;
+                        }
+                        if (status != null)
+                            DatabaseLibrary.setStatus(library.NOVEL_URL, status);
+
+                        if (library.BOOKMARKED)
+                            DatabaseLibrary.bookMark(library.NOVEL_URL);
+                    }
+
+                    Log.i("Progress", "Restoring chapters");
+                    for (Chapter chapter : superserialzied.chapters) {
+                        if (!DatabaseChapter.inChapters(chapter.CHAPTER_URL))
+                            DatabaseChapter.addToChapters(chapter.NOVEL_URL, (NovelChapter) deserialize(chapter.SAVED_DATA));
+
+                        DatabaseChapter.updateY(chapter.CHAPTER_URL, chapter.Y);
+
+                        com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
+                        switch (chapter.READ_CHAPTER) {
+                            case 0:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD;
+                                break;
+                            case 1:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READING;
+                                break;
+                            case 2:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READ;
+                                break;
+                            case 3:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.ONHOLD;
+                                break;
+                            case 4:
+                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.DROPPED;
+                                break;
+                            default:
+                                status = null;
+                                break;
+                        }
+                        if (status != null)
+                            DatabaseChapter.setChapterStatus(chapter.CHAPTER_URL, status);
+
+                        if (chapter.BOOKMARKED)
+                            DatabaseChapter.setBookMark(chapter.CHAPTER_URL, 1);
+
+                        //TODO settings backup
+                    }
+
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
 
     /**
      * Async progress of backup
      */
-    static class backUP extends AsyncTask<Void, Void, Void> {
+    public  static class backUP extends AsyncTask<Void, Void, Void> {
+        Context context;
+
+        public backUP(Context context) {
+            this.context = context;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            Log.i("Progress", "Starting backup");
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.i("Progress", "Finished backup");
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                // Master object for database
-                JSONObject master = new JSONObject();
+                final SUPERSERIALZIED SUPER_SERIALIZED = new SUPERSERIALZIED();
 
+                Log.i("Progress", "Backing up novels");
                 // Library backup
                 {
-                    JSONArray libraryArray = new JSONArray();
-                    Cursor cursor = library.rawQuery("select * from " + Tables.NOVELS, null);
+                    Cursor cursor = library.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null);
                     if (!(cursor.getCount() <= 0))
                         while (cursor.moveToNext()) {
-                            JSONObject a = new JSONObject();
-                            String[] b = {Columns.BOOKMARKED.toString(), Columns.NOVEL_URL.toString(), Columns.NOVEL_PAGE.toString(), Columns.STATUS.toString(), Columns.FORMATTER_ID.toString()};
-                            for (String c : b)
-                                a.put(c, cursor.getString(cursor.getColumnIndex(c)));
+                            String nurl = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
+                            Log.i("NovelBack", nurl);
+                            boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
+                            String npage = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString()));
+                            int formatter_id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+                            int status = cursor.getInt(cursor.getColumnIndex(Columns.STATUS.toString()));
 
-                            libraryArray.put(a);
+                            SUPER_SERIALIZED.libraries.add(new Library(nurl, bookmarked, npage, formatter_id, status));
                         }
-                    master.put("library", libraryArray);
                     cursor.close();
                 }
 
+                // TODO figure out how to prevent non library chapters from being saved, lowering size of backup
+                Log.i("Progress", "Backing up Chapters");
                 // Chapter backup
                 {
-                    JSONArray chapterArray = new JSONArray();
                     Cursor cursor = library.rawQuery("select * from " + Tables.CHAPTERS, null);
                     if (!(cursor.getCount() <= 0))
                         while (cursor.moveToNext()) {
-                            JSONObject a = new JSONObject();
-                            a.put("novelURL", cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())));
-                            a.put("chapterURL", cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString().replace("\"", "\\\""))));
-                            a.put("savedData", cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString())));
-                            a.put("Y", cursor.getInt(cursor.getColumnIndex(Columns.Y.toString())));
-                            a.put("readChapter", cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString())));
-                            a.put("bookmarked", cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
-                            a.put("isSaved", cursor.getString(cursor.getColumnIndex(Columns.IS_SAVED.toString())));
-                            a.put("savePath", cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString())));
-                            chapterArray.put(a);
+                            String nurl = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
+                            String curl = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString()));
+                            // very dirty logger
+                            //Log.i("ChapterBack", curl);
+                            String saved_data = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
+                            int y = cursor.getInt(cursor.getColumnIndex(Columns.Y.toString()));
+                            int read_chapter = cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString()));
+                            boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
+                            boolean is_saved = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.IS_SAVED.toString())));
+                            String path = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
+
+                            SUPER_SERIALIZED.chapters.add(new Chapter(nurl, curl, saved_data, y, read_chapter, bookmarked, is_saved, path));
                         }
-                    master.put("chapters", chapterArray);
                     cursor.close();
                 }
 
-                // Settings Backup
+                Log.i("Progress", "Backing up Downloads");
+                // Downloads backup
                 {
-                    JSONObject settingObject = new JSONObject();
-                    // View
-                    {
-                        JSONObject viewSettings = new JSONObject();
-                        viewSettings.put("textColor", SettingsController.view.getInt("ReaderTextColor", Color.BLACK));
-                        viewSettings.put("backgroundColor", SettingsController.view.getInt("ReaderBackgroundColor", Color.WHITE));
-                        settingObject.put("view", viewSettings);
-                    }
-                    // Download
-                    {
-                        JSONObject downloadSettings = new JSONObject();
-                        downloadSettings.put("path", SettingsController.download.getString("dir", "/storage/emulated/0/Shosetsu/"));
-                    }
-                    master.put("settings", settingObject);
+                    Cursor cursor = library.rawQuery("select * from " + Tables.DOWNLOADS, null);
+                    if (!(cursor.getCount() <= 0))
+                        while (cursor.moveToNext()) {
+                            String nurl = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
+                            String curl = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString()));
+                            String nname = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
+                            String cname = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
+                            int formatter_id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+                            boolean paused = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.PAUSED.toString())));
+
+                            SUPER_SERIALIZED.downloads.add(new Download(nurl, curl, formatter_id, nname, cname, paused));
+                        }
+                    cursor.close();
                 }
+
+                Log.i("Progress", "Writing");
                 File folder = new File(Download_Manager.shoDir + "/backup/");
                 if (!folder.exists())
                     if (!folder.mkdirs()) {
                         throw new IOException("Failed to mkdirs");
                     }
                 FileOutputStream fileOutputStream = new FileOutputStream(
-                        (folder.getPath() + "/backup-" + (new Date().toString()) + ".txt")
+                        (folder.getPath() + "/backup-" + (new Date().toString()) + ".shoback")
                 );
-                fileOutputStream.write(master.toString().getBytes());
+                fileOutputStream.write(SUPER_SERIALIZED.serialize().getBytes());
                 fileOutputStream.close();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }

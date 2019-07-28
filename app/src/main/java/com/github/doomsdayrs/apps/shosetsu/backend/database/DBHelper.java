@@ -32,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
 
-    private static final String chaptersCreate = "create table if not exists " + Database.Tables.CHAPTERS + "(" +
+    private static final String CHAPTERS_CREATE = "create table if not exists " + Database.Tables.CHAPTERS + "(" +
             // Novel URL this chapter belongs to
             Database.Columns.NOVEL_URL + " text not null," +
             // The chapter chapterURL
@@ -56,7 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //TODO Figure out a legitimate way to structure all this data
 
     // Library that the user has saved their novels to
-    private static final String libraryCreate = "create TABLE if not exists " + Database.Tables.NOVELS + " (" +
+    private static final String NOVELS = "create TABLE if not exists " + Database.Tables.NOVELS + " (" +
             // If in the library
             Database.Columns.BOOKMARKED + " integer not null," +
             // URL of this novel
@@ -69,7 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     // Watches download listing
-    private static final String downloadsCreate = "create TABLE if not exists " + Database.Tables.DOWNLOADS + "(" +
+    private static final String DOWNLOADS_CREATE = "create TABLE if not exists " + Database.Tables.DOWNLOADS + "(" +
             Database.Columns.FORMATTER_ID + " integer not null," +
             Database.Columns.NOVEL_URL + " text not null," +
             Database.Columns.CHAPTER_URL + " text not null," +
@@ -102,9 +102,9 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(libraryCreate);
-        db.execSQL(downloadsCreate);
-        db.execSQL(chaptersCreate);
+        db.execSQL(NOVELS);
+        db.execSQL(DOWNLOADS_CREATE);
+        db.execSQL(CHAPTERS_CREATE);
     }
 
     /**
@@ -130,8 +130,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     Database.Columns.FORMATTER_ID + " integer not null," +
                     Database.Columns.MAX_PAGE + " integer not null," +
                     Database.Columns.STATUS + " integer not null" + ")");
-            db.execSQL(downloadsCreate);
-            db.execSQL(chaptersCreate);
+            db.execSQL(DOWNLOADS_CREATE);
+            db.execSQL(CHAPTERS_CREATE);
         }
         if (oldVersion < 5) {
             // in between

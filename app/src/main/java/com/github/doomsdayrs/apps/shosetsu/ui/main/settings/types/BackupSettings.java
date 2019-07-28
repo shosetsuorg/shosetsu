@@ -49,7 +49,8 @@ public class BackupSettings extends Fragment {
         Log.d("OnCreateView", "BackupSettings");
         View view = inflater.inflate(R.layout.settings_backup, container, false);
         button = view.findViewById(R.id.settings_backup_now);
-        button.setOnClickListener(view1 -> Database.backupDatabase());
+        button.setOnClickListener(view1 -> new Database.backUP(getContext()).execute());
+
         return view;
     }
 }
