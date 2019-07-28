@@ -715,12 +715,11 @@ public class Database {
     // > Popup window of restoring progress and errors
 
 
-
- public    static class restore extends AsyncTask<Void, Void, Void> {
+    public static class restore extends AsyncTask<Void, Void, Void> {
         String file_path;
         Context context;
 
-        restore(String file_path, Context context) {
+        public restore(String file_path, Context context) {
             this.file_path = file_path;
             this.context = context;
         }
@@ -840,7 +839,7 @@ public class Database {
     /**
      * Async progress of backup
      */
-    public  static class backUP extends AsyncTask<Void, Void, Void> {
+    public static class backUP extends AsyncTask<Void, Void, Void> {
         Context context;
 
         public backUP(Context context) {

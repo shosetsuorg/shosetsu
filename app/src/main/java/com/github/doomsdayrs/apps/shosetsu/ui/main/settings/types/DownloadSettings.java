@@ -78,10 +78,6 @@ public class DownloadSettings extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 42 && resultCode == Activity.RESULT_OK) {
-            // The document selected by the user won't be returned in the intent.
-            // Instead, a URI to that document will be contained in the return intent
-            // provided to this method as a parameter.
-            // Pull that URI using resultData.getData().
             if (data != null) {
                 String path = Objects.requireNonNull(data.getData()).getPath();
                 Log.i("Selected Folder", "Uri: " + path);

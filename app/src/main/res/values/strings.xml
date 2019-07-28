@@ -96,6 +96,7 @@
     <string name="completed">Completed</string>
     <string name="publishing">Publishing</string>
     <string name="unknown">Unknown</string>
+    <string name="restore_now">Restore now</string>
 
 </resources>
 
