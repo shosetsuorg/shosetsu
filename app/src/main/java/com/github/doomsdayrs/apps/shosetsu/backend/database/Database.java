@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,9 +9,15 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
+import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Chapter;
@@ -507,6 +515,27 @@ public class Database {
             }
         }
 
+        /**
+         * Adds chapter to database
+         *
+         * @param novelURL novelURL
+         */
+        public static void addToChapters(String novelURL, String chapterURL, String chapter) {
+            library.execSQL("insert into " + Tables.CHAPTERS + "(" +
+                    Columns.NOVEL_URL + "," +
+                    Columns.CHAPTER_URL + "," +
+                    Columns.SAVED_DATA + "," +
+                    Columns.Y + "," +
+                    Columns.READ_CHAPTER + "," +
+                    Columns.BOOKMARKED + "," +
+                    Columns.IS_SAVED + ") " +
+                    "values ('" +
+                    novelURL + "','" +
+                    chapterURL + "','" +
+                    chapter + "'," +
+                    0 + "," + 0 + "," + 0 + "," + 0 + ")");
+        }
+
 
         /**
          * Gets chapters of a novel
@@ -588,6 +617,17 @@ public class Database {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        public static void addToLibrary(int formatter, String novelPage, String novelURL, int status) {
+            library.execSQL("insert into " + Tables.NOVELS + "(" +
+                    Columns.BOOKMARKED + ",'" + Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.NOVEL_PAGE + "," + Columns.STATUS + ") values(" +
+                    "0" + "," +
+                    "'" + novelURL + "'," +
+                    "'" + formatter + "','" +
+                    novelPage + "'," +
+                    status + ")"
+            );
         }
 
         public static boolean removeFromLibrary(String novelURL) {
@@ -717,23 +757,47 @@ public class Database {
 
     public static class restore extends AsyncTask<Void, Void, Void> {
         String file_path;
+
+        @SuppressLint("StaticFieldLeak")
         Context context;
+        @SuppressLint("StaticFieldLeak")
+        Button close;
+        @SuppressLint("StaticFieldLeak")
+        ProgressBar progressBar;
+        @SuppressLint("StaticFieldLeak")
+        ProgressBar progressBar2;
+        @SuppressLint("StaticFieldLeak")
+        TextView textView;
+
+        Dialog dialog;
 
         public restore(String file_path, Context context) {
             this.file_path = file_path;
             this.context = context;
+
+            dialog = new Dialog(context);
+            dialog.setContentView(R.layout.backup_restore_view);
+            close = dialog.findViewById(R.id.button);
+            progressBar = dialog.findViewById(R.id.progress);
+            progressBar2 = dialog.findViewById(R.id.progressBar3);
+            textView = dialog.findViewById(R.id.text);
         }
 
         @Override
         protected void onPreExecute() {
             Log.i("Progress", "Started restore");
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             Log.i("Progress", "Completed restore");
+            textView.post(() -> textView.setText(R.string.completed));
+            progressBar2.post(() -> progressBar2.setVisibility(View.GONE));
+            close.post(() -> close.setOnClickListener(view -> dialog.cancel()));
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         protected Void doInBackground(Void... voids) {
             File file = new File("" + file_path);
@@ -741,6 +805,7 @@ public class Database {
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 
+                    textView.post(() -> textView.setText(R.string.reading_file));
                     StringBuilder string = new StringBuilder();
                     {
                         String line;
@@ -749,10 +814,15 @@ public class Database {
                         }
                         bufferedReader.close();
                     }
+
+                    textView.post(() -> textView.setText(R.string.reading_file));
                     SUPERSERIALZIED superserialzied = (SUPERSERIALZIED) deserialize(string.toString());
+                    progressBar.post(() -> progressBar.setMax(superserialzied.chapters.size() + superserialzied.libraries.size() + superserialzied.downloads.size() + 1));
 
                     Log.i("Progress", "Restoring downloads");
                     for (Download download : superserialzied.downloads) {
+                        textView.post(() -> textView.setText("Restoring download: " + download.CHAPTER_URL));
+                        progressBar.post(() -> progressBar.incrementProgressBy(1));
                         DownloadItem downloadItem = new DownloadItem(DefaultScrapers.formatters.get(download.FORMATTER_ID - 1), download.NOVEL_NAME, download.CHAPTER_NAME, download.NOVEL_URL, download.CHAPTER_URL);
                         if (!DatabaseDownloads.inDownloads(downloadItem))
                             DatabaseDownloads.addToDownloads(downloadItem);
@@ -760,8 +830,10 @@ public class Database {
 
                     Log.i("Progress", "Restoring libraries");
                     for (Library library : superserialzied.libraries) {
+                        progressBar.post(() -> progressBar.incrementProgressBy(1));
+                        textView.post(() -> textView.setText("Restoring: " + library.NOVEL_URL));
                         if (!DatabaseLibrary.inLibrary(library.NOVEL_URL))
-                            DatabaseLibrary.addToLibrary(library.FORMATTER_ID, (NovelPage) deserialize(library.NOVEL_PAGE), library.NOVEL_URL, library.STATUS);
+                            DatabaseLibrary.addToLibrary(library.FORMATTER_ID, library.NOVEL_PAGE, library.NOVEL_URL, library.STATUS);
 
                         com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
                         switch (library.STATUS) {
@@ -793,8 +865,10 @@ public class Database {
 
                     Log.i("Progress", "Restoring chapters");
                     for (Chapter chapter : superserialzied.chapters) {
+                        textView.post(() -> textView.setText("Restoring: " + chapter.CHAPTER_URL));
+                        progressBar.post(() -> progressBar.incrementProgressBy(1));
                         if (!DatabaseChapter.inChapters(chapter.CHAPTER_URL))
-                            DatabaseChapter.addToChapters(chapter.NOVEL_URL, (NovelChapter) deserialize(chapter.SAVED_DATA));
+                            DatabaseChapter.addToChapters(chapter.NOVEL_URL, chapter.CHAPTER_URL, chapter.SAVED_DATA);
 
                         DatabaseChapter.updateY(chapter.CHAPTER_URL, chapter.Y);
 
@@ -828,6 +902,18 @@ public class Database {
                         //TODO settings backup
                     }
 
+                    textView.post(() -> textView.setText("Restoring settings"));
+                    progressBar.post(() -> progressBar.incrementProgressBy(1));
+                    Settings.ReaderTextColor = superserialzied.settingsSerialized.reader_text_color;
+                    Settings.ReaderTextBackgroundColor = superserialzied.settingsSerialized.reader_text_background_color;
+                    Download_Manager.shoDir = superserialzied.settingsSerialized.shoDir;
+                    Settings.downloadPaused = superserialzied.settingsSerialized.paused;
+                    Settings.ReaderTextSize = superserialzied.settingsSerialized.textSize;
+                    Settings.themeMode = superserialzied.settingsSerialized.themeMode;
+                    Settings.paragraphSpacing = superserialzied.settingsSerialized.paraSpace;
+                    Settings.indentSize = superserialzied.settingsSerialized.indent;
+
+                    progressBar.post(() -> progressBar.incrementProgressBy(1));
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }

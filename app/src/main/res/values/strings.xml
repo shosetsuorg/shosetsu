@@ -98,6 +98,10 @@
     <string name="unknown">Unknown</string>
     <string name="restore_now">Restore now</string>
 
+
+    <!-- Backup and restore -->
+    <string name="reading_file">Reading</string>
+
 </resources>
 
 
