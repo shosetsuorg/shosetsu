@@ -27,6 +27,9 @@ import android.util.DisplayMetrics;
  * @author github.com/doomsdayrs
  */public class Utilities {
 
+    public static final int SELECTED_STROKE_WIDTH = 8;
+
+
     public static int calculateNoOfColumns(Context context, float columnWidthDp) { // For example columnWidthdp=180
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;

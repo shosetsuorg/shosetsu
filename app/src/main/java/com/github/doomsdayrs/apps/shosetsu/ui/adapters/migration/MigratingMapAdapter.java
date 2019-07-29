@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.CompressedHolder;
 import com.google.android.material.card.MaterialCardView;
@@ -61,7 +62,7 @@ public class MigratingMapAdapter extends RecyclerView.Adapter<CompressedHolder> 
 
         if (position == migrationView.secondSelection) {
             materialCardView.setStrokeColor(Color.BLUE);
-            materialCardView.setStrokeWidth(2);
+            materialCardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
         } else materialCardView.setStrokeWidth(0);
 
         holder.itemView.setOnClickListener(view -> {

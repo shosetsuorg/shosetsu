@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.CompressedHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
@@ -63,7 +64,7 @@ public class MigratingNovelAdapter extends RecyclerView.Adapter<CompressedHolder
 
         if (i == migrationView.selection) {
             materialCardView.setStrokeColor(Color.BLUE);
-            materialCardView.setStrokeWidth(2);
+            materialCardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
         } else materialCardView.setStrokeWidth(0);
 
         Picasso.get().load(novel.imageURL).into(catalogueHolder.image);

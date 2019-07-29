@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.viewholders.LibraryViewHolder;
@@ -89,7 +90,7 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
         } else libraryViewHolder.chip.setVisibility(View.INVISIBLE);
 
         if (libraryFragment.contains(novelCard)) {
-            libraryViewHolder.materialCardView.setStrokeWidth(8);
+            libraryViewHolder.materialCardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
         } else {
             libraryViewHolder.materialCardView.setStrokeWidth(0);
         }

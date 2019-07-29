@@ -147,6 +147,7 @@ public class MigrationView extends AppCompatActivity {
             });
             cancel.setOnLongClickListener(view -> {
                 load.cancel(true);
+                finish();
                 return true;
             });
         }

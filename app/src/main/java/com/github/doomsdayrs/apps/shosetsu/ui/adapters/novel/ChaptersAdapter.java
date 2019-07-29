@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
@@ -78,7 +79,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
         if (novelFragmentChapters.contains(novelChapter)) {
             Log.d("SelectedStatus", "Novel Selected: " + novelChapter.link);
-            chaptersViewHolder.cardView.setStrokeWidth(8);
+            chaptersViewHolder.cardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
             chaptersViewHolder.checkBox.setChecked(true);
         } else {
             chaptersViewHolder.cardView.setStrokeWidth(0);
