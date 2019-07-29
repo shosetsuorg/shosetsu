@@ -89,11 +89,9 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
         } else libraryViewHolder.chip.setVisibility(View.INVISIBLE);
 
         if (libraryFragment.contains(novelCard)) {
-            System.out.println("Is selected");
-            libraryViewHolder.materialCardView.setStrokeColor(Color.BLUE);
+            libraryViewHolder.materialCardView.setStrokeWidth(8);
         } else {
-            System.out.println("Is selected");
-            libraryViewHolder.materialCardView.setStrokeColor(Color.WHITE);
+            libraryViewHolder.materialCardView.setStrokeWidth(0);
         }
 
         if (libraryFragment.selectedNovels.size() > 0) {

@@ -4,6 +4,7 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="selected_blue">#0078FF</color>
 
     <color name="white_trans">#CCFFFFFF</color>
     <color name="black_trans">#CC000000</color>

@@ -78,10 +78,10 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
         if (novelFragmentChapters.contains(novelChapter)) {
             Log.d("SelectedStatus", "Novel Selected: " + novelChapter.link);
-            chaptersViewHolder.cardView.setStrokeColor(Color.BLUE);
+            chaptersViewHolder.cardView.setStrokeWidth(8);
             chaptersViewHolder.checkBox.setChecked(true);
         } else {
-            chaptersViewHolder.cardView.setStrokeColor(Color.WHITE);
+            chaptersViewHolder.cardView.setStrokeWidth(0);
             chaptersViewHolder.checkBox.setChecked(false);
         }
 
@@ -120,7 +120,8 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
         if (novelFragmentChapters.selectedChapters.size() <= 0)
             chaptersViewHolder.itemView.setOnClickListener(chaptersViewHolder);
-        else chaptersViewHolder.itemView.setOnClickListener(view -> chaptersViewHolder.addToSelect());
+        else
+            chaptersViewHolder.itemView.setOnClickListener(view -> chaptersViewHolder.addToSelect());
     }
 
     @Override
