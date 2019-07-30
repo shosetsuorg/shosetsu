@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Download_Manager {
 
-    public static String shoDir = "/Shosetsu/";
+
     private static Downloading download = new Downloading();
 
     /**

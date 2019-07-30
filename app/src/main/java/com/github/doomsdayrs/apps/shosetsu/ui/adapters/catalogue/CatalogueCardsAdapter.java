@@ -1,8 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,14 +8,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -44,7 +46,7 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.CatalogueHolder> {
-    public final ArrayList<CatalogueCard> catalogues;
+    private final ArrayList<CatalogueCard> catalogues;
     private final FragmentManager fragmentManager;
 
     public CatalogueCardsAdapter(ArrayList<CatalogueCard> catalogues, FragmentManager fragmentManager) {
@@ -102,7 +104,7 @@ public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAd
         @Override
         public void onClick(View v) {
             Log.d("FormatterSelection", formatter.getName());
-            if (SettingsController.isOnline()) {
+            if (isOnline()) {
                 CatalogueFragment catalogueFragment = new CatalogueFragment();
                 catalogueFragment.setFormatter(formatter);
                 setFormatter(formatter);

@@ -37,15 +37,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeMode;
+
 //TODO add text size options
 public class AdvancedSettings extends Fragment {
-    static final List<String> strings = new ArrayList<>();
+    private static final List<String> strings = new ArrayList<>();
 
     static {
         strings.add("Light");
@@ -53,7 +54,7 @@ public class AdvancedSettings extends Fragment {
         strings.add("Night");
     }
 
-    Spinner spinner;
+    private Spinner spinner;
 
     public AdvancedSettings() {
     }
@@ -74,7 +75,7 @@ public class AdvancedSettings extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i >= 0 && i <= 2) {
-                    SettingsController.changeMode(getActivity(), i);
+                    changeMode(getActivity(), i);
                     adapterView.setSelection(i);
                 }
             }

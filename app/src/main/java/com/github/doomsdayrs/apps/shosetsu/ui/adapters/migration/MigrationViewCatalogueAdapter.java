@@ -13,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -44,8 +45,8 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<MigrationViewCatalogueAdapter.CatalogueHolder> {
-    public final ArrayList<CatalogueCard> catalogues;
-    public final MigrationView migrationView;
+    private final ArrayList<CatalogueCard> catalogues;
+    private final MigrationView migrationView;
 
     public MigrationViewCatalogueAdapter(ArrayList<CatalogueCard> catalogues, MigrationView migrationView) {
         this.catalogues = catalogues;
@@ -102,7 +103,7 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
         @Override
         public void onClick(View v) {
             Log.d("FormatterSelection", formatter.getName());
-            if (SettingsController.isOnline()) {
+            if (isOnline()) {
 
                 Log.d("Target", String.valueOf(formatter.getID() - 1));
                 migrationView.target = formatter.getID() - 1;

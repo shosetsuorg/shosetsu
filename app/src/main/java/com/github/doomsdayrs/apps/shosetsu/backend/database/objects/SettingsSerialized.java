@@ -1,9 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.objects;
 
-import android.graphics.Color;
-
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
@@ -33,13 +33,14 @@ import java.io.Serializable;
 public class SettingsSerialized implements Serializable {
     public int reader_text_color = Settings.ReaderTextColor;
     public int reader_text_background_color = Settings.ReaderTextBackgroundColor;
-    public String shoDir = Download_Manager.shoDir;
+    public String shoDir = Utilities.shoDir;
     public boolean paused = Settings.downloadPaused;
     public float textSize = Settings.ReaderTextSize;
     public int themeMode = Settings.themeMode;
     public int paraSpace = Settings.paragraphSpacing;
     public int indent = Settings.indentSize;
 
+    @NotNull
     @Override
     public String toString() {
         return "SettingsSerialized{" +

@@ -38,18 +38,24 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeIndentSize;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeParagraphSpacing;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setNightNode;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setTextSize;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.unsetNightMode;
+
 // TODO: Migrate to using PreferenceScreen and PreferenceGroup.
 public class ViewSettings extends Fragment {
-    static final List<String> textSizes = new ArrayList<>();
-    static final List<String> paragraphSpaces = new ArrayList<>();
-    static final List<String> indentSizes = new ArrayList<>();
+    private static final List<String> textSizes = new ArrayList<>();
+    private static final List<String> paragraphSpaces = new ArrayList<>();
+    private static final List<String> indentSizes = new ArrayList<>();
 
     static {
         textSizes.add("Small");
@@ -67,39 +73,41 @@ public class ViewSettings extends Fragment {
         indentSizes.add("Large");
     }
 
-    Spinner paragraphSpacing;
-    Spinner textSize;
-    Spinner indentSize;
+    private Spinner paragraphSpacing;
+    private Spinner textSize;
+    private Spinner indentSize;
 
 
-    private void onClickNIghtMode(View v){
-        SettingsItem nightMOdeItem = new SettingsItem(v);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle(R.string.reader_night_mode);
-        String[] states = {getString(R.string.on), getString(R.string.off)};
-        builder.setItems(states,
-                (dialogInterface, i) -> {
-                    if (i == 0) SettingsController.setNightNode();
-                    else SettingsController.unsetNightMode();
+    private void onClickNIghtMode(View v) {
+        if (this.getContext() != null) {
+            SettingsItem nightMOdeItem = new SettingsItem(v);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+            builder.setTitle(R.string.reader_night_mode);
+            String[] states = {getString(R.string.on), getString(R.string.off)};
+            builder.setItems(states,
+                    (dialogInterface, i) -> {
+                        if (i == 0) setNightNode();
+                        else unsetNightMode();
 
-                    int nightModeStatus = SettingsController.isReaderNightMode()?
-                            R.string.on : R.string.off;
-                    nightMOdeItem.setDesc(nightModeStatus);
-                    nightMOdeItem.invalidate();
-                }
-        );
-        builder.show();
+                        int nightModeStatus = isReaderNightMode() ?
+                                R.string.on : R.string.off;
+                        nightMOdeItem.setDesc(nightModeStatus);
+                        nightMOdeItem.invalidate();
+                    }
+            );
+            builder.show();
+        }
     }
 
-    private void onClickTextSize(View v){
+    private void onClickTextSize(View v) {
 
     }
 
-    private void onClickParaSpacing(View v){
+    private void onClickParaSpacing(View v) {
 
     }
 
-    private void onClickParaIndent(View v){
+    private void onClickParaIndent(View v) {
 
     }
 
@@ -112,7 +120,7 @@ public class ViewSettings extends Fragment {
         // Setup Night Mode
         SettingsItem nightModeItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_night_mode));
         nightModeItem.setTitle(R.string.reader_night_mode);
-        int nightModeStatus = SettingsController.isReaderNightMode()?
+        int nightModeStatus = isReaderNightMode() ?
                 R.string.on : R.string.off;
         nightModeItem.setDesc(nightModeStatus);
         nightModeItem.setOnClickListener(this::onClickNIghtMode);
@@ -169,7 +177,7 @@ public class ViewSettings extends Fragment {
                                     size = 20;
                                     break;
                             }
-                            SettingsController.setTextSize(size);
+                            setTextSize(size);
                             adapterView.setSelection(i);
                         }
                     }
@@ -205,7 +213,7 @@ public class ViewSettings extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, android.view.View view, int i, long l) {
                         if (i >= 0 && i <= 3) {
-                            SettingsController.changeParagraphSpacing(i);
+                            changeParagraphSpacing(i);
                             adapterView.setSelection(i);
                         }
                     }
@@ -216,7 +224,7 @@ public class ViewSettings extends Fragment {
                     }
                 });
 
-                SettingsController.changeParagraphSpacing(spaceBack);
+                changeParagraphSpacing(spaceBack);
                 switch (Settings.paragraphSpacing) {
                     case 0:
                         paragraphSpacing.setSelection(0);
@@ -244,7 +252,7 @@ public class ViewSettings extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, android.view.View view, int i, long l) {
                         if (i >= 0 && i <= 3) {
-                            SettingsController.changeIndentSize(i);
+                            changeIndentSize(i);
                             adapterView.setSelection(i);
                         }
                     }
@@ -254,7 +262,7 @@ public class ViewSettings extends Fragment {
 
                     }
                 });
-                SettingsController.changeIndentSize(spaceBack);
+                changeIndentSize(spaceBack);
                 indentSize.setSelection(Settings.indentSize);
             }
         }

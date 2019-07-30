@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.DownloadAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
@@ -27,6 +26,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.togglePause;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -170,7 +171,7 @@ public class DownloadsFragment extends Fragment {
             menuItem.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
 
         menuItem.setOnMenuItemClickListener(a -> {
-            if (SettingsController.togglePause())
+            if (togglePause())
                 a.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
             else {
                 a.setIcon(R.drawable.ic_pause_circle_outline_black_24dp);

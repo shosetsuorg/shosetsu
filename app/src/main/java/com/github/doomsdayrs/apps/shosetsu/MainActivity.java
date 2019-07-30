@@ -14,14 +14,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.MainActivityNavSwapFrag;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.LibraryFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.UpdatesFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.settings.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.javiersantos.appupdater.AppUpdater;
@@ -31,6 +31,8 @@ import com.github.javiersantos.appupdater.enums.Display;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import com.github.javiersantos.appupdater.objects.Update;
 import com.google.android.material.navigation.NavigationView;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.initPreferences;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -75,12 +77,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         //
         super.onCreate(savedInstanceState);
-        SettingsController.view = getSharedPreferences("view", 0);
-        SettingsController.download = getSharedPreferences("download", 0);
-        SettingsController.advanced = getSharedPreferences("advanced", 0);
-        SettingsController.tracking = getSharedPreferences("tracking", 0);
-        SettingsController.backup = getSharedPreferences("backup", 0);
-        SettingsController.init();
+        Utilities.view = getSharedPreferences("view", 0);
+        Utilities.download = getSharedPreferences("download", 0);
+        Utilities.advanced = getSharedPreferences("advanced", 0);
+        Utilities.tracking = getSharedPreferences("tracking", 0);
+        Utilities.backup = getSharedPreferences("backup", 0);
+        initPreferences();
 
         switch (Settings.themeMode) {
             case 0:
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
         }
-      //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         Log.d("Updater", "Start");
         AppUpdater appUpdater = new AppUpdater(this)

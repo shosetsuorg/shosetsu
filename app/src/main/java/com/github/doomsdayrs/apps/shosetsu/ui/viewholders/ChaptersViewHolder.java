@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
@@ -21,6 +20,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.card.MaterialCardView;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -49,7 +50,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     public NovelChapter novelChapter;
 
-    public final ImageView moreOptions;
+    private final ImageView moreOptions;
     public final MaterialCardView cardView;
     public final CheckBox checkBox;
     public final TextView library_card_title;
@@ -84,7 +85,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.popup_chapter_menu_bookmark:
-                    if (SettingsController.toggleBookmarkChapter(novelChapter.link))
+                    if (toggleBookmarkChapter(novelChapter.link))
                         library_card_title.setTextColor(itemView.getResources().getColor(R.color.bookmarked));
                     else
                         library_card_title.setTextColor(itemView.getResources().getColor(R.color.design_default_color_surface));

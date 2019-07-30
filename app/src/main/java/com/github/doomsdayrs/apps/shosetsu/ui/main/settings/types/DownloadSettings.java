@@ -38,14 +38,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 
 import java.util.Objects;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.download;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
+
 public class DownloadSettings extends Fragment {
 
-    TextView textView;
+    private TextView textView;
 
     public DownloadSettings() {
     }
@@ -56,18 +57,18 @@ public class DownloadSettings extends Fragment {
         Log.d("OnCreateView", "DownloadSettings");
         View view = inflater.inflate(R.layout.settings_download, container, false);
         textView = view.findViewById(R.id.settings_download_dir);
-        textView.setText(Download_Manager.shoDir);
+        textView.setText(shoDir);
         textView.setOnClickListener(view1 -> performFileSearch());
         return view;
     }
 
     private void setDir(String dir) {
-        SettingsController.download.edit().putString("dir", dir).apply();
-        Download_Manager.shoDir = dir;
+        download.edit().putString("dir", dir).apply();
+        shoDir = dir;
         textView.setText(dir);
     }
 
-    void performFileSearch() {
+    private void performFileSearch() {
         Toast.makeText(getContext(), "Please make sure this is on the main storage, SD card storage is not functional yet", Toast.LENGTH_LONG).show();
         Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         i.addCategory(Intent.CATEGORY_DEFAULT);
@@ -81,7 +82,9 @@ public class DownloadSettings extends Fragment {
             if (data != null) {
                 String path = Objects.requireNonNull(data.getData()).getPath();
                 Log.i("Selected Folder", "Uri: " + path);
-                setDir(path.substring(Objects.requireNonNull(path).indexOf(":") + 1));
+                if (path != null)
+                    setDir(path.substring(Objects.requireNonNull(path).indexOf(":") + 1));
+                else Toast.makeText(getContext(), "Path is null", Toast.LENGTH_SHORT).show();
             }
         }
 

@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelPagerAdapter;
@@ -25,6 +24,8 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -57,7 +58,7 @@ public class NovelFragment extends Fragment {
     public ProgressBar progressBar;
 
     private TabLayout tabLayout;
-    public ViewPager viewPager;
+    private ViewPager viewPager;
 
     public ConstraintLayout errorView;
     public TextView errorMessage;
@@ -102,7 +103,7 @@ public class NovelFragment extends Fragment {
         //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
-            if (SettingsController.isOnline() && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
+            if (isOnline() && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 setViewPager();
 
                 if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {

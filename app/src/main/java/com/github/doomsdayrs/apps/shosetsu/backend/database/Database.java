@@ -5,12 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,7 +17,6 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Chapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Download;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Library;
@@ -31,17 +28,11 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -51,6 +42,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.intToBoolean;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -170,15 +164,6 @@ public class Database {
         return objectInputStream.readObject();
     }
 
-    public static boolean intToBoolean(int a) {
-        return a == 1;
-    }
-
-    public static int booleanToInt(boolean a) {
-        if (a)
-            return 1;
-        else return 0;
-    }
 
     /**
      * Download control
@@ -268,13 +253,8 @@ public class Database {
          */
         public static boolean inDownloads(DownloadItem downloadItem) {
             Cursor cursor = library.rawQuery("SELECT " + Columns.CHAPTER_URL + " from " + Tables.DOWNLOADS + " where " + Columns.CHAPTER_URL + " = '" + downloadItem.chapterURL + "'", null);
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return false;
-            } else {
-                cursor.close();
-                return true;
-            }
+            int a = cursor.getCount();
+            return !(a <= 0);
         }
 
         /**
@@ -906,7 +886,7 @@ public class Database {
                     progressBar.post(() -> progressBar.incrementProgressBy(1));
                     Settings.ReaderTextColor = superserialzied.settingsSerialized.reader_text_color;
                     Settings.ReaderTextBackgroundColor = superserialzied.settingsSerialized.reader_text_background_color;
-                    Download_Manager.shoDir = superserialzied.settingsSerialized.shoDir;
+                    shoDir = superserialzied.settingsSerialized.shoDir;
                     Settings.downloadPaused = superserialzied.settingsSerialized.paused;
                     Settings.ReaderTextSize = superserialzied.settingsSerialized.textSize;
                     Settings.themeMode = superserialzied.settingsSerialized.themeMode;
@@ -1008,7 +988,7 @@ public class Database {
                 }
 
                 Log.i("Progress", "Writing");
-                File folder = new File(Download_Manager.shoDir + "/backup/");
+                File folder = new File(shoDir + "/backup/");
                 if (!folder.exists())
                     if (!folder.mkdirs()) {
                         throw new IOException("Failed to mkdirs");

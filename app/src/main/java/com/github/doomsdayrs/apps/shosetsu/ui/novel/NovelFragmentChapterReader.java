@@ -18,7 +18,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.SettingsController;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelFragmentChapterViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChapterViewHideBar;
@@ -29,6 +28,14 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeIndentSize;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeParagraphSpacing;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.getYBookmark;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setTextSize;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderColor;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -120,7 +127,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
         inflater.inflate(R.menu.toolbar_chapter_view, menu);
         // Night mode
-        menu.findItem(R.id.chapter_view_nightMode).setChecked(SettingsController.isReaderNightMode());
+        menu.findItem(R.id.chapter_view_nightMode).setChecked(isReaderNightMode());
 
         // Bookmark
         bookmark = menu.findItem(R.id.chapter_view_bookmark);
@@ -131,7 +138,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
             switch ((int) Settings.ReaderTextSize) {
                 default:
-                    SettingsController.setTextSize(14);
+                    setTextSize(14);
                 case 14:
                     textSmall.setChecked(true);
                     break;
@@ -189,7 +196,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
         bookmarked = Database.DatabaseChapter.isBookMarked(chapterURL);
         if (bookmarked) {
             bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
-            int y = SettingsController.getYBookmark(chapterURL);
+            int y = getYBookmark(chapterURL);
             Log.d("Loaded Scroll", Integer.toString(y));
             scrollView.setScrollY(y);
         }
@@ -233,10 +240,10 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.chapter_view_nightMode:
                 if (!item.isChecked()) {
-                    SettingsController.swapReaderColor();
+                    swapReaderColor();
                     setUpReader();
                 } else {
-                    SettingsController.swapReaderColor();
+                    swapReaderColor();
                     setUpReader();
                 }
                 item.setChecked(!item.isChecked());
@@ -247,14 +254,14 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 int y = scrollView.getScrollY();
                 Log.d("ScrollSave", Integer.toString(y));
 
-                bookmarked = SettingsController.toggleBookmarkChapter(chapterURL);
+                bookmarked = toggleBookmarkChapter(chapterURL);
                 if (bookmarked)
                     bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
                 else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
                 return true;
 
             case R.id.chapter_view_textSize_small:
-                SettingsController.setTextSize(14);
+                setTextSize(14);
                 setUpReader();
 
                 item.setChecked(true);
@@ -262,7 +269,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 textLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_textSize_medium:
-                SettingsController.setTextSize(17);
+                setTextSize(17);
                 setUpReader();
 
                 item.setChecked(true);
@@ -270,7 +277,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 textLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_textSize_large:
-                SettingsController.setTextSize(20);
+                setTextSize(20);
                 setUpReader();
                 item.setChecked(true);
                 textSmall.setChecked(false);
@@ -278,7 +285,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 return true;
 
             case R.id.chapter_view_paragraphSpace_none:
-                SettingsController.changeParagraphSpacing(0);
+                changeParagraphSpacing(0);
                 setUpReader();
                 pspaceNon.setChecked(true);
                 pspaceSmall.setChecked(false);
@@ -286,7 +293,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 pspaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_paragraphSpace_small:
-                SettingsController.changeParagraphSpacing(1);
+                changeParagraphSpacing(1);
                 setUpReader();
                 pspaceNon.setChecked(false);
                 pspaceSmall.setChecked(true);
@@ -294,7 +301,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 pspaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_paragraphSpace_medium:
-                SettingsController.changeParagraphSpacing(2);
+                changeParagraphSpacing(2);
                 setUpReader();
                 pspaceNon.setChecked(false);
                 pspaceSmall.setChecked(false);
@@ -302,7 +309,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 pspaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_paragraphSpace_large:
-                SettingsController.changeParagraphSpacing(3);
+                changeParagraphSpacing(3);
                 setUpReader();
                 pspaceNon.setChecked(false);
                 pspaceSmall.setChecked(false);
@@ -312,7 +319,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
 
             case R.id.chapter_view_indent_none:
-                SettingsController.changeIndentSize(0);
+                changeIndentSize(0);
                 setUpReader();
                 ispaceNon.setChecked(true);
                 ispaceSmall.setChecked(false);
@@ -320,7 +327,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 ispaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_indent_small:
-                SettingsController.changeIndentSize(1);
+                changeIndentSize(1);
                 setUpReader();
                 ispaceNon.setChecked(false);
                 ispaceSmall.setChecked(true);
@@ -328,7 +335,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 ispaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_indent_medium:
-                SettingsController.changeIndentSize(2);
+                changeIndentSize(2);
                 setUpReader();
                 ispaceNon.setChecked(false);
                 ispaceSmall.setChecked(false);
@@ -336,7 +343,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 ispaceLarge.setChecked(false);
                 return true;
             case R.id.chapter_view_indent_large:
-                SettingsController.changeIndentSize(3);
+                changeIndentSize(3);
                 setUpReader();
                 ispaceNon.setChecked(false);
                 ispaceSmall.setChecked(false);
