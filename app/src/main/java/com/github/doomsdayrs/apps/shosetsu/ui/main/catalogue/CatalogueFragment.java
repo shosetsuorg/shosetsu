@@ -1,9 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue;
 
 import android.content.Context;
-import android.content.res.Configuration;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CataloguePageLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue.CatalogueNovelCardsAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueFragmentHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueRefresh;
@@ -161,11 +161,26 @@ public class CatalogueFragment extends Fragment {
                 catalogueNovelCards = new ArrayList<>();
                 catalogueNovelCardsAdapter.notifyDataSetChanged();
             }
-            new CataloguePageLoader(this).execute();
+            if (!formatter.hasCloudFlare())
+                new CataloguePageLoader(this).execute();
         } else
             setLibraryCards(catalogueNovelCards);
 
         return view;
+    }
+
+    private void webView() {
+        Intent intent = new Intent(getActivity(), WebViewApp.class);
+
+        intent.putExtra("url", formatter.getLatestURL(0));
+        startActivityForResult(intent, 42);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 42) {
+
+        }
     }
 
     @Override

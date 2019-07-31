@@ -45,7 +45,8 @@ import java.util.List;
 public enum DefaultScrapers implements Formatter {
     NOVELFULL(new NovelFull(1)),
     BOXNOVEL(new BoxNovel(2)),
-    SYOSETU(new Syosetu(3));
+    SYOSETU(new Syosetu(3)),
+    NOVELPLANENT(new NovelPlanet(4));
 
     public static final ArrayList<Formatter> formatters = new ArrayList<>();
 
@@ -53,12 +54,18 @@ public enum DefaultScrapers implements Formatter {
         formatters.add(NOVELFULL);
         formatters.add(BOXNOVEL);
         formatters.add(SYOSETU);
+        formatters.add(NOVELPLANENT);
     }
 
     private final Formatter formatter;
 
     DefaultScrapers(Formatter formatter) {
         this.formatter = formatter;
+    }
+
+    @Override
+    public boolean hasCloudFlare() {
+        return formatter.hasCloudFlare();
     }
 
     @Override

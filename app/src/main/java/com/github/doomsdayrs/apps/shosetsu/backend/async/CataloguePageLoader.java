@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.async;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueFragmentHitBottom;
@@ -69,6 +70,11 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
     protected Boolean doInBackground(Integer... integers) {
         Log.d("Loading", "Catalogue");
         catalogueFragment.library_view.post(() -> catalogueFragment.errorView.setVisibility(View.GONE));
+        if (catalogueFragment.formatter.hasCloudFlare()) {
+            if (catalogueFragment.getActivity() != null)
+                catalogueFragment.getActivity().runOnUiThread(() -> Toast.makeText(catalogueFragment.getContext(), "CLOUDFLARE", Toast.LENGTH_SHORT).show());
+        }
+
         try {
             List<Novel> novels;
 
@@ -104,7 +110,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
             if (catalogueFragment.getActivity() != null)
                 catalogueFragment.getActivity().runOnUiThread(() -> {
                     catalogueFragment.errorView.setVisibility(View.VISIBLE);
-                        catalogueFragment.errorMessage.setText(e.getMessage());
+                    catalogueFragment.errorMessage.setText(e.getMessage());
                     if (catalogueFragmentHitBottom == null)
                         catalogueFragment.errorButton.setOnClickListener(view -> new CataloguePageLoader(catalogueFragment).execute(integers));
                     else
@@ -147,7 +153,6 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
             catalogueFragment.bottomProgressBar.setVisibility(View.GONE);
             if (catalogueFragment.catalogueNovelCards.size() > 0)
                 catalogueFragment.empty.setVisibility(View.GONE);
-        }
-        else catalogueFragment.swipeRefreshLayout.setRefreshing(false);
+        } else catalogueFragment.swipeRefreshLayout.setRefreshing(false);
     }
 }
