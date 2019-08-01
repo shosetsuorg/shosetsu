@@ -102,6 +102,7 @@ public class NovelPlanet extends ScrapeFormat {
 
         List<Novel> novels = new ArrayList<>();
         s = verify(baseURL, s);
+
         Document document = docFromURL(s);
         System.out.println(document.toString());
         Elements elements = document.select("article");

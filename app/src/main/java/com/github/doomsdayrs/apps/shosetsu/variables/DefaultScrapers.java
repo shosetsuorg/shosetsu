@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -61,6 +64,16 @@ public enum DefaultScrapers implements Formatter {
 
     DefaultScrapers(Formatter formatter) {
         this.formatter = formatter;
+    }
+
+    @Override
+    public void setBuilder(Request.Builder builder) {
+        formatter.setBuilder(builder);
+    }
+
+    @Override
+    public void setClient(OkHttpClient okHttpClient) {
+        formatter.setClient(okHttpClient);
     }
 
     @Override

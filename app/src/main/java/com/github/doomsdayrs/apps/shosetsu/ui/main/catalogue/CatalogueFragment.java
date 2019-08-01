@@ -24,6 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CataloguePageLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.catalogue.CatalogueNovelCardsAdapter;
@@ -36,6 +37,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNov
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import okhttp3.OkHttpClient;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoOfColumns;
 
@@ -180,7 +183,11 @@ public class CatalogueFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 42) {
-
+            //TODO, Pass cookies from webview to okhttp
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .cookieJar(new WebviewCookieHandler())
+                    .build();
+            formatter.setClient(client);
             new CataloguePageLoader(this).execute();
         }
     }

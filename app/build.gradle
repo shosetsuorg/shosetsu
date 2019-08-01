@@ -45,7 +45,7 @@ repositories {
 
 dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha08'
-    implementation 'com.graphql-java:graphql-java:2019-07-24T03-34-24-2e1e989'
+    implementation 'com.graphql-java:graphql-java:2019-08-01T04-03-44-e9b53f6'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     //noinspection GradleCompatible
@@ -56,7 +56,7 @@ dependencies {
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
     implementation 'com.github.Doomsdayrs:novelreader-extensions:1.1.6'
-    implementation 'com.github.Doomsdayrs:novelreader-services:1.1.2'
+    implementation 'com.github.Doomsdayrs:novelreader-services:1.1.3'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'org.jetbrains:annotations:17.0.0'
@@ -67,4 +67,8 @@ dependencies {
     implementation 'us.feras.mdv:markdownview:1.1.0'
     implementation 'joda-time:joda-time:2.10.3'
    // implementation 'com.squareup.duktape:duktape-android:1.2.0'
+
+    // Cookies
+   // implementation "com.squareup.okhttp3:okhttp:3.14.1"
+   implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.0.1'
 }
