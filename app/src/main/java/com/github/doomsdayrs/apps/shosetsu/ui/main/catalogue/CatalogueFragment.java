@@ -163,6 +163,7 @@ public class CatalogueFragment extends Fragment {
             }
             if (!formatter.hasCloudFlare())
                 new CataloguePageLoader(this).execute();
+            else webView();
         } else
             setLibraryCards(catalogueNovelCards);
 
@@ -171,8 +172,8 @@ public class CatalogueFragment extends Fragment {
 
     private void webView() {
         Intent intent = new Intent(getActivity(), WebViewApp.class);
-
         intent.putExtra("url", formatter.getLatestURL(0));
+        intent.putExtra("action", 1);
         startActivityForResult(intent, 42);
     }
 
@@ -180,6 +181,7 @@ public class CatalogueFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 42) {
 
+            new CataloguePageLoader(this).execute();
         }
     }
 

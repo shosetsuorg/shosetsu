@@ -5,6 +5,10 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelGenre;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +42,8 @@ import okhttp3.Request;
 //TODO Cloudflare intercept
 @Deprecated
 public class NovelPlanet extends ScrapeFormat {
+    private final String baseURL = "https://novelplanet.com";
+
     public NovelPlanet(int id) {
         super(id);
         hasCloudFlare(true);
@@ -93,11 +99,34 @@ public class NovelPlanet extends ScrapeFormat {
 
     @Override
     public List<Novel> parseLatest(String s) throws IOException {
-        return new ArrayList<>();
+
+        List<Novel> novels = new ArrayList<>();
+        s = verify(baseURL, s);
+        Document document = docFromURL(s);
+        System.out.println(document.toString());
+        Elements elements = document.select("article");
+        for (Element element : elements) {
+            Novel novel = new Novel();
+
+            {
+                Element preview = element.selectFirst("div.post-preview");
+                Element a = preview.selectFirst("a");
+                novel.link = baseURL + a.attr("href");
+                novel.imageURL = baseURL + a.selectFirst("img").attr("src");
+            }
+            {
+                Element content = element.selectFirst("div.post-content");
+                novel.title = baseURL + content.selectFirst("a.title").attr("href");
+            }
+        }
+
+        return novels;
     }
 
     @Override
     public List<Novel> search(String s) throws IOException {
+
+
         return new ArrayList<>();
     }
 

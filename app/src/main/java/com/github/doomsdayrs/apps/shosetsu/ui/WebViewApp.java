@@ -1,7 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -36,9 +39,12 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class WebViewApp extends AppCompatActivity {
+
+
     WebView webView;
     Actions action = Actions.VIEW;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +54,27 @@ public class WebViewApp extends AppCompatActivity {
 
         Intent intent = getIntent();
         action = Actions.actions.get(intent.getIntExtra("action", 0));
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                finish();
+            }
+        });
+
         webView.loadUrl(intent.getStringExtra("url"));
+
+        switch (action) {
+            case VIEW:
+                break;
+            case CLOUD_FLARE:
+                String myCookies = CookieManager.getInstance().getCookie(intent.getStringExtra("url"));
+                Log.i("Cookies", myCookies);
+                break;
+            default:
+                break;
+        }
+
     }
 
     public enum Actions {
