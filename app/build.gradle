@@ -66,9 +66,4 @@ dependencies {
     implementation 'com.github.javiersantos:AppUpdater:2.7'
     implementation 'us.feras.mdv:markdownview:1.1.0'
     implementation 'joda-time:joda-time:2.10.3'
-   // implementation 'com.squareup.duktape:duktape-android:1.2.0'
-
-    // Cookies
-   // implementation "com.squareup.okhttp3:okhttp:3.14.1"
-   implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.0.1'
 }
