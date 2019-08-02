@@ -1,8 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -57,9 +60,12 @@ public class WebViewApp extends AppCompatActivity {
                 webView.setWebViewClient(new WebViewClient());
                 break;
             case CLOUD_FLARE:
+                webView.addJavascriptInterface(new MyJavaScriptInterface(this), "HtmlViewer");
                 webView.setWebViewClient(new WebViewClient() {
                     @Override
                     public void onPageFinished(WebView view, String url) {
+                        webView.loadUrl("javascript:window.HtmlViewer.showHTML" +
+                                "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                         finish();
                     }
                 });
@@ -91,5 +97,21 @@ public class WebViewApp extends AppCompatActivity {
         public int getAction() {
             return action;
         }
+    }
+
+    class MyJavaScriptInterface {
+
+        private Context ctx;
+
+        MyJavaScriptInterface(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @JavascriptInterface
+        public void showHTML(String html) {
+            new AlertDialog.Builder(ctx).setTitle("HTML").setMessage(html)
+                    .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
+        }
+
     }
 }

@@ -12,6 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNov
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -77,7 +78,13 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
 
         try {
             List<Novel> novels;
-
+            if (catalogueFragment.formatter.hasCloudFlare()) {
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             // Loads novel list
             if (integers.length == 0)
                 novels = catalogueFragment.formatter.parseLatest(catalogueFragment.formatter.getLatestURL(1));
