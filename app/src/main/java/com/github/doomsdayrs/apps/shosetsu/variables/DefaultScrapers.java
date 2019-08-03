@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables;
 
+import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.bestlightnovel.BestLightNovel;
 import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.box_novel.BoxNovel;
 import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.novel_full.NovelFull;
 import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.syosetu.Syosetu;
@@ -49,7 +50,8 @@ public enum DefaultScrapers implements Formatter {
     NOVELFULL(new NovelFull(1)),
     BOXNOVEL(new BoxNovel(2)),
     SYOSETU(new Syosetu(3)),
-    NOVELPLANENT(new NovelPlanet(4));
+    NOVELPLANENT(new NovelPlanet(4)),
+    BESTLIGHTNOVEL(new BestLightNovel(5));
 
     public static final ArrayList<Formatter> formatters = new ArrayList<>();
 
@@ -58,6 +60,7 @@ public enum DefaultScrapers implements Formatter {
         formatters.add(BOXNOVEL);
         formatters.add(SYOSETU);
         formatters.add(NOVELPLANENT);
+        formatters.add(BESTLIGHTNOVEL);
     }
 
     private final Formatter formatter;
