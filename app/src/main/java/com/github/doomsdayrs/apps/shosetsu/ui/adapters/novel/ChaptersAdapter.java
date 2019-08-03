@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel;
 
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,8 +41,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
  * @author github.com/doomsdayrs
  */
 public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
-
-
+    public static int DefaultTextColor;
+    public static boolean set = false;
     private final NovelFragmentChapters novelFragmentChapters;
 
 
@@ -56,7 +55,13 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
     @Override
     public ChaptersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_chapter, viewGroup, false);
-        return new ChaptersViewHolder(view);
+        ChaptersViewHolder chaptersViewHolder = new ChaptersViewHolder(view);
+        if (!set) {
+            DefaultTextColor = chaptersViewHolder.library_card_title.getCurrentTextColor();
+            Log.i("TextDefaultColor", String.valueOf(DefaultTextColor));
+            set = !set;
+        }
+        return chaptersViewHolder;
     }
 
     @Override
@@ -71,10 +76,13 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
             Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
 
         if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
+
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
+            Log.i("TextDefaultColor", String.valueOf(DefaultTextColor));
             chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("UnBookmark");
-        } else
+        } else {
             chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("Bookmark");
+        }
 
 
         if (novelFragmentChapters.contains(novelChapter)) {

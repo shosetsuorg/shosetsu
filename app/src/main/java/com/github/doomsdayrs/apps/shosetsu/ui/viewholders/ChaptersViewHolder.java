@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
@@ -84,11 +86,15 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
+
                 case R.id.popup_chapter_menu_bookmark:
                     if (toggleBookmarkChapter(novelChapter.link))
                         library_card_title.setTextColor(itemView.getResources().getColor(R.color.bookmarked));
-                    else
-                        library_card_title.setTextColor(itemView.getResources().getColor(R.color.design_default_color_surface));
+                    else {
+                        Log.i("SetDefault", String.valueOf(ChaptersAdapter.DefaultTextColor));
+
+                        library_card_title.setTextColor(ChaptersAdapter.DefaultTextColor);
+                    }
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
                     return true;
                 case R.id.popup_chapter_menu_download:
