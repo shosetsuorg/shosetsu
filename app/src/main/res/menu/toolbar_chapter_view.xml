@@ -5,11 +5,16 @@
 
     <group>
         <item
+            android:id="@+id/tap_to_scroll"
+            android:checkable="true"
+            android:title="@string/tap_to_scroll"
+            app:showAsAction="never" />
+
+        <item
             android:id="@+id/chapter_view_nightMode"
             android:checkable="true"
             android:title="@string/reader_night_mode"
             app:showAsAction="never" />
-
         <item
             android:id="@+id/chapter_view_textSize"
             android:title="@string/text_size"

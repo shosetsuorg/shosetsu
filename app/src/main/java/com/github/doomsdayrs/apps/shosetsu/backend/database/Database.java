@@ -44,7 +44,9 @@ import java.util.Date;
 import java.util.List;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.intToBoolean;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -892,6 +894,9 @@ public class Database {
                     Settings.themeMode = superserialzied.settingsSerialized.themeMode;
                     Settings.paragraphSpacing = superserialzied.settingsSerialized.paraSpace;
                     Settings.indentSize = superserialzied.settingsSerialized.indent;
+
+                    if (isTapToScroll() != superserialzied.settingsSerialized.tap_to_scroll)
+                        toggleTapToScroll();
 
                     progressBar.post(() -> progressBar.incrementProgressBy(1));
                 } catch (IOException | ClassNotFoundException e) {

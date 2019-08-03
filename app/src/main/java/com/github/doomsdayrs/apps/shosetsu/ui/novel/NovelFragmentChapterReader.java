@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -31,11 +32,12 @@ import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeIndentSize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeParagraphSpacing;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.getYBookmark;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setTextSize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderColor;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -63,7 +65,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookma
 //TODO MarkDown support
 public class NovelFragmentChapterReader extends AppCompatActivity {
     private String title;
-    private ScrollView scrollView;
+    public ScrollView scrollView;
     public TextView textView;
     public ProgressBar progressBar;
     public Formatter formatter;
@@ -71,7 +73,11 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
     private String novelURL;
     public String unformattedText = null;
     public String text = null;
+
     private MenuItem bookmark;
+    private boolean bookmarked;
+
+    private MenuItem tap_to_scroll;
 
     private MenuItem textSmall;
     private MenuItem textMedium;
@@ -83,14 +89,17 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
     private MenuItem pspaceLarge;
 
 
-
     private MenuItem ispaceNon;
     private MenuItem ispaceSmall;
     private MenuItem ispaceMedium;
     private MenuItem ispaceLarge;
-    
-    private int a = 0;
-    private boolean bookmarked;
+
+
+    //Tap to scroll
+    private View scroll_up;
+    private View scroll_down;
+
+    //TODO FIX THE GOD DAM SCROLL FEATURE WTF HAPPENEEDDDDDD
 
 
     // ERROR SCREEN
@@ -130,7 +139,20 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
         menu.findItem(R.id.chapter_view_nightMode).setChecked(isReaderNightMode());
 
         // Bookmark
-        bookmark = menu.findItem(R.id.chapter_view_bookmark);
+        {
+            bookmark = menu.findItem(R.id.chapter_view_bookmark);
+            bookmarked = Database.DatabaseChapter.isBookMarked(chapterURL);
+            if (bookmarked)
+                bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
+
+        }
+
+        // Tap To Scroll
+        {
+            tap_to_scroll = menu.findItem(R.id.tap_to_scroll);
+            tap_to_scroll.setChecked(isTapToScroll());
+        }
+        // Text size
         {
             textSmall = menu.findItem(R.id.chapter_view_textSize_small);
             textMedium = menu.findItem(R.id.chapter_view_textSize_medium);
@@ -150,6 +172,8 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                     break;
             }
         }
+
+        // Paragraph Space
         {
             pspaceNon = menu.findItem(R.id.chapter_view_paragraphSpace_none);
             pspaceSmall = menu.findItem(R.id.chapter_view_paragraphSpace_small);
@@ -171,6 +195,8 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                     break;
             }
         }
+
+        // Indent Space
         {
             ispaceNon = menu.findItem(R.id.chapter_view_indent_none);
             ispaceSmall = menu.findItem(R.id.chapter_view_indent_small);
@@ -193,13 +219,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             }
         }
 
-        bookmarked = Database.DatabaseChapter.isBookMarked(chapterURL);
-        if (bookmarked) {
-            bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
-            int y = getYBookmark(chapterURL);
-            Log.d("Loaded Scroll", Integer.toString(y));
-            scrollView.setScrollY(y);
-        }
+
         return true;
     }
 
@@ -220,7 +240,7 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
             for (int x = 0; x < Settings.indentSize; x++)
                 replaceSpacing.append("\t");
-            
+
             text = unformattedText.replaceAll("\n", replaceSpacing.toString());
             textView.setText(text);
         }
@@ -248,11 +268,11 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
                 }
                 item.setChecked(!item.isChecked());
                 return true;
-
+            case R.id.tap_to_scroll:
+                tap_to_scroll.setChecked(toggleTapToScroll());
+                return true;
             case R.id.chapter_view_bookmark:
 
-                int y = scrollView.getScrollY();
-                Log.d("ScrollSave", Integer.toString(y));
 
                 bookmarked = toggleBookmarkChapter(chapterURL);
                 if (bookmarked)
@@ -381,6 +401,8 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             errorButton = findViewById(R.id.error_button);
             progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);
             scrollView = findViewById(R.id.fragment_novel_scroll);
+            scroll_up = findViewById(R.id.scroll_up);
+            scroll_down = findViewById(R.id.scroll_down);
         }
 
         {
@@ -399,11 +421,34 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             } else {
                 scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
             }
+
+
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
             textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
-        }
 
-        setUpReader();
+            scroll_up.setOnClickListener(view -> {
+                if (isTapToScroll()) {
+                    Log.i("Scroll", "Up");
+                    int y = scrollView.getScrollY();
+                    if (y - 100 > 0)
+                        y -= 100;
+                    else y = 0;
+                    scrollView.setScrollY(y);
+                }
+            });
+
+            scroll_up.setOnClickListener(view -> {
+                if (isTapToScroll()) {
+                    Log.i("Scroll", "Down");
+                    int y = scrollView.getScrollY();
+                    int my = scrollView.getMaxScrollAmount();
+                    if (y + 100 < my)
+                        y += 100;
+                    else y = my;
+                    scrollView.setScrollY(y);
+                }
+            });
+        }
 
         if (savedInstanceState != null) {
             unformattedText = savedInstanceState.getString("unformattedText");
@@ -413,11 +458,14 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             text = savedInstanceState.getString("text");
         } else chapterURL = getIntent().getStringExtra("chapterURL");
 
+        Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READING);
+
         Log.d("novelURL", Objects.requireNonNull(chapterURL));
 
         if (Database.DatabaseChapter.isSaved(chapterURL)) {
             unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterURL));
-
+            int y = Database.DatabaseChapter.getY(chapterURL);
+            scrollView.scrollTo(0, y);
         } else if (text == null)
             if (chapterURL != null) {
                 new NovelFragmentChapterViewLoad(this).execute();
@@ -430,14 +478,17 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
     }
 
     public void bottom() {
-        if (scrollView.canScrollVertically(1))
-            if (a % 5 == 0) {
-                int y = scrollView.getScrollY();
+        if (scrollView.canScrollVertically(1)) {
+            int y = scrollView.getScrollY();
+            if (y % 5 == 0) {
                 Log.d("ScrollSave", Integer.toString(y));
-                Database.DatabaseChapter.updateY(chapterURL, y);
-            } else a++;
-        else {
-            Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
+                if (chapterURL != null)
+                    Database.DatabaseChapter.updateY(chapterURL, y);
+            }
+        } else {
+            Log.i("Scroll", "Marking chapter as READ");
+            if (chapterURL != null)
+                Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
             //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
         }
     }

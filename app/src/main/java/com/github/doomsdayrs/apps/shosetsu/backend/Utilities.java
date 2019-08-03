@@ -66,6 +66,17 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
         Settings.indentSize = view.getInt("indentSize", 1);
     }
 
+    public static boolean toggleTapToScroll() {
+        if (isTapToScroll())
+            view.edit().putBoolean("tapToScroll", false).apply();
+        else view.edit().putBoolean("tapToScroll", true).apply();
+        return isTapToScroll();
+    }
+
+    public static boolean isTapToScroll() {
+        return view.getBoolean("tapToScroll", false);
+    }
+
     public static boolean intToBoolean(int a) {
         return a == 1;
     }

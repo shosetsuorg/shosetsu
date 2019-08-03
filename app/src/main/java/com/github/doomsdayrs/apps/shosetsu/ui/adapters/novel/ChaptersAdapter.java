@@ -76,7 +76,6 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
             Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
 
         if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
-
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
             Log.i("TextDefaultColor", String.valueOf(DefaultTextColor));
             chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("UnBookmark");

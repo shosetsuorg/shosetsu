@@ -101,6 +101,7 @@
 
     <!-- Backup and restore -->
     <string name="reading_file">Reading</string>
+    <string name="tap_to_scroll">Tap to scroll</string>
 
 </resources>
 

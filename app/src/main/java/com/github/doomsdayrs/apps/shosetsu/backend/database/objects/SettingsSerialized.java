@@ -39,6 +39,7 @@ public class SettingsSerialized implements Serializable {
     public int themeMode = Settings.themeMode;
     public int paraSpace = Settings.paragraphSpacing;
     public int indent = Settings.indentSize;
+    public boolean tap_to_scroll = Utilities.isTapToScroll();
 
     @NotNull
     @Override

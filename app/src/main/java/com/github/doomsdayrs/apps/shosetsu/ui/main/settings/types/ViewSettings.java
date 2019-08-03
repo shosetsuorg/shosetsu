@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,8 +48,10 @@ import java.util.List;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeIndentSize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeParagraphSpacing;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setNightNode;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setTextSize;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.unsetNightMode;
 
 // TODO: Migrate to using PreferenceScreen and PreferenceGroup.
@@ -76,7 +79,7 @@ public class ViewSettings extends Fragment {
     private Spinner paragraphSpacing;
     private Spinner textSize;
     private Spinner indentSize;
-
+    private Switch tap_to_scroll;
 
     private void onClickNIghtMode(View v) {
         if (this.getContext() != null) {
@@ -143,7 +146,7 @@ public class ViewSettings extends Fragment {
         paragraphSpacing = settingsReaderView.findViewById(R.id.reader_paragraphSpacing);
         textSize = settingsReaderView.findViewById(R.id.reader_textSize);
         indentSize = settingsReaderView.findViewById(R.id.reader_indentSize);
-
+        tap_to_scroll = settingsReaderView.findViewById(R.id.tap_to_scroll);
 
         if (getContext() != null) {
             {
@@ -265,6 +268,13 @@ public class ViewSettings extends Fragment {
                 changeIndentSize(spaceBack);
                 indentSize.setSelection(Settings.indentSize);
             }
+
+            {
+                tap_to_scroll.setChecked(isTapToScroll());
+                tap_to_scroll.setOnCheckedChangeListener((compoundButton, b) -> toggleTapToScroll());
+            }
+
+
         }
 
         return settingsReaderView;
