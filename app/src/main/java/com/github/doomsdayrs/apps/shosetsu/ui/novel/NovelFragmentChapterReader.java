@@ -244,6 +244,8 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             text = unformattedText.replaceAll("\n", replaceSpacing.toString());
             textView.setText(text);
         }
+
+
     }
 
 
@@ -412,10 +414,8 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             setSupportActionBar(toolbar);
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
-            /*
-             * Chooses the way the way to save the scroll position
-             * the before marshmallow version is untested
-             */
+
+            // Bottom listener
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottom());
             } else {
@@ -464,8 +464,6 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
         if (Database.DatabaseChapter.isSaved(chapterURL)) {
             unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterURL));
-            int y = Database.DatabaseChapter.getY(chapterURL);
-            scrollView.scrollTo(0, y);
         } else if (text == null)
             if (chapterURL != null) {
                 new NovelFragmentChapterViewLoad(this).execute();
@@ -475,6 +473,19 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             getSupportActionBar().setTitle(title);
 
         setUpReader();
+
+        if (unformattedText != null) {
+            int y = Database.DatabaseChapter.getY(chapterURL);
+            scrollView.setScrollY(y);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) ->
+                    bottom());
+        } else {
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(
+                    this::bottom);
+        }
     }
 
     public void bottom() {

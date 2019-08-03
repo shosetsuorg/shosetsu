@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.view.View;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
 
 /*
@@ -55,7 +54,7 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
             novelFragmentChapterReader.runOnUiThread(() -> {
                 novelFragmentChapterReader.errorView.setVisibility(View.VISIBLE);
                 novelFragmentChapterReader.errorMessage.setText(e.getMessage());
-                novelFragmentChapterReader.scrollView.scrollTo(0, Database.DatabaseChapter.getY(novelFragmentChapterReader.chapterURL));
+
                 novelFragmentChapterReader.errorButton.setOnClickListener(view -> new NovelFragmentChapterViewLoad(novelFragmentChapterReader).execute());
             });
 
