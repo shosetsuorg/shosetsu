@@ -56,12 +56,14 @@ public class StaticNovel {
 
     /**
      * @param chapterURL Current chapter URL
-     * @return chapter after the input
+     * @return chapter after the input, returns the current chapter if no more
      */
     public static NovelChapter getNextChapter(@NotNull String chapterURL) {
         if (novelChapters != null && novelChapters.size() != 0)
             for (int x = 0; x < novelChapters.size(); x++) {
                 if (novelChapters.get(x).link.equalsIgnoreCase(chapterURL)) {
+                    if (x + 1 == novelChapters.size() || x - 1 == -1)
+                        return novelChapters.get(x);
                     if (NovelFragmentChapters.reversed)
                         return novelChapters.get(x - 1);
                     else return novelChapters.get(x + 1);

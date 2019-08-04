@@ -415,9 +415,12 @@ public class ChapterReader extends AppCompatActivity {
             NovelChapter novelChapter = getNextChapter(chapterURL);
 
             if (novelChapter != null) {
-                title = novelChapter.chapterNum;
-                chapterURL = novelChapter.link;
-                loadChapter();
+                if (!novelChapter.link.equalsIgnoreCase(chapterURL)) {
+                    title = novelChapter.chapterNum;
+                    chapterURL = novelChapter.link;
+                    loadChapter();
+                } else
+                    Toast.makeText(getApplicationContext(), "No more chapters!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Cannot move to next chapter, Please exit reader", Toast.LENGTH_LONG).show();
             }
