@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.view.View;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.ChapterReader;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -30,37 +30,37 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
  *
  * @author github.com/doomsdayrs
  */
-public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapterReader, Void, String> {
+public class NovelFragmentChapterViewLoad extends AsyncTask<ChapterReader, Void, String> {
     /**
      * Reference to the progress bar
      */
     @SuppressLint("StaticFieldLeak")
     private final
-    NovelFragmentChapterReader novelFragmentChapterReader;
+    ChapterReader chapterReader;
 
     /**
      * Constructor
      */
-    public NovelFragmentChapterViewLoad(NovelFragmentChapterReader novelFragmentChapterReader) {
-        this.novelFragmentChapterReader = novelFragmentChapterReader;
+    public NovelFragmentChapterViewLoad(ChapterReader chapterReader) {
+        this.chapterReader = chapterReader;
     }
 
     @Override
-    protected String doInBackground(NovelFragmentChapterReader... novelFragmentChapterReaders) {
-        novelFragmentChapterReader.runOnUiThread(() -> novelFragmentChapterReader.errorView.setVisibility(View.GONE));
+    protected String doInBackground(ChapterReader... chapterReaders) {
+        chapterReader.runOnUiThread(() -> chapterReader.errorView.setVisibility(View.GONE));
         try {
-            novelFragmentChapterReader.unformattedText = novelFragmentChapterReader.formatter.getNovelPassage(novelFragmentChapterReader.chapterURL);
-            novelFragmentChapterReader.runOnUiThread(novelFragmentChapterReader::setUpReader);
-            novelFragmentChapterReader.runOnUiThread(() ->
-                    novelFragmentChapterReader.scrollView.post(() ->
-                            novelFragmentChapterReader.scrollView.scrollTo(0, Database.DatabaseChapter.getY(novelFragmentChapterReader.chapterURL)))
+            chapterReader.unformattedText = chapterReader.formatter.getNovelPassage(chapterReader.chapterURL);
+            chapterReader.runOnUiThread(chapterReader::setUpReader);
+            chapterReader.runOnUiThread(() ->
+                    chapterReader.scrollView.post(() ->
+                            chapterReader.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterReader.chapterURL)))
             );
-            novelFragmentChapterReader.runOnUiThread(novelFragmentChapterReader::addBottomListener);
+            chapterReader.runOnUiThread(() -> chapterReader.ready = true);
         } catch (Exception e) {
-            novelFragmentChapterReader.runOnUiThread(() -> {
-                novelFragmentChapterReader.errorView.setVisibility(View.VISIBLE);
-                novelFragmentChapterReader.errorMessage.setText(e.getMessage());
-                novelFragmentChapterReader.errorButton.setOnClickListener(view -> new NovelFragmentChapterViewLoad(novelFragmentChapterReader).execute());
+            chapterReader.runOnUiThread(() -> {
+                chapterReader.errorView.setVisibility(View.VISIBLE);
+                chapterReader.errorMessage.setText(e.getMessage());
+                chapterReader.errorButton.setOnClickListener(view -> new NovelFragmentChapterViewLoad(chapterReader).execute());
             });
 
         }
@@ -74,8 +74,8 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (novelFragmentChapterReader != null)
-            novelFragmentChapterReader.progressBar.setVisibility(View.VISIBLE);
+        if (chapterReader != null)
+            chapterReader.progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -86,7 +86,10 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<NovelFragmentChapter
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        if (novelFragmentChapterReader.progressBar != null)
-            novelFragmentChapterReader.progressBar.setVisibility(View.GONE);
+        if (chapterReader.progressBar != null)
+            chapterReader.progressBar.setVisibility(View.GONE);
+
+        if (chapterReader.getSupportActionBar() != null)
+            chapterReader.getSupportActionBar().setTitle(chapterReader.title);
     }
 }

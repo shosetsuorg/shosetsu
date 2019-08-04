@@ -310,6 +310,7 @@ public class Database {
          * @param y          integer value scroll
          */
         public static void updateY(String chapterURL, int y) {
+            Log.i("updateY", chapterURL + " := " + y);
             library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
 

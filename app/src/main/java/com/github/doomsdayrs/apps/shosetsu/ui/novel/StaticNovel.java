@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
+import android.annotation.SuppressLint;
+
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
@@ -7,6 +9,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +45,30 @@ public class StaticNovel {
      */
     public static String novelURL;
     public static NovelPage novelPage;
+
     public static List<NovelChapter> novelChapters = new ArrayList<>();
     public static Formatter formatter;
     public static Status status = Status.UNREAD;
+    @SuppressLint("StaticFieldLeak")
     public static NovelLoader novelLoader = null;
+    @SuppressLint("StaticFieldLeak")
     public static ChapterLoader chapterLoader = null;
+
+    /**
+     * @param chapterURL Current chapter URL
+     * @return chapter after the input
+     */
+    public static NovelChapter getNextChapter(@NotNull String chapterURL) {
+        if (novelChapters != null && novelChapters.size() != 0)
+            for (int x = 0; x < novelChapters.size(); x++) {
+                if (novelChapters.get(x).link.equalsIgnoreCase(chapterURL)) {
+                    if (NovelFragmentChapters.reversed)
+                        return novelChapters.get(x - 1);
+                    else return novelChapters.get(x + 1);
+                }
+            }
+        return null;
+    }
 
     /**
      * @return position of last read chapter, reads array from reverse. If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.

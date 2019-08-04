@@ -35,7 +35,7 @@
             android:name=".ui.WebViewApp"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
-            android:name=".ui.novel.NovelFragmentChapterReader"
+            android:name=".ui.novel.ChapterReader"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".ui.novel.MigrationView"

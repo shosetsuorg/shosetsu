@@ -12,7 +12,7 @@ import android.util.DisplayMetrics;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.ChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
@@ -230,7 +230,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
     public static void openChapter(Activity activity, NovelChapter novelChapter) {
         Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
-        Intent intent = new Intent(activity, NovelFragmentChapterReader.class);
+        Intent intent = new Intent(activity, ChapterReader.class);
         intent.putExtra("title", novelChapter.chapterNum);
         intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelURL", StaticNovel.novelURL);
