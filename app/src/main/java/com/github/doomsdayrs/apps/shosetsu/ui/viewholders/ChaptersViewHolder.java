@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.viewholders;
 
-import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -16,13 +15,13 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.ChaptersAdapter;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.card.MaterialCardView;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 
 /*
@@ -156,12 +155,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View v) {
-        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
-        Intent intent = new Intent(novelFragmentChapters.getActivity(), NovelFragmentChapterReader.class);
-        intent.putExtra("title", novelChapter.chapterNum);
-        intent.putExtra("chapterURL", novelChapter.link);
-        intent.putExtra("novelURL", StaticNovel.novelURL);
-        intent.putExtra("formatter", StaticNovel.formatter.getID());
-        novelFragmentChapters.startActivity(intent);
+        openChapter(novelFragmentChapters.getActivity(), novelChapter);
     }
 }

@@ -5,6 +5,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import java.util.ArrayList;
@@ -45,6 +46,43 @@ public class StaticNovel {
     public static Status status = Status.UNREAD;
     public static NovelLoader novelLoader = null;
     public static ChapterLoader chapterLoader = null;
+
+    /**
+     * @return position of last read chapter, reads array from reverse. If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
+     */
+    public static int lastRead() {
+        if (StaticNovel.novelChapters != null) {
+            if (StaticNovel.novelChapters.size() != 0) {
+                if (!NovelFragmentChapters.reversed) {
+                    for (int x = novelChapters.size() - 1; x >= 0; x--) {
+                        Status status = Database.DatabaseChapter.getStatus(novelChapters.get(x).link);
+                        switch (status) {
+                            default:
+                                break;
+                            case READ:
+                                return x + 1;
+                            case READING:
+                                return x;
+                        }
+                    }
+                } else {
+                    for (int x = 0; x < novelChapters.size(); x++) {
+                        Status status = Database.DatabaseChapter.getStatus(novelChapters.get(x).link);
+                        switch (status) {
+                            default:
+                                break;
+                            case READ:
+                                return x - 1;
+                            case READING:
+                                return x;
+                        }
+                    }
+                }
+                return 0;
+            } else return -2;
+        } else return -1;
+    }
+
 
     public static void destroy() {
         formatter = null;

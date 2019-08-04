@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,17 +21,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentChaptersOnFilter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -89,15 +90,15 @@ public class NovelFragmentChapters extends Fragment {
         return max;
     }
 
-    public boolean reversed;
+    public static boolean reversed;
     @SuppressLint("StaticFieldLeak")
     public static RecyclerView recyclerView;
     public int currentMaxPage = 1;
     public static ChaptersAdapter adapter;
-    private Context context;
     public SwipeRefreshLayout swipeRefreshLayout;
     public NovelFragment novelFragment;
     public TextView pageCount;
+    public FloatingActionButton resumeRead;
 
     /**
      * Constructor
@@ -121,6 +122,7 @@ public class NovelFragmentChapters extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        reversed = false;
         Log.d("NFChapters", "Destroy");
         recyclerView = null;
         adapter = null;
@@ -159,7 +161,7 @@ public class NovelFragmentChapters extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (savedInstanceState!=null){
+        if (savedInstanceState != null) {
             selectedChapters = (ArrayList<NovelChapter>) savedInstanceState.getSerializable("selChapter");
         }
         Log.d("NovelFragmentChapters", "Creating");
@@ -167,13 +169,13 @@ public class NovelFragmentChapters extends Fragment {
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
         swipeRefreshLayout = view.findViewById(R.id.fragment_novel_chapters_refresh);
         pageCount = view.findViewById(R.id.page_count);
-
+        resumeRead = view.findViewById(R.id.resume);
+        resumeRead.setVisibility(View.GONE);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (StaticNovel.chapterLoader != null && !StaticNovel.chapterLoader.isCancelled()) {
                 StaticNovel.chapterLoader.setC(false);
                 StaticNovel.chapterLoader.cancel(true);
             }
-
             StaticNovel.chapterLoader = new ChapterLoader(this);
             StaticNovel.chapterLoader.execute(getActivity());
         });
@@ -182,7 +184,14 @@ public class NovelFragmentChapters extends Fragment {
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }
         setNovels();
-        this.context = Objects.requireNonNull(container).getContext();
+        onResume();
+        resumeRead.setOnClickListener(view1 -> {
+            int i = StaticNovel.lastRead();
+            if (i != -1 && i != -2)
+                Utilities.openChapter(getActivity(), StaticNovel.novelChapters.get(i));
+            else
+                Toast.makeText(getContext(), "No chapters! How did you even press this!", Toast.LENGTH_SHORT);
+        });
         return view;
     }
 
@@ -192,10 +201,12 @@ public class NovelFragmentChapters extends Fragment {
     public void setNovels() {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
             if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(StaticNovel.novelURL);
+                if (StaticNovel.novelChapters != null && StaticNovel.novelChapters.size() != 0)
+                    resumeRead.setVisibility(View.VISIBLE);
             }
             adapter = new ChaptersAdapter(this);
             adapter.setHasStableIds(true);

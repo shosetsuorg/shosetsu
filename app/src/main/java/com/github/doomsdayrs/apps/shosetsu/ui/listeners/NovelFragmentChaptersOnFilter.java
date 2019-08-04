@@ -40,7 +40,7 @@ public class NovelFragmentChaptersOnFilter implements MenuItem.OnMenuItemClickLi
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         Collections.reverse(StaticNovel.novelChapters);
-        novelFragmentChapters.reversed = !novelFragmentChapters.reversed;
+        NovelFragmentChapters.reversed = !NovelFragmentChapters.reversed;
         return NovelFragmentChapters.recyclerView.post(() -> {
             NovelFragmentChapters.adapter.notifyDataSetChanged();
         });

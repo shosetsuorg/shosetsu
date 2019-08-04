@@ -196,6 +196,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                 novelFragmentChapters.pageCount.setVisibility(View.GONE);
             if (aBoolean)
                 activity.runOnUiThread(novelFragmentChapters::setNovels);
+            novelFragmentChapters.resumeRead.setVisibility(View.VISIBLE);
         }
 
     }

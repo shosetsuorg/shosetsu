@@ -2,15 +2,20 @@ package com.github.doomsdayrs.apps.shosetsu.backend;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 
+import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -221,6 +226,16 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
         view.edit()
                 .putInt("ReaderTextSize", size)
                 .apply();
+    }
+
+    public static void openChapter(Activity activity, NovelChapter novelChapter) {
+        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
+        Intent intent = new Intent(activity, NovelFragmentChapterReader.class);
+        intent.putExtra("title", novelChapter.chapterNum);
+        intent.putExtra("chapterURL", novelChapter.link);
+        intent.putExtra("novelURL", StaticNovel.novelURL);
+        intent.putExtra("formatter", StaticNovel.formatter.getID());
+        activity.startActivity(intent);
     }
 
     //TODO Online Trackers
