@@ -99,9 +99,6 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
     private View scroll_up;
     private View scroll_down;
 
-    //TODO FIX THE GOD DAM SCROLL FEATURE WTF HAPPENEEDDDDDD
-
-
     // ERROR SCREEN
     //TODO Handle ERRORs on loading, EVERYWHERE
     public ConstraintLayout errorView;
@@ -222,32 +219,6 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
         return true;
     }
-
-    /**
-     * Changes the theme of the reader
-     * TODO change the scroll position bars color
-     */
-    public void setUpReader() {
-        scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-        textView.setTextColor(Settings.ReaderTextColor);
-        textView.setTextSize(Settings.ReaderTextSize);
-
-        if (unformattedText != null) {
-            StringBuilder replaceSpacing = new StringBuilder("\n");
-            for (int x = 0; x < Settings.paragraphSpacing; x++)
-                replaceSpacing.append("\n");
-
-            for (int x = 0; x < Settings.indentSize; x++)
-                replaceSpacing.append("\t");
-
-            text = unformattedText.replaceAll("\n", replaceSpacing.toString());
-            textView.setText(text);
-        }
-
-
-    }
-
 
     /**
      * What to do when an menu item is selected
@@ -376,7 +347,6 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
         return false;
     }
 
-
     /**
      * Create method
      *
@@ -414,13 +384,6 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
             setSupportActionBar(toolbar);
             //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
-
-            // Bottom listener
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottom());
-            } else {
-                scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
-            }
 
 
             textView = findViewById(R.id.fragment_novel_chapter_view_text);
@@ -464,6 +427,10 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
 
         if (Database.DatabaseChapter.isSaved(chapterURL)) {
             unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterURL));
+            setUpReader();
+            scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterURL)));
+
+            addBottomListener();
         } else if (text == null)
             if (chapterURL != null) {
                 new NovelFragmentChapterViewLoad(this).execute();
@@ -472,21 +439,40 @@ public class NovelFragmentChapterReader extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(title);
 
-        setUpReader();
 
+    }
+
+
+    /**
+     * Changes the theme of the reader
+     * TODO change the scroll position bars color
+     */
+    public void setUpReader() {
+        scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setTextColor(Settings.ReaderTextColor);
+        textView.setTextSize(Settings.ReaderTextSize);
         if (unformattedText != null) {
-            int y = Database.DatabaseChapter.getY(chapterURL);
-            scrollView.setScrollY(y);
-        }
+            StringBuilder replaceSpacing = new StringBuilder("\n");
+            for (int x = 0; x < Settings.paragraphSpacing; x++)
+                replaceSpacing.append("\n");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) ->
-                    bottom());
-        } else {
-            scrollView.getViewTreeObserver().addOnScrollChangedListener(
-                    this::bottom);
+            for (int x = 0; x < Settings.indentSize; x++)
+                replaceSpacing.append("\t");
+
+            text = unformattedText.replaceAll("\n", replaceSpacing.toString());
+            textView.setText(text);
         }
     }
+
+    public void addBottomListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottom());
+        } else {
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
+        }
+    }
+
 
     public void bottom() {
         if (scrollView.canScrollVertically(1)) {
