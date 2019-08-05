@@ -81,6 +81,7 @@ public class ViewSettings extends Fragment {
     private Spinner indentSize;
     private Switch tap_to_scroll;
 
+    //TODO remove this abomination of code. We just need to make a simple old switch
     private void onClickNIghtMode(View v) {
         if (this.getContext() != null) {
             SettingsItem nightMOdeItem = new SettingsItem(v);
@@ -148,6 +149,7 @@ public class ViewSettings extends Fragment {
         indentSize = settingsReaderView.findViewById(R.id.reader_indentSize);
         tap_to_scroll = settingsReaderView.findViewById(R.id.tap_to_scroll);
 
+        //TODO figure out why the itemSelectedListner runs without being selected
         if (getContext() != null) {
             {
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, textSizes);
@@ -192,7 +194,6 @@ public class ViewSettings extends Fragment {
             }
             {
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, paragraphSpaces);
-                //TODO figure out why the itemSelectedListner runs without being selected
                 int spaceBack = Settings.paragraphSpacing;
 
                 switch (Settings.paragraphSpacing) {
@@ -247,7 +248,6 @@ public class ViewSettings extends Fragment {
 
             {
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, indentSizes);
-                //TODO figure out why the itemSelectedListner runs without being selected
                 int spaceBack = Settings.indentSize;
                 indentSize.setSelection(Settings.indentSize);
                 indentSize.setAdapter(dataAdapter);
