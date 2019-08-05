@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.async;
+package com.github.doomsdayrs.apps.shosetsu.ui.reader.async;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
  *
  * @author github.com/doomsdayrs
  */
-public class NovelFragmentChapterViewLoad extends AsyncTask<ChapterReader, Void, String> {
+public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
     /**
      * Reference to the progress bar
      */
@@ -41,7 +41,7 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<ChapterReader, Void,
     /**
      * Constructor
      */
-    public NovelFragmentChapterViewLoad(ChapterReader chapterReader) {
+    public ReaderViewLoader(ChapterReader chapterReader) {
         this.chapterReader = chapterReader;
     }
 
@@ -60,7 +60,7 @@ public class NovelFragmentChapterViewLoad extends AsyncTask<ChapterReader, Void,
             chapterReader.runOnUiThread(() -> {
                 chapterReader.errorView.setVisibility(View.VISIBLE);
                 chapterReader.errorMessage.setText(e.getMessage());
-                chapterReader.errorButton.setOnClickListener(view -> new NovelFragmentChapterViewLoad(chapterReader).execute());
+                chapterReader.errorButton.setOnClickListener(view -> new ReaderViewLoader(chapterReader).execute());
             });
 
         }

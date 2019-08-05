@@ -5,9 +5,9 @@ import android.annotation.SuppressLint;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
-import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader;
-import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.ChapterLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import org.jetbrains.annotations.NotNull;

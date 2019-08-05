@@ -20,10 +20,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentMainAddToLibrary;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate;
+import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions;
+import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -110,7 +111,7 @@ public class NovelFragmentMain extends Fragment {
             case R.id.webview:
                 intent = new Intent(getActivity(), WebViewApp.class);
                 intent.putExtra("url", StaticNovel.novelURL);
-                intent.putExtra("action", WebViewApp.Actions.VIEW.getAction());
+                intent.putExtra("action", Actions.VIEW.getAction());
                 startActivity(intent);
                 return true;
             case R.id.browser:

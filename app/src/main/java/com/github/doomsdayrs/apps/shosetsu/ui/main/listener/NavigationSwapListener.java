@@ -34,11 +34,11 @@ import com.google.android.material.navigation.NavigationView;
  *
  * @author github.com/doomsdayrs
  */
-public class MainActivityNavSwapFrag implements NavigationView.OnNavigationItemSelectedListener {
+public class NavigationSwapListener implements NavigationView.OnNavigationItemSelectedListener {
 
     private final MainActivity mainActivity;
 
-    public MainActivityNavSwapFrag(MainActivity mainActivity) {
+    public NavigationSwapListener(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
 

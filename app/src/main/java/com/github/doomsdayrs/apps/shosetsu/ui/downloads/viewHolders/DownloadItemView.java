@@ -31,12 +31,12 @@ import com.github.doomsdayrs.apps.shosetsu.R;
  *
  * @author github.com/doomsdayrs
  */
-public class DownloadItemViewHolder extends RecyclerView.ViewHolder {
+public class DownloadItemView extends RecyclerView.ViewHolder {
 
     public final TextView title;
     public final TextView status;
 
-    public DownloadItemViewHolder(@NonNull View itemView) {
+    public DownloadItemView(@NonNull View itemView) {
         super(itemView);
         title = itemView.findViewById(R.id.recycler_download_card_title);
         status = itemView.findViewById(R.id.recycler_download_card_status);

@@ -1,11 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners;
-
-import android.util.Log;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader;
+package com.github.doomsdayrs.apps.shosetsu.ui.webView;
 
 import java.util.ArrayList;
 
@@ -27,27 +20,28 @@ import java.util.ArrayList;
  * specific language governing permissions and limitations
  * under the License.
  * ====================================================================
- * Shosetsu
- * 18 / 06 / 2019
+ * shosetsu
+ * 05 / 08 / 2019
  *
  * @author github.com/doomsdayrs
  */
-public class CatalogueRefresh implements SwipeRefreshLayout.OnRefreshListener {
-    private final CatalogueFragment catalogueFragment;
+public enum Actions {
+    VIEW(0),
+    CLOUD_FLARE(1);
+    public static final ArrayList<Actions> actions = new ArrayList<>();
 
-    public CatalogueRefresh(CatalogueFragment catalogueFragment) {
-        this.catalogueFragment = catalogueFragment;
+    static {
+        actions.add(Actions.VIEW);
+        actions.add(Actions.CLOUD_FLARE);
     }
 
-    @Override
-    public void onRefresh() {
-        catalogueFragment.swipeRefreshLayout.setRefreshing(true);
+    public final int action;
 
-        catalogueFragment.catalogueNovelCards = new ArrayList<>();
-        catalogueFragment.currentMaxPage = 1;
-        Log.d("FragmentRefresh", "Refreshing catalogue data");
-        new CataloguePageLoader(catalogueFragment).execute();
+    Actions(int action) {
+        this.action = action;
+    }
 
-
+    public int getAction() {
+        return action;
     }
 }

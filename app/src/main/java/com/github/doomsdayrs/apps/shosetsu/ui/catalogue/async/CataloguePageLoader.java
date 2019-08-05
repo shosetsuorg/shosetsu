@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.async;
+package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueFragmentHitBottom;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
     // References to objects
     private final CatalogueFragment catalogueFragment;
-    private final CatalogueFragmentHitBottom catalogueFragmentHitBottom;
+    private final CatalogueHitBottom catalogueHitBottom;
 
     /**
      * Constructor
@@ -49,16 +49,16 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
      */
     public CataloguePageLoader(CatalogueFragment catalogueFragment) {
         this.catalogueFragment = catalogueFragment;
-        catalogueFragmentHitBottom = null;
+        catalogueHitBottom = null;
     }
 
     /**
      * @param catalogueFragment          the fragment this is assigned to (reference to parent)
-     * @param catalogueFragmentHitBottom The listener to update once new page is loaded
+     * @param catalogueHitBottom The listener to update once new page is loaded
      */
-    public CataloguePageLoader(CatalogueFragment catalogueFragment, CatalogueFragmentHitBottom catalogueFragmentHitBottom) {
+    public CataloguePageLoader(CatalogueFragment catalogueFragment, CatalogueHitBottom catalogueHitBottom) {
         this.catalogueFragment = catalogueFragment;
-        this.catalogueFragmentHitBottom = catalogueFragmentHitBottom;
+        this.catalogueHitBottom = catalogueHitBottom;
     }
 
     /**
@@ -94,21 +94,21 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
 
             for (Novel novel : novels)
                 catalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, novel.link));
-            catalogueFragment.library_view.post(() -> catalogueFragment.catalogueNovelCardsAdapter.notifyDataSetChanged());
+            catalogueFragment.library_view.post(() -> catalogueFragment.catalogueAdapter.notifyDataSetChanged());
 
-            if (catalogueFragmentHitBottom != null) {
+            if (catalogueHitBottom != null) {
                 catalogueFragment.library_view.post(() -> {
-                    catalogueFragment.catalogueNovelCardsAdapter.notifyDataSetChanged();
-                    catalogueFragment.library_view.addOnScrollListener(catalogueFragmentHitBottom);
+                    catalogueFragment.catalogueAdapter.notifyDataSetChanged();
+                    catalogueFragment.library_view.addOnScrollListener(catalogueHitBottom);
                 });
-                catalogueFragmentHitBottom.running = false;
+                catalogueHitBottom.running = false;
                 Log.d("CatalogueFragmentLoad", "Completed");
             }
             Log.d("FragmentRefresh", "Complete");
 
             if (catalogueFragment.getActivity() != null)
                 catalogueFragment.getActivity().runOnUiThread(() -> {
-                    catalogueFragment.catalogueNovelCardsAdapter.notifyDataSetChanged();
+                    catalogueFragment.catalogueAdapter.notifyDataSetChanged();
                     catalogueFragment.swipeRefreshLayout.setRefreshing(false);
                 });
 
@@ -118,10 +118,10 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
                 catalogueFragment.getActivity().runOnUiThread(() -> {
                     catalogueFragment.errorView.setVisibility(View.VISIBLE);
                     catalogueFragment.errorMessage.setText(e.getMessage());
-                    if (catalogueFragmentHitBottom == null)
+                    if (catalogueHitBottom == null)
                         catalogueFragment.errorButton.setOnClickListener(view -> new CataloguePageLoader(catalogueFragment).execute(integers));
                     else
-                        catalogueFragment.errorButton.setOnClickListener(view -> new CataloguePageLoader(catalogueFragment, catalogueFragmentHitBottom).execute(integers));
+                        catalogueFragment.errorButton.setOnClickListener(view -> new CataloguePageLoader(catalogueFragment, catalogueHitBottom).execute(integers));
 
                 });
 
@@ -134,7 +134,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
      */
     @Override
     protected void onCancelled() {
-        if (catalogueFragmentHitBottom != null)
+        if (catalogueHitBottom != null)
             catalogueFragment.bottomProgressBar.setVisibility(View.INVISIBLE);
         else catalogueFragment.swipeRefreshLayout.setRefreshing(false);
     }
@@ -144,7 +144,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
      */
     @Override
     protected void onPreExecute() {
-        if (catalogueFragmentHitBottom != null)
+        if (catalogueHitBottom != null)
             catalogueFragment.bottomProgressBar.setVisibility(View.VISIBLE);
         else catalogueFragment.swipeRefreshLayout.setRefreshing(true);
     }
@@ -156,7 +156,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
      */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if (catalogueFragmentHitBottom != null) {
+        if (catalogueHitBottom != null) {
             catalogueFragment.bottomProgressBar.setVisibility(View.GONE);
             if (catalogueFragment.catalogueNovelCards.size() > 0)
                 catalogueFragment.empty.setVisibility(View.GONE);

@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.async;
+package com.github.doomsdayrs.apps.shosetsu.ui.novel.async;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

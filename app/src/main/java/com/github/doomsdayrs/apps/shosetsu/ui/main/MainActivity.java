@@ -20,7 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.MainActivityNavSwapFrag;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener;
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new MainActivityNavSwapFrag(this));
+        navigationView.setNavigationItemSelectedListener(new NavigationSwapListener(this));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);

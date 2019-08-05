@@ -22,12 +22,9 @@ package com.github.doomsdayrs.apps.shosetsu.ui.migration;/*
  * @author github.com/doomsdayrs
  */
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,25 +39,22 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.async.MigrationViewLoad;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingMapAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigrationViewCatalogueAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.migration.async.MigrationViewLoad;
+import com.github.doomsdayrs.apps.shosetsu.ui.migration.async.Transfer;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class MigrationView extends AppCompatActivity {
-    transfer t;
+    Transfer t;
 
     private ArrayList<CatalogueCard> catalogues = null;
 
@@ -112,9 +106,7 @@ public class MigrationView extends AppCompatActivity {
         Intent intent = getIntent();
         try {
             novels = (ArrayList<NovelCard>) Database.deserialize(intent.getStringExtra("selected"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         setContentView(R.layout.migrate_source_view);
@@ -173,7 +165,7 @@ public class MigrationView extends AppCompatActivity {
                         Log.d("Increment", "Decrease");
                         selection--;
                     } else {
-                        t = new transfer(confirmedMappings, target, this);
+                        t = new Transfer(confirmedMappings, target, this);
                         t.execute();
                     }
                     secondSelection = -1;
@@ -239,102 +231,5 @@ public class MigrationView extends AppCompatActivity {
         mappingNovelsAdapter = new MigratingMapAdapter(this);
         mappingNovels.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mappingNovels.setAdapter(mappingNovelsAdapter);
-    }
-
-
-    static class transfer extends AsyncTask<Void, Void, Void> {
-        @SuppressLint("StaticFieldLeak")
-        MigrationView migrationView;
-
-        final ArrayList<String[]> strings;
-        final Formatter formatter;
-        boolean C = true;
-
-        public transfer(ArrayList<String[]> strings, int target, MigrationView migrationView) {
-            this.strings = strings;
-            this.migrationView = migrationView;
-            formatter = DefaultScrapers.formatters.get(target);
-        }
-
-        public void setC(boolean c) {
-            C = c;
-        }
-
-        @Override
-        protected void onCancelled() {
-            C = false;
-            super.onCancelled();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            migrationView.migration.setVisibility(View.GONE);
-            migrationView.progressBar.setVisibility(View.VISIBLE);
-            migrationView.output.post(() -> migrationView.output.setText(migrationView.getResources().getText(R.string.starting)));
-            if (formatter.isIncrementingChapterList())
-                migrationView.pageCount.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            for (String[] strings : strings)
-                if (C) {
-                String s = strings[0] + "--->" + strings[1];
-                System.out.println(s);
-                migrationView.output.post(() -> migrationView.output.setText(s));
-                try {
-                    NovelPage novelPage = formatter.parseNovel(strings[1]);
-                    if (formatter.isIncrementingChapterList()) {
-                        int mangaCount = 0;
-                        int page = 1;
-                        while (page <= novelPage.maxChapterPage && C) {
-                            String p = "Page: " + page + "/" + novelPage.maxChapterPage;
-                            migrationView.pageCount.post(() -> migrationView.pageCount.setText(p));
-
-                            novelPage = formatter.parseNovel(strings[1], page);
-                            for (NovelChapter novelChapter : novelPage.novelChapters)
-                                if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
-                                    mangaCount++;
-                                    System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
-
-                                    Database.DatabaseChapter.addToChapters(strings[1], novelChapter);
-                                }
-                            page++;
-
-                            try {
-                                TimeUnit.MILLISECONDS.sleep(300);
-                            } catch (InterruptedException e) {
-                                if (e.getMessage() != null)
-                                    Log.e("Interrupt", e.getMessage());
-                            }
-                        }
-                    } else {
-                        int mangaCount = 0;
-                        for (NovelChapter novelChapter : novelPage.novelChapters)
-                            if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
-                                mangaCount++;
-                                System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
-                                Database.DatabaseChapter.addToChapters(strings[1], novelChapter);
-                            }
-                    }
-                    if (C) {
-                        migrationView.pageCount.post(() -> migrationView.pageCount.setText(""));
-                        Database.DatabaseLibrary.migrateNovel(strings[0], strings[1], formatter.getID(), novelPage, Database.DatabaseLibrary.getStatus(strings[0]).getA());
-                    }
-                } catch (IOException e) {
-                    if (e.getMessage() != null)
-                        Log.e("Interrupt", e.getMessage());
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            LibraryFragment.changedData = true;
-            if (migrationView != null) {
-                migrationView.finish();
-            }
-        }
     }
 }

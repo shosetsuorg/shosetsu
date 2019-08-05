@@ -46,12 +46,12 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
-public class CatalogueNovelCardsAdapter extends RecyclerView.Adapter<CatalogueNovelCardsAdapter.NovelCardsViewHolder> {
+public class CatalogueAdapter extends RecyclerView.Adapter<CatalogueAdapter.NovelCardsViewHolder> {
     private List<CatalogueNovelCard> recycleCards;
     private final FragmentManager fragmentManager;
     private final Formatter formatter;
 
-    public CatalogueNovelCardsAdapter(List<CatalogueNovelCard> recycleCards, FragmentManager fragmentManager, Formatter formatter) {
+    public CatalogueAdapter(List<CatalogueNovelCard> recycleCards, FragmentManager fragmentManager, Formatter formatter) {
         this.recycleCards = recycleCards;
         this.fragmentManager = fragmentManager;
         this.formatter = formatter;

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItemViewHolder;
+import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItemView;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 
 /*
@@ -35,7 +35,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
  *
  * @author github.com/doomsdayrs
  */
-public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemViewHolder> {
+public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemView> {
 
     // This references a static variable
 
@@ -47,16 +47,16 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemViewHolder
 
     @NonNull
     @Override
-    public DownloadItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public DownloadItemView onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_download_card, viewGroup, false);
-        return new DownloadItemViewHolder(view);
+        return new DownloadItemView(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DownloadItemViewHolder downloadItemViewHolder, int i) {
+    public void onBindViewHolder(@NonNull DownloadItemView downloadItemView, int i) {
         DownloadItem downloadItem = DownloadsFragment.downloadItems.get(i);
-        downloadItemViewHolder.title.setText(downloadItem.chapterURL);
-        downloadItemViewHolder.status.setText(downloadItem.getStatus());
+        downloadItemView.title.setText(downloadItem.chapterURL);
+        downloadItemView.status.setText(downloadItem.getStatus());
     }
 
     @Override

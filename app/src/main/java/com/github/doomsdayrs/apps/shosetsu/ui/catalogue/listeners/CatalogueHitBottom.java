@@ -5,8 +5,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.async.CataloguePageLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -31,11 +31,11 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
  *
  * @author github.com/doomsdayrs
  */
-public class CatalogueFragmentHitBottom extends RecyclerView.OnScrollListener {
+public class CatalogueHitBottom extends RecyclerView.OnScrollListener {
     private final CatalogueFragment catalogueFragment;
     public boolean running = false;
 
-    public CatalogueFragmentHitBottom(CatalogueFragment catalogueFragment) {
+    public CatalogueHitBottom(CatalogueFragment catalogueFragment) {
         this.catalogueFragment = catalogueFragment;
     }
 

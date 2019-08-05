@@ -32,7 +32,7 @@
         </activity>
 
         <activity
-            android:name=".ui.WebViewApp"
+            android:name=".ui.webView.WebViewApp"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".ui.reader.ChapterReader"

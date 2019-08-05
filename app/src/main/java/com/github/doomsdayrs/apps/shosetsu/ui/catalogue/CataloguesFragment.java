@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueCardsAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
@@ -94,7 +94,7 @@ public class CataloguesFragment extends Fragment {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(Objects.requireNonNull(container).getContext());
-            RecyclerView.Adapter adapter = new CatalogueCardsAdapter(cards, fragmentManager);
+            RecyclerView.Adapter adapter = new CataloguesAdapter(cards, fragmentManager);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
         }

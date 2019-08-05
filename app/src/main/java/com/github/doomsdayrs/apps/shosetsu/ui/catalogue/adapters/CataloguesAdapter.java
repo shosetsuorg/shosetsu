@@ -45,11 +45,11 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
  *
  * @author github.com/doomsdayrs
  */
-public class CatalogueCardsAdapter extends RecyclerView.Adapter<CatalogueCardsAdapter.CatalogueHolder> {
+public class CataloguesAdapter extends RecyclerView.Adapter<CataloguesAdapter.CatalogueHolder> {
     private final ArrayList<CatalogueCard> catalogues;
     private final FragmentManager fragmentManager;
 
-    public CatalogueCardsAdapter(ArrayList<CatalogueCard> catalogues, FragmentManager fragmentManager) {
+    public CataloguesAdapter(ArrayList<CatalogueCard> catalogues, FragmentManager fragmentManager) {
         this.catalogues = catalogues;
         this.fragmentManager = fragmentManager;
     }

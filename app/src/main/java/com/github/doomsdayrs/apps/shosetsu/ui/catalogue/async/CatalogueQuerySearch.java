@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.async;
+package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async;
 
 import android.os.AsyncTask;
 

@@ -25,12 +25,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler;
-import com.github.doomsdayrs.apps.shosetsu.backend.async.CataloguePageLoader;
-import com.github.doomsdayrs.apps.shosetsu.ui.WebViewApp;
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueNovelCardsAdapter;
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueFragmentHitBottom;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery;
+import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
@@ -75,7 +75,7 @@ public class CatalogueFragment extends Fragment {
     public boolean isInSearch = false;
     private Context context;
 
-    public CatalogueNovelCardsAdapter catalogueNovelCardsAdapter;
+    public CatalogueAdapter catalogueAdapter;
     public ProgressBar bottomProgressBar;
 
     private boolean dontRefresh = false;
@@ -162,7 +162,7 @@ public class CatalogueFragment extends Fragment {
             setLibraryCards(catalogueNovelCards);
             if (catalogueNovelCards.size() > 0) {
                 catalogueNovelCards = new ArrayList<>();
-                catalogueNovelCardsAdapter.notifyDataSetChanged();
+                catalogueAdapter.notifyDataSetChanged();
             }
             if (!formatter.hasCloudFlare())
                 new CataloguePageLoader(this).execute();
@@ -214,10 +214,10 @@ public class CatalogueFragment extends Fragment {
 
             library_layoutManager = new GridLayoutManager(context, calculateNoOfColumns(getContext(), 200), RecyclerView.VERTICAL, false);
 
-            catalogueNovelCardsAdapter = new CatalogueNovelCardsAdapter(recycleCards, getFragmentManager(), formatter);
+            catalogueAdapter = new CatalogueAdapter(recycleCards, getFragmentManager(), formatter);
             library_view.setLayoutManager(library_layoutManager);
-            library_view.addOnScrollListener(new CatalogueFragmentHitBottom(this));
-            library_view.setAdapter(catalogueNovelCardsAdapter);
+            library_view.addOnScrollListener(new CatalogueHitBottom(this));
+            library_view.setAdapter(catalogueAdapter);
         }
     }
 }

@@ -1,11 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.ui;
+package com.github.doomsdayrs.apps.shosetsu.ui.webView;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -13,8 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-
-import java.util.ArrayList;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -60,7 +55,7 @@ public class WebViewApp extends AppCompatActivity {
                 webView.setWebViewClient(new WebViewClient());
                 break;
             case CLOUD_FLARE:
-                webView.addJavascriptInterface(new MyJavaScriptInterface(this), "HtmlViewer");
+                webView.addJavascriptInterface(new JSInterface(this), "HtmlViewer");
                 webView.setWebViewClient(new WebViewClient() {
                     @Override
                     public void onPageFinished(WebView view, String url) {
@@ -78,40 +73,6 @@ public class WebViewApp extends AppCompatActivity {
         webView.loadUrl(intent.getStringExtra("url"));
     }
 
-    public enum Actions {
-        VIEW(0),
-        CLOUD_FLARE(1);
-        public static final ArrayList<Actions> actions = new ArrayList<>();
 
-        static {
-            actions.add(Actions.VIEW);
-            actions.add(Actions.CLOUD_FLARE);
-        }
 
-        public final int action;
-
-        Actions(int action) {
-            this.action = action;
-        }
-
-        public int getAction() {
-            return action;
-        }
-    }
-
-    class MyJavaScriptInterface {
-
-        private Context ctx;
-
-        MyJavaScriptInterface(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        @JavascriptInterface
-        public void showHTML(String html) {
-            new AlertDialog.Builder(ctx).setTitle("HTML").setMessage(html)
-                    .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
-        }
-
-    }
 }

@@ -1,9 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners;
+package com.github.doomsdayrs.apps.shosetsu.ui.webView;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.webkit.JavascriptInterface;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,21 +22,21 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
  * specific language governing permissions and limitations
  * under the License.
  * ====================================================================
- * Shosetsu
- * 06 / 07 / 2019
+ * shosetsu
+ * 05 / 08 / 2019
  *
  * @author github.com/doomsdayrs
  */
+public class JSInterface {
+    private Context ctx;
 
-public class NovelFragmentUpdate implements SwipeRefreshLayout.OnRefreshListener {
-    NovelFragmentMain novelFragmentMain;
-
-    public NovelFragmentUpdate(NovelFragmentMain novelFragmentMain) {
-        this.novelFragmentMain = novelFragmentMain;
+    JSInterface(Context ctx) {
+        this.ctx = ctx;
     }
 
-    @Override
-    public void onRefresh() {
-        new NovelLoader(novelFragmentMain, false).execute(novelFragmentMain.getActivity());
+    @JavascriptInterface
+    public void showHTML(String html) {
+        new AlertDialog.Builder(ctx).setTitle("HTML").setMessage(html)
+                .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
     }
 }
