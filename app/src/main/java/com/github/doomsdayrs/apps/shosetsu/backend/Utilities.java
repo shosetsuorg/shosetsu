@@ -12,8 +12,8 @@ import android.util.DisplayMetrics;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.ChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 

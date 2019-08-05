@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.github.doomsdayrs.apps.shosetsu.MainActivity">
+    tools:context="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity">
 
     <androidx.gridlayout.widget.GridLayout
         android:layout_width="match_parent"

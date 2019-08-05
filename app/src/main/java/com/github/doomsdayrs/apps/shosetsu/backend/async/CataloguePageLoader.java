@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
-import com.github.doomsdayrs.apps.shosetsu.ui.listeners.CatalogueFragmentHitBottom;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.catalogue.CatalogueFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueFragmentHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
 import java.io.IOException;

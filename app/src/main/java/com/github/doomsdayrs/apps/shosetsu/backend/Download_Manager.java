@@ -6,7 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.main.DownloadsFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;

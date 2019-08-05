@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.view.View;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.ChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

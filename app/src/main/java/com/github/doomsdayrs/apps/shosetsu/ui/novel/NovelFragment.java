@@ -18,7 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.adapters.novel.NovelPagerAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.google.android.material.tabs.TabLayout;
 

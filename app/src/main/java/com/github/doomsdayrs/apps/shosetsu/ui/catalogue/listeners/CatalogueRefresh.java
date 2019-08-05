@@ -1,14 +1,13 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.async;
+package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners;
 
-import android.os.AsyncTask;
+import android.util.Log;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.github.doomsdayrs.apps.shosetsu.backend.async.CataloguePageLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -33,28 +32,22 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
-public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<CatalogueNovelCard>> {
-    private CatalogueFragment catalogueFragment;
+public class CatalogueRefresh implements SwipeRefreshLayout.OnRefreshListener {
+    private final CatalogueFragment catalogueFragment;
 
-    public CatalogueQuerySearch(CatalogueFragment catalogueFragment) {
+    public CatalogueRefresh(CatalogueFragment catalogueFragment) {
         this.catalogueFragment = catalogueFragment;
     }
 
-    /**
-     * Search catalogue
-     * @param strings ignored
-     * @return List of results
-     */
     @Override
-    protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
-        ArrayList<CatalogueNovelCard> result = new ArrayList<>();
-        try {
-            List<Novel> novels = catalogueFragment.formatter.search(strings[0]);
-            for (Novel novel : novels)
-                result.add(new CatalogueNovelCard(novel.imageURL, novel.title, novel.link));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
+    public void onRefresh() {
+        catalogueFragment.swipeRefreshLayout.setRefreshing(true);
+
+        catalogueFragment.catalogueNovelCards = new ArrayList<>();
+        catalogueFragment.currentMaxPage = 1;
+        Log.d("FragmentRefresh", "Refreshing catalogue data");
+        new CataloguePageLoader(catalogueFragment).execute();
+
+
     }
 }

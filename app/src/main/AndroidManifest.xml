@@ -22,7 +22,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
         <activity
-            android:name="com.github.doomsdayrs.apps.shosetsu.MainActivity"
+            android:name="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,10 +35,10 @@
             android:name=".ui.WebViewApp"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
-            android:name=".ui.novel.ChapterReader"
+            android:name=".ui.reader.ChapterReader"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
-            android:name=".ui.novel.MigrationView"
+            android:name=".ui.migration.MigrationView"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
     </application>
 
