@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -190,7 +191,7 @@ public class NovelFragmentChapters extends Fragment {
             if (i != -1 && i != -2)
                 Utilities.openChapter(getActivity(), StaticNovel.novelChapters.get(i));
             else
-                Toast.makeText(getContext(), "No chapters! How did you even press this!", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show();
         });
         return view;
     }
@@ -234,6 +235,77 @@ public class NovelFragmentChapters extends Fragment {
         return new MenuInflater(getContext());
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.chapter_select_all:
+                for (NovelChapter novelChapter : StaticNovel.novelChapters)
+                    if (!contains(novelChapter))
+                        selectedChapters.add(novelChapter);
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+
+            case R.id.chapter_download_selected:
+                for (NovelChapter novelChapter : selectedChapters)
+                    if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
+                        Download_Manager.addToDownload(downloadItem);
+                    }
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+
+            case R.id.chapter_delete_selected:
+                for (NovelChapter novelChapter : selectedChapters)
+                    if (Database.DatabaseChapter.isSaved(novelChapter.link))
+                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link));
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+
+            case R.id.chapter_deselect_all:
+                selectedChapters = new ArrayList<>();
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                onCreateOptionsMenu(menu, getInflater());
+                return true;
+
+            case R.id.chapter_mark_read:
+                for (NovelChapter novelChapter : selectedChapters)
+                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 2)
+                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READ);
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+
+            case R.id.chapter_mark_unread:
+                for (NovelChapter novelChapter : selectedChapters)
+                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
+                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.UNREAD);
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+
+            case R.id.chapter_mark_reading:
+                for (NovelChapter novelChapter : selectedChapters)
+                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
+                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+
+            case R.id.chapter_select_between:
+                int min = findMinPosition();
+                int max = findMaxPosition();
+                for (int x = min; x < max; x++)
+                    if (!contains(StaticNovel.novelChapters.get(x)))
+                        selectedChapters.add(StaticNovel.novelChapters.get(x));
+                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return true;
+
+            case R.id.chapter_filter:
+                new NovelFragmentChaptersOnFilter(this);
+                return true;
+
+        }
+        return false;
+    }
+
     /**
      * Creates the option menu (on the top toolbar)
      *
@@ -244,76 +316,9 @@ public class NovelFragmentChapters extends Fragment {
     public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
         this.menu = menu;
         menu.clear();
-
-        if (selectedChapters.size() <= 0) {
+        if (selectedChapters.size() <= 0)
             inflater.inflate(R.menu.toolbar_chapters, menu);
-            menu.findItem(R.id.chapter_filter).setOnMenuItemClickListener(new NovelFragmentChaptersOnFilter(this));
-        } else {
+        else
             inflater.inflate(R.menu.toolbar_chapters_selected, menu);
-            menu.findItem(R.id.chapter_select_all).setOnMenuItemClickListener(menuItem -> {
-                for (NovelChapter novelChapter : StaticNovel.novelChapters)
-                    if (!contains(novelChapter))
-                        selectedChapters.add(novelChapter);
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                return true;
-            });
-            menu.findItem(R.id.chapter_download_selected).setOnMenuItemClickListener(menuItem -> {
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
-                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
-                        Download_Manager.addToDownload(downloadItem);
-                    }
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                return true;
-            });
-            menu.findItem(R.id.chapter_delete_selected).setOnMenuItemClickListener(menuItem -> {
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (Database.DatabaseChapter.isSaved(novelChapter.link))
-                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link));
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                return true;
-            });
-            menu.findItem(R.id.chapter_deselect_all).setOnMenuItemClickListener(menuItem -> {
-                selectedChapters = new ArrayList<>();
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                onCreateOptionsMenu(menu, inflater);
-                return true;
-            });
-            menu.findItem(R.id.chapter_mark_read).setOnMenuItemClickListener(menuItem -> {
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 2)
-                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READ);
-
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                return true;
-            });
-
-            menu.findItem(R.id.chapter_mark_unread).setOnMenuItemClickListener(menuItem -> {
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
-                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.UNREAD);
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                return true;
-            });
-
-            menu.findItem(R.id.chapter_mark_reading).setOnMenuItemClickListener(menuItem -> {
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
-                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                return true;
-            });
-
-            menu.findItem(R.id.chapter_select_between).setOnMenuItemClickListener(menuItem -> {
-                int min = findMinPosition();
-                int max = findMaxPosition();
-                for (int x = min; x < max; x++)
-                    if (!contains(StaticNovel.novelChapters.get(x)))
-                        selectedChapters.add(StaticNovel.novelChapters.get(x));
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                return true;
-            });
-        }
-
     }
 }

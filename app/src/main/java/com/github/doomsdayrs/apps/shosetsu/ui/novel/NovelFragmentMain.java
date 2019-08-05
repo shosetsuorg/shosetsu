@@ -1,25 +1,26 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Stati;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentMainAddToLibrary;
 import com.github.doomsdayrs.apps.shosetsu.ui.listeners.NovelFragmentUpdate;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
@@ -90,11 +91,11 @@ public class NovelFragmentMain extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.toolbar_novel, menu);
-        if (Database.DatabaseLibrary.isBookmarked(StaticNovel.novelURL)) {
-            menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
-                Intent intent = new Intent(getActivity(), MigrationView.class);
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.source_migrate:
+                intent = new Intent(getActivity(), MigrationView.class);
                 try {
                     ArrayList<NovelCard> novelCards = new ArrayList<>();
                     novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID()));
@@ -105,7 +106,25 @@ public class NovelFragmentMain extends Fragment {
                 intent.putExtra("target", 1);
                 startActivity(intent);
                 return true;
-            });
+            case R.id.webview:
+                intent = new Intent(getActivity(), WebViewApp.class);
+                intent.putExtra("url", StaticNovel.novelURL);
+                intent.putExtra("action", WebViewApp.Actions.VIEW.getAction());
+                startActivity(intent);
+                return true;
+            case R.id.browser:
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(StaticNovel.novelURL));
+                startActivity(intent);
+        }
+        return false;
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar_novel, menu);
+        if (Database.DatabaseLibrary.isBookmarked(StaticNovel.novelURL)) {
+            menu.findItem(R.id.source_migrate).setVisible(true);
         } else menu.findItem(R.id.source_migrate).setVisible(false);
 
     }

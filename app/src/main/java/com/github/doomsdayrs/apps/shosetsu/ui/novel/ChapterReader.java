@@ -235,7 +235,6 @@ public class ChapterReader extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         Log.d("item", item.toString());
-        System.out.println("Text size" + textView.getTextSize());
         switch (item.getItemId()) {
             case R.id.chapter_view_nightMode:
                 if (!item.isChecked()) {

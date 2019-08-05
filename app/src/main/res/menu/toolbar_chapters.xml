@@ -7,4 +7,9 @@
         android:icon="@drawable/ic_filter_list_black_24dp"
         android:title="@string/filter"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/download"
+        android:title="@string/download"
+        app:showAsAction="never" />
 </menu>

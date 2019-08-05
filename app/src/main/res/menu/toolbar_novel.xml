@@ -3,4 +3,10 @@
     <item
         android:id="@+id/source_migrate"
         android:title="@string/migrate_source" />
+    <item
+        android:id="@+id/webview"
+        android:title="@string/open_in_webview" />
+    <item
+        android:id="@+id/browser"
+        android:title="@string/open_in_browser" />
 </menu>
