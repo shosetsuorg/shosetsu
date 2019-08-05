@@ -2,13 +2,13 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
@@ -208,27 +208,32 @@ public class LibraryFragment extends Fragment {
                     return false;
                 });
             }
-            menu.findItem(R.id.updater_now).setOnMenuItemClickListener(menuItem -> {
+        } else
+            inflater.inflate(R.menu.toolbar_library_selected, menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.updater_now:
                 Toast.makeText(getContext(), "In the future this will start a checking of each novel in this library", Toast.LENGTH_SHORT).show();
                 return true;
-            });
 
-        } else {
-            inflater.inflate(R.menu.toolbar_library_selected, menu);
-            menu.findItem(R.id.chapter_select_all).setOnMenuItemClickListener(menuItem -> {
+            case R.id.chapter_select_all:
                 for (NovelCard novelChapter : libraryNovelCards)
                     if (!contains(novelChapter))
                         selectedNovels.add(novelChapter);
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
                 return true;
-            });
-            menu.findItem(R.id.chapter_deselect_all).setOnMenuItemClickListener(menuItem -> {
+
+            case R.id.chapter_deselect_all:
                 selectedNovels = new ArrayList<>();
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
-                onCreateOptionsMenu(menu, inflater);
+                onCreateOptionsMenu(menu, getInflater());
                 return true;
-            });
-            menu.findItem(R.id.remove_from_library).setOnMenuItemClickListener(menuItem -> {
+
+            case R.id.remove_from_library:
                 for (NovelCard novelCard : selectedNovels) {
                     Database.DatabaseLibrary.unBookmark(novelCard.novelURL);
                     libraryNovelCards.remove(novelCard);
@@ -236,8 +241,8 @@ public class LibraryFragment extends Fragment {
                 selectedNovels = new ArrayList<>();
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
                 return true;
-            });
-            menu.findItem(R.id.source_migrate).setOnMenuItemClickListener(menuItem -> {
+
+            case R.id.source_migrate:
                 Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
                     intent.putExtra("selected", Database.serialize(selectedNovels));
@@ -247,10 +252,8 @@ public class LibraryFragment extends Fragment {
                 intent.putExtra("target", 1);
                 startActivity(intent);
                 return true;
-            });
+
         }
-
+        return false;
     }
-
-
 }

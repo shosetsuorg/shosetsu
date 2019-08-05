@@ -24,6 +24,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,22 +166,26 @@ public class DownloadsFragment extends Fragment {
      * @param inflater Object to inflate the menu
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_downloads, menu);
         MenuItem menuItem = menu.findItem(R.id.toolbar_downloads_pause);
         if (Settings.downloadPaused)
             menuItem.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
-
-        menuItem.setOnMenuItemClickListener(a -> {
-            if (togglePause())
-                a.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
-            else {
-                a.setIcon(R.drawable.ic_pause_circle_outline_black_24dp);
-                Download_Manager.init();
-            }
-            return true;
-        });
-
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toolbar_downloads_pause:
+                if (togglePause())
+                    item.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
+                else {
+                    item.setIcon(R.drawable.ic_pause_circle_outline_black_24dp);
+                    Download_Manager.init();
+                }
+                return true;
+        }
+
+        return false;
+    }
 }
