@@ -28,7 +28,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.ChapterLoader;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentChaptersOnFilter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,6 +35,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -302,9 +302,9 @@ public class NovelFragmentChapters extends Fragment {
                 return true;
 
             case R.id.chapter_filter:
-                new NovelFragmentChaptersOnFilter(this);
-                return true;
-
+                Collections.reverse(StaticNovel.novelChapters);
+                NovelFragmentChapters.reversed = !NovelFragmentChapters.reversed;
+                return NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
         }
         return false;
     }

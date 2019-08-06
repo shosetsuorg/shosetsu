@@ -63,11 +63,16 @@ public class StaticNovel {
         if (novelChapters != null && novelChapters.size() != 0)
             for (int x = 0; x < novelChapters.size(); x++) {
                 if (novelChapters.get(x).link.equalsIgnoreCase(chapterURL)) {
-                    if (x + 1 == novelChapters.size() || x - 1 == -1)
-                        return novelChapters.get(x);
-                    if (NovelFragmentChapters.reversed)
-                        return novelChapters.get(x - 1);
-                    else return novelChapters.get(x + 1);
+
+                    if (NovelFragmentChapters.reversed) {
+                        if (x - 1 != -1)
+                            return novelChapters.get(x - 1);
+                        else return novelChapters.get(x);
+                    } else {
+                        if (x + 1 != novelChapters.size())
+                            return novelChapters.get(x + 1);
+                        else return novelChapters.get(x);
+                    }
                 }
             }
         return null;
