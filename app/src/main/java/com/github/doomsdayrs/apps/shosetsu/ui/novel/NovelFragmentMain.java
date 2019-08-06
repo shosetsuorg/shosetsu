@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +22,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentMainAddToLibrary;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate;
-import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions;
-import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -34,6 +31,9 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -94,10 +94,9 @@ public class NovelFragmentMain extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent intent;
         switch (item.getItemId()) {
             case R.id.source_migrate:
-                intent = new Intent(getActivity(), MigrationView.class);
+                Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
                     ArrayList<NovelCard> novelCards = new ArrayList<>();
                     novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID()));
@@ -109,14 +108,13 @@ public class NovelFragmentMain extends Fragment {
                 startActivity(intent);
                 return true;
             case R.id.webview:
-                intent = new Intent(getActivity(), WebViewApp.class);
-                intent.putExtra("url", StaticNovel.novelURL);
-                intent.putExtra("action", Actions.VIEW.getAction());
-                startActivity(intent);
+                if (getActivity() != null)
+                    openInWebview(getActivity(), StaticNovel.novelURL);
                 return true;
             case R.id.browser:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(StaticNovel.novelURL));
-                startActivity(intent);
+                if (getActivity() != null)
+                    openInBrowser(getActivity(), StaticNovel.novelURL);
+                return true;
         }
         return false;
     }

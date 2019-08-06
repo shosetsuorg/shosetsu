@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
@@ -14,8 +15,12 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions;
+import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+
+import org.jetbrains.annotations.NotNull;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -235,6 +240,18 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
         intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelURL", StaticNovel.novelURL);
         intent.putExtra("formatter", StaticNovel.formatter.getID());
+        activity.startActivity(intent);
+    }
+
+    public static void openInWebview(@NotNull Activity activity, @NotNull String url) {
+        Intent intent = new Intent(activity, WebViewApp.class);
+        intent.putExtra("url", url);
+        intent.putExtra("action", Actions.VIEW.getAction());
+        activity.startActivity(intent);
+    }
+
+    public static void openInBrowser(@NotNull Activity activity, @NotNull String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         activity.startActivity(intent);
     }
 

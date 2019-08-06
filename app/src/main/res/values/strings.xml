@@ -105,6 +105,9 @@
     <string name="press_to_continue_to_next_chapter">Press to continue to next chapter!</string>
     <string name="open_in_webview">Open in WebView</string>
     <string name="open_in_browser">Open in browser</string>
+    <string name="open_in">Open in</string>
+    <string name="webview">WebView</string>
+    <string name="browser">Browser</string>
 
 </resources>
 

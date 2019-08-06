@@ -20,4 +20,16 @@
                 android:title="@string/reading" />
         </menu>
     </item>
+
+    <item android:title="@string/open_in">
+        <menu>
+            <item
+                android:id="@+id/webview"
+                android:title="@string/webview" />
+
+            <item
+                android:id="@+id/browser"
+                android:title="@string/browser" />
+        </menu>
+    </item>
 </menu>

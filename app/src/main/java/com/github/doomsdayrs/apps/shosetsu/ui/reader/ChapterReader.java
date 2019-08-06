@@ -37,6 +37,8 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeIndent
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeParagraphSpacing;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setTextSize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderColor;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
@@ -347,6 +349,12 @@ public class ChapterReader extends AppCompatActivity {
                 ispaceSmall.setChecked(false);
                 ispaceMedium.setChecked(false);
                 ispaceLarge.setChecked(true);
+                return true;
+            case R.id.browser:
+                openInBrowser(this, chapterURL);
+                return true;
+            case R.id.webview:
+                openInWebview(this, chapterURL);
                 return true;
         }
         return false;

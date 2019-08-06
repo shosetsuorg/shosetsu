@@ -22,6 +22,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.card.MaterialCardView;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 
 /*
@@ -85,7 +87,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
-
                 case R.id.popup_chapter_menu_bookmark:
                     if (toggleBookmarkChapter(novelChapter.link))
                         library_card_title.setTextColor(itemView.getResources().getColor(R.color.bookmarked));
@@ -119,6 +120,14 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                 case R.id.popup_chapter_menu_mark_reading:
                     Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
+                case R.id.browser:
+                    if (novelFragmentChapters.getActivity() != null)
+                        openInBrowser(novelFragmentChapters.getActivity(), novelChapter.link);
+                    return true;
+                case R.id.webview:
+                    if (novelFragmentChapters.getActivity() != null)
+                        openInWebview(novelFragmentChapters.getActivity(), novelChapter.link);
                     return true;
                 default:
                     return false;

@@ -81,6 +81,19 @@
         </item>
     </group>
 
+    <item android:title="@string/open_in">
+        <menu>
+            <item
+                android:id="@+id/webview"
+                android:title="@string/webview" />
+
+            <item
+                android:id="@+id/browser"
+                android:title="@string/browser" />
+        </menu>
+    </item>
+
+
     <item
         android:id="@+id/chapter_view_bookmark"
         android:icon="@drawable/ic_bookmark_border_black_24dp"
