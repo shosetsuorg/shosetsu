@@ -1,19 +1,22 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters;
 
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
@@ -42,7 +45,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
  */
 public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
     public static int DefaultTextColor;
-    public static boolean set = false;
+    private static boolean set = false;
     private final NovelFragmentChapters novelFragmentChapters;
 
 
@@ -67,7 +70,6 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
         NovelChapter novelChapter = StaticNovel.novelChapters.get(i);
-
         chaptersViewHolder.novelChapter = novelChapter;
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
@@ -77,7 +79,6 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
         if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
-            Log.i("TextDefaultColor", String.valueOf(DefaultTextColor));
             chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("UnBookmark");
         } else {
             chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("Bookmark");
@@ -85,7 +86,6 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
 
         if (novelFragmentChapters.contains(novelChapter)) {
-            Log.d("SelectedStatus", "Novel Selected: " + novelChapter.link);
             chaptersViewHolder.cardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
             chaptersViewHolder.checkBox.setChecked(true);
         } else {
@@ -99,7 +99,6 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
 
         if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
-            Log.d("In Storage", StaticNovel.novelURL + " " + novelChapter.link + " " + i);
             chaptersViewHolder.downloadTag.setVisibility(View.VISIBLE);
             chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_download).setTitle("Delete");
         } else {
@@ -108,21 +107,38 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
         }
 
         switch (Database.DatabaseChapter.getStatus(novelChapter.link)) {
+
             case READING:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    chaptersViewHolder.constraintLayout.setForeground(new ColorDrawable());
+                } else {
+                    //TODO Tint for cards before 22
+                }
                 chaptersViewHolder.status.setText(Status.READING.getStatus());
                 chaptersViewHolder.readTag.setVisibility(View.VISIBLE);
                 chaptersViewHolder.read.setVisibility(View.VISIBLE);
                 chaptersViewHolder.read.setText(String.valueOf(Database.DatabaseChapter.getY(novelChapter.link)));
                 break;
+            case UNREAD:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    chaptersViewHolder.constraintLayout.setForeground(new ColorDrawable());
+                } else {
+                    //TODO Tint for cards before 22
+
+                }
+                chaptersViewHolder.status.setText(Status.UNREAD.getStatus());
+                break;
 
             case READ:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (novelFragmentChapters.getContext() != null)
+                        chaptersViewHolder.constraintLayout.setForeground(new ColorDrawable(ContextCompat.getColor(novelFragmentChapters.getContext(), R.color.shade)));
+                } else {
+                    //TODO Tint for cards before 22
+                }
                 chaptersViewHolder.status.setText(Status.READ.getStatus());
                 chaptersViewHolder.readTag.setVisibility(View.GONE);
                 chaptersViewHolder.read.setVisibility(View.GONE);
-                break;
-
-            case UNREAD:
-                chaptersViewHolder.status.setText(Status.UNREAD.getStatus());
                 break;
         }
 

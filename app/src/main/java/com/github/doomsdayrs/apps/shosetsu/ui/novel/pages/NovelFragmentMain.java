@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.novel;
+package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentMainAddToLibrary;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;

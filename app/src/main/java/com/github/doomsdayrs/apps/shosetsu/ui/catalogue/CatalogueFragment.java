@@ -212,12 +212,14 @@ public class CatalogueFragment extends Fragment {
             library_view.setHasFixedSize(false);
             RecyclerView.LayoutManager library_layoutManager;
 
-            library_layoutManager = new GridLayoutManager(context, calculateNoOfColumns(getContext(), 200), RecyclerView.VERTICAL, false);
+            if (getContext() != null) {
+                library_layoutManager = new GridLayoutManager(context, calculateNoOfColumns(getContext(), 200), RecyclerView.VERTICAL, false);
 
-            catalogueAdapter = new CatalogueAdapter(recycleCards, getFragmentManager(), formatter);
-            library_view.setLayoutManager(library_layoutManager);
-            library_view.addOnScrollListener(new CatalogueHitBottom(this));
-            library_view.setAdapter(catalogueAdapter);
+                catalogueAdapter = new CatalogueAdapter(recycleCards, this, formatter);
+                library_view.setLayoutManager(library_layoutManager);
+                library_view.addOnScrollListener(new CatalogueHitBottom(this));
+                library_view.setAdapter(catalogueAdapter);
+            }
         }
     }
 }

@@ -1,22 +1,20 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters;
 
-import android.os.AsyncTask;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 import com.squareup.picasso.Picasso;
@@ -46,29 +44,29 @@ import java.util.List;
  *
  * @author github.com/doomsdayrs
  */
-public class CatalogueAdapter extends RecyclerView.Adapter<CatalogueAdapter.NovelCardsViewHolder> {
+public class CatalogueAdapter extends RecyclerView.Adapter<NovelCardViewHolder> {
     private List<CatalogueNovelCard> recycleCards;
-    private final FragmentManager fragmentManager;
+    private final CatalogueFragment catalogueFragment;
     private final Formatter formatter;
 
-    public CatalogueAdapter(List<CatalogueNovelCard> recycleCards, FragmentManager fragmentManager, Formatter formatter) {
+    public CatalogueAdapter(List<CatalogueNovelCard> recycleCards, CatalogueFragment catalogueFragment, Formatter formatter) {
         this.recycleCards = recycleCards;
-        this.fragmentManager = fragmentManager;
+        this.catalogueFragment = catalogueFragment;
         this.formatter = formatter;
     }
 
     @NonNull
     @Override
-    public NovelCardsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public NovelCardViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_card, viewGroup, false);
-        NovelCardsViewHolder novelCardsViewHolder = new NovelCardsViewHolder(view);
-        novelCardsViewHolder.fragmentManager = fragmentManager;
+        NovelCardViewHolder novelCardsViewHolder = new NovelCardViewHolder(view);
+        novelCardsViewHolder.catalogueFragment = catalogueFragment;
         novelCardsViewHolder.formatter = formatter;
         return novelCardsViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NovelCardsViewHolder novelCardsViewHolder, int i) {
+    public void onBindViewHolder(@NonNull NovelCardViewHolder novelCardsViewHolder, int i) {
         CatalogueNovelCard recycleCard = recycleCards.get(i);
         if (recycleCard != null) {
             novelCardsViewHolder.url = recycleCard.novelURL;
@@ -79,6 +77,15 @@ public class CatalogueAdapter extends RecyclerView.Adapter<CatalogueAdapter.Nove
                         .load(recycleCard.imageURL)
                         .into(novelCardsViewHolder.library_card_image);
             } else novelCardsViewHolder.library_card_image.setVisibility(View.GONE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Database.DatabaseLibrary.isBookmarked(recycleCard.novelURL)) {
+                    if (catalogueFragment.getContext() != null)
+                        novelCardsViewHolder.constraintLayout.setForeground(new ColorDrawable(ContextCompat.getColor(catalogueFragment.getContext(), R.color.shade)));
+                } else novelCardsViewHolder.constraintLayout.setForeground(new ColorDrawable());
+            } else {
+                //TODO Tint for cards before 22
+            }
 
             switch (Settings.themeMode) {
                 case 0:
@@ -96,74 +103,4 @@ public class CatalogueAdapter extends RecyclerView.Adapter<CatalogueAdapter.Nove
     public int getItemCount() {
         return recycleCards.size();
     }
-
-    static class NovelCardsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        FragmentManager fragmentManager;
-        Formatter formatter;
-        final ImageView library_card_image;
-        final TextView library_card_title;
-        String url;
-
-        NovelCardsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            library_card_image = itemView.findViewById(R.id.novel_item_image);
-            library_card_title = itemView.findViewById(R.id.textView);
-
-            itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            NovelFragment novelFragment = new NovelFragment();
-            StaticNovel.formatter = formatter;
-            StaticNovel.novelURL = url;
-
-            fragmentManager.beginTransaction()
-                    .addToBackStack("tag")
-                    .replace(R.id.fragment_container, novelFragment)
-                    .commit();
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
-            new add(this).execute(view);
-            return true;
-        }
-
-        static class add extends AsyncTask<View, Void, Void> {
-            NovelCardsViewHolder novelCardsViewHolder;
-
-            public add(NovelCardsViewHolder novelCardsViewHolder) {
-                this.novelCardsViewHolder = novelCardsViewHolder;
-            }
-
-            @Override
-            protected Void doInBackground(View... views) {
-                try {
-                    if (!Database.DatabaseLibrary.inLibrary(novelCardsViewHolder.url)) {
-                        Database.DatabaseLibrary.addToLibrary(novelCardsViewHolder.formatter.getID(), novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
-                        if (views[0] != null)
-                            views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());
-                    }
-                    if (Database.DatabaseLibrary.isBookmarked(novelCardsViewHolder.url)) {
-                        if (views[0] != null)
-                            views[0].post(() -> Toast.makeText(views[0].getContext(), "Already in the library", Toast.LENGTH_SHORT).show());
-                    } else {
-                        Database.DatabaseLibrary.bookMark(novelCardsViewHolder.url);
-                        if (views[0] != null)
-                            views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());
-                    }
-                } catch (Exception e) {
-                    if (views[0] != null)
-                        views[0].post(() -> Toast.makeText(views[0].getContext(), "Failed to add to library: " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_LONG).show());
-                }
-                return null;
-            }
-        }
-
-    }
-
-
-
 }

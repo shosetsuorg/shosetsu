@@ -8,15 +8,16 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.card.MaterialCardView;
@@ -55,6 +56,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     private final ImageView moreOptions;
     public final MaterialCardView cardView;
+    public final ConstraintLayout constraintLayout;
     public final CheckBox checkBox;
     public final TextView library_card_title;
     public final TextView status;
@@ -72,6 +74,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         {
             cardView = itemView.findViewById(R.id.recycler_novel_chapter_card);
             checkBox = itemView.findViewById(R.id.recycler_novel_chapter_selectCheck);
+            constraintLayout = itemView.findViewById(R.id.constraint);
             library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
             moreOptions = itemView.findViewById(R.id.recycler_novel_chapter_options);
             status = itemView.findViewById(R.id.recycler_novel_chapter_status);

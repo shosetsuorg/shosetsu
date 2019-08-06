@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.novel;
+package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -24,6 +24,8 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentChaptersOnFilter;
@@ -73,7 +75,9 @@ public class NovelFragmentChapters extends Fragment {
         return false;
     }
 
-    public int findMinPosition() {
+    private int currentMaxPage = 1;
+
+    private int findMinPosition() {
         int min = StaticNovel.novelChapters.size();
         for (int x = 0; x < StaticNovel.novelChapters.size(); x++)
             if (contains(StaticNovel.novelChapters.get(x)))
@@ -82,7 +86,11 @@ public class NovelFragmentChapters extends Fragment {
         return min;
     }
 
-    public int findMaxPosition() {
+    public static boolean reversed;
+    @SuppressLint("StaticFieldLeak")
+    public static RecyclerView recyclerView;
+
+    private int findMaxPosition() {
         int max = -1;
         for (int x = StaticNovel.novelChapters.size() - 1; x >= 0; x--)
             if (contains(StaticNovel.novelChapters.get(x)))
@@ -90,11 +98,6 @@ public class NovelFragmentChapters extends Fragment {
                     max = x;
         return max;
     }
-
-    public static boolean reversed;
-    @SuppressLint("StaticFieldLeak")
-    public static RecyclerView recyclerView;
-    public int currentMaxPage = 1;
     public static ChaptersAdapter adapter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public NovelFragment novelFragment;

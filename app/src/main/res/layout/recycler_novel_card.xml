@@ -7,11 +7,10 @@
     android:layout_margin="4dp"
     app:cardElevation="1dp"
     app:contentPadding="1dp"
-    app:strokeColor="@color/selected_blue"
-   >
+    app:strokeColor="@color/selected_blue">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/relativeLayout"
+        android:id="@+id/constraint"
         android:layout_width="190dp"
         android:layout_height="wrap_content">
 

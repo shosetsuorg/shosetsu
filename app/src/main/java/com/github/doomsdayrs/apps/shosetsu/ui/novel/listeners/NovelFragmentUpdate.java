@@ -2,8 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
  */
 
 public class NovelFragmentUpdate implements SwipeRefreshLayout.OnRefreshListener {
-    NovelFragmentMain novelFragmentMain;
+    private NovelFragmentMain novelFragmentMain;
 
     public NovelFragmentUpdate(NovelFragmentMain novelFragmentMain) {
         this.novelFragmentMain = novelFragmentMain;

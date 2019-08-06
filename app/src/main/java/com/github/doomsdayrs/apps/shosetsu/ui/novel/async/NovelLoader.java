@@ -9,8 +9,8 @@ import android.view.View;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.io.IOException;
@@ -93,7 +93,6 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
         } else if (novelFragmentMain != null && novelFragmentMain.getActivity() != null)
             novelFragmentMain.getActivity().runOnUiThread(() -> novelFragmentMain.novelFragment.errorView.setVisibility(View.GONE));
-
 
 
         try {
@@ -197,7 +196,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
                 if (StaticNovel.chapterLoader != null && StaticNovel.chapterLoader.isCancelled())
                     StaticNovel.chapterLoader.cancel(true);
 
-                if (StaticNovel.chapterLoader == null || StaticNovel.chapterLoader.isCancelled())
+                if ((StaticNovel.chapterLoader == null || StaticNovel.chapterLoader.isCancelled()) && novelFragment != null)
                     StaticNovel.chapterLoader = new ChapterLoader(novelFragment);
                 activity.runOnUiThread(() -> StaticNovel.chapterLoader.execute(activity));
             }

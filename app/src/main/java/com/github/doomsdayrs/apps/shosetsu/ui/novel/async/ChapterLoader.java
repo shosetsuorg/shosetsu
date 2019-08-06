@@ -9,8 +9,8 @@ import android.view.View;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      *
      * @param novelFragment reference to the fragment
      */
-    public ChapterLoader(NovelFragment novelFragment) {
+    ChapterLoader(NovelFragment novelFragment) {
         novelFragmentChapters = novelFragment.novelFragmentChapters;
     }
 

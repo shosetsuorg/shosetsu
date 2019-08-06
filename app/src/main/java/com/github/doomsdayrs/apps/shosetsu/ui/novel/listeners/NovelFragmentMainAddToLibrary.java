@@ -4,8 +4,8 @@ import android.view.View;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /*
