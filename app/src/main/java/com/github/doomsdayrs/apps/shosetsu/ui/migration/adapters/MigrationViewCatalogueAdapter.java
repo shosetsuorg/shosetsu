@@ -105,8 +105,8 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
             Log.d("FormatterSelection", formatter.getName());
             if (isOnline()) {
 
-                Log.d("Target", String.valueOf(formatter.getID() - 1));
-                migrationView.target = formatter.getID() - 1;
+                Log.d("Target", String.valueOf(formatter.getID()));
+                migrationView.target = formatter.getID();
                 migrationView.targetSelection.setVisibility(View.GONE);
                 migrationView.migration.setVisibility(View.VISIBLE);
 

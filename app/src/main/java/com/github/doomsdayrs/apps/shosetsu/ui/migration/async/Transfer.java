@@ -42,16 +42,17 @@ import java.util.concurrent.TimeUnit;
  * @author github.com/doomsdayrs
  */
 public class Transfer extends AsyncTask<Void, Void, Void> {
-    final ArrayList<String[]> strings;
-    final Formatter formatter;
+    private final ArrayList<String[]> strings;
+    private final Formatter formatter;
     @SuppressLint("StaticFieldLeak")
+    private
     MigrationView migrationView;
-    boolean C = true;
+    private boolean C = true;
 
     public Transfer(ArrayList<String[]> strings, int target, MigrationView migrationView) {
         this.strings = strings;
         this.migrationView = migrationView;
-        formatter = DefaultScrapers.formatters.get(target);
+        formatter = DefaultScrapers.getByID(target);
     }
 
     public void setC(boolean c) {

@@ -38,12 +38,12 @@ import java.util.ArrayList;
 public class MigrationViewLoad extends AsyncTask<Void, Void, Void> {
 
     @SuppressLint("StaticFieldLeak")
-    final MigrationView migrationView;
-    final Formatter targetFormat;
+    private final MigrationView migrationView;
+    private final Formatter targetFormat;
 
     public MigrationViewLoad(MigrationView migrationView) {
         this.migrationView = migrationView;
-        this.targetFormat = DefaultScrapers.formatters.get(migrationView.target);
+        this.targetFormat = DefaultScrapers.getByID(migrationView.target);
     }
 
     @Override

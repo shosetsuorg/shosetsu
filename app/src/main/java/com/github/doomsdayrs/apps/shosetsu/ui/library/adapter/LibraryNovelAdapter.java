@@ -68,7 +68,7 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
                 .into(libraryViewHolder.library_card_image);
             libraryViewHolder.libraryFragment = libraryFragment;
             libraryViewHolder.novelCard = novelCard;
-            libraryViewHolder.formatter = DefaultScrapers.formatters.get(novelCard.formatterID - 1);
+            libraryViewHolder.formatter = DefaultScrapers.getByID(novelCard.formatterID);
             libraryViewHolder.library_card_title.setText(novelCard.title);
 
             switch (Settings.themeMode) {

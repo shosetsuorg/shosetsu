@@ -37,7 +37,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -186,11 +185,7 @@ public class MigrationView extends AppCompatActivity {
         pageCount = findViewById(R.id.page_count);
 
         if (catalogues == null) {
-            catalogues = new ArrayList<>();
-            for (Formatter formatter : DefaultScrapers.formatters) {
-                catalogues.add(new CatalogueCard(formatter));
-
-            }
+            catalogues = DefaultScrapers.getAsCatalogue();
         }
 
         targetSelection = findViewById(R.id.target_selection);

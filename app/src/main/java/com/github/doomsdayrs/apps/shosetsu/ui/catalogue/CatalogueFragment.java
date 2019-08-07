@@ -103,7 +103,7 @@ public class CatalogueFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putSerializable("list", catalogueNovelCards);
         if (formatter != null)
-            outState.putInt("formatter", formatter.getID() - 1);
+            outState.putInt("formatter", formatter.getID());
     }
 
     @Override
@@ -150,7 +150,7 @@ public class CatalogueFragment extends Fragment {
 
         if (savedInstanceState != null) {
             catalogueNovelCards = (ArrayList<CatalogueNovelCard>) savedInstanceState.getSerializable("list");
-            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter"));
+            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
         }
         Statics.mainActionBar.setTitle(formatter.getName());
         swipeRefreshLayout.setOnRefreshListener(new CatalogueRefresh(this));

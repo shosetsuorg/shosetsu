@@ -386,12 +386,12 @@ public class ChapterReader extends AppCompatActivity {
             unformattedText = savedInstanceState.getString("unformattedText");
             title = savedInstanceState.getString("title");
             chapterURL = savedInstanceState.getString("chapterURL");
-            formatter = DefaultScrapers.formatters.get(savedInstanceState.getInt("formatter") - 1);
+            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
             text = savedInstanceState.getString("text");
         } else {
             chapterURL = getIntent().getStringExtra("chapterURL");
             title = getIntent().getStringExtra("title");
-            formatter = DefaultScrapers.formatters.get(getIntent().getIntExtra("formatter", -1) - 1);
+            formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
         }
         Log.i("Reading", chapterURL);
 

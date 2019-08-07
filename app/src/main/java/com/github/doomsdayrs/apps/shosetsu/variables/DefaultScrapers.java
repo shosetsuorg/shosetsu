@@ -8,6 +8,7 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelGenre;
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,6 +55,21 @@ public enum DefaultScrapers implements Formatter {
     BESTLIGHTNOVEL(new BestLightNovel(5));
 
     public static final ArrayList<Formatter> formatters = new ArrayList<>();
+
+    public static Formatter getByID(int ID) {
+        for (Formatter formatter : formatters) {
+            if (formatter.getID() == ID)
+                return formatter;
+        }
+        return null;
+    }
+
+    public static ArrayList<CatalogueCard> getAsCatalogue() {
+        ArrayList<CatalogueCard> catalogueCards = new ArrayList<>();
+        for (Formatter formatter : DefaultScrapers.formatters)
+            catalogueCards.add(new CatalogueCard(formatter));
+        return catalogueCards;
+    }
 
     static {
         formatters.add(NOVELFULL);

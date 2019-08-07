@@ -186,7 +186,7 @@ public class Database {
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
 
-                downloadItems.add(new DownloadItem(DefaultScrapers.formatters.get(formatter - 1), nName, cName, nURL, cURL));
+                downloadItems.add(new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, nURL, cURL));
             }
             cursor.close();
 
@@ -212,7 +212,7 @@ public class Database {
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
                 cursor.close();
-                return new DownloadItem(DefaultScrapers.formatters.get(formatter - 1), nName, cName, nURL, cURL);
+                return new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, nURL, cURL);
             }
         }
 
@@ -256,6 +256,7 @@ public class Database {
         public static boolean inDownloads(DownloadItem downloadItem) {
             Cursor cursor = library.rawQuery("SELECT " + Columns.CHAPTER_URL + " from " + Tables.DOWNLOADS + " where " + Columns.CHAPTER_URL + " = '" + downloadItem.chapterURL + "'", null);
             int a = cursor.getCount();
+            cursor.close();
             return !(a <= 0);
         }
 
@@ -285,7 +286,7 @@ public class Database {
         }
 
         /**
-         * @param novelURL
+         * @param novelURL URL of novel
          * @return Count of chapters left to read
          */
         public static int getCountOfChaptersUnread(String novelURL) {
@@ -503,7 +504,7 @@ public class Database {
          *
          * @param novelURL novelURL
          */
-        public static void addToChapters(String novelURL, String chapterURL, String chapter) {
+        static void addToChapters(String novelURL, String chapterURL, String chapter) {
             library.execSQL("insert into " + Tables.CHAPTERS + "(" +
                     Columns.NOVEL_URL + "," +
                     Columns.CHAPTER_URL + "," +
@@ -539,9 +540,7 @@ public class Database {
                         if (text != null) {
                             novelChapters.add((NovelChapter) deserialize(text));
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
+                    } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -602,7 +601,7 @@ public class Database {
             }
         }
 
-        public static void addToLibrary(int formatter, String novelPage, String novelURL, int status) {
+        static void addToLibrary(int formatter, String novelPage, String novelURL, int status) {
             library.execSQL("insert into " + Tables.NOVELS + "(" +
                     Columns.BOOKMARKED + ",'" + Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.NOVEL_PAGE + "," + Columns.STATUS + ") values(" +
                     "0" + "," +
@@ -659,9 +658,7 @@ public class Database {
                                 novelPage.imageURL,
                                 cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
                         ));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
+                    } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -687,16 +684,14 @@ public class Database {
                     NovelPage novelPage = (NovelPage) deserialize(cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString())));
                     cursor.close();
                     return novelPage;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
+                } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
             return null;
         }
 
-        public static void setStatus(String novelURL, Status status) {
+        static void setStatus(String novelURL, Status status) {
             library.execSQL("update " + Tables.NOVELS + " set " + Columns.STATUS + "=" + status + " where " + Columns.NOVEL_URL + "='" + novelURL + "'");
         }
 
@@ -806,7 +801,7 @@ public class Database {
                     for (DBDownloadItem DBDownloadItem : superserialzied.DBDownloadItems) {
                         textView.post(() -> textView.setText("Restoring download: " + DBDownloadItem.CHAPTER_URL));
                         progressBar.post(() -> progressBar.incrementProgressBy(1));
-                        DownloadItem downloadItem = new DownloadItem(DefaultScrapers.formatters.get(DBDownloadItem.FORMATTER_ID - 1), DBDownloadItem.NOVEL_NAME, DBDownloadItem.CHAPTER_NAME, DBDownloadItem.NOVEL_URL, DBDownloadItem.CHAPTER_URL);
+                        DownloadItem downloadItem = new DownloadItem(DefaultScrapers.getByID(DBDownloadItem.FORMATTER_ID), DBDownloadItem.NOVEL_NAME, DBDownloadItem.CHAPTER_NAME, DBDownloadItem.NOVEL_URL, DBDownloadItem.CHAPTER_URL);
                         if (!DatabaseDownloads.inDownloads(downloadItem))
                             DatabaseDownloads.addToDownloads(downloadItem);
                     }
@@ -912,6 +907,7 @@ public class Database {
      * Async progress of backup
      */
     public static class backUP extends AsyncTask<Void, Void, Void> {
+        @SuppressLint("StaticFieldLeak")
         Context context;
 
         public backUP(Context context) {

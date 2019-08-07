@@ -15,12 +15,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -60,7 +61,7 @@ public class CataloguesFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_catalogues, menu);
     }
 
@@ -81,11 +82,7 @@ public class CataloguesFragment extends Fragment {
         // > Conditional for languages
         // > Conditional for categories, maybe
         if (cards == null) {
-            cards = new ArrayList<>();
-            for (Formatter formatter : DefaultScrapers.formatters) {
-                cards.add(new CatalogueCard(formatter));
-
-            }
+            cards = DefaultScrapers.getAsCatalogue();
         }
         FragmentManager fragmentManager = getFragmentManager();
 
