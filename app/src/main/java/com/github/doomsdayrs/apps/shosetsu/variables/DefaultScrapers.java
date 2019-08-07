@@ -50,7 +50,7 @@ public enum DefaultScrapers implements Formatter {
     NOVELFULL(new NovelFull(1)),
     BOXNOVEL(new BoxNovel(2)),
     SYOSETU(new Syosetu(3)),
-    NOVELPLANENT(new NovelPlanet(4)),
+    //NOVELPLANENT(new NovelPlanet(4)),
     BESTLIGHTNOVEL(new BestLightNovel(5));
 
     public static final ArrayList<Formatter> formatters = new ArrayList<>();
@@ -59,7 +59,7 @@ public enum DefaultScrapers implements Formatter {
         formatters.add(NOVELFULL);
         formatters.add(BOXNOVEL);
         formatters.add(SYOSETU);
-        formatters.add(NOVELPLANENT);
+        // formatters.add(NOVELPLANENT);
         formatters.add(BESTLIGHTNOVEL);
     }
 

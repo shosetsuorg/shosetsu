@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.objects;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseChapter;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.Base;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -25,34 +25,32 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseCha
  *
  * @author github.com/doomsdayrs
  */
-public class Chapter extends BaseChapter {
-    public final String SAVED_DATA;
-    public final int Y;
-    public final int READ_CHAPTER;
+public class DBNovel extends Base {
     public final boolean BOOKMARKED;
-    public final boolean IS_SAVED;
-    public final String SAVE_PATH;
 
-    public Chapter(String novel_url, String chapter_url, String saved_data, int y, int read_chapter, boolean bookmarked, boolean is_saved, String save_path) {
-        super(novel_url, chapter_url);
-        SAVED_DATA = saved_data;
-        Y = y;
-        READ_CHAPTER = read_chapter;
+    /**
+     * Serialized NovelPage object in string form, must be deserialized for use
+     */
+    public final String NOVEL_PAGE;
+
+    public final int FORMATTER_ID;
+    public final int STATUS;
+
+    public DBNovel(String novel_url, boolean bookmarked, String novel_page, int formatter_id, int status) {
+        super(novel_url);
         BOOKMARKED = bookmarked;
-        IS_SAVED = is_saved;
-        SAVE_PATH = save_path;
+        NOVEL_PAGE = novel_page;
+        FORMATTER_ID = formatter_id;
+        STATUS = status;
     }
 
     @Override
     public String toString() {
-        return "Chapter{" +
-                "SAVED_DATA='" + SAVED_DATA + '\'' +
-                ", Y='" + Y + '\'' +
-                ", READ_CHAPTER=" + READ_CHAPTER +
-                ", BOOKMARKED=" + BOOKMARKED +
-                ", IS_SAVED=" + IS_SAVED +
-                ", SAVE_PATH='" + SAVE_PATH + '\'' +
-                ", CHAPTER_URL='" + CHAPTER_URL + '\'' +
+        return "Library{" +
+                "BOOKMARKED=" + BOOKMARKED +
+                ", NOVEL_PAGE='" + NOVEL_PAGE + '\'' +
+                ", FORMATTER_ID=" + FORMATTER_ID +
+                ", STATUS=" + STATUS +
                 ", NOVEL_URL='" + NOVEL_URL + '\'' +
                 '}';
     }

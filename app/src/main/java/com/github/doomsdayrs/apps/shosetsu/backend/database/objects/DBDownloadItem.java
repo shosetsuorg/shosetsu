@@ -24,19 +24,20 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseCha
  * 27 / 07 / 2019
  *
  * @author github.com/doomsdayrs
- */public class Download extends BaseChapter {
+ */public class DBDownloadItem extends BaseChapter {
     public final int FORMATTER_ID;
     public final String NOVEL_NAME;
     public final String CHAPTER_NAME;
     public final boolean PAUSED;
 
-    public Download(String novel_url, String chapter_url, int formatter_id, String novel_name, String chapter_name, boolean paused) {
+    public DBDownloadItem(String novel_url, String chapter_url, int formatter_id, String novel_name, String chapter_name, boolean paused) {
         super(novel_url, chapter_url);
         FORMATTER_ID = formatter_id;
         NOVEL_NAME = novel_name;
         CHAPTER_NAME = chapter_name;
         PAUSED = paused;
     }
+
 
     @Override
     public String toString() {

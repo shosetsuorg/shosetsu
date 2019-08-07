@@ -17,9 +17,9 @@ import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelCha
 import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Chapter;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Download;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Library;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBChapter;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBDownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBNovel;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.SUPERSERIALZIED;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
@@ -800,26 +800,26 @@ public class Database {
 
                     textView.post(() -> textView.setText(R.string.reading_file));
                     SUPERSERIALZIED superserialzied = (SUPERSERIALZIED) deserialize(string.toString());
-                    progressBar.post(() -> progressBar.setMax(superserialzied.chapters.size() + superserialzied.libraries.size() + superserialzied.downloads.size() + 1));
+                    progressBar.post(() -> progressBar.setMax(superserialzied.DBChapters.size() + superserialzied.libraries.size() + superserialzied.DBDownloadItems.size() + 1));
 
                     Log.i("Progress", "Restoring downloads");
-                    for (Download download : superserialzied.downloads) {
-                        textView.post(() -> textView.setText("Restoring download: " + download.CHAPTER_URL));
+                    for (DBDownloadItem DBDownloadItem : superserialzied.DBDownloadItems) {
+                        textView.post(() -> textView.setText("Restoring download: " + DBDownloadItem.CHAPTER_URL));
                         progressBar.post(() -> progressBar.incrementProgressBy(1));
-                        DownloadItem downloadItem = new DownloadItem(DefaultScrapers.formatters.get(download.FORMATTER_ID - 1), download.NOVEL_NAME, download.CHAPTER_NAME, download.NOVEL_URL, download.CHAPTER_URL);
+                        DownloadItem downloadItem = new DownloadItem(DefaultScrapers.formatters.get(DBDownloadItem.FORMATTER_ID - 1), DBDownloadItem.NOVEL_NAME, DBDownloadItem.CHAPTER_NAME, DBDownloadItem.NOVEL_URL, DBDownloadItem.CHAPTER_URL);
                         if (!DatabaseDownloads.inDownloads(downloadItem))
                             DatabaseDownloads.addToDownloads(downloadItem);
                     }
 
                     Log.i("Progress", "Restoring libraries");
-                    for (Library library : superserialzied.libraries) {
+                    for (DBNovel DBNovel : superserialzied.libraries) {
                         progressBar.post(() -> progressBar.incrementProgressBy(1));
-                        textView.post(() -> textView.setText("Restoring: " + library.NOVEL_URL));
-                        if (!DatabaseLibrary.inLibrary(library.NOVEL_URL))
-                            DatabaseLibrary.addToLibrary(library.FORMATTER_ID, library.NOVEL_PAGE, library.NOVEL_URL, library.STATUS);
+                        textView.post(() -> textView.setText("Restoring: " + DBNovel.NOVEL_URL));
+                        if (!DatabaseLibrary.inLibrary(DBNovel.NOVEL_URL))
+                            DatabaseLibrary.addToLibrary(DBNovel.FORMATTER_ID, DBNovel.NOVEL_PAGE, DBNovel.NOVEL_URL, DBNovel.STATUS);
 
                         com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
-                        switch (library.STATUS) {
+                        switch (DBNovel.STATUS) {
                             case 0:
                                 status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD;
                                 break;
@@ -840,23 +840,23 @@ public class Database {
                                 break;
                         }
                         if (status != null)
-                            DatabaseLibrary.setStatus(library.NOVEL_URL, status);
+                            DatabaseLibrary.setStatus(DBNovel.NOVEL_URL, status);
 
-                        if (library.BOOKMARKED)
-                            DatabaseLibrary.bookMark(library.NOVEL_URL);
+                        if (DBNovel.BOOKMARKED)
+                            DatabaseLibrary.bookMark(DBNovel.NOVEL_URL);
                     }
 
                     Log.i("Progress", "Restoring chapters");
-                    for (Chapter chapter : superserialzied.chapters) {
-                        textView.post(() -> textView.setText("Restoring: " + chapter.CHAPTER_URL));
+                    for (DBChapter DBChapter : superserialzied.DBChapters) {
+                        textView.post(() -> textView.setText("Restoring: " + DBChapter.CHAPTER_URL));
                         progressBar.post(() -> progressBar.incrementProgressBy(1));
-                        if (!DatabaseChapter.inChapters(chapter.CHAPTER_URL))
-                            DatabaseChapter.addToChapters(chapter.NOVEL_URL, chapter.CHAPTER_URL, chapter.SAVED_DATA);
+                        if (!DatabaseChapter.inChapters(DBChapter.CHAPTER_URL))
+                            DatabaseChapter.addToChapters(DBChapter.NOVEL_URL, DBChapter.CHAPTER_URL, DBChapter.SAVED_DATA);
 
-                        DatabaseChapter.updateY(chapter.CHAPTER_URL, chapter.Y);
+                        DatabaseChapter.updateY(DBChapter.CHAPTER_URL, DBChapter.Y);
 
                         com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
-                        switch (chapter.READ_CHAPTER) {
+                        switch (DBChapter.READ_CHAPTER) {
                             case 0:
                                 status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD;
                                 break;
@@ -877,10 +877,10 @@ public class Database {
                                 break;
                         }
                         if (status != null)
-                            DatabaseChapter.setChapterStatus(chapter.CHAPTER_URL, status);
+                            DatabaseChapter.setChapterStatus(DBChapter.CHAPTER_URL, status);
 
-                        if (chapter.BOOKMARKED)
-                            DatabaseChapter.setBookMark(chapter.CHAPTER_URL, 1);
+                        if (DBChapter.BOOKMARKED)
+                            DatabaseChapter.setBookMark(DBChapter.CHAPTER_URL, 1);
 
                         //TODO settings backup
                     }
@@ -947,7 +947,7 @@ public class Database {
                             int formatter_id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
                             int status = cursor.getInt(cursor.getColumnIndex(Columns.STATUS.toString()));
 
-                            SUPER_SERIALIZED.libraries.add(new Library(nurl, bookmarked, npage, formatter_id, status));
+                            SUPER_SERIALIZED.libraries.add(new DBNovel(nurl, bookmarked, npage, formatter_id, status));
                         }
                     cursor.close();
                 }
@@ -970,7 +970,7 @@ public class Database {
                             boolean is_saved = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.IS_SAVED.toString())));
                             String path = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
 
-                            SUPER_SERIALIZED.chapters.add(new Chapter(nurl, curl, saved_data, y, read_chapter, bookmarked, is_saved, path));
+                            SUPER_SERIALIZED.DBChapters.add(new DBChapter(nurl, curl, saved_data, y, read_chapter, bookmarked, is_saved, path));
                         }
                     cursor.close();
                 }
@@ -988,7 +988,7 @@ public class Database {
                             int formatter_id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
                             boolean paused = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.PAUSED.toString())));
 
-                            SUPER_SERIALIZED.downloads.add(new Download(nurl, curl, formatter_id, nname, cname, paused));
+                            SUPER_SERIALIZED.DBDownloadItems.add(new DBDownloadItem(nurl, curl, formatter_id, nname, cname, paused));
                         }
                     cursor.close();
                 }

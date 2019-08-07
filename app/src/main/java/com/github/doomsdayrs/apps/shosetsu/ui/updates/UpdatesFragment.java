@@ -37,8 +37,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
-import com.github.doomsdayrs.apps.shosetsu.variables.Update;
 
 import java.util.ArrayList;
 

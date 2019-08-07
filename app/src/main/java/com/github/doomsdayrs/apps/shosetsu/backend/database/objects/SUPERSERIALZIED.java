@@ -30,9 +30,9 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class SUPERSERIALZIED implements Serializable {
-    public final ArrayList<Library> libraries = new ArrayList<>();
-    public final ArrayList<Chapter> chapters = new ArrayList<>();
-    public final ArrayList<Download> downloads = new ArrayList<>();
+    public final ArrayList<DBNovel> libraries = new ArrayList<>();
+    public final ArrayList<DBChapter> DBChapters = new ArrayList<>();
+    public final ArrayList<DBDownloadItem> DBDownloadItems = new ArrayList<>();
     public final ArrayList<Update> updates = new ArrayList<>();
     public final SettingsSerialized settingsSerialized = new SettingsSerialized();
 
@@ -40,8 +40,8 @@ public class SUPERSERIALZIED implements Serializable {
     public String toString() {
         return "SUPERSERIALZIED{" +
                 "libraries=" + libraries +
-                ", chapters=" + chapters +
-                ", downloads=" + downloads +
+                ", chapters=" + DBChapters +
+                ", downloads=" + DBDownloadItems +
                 ", updates=" + updates +
                 ", settings=" + settingsSerialized +
                 '}';
