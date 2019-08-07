@@ -6,9 +6,8 @@ android {
         applicationId "com.github.doomsdayrs.apps.shosetsu"
         minSdkVersion 22
         targetSdkVersion 29
-        //TODO increment this number for actual alpha release of the software
-        versionCode 18
-        versionName "v1.1.9-alpha"
+        versionCode 19
+        versionName "v1.2.0-alpha"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
