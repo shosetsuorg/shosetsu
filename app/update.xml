@@ -1,16 +1,19 @@
 <AppUpdater>
 
     <update>
-        <latestVersion>1.1.9-alpha</latestVersion>
-        <latestVersionCode>18</latestVersionCode>
+        <latestVersion>1.2.0-alpha</latestVersion>
+        <latestVersionCode>19</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
         <releaseNotes>
-            - Still hoping you got an update :D
             - If you are from uptodown, use uptodown to get your update at https://shosetsu.en.uptodown.com/android
-            - Lots of bug fixes and performance improvements
-            - Added bases for many new features to come
-            - Primitive migration, and. GOSH. It can handle multiple novels, might be slow tho. and be patient for loadings
-            - Known issue: rotating often in chapter view then swapping back to a catalogue breaks the catalogue.
+            - Added resume button for chapters
+            - Formatter IDs now used more, intelligently.
+            - Fixed issues with reader by doing a rewrite
+            - New package structure for code
+            - RESTOREEEE feature, i think it works
+            - More featuressssss!
+            - General code improvements
+            - BestLightNovel contains japanese novels ;D
         </releaseNotes>
     </update>
 
