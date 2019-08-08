@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     app:cardElevation="1dp"
-    app:contentPadding="1dp"
     app:strokeColor="@color/selected_blue">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,9 +29,8 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            android:text=""
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
