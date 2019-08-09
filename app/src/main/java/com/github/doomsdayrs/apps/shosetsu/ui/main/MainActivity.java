@@ -58,7 +58,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.initPreferen
  *
  * @author github.com/doomsdayrs
  */
-
+//TODO Inform users to refresh their libraries
 public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     public NavigationView navigationView;
@@ -185,7 +185,10 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawer(GravityCompat.START);
-        else super.onBackPressed();
+        else {
+            super.onBackPressed();
+
+        }
     }
 
 }

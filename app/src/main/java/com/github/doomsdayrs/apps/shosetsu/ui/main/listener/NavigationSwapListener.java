@@ -47,6 +47,7 @@ public class NavigationSwapListener implements NavigationView.OnNavigationItemSe
         mainActivity.navigationView.setCheckedItem(menuItem);
         switch (menuItem.getItemId()) {
             case R.id.nav_library: {
+                mainActivity.getSupportFragmentManager().popBackStack();
                 Log.d("Nav", "Library selected");
                 mainActivity.getSupportFragmentManager().beginTransaction()
                         .addToBackStack("tag")

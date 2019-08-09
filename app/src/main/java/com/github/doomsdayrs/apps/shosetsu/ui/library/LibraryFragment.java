@@ -78,7 +78,6 @@ public class LibraryFragment extends Fragment {
     public LibraryNovelAdapter libraryNovelCardsAdapter;
     public Menu menu;
 
-
     /**
      * Constructor
      */

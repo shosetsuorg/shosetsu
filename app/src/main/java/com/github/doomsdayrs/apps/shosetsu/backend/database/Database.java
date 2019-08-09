@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBChapter;
@@ -163,9 +164,47 @@ public class Database {
         byte[] bytes = Base64.decode(string, Base64.NO_WRAP);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        return objectInputStream.readObject();
+        Object object = objectInputStream.readObject();
+        Class c = object.getClass();
+        if (c.equals(com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage.class)) {
+            System.out.println("WARNING, OLD PAGE DETECTED.");
+            NovelPage newPage = new NovelPage();
+            com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage oldPage = (com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage) object;
+            newPage.artists = oldPage.artists;
+            newPage.authors = oldPage.artists;
+            newPage.description = oldPage.description;
+            newPage.genres = oldPage.genres;
+            newPage.imageURL = oldPage.imageURL;
+            newPage.language = oldPage.language;
+            newPage.maxChapterPage = oldPage.maxChapterPage;
+            newPage.novelChapters = new ArrayList<>();
+            for (com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter C : oldPage.novelChapters) {
+                NovelChapter newC = new NovelChapter();
+                newC.chapterNum = C.chapterNum;
+                newC.link = C.link;
+                newC.release = C.release;
+                newPage.novelChapters.add(newC);
+            }
+            switch (oldPage.status) {
+                case PUBLISHING:
+                    newPage.status = Stati.PUBLISHING;
+                    break;
+                case COMPLETED:
+                    newPage.status = Stati.COMPLETED;
+                    break;
+                case PAUSED:
+                    newPage.status = Stati.PAUSED;
+                    break;
+                case UNKNOWN:
+                    newPage.status = Stati.UNKNOWN;
+                    break;
+            }
+            newPage.tags = oldPage.tags;
+            newPage.title = oldPage.title;
+            return newPage;
+        }
+        return object;
     }
-
 
     /**
      * Download control

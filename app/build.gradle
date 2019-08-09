@@ -57,6 +57,7 @@ dependencies {
 
     implementation 'com.github.Doomsdayrs:shosetsu-extensions:0.1.0'
     implementation 'com.github.Doomsdayrs:shosetsu-services:0.1.0'
+    implementation 'com.github.Doomsdayrs:novelreader-services:1.1.4'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'org.jetbrains:annotations:17.0.0'
