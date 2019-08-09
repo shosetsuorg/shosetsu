@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;

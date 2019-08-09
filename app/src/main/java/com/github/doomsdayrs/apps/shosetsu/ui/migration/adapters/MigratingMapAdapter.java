@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;

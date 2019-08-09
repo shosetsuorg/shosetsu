@@ -1,13 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.variables;
 
-import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.bestlightnovel.BestLightNovel;
-import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.box_novel.BoxNovel;
-import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.novel_full.NovelFull;
-import com.github.Doomsdayrs.api.novelreader_core.extensions.lang.en.syosetu.Syosetu;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelGenre;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
+import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.bestlightnovel.BestLightNovel;
+import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.box_novel.BoxNovel;
+import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.novel_full.NovelFull;
+import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.syosetu.Syosetu;
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelGenre;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 
 import java.io.IOException;

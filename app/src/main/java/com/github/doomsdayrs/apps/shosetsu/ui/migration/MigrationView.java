@@ -37,7 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingMapAdapter;

@@ -55,8 +55,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
-    implementation 'com.github.Doomsdayrs:novelreader-extensions:1.1.9'
-    implementation 'com.github.Doomsdayrs:novelreader-services:1.1.3'
+    implementation 'com.github.Doomsdayrs:shosetsu-extensions:0.1.0'
+    implementation 'com.github.Doomsdayrs:shosetsu-services:0.1.0'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'org.jetbrains:annotations:17.0.0'

@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async;
 
 import android.os.AsyncTask;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 

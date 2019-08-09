@@ -30,7 +30,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;

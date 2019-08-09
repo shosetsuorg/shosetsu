@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

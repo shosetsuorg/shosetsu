@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;

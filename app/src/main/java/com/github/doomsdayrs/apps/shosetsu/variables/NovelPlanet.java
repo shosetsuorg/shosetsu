@@ -1,9 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.variables;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.ScrapeFormat;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelGenre;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelPage;
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.ScrapeFormat;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelGenre;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

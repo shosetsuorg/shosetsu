@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.Novel;
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 

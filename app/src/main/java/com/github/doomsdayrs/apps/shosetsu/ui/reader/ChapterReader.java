@@ -18,8 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;

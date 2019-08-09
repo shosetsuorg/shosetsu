@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter;

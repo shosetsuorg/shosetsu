@@ -10,7 +10,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.DisplayMetrics;
 
-import com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
