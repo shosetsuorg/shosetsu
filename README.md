@@ -1,3 +1,6 @@
+[![Dev Status](https://travis-ci.com/Doomsdayrs/shosetsu.svg?branch=development)](https://travis-ci.com/Doomsdayrs/shosetsu)
+[![Master Status](https://travis-ci.com/Doomsdayrs/shosetsu.svg?branch=master)](https://travis-ci.com/Doomsdayrs/shosetsu)
+
 # ![logo](https://github.com/Doomsdayrs/shosetsu/raw/master/app/src/main/res/mipmap-hdpi/ic_launcher.png) Shosetsu
 
 A free and open source android application for reading novels.  
