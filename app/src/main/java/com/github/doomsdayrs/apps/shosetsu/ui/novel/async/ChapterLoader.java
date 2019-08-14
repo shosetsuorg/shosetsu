@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
@@ -14,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -100,33 +100,16 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                     }
                     StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
                     for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
-                        if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
-                            mangaCount++;
-                            System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
-
-                            StaticNovel.novelChapters.add(novelChapter);
-                            Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
-                        }
+                        add(mangaCount, novelChapter);
                     page++;
 
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(300);
-                    } catch (InterruptedException e) {
-                        if (e.getMessage() != null)
-                            Log.e("Error", e.getMessage());
-                    }
+                    Utilities.wait(300);
                 }
             } else {
                 StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
                 int mangaCount = 0;
                 for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
-                    if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
-                        mangaCount++;
-                        System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
-
-                        StaticNovel.novelChapters.add(novelChapter);
-                        Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
-                    }
+                    add(mangaCount, novelChapter);
             }
             return true;
         } catch (IOException e) {
@@ -142,6 +125,14 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         return false;
     }
 
+    private void add(int mangaCount, NovelChapter novelChapter) {
+        if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
+            mangaCount++;
+            System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+            StaticNovel.novelChapters.add(novelChapter);
+            Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+        }
+    }
 
     private void refresh(View view) {
         if (StaticNovel.chapterLoader != null && StaticNovel.chapterLoader.isCancelled())

@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -21,6 +22,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -255,6 +258,21 @@ import org.jetbrains.annotations.NotNull;
         activity.startActivity(intent);
     }
 
+
+    /**
+     * Freezes the thread for x time
+     *
+     * @param time time in MS
+     */
+    public static void wait(int time) {
+        try {
+            TimeUnit.MILLISECONDS.sleep(time);
+        } catch (InterruptedException e) {
+            if (e.getMessage() != null)
+                Log.e("Error", e.getMessage());
+        }
+    }
+
     //TODO Online Trackers
     //Methods below when tracking system setup
 
@@ -266,4 +284,5 @@ import org.jetbrains.annotations.NotNull;
     @SuppressWarnings({"EmptyMethod", "unused"})
     public static void addTracker() {
     }
+
 }

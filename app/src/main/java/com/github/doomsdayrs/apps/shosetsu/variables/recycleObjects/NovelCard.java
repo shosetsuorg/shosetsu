@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
 
+import org.jetbrains.annotations.NotNull;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -35,6 +37,7 @@ public class NovelCard extends RecycleCard {
     /**
      * ID of formatter
      */
+    @NotNull
     public final int formatterID;
 
     /**
