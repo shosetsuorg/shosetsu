@@ -90,8 +90,8 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                 StaticNovel.novelChapters = new ArrayList<>();
 
             int page = 1;
-            StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
             if (StaticNovel.formatter.isIncrementingChapterList()) {
+                StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL, page);
                 int mangaCount = 0;
                 while (page <= StaticNovel.novelPage.maxChapterPage && C) {
                     if (novelFragmentChapters != null) {
