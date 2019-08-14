@@ -254,5 +254,8 @@ public class DBHelper extends SQLiteOpenHelper {
             cursor.close();
             db.execSQL("drop table if exists libraryNext");
         }
+        if (oldVersion < 7) {
+
+        }
     }
 }

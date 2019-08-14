@@ -88,6 +88,7 @@ public class Database {
      */
     public enum Tables {
         NOVELS("novels"),
+        UPDATES("updates"),
         DOWNLOADS("downloads"),
         CHAPTERS("chapters");
 
@@ -206,9 +207,6 @@ public class Database {
         return object;
     }
 
-    /**
-     * Download control
-     */
     public static class DatabaseDownloads {
         /**
          * Gets downloads that are stored
@@ -310,9 +308,6 @@ public class Database {
         }
     }
 
-    /**
-     * Chapter control
-     */
     public static class DatabaseChapter {
 
         // TODO This will remove all chapter data
@@ -767,10 +762,9 @@ public class Database {
         }
     }
 
-    //TODO Restore backup
-    // > If entry exists, simply update the data
-    // > Popup window of restoring progress and errors
+    public static class DatabaseUpdates {
 
+    }
 
     public static class restore extends AsyncTask<Void, Void, Void> {
         String file_path;

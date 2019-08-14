@@ -33,6 +33,8 @@ public class SUPERSERIALZIED implements Serializable {
     public final ArrayList<DBNovel> libraries = new ArrayList<>();
     public final ArrayList<DBChapter> DBChapters = new ArrayList<>();
     public final ArrayList<DBDownloadItem> DBDownloadItems = new ArrayList<>();
+
+    @Deprecated
     public final ArrayList<Update> updates = new ArrayList<>();
     public final SettingsSerialized settingsSerialized = new SettingsSerialized();
 
