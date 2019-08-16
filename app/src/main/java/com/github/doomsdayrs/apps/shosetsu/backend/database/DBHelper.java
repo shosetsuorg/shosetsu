@@ -5,23 +5,24 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
+
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * This file is part of Shosetsu.
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * Shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Shosetsu is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  * Shosetsu
  * 14 / 06 / 2019
@@ -32,58 +33,60 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
 
-    private static final String CHAPTERS_CREATE = "create table if not exists " + Database.Tables.CHAPTERS + "(" +
+    private static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
             // Novel URL this chapter belongs to
-            Database.Columns.NOVEL_URL + " text not null," +
+            Columns.NOVEL_URL + " text not null," +
             // The chapter chapterURL
-            Database.Columns.CHAPTER_URL + " text not null unique," +
+            Columns.CHAPTER_URL + " text not null unique," +
 
             // Unsure if i should keep this or not
-            Database.Columns.SAVED_DATA + " text," +
+            Columns.SAVED_DATA + " text," +
 
             // Saved Data
             // > Scroll position, either 0 for top, or X for the position
-            Database.Columns.Y + " integer not null," +
+            Columns.Y + " integer not null," +
             // > Either 0 for none, or an incremented count (Status)
-            Database.Columns.READ_CHAPTER + " integer not null," +
+            Columns.READ_CHAPTER + " integer not null," +
             // > Either 0 for false or 1 for true.
-            Database.Columns.BOOKMARKED + " integer not null," +
+            Columns.BOOKMARKED + " integer not null," +
 
             // If 1 then true and SAVE_PATH has data, false otherwise
-            Database.Columns.IS_SAVED + " integer not null," +
-            Database.Columns.SAVE_PATH + " text)";
+            Columns.IS_SAVED + " integer not null," +
+            Columns.SAVE_PATH + " text)";
 
     //TODO Figure out a legitimate way to structure all this data
 
     // Library that the user has saved their novels to
-    private static final String NOVELS = "create TABLE if not exists " + Database.Tables.NOVELS + " (" +
+    private static final String NOVELS = "create TABLE if not exists " + Tables.NOVELS + " (" +
             // If in the library
-            Database.Columns.BOOKMARKED + " integer not null," +
+            Columns.BOOKMARKED + " integer not null," +
             // URL of this novel
-            Database.Columns.NOVEL_URL + " text not null unique, " +
+            Columns.NOVEL_URL + " text not null unique, " +
             // Saved DATA of the novel
-            Database.Columns.NOVEL_PAGE + " text not null," +
+            Columns.NOVEL_PAGE + " text not null," +
             // Formatter this novel comes from
-            Database.Columns.FORMATTER_ID + " integer not null," +
-            Database.Columns.STATUS + " integer not null" + ")";
+            Columns.FORMATTER_ID + " integer not null," +
+            Columns.STATUS + " integer not null" + ")";
 
 
     // Watches download listing
-    private static final String DOWNLOADS_CREATE = "create TABLE if not exists " + Database.Tables.DOWNLOADS + "(" +
-            Database.Columns.FORMATTER_ID + " integer not null," +
-            Database.Columns.NOVEL_URL + " text not null," +
-            Database.Columns.CHAPTER_URL + " text not null," +
+    private static final String DOWNLOADS_CREATE = "create TABLE if not exists " + Tables.DOWNLOADS + "(" +
+            Columns.FORMATTER_ID + " integer not null," +
+            Columns.NOVEL_URL + " text not null," +
+            Columns.CHAPTER_URL + " text not null," +
 
-            Database.Columns.NOVEL_NAME + " text not null," +
-            Database.Columns.CHAPTER_NAME + " text not null," +
+            Columns.NOVEL_NAME + " text not null," +
+            Columns.CHAPTER_NAME + " text not null," +
 
             // If this novel should be skipped over
             // TODO Put this into use in Download_Manager
             // TODO put status as a column here
-            Database.Columns.PAUSED + " integer not null)";
+            Columns.PAUSED + " integer not null)";
 
-    //TODO ChapterUpdate table for all the chapterUpdates
-
+    private static final String UPDATES_CREATE = "create table if not exists " + Tables.UPDATES + "(" +
+            Columns.NOVEL_URL + " text not null," +
+            Columns.CHAPTER_URL + " text not null unique," +
+            Columns.TIME + " integer not null" + ")";
 
     /**
      * Constructor
@@ -105,6 +108,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(NOVELS);
         db.execSQL(DOWNLOADS_CREATE);
         db.execSQL(CHAPTERS_CREATE);
+        db.execSQL(UPDATES_CREATE);
     }
 
     /**
@@ -255,7 +259,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("drop table if exists libraryNext");
         }
         if (oldVersion < 7) {
-
+            db.execSQL(UPDATES_CREATE);
         }
     }
 }
