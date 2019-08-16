@@ -36,7 +36,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.async.BackupProcess;
+import com.github.doomsdayrs.apps.shosetsu.backend.async.RestoreProcess;
 
 public class BackupSettings extends Fragment {
 
@@ -50,7 +51,7 @@ public class BackupSettings extends Fragment {
         Log.d("OnCreateView", "BackupSettings");
         View view = inflater.inflate(R.layout.settings_backup, container, false);
         Button backup = view.findViewById(R.id.settings_backup_now);
-        backup.setOnClickListener(view1 -> new Database.backUP(getContext()).execute());
+        backup.setOnClickListener(view1 -> new BackupProcess(getContext()).execute());
         Button restore = view.findViewById(R.id.settings_restore_now);
         restore.setOnClickListener(view1 -> performFileSelection());
         return view;
@@ -78,7 +79,7 @@ public class BackupSettings extends Fragment {
                     String fileEnding = path.substring(i + 1);
                     if (fileEnding.equalsIgnoreCase("shoback")) {
                         Log.i("Selected Folder", "Uri: " + path);
-                        new Database.restore(path.substring(path.indexOf(":") + 1), getContext()).execute();
+                        new RestoreProcess(path.substring(path.indexOf(":") + 1), getContext()).execute();
                     } else
                         Toast.makeText(getContext(), "Invalid file to use!", Toast.LENGTH_LONG).show();
                 }

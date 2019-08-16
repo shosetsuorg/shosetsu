@@ -1,53 +1,29 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
-import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBChapter;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBDownloadItem;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBNovel;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.SUPERSERIALZIED;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.intToBoolean;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
 
 /*
  * This file is part of Shosetsu.
@@ -78,7 +54,7 @@ public class Database {
     /**
      * SQLITEDatabase
      */
-    public static SQLiteDatabase library;
+    public static SQLiteDatabase sqLiteDatabase;
 
 
     /**
@@ -214,7 +190,7 @@ public class Database {
          */
         public static List<DownloadItem> getDownloadList() {
             ArrayList<DownloadItem> downloadItems = new ArrayList<>();
-            Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + ";", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + ";", null);
             while (cursor.moveToNext()) {
                 String nURL = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
                 String cURL = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString()));
@@ -235,7 +211,7 @@ public class Database {
          * @return DownloadItem to download
          */
         public static DownloadItem getFirstDownload() {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + " LIMIT 1;", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_ID + "," + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.NOVEL_NAME + "," + Columns.CHAPTER_NAME + " from " + Tables.DOWNLOADS + " LIMIT 1;", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -259,7 +235,7 @@ public class Database {
          * @return if removed
          */
         public static boolean removeDownload(DownloadItem downloadItem) {
-            return library.delete(Tables.DOWNLOADS.toString(), Columns.CHAPTER_URL + "='" + downloadItem.chapterURL + "'", null) > 0;
+            return sqLiteDatabase.delete(Tables.DOWNLOADS.toString(), Columns.CHAPTER_URL + "='" + downloadItem.chapterURL + "'", null) > 0;
         }
 
         /**
@@ -268,7 +244,7 @@ public class Database {
          * @param downloadItem Download item to add
          */
         public static void addToDownloads(DownloadItem downloadItem) {
-            library.execSQL("insert into " + Tables.DOWNLOADS + " (" +
+            sqLiteDatabase.execSQL("insert into " + Tables.DOWNLOADS + " (" +
                     Columns.FORMATTER_ID + "," +
                     Columns.NOVEL_URL + "," +
                     Columns.CHAPTER_URL + "," +
@@ -290,7 +266,7 @@ public class Database {
          * @return if is in list
          */
         public static boolean inDownloads(DownloadItem downloadItem) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.CHAPTER_URL + " from " + Tables.DOWNLOADS + " where " + Columns.CHAPTER_URL + " = '" + downloadItem.chapterURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.CHAPTER_URL + " from " + Tables.DOWNLOADS + " where " + Columns.CHAPTER_URL + " = '" + downloadItem.chapterURL + "'", null);
             int a = cursor.getCount();
             cursor.close();
             return !(a <= 0);
@@ -300,7 +276,7 @@ public class Database {
          * @return count of download items
          */
         public static int getDownloadCount() {
-            Cursor cursor = library.rawQuery("select " + Columns.FORMATTER_ID + " from " + Tables.DOWNLOADS, null);
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.FORMATTER_ID + " from " + Tables.DOWNLOADS, null);
             int a = cursor.getCount();
             cursor.close();
             return a;
@@ -323,7 +299,7 @@ public class Database {
          * @return Count of chapters left to read
          */
         public static int getCountOfChaptersUnread(String novelURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + "='" + novelURL + "'" + " and " + Columns.READ_CHAPTER + "!=" + Status.READ, null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + "='" + novelURL + "'" + " and " + Columns.READ_CHAPTER + "!=" + Status.READ, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return 0;
@@ -345,7 +321,7 @@ public class Database {
          */
         public static void updateY(String chapterURL, int y) {
             Log.i("updateY", chapterURL + " := " + y);
-            library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
 
 
@@ -354,7 +330,7 @@ public class Database {
          * @return returns chapter status
          */
         public static Status getStatus(String chapterURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + chapterURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return Status.UNREAD;
@@ -378,7 +354,7 @@ public class Database {
          * @param status     status to be set
          */
         public static void setChapterStatus(String chapterURL, Status status) {
-            library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
 
         /**
@@ -389,7 +365,7 @@ public class Database {
          * @return if bookmarked?
          */
         public static int getY(String chapterURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + chapterURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return 0;
@@ -408,7 +384,7 @@ public class Database {
          * @param b          1 is true, 0 is false
          */
         public static void setBookMark(String chapterURL, int b) {
-            library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.BOOKMARKED + "=" + b + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.BOOKMARKED + "=" + b + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
 
         }
 
@@ -419,7 +395,7 @@ public class Database {
          * @return if bookmarked?
          */
         public static boolean isBookMarked(String url) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + url + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " = '" + url + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
@@ -438,7 +414,7 @@ public class Database {
          * @param chapterURL chapter to remove save path of
          */
         public static void removePath(String chapterURL) {
-            library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=null," + Columns.IS_SAVED + "=0 where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=null," + Columns.IS_SAVED + "=0 where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
 
         /**
@@ -448,7 +424,7 @@ public class Database {
          * @param chapterPath save path to set
          */
         public static void addSavedPath(String chapterURL, String chapterPath) {
-            library.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "='" + chapterPath + "'," + Columns.IS_SAVED + "=1 where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "='" + chapterPath + "'," + Columns.IS_SAVED + "=1 where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
         }
 
         /**
@@ -459,7 +435,7 @@ public class Database {
          */
         public static boolean isSaved(String chapterURL) {
             //   Log.d("CheckSave", chapterURL);
-            Cursor cursor = library.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 //   Log.d("CheckSave", chapterURL + " FALSE");
@@ -481,7 +457,7 @@ public class Database {
          * @return String of passage
          */
         public static String getSavedNovelPassage(String chapterURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.SAVE_PATH + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.SAVE_PATH + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + "='" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -500,7 +476,7 @@ public class Database {
          * @return if present
          */
         public static boolean inChapters(String chapterURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
             int a = cursor.getCount();
             cursor.close();
             return !(a <= 0);
@@ -514,7 +490,7 @@ public class Database {
          */
         public static void addToChapters(String novelURL, NovelChapter novelChapter) {
             try {
-                library.execSQL("insert into " + Tables.CHAPTERS + "(" +
+                sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS + "(" +
                         Columns.NOVEL_URL + "," +
                         Columns.CHAPTER_URL + "," +
                         Columns.SAVED_DATA + "," +
@@ -537,8 +513,8 @@ public class Database {
          *
          * @param novelURL novelURL
          */
-        static void addToChapters(String novelURL, String chapterURL, String chapter) {
-            library.execSQL("insert into " + Tables.CHAPTERS + "(" +
+        public static void addToChapters(String novelURL, String chapterURL, String chapter) {
+            sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS + "(" +
                     Columns.NOVEL_URL + "," +
                     Columns.CHAPTER_URL + "," +
                     Columns.SAVED_DATA + "," +
@@ -561,7 +537,7 @@ public class Database {
          * @return List of chapters saved of novel
          */
         public static List<NovelChapter> getChapters(String novelURL) {
-            Cursor cursor = library.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -591,8 +567,8 @@ public class Database {
          *
          * @param novelURL novelURL of the novel
          */
-        public static void bookMark(String novelURL) {
-            library.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.NOVEL_URL + "='" + novelURL + "'");
+        public static void bookMark(@NotNull String novelURL) {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.NOVEL_URL + "='" + novelURL + "'");
         }
 
         /**
@@ -601,12 +577,12 @@ public class Database {
          * @param novelURL novelURL
          * @return if removed successfully
          */
-        public static void unBookmark(String novelURL) {
-            library.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.NOVEL_URL + "='" + novelURL + "'");
+        public static void unBookmark(@NotNull String novelURL) {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.NOVEL_URL + "='" + novelURL + "'");
         }
 
-        public static boolean isBookmarked(String novelURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
+        public static boolean isBookmarked(@NotNull String novelURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
@@ -619,9 +595,9 @@ public class Database {
         }
 
 
-        public static void addToLibrary(int formatter, NovelPage novelPage, String novelURL, int status) {
+        public static void addToLibrary(int formatter, @NotNull NovelPage novelPage, @NotNull String novelURL, int status) {
             try {
-                library.execSQL("insert into " + Tables.NOVELS + "(" +
+                sqLiteDatabase.execSQL("insert into " + Tables.NOVELS + "(" +
                         Columns.BOOKMARKED + ",'" + Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.NOVEL_PAGE + "," + Columns.STATUS + ") values(" +
                         "0" + "," +
                         "'" + novelURL + "'," +
@@ -634,8 +610,8 @@ public class Database {
             }
         }
 
-        static void addToLibrary(int formatter, String novelPage, String novelURL, int status) {
-            library.execSQL("insert into " + Tables.NOVELS + "(" +
+        public static void addToLibrary(int formatter, @NotNull String novelPage, @NotNull String novelURL, int status) {
+            sqLiteDatabase.execSQL("insert into " + Tables.NOVELS + "(" +
                     Columns.BOOKMARKED + ",'" + Columns.NOVEL_URL + "'," + Columns.FORMATTER_ID + "," + Columns.NOVEL_PAGE + "," + Columns.STATUS + ") values(" +
                     "0" + "," +
                     "'" + novelURL + "'," +
@@ -645,8 +621,8 @@ public class Database {
             );
         }
 
-        public static boolean removeFromLibrary(String novelURL) {
-            return library.delete(Tables.NOVELS.toString(), Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
+        public static boolean removeFromLibrary(@NotNull String novelURL) {
+            return sqLiteDatabase.delete(Tables.NOVELS.toString(), Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
         }
 
         /**
@@ -655,8 +631,8 @@ public class Database {
          * @param novelURL Novel novelURL
          * @return yes or no
          */
-        public static boolean inLibrary(String novelURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
+        public static boolean inLibrary(@NotNull String novelURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
@@ -673,7 +649,7 @@ public class Database {
          */
         public static ArrayList<NovelCard> getLibrary() {
             Log.d("DL", "Getting");
-            Cursor cursor = library.query(Tables.NOVELS.toString(),
+            Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
                     new String[]{Columns.NOVEL_URL.toString(), Columns.FORMATTER_ID.toString(), Columns.NOVEL_PAGE.toString()},
                     Columns.BOOKMARKED + "=1", null, null, null, null);
 
@@ -706,8 +682,8 @@ public class Database {
          * @param novelURL novelURL to retrieve
          * @return Saved novelPage
          */
-        public static NovelPage getNovelPage(String novelURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.NOVEL_PAGE + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + "='" + novelURL + "'", null);
+        public static NovelPage getNovelPage(@NotNull String novelURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.NOVEL_PAGE + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + "='" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -724,12 +700,12 @@ public class Database {
             return null;
         }
 
-        static void setStatus(String novelURL, Status status) {
-            library.execSQL("update " + Tables.NOVELS + " set " + Columns.STATUS + "=" + status + " where " + Columns.NOVEL_URL + "='" + novelURL + "'");
+        public static void setStatus(@NotNull String novelURL, @NotNull Status status) {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.STATUS + "=" + status + " where " + Columns.NOVEL_URL + "='" + novelURL + "'");
         }
 
-        public static Status getStatus(String novelURL) {
-            Cursor cursor = library.rawQuery("SELECT " + Columns.STATUS + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + " = '" + novelURL + "'", null);
+        public static Status getStatus(@NotNull String novelURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.STATUS + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + " = '" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return Status.UNREAD;
@@ -749,11 +725,11 @@ public class Database {
             }
         }
 
-        public static void updateData(String novelURL, NovelPage novelPage) throws IOException {
-            library.execSQL("update " + Tables.NOVELS + " set " + Columns.NOVEL_PAGE + "='" + serialize(novelPage) + "' where " + Columns.NOVEL_URL + "='" + novelURL + "'");
+        public static void updateData(@NotNull String novelURL, @NotNull NovelPage novelPage) throws IOException {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.NOVEL_PAGE + "='" + serialize(novelPage) + "' where " + Columns.NOVEL_URL + "='" + novelURL + "'");
         }
 
-        public static void migrateNovel(String oldURL, String newURL, int formatterID, NovelPage newNovel, int status) {
+        public static void migrateNovel(@NotNull String oldURL, @NotNull String newURL, int formatterID, @NotNull NovelPage newNovel, int status) {
             unBookmark(oldURL);
             if (!Database.DatabaseLibrary.inLibrary(newURL))
                 addToLibrary(formatterID, newNovel, newURL, status);
@@ -763,280 +739,19 @@ public class Database {
 
     public static class DatabaseUpdates {
 
-    }
+        public static void getTimeBetween(long before, long after) {
 
-    public static class restore extends AsyncTask<Void, Void, Void> {
-        String file_path;
-
-        @SuppressLint("StaticFieldLeak")
-        Context context;
-        @SuppressLint("StaticFieldLeak")
-        Button close;
-        @SuppressLint("StaticFieldLeak")
-        ProgressBar progressBar;
-        @SuppressLint("StaticFieldLeak")
-        ProgressBar progressBar2;
-        @SuppressLint("StaticFieldLeak")
-        TextView textView;
-
-        Dialog dialog;
-
-        public restore(String file_path, Context context) {
-            this.file_path = file_path;
-            this.context = context;
-
-            dialog = new Dialog(context);
-            dialog.setContentView(R.layout.backup_restore_view);
-            close = dialog.findViewById(R.id.button);
-            progressBar = dialog.findViewById(R.id.progress);
-            progressBar2 = dialog.findViewById(R.id.progressBar3);
-            textView = dialog.findViewById(R.id.text);
         }
 
-        @Override
-        protected void onPreExecute() {
-            Log.i("Progress", "Started restore");
-            dialog.show();
+        public static void addToUpdates(@NotNull String novelURL, @NotNull String chapterURL, long time) {
+            sqLiteDatabase.execSQL("insert into " + Tables.UPDATES + "('" + Columns.NOVEL_URL + "','" + Columns.CHAPTER_URL + "'," + Columns.TIME + ") values(" +
+                    "'" + novelURL + "'," +
+                    "'" + chapterURL + "'," +
+                    "" + time + ")");
         }
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            Log.i("Progress", "Completed restore");
-            textView.post(() -> textView.setText(R.string.completed));
-            progressBar2.post(() -> progressBar2.setVisibility(View.GONE));
-            close.post(() -> close.setOnClickListener(view -> dialog.cancel()));
+        public static void format() {
+
         }
-
-        @SuppressLint("SetTextI18n")
-        @Override
-        protected Void doInBackground(Void... voids) {
-            File file = new File("" + file_path);
-            if (file.exists()) {
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-
-                    textView.post(() -> textView.setText(R.string.reading_file));
-                    StringBuilder string = new StringBuilder();
-                    {
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            string.append(line);
-                        }
-                        bufferedReader.close();
-                    }
-
-                    textView.post(() -> textView.setText(R.string.reading_file));
-                    SUPERSERIALZIED superserialzied = (SUPERSERIALZIED) deserialize(string.toString());
-                    progressBar.post(() -> progressBar.setMax(superserialzied.DBChapters.size() + superserialzied.libraries.size() + superserialzied.DBDownloadItems.size() + 1));
-
-                    Log.i("Progress", "Restoring downloads");
-                    for (DBDownloadItem DBDownloadItem : superserialzied.DBDownloadItems) {
-                        textView.post(() -> textView.setText("Restoring download: " + DBDownloadItem.CHAPTER_URL));
-                        progressBar.post(() -> progressBar.incrementProgressBy(1));
-                        DownloadItem downloadItem = new DownloadItem(DefaultScrapers.getByID(DBDownloadItem.FORMATTER_ID), DBDownloadItem.NOVEL_NAME, DBDownloadItem.CHAPTER_NAME, DBDownloadItem.NOVEL_URL, DBDownloadItem.CHAPTER_URL);
-                        if (!DatabaseDownloads.inDownloads(downloadItem))
-                            DatabaseDownloads.addToDownloads(downloadItem);
-                    }
-
-                    Log.i("Progress", "Restoring libraries");
-                    for (DBNovel DBNovel : superserialzied.libraries) {
-                        progressBar.post(() -> progressBar.incrementProgressBy(1));
-                        textView.post(() -> textView.setText("Restoring: " + DBNovel.NOVEL_URL));
-                        if (!DatabaseLibrary.inLibrary(DBNovel.NOVEL_URL))
-                            DatabaseLibrary.addToLibrary(DBNovel.FORMATTER_ID, DBNovel.NOVEL_PAGE, DBNovel.NOVEL_URL, DBNovel.STATUS);
-
-                        com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
-                        switch (DBNovel.STATUS) {
-                            case 0:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD;
-                                break;
-                            case 1:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READING;
-                                break;
-                            case 2:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READ;
-                                break;
-                            case 3:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.ONHOLD;
-                                break;
-                            case 4:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.DROPPED;
-                                break;
-                            default:
-                                status = null;
-                                break;
-                        }
-                        if (status != null)
-                            DatabaseLibrary.setStatus(DBNovel.NOVEL_URL, status);
-
-                        if (DBNovel.BOOKMARKED)
-                            DatabaseLibrary.bookMark(DBNovel.NOVEL_URL);
-                    }
-
-                    Log.i("Progress", "Restoring chapters");
-                    for (DBChapter DBChapter : superserialzied.DBChapters) {
-                        textView.post(() -> textView.setText("Restoring: " + DBChapter.CHAPTER_URL));
-                        progressBar.post(() -> progressBar.incrementProgressBy(1));
-                        if (!DatabaseChapter.inChapters(DBChapter.CHAPTER_URL))
-                            DatabaseChapter.addToChapters(DBChapter.NOVEL_URL, DBChapter.CHAPTER_URL, DBChapter.SAVED_DATA);
-
-                        DatabaseChapter.updateY(DBChapter.CHAPTER_URL, DBChapter.Y);
-
-                        com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
-                        switch (DBChapter.READ_CHAPTER) {
-                            case 0:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD;
-                                break;
-                            case 1:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READING;
-                                break;
-                            case 2:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READ;
-                                break;
-                            case 3:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.ONHOLD;
-                                break;
-                            case 4:
-                                status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.DROPPED;
-                                break;
-                            default:
-                                status = null;
-                                break;
-                        }
-                        if (status != null)
-                            DatabaseChapter.setChapterStatus(DBChapter.CHAPTER_URL, status);
-
-                        if (DBChapter.BOOKMARKED)
-                            DatabaseChapter.setBookMark(DBChapter.CHAPTER_URL, 1);
-
-                        //TODO settings backup
-                    }
-
-                    textView.post(() -> textView.setText("Restoring settings"));
-                    progressBar.post(() -> progressBar.incrementProgressBy(1));
-                    Settings.ReaderTextColor = superserialzied.settingsSerialized.reader_text_color;
-                    Settings.ReaderTextBackgroundColor = superserialzied.settingsSerialized.reader_text_background_color;
-                    shoDir = superserialzied.settingsSerialized.shoDir;
-                    Settings.downloadPaused = superserialzied.settingsSerialized.paused;
-                    Settings.ReaderTextSize = superserialzied.settingsSerialized.textSize;
-                    Settings.themeMode = superserialzied.settingsSerialized.themeMode;
-                    Settings.paragraphSpacing = superserialzied.settingsSerialized.paraSpace;
-                    Settings.indentSize = superserialzied.settingsSerialized.indent;
-
-                    if (isTapToScroll() != superserialzied.settingsSerialized.tap_to_scroll)
-                        toggleTapToScroll();
-
-                    progressBar.post(() -> progressBar.incrementProgressBy(1));
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Async progress of backup
-     */
-    public static class backUP extends AsyncTask<Void, Void, Void> {
-        @SuppressLint("StaticFieldLeak")
-        Context context;
-
-        public backUP(Context context) {
-            this.context = context;
-        }
-
-
-        @Override
-        protected void onPreExecute() {
-            Log.i("Progress", "Starting backup");
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            Log.i("Progress", "Finished backup");
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                final SUPERSERIALZIED SUPER_SERIALIZED = new SUPERSERIALZIED();
-
-                Log.i("Progress", "Backing up novels");
-                // Library backup
-                {
-                    Cursor cursor = library.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null);
-                    if (!(cursor.getCount() <= 0))
-                        while (cursor.moveToNext()) {
-                            String nurl = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
-                            Log.i("NovelBack", nurl);
-                            boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
-                            String npage = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString()));
-                            int formatter_id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
-                            int status = cursor.getInt(cursor.getColumnIndex(Columns.STATUS.toString()));
-
-                            SUPER_SERIALIZED.libraries.add(new DBNovel(nurl, bookmarked, npage, formatter_id, status));
-                        }
-                    cursor.close();
-                }
-
-                // TODO figure out how to prevent non library chapters from being saved, lowering size of backup
-                Log.i("Progress", "Backing up Chapters");
-                // Chapter backup
-                {
-                    Cursor cursor = library.rawQuery("select * from " + Tables.CHAPTERS, null);
-                    if (!(cursor.getCount() <= 0))
-                        while (cursor.moveToNext()) {
-                            String nurl = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
-                            String curl = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString()));
-                            // very dirty logger
-                            //Log.i("ChapterBack", curl);
-                            String saved_data = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
-                            int y = cursor.getInt(cursor.getColumnIndex(Columns.Y.toString()));
-                            int read_chapter = cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString()));
-                            boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
-                            boolean is_saved = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.IS_SAVED.toString())));
-                            String path = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
-
-                            SUPER_SERIALIZED.DBChapters.add(new DBChapter(nurl, curl, saved_data, y, read_chapter, bookmarked, is_saved, path));
-                        }
-                    cursor.close();
-                }
-
-                Log.i("Progress", "Backing up Downloads");
-                // Downloads backup
-                {
-                    Cursor cursor = library.rawQuery("select * from " + Tables.DOWNLOADS, null);
-                    if (!(cursor.getCount() <= 0))
-                        while (cursor.moveToNext()) {
-                            String nurl = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
-                            String curl = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString()));
-                            String nname = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
-                            String cname = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
-                            int formatter_id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
-                            boolean paused = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.PAUSED.toString())));
-
-                            SUPER_SERIALIZED.DBDownloadItems.add(new DBDownloadItem(nurl, curl, formatter_id, nname, cname, paused));
-                        }
-                    cursor.close();
-                }
-
-                Log.i("Progress", "Writing");
-                File folder = new File(shoDir + "/backup/");
-                if (!folder.exists())
-                    if (!folder.mkdirs()) {
-                        throw new IOException("Failed to mkdirs");
-                    }
-                FileOutputStream fileOutputStream = new FileOutputStream(
-                        (folder.getPath() + "/backup-" + (new Date().toString()) + ".shoback")
-                );
-                fileOutputStream.write(SUPER_SERIALIZED.serialize().getBytes());
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
     }
 }

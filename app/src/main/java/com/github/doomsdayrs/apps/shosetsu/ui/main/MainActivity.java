@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Sets up DB
         DBHelper helper = new DBHelper(this);
-        Database.library = helper.getWritableDatabase();
+        Database.sqLiteDatabase = helper.getWritableDatabase();
 
         Download_Manager.init();
 
