@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.types;
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup;
 /*
  * This file is part of Shosetsu.
  *
@@ -36,8 +36,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.async.BackupProcess;
-import com.github.doomsdayrs.apps.shosetsu.backend.async.RestoreProcess;
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess;
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess;
 
 public class BackupSettings extends Fragment {
 

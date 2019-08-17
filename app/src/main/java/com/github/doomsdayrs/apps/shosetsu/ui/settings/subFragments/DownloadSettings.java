@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.types;
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments;
 /*
  * This file is part of Shosetsu.
  *

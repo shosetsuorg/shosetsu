@@ -9,6 +9,7 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
@@ -739,8 +740,54 @@ public class Database {
 
     public static class DatabaseUpdates {
 
-        public static void getTimeBetween(long before, long after) {
+        public static ArrayList<Update> getAll() {
+            Log.d("DL", "Getting");
+            Cursor cursor = sqLiteDatabase.query(Tables.UPDATES.toString(),
+                    new String[]{Columns.NOVEL_URL.toString(), Columns.CHAPTER_URL.toString(), Columns.TIME.toString()}, null, null, null, null, null);
 
+            ArrayList<Update> novelCards = new ArrayList<>();
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return new ArrayList<>();
+            } else {
+                while (cursor.moveToNext()) {
+                    novelCards.add(new Update(
+                            cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())),
+                            cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString())),
+                            cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString()))
+                    ));
+                }
+                cursor.close();
+                return novelCards;
+            }
+        }
+
+        /**
+         * @param before inclusive
+         * @param after  exclusive
+         */
+        public static ArrayList<Update> getTimeBetween(long before, long after) {
+            Log.d("DL", "Getting");
+            Cursor cursor = sqLiteDatabase.rawQuery(
+                    "SELECT " + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.TIME + " from " + Tables.UPDATES +
+                            " where " + Columns.TIME + "<=" + before + " and " + Columns.TIME + ">" + after, null);
+
+
+            ArrayList<Update> novelCards = new ArrayList<>();
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return new ArrayList<>();
+            } else {
+                while (cursor.moveToNext()) {
+                    novelCards.add(new Update(
+                            cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())),
+                            cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString())),
+                            cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString()))
+                    ));
+                }
+                cursor.close();
+                return novelCards;
+            }
         }
 
         public static void addToUpdates(@NotNull String novelURL, @NotNull String chapterURL, long time) {
@@ -750,8 +797,34 @@ public class Database {
                     "" + time + ")");
         }
 
-        public static void format() {
 
+        public static void format() {
+            ArrayList<Update> updates = getAll();
+            ArrayList<ArrayList<Update>> sorted = new ArrayList<>();
+            for (Update update : updates)
+                for (ArrayList<Update> list : sorted) {
+                    Update lU = null;
+
+                    if (list.size() != 0)
+                        lU = list.get(0);
+
+                    if (lU != null) {
+                        if (lU.CHAPTER_URL.equalsIgnoreCase(update.CHAPTER_URL))
+                            list.add(update);
+                    } else list.add(update);
+                }
+
+            for (ArrayList<Update> list : sorted) {
+                if (list.size() != 4) {
+                    int dif = list.size() - 4;
+                    for (int x = 0; x < dif; x++)
+                        removeFromUpdates(list.get(x).CHAPTER_URL);
+                }
+            }
+        }
+
+        public static boolean removeFromUpdates(@NotNull String chapterURL) {
+            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.CHAPTER_URL + "='" + chapterURL + "'", null) > 0;
         }
     }
 }

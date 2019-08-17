@@ -134,7 +134,7 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
         builder.setProgress(0, 0, false);
         builder.setOngoing(false);
         notificationManager.notify(ID, builder.build());
-
+        Database.DatabaseUpdates.format();
     }
 
 
@@ -143,6 +143,8 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
             mangaCount++;
             System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
             Database.DatabaseChapter.addToChapters(novelCard.novelURL, novelChapter);
+            Database.DatabaseUpdates.addToUpdates(novelCard.novelURL, novelChapter.link, System.currentTimeMillis());
+
             if (!updatedNovels.contains(novelCard))
                 updatedNovels.add(novelCard);
         }
