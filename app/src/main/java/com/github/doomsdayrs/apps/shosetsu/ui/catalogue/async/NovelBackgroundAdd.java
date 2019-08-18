@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -54,6 +55,8 @@ public class NovelBackgroundAdd extends AsyncTask<View, Void, Void> {
         } catch (Exception e) {
             if (views[0] != null)
                 views[0].post(() -> Toast.makeText(views[0].getContext(), "Failed to add to library: " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_LONG).show());
+            String message = novelCardsViewHolder.library_card_title.getText().toString() + " : " + e.getMessage();
+            Log.e("NovelBackgroundAdd", message);
         }
         return null;
     }
