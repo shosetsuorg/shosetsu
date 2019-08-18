@@ -74,7 +74,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
             checkBox = itemView.findViewById(R.id.recycler_novel_chapter_selectCheck);
             constraintLayout = itemView.findViewById(R.id.constraint);
             library_card_title = itemView.findViewById(R.id.recycler_novel_chapter_title);
-            moreOptions = itemView.findViewById(R.id.recycler_novel_chapter_options);
+            moreOptions = itemView.findViewById(R.id.more_options);
             status = itemView.findViewById(R.id.recycler_novel_chapter_status);
             read = itemView.findViewById(R.id.recycler_novel_chapter_read);
             readTag = itemView.findViewById(R.id.recycler_novel_chapter_read_tag);

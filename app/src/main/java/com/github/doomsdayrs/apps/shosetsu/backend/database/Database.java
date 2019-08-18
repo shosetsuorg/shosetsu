@@ -558,6 +558,26 @@ public class Database {
                 return novelChapters;
             }
         }
+
+        public static NovelChapter getChapter(String novelURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return null;
+            } else {
+                NovelChapter novelChapters = null;
+                try {
+                    String text = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
+                    cursor.close();
+                    if (text != null) {
+                        novelChapters = ((NovelChapter) deserialize(text));
+                    }
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return novelChapters;
+            }
+        }
     }
 
     public static class DatabaseLibrary {

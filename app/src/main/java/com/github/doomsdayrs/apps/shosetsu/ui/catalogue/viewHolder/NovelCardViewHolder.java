@@ -47,7 +47,7 @@ public class NovelCardViewHolder extends RecyclerView.ViewHolder implements View
     public NovelCardViewHolder(@NonNull View itemView) {
         super(itemView);
         library_card_image = itemView.findViewById(R.id.novel_item_image);
-        library_card_title = itemView.findViewById(R.id.textView);
+        library_card_title = itemView.findViewById(R.id.title);
         constraintLayout = itemView.findViewById(R.id.constraint);
         itemView.setOnClickListener(this);
         itemView.setOnLongClickListener(this);

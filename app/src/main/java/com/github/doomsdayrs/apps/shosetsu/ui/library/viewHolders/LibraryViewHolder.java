@@ -51,7 +51,7 @@ public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.O
         super(itemView);
         materialCardView = itemView.findViewById(R.id.novel_item_card);
         library_card_image = itemView.findViewById(R.id.novel_item_image);
-        library_card_title = itemView.findViewById(R.id.textView);
+        library_card_title = itemView.findViewById(R.id.title);
 
         chip = itemView.findViewById(R.id.novel_item_left_to_read);
         itemView.setOnLongClickListener(view -> {

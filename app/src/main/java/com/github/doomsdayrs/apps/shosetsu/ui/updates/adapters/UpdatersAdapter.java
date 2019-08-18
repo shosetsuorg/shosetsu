@@ -1,24 +1,31 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters;
 
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
+import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
+import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder;
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdateHolder;
+import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+
+import java.util.ArrayList;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter;
 
 /*
  * This file is part of Shosetsu.
@@ -41,116 +48,81 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
  *
  * @author github.com/doomsdayrs
  */
-public class UpdatersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
-    public static int DefaultTextColor;
-    private static boolean set = false;
-    private final NovelFragmentChapters novelFragmentChapters;
+public class UpdatersAdapter extends RecyclerView.Adapter<UpdateHolder> {
+    public final ArrayList<Update> updates;
+    public final Activity activity;
 
-
-    public UpdatersAdapter(NovelFragmentChapters novelFragmentChapters) {
-        this.novelFragmentChapters = novelFragmentChapters;
+    public UpdatersAdapter(ArrayList<Update> updates, Activity activity) {
+        this.updates = updates;
+        this.activity = activity;
     }
 
 
     @NonNull
     @Override
-    public ChaptersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public UpdateHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_chapter, viewGroup, false);
-        ChaptersViewHolder chaptersViewHolder = new ChaptersViewHolder(view);
-        if (!set) {
-            DefaultTextColor = chaptersViewHolder.library_card_title.getCurrentTextColor();
-            Log.i("TextDefaultColor", String.valueOf(DefaultTextColor));
-            set = !set;
-        }
-        return chaptersViewHolder;
+
+        return new UpdateHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
-        NovelChapter novelChapter = StaticNovel.novelChapters.get(i);
-        chaptersViewHolder.novelChapter = novelChapter;
-        chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
-        chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
+    public void onBindViewHolder(@NonNull UpdateHolder updateHolder, int i) {
+        updateHolder.novelChapter = DatabaseChapter.getChapter(updates.get(i).CHAPTER_URL);
 
-        if (!Database.DatabaseChapter.inChapters(novelChapter.link))
-            Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+        updateHolder.popupMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.popup_chapter_menu_bookmark:
+                    if (toggleBookmarkChapter(updateHolder.novelChapter.link))
+                        updateHolder.title.setTextColor(updateHolder.itemView.getResources().getColor(R.color.bookmarked));
+                    else {
+                        Log.i("SetDefault", String.valueOf(ChaptersAdapter.DefaultTextColor));
+                        updateHolder.title.setTextColor(ChaptersAdapter.DefaultTextColor);
+                    }
+                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
+                case R.id.popup_chapter_menu_download:
+                    if (!Database.DatabaseChapter.isSaved(updateHolder.novelChapter.link)) {
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, updateHolder.novelChapter.chapterNum, StaticNovel.novelURL, updateHolder.novelChapter.link);
+                        Download_Manager.addToDownload(downloadItem);
+                    } else {
+                        if (Download_Manager.delete(updateHolder.itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, updateHolder.novelChapter.chapterNum, StaticNovel.novelURL, updateHolder.novelChapter.link))) {
+                            updateHolder.downloadTag.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
 
-        if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
-            chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
-            chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("UnBookmark");
-        } else {
-            chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("Bookmark");
-        }
-
-
-        if (novelFragmentChapters.contains(novelChapter)) {
-            chaptersViewHolder.cardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
-            chaptersViewHolder.checkBox.setChecked(true);
-        } else {
-            chaptersViewHolder.cardView.setStrokeWidth(0);
-            chaptersViewHolder.checkBox.setChecked(false);
-        }
-
-        if (novelFragmentChapters.selectedChapters.size() > 0) {
-            chaptersViewHolder.checkBox.setVisibility(View.VISIBLE);
-        } else chaptersViewHolder.checkBox.setVisibility(View.GONE);
-
-
-        if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
-            chaptersViewHolder.downloadTag.setVisibility(View.VISIBLE);
-            chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_download).setTitle("Delete");
-        } else {
-            chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_download).setTitle("Download");
-            chaptersViewHolder.downloadTag.setVisibility(View.INVISIBLE);
-        }
-
-        switch (Database.DatabaseChapter.getStatus(novelChapter.link)) {
-
-            case READING:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    chaptersViewHolder.constraintLayout.setForeground(new ColorDrawable());
-                } else {
-                    //TODO Tint for cards before 22
-                }
-                chaptersViewHolder.status.setText(Status.READING.getStatus());
-                chaptersViewHolder.readTag.setVisibility(View.VISIBLE);
-                chaptersViewHolder.read.setVisibility(View.VISIBLE);
-                chaptersViewHolder.read.setText(String.valueOf(Database.DatabaseChapter.getY(novelChapter.link)));
-                break;
-            case UNREAD:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    chaptersViewHolder.constraintLayout.setForeground(new ColorDrawable());
-                } else {
-                    //TODO Tint for cards before 22
-
-                }
-                chaptersViewHolder.status.setText(Status.UNREAD.getStatus());
-                break;
-
-            case READ:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (novelFragmentChapters.getContext() != null)
-                        chaptersViewHolder.constraintLayout.setForeground(new ColorDrawable(ContextCompat.getColor(novelFragmentChapters.getContext(), R.color.shade)));
-                } else {
-                    //TODO Tint for cards before 22
-                }
-                chaptersViewHolder.status.setText(Status.READ.getStatus());
-                chaptersViewHolder.readTag.setVisibility(View.GONE);
-                chaptersViewHolder.read.setVisibility(View.GONE);
-                break;
-        }
-
-        if (novelFragmentChapters.selectedChapters.size() <= 0)
-            chaptersViewHolder.itemView.setOnClickListener(chaptersViewHolder);
-        else
-            chaptersViewHolder.itemView.setOnClickListener(view -> chaptersViewHolder.addToSelect());
+                case R.id.popup_chapter_menu_mark_read:
+                    Database.DatabaseChapter.setChapterStatus(updateHolder.novelChapter.link, Status.READ);
+                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
+                case R.id.popup_chapter_menu_mark_unread:
+                    Database.DatabaseChapter.setChapterStatus(updateHolder.novelChapter.link, Status.UNREAD);
+                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
+                case R.id.popup_chapter_menu_mark_reading:
+                    Database.DatabaseChapter.setChapterStatus(updateHolder.novelChapter.link, Status.READING);
+                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    return true;
+                case R.id.browser:
+                    if (activity != null)
+                        openInBrowser(activity, updateHolder.novelChapter.link);
+                    return true;
+                case R.id.webview:
+                    if (activity != null)
+                        openInWebview(activity, updateHolder.novelChapter.link);
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        updateHolder.moreOptions.setOnClickListener(view -> updateHolder.popupMenu.show());
     }
 
     @Override
     public int getItemCount() {
-        if (StaticNovel.novelChapters != null)
-            return StaticNovel.novelChapters.size();
-        else return 0;
+        return updates.size();
     }
 
     @Override
