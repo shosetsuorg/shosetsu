@@ -817,30 +817,8 @@ public class Database {
                     "" + time + ")");
         }
 
-
-        public static void format() {
-            ArrayList<Update> updates = getAll();
-            ArrayList<ArrayList<Update>> sorted = new ArrayList<>();
-            for (Update update : updates)
-                for (ArrayList<Update> list : sorted) {
-                    Update lU = null;
-
-                    if (list.size() != 0)
-                        lU = list.get(0);
-
-                    if (lU != null) {
-                        if (lU.CHAPTER_URL.equalsIgnoreCase(update.CHAPTER_URL))
-                            list.add(update);
-                    } else list.add(update);
-                }
-
-            for (ArrayList<Update> list : sorted) {
-                if (list.size() != 4) {
-                    int dif = list.size() - 4;
-                    for (int x = 0; x < dif; x++)
-                        removeFromUpdates(list.get(x).CHAPTER_URL);
-                }
-            }
+        public static boolean removeNovelFromUpdates(@NotNull String novelURL) {
+            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
         }
 
         public static boolean removeFromUpdates(@NotNull String chapterURL) {
