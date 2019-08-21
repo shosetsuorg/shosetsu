@@ -58,6 +58,8 @@ public class UpdatesPager extends FragmentPagerAdapter {
         DateTime dateTime = new DateTime(fragments.get(position).date);
         if (dateTime.equals(trimDate(new DateTime(System.currentTimeMillis())))) {
             return "Today";
+        } else if (dateTime.equals(trimDate(new DateTime(System.currentTimeMillis())).minusDays(1))) {
+            return "Yesterday";
         }
         return dateTime.getDayOfMonth() + "/" + dateTime.getMonthOfYear() + "/" + dateTime.getYear();
     }

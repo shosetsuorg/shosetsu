@@ -18,6 +18,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates;
  */
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,10 +64,12 @@ public class UpdateFragment extends Fragment {
         if (date == -1)
             date = savedInstanceState.getLong("date");
 
-        updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86400000);
+        updates = Database.DatabaseUpdates.getTimeBetween(date + 86400000, date);
         recyclerView = view.findViewById(R.id.recycler_update);
         updatersAdapter = new UpdatersAdapter(updates, getActivity());
         chapterSetUp();
+
+        Log.d("Updates on this day: ", updates.toString());
         return view;
     }
 
@@ -77,6 +80,7 @@ public class UpdateFragment extends Fragment {
             updatersAdapter.setHasStableIds(true);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(updatersAdapter);
+            recyclerView.post(updatersAdapter::notifyDataSetChanged);
         }
     }
 }

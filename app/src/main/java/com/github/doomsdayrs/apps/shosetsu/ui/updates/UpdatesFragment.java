@@ -43,6 +43,7 @@ import com.google.android.material.tabs.TabLayout;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getStartingDay;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getTotalDays;
@@ -100,6 +101,8 @@ public class UpdatesFragment extends Fragment {
         UpdateFragment updateFragment = new UpdateFragment();
         updateFragment.setDate(trimDate(new DateTime(System.currentTimeMillis())).getMillis());
         updatesFragments.add(updateFragment);
+
+        Collections.reverse(updatesFragments);
 
         UpdatesPager pagerAdapter = new UpdatesPager(getChildFragmentManager(), updatesFragments);
         viewPager.setAdapter(pagerAdapter);

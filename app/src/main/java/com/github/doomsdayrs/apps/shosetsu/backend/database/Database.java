@@ -829,14 +829,14 @@ public class Database {
         }
 
         /**
-         * @param before inclusive
-         * @param after  exclusive
+         * @param before exclusive
+         * @param after  inclusive
          */
         public static ArrayList<Update> getTimeBetween(long before, long after) {
             Log.d("DL", "Getting");
             Cursor cursor = sqLiteDatabase.rawQuery(
                     "SELECT " + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.TIME + " from " + Tables.UPDATES +
-                            " where " + Columns.TIME + "<=" + before + " and " + Columns.TIME + ">" + after, null);
+                            " where " + Columns.TIME + "<" + before + " and " + Columns.TIME + "<=" + after, null);
 
 
             ArrayList<Update> novelCards = new ArrayList<>();

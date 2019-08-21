@@ -61,8 +61,7 @@ public class UpdatersAdapter extends RecyclerView.Adapter<UpdateHolder> {
     @NonNull
     @Override
     public UpdateHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_chapter, viewGroup, false);
-
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.update_card, viewGroup, false);
         return new UpdateHolder(view);
     }
 
