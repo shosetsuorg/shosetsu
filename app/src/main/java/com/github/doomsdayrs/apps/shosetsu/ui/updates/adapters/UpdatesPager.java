@@ -23,9 +23,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateFragment;
+
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.trimDate;
 
 /**
  * shosetsu
@@ -35,11 +39,11 @@ import java.util.ArrayList;
  */
 public class UpdatesPager extends FragmentPagerAdapter {
 
-    private ArrayList<Fragment> fragments = new ArrayList<>();
-    private ArrayList<Long> dates = new ArrayList<>();
+    private final ArrayList<UpdateFragment> fragments;
 
-    public UpdatesPager(@NonNull FragmentManager fm) {
+    public UpdatesPager(@NonNull FragmentManager fm, ArrayList<UpdateFragment> fragments) {
         super(fm);
+        this.fragments = fragments;
     }
 
     @NonNull
@@ -51,7 +55,11 @@ public class UpdatesPager extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return new DateTime(dates.get(position)).toString();
+        DateTime dateTime = new DateTime(fragments.get(position).date);
+        if (dateTime.equals(trimDate(new DateTime(System.currentTimeMillis())))) {
+            return "Today";
+        }
+        return dateTime.getDayOfMonth() + "/" + dateTime.getMonthOfYear() + "/" + dateTime.getYear();
     }
 
     @Override
@@ -59,8 +67,7 @@ public class UpdatesPager extends FragmentPagerAdapter {
         return fragments.size();
     }
 
-    public void addToFragments(Fragment f, long l) {
+    public void addToFragments(UpdateFragment f) {
         fragments.add(0, f);
-        dates.add(0, l);
     }
 }

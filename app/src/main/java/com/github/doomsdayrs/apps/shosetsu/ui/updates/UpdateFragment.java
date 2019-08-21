@@ -25,8 +25,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatersAdapter;
+
+import java.util.ArrayList;
 
 /**
  * shosetsu
@@ -35,7 +42,10 @@ import com.github.doomsdayrs.apps.shosetsu.R;
  * @author github.com/doomsdayrs
  */
 public class UpdateFragment extends Fragment {
-    public long date;
+    public long date = -1;
+    ArrayList<Update> updates = new ArrayList<>();
+    RecyclerView recyclerView;
+    UpdatersAdapter updatersAdapter;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -49,9 +59,24 @@ public class UpdateFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.updates_list, container);
+        View view = inflater.inflate(R.layout.updates_list, container, false);
+        if (date == -1)
+            date = savedInstanceState.getLong("date");
 
-
+        updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86400000);
+        recyclerView = view.findViewById(R.id.recycler_update);
+        updatersAdapter = new UpdatersAdapter(updates, getActivity());
+        chapterSetUp();
         return view;
+    }
+
+    public void chapterSetUp() {
+        if (recyclerView != null) {
+            recyclerView.setHasFixedSize(false);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+            updatersAdapter.setHasStableIds(true);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(updatersAdapter);
+        }
     }
 }

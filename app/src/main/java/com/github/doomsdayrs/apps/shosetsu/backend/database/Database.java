@@ -16,6 +16,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 /*
@@ -759,6 +762,49 @@ public class Database {
     }
 
     public static class DatabaseUpdates {
+
+        public static DateTime trimDate(DateTime date) {
+            Calendar cal = Calendar.getInstance();
+            cal.clear(); // as per BalusC comment.
+            cal.setTime(date.toDate());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            return new DateTime(cal.getTimeInMillis());
+        }
+
+        public static int getTotalDays() {
+            DateTime firstDay = new DateTime(getStartingDay());
+            DateTime latest = new DateTime(getLatestDay());
+            return Days.daysBetween(firstDay, latest).getDays();
+        }
+
+        public static long getStartingDay() {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.TIME + " FROM " + Tables.UPDATES + " ORDER BY ROWID ASC LIMIT 1", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return 0;
+            } else {
+                cursor.moveToNext();
+                long day = cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString()));
+                cursor.close();
+                return trimDate(new DateTime(day)).getMillis();
+            }
+        }
+
+        public static long getLatestDay() {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.TIME + " FROM " + Tables.UPDATES + " ORDER BY ROWID DESC LIMIT 1", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return 0;
+            } else {
+                cursor.moveToNext();
+                long day = cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString()));
+                cursor.close();
+                return trimDate(new DateTime(day)).getMillis();
+            }
+        }
 
         public static ArrayList<Update> getAll() {
             Log.d("DL", "Getting");

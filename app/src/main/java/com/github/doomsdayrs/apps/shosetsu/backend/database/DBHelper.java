@@ -94,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 6);
+        super(context, DB_NAME, null, 7);
     }
 
 

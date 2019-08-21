@@ -134,7 +134,6 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
         builder.setProgress(0, 0, false);
         builder.setOngoing(false);
         notificationManager.notify(ID, builder.build());
-        Database.DatabaseUpdates.format();
     }
 
 
