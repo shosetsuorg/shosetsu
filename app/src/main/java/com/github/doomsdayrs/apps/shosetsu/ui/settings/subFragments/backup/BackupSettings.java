@@ -79,7 +79,7 @@ public class BackupSettings extends Fragment {
                     String fileEnding = path.substring(i + 1);
                     if (fileEnding.equalsIgnoreCase("shoback")) {
                         Log.i("Selected Folder", "Uri: " + path);
-                        new RestoreProcess(path.substring(path.indexOf(":") + 1), getContext()).execute();
+                        new RestoreProcess(path, getContext()).execute();
                     } else
                         Toast.makeText(getContext(), "Invalid file to use!", Toast.LENGTH_LONG).show();
                 }

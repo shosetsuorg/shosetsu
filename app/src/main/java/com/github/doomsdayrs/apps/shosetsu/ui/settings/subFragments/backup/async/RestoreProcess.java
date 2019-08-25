@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -50,7 +51,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.dese
  *
  * @author github.com/doomsdayrs
  */
-public class RestoreProcess extends AsyncTask<Void, Void, Void> {
+public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
     String file_path;
 
     @SuppressLint("StaticFieldLeak")
@@ -85,16 +86,21 @@ public class RestoreProcess extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        Log.i("Progress", "Completed restore");
-        textView.post(() -> textView.setText(R.string.completed));
-        progressBar2.post(() -> progressBar2.setVisibility(View.GONE));
-        close.post(() -> close.setOnClickListener(view -> dialog.cancel()));
+    protected void onPostExecute(Boolean b) {
+        if (b) {
+            Log.i("Progress", "Completed restore");
+            textView.post(() -> textView.setText(R.string.completed));
+            progressBar2.post(() -> progressBar2.setVisibility(View.GONE));
+            close.post(() -> close.setOnClickListener(view -> dialog.cancel()));
+        } else {
+            dialog.cancel();
+            Toast.makeText(context, "Failed to process", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected Boolean doInBackground(Void... voids) {
         File file = new File("" + file_path);
         if (file.exists()) {
             try {
@@ -212,10 +218,11 @@ public class RestoreProcess extends AsyncTask<Void, Void, Void> {
                     toggleTapToScroll();
 
                 progressBar.post(() -> progressBar.incrementProgressBy(1));
+                return true;
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return false;
     }
 }
