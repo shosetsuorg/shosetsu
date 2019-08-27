@@ -22,6 +22,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates;
  */
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -89,8 +90,10 @@ public class UpdatesFragment extends Fragment {
     private void setViewPager() {
         ArrayList<UpdateFragment> updatesFragments = new ArrayList<>();
         int days = getTotalDays();
-
+        Log.d("TotalDays", String.valueOf(days));
         long startTime = getStartingDay();
+        Log.d("StartingDay", new DateTime(startTime).toString());
+
         for (int x = 0; x < days; x++) {
             UpdateFragment updateFragment = new UpdateFragment();
             updateFragment.setDate(startTime);
