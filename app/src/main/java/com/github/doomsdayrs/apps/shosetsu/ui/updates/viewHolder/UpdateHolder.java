@@ -27,6 +27,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
 
 /**
  * shosetsu
@@ -36,6 +40,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
  */
 public class UpdateHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final ImageView moreOptions;
+    public ImageView image;
     public NovelChapter novelChapter;
     public TextView downloadTag;
     public TextView title;
@@ -45,7 +50,8 @@ public class UpdateHolder extends RecyclerView.ViewHolder implements View.OnClic
         super(itemView);
         moreOptions = itemView.findViewById(R.id.more_options);
         downloadTag = itemView.findViewById(R.id.recycler_novel_chapter_download);
-        title = itemView.findViewById(R.id.recycler_novel_chapter_title);
+        title = itemView.findViewById(R.id.title);
+        image = itemView.findViewById(R.id.image);
 
         if (popupMenu == null) {
             popupMenu = new PopupMenu(moreOptions.getContext(), moreOptions);
@@ -53,6 +59,19 @@ public class UpdateHolder extends RecyclerView.ViewHolder implements View.OnClic
         }
 
 
+    }
+
+    public void setNovelChapter(NovelChapter novelChapter) {
+        this.novelChapter = novelChapter;
+        title.setText(novelChapter.chapterNum);
+        Picasso.get()
+                .load(
+                        Objects.requireNonNull(
+                                Database.DatabaseLibrary.getNovel(
+                                        Database.DatabaseChapter.getChapterNovelURL(novelChapter.link)
+                                )
+                        ).imageURL)
+                .into(image);
     }
 
     @Override

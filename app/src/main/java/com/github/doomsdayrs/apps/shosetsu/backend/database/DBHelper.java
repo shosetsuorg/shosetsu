@@ -39,7 +39,6 @@ public class DBHelper extends SQLiteOpenHelper {
             // The chapter chapterURL
             Columns.CHAPTER_URL + " text not null unique," +
 
-            // Unsure if i should keep this or not
             Columns.SAVED_DATA + " text," +
 
             // Saved Data

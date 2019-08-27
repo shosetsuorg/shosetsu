@@ -562,14 +562,15 @@ public class Database {
             }
         }
 
-        public static NovelChapter getChapter(String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
+        public static NovelChapter getChapter(String chapterURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
             } else {
                 NovelChapter novelChapters = null;
                 try {
+                    cursor.moveToNext();
                     String text = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
                     cursor.close();
                     if (text != null) {
@@ -581,7 +582,21 @@ public class Database {
                 return novelChapters;
             }
         }
+
+        public static String getChapterNovelURL(String chapterURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.NOVEL_URL + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return null;
+            } else {
+                cursor.moveToNext();
+                String text = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString()));
+                cursor.close();
+                return text;
+            }
+        }
     }
+
 
     public static class DatabaseLibrary {
 
@@ -698,6 +713,34 @@ public class Database {
                 cursor.close();
                 return novelCards;
             }
+        }
+
+        public static NovelCard getNovel(String novelURL) {
+            Log.d("DL", "Getting");
+            Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
+                    new String[]{Columns.NOVEL_URL.toString(), Columns.FORMATTER_ID.toString(), Columns.NOVEL_PAGE.toString()},
+                    Columns.BOOKMARKED + "=1 and " + Columns.NOVEL_URL + "='" + novelURL + "'", null, null, null, null);
+
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return null;
+            } else {
+                cursor.moveToNext();
+                try {
+                    NovelPage novelPage = (NovelPage) deserialize(cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString())));
+                    NovelCard novelCard = new NovelCard(
+                            novelPage.title,
+                            cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())),
+                            novelPage.imageURL,
+                            cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
+                    );
+                    cursor.close();
+                    return novelCard;
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
         }
 
         /**
@@ -829,14 +872,19 @@ public class Database {
         }
 
         /**
-         * @param before exclusive
-         * @param after  inclusive
+         * Works as long as date2 is after date1
+         *
+         * @param date1 first
+         * @param date2 second
          */
-        public static ArrayList<Update> getTimeBetween(long before, long after) {
-            Log.d("DL", "Getting");
+        public static ArrayList<Update> getTimeBetween(long date1, long date2) throws Exception {
+            if (date2 <= date1)
+                throw new Exception("Dates implemented wrongly");
+            Log.d("ULDates", "" + date1 + "-" + date2);
+            Log.i("UL", "Getting dates between [" + new DateTime(date1) + "] and [" + new DateTime(date2) + "]");
             Cursor cursor = sqLiteDatabase.rawQuery(
                     "SELECT " + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.TIME + " from " + Tables.UPDATES +
-                            " where " + Columns.TIME + "<" + before + " and " + Columns.TIME + "<=" + after, null);
+                            " where " + Columns.TIME + "<" + date2 + " and " + Columns.TIME + ">=" + date1, null);
 
 
             ArrayList<Update> novelCards = new ArrayList<>();

@@ -44,9 +44,8 @@ import java.util.ArrayList;
  */
 public class UpdateFragment extends Fragment {
     public long date = -1;
-    ArrayList<Update> updates = new ArrayList<>();
-    RecyclerView recyclerView;
-    UpdatersAdapter updatersAdapter;
+    private ArrayList<Update> updates = new ArrayList<>();
+    private RecyclerView recyclerView;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -62,23 +61,25 @@ public class UpdateFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.updates_list, container, false);
         if (date == -1)
-            date = savedInstanceState.getLong("date");
+            if (savedInstanceState != null)
+                date = savedInstanceState.getLong("date");
 
-        updates = Database.DatabaseUpdates.getTimeBetween(date + 86400000, date);
+        try {
+            updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         recyclerView = view.findViewById(R.id.recycler_update);
-        updatersAdapter = new UpdatersAdapter(updates, getActivity());
         chapterSetUp();
 
-        Log.d("Updates on this day: ", updates.toString());
+        Log.d("Updates on this day: ", "" + updates.size());
         return view;
     }
 
-    public void chapterSetUp() {
+    private void chapterSetUp() {
         if (recyclerView != null) {
-            recyclerView.setHasFixedSize(false);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-            updatersAdapter.setHasStableIds(true);
-            recyclerView.setLayoutManager(layoutManager);
+            UpdatersAdapter updatersAdapter = new UpdatersAdapter(updates, getActivity());
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(updatersAdapter);
             recyclerView.post(updatersAdapter::notifyDataSetChanged);
         }
