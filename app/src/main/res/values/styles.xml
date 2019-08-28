@@ -1,6 +1,9 @@
 <resources>
 
     <!-- Base application theme. -->
+
+    <style name="AppTheme" parent="Theme.MaterialComponents" />
+
     <style name="dark_mode" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorAccent">@color/colorDarkAccent</item>
     </style>
@@ -11,6 +14,10 @@
 
     <style name="night_mode" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorAccent">@color/colorNightAccent</item>
+    </style>
+
+    <style name="AppTheme.AppBar" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="android:background">@color/colorLightAccent</item>
     </style>
 
 </resources>
