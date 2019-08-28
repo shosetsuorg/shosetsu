@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Base64;
 import android.util.Log;
 
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
@@ -802,6 +803,20 @@ public class Database {
                 addToLibrary(formatterID, newNovel, newURL, status);
             bookMark(newURL);
         }
+
+        public static Formatter getFormat(String novelURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + "='" + novelURL + "'", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return null;
+            } else {
+                cursor.moveToNext();
+                Formatter formatter = DefaultScrapers.getByID(cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString())));
+                cursor.close();
+                return formatter;
+            }
+        }
+
     }
 
     public static class DatabaseUpdates {

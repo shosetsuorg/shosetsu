@@ -79,10 +79,12 @@ public class UpdatesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Statics.mainActionBar.setTitle("Library");
         View view = inflater.inflate(R.layout.fragment_update, container, false);
+        Statics.mainActionBar.setTitle("Updates");
+
         viewPager = view.findViewById(R.id.viewpager);
         tabLayout = view.findViewById(R.id.tabLayout);
+
         setViewPager();
         return view;
     }
