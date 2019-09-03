@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdateHolder;
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
@@ -48,14 +48,14 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  *
  * @author github.com/doomsdayrs
  */
-public class UpdatersAdapter extends RecyclerView.Adapter<UpdateHolder> {
+public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterHolder> {
     public static int DefaultTextColor;
     private static boolean set = false;
 
     public final ArrayList<Update> updates;
     public final Activity activity;
 
-    public UpdatersAdapter(ArrayList<Update> updates, Activity activity) {
+    public UpdatedChaptersAdapter(ArrayList<Update> updates, Activity activity) {
         this.updates = updates;
         this.activity = activity;
     }
@@ -63,24 +63,24 @@ public class UpdatersAdapter extends RecyclerView.Adapter<UpdateHolder> {
 
     @NonNull
     @Override
-    public UpdateHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public UpdatedChapterHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.update_card, viewGroup, false);
-        UpdateHolder updateHolder = new UpdateHolder(view);
+        UpdatedChapterHolder updatedChapterHolder = new UpdatedChapterHolder(view);
         if (!set) {
-            DefaultTextColor = updateHolder.title.getCurrentTextColor();
+            DefaultTextColor = updatedChapterHolder.title.getCurrentTextColor();
             Log.i("TextDefaultColor", String.valueOf(DefaultTextColor));
             set = !set;
         }
-        return updateHolder;
+        return updatedChapterHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UpdateHolder updateHolder, int i) {
+    public void onBindViewHolder(@NonNull UpdatedChapterHolder updatedChapterHolder, int i) {
         Log.d("Binding", updates.get(i).CHAPTER_URL);
-        updateHolder.setNovelChapter(Objects.requireNonNull(DatabaseChapter.getChapter(updates.get(i).CHAPTER_URL)));
-        updateHolder.popupMenu.setOnMenuItemClickListener(menuItem -> {
+        updatedChapterHolder.setNovelChapter(Objects.requireNonNull(DatabaseChapter.getChapter(updates.get(i).CHAPTER_URL)));
+        updatedChapterHolder.popupMenu.setOnMenuItemClickListener(menuItem -> {
             NovelPage novelPage = new NovelPage();
-            String nURL = DatabaseChapter.getChapterNovelURL(updateHolder.novelChapter.link);
+            String nURL = DatabaseChapter.getChapterNovelURL(updatedChapterHolder.novelChapter.link);
 
             if (nURL != null)
                 novelPage = Database.DatabaseLibrary.getNovelPage(nURL);
@@ -95,55 +95,55 @@ public class UpdatersAdapter extends RecyclerView.Adapter<UpdateHolder> {
             if (novelPage != null)
                 switch (menuItem.getItemId()) {
                     case R.id.popup_chapter_menu_bookmark:
-                        if (toggleBookmarkChapter(updateHolder.novelChapter.link))
-                            updateHolder.title.setTextColor(updateHolder.itemView.getResources().getColor(R.color.bookmarked));
+                        if (toggleBookmarkChapter(updatedChapterHolder.novelChapter.link))
+                            updatedChapterHolder.title.setTextColor(updatedChapterHolder.itemView.getResources().getColor(R.color.bookmarked));
                         else {
                             Log.i("SetDefault", String.valueOf(DefaultTextColor));
-                            updateHolder.title.setTextColor(DefaultTextColor);
+                            updatedChapterHolder.title.setTextColor(DefaultTextColor);
                         }
                         notifyDataSetChanged();
                         return true;
                     case R.id.popup_chapter_menu_download:
-                        if (!Database.DatabaseChapter.isSaved(updateHolder.novelChapter.link)) {
-                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.title, updateHolder.novelChapter.chapterNum, nURL, updateHolder.novelChapter.link);
+                        if (!Database.DatabaseChapter.isSaved(updatedChapterHolder.novelChapter.link)) {
+                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.chapterNum, nURL, updatedChapterHolder.novelChapter.link);
                             Download_Manager.addToDownload(downloadItem);
                         } else {
-                            if (Download_Manager.delete(updateHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.title, updateHolder.novelChapter.chapterNum, nURL, updateHolder.novelChapter.link))) {
-                                updateHolder.downloadTag.setVisibility(View.INVISIBLE);
+                            if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.chapterNum, nURL, updatedChapterHolder.novelChapter.link))) {
+                                updatedChapterHolder.downloadTag.setVisibility(View.INVISIBLE);
                             }
                         }
                         notifyDataSetChanged();
                         return true;
 
                     case R.id.popup_chapter_menu_mark_read:
-                        Database.DatabaseChapter.setChapterStatus(updateHolder.novelChapter.link, Status.READ);
+                        Database.DatabaseChapter.setChapterStatus(updatedChapterHolder.novelChapter.link, Status.READ);
                         notifyDataSetChanged();
 
                         return true;
                     case R.id.popup_chapter_menu_mark_unread:
-                        Database.DatabaseChapter.setChapterStatus(updateHolder.novelChapter.link, Status.UNREAD);
+                        Database.DatabaseChapter.setChapterStatus(updatedChapterHolder.novelChapter.link, Status.UNREAD);
                         notifyDataSetChanged();
 
                         return true;
                     case R.id.popup_chapter_menu_mark_reading:
-                        Database.DatabaseChapter.setChapterStatus(updateHolder.novelChapter.link, Status.READING);
+                        Database.DatabaseChapter.setChapterStatus(updatedChapterHolder.novelChapter.link, Status.READING);
                         notifyDataSetChanged();
 
                         return true;
                     case R.id.browser:
                         if (activity != null)
-                            openInBrowser(activity, updateHolder.novelChapter.link);
+                            openInBrowser(activity, updatedChapterHolder.novelChapter.link);
                         return true;
                     case R.id.webview:
                         if (activity != null)
-                            openInWebview(activity, updateHolder.novelChapter.link);
+                            openInWebview(activity, updatedChapterHolder.novelChapter.link);
                         return true;
                     default:
                         return false;
                 }
             return false;
         });
-        updateHolder.moreOptions.setOnClickListener(view -> updateHolder.popupMenu.show());
+        updatedChapterHolder.moreOptions.setOnClickListener(view -> updatedChapterHolder.popupMenu.show());
     }
 
     @Override

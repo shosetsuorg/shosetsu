@@ -37,7 +37,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatesPager;
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.google.android.material.tabs.TabLayout;
 
@@ -46,6 +46,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getCountBetween;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getStartingDay;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getTotalDays;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.trimDate;
@@ -102,6 +103,20 @@ public class UpdatesFragment extends Fragment {
             startTime += 86400000;
             updatesFragments.add(updateFragment);
         }
+        // Removing empty days
+
+        for (int x = updatesFragments.size() - 1; x > 0; x--) {
+            UpdateFragment updateFragment = updatesFragments.get(x);
+            try {
+                int c = getCountBetween(updateFragment.date, updateFragment.date + 86399999);
+                if (c <= 0) {
+                    updatesFragments.remove(x);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         // TODAY
         UpdateFragment updateFragment = new UpdateFragment();
         updateFragment.setDate(trimDate(new DateTime(System.currentTimeMillis())).getMillis());
@@ -109,7 +124,7 @@ public class UpdatesFragment extends Fragment {
 
         Collections.reverse(updatesFragments);
 
-        UpdatesPager pagerAdapter = new UpdatesPager(getChildFragmentManager(), updatesFragments);
+        UpdatedDaysPager pagerAdapter = new UpdatedDaysPager(getChildFragmentManager(), updatesFragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

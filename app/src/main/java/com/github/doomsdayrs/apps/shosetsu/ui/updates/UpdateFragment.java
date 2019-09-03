@@ -30,11 +30,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatersAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedChaptersAdapter;
 
 import java.util.ArrayList;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getTimeBetween;
 
 /**
  * shosetsu
@@ -44,6 +45,8 @@ import java.util.ArrayList;
  */
 public class UpdateFragment extends Fragment {
     public long date = -1;
+    private ArrayList<String> novels = new ArrayList<>();
+
     private ArrayList<Update> updates = new ArrayList<>();
     private RecyclerView recyclerView;
 
@@ -65,10 +68,14 @@ public class UpdateFragment extends Fragment {
                 date = savedInstanceState.getLong("date");
 
         try {
-            updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999);
+            updates = getTimeBetween(date, date + 86399999);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        for (Update update : updates)
+            if (!novels.contains(update.NOVEL_URL))
+                novels.add(update.NOVEL_URL);
+
         recyclerView = view.findViewById(R.id.recycler_update);
         chapterSetUp();
 
@@ -78,7 +85,7 @@ public class UpdateFragment extends Fragment {
 
     private void chapterSetUp() {
         if (recyclerView != null) {
-            UpdatersAdapter updatersAdapter = new UpdatersAdapter(updates, getActivity());
+            UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(updates, getActivity());
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(updatersAdapter);
             recyclerView.post(updatersAdapter::notifyDataSetChanged);

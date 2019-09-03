@@ -37,11 +37,11 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  *
  * @author github.com/doomsdayrs
  */
-public class UpdatesPager extends FragmentPagerAdapter {
+public class UpdatedDaysPager extends FragmentPagerAdapter {
 
     private final ArrayList<UpdateFragment> fragments;
 
-    public UpdatesPager(@NonNull FragmentManager fm, ArrayList<UpdateFragment> fragments) {
+    public UpdatedDaysPager(@NonNull FragmentManager fm, ArrayList<UpdateFragment> fragments) {
         super(fm);
         this.fragments = fragments;
     }

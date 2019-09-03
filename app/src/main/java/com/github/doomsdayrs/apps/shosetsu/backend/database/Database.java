@@ -886,6 +886,24 @@ public class Database {
             }
         }
 
+
+        /**
+         * Gets count on day
+         *
+         * @param date1 first
+         * @param date2 second
+         */
+        public static int getCountBetween(long date1, long date2) throws Exception {
+            if (date2 <= date1)
+                throw new Exception("Dates implemented wrongly");
+            Cursor cursor = sqLiteDatabase.rawQuery(
+                    "SELECT " + Columns.TIME + " from " + Tables.UPDATES +
+                            " where " + Columns.TIME + "<" + date2 + " and " + Columns.TIME + ">=" + date1, null);
+            int c = cursor.getCount();
+            cursor.close();
+            return c;
+        }
+
         /**
          * Works as long as date2 is after date1
          *
@@ -895,7 +913,6 @@ public class Database {
         public static ArrayList<Update> getTimeBetween(long date1, long date2) throws Exception {
             if (date2 <= date1)
                 throw new Exception("Dates implemented wrongly");
-            Log.d("ULDates", "" + date1 + "-" + date2);
             Log.i("UL", "Getting dates between [" + new DateTime(date1) + "] and [" + new DateTime(date2) + "]");
             Cursor cursor = sqLiteDatabase.rawQuery(
                     "SELECT " + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.TIME + " from " + Tables.UPDATES +

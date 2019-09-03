@@ -38,7 +38,7 @@ import java.util.Objects;
  *
  * @author github.com/doomsdayrs
  */
-public class UpdateHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final ImageView moreOptions;
     public ImageView image;
     public NovelChapter novelChapter;
@@ -46,7 +46,7 @@ public class UpdateHolder extends RecyclerView.ViewHolder implements View.OnClic
     public TextView title;
     public PopupMenu popupMenu;
 
-    public UpdateHolder(@NonNull View itemView) {
+    public UpdatedChapterHolder(@NonNull View itemView) {
         super(itemView);
         moreOptions = itemView.findViewById(R.id.more_options);
         downloadTag = itemView.findViewById(R.id.recycler_novel_chapter_download);
