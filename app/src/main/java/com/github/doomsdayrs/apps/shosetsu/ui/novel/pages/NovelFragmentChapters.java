@@ -190,7 +190,7 @@ public class NovelFragmentChapters extends Fragment {
         resumeRead.setOnClickListener(view1 -> {
             int i = StaticNovel.lastRead();
             if (i != -1 && i != -2)
-                Utilities.openChapter(getActivity(), StaticNovel.novelChapters.get(i));
+                Utilities.openChapter(getActivity(), StaticNovel.novelChapters.get(i), StaticNovel.novelURL, StaticNovel.formatter.getID());
             else
                 Toast.makeText(getContext(), "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show();
         });

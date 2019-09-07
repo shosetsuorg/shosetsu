@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,11 +20,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Update_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.async.ChapterUpdater;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
@@ -215,9 +214,7 @@ public class LibraryFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.updater_now:
-                Toast.makeText(getContext(), "In the future this will start a checking of each novel in this library", Toast.LENGTH_SHORT).show();
-                ChapterUpdater chapterUpdater = new ChapterUpdater(libraryNovelCards, context);
-                chapterUpdater.execute();
+                Update_Manager.init(libraryNovelCards, context);
                 return true;
 
             case R.id.chapter_select_all:

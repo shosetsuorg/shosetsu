@@ -17,6 +17,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder;
  * ====================================================================
  */
 
+import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -25,12 +26,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter;
 
 /**
  * shosetsu
@@ -72,10 +76,14 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
                                 )
                         ).imageURL)
                 .into(image);
+        itemView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-
+        String nurl = Database.DatabaseChapter.getChapterNovelURL(novelChapter.link);
+        Formatter formatter = Database.DatabaseLibrary.getFormat(nurl);
+        if (formatter != null)
+            openChapter((Activity) itemView.getContext(), novelChapter, nurl, formatter.getID());
     }
 }

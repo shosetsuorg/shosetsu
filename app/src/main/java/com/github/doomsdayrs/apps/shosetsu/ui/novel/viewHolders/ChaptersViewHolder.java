@@ -165,6 +165,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View v) {
-        openChapter(novelFragmentChapters.getActivity(), novelChapter);
+        openChapter(novelFragmentChapters.getActivity(), novelChapter, StaticNovel.novelURL, StaticNovel.formatter.getID());
     }
 }
