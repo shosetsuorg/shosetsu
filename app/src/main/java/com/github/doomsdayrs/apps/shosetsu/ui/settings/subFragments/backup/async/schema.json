@@ -1,0 +1,56 @@
+{
+  "ignoreThis": "This is an example of schema for the backup, use it for reference. Strings should be serialized before being put into json, and each sub JSON should be serialized aswell",
+  "ignoreThis2": "the type of data is specified in KEY, remove them and the spaces for a proper key for actual JSON files",
+  "settings": {
+    "reader_text_color": "Settings.ReaderTextColor",
+    "reader_text_background_color": "Settings.ReaderTextBackgroundColor",
+    "shoDir": "Utilities.shoDir : Serialize this",
+    "paused": "Settings.downloadPaused",
+    "textSize": "Settings.ReaderTextSize",
+    "themeMode ": "Settings.themeMode",
+    "paraSpace": "Settings.paragraphSpacing",
+    "indent": "Settings.indentSize",
+    "tap_to_scroll ": " Utilities.isTapToScroll()"
+  },
+  "novels": [
+    {
+      "novelURL": "serialize",
+      "FORMATTER_ID": "",
+      "STATUS": "ignore",
+      "bookmarked": "",
+      "novelPage": {
+        "ignoreThis5": "TODO make method in base objects to convert themselves to json",
+        "title": "serialize",
+        "imageURL": "serialize",
+        "description": "serialize",
+        "genres": "serialize",
+        "authors": "serialize",
+        "status": "convert stati to an int and use a switch to set them",
+        "tags": [
+          "Array of serialized strings"
+        ],
+        "artists": [
+          "Array of serialized strings"
+        ],
+        "language": "serialize",
+        "maxChapterPage": "",
+        "novelChapters": "ignore this completely, it is not needed for most operations. This is just here to tell you to ignore this"
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "novelURL": "serialize",
+      "chapterURL": "serialize",
+      "SAVED_DATA": {
+        "": "This is some form of object, to decrypt on a later date"
+      },
+      "Y": "",
+      "READ_CHAPTER": "",
+      "BOOKMARKED": "",
+      "IS_SAVED": "",
+      "SAVE_PATH": "serialize"
+    }
+  ],
+  "ignoreThis3": "No longer transferring download data"
+}
