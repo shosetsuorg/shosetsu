@@ -1,15 +1,11 @@
 <AppUpdater>
 
     <update>
-        <latestVersion>0.1.0</latestVersion>
-        <latestVersionCode>20</latestVersionCode>
+        <latestVersion>0.1.0.1</latestVersion>
+        <latestVersionCode>21</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
         <releaseNotes>
-            - If you are from uptodown, use uptodown to get your update at https://shosetsu.en.uptodown.com/android
-            - Added update notifier
-            - Fixed bugs and made improvements
-            - New version code system
-            - Officially out of alpha
+            - Fixed chapter formatting
         </releaseNotes>
     </update>
 
