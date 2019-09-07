@@ -23,6 +23,7 @@ import java.io.Serializable;
  *
  * @author github.com/doomsdayrs
  */public class Base implements Serializable {
+    static final long serialVersionUID = 2000;
     public final String NOVEL_URL;
 
     public Base(String novel_url) {

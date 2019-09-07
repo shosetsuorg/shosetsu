@@ -24,6 +24,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseCha
  * @author github.com/doomsdayrs
  */
 public class DBChapter extends BaseChapter {
+    static final long serialVersionUID = 2002;
+
     public final String SAVED_DATA;
     public final int Y;
     public final int READ_CHAPTER;

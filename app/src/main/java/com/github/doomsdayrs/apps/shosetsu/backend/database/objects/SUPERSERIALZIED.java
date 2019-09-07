@@ -28,6 +28,9 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class SUPERSERIALZIED implements Serializable {
+    static final long serialVersionUID = 2006;
+
+
     public final ArrayList<DBNovel> libraries = new ArrayList<>();
     public final ArrayList<DBChapter> DBChapters = new ArrayList<>();
     public final ArrayList<DBDownloadItem> DBDownloadItems = new ArrayList<>();

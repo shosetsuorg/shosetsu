@@ -21,6 +21,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base;
  *
  * @author github.com/doomsdayrs
  */public class BaseChapter extends Base {
+    static final long serialVersionUID = 2001;
+
     public final String CHAPTER_URL;
 
     public BaseChapter(String novel_url, String chapter_url) {

@@ -29,6 +29,9 @@ import java.io.Serializable;
  * @author github.com/doomsdayrs
  */
 public class SettingsSerialized implements Serializable {
+    static final long serialVersionUID = 2005;
+
+
     public int reader_text_color = Settings.ReaderTextColor;
     public int reader_text_background_color = Settings.ReaderTextBackgroundColor;
     public String shoDir = Utilities.shoDir;

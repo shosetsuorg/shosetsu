@@ -23,6 +23,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseCha
  *
  * @author github.com/doomsdayrs
  */public class DBDownloadItem extends BaseChapter {
+    static final long serialVersionUID = 2003;
+
+
     public final int FORMATTER_ID;
     public final String NOVEL_NAME;
     public final String CHAPTER_NAME;

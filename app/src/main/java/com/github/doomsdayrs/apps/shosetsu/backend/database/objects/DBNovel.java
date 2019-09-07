@@ -24,6 +24,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.Base;
  * @author github.com/doomsdayrs
  */
 public class DBNovel extends Base {
+    static final long serialVersionUID = 2004;
+
+
     public final boolean BOOKMARKED;
 
     /**
