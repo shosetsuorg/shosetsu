@@ -14,10 +14,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:layout_height="wrap_content"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            layout="@layout/toolbar_main"/>
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBar"
+            app:elevation="4dp">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                app:elevation="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"/>
+        </com.google.android.material.appbar.AppBarLayout>
+
 
         <FrameLayout
             android:id="@+id/fragment_container"

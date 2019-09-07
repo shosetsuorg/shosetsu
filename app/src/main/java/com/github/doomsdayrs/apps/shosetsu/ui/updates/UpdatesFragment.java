@@ -1,21 +1,19 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates;
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * This file is part of Shosetsu.
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * Shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Shosetsu is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  * shosetsu
  * 15 / 07 / 2019
@@ -24,26 +22,41 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates;
  */
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
+import com.github.doomsdayrs.apps.shosetsu.backend.Update_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
+import com.google.android.material.tabs.TabLayout;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getCountBetween;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getStartingDay;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getTotalDays;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.trimDate;
 
 public class UpdatesFragment extends Fragment {
-    public static ArrayList<Update> updates = new ArrayList<>();
+
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     public UpdatesFragment() {
         setHasOptionsMenu(true);
@@ -53,7 +66,7 @@ public class UpdatesFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.updater_now:
-                Toast.makeText(getContext(), "In the future this will start a checking of each novel in this library", Toast.LENGTH_SHORT).show();
+                Update_Manager.init(Database.DatabaseLibrary.getLibrary(), getContext());
                 return true;
         }
 
@@ -68,9 +81,68 @@ public class UpdatesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Statics.mainActionBar.setTitle("Library");
         View view = inflater.inflate(R.layout.fragment_update, container, false);
+        Statics.mainActionBar.setTitle("Updates");
 
+        viewPager = view.findViewById(R.id.viewpager);
+        tabLayout = view.findViewById(R.id.tabLayout);
+
+        setViewPager();
         return view;
+    }
+
+    private void setViewPager() {
+        ArrayList<UpdateFragment> updatesFragments = new ArrayList<>();
+        int days = getTotalDays();
+        Log.d("TotalDays", String.valueOf(days));
+        long startTime = getStartingDay();
+        Log.d("StartingDay", new DateTime(startTime).toString());
+
+        for (int x = 0; x < days; x++) {
+            UpdateFragment updateFragment = new UpdateFragment();
+            updateFragment.setDate(startTime);
+            startTime += 86400000;
+            updatesFragments.add(updateFragment);
+        }
+        // Removing empty days
+
+        for (int x = updatesFragments.size() - 1; x > 0; x--) {
+            UpdateFragment updateFragment = updatesFragments.get(x);
+            try {
+                int c = getCountBetween(updateFragment.date, updateFragment.date + 86399999);
+                if (c <= 0) {
+                    updatesFragments.remove(x);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // TODAY
+        UpdateFragment updateFragment = new UpdateFragment();
+        updateFragment.setDate(trimDate(new DateTime(System.currentTimeMillis())).getMillis());
+        updatesFragments.add(updateFragment);
+
+        Collections.reverse(updatesFragments);
+
+        UpdatedDaysPager pagerAdapter = new UpdatedDaysPager(getChildFragmentManager(), updatesFragments);
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        tabLayout.post(() -> tabLayout.setupWithViewPager(viewPager));
     }
 }
