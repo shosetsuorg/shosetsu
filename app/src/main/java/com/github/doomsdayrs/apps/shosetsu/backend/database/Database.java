@@ -183,6 +183,14 @@ public class Database {
             newPage.tags = oldPage.tags;
             newPage.title = oldPage.title;
             return newPage;
+        } else if (c.equals(com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter.class)) {
+            System.out.println("WARNING, OLD CHAPTER DETECTED.");
+            com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter C = (com.github.Doomsdayrs.api.novelreader_core.services.core.objects.NovelChapter) object;
+            NovelChapter newC = new NovelChapter();
+            newC.chapterNum = C.chapterNum;
+            newC.link = C.link;
+            newC.release = C.release;
+            return newC;
         }
         return object;
     }

@@ -6,8 +6,8 @@ android {
         applicationId "com.github.doomsdayrs.apps.shosetsu"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 20
-        versionName "v0.1.0"
+        versionCode 21
+        versionName "v0.1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -60,6 +60,7 @@ dependencies {
 
     implementation 'com.github.Doomsdayrs:shosetsu-extensions:0.1.1'
     implementation 'com.github.Doomsdayrs:shosetsu-services:v0.1.1'
+
     implementation 'com.github.Doomsdayrs:novelreader-services:1.1.4'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
