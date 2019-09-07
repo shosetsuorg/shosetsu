@@ -166,20 +166,23 @@ public class Database {
                 newC.release = C.release;
                 newPage.novelChapters.add(newC);
             }
-            switch (oldPage.status) {
-                case PUBLISHING:
-                    newPage.status = Stati.PUBLISHING;
-                    break;
-                case COMPLETED:
-                    newPage.status = Stati.COMPLETED;
-                    break;
-                case PAUSED:
-                    newPage.status = Stati.PAUSED;
-                    break;
-                case UNKNOWN:
-                    newPage.status = Stati.UNKNOWN;
-                    break;
-            }
+            if (oldPage.status != null)
+                switch (oldPage.status) {
+                    case PUBLISHING:
+                        newPage.status = Stati.PUBLISHING;
+                        break;
+                    case COMPLETED:
+                        newPage.status = Stati.COMPLETED;
+                        break;
+                    case PAUSED:
+                        newPage.status = Stati.PAUSED;
+                        break;
+                    case UNKNOWN:
+                        newPage.status = Stati.UNKNOWN;
+                        break;
+                }
+            else newPage.status = Stati.UNKNOWN;
+
             newPage.tags = oldPage.tags;
             newPage.title = oldPage.title;
             return newPage;
