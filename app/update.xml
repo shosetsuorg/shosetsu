@@ -1,19 +1,15 @@
 <AppUpdater>
 
     <update>
-        <latestVersion>1.2.0-alpha</latestVersion>
-        <latestVersionCode>19</latestVersionCode>
+        <latestVersion>0.1.0</latestVersion>
+        <latestVersionCode>20</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
         <releaseNotes>
             - If you are from uptodown, use uptodown to get your update at https://shosetsu.en.uptodown.com/android
-            - Added resume button for chapters
-            - Formatter IDs now used more, intelligently.
-            - Fixed issues with reader by doing a rewrite
-            - New package structure for code
-            - RESTOREEEE feature, i think it works
-            - More featuressssss!
-            - General code improvements
-            - BestLightNovel contains japanese novels ;D
+            - Added update notifier
+            - Fixed bugs and made improvements
+            - New version code system
+            - Officially out of alpha
         </releaseNotes>
     </update>
 
