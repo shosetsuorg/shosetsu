@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
@@ -137,10 +138,10 @@ public class DBHelper extends SQLiteOpenHelper {
             try {
                 cursor.moveToNext();
                 String text = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString()));
-                cursor.close();
                 if (text != null) {
                     novelPages.add(new Holder(cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())), (NovelPage) deserialize(text)));
                 }
+                cursor.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -320,11 +321,14 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL(UPDATES_CREATE);
         }
         if (oldVersion < 8) {
+            Log.i("DBUpgrade", "Upgrading to version 8");
+
             // Updates chapters first, being most resource intensive
             ArrayList<Holder> holders = getPages(db);
             if (holders != null) {
                 for (Holder holder : holders) {
                     try {
+                        Log.i("Processing", holder.novelURL);
                         updateNovelData(db, holder.novelURL, holder.novelPage);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -334,6 +338,7 @@ public class DBHelper extends SQLiteOpenHelper {
             ArrayList<NovelChapter> novelChapters = getChapters(db);
             if (novelChapters != null) {
                 for (NovelChapter novelChapter : novelChapters) {
+                    Log.i("Processing", novelChapter.link);
                     try {
                         updateChapterData(db, novelChapter.link, novelChapter);
                     } catch (Exception e) {
