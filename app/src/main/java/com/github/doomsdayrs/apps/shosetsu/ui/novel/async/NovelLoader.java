@@ -173,7 +173,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
                 try {
                     Database.DatabaseLibrary.updateData(StaticNovel.novelURL, StaticNovel.novelPage);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

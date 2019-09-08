@@ -5,8 +5,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeOBJECT;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.deserialize;
 
 /*
  * This file is part of Shosetsu.
@@ -93,7 +102,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 7);
+        super(context, DB_NAME, null, 8);
     }
 
 
@@ -108,6 +117,56 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DOWNLOADS_CREATE);
         db.execSQL(CHAPTERS_CREATE);
         db.execSQL(UPDATES_CREATE);
+    }
+
+    private static void updateNovelData(SQLiteDatabase sqLiteDatabase, @NotNull String novelURL, @NotNull NovelPage novelPage) throws Exception {
+        sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.NOVEL_PAGE + "='" + serializeOBJECT(novelPage) + "' where " + Columns.NOVEL_URL + "='" + novelURL + "'");
+    }
+
+    private static void updateChapterData(SQLiteDatabase sqLiteDatabase, @NotNull String chapterURL, @NotNull NovelChapter novelChapter) throws Exception {
+        sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVED_DATA + "='" + serializeOBJECT(novelChapter) + "' where " + Columns.CHAPTER_URL + "='" + chapterURL + "'");
+    }
+
+    private static ArrayList<Holder> getPages(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.NOVEL_PAGE + "," + Columns.NOVEL_URL + " from " + Tables.NOVELS, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return null;
+        } else {
+            ArrayList<Holder> novelPages = new ArrayList<>();
+            try {
+                cursor.moveToNext();
+                String text = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString()));
+                cursor.close();
+                if (text != null) {
+                    novelPages.add(new Holder(cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())), (NovelPage) deserialize(text)));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return novelPages;
+        }
+    }
+
+    private static ArrayList<NovelChapter> getChapters(SQLiteDatabase sqLiteDatabase) {
+        Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return null;
+        } else {
+            ArrayList<NovelChapter> novelChapters = new ArrayList<>();
+            try {
+                cursor.moveToNext();
+                String text = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
+                cursor.close();
+                if (text != null) {
+                    novelChapters.add((NovelChapter) deserialize(text));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return novelChapters;
+        }
     }
 
     /**
@@ -260,5 +319,39 @@ public class DBHelper extends SQLiteOpenHelper {
         if (oldVersion < 7) {
             db.execSQL(UPDATES_CREATE);
         }
+        if (oldVersion < 8) {
+            // Updates chapters first, being most resource intensive
+            ArrayList<Holder> holders = getPages(db);
+            if (holders != null) {
+                for (Holder holder : holders) {
+                    try {
+                        updateNovelData(db, holder.novelURL, holder.novelPage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            ArrayList<NovelChapter> novelChapters = getChapters(db);
+            if (novelChapters != null) {
+                for (NovelChapter novelChapter : novelChapters) {
+                    try {
+                        updateChapterData(db, novelChapter.link, novelChapter);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
+
+    private static class Holder {
+        final String novelURL;
+        final NovelPage novelPage;
+
+        Holder(String novelURL, NovelPage novelPage) {
+            this.novelURL = novelURL;
+            this.novelPage = novelPage;
+        }
+    }
+
 }
