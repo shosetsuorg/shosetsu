@@ -136,10 +136,11 @@ public class DBHelper extends SQLiteOpenHelper {
         } else {
             ArrayList<Holder> novelPages = new ArrayList<>();
             try {
-                cursor.moveToNext();
-                String text = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString()));
-                if (text != null) {
-                    novelPages.add(new Holder(cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())), (NovelPage) deserialize(text)));
+                while (cursor.moveToNext()) {
+                    String text = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString()));
+                    if (text != null) {
+                        novelPages.add(new Holder(cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())), (NovelPage) deserialize(text)));
+                    }
                 }
                 cursor.close();
             } catch (Exception e) {
@@ -157,12 +158,13 @@ public class DBHelper extends SQLiteOpenHelper {
         } else {
             ArrayList<NovelChapter> novelChapters = new ArrayList<>();
             try {
-                cursor.moveToNext();
-                String text = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
-                cursor.close();
-                if (text != null) {
-                    novelChapters.add((NovelChapter) deserialize(text));
+                while (cursor.moveToNext()) {
+                    String text = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
+                    if (text != null) {
+                        novelChapters.add((NovelChapter) deserialize(text));
+                    }
                 }
+                cursor.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
