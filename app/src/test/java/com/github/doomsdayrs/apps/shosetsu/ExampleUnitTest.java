@@ -1,7 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu;
 
-import org.joda.time.DateTime;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+
 import org.junit.Test;
+
+import java.io.IOException;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -10,30 +13,14 @@ import org.junit.Test;
  */
 public class ExampleUnitTest {
 
-
-    public static void format(DateTime dateTime) {
-        long time = dateTime.getMillis();
-
-        time -= dateTime.getHourOfDay();
-        time -= dateTime.getMinuteOfHour();
-        time -= dateTime.getSecondOfMinute();
-        time -= dateTime.getMillisOfSecond();
-
-        System.out.println("Formatted TIME " + time);
-        System.out.println("Formatted DATETIME " + new DateTime(time));
-
-    }
-
     @Test
-    public void date() {
-        long time = System.currentTimeMillis();
-        System.out.println("Raw TIME " + time);
-
-        DateTime dateTime = new DateTime(time);
-        System.out.println("Raw DateTime " + dateTime);
-
-        int divided = (int) (time / 86400);
-        System.out.println("Days since the beginning of TIME: " + divided);
-        format(dateTime);
+    public void format() {
+        try {
+            System.out.println((String) Database.deserialize("U3RyaW5n"));
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+
+
 }
