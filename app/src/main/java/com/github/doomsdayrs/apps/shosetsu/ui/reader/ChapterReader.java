@@ -70,6 +70,7 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.getNextCh
 public class ChapterReader extends AppCompatActivity {
     public boolean ready = false;
 
+
     public ScrollView scrollView;
     public TextView textView;
     public ProgressBar progressBar;
