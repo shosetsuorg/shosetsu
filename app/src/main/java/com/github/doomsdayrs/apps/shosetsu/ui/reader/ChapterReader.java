@@ -61,6 +61,9 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.getNextCh
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 9 / June / 2019
  *
@@ -527,10 +530,16 @@ public class ChapterReader extends AppCompatActivity {
      * What to do when scroll hits bottom
      */
     public void bottom() {
+        int total = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
         if (ready)
-            if (scrollView.canScrollVertically(1)) {
+            if ((scrollView.getScrollY() / (float) total) < .99) {
                 int y = scrollView.getScrollY();
                 if (y % 5 == 0) {
+                    Log.d("YMAX", String.valueOf(total));
+                    Log.d("YC", String.valueOf(y));
+                    Log.d("YD", String.valueOf((scrollView.getScrollY() / (float) total)));
+                    Log.d("TY", String.valueOf(textView.getScrollY()));
+
                     if (chapterURL != null && Database.DatabaseChapter.getStatus(chapterURL) != Status.READ)
                         Database.DatabaseChapter.updateY(chapterURL, y);
                 }
