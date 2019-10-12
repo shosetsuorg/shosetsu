@@ -69,6 +69,8 @@ public class Database {
      * Tables to work with
      */
     public enum Tables {
+        NOVEL_IDENTIFICATION("novel_identification"),
+        CHAPTER_IDENTIFICATION("chapter_identification"),
         NOVELS("novels"),
         UPDATES("updates"),
         DOWNLOADS("downloads"),
@@ -92,11 +94,12 @@ public class Database {
      * Columns to work with
      */
     public enum Columns {
-        MAX_PAGE("maxPage"),
+        URL("url"),
+        ID("id"),
         CHAPTER_URL("chapterURL"),
         NOVEL_URL("novelURL"),
         NOVEL_PAGE("novelPage"),
-        SAVED_DATA("savedData"),
+        NOVEL_CHAPTER("novel_chaper"),
         FORMATTER_ID("formatterID"),
         READ_CHAPTER("read"),
         Y("y"),
@@ -463,7 +466,7 @@ public class Database {
                 sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS + "(" +
                         Columns.NOVEL_URL + "," +
                         Columns.CHAPTER_URL + "," +
-                        Columns.SAVED_DATA + "," +
+                        Columns.NOVEL_CHAPTER + "," +
                         Columns.Y + "," +
                         Columns.READ_CHAPTER + "," +
                         Columns.BOOKMARKED + "," +
@@ -485,7 +488,7 @@ public class Database {
          * @return List of chapters saved of novel
          */
         public static List<NovelChapter> getChapters(String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.NOVEL_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.NOVEL_URL + " ='" + novelURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -493,7 +496,7 @@ public class Database {
                 ArrayList<NovelChapter> novelChapters = new ArrayList<>();
                 while (cursor.moveToNext()) {
                     try {
-                        String text = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
+                        String text = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_CHAPTER.toString()));
                         if (text != null) {
                             novelChapters.add(deserializeNovelChapterJSON(text));
                         }
@@ -507,7 +510,7 @@ public class Database {
         }
 
         public static NovelChapter getChapter(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.SAVED_DATA + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.NOVEL_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.CHAPTER_URL + " ='" + chapterURL + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -515,7 +518,7 @@ public class Database {
                 NovelChapter novelChapters = null;
                 try {
                     cursor.moveToNext();
-                    String text = cursor.getString(cursor.getColumnIndex(Columns.SAVED_DATA.toString()));
+                    String text = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_CHAPTER.toString()));
                     cursor.close();
                     if (text != null) {
                         novelChapters = deserializeNovelChapterJSON(text);

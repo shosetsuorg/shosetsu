@@ -32,13 +32,25 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
 
+    private static final String NOVEL_IDENTIFICATION_CREATE = "create table if not exists " + Tables.NOVEL_IDENTIFICATION + "(" +
+            Columns.URL + " text not null primary key," +
+            Columns.ID + " integer not null autoincrement," +
+            Columns.FORMATTER_ID + " integer not null" +
+            ")";
+
+    private static final String CHAPTER_IDENTIFICATION_CREATE = "create table if not exists " + Tables.CHAPTER_IDENTIFICATION + "(" +
+            Columns.URL + " text not null primary key," +
+            Columns.ID + " integer not null autoincrement," +
+            Columns.FORMATTER_ID + " integer not null" +
+            ")";
+
     private static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
             // Novel URL this chapter belongs to
             Columns.NOVEL_URL + " text not null," +
             // The chapter chapterURL
             Columns.CHAPTER_URL + " text not null unique," +
 
-            Columns.SAVED_DATA + " text," +
+            Columns.NOVEL_CHAPTER + " text," +
 
             // Saved Data
             // > Scroll position, either 0 for top, or X for the position

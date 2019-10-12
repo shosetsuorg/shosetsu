@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.objects;
 
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseChapter;
 
 /*
@@ -29,5 +30,6 @@ public class Update extends BaseChapter {
     public Update(String novel_url, String chapter_url, long time) {
         super(novel_url, chapter_url);
         this.time = time;
+        NovelChapter novelChapter;
     }
 }
