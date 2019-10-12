@@ -23,11 +23,12 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.github.doomsdayrs.apps.shosetsu.backend.Serialize;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBChapter;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBDownloadItem;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBNovel;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.SUPERSERIALZIED;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -66,66 +67,85 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-            final SUPERSERIALZIED SUPER_SERIALIZED = new SUPERSERIALZIED();
+            final JSONObject BACKUP = new JSONObject();
 
             Log.i("Progress", "Backing up novels");
-            // Library backup
             {
+                final JSONArray NOVELS = new JSONArray();
                 Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Database.Tables.NOVELS + " where " + Database.Columns.BOOKMARKED + "=1", null);
                 if (!(cursor.getCount() <= 0))
                     while (cursor.moveToNext()) {
+
+                        // Gets the novelURL
                         String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
                         Log.i("NovelBack", nurl);
-                        boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
-                        String npage = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString()));
-                        int formatter_id = cursor.getInt(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString()));
-                        int status = cursor.getInt(cursor.getColumnIndex(Database.Columns.STATUS.toString()));
 
-                        SUPER_SERIALIZED.libraries.add(new DBNovel(nurl, bookmarked, npage, formatter_id, status));
+                        // Gets if it is in library, if not then it skips
+                        boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
+                        Log.i("NovelBack", "Valid?: " + bookmarked);
+                        if (bookmarked) {
+                            //SHOULD BE IN JSON ALREADY
+                            JSONObject npage = new JSONObject(cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())));
+                            npage.put("novelChapters", new JSONArray());
+
+                            // ID of formatter
+                            int formatter_id = cursor.getInt(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString()));
+
+                            //IGNORED: int status = cursor.getInt(cursor.getColumnIndex(Database.Columns.STATUS.toString()));
+
+                            JSONObject novel = new JSONObject();
+                            novel.put("novelURL", Database.serialize(nurl));
+                            novel.put("bookmarked", true);
+                            novel.put("FORMATTER_ID", formatter_id);
+                            novel.put("novelPage", npage);
+                            NOVELS.put(novel);
+                        }
                     }
+                BACKUP.put("novels", NOVELS);
                 cursor.close();
             }
 
-            // TODO figure out how to prevent non library chapters from being saved, lowering size of backup
             Log.i("Progress", "Backing up Chapters");
-            // Chapter backup
             {
+                final JSONArray CHAPTERS = new JSONArray();
                 Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Database.Tables.CHAPTERS, null);
                 if (!(cursor.getCount() <= 0))
                     while (cursor.moveToNext()) {
                         String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
-                        String curl = cursor.getString(cursor.getColumnIndex(Database.Columns.CHAPTER_URL.toString()));
-                        // very dirty logger
-                        //Log.i("ChapterBack", curl);
-                        String saved_data = cursor.getString(cursor.getColumnIndex(Database.Columns.SAVED_DATA.toString()));
-                        int y = cursor.getInt(cursor.getColumnIndex(Database.Columns.Y.toString()));
-                        int read_chapter = cursor.getInt(cursor.getColumnIndex(Database.Columns.READ_CHAPTER.toString()));
-                        boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
-                        boolean is_saved = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.IS_SAVED.toString())));
-                        String path = cursor.getString(cursor.getColumnIndex(Database.Columns.SAVED_DATA.toString()));
 
-                        SUPER_SERIALIZED.DBChapters.add(new DBChapter(nurl, curl, saved_data, y, read_chapter, bookmarked, is_saved, path));
+                        boolean inLibrary = Database.DatabaseLibrary.isBookmarked(nurl);
+                        if (inLibrary) {
+                            String curl = cursor.getString(cursor.getColumnIndex(Database.Columns.CHAPTER_URL.toString()));
+                            // very dirty logger
+                            //Log.i("ChapterBack", curl);
+
+                            String saved_data = cursor.getString(cursor.getColumnIndex(Database.Columns.SAVED_DATA.toString()));
+                            int y = cursor.getInt(cursor.getColumnIndex(Database.Columns.Y.toString()));
+                            int read_chapter = cursor.getInt(cursor.getColumnIndex(Database.Columns.READ_CHAPTER.toString()));
+                            boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
+                            boolean is_saved = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.IS_SAVED.toString())));
+                            String path = cursor.getString(cursor.getColumnIndex(Database.Columns.SAVED_DATA.toString()));
+
+                            JSONObject chapter = new JSONObject();
+                            chapter.put("novelURL", Database.serialize(nurl));
+                            chapter.put("chapterURL", Database.serialize(curl));
+
+                            //TODO Figure out where i use this
+                            //chapter.put("SAVED_DATA",);
+
+                            chapter.put("Y", y);
+                            chapter.put("READ_CHAPTER", read_chapter);
+                            chapter.put("BOOKMARKED", bookmarked);
+                            chapter.put("IS_SAVED", is_saved);
+                            chapter.put("SAVE_PATH", Database.serialize(path));
+                            CHAPTERS.put(chapter);
+                        }
                     }
+                BACKUP.put("chapters", CHAPTERS);
                 cursor.close();
             }
 
-            Log.i("Progress", "Backing up Downloads");
-            // Downloads backup
-            {
-                Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Database.Tables.DOWNLOADS, null);
-                if (!(cursor.getCount() <= 0))
-                    while (cursor.moveToNext()) {
-                        String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
-                        String curl = cursor.getString(cursor.getColumnIndex(Database.Columns.CHAPTER_URL.toString()));
-                        String nname = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_NAME.toString()));
-                        String cname = cursor.getString(cursor.getColumnIndex(Database.Columns.CHAPTER_NAME.toString()));
-                        int formatter_id = cursor.getInt(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString()));
-                        boolean paused = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.PAUSED.toString())));
-
-                        SUPER_SERIALIZED.DBDownloadItems.add(new DBDownloadItem(nurl, curl, formatter_id, nname, cname, paused));
-                    }
-                cursor.close();
-            }
+            BACKUP.put("settings", Serialize.getSettingsInJSON());
 
             Log.i("Progress", "Writing");
             File folder = new File(shoDir + "/backup/");
@@ -136,9 +156,9 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
             FileOutputStream fileOutputStream = new FileOutputStream(
                     (folder.getPath() + "/backup-" + (new Date().toString()) + ".shoback")
             );
-            fileOutputStream.write(SUPER_SERIALIZED.serialize().getBytes());
+            fileOutputStream.write(BACKUP.toString().getBytes());
             fileOutputStream.close();
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
         return null;

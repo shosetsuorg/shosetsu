@@ -3,6 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.deserialize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.serialize;
 
@@ -35,6 +38,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.seri
 public class Serialize {
     private static final String[] NOVELPAGEKEYS = {"title", "imageURL", "description", "genres", "authors", "status", "tags", "artists", "language", "maxChapterPage", "novelChapters"};
     private static final String[] NOVELCHAPTERKEYS = {"release", "chapterNum", "link"};
+
     private static boolean debug = false;
 
     public static void toggleDebug() {
@@ -119,6 +123,13 @@ public class Serialize {
         } else throw new Exception("Illegal class");
     }
 
+    /**
+     * Deserializes a NovelPage from JSON
+     *
+     * @param serial SERIAL String
+     * @return NovelPage
+     * @throws Exception If something goes wrong
+     */
     public static NovelPage deserializeNovelPageJSON(String serial) throws Exception {
         NovelPage novelPage = new NovelPage();
         JSONObject jsonObject = new JSONObject((String) deserialize(serial));
@@ -218,6 +229,13 @@ public class Serialize {
         return novelPage;
     }
 
+    /**
+     * Deserializes a NovelChapter from JSON
+     *
+     * @param serial SERIAL String
+     * @return NovelChapter
+     * @throws Exception If something goes wrong
+     */
     public static NovelChapter deserializeNovelChapterJSON(String serial) throws Exception {
         NovelChapter novelChapter = new NovelChapter();
         JSONObject jsonObject = new JSONObject((String) deserialize(serial));
@@ -247,6 +265,14 @@ public class Serialize {
         return novelChapter;
     }
 
+    /**
+     * Converts a NovelChapter TO json
+     *
+     * @param novelChapter NovelChapter to convert
+     * @return JSON version of NovelChapter
+     * @throws IOException   EXCEPTION
+     * @throws JSONException EXCEPTION
+     */
     private static JSONObject novelChapterToJSON(NovelChapter novelChapter) throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("release", serialize(novelChapter.release));
@@ -255,4 +281,24 @@ public class Serialize {
         return jsonObject;
     }
 
+    /**
+     * Returns current settings in JSON format, Follows schema.json
+     *
+     * @return JSON of settings
+     * @throws JSONException EXCEPTION
+     * @throws IOException   EXCEPTION IN SERIALIZING
+     */
+    public static JSONObject getSettingsInJSON() throws JSONException, IOException {
+        JSONObject settings = new JSONObject();
+        settings.put("reader_text_color", Settings.ReaderTextColor);
+        settings.put("reader_text_background_color", Settings.ReaderTextBackgroundColor);
+        settings.put("shoDir", Database.serialize(shoDir));
+        settings.put("paused", Settings.downloadPaused);
+        settings.put("textSize", Settings.ReaderTextSize);
+        settings.put("themeMode", Settings.themeMode);
+        settings.put("paraSpace", Settings.paragraphSpacing);
+        settings.put("indent", Settings.indentSize);
+        settings.put("tap_to_scroll", Utilities.isTapToScroll());
+        return settings;
+    }
 }
