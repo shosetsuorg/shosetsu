@@ -8,7 +8,6 @@ import android.util.Log;
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
@@ -477,28 +476,6 @@ public class Database {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        /**
-         * Adds chapter to database
-         *
-         * @param novelURL novelURL
-         * @param chapter  serialized chapterData
-         */
-        public static void addToChapters(String novelURL, String chapterURL, String chapter) {
-            sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS + "(" +
-                    Columns.NOVEL_URL + "," +
-                    Columns.CHAPTER_URL + "," +
-                    Columns.SAVED_DATA + "," +
-                    Columns.Y + "," +
-                    Columns.READ_CHAPTER + "," +
-                    Columns.BOOKMARKED + "," +
-                    Columns.IS_SAVED + ") " +
-                    "values ('" +
-                    novelURL + "','" +
-                    chapterURL + "','" +
-                    chapter + "'," +
-                    0 + "," + 0 + "," + 0 + "," + 0 + ")");
         }
 
         /**
