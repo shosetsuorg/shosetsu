@@ -116,7 +116,7 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
                     }
                     if (C) {
                         migrationView.pageCount.post(() -> migrationView.pageCount.setText(""));
-                        Database.DatabaseLibrary.migrateNovel(strings[0], strings[1], formatter.getID(), novelPage, Database.DatabaseLibrary.getStatus(strings[0]).getA());
+                        Database.DatabaseNovels.migrateNovel(strings[0], strings[1], formatter.getID(), novelPage, Database.DatabaseNovels.getStatus(strings[0]).getA());
                     }
                 } catch (IOException e) {
                     if (e.getMessage() != null)

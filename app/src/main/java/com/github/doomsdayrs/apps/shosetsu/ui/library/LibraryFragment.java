@@ -84,7 +84,7 @@ public class LibraryFragment extends Fragment {
     }
 
     private void readFromDB() {
-        libraryNovelCards = Database.DatabaseLibrary.getLibrary();
+        libraryNovelCards = Database.DatabaseNovels.getLibrary();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             libraryNovelCards.sort((novelCard, t1) -> novelCard.title.compareTo(t1.title));
         } else {
@@ -145,7 +145,7 @@ public class LibraryFragment extends Fragment {
         Log.d("Library", "Resumed");
         if (LibraryFragment.changedData) {
             Log.d("Library", "Updating data");
-            libraryNovelCards = Database.DatabaseLibrary.getLibrary();
+            libraryNovelCards = Database.DatabaseNovels.getLibrary();
             changedData = !changedData;
         }
         libraryNovelCardsAdapter.notifyDataSetChanged();
@@ -232,7 +232,7 @@ public class LibraryFragment extends Fragment {
 
             case R.id.remove_from_library:
                 for (NovelCard novelCard : selectedNovels) {
-                    Database.DatabaseLibrary.unBookmark(novelCard.novelURL);
+                    Database.DatabaseNovels.unBookmark(novelCard.novelURL);
                     libraryNovelCards.remove(novelCard);
                 }
                 selectedNovels = new ArrayList<>();

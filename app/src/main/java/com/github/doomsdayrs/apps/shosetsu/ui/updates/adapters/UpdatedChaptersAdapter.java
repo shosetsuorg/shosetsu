@@ -83,14 +83,14 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
             String nURL = DatabaseChapter.getChapterNovelURL(updatedChapterHolder.novelChapter.link);
 
             if (nURL != null)
-                novelPage = Database.DatabaseLibrary.getNovelPage(nURL);
+                novelPage = Database.DatabaseNovels.getNovelPage(nURL);
 
             if (novelPage == null) {
                 Log.e("DatabaseError", "No such novel in DB");
                 System.exit(-1);
             }
 
-            Formatter formatter = Database.DatabaseLibrary.getFormat(nURL);
+            Formatter formatter = Database.DatabaseNovels.getFormat(nURL);
 
             if (novelPage != null)
                 switch (menuItem.getItemId()) {

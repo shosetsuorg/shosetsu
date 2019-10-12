@@ -95,8 +95,8 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
         try {
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
-            if (C && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
-                Database.DatabaseLibrary.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
+            if (C && !Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
+                Database.DatabaseNovels.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
             }
             for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
                 if (C && !Database.DatabaseChapter.inChapters(novelChapter.link))
@@ -170,9 +170,9 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         } else {
             assert novelFragmentMain != null;
             novelFragmentMain.swipeRefreshLayout.setRefreshing(false);
-            if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
+            if (Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
                 try {
-                    Database.DatabaseLibrary.updateData(StaticNovel.novelURL, StaticNovel.novelPage);
+                    Database.DatabaseNovels.updateData(StaticNovel.novelURL, StaticNovel.novelPage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

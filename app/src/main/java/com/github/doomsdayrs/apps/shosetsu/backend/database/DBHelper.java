@@ -33,57 +33,67 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     private static final String NOVEL_IDENTIFICATION_CREATE = "create table if not exists " + Tables.NOVEL_IDENTIFICATION + "(" +
-            Columns.URL + " text not null primary key," +
-            Columns.ID + " integer not null autoincrement," +
+            Columns.ID + " integer primary key autoincrement," +
+            Columns.URL + " text unique not null," +
             Columns.FORMATTER_ID + " integer not null" +
             ")";
 
     private static final String CHAPTER_IDENTIFICATION_CREATE = "create table if not exists " + Tables.CHAPTER_IDENTIFICATION + "(" +
-            Columns.URL + " text not null primary key," +
-            Columns.ID + " integer not null autoincrement," +
-            Columns.FORMATTER_ID + " integer not null" +
+            Columns.ID + " integer primary key autoincrement," +
+
+            // Refers to NOVEL
+            Columns.PARENT_ID + " integer not null," +
+            Columns.URL + " text unique not null" +
             ")";
 
+
     private static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
-            // Novel URL this chapter belongs to
-            Columns.NOVEL_URL + " text not null," +
-            // The chapter chapterURL
-            Columns.CHAPTER_URL + " text not null unique," +
+            // Refers to CHAPERID
+            Columns.PARENT_ID + " integer primary key," +
 
-            Columns.NOVEL_CHAPTER + " text," +
+            Columns.TITLE + " text," +
+            Columns.RELEASE_DATE + " text," +
 
-            // Saved Data
             // > Scroll position, either 0 for top, or X for the position
             Columns.Y + " integer not null," +
             // > Either 0 for none, or an incremented count (Status)
             Columns.READ_CHAPTER + " integer not null," +
             // > Either 0 for false or 1 for true.
-            Columns.BOOKMARKED + " integer not null," +
+            Columns.BOOKMARKED + " integer  not null," +
 
             // If 1 then true and SAVE_PATH has data, false otherwise
             Columns.IS_SAVED + " integer not null," +
-            Columns.SAVE_PATH + " text)";
+            Columns.SAVE_PATH + " text" +
+            ")";
 
     //TODO Figure out a legitimate way to structure all this data
 
     // Library that the user has saved their novels to
     private static final String NOVELS = "create TABLE if not exists " + Tables.NOVELS + " (" +
+            // Refers to NOVELID
+            Columns.PARENT_ID + " integer not null," +
             // If in the library
             Columns.BOOKMARKED + " integer not null," +
-            // URL of this novel
-            Columns.NOVEL_URL + " text not null unique, " +
-            // Saved DATA of the novel
-            Columns.NOVEL_PAGE + " text not null," +
-            // Formatter this novel comes from
-            Columns.FORMATTER_ID + " integer not null," +
-            Columns.STATUS + " integer not null" + ")";
+            Columns.READING_STATUS + " text," +
+
+            // This bulk is the data values
+            Columns.TITLE + " text," +
+            Columns.IMAGE_URL + " text," +
+            Columns.DESCRIPTION + " text," +
+            Columns.GENRES + " text," +
+            Columns.AUTHORS + " text," +
+            Columns.STATUS + " integer not null," +
+            Columns.TAGS + " text," +
+            Columns.ARTISTS + " text," +
+            Columns.LANGUAGE + " text," +
+            Columns.MAX_CHAPTER_PAGE + " integer" +
+            ")";
 
 
     // Watches download listing
     private static final String DOWNLOADS_CREATE = "create TABLE if not exists " + Tables.DOWNLOADS + "(" +
-            Columns.FORMATTER_ID + " integer not null," +
-            Columns.NOVEL_URL + " text not null," +
-            Columns.CHAPTER_URL + " text not null," +
+            // Refers to CHAPERID
+            Columns.PARENT_ID + " integer not null," +
 
             Columns.NOVEL_NAME + " text not null," +
             Columns.CHAPTER_NAME + " text not null," +
@@ -94,8 +104,8 @@ public class DBHelper extends SQLiteOpenHelper {
             Columns.PAUSED + " integer not null)";
 
     private static final String UPDATES_CREATE = "create table if not exists " + Tables.UPDATES + "(" +
-            Columns.NOVEL_URL + " text not null," +
-            Columns.CHAPTER_URL + " text not null unique," +
+            // Refers to CHAPERID
+            Columns.PARENT_ID + " integer not null," +
             Columns.TIME + " integer not null" + ")";
 
     /**
@@ -135,6 +145,9 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + Tables.NOVELS);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.DOWNLOADS);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.UPDATES);
+
+            db.execSQL(NOVEL_IDENTIFICATION_CREATE);
+            db.execSQL(CHAPTER_IDENTIFICATION_CREATE);
 
             db.execSQL(NOVELS);
             db.execSQL(DOWNLOADS_CREATE);

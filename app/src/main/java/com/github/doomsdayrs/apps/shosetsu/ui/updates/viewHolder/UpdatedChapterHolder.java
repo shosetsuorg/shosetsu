@@ -71,7 +71,7 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
         Picasso.get()
                 .load(
                         Objects.requireNonNull(
-                                Database.DatabaseLibrary.getNovel(
+                                Database.DatabaseNovels.getNovel(
                                         Database.DatabaseChapter.getChapterNovelURL(novelChapter.link)
                                 )
                         ).imageURL)
@@ -82,7 +82,7 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
     @Override
     public void onClick(View view) {
         String nurl = Database.DatabaseChapter.getChapterNovelURL(novelChapter.link);
-        Formatter formatter = Database.DatabaseLibrary.getFormat(nurl);
+        Formatter formatter = Database.DatabaseNovels.getFormat(nurl);
         if (formatter != null)
             openChapter((Activity) itemView.getContext(), novelChapter, nurl, formatter.getID());
     }

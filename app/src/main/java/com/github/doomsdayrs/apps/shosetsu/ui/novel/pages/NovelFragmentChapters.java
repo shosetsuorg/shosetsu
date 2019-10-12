@@ -205,7 +205,7 @@ public class NovelFragmentChapters extends Fragment {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-            if (Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
+            if (Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
                 StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(StaticNovel.novelURL);
                 if (StaticNovel.novelChapters != null && StaticNovel.novelChapters.size() != 0)
                     resumeRead.setVisibility(View.VISIBLE);

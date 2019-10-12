@@ -103,7 +103,7 @@ public class NovelFragment extends Fragment {
         //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
-            if (isOnline() && !Database.DatabaseLibrary.inLibrary(StaticNovel.novelURL)) {
+            if (isOnline() && !Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
                 setViewPager();
 
                 if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {
@@ -114,8 +114,8 @@ public class NovelFragment extends Fragment {
 
                 StaticNovel.novelLoader.execute(getActivity());
             } else {
-                StaticNovel.novelPage = Database.DatabaseLibrary.getNovelPage(StaticNovel.novelURL);
-                StaticNovel.status = Database.DatabaseLibrary.getStatus(StaticNovel.novelURL);
+                StaticNovel.novelPage = Database.DatabaseNovels.getNovelPage(StaticNovel.novelURL);
+                StaticNovel.status = Database.DatabaseNovels.getStatus(StaticNovel.novelURL);
                 if (StaticNovel.novelPage != null)
                     Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
                 setViewPager();
