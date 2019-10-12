@@ -29,21 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.SUPERSERIALZIED;
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
-import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.deserialize;
 
 /**
  * shosetsu
@@ -102,6 +89,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... voids) {
         File file = new File("" + file_path);
+        /*
         if (file.exists()) {
             try {
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
@@ -117,7 +105,6 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                 }
 
                 textView.post(() -> textView.setText(R.string.reading_file));
-                SUPERSERIALZIED superserialzied = (SUPERSERIALZIED) deserialize(string.toString());
                 progressBar.post(() -> progressBar.setMax(superserialzied.DBChapters.size() + superserialzied.libraries.size() + superserialzied.DBDownloadItems.size() + 1));
 
                 Log.i("Progress", "Restoring downloads");
@@ -223,6 +210,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                 e.printStackTrace();
             }
         }
+        */
         return false;
     }
 }
