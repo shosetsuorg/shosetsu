@@ -49,7 +49,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
             // Refers to CHAPERID
-            Columns.PARENT_ID + " integer primary key," +
+            Columns.ID + " integer primary key," +
+
+            // Refers to NOVELID
+            Columns.PARENT_ID + " integer not null," +
 
             Columns.TITLE + " text," +
             Columns.RELEASE_DATE + " text," +

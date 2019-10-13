@@ -94,7 +94,7 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                             //IGNORED: int status = cursor.getInt(cursor.getColumnIndex(Database.Columns.STATUS.toString()));
 
                             JSONObject novel = new JSONObject();
-                            novel.put("novelURL", Database.serialize(nurl));
+                            novel.put("novelURL", Database.serializeToString(nurl));
                             novel.put("bookmarked", true);
                             novel.put("FORMATTER_ID", formatter_id);
                             novel.put("novelPage", npage);
@@ -127,8 +127,8 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                             String path = cursor.getString(cursor.getColumnIndex(Database.Columns.SAVE_PATH.toString()));
 
                             JSONObject chapter = new JSONObject();
-                            chapter.put("novelURL", Database.serialize(nurl));
-                            chapter.put("chapterURL", Database.serialize(curl));
+                            chapter.put("novelURL", Database.serializeToString(nurl));
+                            chapter.put("chapterURL", Database.serializeToString(curl));
 
                             //TODO Figure out where i use this
                             //chapter.put("SAVED_DATA",);
@@ -137,7 +137,7 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                             chapter.put("READ_CHAPTER", read_chapter);
                             chapter.put("BOOKMARKED", bookmarked);
                             chapter.put("IS_SAVED", is_saved);
-                            chapter.put("SAVE_PATH", Database.serialize(path));
+                            chapter.put("SAVE_PATH", Database.serializeToString(path));
                             CHAPTERS.put(chapter);
                         }
                     }

@@ -100,7 +100,7 @@ public class NovelFragmentMain extends Fragment {
                 try {
                     ArrayList<NovelCard> novelCards = new ArrayList<>();
                     novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID()));
-                    intent.putExtra("selected", Database.serialize(novelCards));
+                    intent.putExtra("selected", Database.serializeToString(novelCards));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

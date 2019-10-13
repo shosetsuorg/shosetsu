@@ -242,7 +242,7 @@ public class LibraryFragment extends Fragment {
             case R.id.source_migrate:
                 Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
-                    intent.putExtra("selected", Database.serialize(selectedNovels));
+                    intent.putExtra("selected", Database.serializeToString(selectedNovels));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

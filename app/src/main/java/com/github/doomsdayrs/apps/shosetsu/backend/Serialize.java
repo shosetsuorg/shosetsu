@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.deserialize;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.serialize;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.deserializeString;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.serializeToString;
 
 /*
  * This file is part of shosetsu-services.
@@ -54,34 +54,34 @@ public class Serialize {
     public static String serializeOBJECT(Object object) throws Exception {
         if (object.getClass().equals(NovelChapter.class)) {
             NovelChapter novelChapter = (NovelChapter) object;
-            return serialize(novelChapterToJSON(novelChapter).toString());
+            return serializeToString(novelChapterToJSON(novelChapter).toString());
         } else if (object.getClass().equals(NovelPage.class)) {
             NovelPage novelPage = (NovelPage) object;
             JSONObject jsonObject = new JSONObject();
 
             if (novelPage.title != null)
-                jsonObject.put("title", serialize(novelPage.title));
+                jsonObject.put("title", serializeToString(novelPage.title));
             else jsonObject.put("title", "null");
 
             if (novelPage.imageURL != null)
-                jsonObject.put("imageURL", serialize(novelPage.imageURL));
+                jsonObject.put("imageURL", serializeToString(novelPage.imageURL));
             else jsonObject.put("imageURL", "null");
 
             if (novelPage.description != null)
-                jsonObject.put("description", serialize(novelPage.description));
+                jsonObject.put("description", serializeToString(novelPage.description));
             else jsonObject.put("description", "null");
 
             if (novelPage.genres != null) {
                 JSONArray jsonArray = new JSONArray();
                 for (String genre : novelPage.genres)
-                    jsonArray.put(serialize(genre));
+                    jsonArray.put(serializeToString(genre));
                 jsonObject.put("genres", jsonArray);
             } else jsonObject.put("genres", new JSONArray());
 
             if (novelPage.authors != null) {
                 JSONArray jsonArray = new JSONArray();
                 for (String author : novelPage.authors)
-                    jsonArray.put(serialize(author));
+                    jsonArray.put(serializeToString(author));
                 jsonObject.put("authors", jsonArray);
             } else jsonObject.put("authors", new JSONArray());
 
@@ -92,19 +92,19 @@ public class Serialize {
             if (novelPage.tags != null) {
                 JSONArray jsonArray = new JSONArray();
                 for (String tag : novelPage.tags)
-                    jsonArray.put(serialize(tag));
+                    jsonArray.put(serializeToString(tag));
                 jsonObject.put("tags", jsonArray);
             } else jsonObject.put("tags", new JSONArray());
 
             if (novelPage.artists != null) {
                 JSONArray jsonArray = new JSONArray();
                 for (String artist : novelPage.artists)
-                    jsonArray.put(serialize(artist));
+                    jsonArray.put(serializeToString(artist));
                 jsonObject.put("artists", jsonArray);
             } else jsonObject.put("artists", new JSONArray());
 
             if (novelPage.language != null) {
-                jsonObject.put("language", serialize(novelPage.language));
+                jsonObject.put("language", serializeToString(novelPage.language));
             } else jsonObject.put("language", "null");
 
             jsonObject.put("maxChapterPage", novelPage.maxChapterPage);
@@ -112,14 +112,14 @@ public class Serialize {
             if (novelPage.novelChapters != null) {
                 JSONArray jsonArray = new JSONArray();
                 for (NovelChapter novelChapter : novelPage.novelChapters)
-                    jsonArray.put(serialize(novelChapterToJSON(novelChapter).toString()));
+                    jsonArray.put(serializeToString(novelChapterToJSON(novelChapter).toString()));
                 jsonObject.put("novelChapters", jsonArray);
             } else jsonObject.put("novelChapters", new JSONArray());
 
             if (debug)
                 System.out.println("JSON to be serialized: " + jsonObject.toString());
 
-            return serialize(jsonObject.toString());
+            return serializeToString(jsonObject.toString());
         } else throw new Exception("Illegal class");
     }
 
@@ -132,7 +132,7 @@ public class Serialize {
      */
     public static NovelPage deserializeNovelPageJSON(String serial) throws Exception {
         NovelPage novelPage = new NovelPage();
-        JSONObject jsonObject = new JSONObject((String) deserialize(serial));
+        JSONObject jsonObject = new JSONObject((String) deserializeString(serial));
         if (debug)
             System.out.println("Deserialize-d json: " + jsonObject);
         for (String key : NOVELPAGEKEYS) {
@@ -169,7 +169,7 @@ public class Serialize {
                     String[] strings = new String[array.length()];
                     for (int x = 0; x < array.length(); x++) {
                         String s = array.getString(x);
-                        strings[x] = (String) deserialize(s);
+                        strings[x] = (String) deserializeString(s);
                     }
                     switch (key) {
                         case "genres":
@@ -199,7 +199,7 @@ public class Serialize {
                     if (!response.equals("null")) {
                         if (debug)
                             System.out.println("Serial response of novelChapter key [" + key + "]: " + response);
-                        response = (String) deserialize(response);
+                        response = (String) deserializeString(response);
                     }
                     switch (key) {
                         case "title":
@@ -238,12 +238,12 @@ public class Serialize {
      */
     public static NovelChapter deserializeNovelChapterJSON(String serial) throws Exception {
         NovelChapter novelChapter = new NovelChapter();
-        JSONObject jsonObject = new JSONObject((String) deserialize(serial));
+        JSONObject jsonObject = new JSONObject((String) deserializeString(serial));
         for (String key : NOVELCHAPTERKEYS) {
             if (!jsonObject.has(key))
                 throw new Exception("JSON is invalid due to missing key[" + key + "]");
 
-            String response = (String) deserialize(jsonObject.getString(key));
+            String response = (String) deserializeString(jsonObject.getString(key));
             switch (key) {
                 case "release":
                     if (response.equals("null"))
@@ -275,9 +275,9 @@ public class Serialize {
      */
     private static JSONObject novelChapterToJSON(NovelChapter novelChapter) throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("release", serialize(novelChapter.release));
-        jsonObject.put("chapterNum", serialize(novelChapter.chapterNum));
-        jsonObject.put("link", serialize(novelChapter.link));
+        jsonObject.put("release", serializeToString(novelChapter.release));
+        jsonObject.put("chapterNum", serializeToString(novelChapter.chapterNum));
+        jsonObject.put("link", serializeToString(novelChapter.link));
         return jsonObject;
     }
 
@@ -292,7 +292,7 @@ public class Serialize {
         JSONObject settings = new JSONObject();
         settings.put("reader_text_color", Settings.ReaderTextColor);
         settings.put("reader_text_background_color", Settings.ReaderTextBackgroundColor);
-        settings.put("shoDir", Database.serialize(shoDir));
+        settings.put("shoDir", Database.serializeToString(shoDir));
         settings.put("paused", Settings.downloadPaused);
         settings.put("textSize", Settings.ReaderTextSize);
         settings.put("themeMode", Settings.themeMode);

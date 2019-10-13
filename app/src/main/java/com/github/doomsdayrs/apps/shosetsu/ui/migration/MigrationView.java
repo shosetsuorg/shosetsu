@@ -103,7 +103,7 @@ public class MigrationView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         try {
-            novels = (ArrayList<NovelCard>) Database.deserialize(intent.getStringExtra("selected"));
+            novels = (ArrayList<NovelCard>) Database.deserializeString(intent.getStringExtra("selected"));
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
