@@ -31,6 +31,7 @@ import java.util.List;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.deserializeNovelPageJSON;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeOBJECT;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 
 /*
  * This file is part of Shosetsu.
@@ -167,6 +168,46 @@ public class Database {
         return object;
     }
 
+    /**
+     * Checks string before deserialization
+     * If null or empty, returns "". Else deserializes the string and returns
+     *
+     * @param string String to be checked
+     * @return Completed String
+     */
+    public static String checkStringDeserialize(String string) {
+        if (string == null || string.isEmpty()) {
+            return "";
+        } else {
+            try {
+                return (String) deserializeString(string);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Checks string before serialization
+     * If null or empty, returns "". Else serializes the string and returns
+     *
+     * @param string String to be checked
+     * @return Completed String
+     */
+    public static String checkStringSerialize(String string) {
+        if (string == null || string.isEmpty()) {
+            return "";
+        } else {
+            try {
+                return serializeToString(string);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
     public static class DatabaseIdentification {
 
         public static void addChapter(int novelID, String chapterURL) {
@@ -287,8 +328,37 @@ public class Database {
             }
             return null;
         }
-    }
 
+
+        /**
+         * Returns Formatter ID via Novel ID
+         *
+         * @param id Novel ID
+         * @return Formatter ID
+         */
+        public static int getFormatterIDFromNovelID(int id) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " = " + id + "", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+            } else {
+                cursor.moveToNext();
+                int ID = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+                cursor.close();
+                return ID;
+            }
+            return -1;
+        }
+
+        /**
+         * Returns Formatter ID via ChapterID, this simply compacts a longer line of methods into one.
+         *
+         * @param id Chapter ID
+         * @return Formatter ID
+         */
+        public static int getFormatterIDFromChapterID(int id) {
+            return getFormatterIDFromNovelID(getNovelIDFromChapterID(id));
+        }
+    }
 
     public static class DatabaseDownloads {
         /**
@@ -401,7 +471,7 @@ public class Database {
          * @return Count of chapters left to read
          */
         public static int getCountOfChaptersUnread(String novelURL) {
-            int novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelURL);
+            int novelID = getNovelIDFromNovelURL(novelURL);
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + "=" + novelID + "" + " and " + Columns.READ_CHAPTER + "!=" + Status.READ, null);
             int count = cursor.getCount();
             cursor.close();
@@ -585,30 +655,10 @@ public class Database {
          * @param novelChapter chapterURL
          */
         public static void addToChapters(String novelURL, NovelChapter novelChapter) {
-            DatabaseIdentification.addChapter(DatabaseIdentification.getNovelIDFromNovelURL(novelURL), novelChapter.link);
-            String title = novelChapter.chapterNum;
-            String release = novelChapter.chapterNum;
-            // Formats the strings
-            {
-                if (title == null) {
-                    title = "";
-                } else {
-                    try {
-                        title = serializeToString(title);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (release == null) {
-                    release = "";
-                } else {
-                    try {
-                        release = serializeToString(release);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            DatabaseIdentification.addChapter(getNovelIDFromNovelURL(novelURL), novelChapter.link);
+
+            String title = checkStringSerialize(novelChapter.chapterNum);
+            String release = checkStringSerialize(novelChapter.release);
 
             try {
                 sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS +
@@ -625,7 +675,7 @@ public class Database {
                         "values" +
                         "(" +
                         DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link) + "," +
-                        DatabaseIdentification.getNovelIDFromNovelURL(novelURL) + "," +
+                        getNovelIDFromNovelURL(novelURL) + "," +
                         title + "," +
                         release + "," +
                         0 + "," + 0 + "," + 0 + "," + 0 +
@@ -642,7 +692,7 @@ public class Database {
          * @return List of chapters saved of novel
          */
         public static List<NovelChapter> getChapters(String novelURL) {
-            int novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelURL);
+            int novelID = getNovelIDFromNovelURL(novelURL);
             Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
@@ -652,18 +702,11 @@ public class Database {
                 while (cursor.moveToNext()) {
                     try {
                         String url = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())));
-                        String text = cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()));
-                        if (!text.equals("")) {
-                            text = (String) deserializeString(text);
-                        }
-                        String release = cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString()));
-                        if (!release.equals("")) {
-                            release = (String) deserializeString(release);
-                        }
+
                         NovelChapter novelChapter = new NovelChapter();
-                        novelChapter.chapterNum = text;
+                        novelChapter.chapterNum = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
                         novelChapter.link = url;
-                        novelChapter.release = release;
+                        novelChapter.release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
                         novelChapters.add(novelChapter);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -682,20 +725,10 @@ public class Database {
             } else {
                 NovelChapter novelChapter = null;
                 try {
-                    String url = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())));
-                    String text = cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()));
-                    if (!text.equals("")) {
-                        text = (String) deserializeString(text);
-                    }
-                    String release = cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString()));
-                    if (!release.equals("")) {
-                        release = (String) deserializeString(release);
-                    }
-
                     novelChapter = new NovelChapter();
-                    novelChapter.chapterNum = text;
-                    novelChapter.link = url;
-                    novelChapter.release = release;
+                    novelChapter.chapterNum = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
+                    novelChapter.link = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())));
+                    novelChapter.release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -712,7 +745,7 @@ public class Database {
          * @param novelURL novelURL of the novel
          */
         public static void bookMark(@NotNull String novelURL) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.ID + "=" + DatabaseIdentification.getNovelIDFromNovelURL(novelURL));
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.ID + "=" + getNovelIDFromNovelURL(novelURL));
         }
 
         /**
@@ -722,11 +755,11 @@ public class Database {
          * @return if removed successfully
          */
         public static void unBookmark(@NotNull String novelURL) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.ID + "=" + DatabaseIdentification.getNovelIDFromNovelURL(novelURL));
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.ID + "=" + getNovelIDFromNovelURL(novelURL));
         }
 
         public static boolean isBookmarked(@NotNull String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.ID + "=" + DatabaseIdentification.getNovelIDFromNovelURL(novelURL), null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.ID + "=" + getNovelIDFromNovelURL(novelURL), null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
@@ -787,7 +820,7 @@ public class Database {
         public static ArrayList<NovelCard> getLibrary() {
             Log.d("DL", "Getting");
             Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
-                    new String[]{Columns.NOVEL_URL.toString(), Columns.FORMATTER_ID.toString(), Columns.NOVEL_PAGE.toString()},
+                    new String[]{Columns.PARENT_ID.toString(), Columns.TITLE.toString(), Columns.IMAGE_URL.toString()},
                     Columns.BOOKMARKED + "=1", null, null, null, null);
 
             ArrayList<NovelCard> novelCards = new ArrayList<>();
@@ -797,12 +830,12 @@ public class Database {
             } else {
                 while (cursor.moveToNext()) {
                     try {
-                        NovelPage novelPage = deserializeNovelPageJSON(cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString())));
+                        int parent = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
                         novelCards.add(new NovelCard(
-                                novelPage.title,
-                                cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())),
-                                novelPage.imageURL,
-                                cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
+                                checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
+                                DatabaseIdentification.getNovelURLfromNovelID(parent),
+                                checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString()))),
+                                DatabaseIdentification.getFormatterIDFromNovelID(parent)
                         ));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -815,9 +848,11 @@ public class Database {
 
         public static NovelCard getNovel(String novelURL) {
             Log.d("DL", "Getting");
+            int parent = getNovelIDFromNovelURL(novelURL);
+
             Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
-                    new String[]{Columns.NOVEL_URL.toString(), Columns.FORMATTER_ID.toString(), Columns.NOVEL_PAGE.toString()},
-                    Columns.BOOKMARKED + "=1 and " + Columns.NOVEL_URL + "='" + novelURL + "'", null, null, null, null);
+                    new String[]{Columns.PARENT_ID.toString(), Columns.TITLE.toString(), Columns.IMAGE_URL.toString()},
+                    Columns.BOOKMARKED + "=1 and " + Columns.PARENT_ID + "=" + parent, null, null, null, null);
 
             if (cursor.getCount() <= 0) {
                 cursor.close();
@@ -825,12 +860,11 @@ public class Database {
             } else {
                 cursor.moveToNext();
                 try {
-                    NovelPage novelPage = deserializeNovelPageJSON(cursor.getString(cursor.getColumnIndex(Columns.NOVEL_PAGE.toString())));
                     NovelCard novelCard = new NovelCard(
-                            novelPage.title,
-                            cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())),
-                            novelPage.imageURL,
-                            cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
+                            checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
+                            novelURL,
+                            checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString()))),
+                            DatabaseIdentification.getFormatterIDFromNovelID(parent)
                     );
                     cursor.close();
                     return novelCard;
@@ -870,7 +904,7 @@ public class Database {
         }
 
         public static Status getStatus(@NotNull String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.STATUS + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + " = '" + novelURL + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READING_STATUS + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + " =" + getNovelIDFromNovelURL(novelURL), null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return Status.UNREAD;
