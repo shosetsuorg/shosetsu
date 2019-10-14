@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.deserializeString;
@@ -65,6 +66,58 @@ public class Utilities {
         float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;
         return (int) (screenWidthDp / columnWidthDp + 0.5);
     }
+
+    /**
+     * Converts String Stati back into Stati
+     *
+     * @param s String title
+     * @return Stati
+     */
+    public static Stati convertStringToStati(String s) {
+        switch (s) {
+            case "Publishing":
+                return Stati.PUBLISHING;
+            case "Completed":
+                return Stati.COMPLETED;
+            case "Paused":
+                return Stati.PAUSED;
+            default:
+            case "Unknown":
+                return Stati.UNKNOWN;
+        }
+    }
+
+
+    /**
+     * Converts Array of Strings into a String
+     *
+     * @param a array of strings
+     * @return String Array
+     */
+    public static String convertArrayToString(String[] a) {
+        for (int x = 0; x < a.length; x++) {
+            a[x] = a[x].replace(",", ">,<");
+        }
+        return Arrays.toString(a);
+    }
+
+
+    /**
+     * Converts a String Array back into an Array of Strings
+     *
+     * @param s String array
+     * @return Array of Strings
+     */
+    public static String[] convertStringToArray(String s) {
+        String[] a = s.substring(1, s.length() - 1).split(", ");
+
+        for (int x = 0; x < a.length; x++) {
+            a[x] = a[x].replace(">,<", ",");
+        }
+
+        return a;
+    }
+
 
     // Preference objects
     public static SharedPreferences download;

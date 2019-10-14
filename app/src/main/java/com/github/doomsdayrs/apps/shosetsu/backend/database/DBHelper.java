@@ -85,7 +85,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Columns.DESCRIPTION + " text," +
             Columns.GENRES + " text," +
             Columns.AUTHORS + " text," +
-            Columns.STATUS + " integer not null," +
+            Columns.STATUS + " text not null," +
             Columns.TAGS + " text," +
             Columns.ARTISTS + " text," +
             Columns.LANGUAGE + " text," +
