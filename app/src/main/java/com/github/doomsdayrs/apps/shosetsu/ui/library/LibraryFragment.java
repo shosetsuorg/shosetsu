@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoOfColumns;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
 
 /*
  * This file is part of Shosetsu.
@@ -242,7 +243,7 @@ public class LibraryFragment extends Fragment {
             case R.id.source_migrate:
                 Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
-                    intent.putExtra("selected", Database.serializeToString(selectedNovels));
+                    intent.putExtra("selected", serializeToString(selectedNovels));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

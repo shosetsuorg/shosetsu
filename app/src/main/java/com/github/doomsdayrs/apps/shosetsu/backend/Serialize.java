@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.backend;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
 import org.json.JSONArray;
@@ -13,9 +12,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.deserializeString;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.deserializeString;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.serializeToString;
 
 /*
  * This file is part of shosetsu-services.
@@ -292,7 +291,7 @@ public class Serialize {
         JSONObject settings = new JSONObject();
         settings.put("reader_text_color", Settings.ReaderTextColor);
         settings.put("reader_text_background_color", Settings.ReaderTextBackgroundColor);
-        settings.put("shoDir", Database.serializeToString(shoDir));
+        settings.put("shoDir", serializeToString(shoDir));
         settings.put("paused", Settings.downloadPaused);
         settings.put("textSize", Settings.ReaderTextSize);
         settings.put("themeMode", Settings.themeMode);

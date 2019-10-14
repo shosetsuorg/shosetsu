@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -27,13 +28,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.deserializeString;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.serializeToString;
 
 /*
  * This file is part of Shosetsu.
@@ -66,6 +69,80 @@ public class Utilities {
         float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;
         return (int) (screenWidthDp / columnWidthDp + 0.5);
     }
+
+    /**
+     * Serialize object to string
+     *
+     * @param object object serialize
+     * @return Serialised string
+     * @throws IOException exception
+     */
+    public static String serializeToString(@NotNull Object object) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(object);
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        return "serial-" + Base64.encodeToString(bytes, Base64.NO_WRAP);
+    }
+
+    /**
+     * Deserialize a string to the object
+     *
+     * @param string serialized string
+     * @return Object from string
+     * @throws IOException            exception
+     * @throws ClassNotFoundException exception
+     */
+    public static Object deserializeString(@NotNull String string) throws IOException, ClassNotFoundException {
+        string = string.substring(7);
+        byte[] bytes = Base64.decode(string, Base64.NO_WRAP);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        Object object = objectInputStream.readObject();
+        return object;
+    }
+
+    /**
+     * Checks string before deserialization
+     * If null or empty, returns "". Else deserializes the string and returns
+     *
+     * @param string String to be checked
+     * @return Completed String
+     */
+    public static String checkStringDeserialize(String string) {
+        if (string == null || string.isEmpty()) {
+            return "";
+        } else {
+            try {
+                return (String) deserializeString(string);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Checks string before serialization
+     * If null or empty, returns "". Else serializes the string and returns
+     *
+     * @param string String to be checked
+     * @return Completed String
+     */
+    public static String checkStringSerialize(String string) {
+        if (string == null || string.isEmpty()) {
+            return "";
+        } else {
+            try {
+                return serializeToString(string);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+
 
     /**
      * Converts String Stati back into Stati

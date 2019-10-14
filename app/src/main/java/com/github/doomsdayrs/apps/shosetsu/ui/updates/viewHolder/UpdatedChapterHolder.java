@@ -72,7 +72,7 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
                 .load(
                         Objects.requireNonNull(
                                 Database.DatabaseNovels.getNovel(
-                                        Database.DatabaseChapter.getChapterNovelURL(novelChapter.link)
+                                        Database.DatabaseIdentification.getNovelURLFromChapterURL(novelChapter.link)
                                 )
                         ).imageURL)
                 .into(image);
@@ -81,7 +81,7 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
 
     @Override
     public void onClick(View view) {
-        String nurl = Database.DatabaseChapter.getChapterNovelURL(novelChapter.link);
+        String nurl = Database.DatabaseIdentification.getNovelURLFromChapterURL(novelChapter.link);
         Formatter formatter = Database.DatabaseNovels.getFormat(nurl);
         if (formatter != null)
             openChapter((Activity) itemView.getContext(), novelChapter, nurl, formatter.getID());

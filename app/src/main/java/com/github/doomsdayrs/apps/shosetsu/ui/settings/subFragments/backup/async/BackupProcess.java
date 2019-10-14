@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.intToBoolean;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase;
 
@@ -94,7 +95,7 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                             //IGNORED: int status = cursor.getInt(cursor.getColumnIndex(Database.Columns.STATUS.toString()));
 
                             JSONObject novel = new JSONObject();
-                            novel.put("novelURL", Database.serializeToString(nurl));
+                            novel.put("novelURL", serializeToString(nurl));
                             novel.put("bookmarked", true);
                             novel.put("FORMATTER_ID", formatter_id);
                             novel.put("novelPage", npage);
@@ -127,8 +128,8 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                             String path = cursor.getString(cursor.getColumnIndex(Database.Columns.SAVE_PATH.toString()));
 
                             JSONObject chapter = new JSONObject();
-                            chapter.put("novelURL", Database.serializeToString(nurl));
-                            chapter.put("chapterURL", Database.serializeToString(curl));
+                            chapter.put("novelURL", serializeToString(nurl));
+                            chapter.put("chapterURL", serializeToString(curl));
 
                             //TODO Figure out where i use this
                             //chapter.put("SAVED_DATA",);
@@ -137,7 +138,7 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                             chapter.put("READ_CHAPTER", read_chapter);
                             chapter.put("BOOKMARKED", bookmarked);
                             chapter.put("IS_SAVED", is_saved);
-                            chapter.put("SAVE_PATH", Database.serializeToString(path));
+                            chapter.put("SAVE_PATH", serializeToString(path));
                             CHAPTERS.put(chapter);
                         }
                     }

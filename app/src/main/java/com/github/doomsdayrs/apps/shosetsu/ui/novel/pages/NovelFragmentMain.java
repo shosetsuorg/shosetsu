@@ -36,6 +36,7 @@ import java.util.Arrays;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
 
 /*
  * This file is part of Shosetsu.
@@ -100,7 +101,7 @@ public class NovelFragmentMain extends Fragment {
                 try {
                     ArrayList<NovelCard> novelCards = new ArrayList<>();
                     novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID()));
-                    intent.putExtra("selected", Database.serializeToString(novelCards));
+                    intent.putExtra("selected", serializeToString(novelCards));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

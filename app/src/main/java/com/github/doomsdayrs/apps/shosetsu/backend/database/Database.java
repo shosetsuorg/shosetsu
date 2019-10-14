@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Base64;
 import android.util.Log;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
@@ -19,19 +18,18 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringDeserialize;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringSerialize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertArrayToString;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStringToArray;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStringToStati;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.deserializeString;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeOBJECT;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.addNovel;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
@@ -140,77 +138,6 @@ public class Database {
         }
     }
 
-    /**
-     * Serialize object to string
-     *
-     * @param object object serialize
-     * @return Serialised string
-     * @throws IOException exception
-     */
-    public static String serializeToString(@NotNull Object object) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(object);
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        return "serial-" + Base64.encodeToString(bytes, Base64.NO_WRAP);
-    }
-
-    /**
-     * Deserialize a string to the object
-     *
-     * @param string serialized string
-     * @return Object from string
-     * @throws IOException            exception
-     * @throws ClassNotFoundException exception
-     */
-    public static Object deserializeString(@NotNull String string) throws IOException, ClassNotFoundException {
-        string = string.substring(7);
-        byte[] bytes = Base64.decode(string, Base64.NO_WRAP);
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        Object object = objectInputStream.readObject();
-        return object;
-    }
-
-    /**
-     * Checks string before deserialization
-     * If null or empty, returns "". Else deserializes the string and returns
-     *
-     * @param string String to be checked
-     * @return Completed String
-     */
-    public static String checkStringDeserialize(String string) {
-        if (string == null || string.isEmpty()) {
-            return "";
-        } else {
-            try {
-                return (String) deserializeString(string);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return "";
-    }
-
-    /**
-     * Checks string before serialization
-     * If null or empty, returns "". Else serializes the string and returns
-     *
-     * @param string String to be checked
-     * @return Completed String
-     */
-    public static String checkStringSerialize(String string) {
-        if (string == null || string.isEmpty()) {
-            return "";
-        } else {
-            try {
-                return serializeToString(string);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return "";
-    }
 
     public static class DatabaseIdentification {
 
@@ -233,14 +160,14 @@ public class Database {
         public static void addNovel(String novelURL, int formatter) {
             try {
                 sqLiteDatabase.execSQL("insert into " + Tables.CHAPTER_IDENTIFICATION + "(" +
-                                Columns.URL + "," +
-                                Columns.FORMATTER_ID +
-                                ")" +
-                                "values" +
-                                "('" +
-                                novelURL +
-                                "'," +
-                                formatter
+                        Columns.URL + "," +
+                        Columns.FORMATTER_ID +
+                        ")" +
+                        "values" +
+                        "('" +
+                        novelURL +
+                        "'," +
+                        formatter +
                         ")");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -295,7 +222,7 @@ public class Database {
                 String serial = cursor.getString(cursor.getColumnIndex(Columns.URL.toString()));
                 cursor.close();
                 try {
-                    return (String) Database.deserializeString(serial);
+                    return (String) deserializeString(serial);
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -329,6 +256,14 @@ public class Database {
         }
 
         /**
+         * @param url Chapter url
+         * @return Novel URL
+         */
+        public static String getNovelURLFromChapterURL(String url) {
+            return getNovelURLFromChapterID(getChapterIDFromChapterURL(url));
+        }
+
+        /**
          * @param id NovelID
          * @return NovelURL
          */
@@ -341,7 +276,7 @@ public class Database {
                 String serial = cursor.getString(cursor.getColumnIndex(Columns.URL.toString()));
                 cursor.close();
                 try {
-                    return (String) Database.deserializeString(serial);
+                    return (String) deserializeString(serial);
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }

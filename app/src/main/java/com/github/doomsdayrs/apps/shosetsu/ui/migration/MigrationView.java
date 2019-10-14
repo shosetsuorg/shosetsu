@@ -38,7 +38,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingMapAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigrationViewCatalogueAdapter;
@@ -50,6 +49,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.deserializeString;
 
 public class MigrationView extends AppCompatActivity {
     Transfer t;
@@ -103,7 +104,7 @@ public class MigrationView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         try {
-            novels = (ArrayList<NovelCard>) Database.deserializeString(intent.getStringExtra("selected"));
+            novels = (ArrayList<NovelCard>) deserializeString(intent.getStringExtra("selected"));
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

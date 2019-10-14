@@ -80,7 +80,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
         updatedChapterHolder.setNovelChapter(Objects.requireNonNull(DatabaseChapter.getChapter(updates.get(i).CHAPTER_URL)));
         updatedChapterHolder.popupMenu.setOnMenuItemClickListener(menuItem -> {
             NovelPage novelPage = new NovelPage();
-            String nURL = DatabaseChapter.getChapterNovelURL(updatedChapterHolder.novelChapter.link);
+            String nURL = Database.DatabaseIdentification.getNovelURLFromChapterURL(updatedChapterHolder.novelChapter.link);
 
             if (nURL != null)
                 novelPage = Database.DatabaseNovels.getNovelPage(nURL);
