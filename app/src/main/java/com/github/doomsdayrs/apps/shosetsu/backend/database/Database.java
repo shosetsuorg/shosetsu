@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
@@ -30,9 +29,11 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertArray
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStringToArray;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStringToStati;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.deserializeString;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeOBJECT;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.addNovel;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelURLFromChapterID;
 
 /*
  * This file is part of Shosetsu.
@@ -606,11 +607,11 @@ public class Database {
         /**
          * Adds chapter to database
          *
-         * @param novelURL     novelURL
+         * @param novelID ID of novel
          * @param novelChapter chapterURL
          */
-        public static void addToChapters(String novelURL, NovelChapter novelChapter) {
-            DatabaseIdentification.addChapter(getNovelIDFromNovelURL(novelURL), novelChapter.link);
+        public static void addToChapters(int novelID, NovelChapter novelChapter) {
+            DatabaseIdentification.addChapter(novelID, novelChapter.link);
 
             String title = checkStringSerialize(novelChapter.chapterNum);
             String release = checkStringSerialize(novelChapter.release);
@@ -630,7 +631,7 @@ public class Database {
                         "values" +
                         "(" +
                         DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link) + "," +
-                        getNovelIDFromNovelURL(novelURL) + "," +
+                        novelID + "," +
                         title + "," +
                         release + "," +
                         0 + "," + 0 + "," + 0 + "," + 0 +
@@ -640,14 +641,18 @@ public class Database {
             }
         }
 
+        public static List<NovelChapter> getChapters(String novelURL) {
+            int novelID = getNovelIDFromNovelURL(novelURL);
+            return getChapters(novelID);
+        }
+
         /**
          * Gets chapters of a novel
          *
-         * @param novelURL novel to retrieve from
+         * @param novelID ID to retrieve from
          * @return List of chapters saved of novel
          */
-        public static List<NovelChapter> getChapters(String novelURL) {
-            int novelID = getNovelIDFromNovelURL(novelURL);
+        public static List<NovelChapter> getChapters(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
@@ -761,7 +766,7 @@ public class Database {
                         "'" + checkStringSerialize(convertArrayToString(novelPage.tags)) + "'," +
                         "'" + checkStringSerialize(convertArrayToString(novelPage.artists)) + "'," +
                         "'" + checkStringSerialize(novelPage.language) + "'," +
-                        novelPage.maxChapterPage + "," +
+                        novelPage.maxChapterPage +
                         ")"
                 );
             } catch (Exception e) {
@@ -776,7 +781,9 @@ public class Database {
          * @return if successful
          */
         public static boolean removeFromLibrary(@NotNull String novelURL) {
-            return sqLiteDatabase.delete(Tables.NOVELS.toString(), Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
+            boolean a = sqLiteDatabase.delete(Tables.NOVELS.toString(), Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL), null) > 0;
+            boolean b = sqLiteDatabase.delete(Tables.NOVEL_IDENTIFICATION.toString(), Columns.ID + "=" + getNovelIDFromNovelURL(novelURL), null) > 0;
+            return a && b;
         }
 
         /**
@@ -928,8 +935,23 @@ public class Database {
             }
         }
 
-        public static void updateData(@NotNull String novelURL, @NotNull NovelPage novelPage) throws Exception {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.NOVEL_PAGE + "='" + serializeOBJECT(novelPage) + "' where " + Columns.NOVEL_URL + "='" + novelURL + "'");
+        public static void updateData(@NotNull String novelURL, @NotNull NovelPage novelPage) {
+            String imageURL = novelPage.imageURL;
+            if (imageURL == null)
+                imageURL = "";
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " +
+                    Columns.TITLE + "='" + checkStringSerialize(novelPage.title) + "'," +
+                    Columns.IMAGE_URL + "='" + imageURL + "'," +
+                    Columns.DESCRIPTION + "='" + checkStringSerialize(novelPage.description) + "'," +
+                    Columns.GENRES + "='" + checkStringSerialize(convertArrayToString(novelPage.genres)) + "'," +
+                    Columns.AUTHORS + "='" + checkStringSerialize(convertArrayToString(novelPage.authors)) + "'," +
+                    Columns.STATUS + "='" + novelPage.status + "'," +
+                    Columns.TAGS + "='" + checkStringSerialize(convertArrayToString(novelPage.tags)) + "'," +
+                    Columns.ARTISTS + "='" + checkStringSerialize(convertArrayToString(novelPage.artists)) + "'," +
+                    Columns.LANGUAGE + "='" + checkStringSerialize(novelPage.language) + "'," +
+                    Columns.MAX_CHAPTER_PAGE + "=" + novelPage.maxChapterPage +
+                    "where " + Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL));
+
         }
 
         public static void migrateNovel(@NotNull String oldURL, @NotNull String newURL, int formatterID, @NotNull NovelPage newNovel, int status) {
@@ -937,19 +959,6 @@ public class Database {
             if (!DatabaseNovels.inLibrary(newURL))
                 addToLibrary(formatterID, newNovel, newURL, status);
             bookMark(newURL);
-        }
-
-        public static Formatter getFormat(String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVELS + " where " + Columns.NOVEL_URL + "='" + novelURL + "'", null);
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return null;
-            } else {
-                cursor.moveToNext();
-                Formatter formatter = DefaultScrapers.getByID(cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString())));
-                cursor.close();
-                return formatter;
-            }
         }
 
     }
@@ -1051,7 +1060,7 @@ public class Database {
                 throw new Exception("Dates implemented wrongly");
             Log.i("UL", "Getting dates between [" + new DateTime(date1) + "] and [" + new DateTime(date2) + "]");
             Cursor cursor = sqLiteDatabase.rawQuery(
-                    "SELECT " + Columns.NOVEL_URL + "," + Columns.CHAPTER_URL + "," + Columns.TIME + " from " + Tables.UPDATES +
+                    "SELECT " + Columns.PARENT_ID + "," + Columns.TIME + " from " + Tables.UPDATES +
                             " where " + Columns.TIME + "<" + date2 + " and " + Columns.TIME + ">=" + date1, null);
 
 
@@ -1061,9 +1070,10 @@ public class Database {
                 return new ArrayList<>();
             } else {
                 while (cursor.moveToNext()) {
+                    int id = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
                     novelCards.add(new Update(
-                            cursor.getString(cursor.getColumnIndex(Columns.NOVEL_URL.toString())),
-                            cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_URL.toString())),
+                            getNovelURLFromChapterID(id),
+                            getChapterURLFromChapterID(id),
                             cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString()))
                     ));
                 }
@@ -1072,19 +1082,19 @@ public class Database {
             }
         }
 
-        public static void addToUpdates(@NotNull String novelURL, @NotNull String chapterURL, long time) {
-            sqLiteDatabase.execSQL("insert into " + Tables.UPDATES + "('" + Columns.NOVEL_URL + "','" + Columns.CHAPTER_URL + "'," + Columns.TIME + ") values(" +
-                    "'" + novelURL + "'," +
-                    "'" + chapterURL + "'," +
-                    "" + time + ")");
+        public static void addToUpdates(int novelID, @NotNull String chapterURL, long time) {
+            sqLiteDatabase.execSQL("insert into " + Tables.UPDATES + "(" + Columns.ID + "," + Columns.PARENT_ID + "," + Columns.TIME + ") values(" +
+                    getChapterIDFromChapterURL(chapterURL) + "," +
+                    novelID + "," +
+                    +time + ")");
         }
 
-        public static boolean removeNovelFromUpdates(@NotNull String novelURL) {
-            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.NOVEL_URL + "='" + novelURL + "'", null) > 0;
+        public static boolean removeNovelFromUpdates(int novelID) {
+            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.PARENT_ID + "=" + novelID, null) > 0;
         }
 
         public static boolean removeFromUpdates(@NotNull String chapterURL) {
-            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.CHAPTER_URL + "='" + chapterURL + "'", null) > 0;
+            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.ID + "=" + getChapterIDFromChapterURL(chapterURL), null) > 0;
         }
     }
 }

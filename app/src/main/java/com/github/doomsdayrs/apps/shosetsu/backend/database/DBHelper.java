@@ -108,6 +108,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String UPDATES_CREATE = "create table if not exists " + Tables.UPDATES + "(" +
             // Refers to CHAPERID
+            Columns.ID + " integer not null," +
+            // Refers to NovelID
             Columns.PARENT_ID + " integer not null," +
             Columns.TIME + " integer not null" + ")";
 
