@@ -78,16 +78,16 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                     while (cursor.moveToNext()) {
 
                         // Gets the novelURL
-                        String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
-                        Log.i("NovelBack", nurl);
+                        //String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
+                        //  Log.i("NovelBack", nurl);
 
                         // Gets if it is in library, if not then it skips
                         boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
                         Log.i("NovelBack", "Valid?: " + bookmarked);
                         if (bookmarked) {
                             //SHOULD BE IN JSON ALREADY
-                            JSONObject npage = new JSONObject(cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())));
-                            npage.put("novelChapters", new JSONArray());
+                            //  JSONObject npage = new JSONObject(cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())));
+                            // npage.put("novelChapters", new JSONArray());
 
                             // ID of formatter
                             int formatter_id = cursor.getInt(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString()));
@@ -95,10 +95,10 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                             //IGNORED: int status = cursor.getInt(cursor.getColumnIndex(Database.Columns.STATUS.toString()));
 
                             JSONObject novel = new JSONObject();
-                            novel.put("novelURL", serializeToString(nurl));
+                            //novel.put("novelURL", serializeToString(nurl));
                             novel.put("bookmarked", true);
                             novel.put("FORMATTER_ID", formatter_id);
-                            novel.put("novelPage", npage);
+                            //novel.put("novelPage", npage);
                             NOVELS.put(novel);
                         }
                     }
@@ -112,15 +112,17 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                 Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Database.Tables.CHAPTERS, null);
                 if (!(cursor.getCount() <= 0))
                     while (cursor.moveToNext()) {
-                        String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
+                        //String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
 
-                        boolean inLibrary = Database.DatabaseNovels.isBookmarked(nurl);
+                        //TODO Fix this shit
+                        boolean inLibrary = false;
+                        //Database.DatabaseNovels.isBookmarked(nurl);
                         if (inLibrary) {
-                            String curl = cursor.getString(cursor.getColumnIndex(Database.Columns.CHAPTER_URL.toString()));
+                            // String curl = cursor.getString(cursor.getColumnIndex(Database.Columns.CHAPTER_URL.toString()));
                             // very dirty logger
                             //Log.i("ChapterBack", curl);
 
-                            String saved_data = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_CHAPTER.toString()));
+                            // String saved_data = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_CHAPTER.toString()));
                             int y = cursor.getInt(cursor.getColumnIndex(Database.Columns.Y.toString()));
                             int read_chapter = cursor.getInt(cursor.getColumnIndex(Database.Columns.READ_CHAPTER.toString()));
                             boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
@@ -128,8 +130,8 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                             String path = cursor.getString(cursor.getColumnIndex(Database.Columns.SAVE_PATH.toString()));
 
                             JSONObject chapter = new JSONObject();
-                            chapter.put("novelURL", serializeToString(nurl));
-                            chapter.put("chapterURL", serializeToString(curl));
+                            //chapter.put("novelURL", serializeToString(nurl));
+                            // chapter.put("chapterURL", serializeToString(curl));
 
                             //TODO Figure out where i use this
                             //chapter.put("SAVED_DATA",);
