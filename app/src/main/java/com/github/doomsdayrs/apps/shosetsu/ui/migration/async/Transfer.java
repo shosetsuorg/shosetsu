@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -89,12 +91,13 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
                             migrationView.pageCount.post(() -> migrationView.pageCount.setText(p));
 
                             novelPage = formatter.parseNovel(strings[1], page);
+                            int novelID = getNovelIDFromNovelURL(strings[1]);
                             for (NovelChapter novelChapter : novelPage.novelChapters)
                                 if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
                                     mangaCount++;
                                     System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
 
-                                    Database.DatabaseChapter.addToChapters(strings[1], novelChapter);
+                                    Database.DatabaseChapter.addToChapters(novelID, novelChapter);
                                 }
                             page++;
 
@@ -107,11 +110,12 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
                         }
                     } else {
                         int mangaCount = 0;
+                        int novelID = getNovelIDFromNovelURL(strings[1]);
                         for (NovelChapter novelChapter : novelPage.novelChapters)
                             if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
                                 mangaCount++;
                                 System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
-                                Database.DatabaseChapter.addToChapters(strings[1], novelChapter);
+                                Database.DatabaseChapter.addToChapters(novelID, novelChapter);
                             }
                     }
                     if (C) {

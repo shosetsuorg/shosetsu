@@ -306,6 +306,25 @@ public class Database {
         }
 
         /**
+         * Returns Formatter ID via Novel URL
+         *
+         * @param url Novel URL
+         * @return Formatter ID
+         */
+        public static int getFormatterIDFromNovelURL(String url) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.URL + " = '" + url + "'", null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+            } else {
+                cursor.moveToNext();
+                int ID = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+                cursor.close();
+                return ID;
+            }
+            return -1;
+        }
+
+        /**
          * Returns Formatter ID via ChapterID, this simply compacts a longer line of methods into one.
          *
          * @param id Chapter ID
@@ -607,7 +626,7 @@ public class Database {
         /**
          * Adds chapter to database
          *
-         * @param novelID ID of novel
+         * @param novelID      ID of novel
          * @param novelChapter chapterURL
          */
         public static void addToChapters(int novelID, NovelChapter novelChapter) {

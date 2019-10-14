@@ -20,6 +20,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -72,8 +74,9 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
         chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
 
+        //TODO The getNovelID in this method likely will cause slowdowns due to IO
         if (!Database.DatabaseChapter.inChapters(novelChapter.link))
-            Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+            Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(StaticNovel.novelURL), novelChapter);
 
         if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));

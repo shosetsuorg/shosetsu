@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -141,8 +143,9 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
         if (continueProcesss && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
             mangaCount++;
             System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
-            Database.DatabaseChapter.addToChapters(novelCard.novelURL, novelChapter);
-            Database.DatabaseUpdates.addToUpdates(novelCard.novelURL, novelChapter.link, System.currentTimeMillis());
+            int novelID = getNovelIDFromNovelURL(novelCard.novelURL);
+            Database.DatabaseChapter.addToChapters(novelID, novelChapter);
+            Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis());
 
             if (!updatedNovels.contains(novelCard))
                 updatedNovels.add(novelCard);

@@ -30,11 +30,13 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromNovelURL;
 
 /**
  * shosetsu
@@ -82,7 +84,7 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
     @Override
     public void onClick(View view) {
         String nurl = Database.DatabaseIdentification.getNovelURLFromChapterURL(novelChapter.link);
-        Formatter formatter = Database.DatabaseNovels.getFormat(nurl);
+        Formatter formatter = DefaultScrapers.getByID(getFormatterIDFromNovelURL(nurl));
         if (formatter != null)
             openChapter((Activity) itemView.getContext(), novelChapter, nurl, formatter.getID());
     }

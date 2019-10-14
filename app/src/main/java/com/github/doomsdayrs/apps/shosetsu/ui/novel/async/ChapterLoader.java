@@ -16,6 +16,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -124,11 +126,12 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     }
 
     private void add(int mangaCount, NovelChapter novelChapter) {
+        //TODO The getNovelID in this method likely will cause slowdowns due to IO
         if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
             mangaCount++;
             System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
             StaticNovel.novelChapters.add(novelChapter);
-            Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+            Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(StaticNovel.novelURL), novelChapter);
         }
     }
 

@@ -16,6 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
@@ -26,6 +27,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowse
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromNovelURL;
 
 /*
  * This file is part of Shosetsu.
@@ -90,7 +92,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
                 System.exit(-1);
             }
 
-            Formatter formatter = Database.DatabaseNovels.getFormat(nURL);
+            Formatter formatter = DefaultScrapers.getByID(getFormatterIDFromNovelURL(nURL));
 
             if (novelPage != null)
                 switch (menuItem.getItemId()) {

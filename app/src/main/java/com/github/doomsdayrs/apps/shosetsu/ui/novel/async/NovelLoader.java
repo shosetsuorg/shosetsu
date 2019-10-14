@@ -16,6 +16,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -98,9 +100,11 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             if (C && !Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
                 Database.DatabaseNovels.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
             }
+            //TODO The getNovelID in this method likely will cause slowdowns due to IO
+            int novelID = getNovelIDFromNovelURL(StaticNovel.novelURL);
             for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
                 if (C && !Database.DatabaseChapter.inChapters(novelChapter.link))
-                    Database.DatabaseChapter.addToChapters(StaticNovel.novelURL, novelChapter);
+                    Database.DatabaseChapter.addToChapters(novelID, novelChapter);
             System.out.println(StaticNovel.novelChapters);
             if (StaticNovel.novelChapters == null)
                 StaticNovel.novelChapters = new ArrayList<>();
