@@ -62,8 +62,8 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
         //Sets values
         {
             Picasso.get()
-                .load(novelCard.imageURL)
-                .into(libraryViewHolder.library_card_image);
+                    .load(novelCard.imageURL)
+                    .into(libraryViewHolder.library_card_image);
             libraryViewHolder.libraryFragment = libraryFragment;
             libraryViewHolder.novelCard = novelCard;
             libraryViewHolder.formatter = DefaultScrapers.getByID(novelCard.formatterID);

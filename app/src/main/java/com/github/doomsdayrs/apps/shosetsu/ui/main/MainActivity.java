@@ -2,14 +2,15 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -74,8 +75,18 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //
         super.onCreate(savedInstanceState);
+
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                    {
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    }, 1);
+        }
+
+
         Utilities.view = getSharedPreferences("view", 0);
         Utilities.download = getSharedPreferences("download", 0);
         Utilities.advanced = getSharedPreferences("advanced", 0);
@@ -139,9 +150,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Updater", "Completed construction");
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
         // Settings setup
         Settings.connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 

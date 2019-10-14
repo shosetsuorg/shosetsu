@@ -94,12 +94,16 @@ public class Utilities {
      * @throws ClassNotFoundException exception
      */
     public static Object deserializeString(@NotNull String string) throws IOException, ClassNotFoundException {
-        string = string.substring(7);
-        byte[] bytes = Base64.decode(string, Base64.NO_WRAP);
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        Object object = objectInputStream.readObject();
-        return object;
+        if (!string.equals("null")) {
+            string = string.substring(7);
+            //Log.d("Deserialize", string);
+            byte[] bytes = Base64.decode(string, Base64.NO_WRAP);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            Object object = objectInputStream.readObject();
+            return object;
+        }
+        return null;
     }
 
     /**
@@ -143,7 +147,6 @@ public class Utilities {
     }
 
 
-
     /**
      * Converts String Stati back into Stati
      *
@@ -171,11 +174,14 @@ public class Utilities {
      * @param a array of strings
      * @return String Array
      */
-    public static String convertArrayToString(String[] a) {
-        for (int x = 0; x < a.length; x++) {
-            a[x] = a[x].replace(",", ">,<");
+    public static String convertArrayToString(@NotNull String[] a) {
+        if (a != null && a.length != 0) {
+            for (int x = 0; x < a.length; x++) {
+                a[x] = a[x].replace(",", ">,<");
+            }
+            return Arrays.toString(a);
         }
-        return Arrays.toString(a);
+        return "[]";
     }
 
 
@@ -185,7 +191,7 @@ public class Utilities {
      * @param s String array
      * @return Array of Strings
      */
-    public static String[] convertStringToArray(String s) {
+    public static String[] convertStringToArray(@NotNull String s) {
         String[] a = s.substring(1, s.length() - 1).split(", ");
 
         for (int x = 0; x < a.length; x++) {

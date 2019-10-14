@@ -8,6 +8,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -20,13 +22,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents"
         tools:ignore="GoogleAppIndexingWarning"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="n">
+
+
         <activity
             android:name="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

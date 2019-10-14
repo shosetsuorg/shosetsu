@@ -135,7 +135,7 @@ public class Download_Manager {
                             File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
                             Log.d("Des", folder.toString());
                             if (!folder.exists())
-                                if (!folder.mkdirs()) {
+                                if (folder.mkdirs()) {
                                     throw new IOException("Failed to mkdirs");
                                 }
                             String formattedName = downloadItem.chapterName.replaceAll("/", "");

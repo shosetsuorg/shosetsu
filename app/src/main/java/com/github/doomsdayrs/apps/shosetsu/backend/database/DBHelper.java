@@ -129,6 +129,8 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(NOVEL_IDENTIFICATION_CREATE);
+        db.execSQL(CHAPTER_IDENTIFICATION_CREATE);
         db.execSQL(NOVELS);
         db.execSQL(DOWNLOADS_CREATE);
         db.execSQL(CHAPTERS_CREATE);
