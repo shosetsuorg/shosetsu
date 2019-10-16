@@ -139,7 +139,6 @@ public class Database {
         }
     }
 
-
     public static class DatabaseIdentification {
 
         public static boolean hasChapter(String chapterURL) {

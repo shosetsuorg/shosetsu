@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         Utilities.advanced = getSharedPreferences("advanced", 0);
         Utilities.tracking = getSharedPreferences("tracking", 0);
         Utilities.backup = getSharedPreferences("backup", 0);
-        initPreferences();
+        initPreferences(this);
 
         switch (Settings.themeMode) {
             case 0:

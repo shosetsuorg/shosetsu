@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.cleanString;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
 
 /*
@@ -132,13 +133,13 @@ public class Download_Manager {
                     try {
                         {
                             Log.d("Dir", shoDir + "download/");
-                            File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName);
+                            File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + cleanString(downloadItem.novelName));
                             Log.d("Des", folder.toString());
                             if (!folder.exists())
-                                if (folder.mkdirs()) {
+                                if (!folder.mkdirs()) {
                                     throw new IOException("Failed to mkdirs");
                                 }
-                            String formattedName = downloadItem.chapterName.replaceAll("/", "");
+                            String formattedName = cleanString(downloadItem.chapterName);
 
                             String passage = downloadItem.formatter.getNovelPassage(downloadItem.chapterURL);
                             FileOutputStream fileOutputStream = new FileOutputStream(

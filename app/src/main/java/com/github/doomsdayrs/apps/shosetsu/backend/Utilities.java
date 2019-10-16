@@ -12,6 +12,8 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
@@ -60,6 +62,19 @@ import java.util.concurrent.TimeUnit;
  * @author github.com/doomsdayrs
  */
 public class Utilities {
+
+
+    /**
+     * Cleans a string
+     *
+     * @param input String to clean
+     * @return string without specials
+     */
+    public static String cleanString(String input) {
+        return input.replaceAll("[^A-Za-z0-9]", "_");
+    }
+
+
 
     public static final int SELECTED_STROKE_WIDTH = 8;
     public static String shoDir = "/Shosetsu/";
@@ -211,11 +226,15 @@ public class Utilities {
 
     /**
      * Initializes the settings
+     *
+     * @param
      */
-    public static void initPreferences() {
+    public static void initPreferences(AppCompatActivity mainActivity) {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
-        shoDir = download.getString("dir", "/storage/emulated/0/Shosetsu/");
+        String dir = mainActivity.getExternalFilesDir(null).getAbsolutePath();
+        dir = dir.substring(0, dir.indexOf("/Android"));
+        shoDir = download.getString("dir", dir + "/Shosetsu/");
         Settings.downloadPaused = download.getBoolean("paused", false);
         Settings.ReaderTextSize = view.getInt("ReaderTextSize", 14);
         Settings.themeMode = advanced.getInt("themeMode", 0);
