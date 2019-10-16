@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -63,6 +64,29 @@ import java.util.concurrent.TimeUnit;
  */
 public class Utilities {
 
+    /**
+     * Demarks a list of items, setting only one to be checked.
+     *
+     * @param menuItems      Items to sort through
+     * @param positionSpared Item to set checked
+     * @param demarkAction   Any action to proceed with
+     */
+    public static void demarkMenuItems(@NotNull MenuItem[] menuItems, int positionSpared, DemarkAction demarkAction) {
+        for (int x = 0; x < menuItems.length; x++)
+            if (x != positionSpared)
+                menuItems[x].setChecked(false);
+            else menuItems[x].setChecked(true);
+
+        if (demarkAction != null)
+            demarkAction.action(positionSpared);
+    }
+
+    /**
+     * Abstraction for Actions to take after demarking items. To simplify bulky code
+     */
+    public interface DemarkAction {
+        void action(int spared);
+    }
 
     /**
      * Cleans a string
@@ -73,8 +97,6 @@ public class Utilities {
     public static String cleanString(String input) {
         return input.replaceAll("[^A-Za-z0-9]", "_");
     }
-
-
 
     public static final int SELECTED_STROKE_WIDTH = 8;
     public static String shoDir = "/Shosetsu/";

@@ -108,6 +108,9 @@
     <string name="open_in">Open in</string>
     <string name="webview">WebView</string>
     <string name="browser">Browser</string>
+    <string name="reader">Reader</string>
+    <string name="default_reader">Default</string>
+    <string name="markdown_reader">MarkDown reader</string>
 
 </resources>
 

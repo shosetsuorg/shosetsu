@@ -77,7 +77,9 @@ public class DBHelper extends SQLiteOpenHelper {
             Columns.PARENT_ID + " integer not null," +
             // If in the library
             Columns.BOOKMARKED + " integer not null," +
+
             Columns.READING_STATUS + " text," +
+            Columns.READER_TYPE + " integer," +
 
             // This bulk is the data values
             Columns.TITLE + " text," +

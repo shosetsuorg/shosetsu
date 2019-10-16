@@ -99,7 +99,7 @@ public class Database {
         URL("url"),
         PARENT_ID("parent_id"),
         ID("id"),
-
+        READER_TYPE("reader_type"),
 
         TITLE("title"),
         IMAGE_URL("image_url"),
@@ -747,6 +747,30 @@ public class Database {
             return a > 0;
         }
 
+        public static void setReaderType(@NotNull String novelURL, int reader) {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READER_TYPE + "=" + reader + " where " + Columns.ID + "=" + getNovelIDFromNovelURL(novelURL));
+        }
+
+        /**
+         * Gets reader type for novel
+         *
+         * @param novelURL Novel URL
+         * @return -2 is no such novel, -1 is default, 0 is the same as -1, and 1+ is a specific reading type
+         */
+        public static int getReaderType(@NotNull String novelURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READER_TYPE + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL), null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return -2;
+            }
+            cursor.moveToNext();
+            System.out.println(Arrays.toString(cursor.getColumnNames()));
+            int a = cursor.getInt(cursor.getColumnIndex(Columns.READER_TYPE.toString()));
+            cursor.close();
+            return a;
+        }
+
+
         public static void addToLibrary(int formatter, @NotNull NovelPage novelPage, @NotNull String novelURL, int readingStatus) {
             addNovel(novelURL, formatter);
             int id = getNovelIDFromNovelURL(novelURL);
@@ -759,6 +783,7 @@ public class Database {
                         Columns.PARENT_ID + "," +
                         Columns.BOOKMARKED + "," +
                         Columns.READING_STATUS + "," +
+                        Columns.READER_TYPE + "," +
                         Columns.TITLE + "," +
                         Columns.IMAGE_URL + "," +
                         Columns.DESCRIPTION + "," +
@@ -773,6 +798,7 @@ public class Database {
                         id + "," +
                         0 + "," +
                         readingStatus + "," +
+                        -1 + "," +
                         "'" + checkStringSerialize(novelPage.title) + "'," +
                         "'" + imageURL + "'," +
                         "'" + checkStringSerialize(novelPage.description) + "'," +

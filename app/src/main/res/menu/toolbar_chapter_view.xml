@@ -79,16 +79,33 @@
                     android:title="@string/large" />
             </menu>
         </item>
+
+        <item
+            android:title="@string/reader"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/reader_0"
+                    android:title="@string/default_reader" />
+
+                <item
+                    android:id="@+id/reader_1"
+                    android:title="@string/markdown_reader" />
+
+            </menu>
+        </item>
     </group>
 
     <item android:title="@string/open_in">
         <menu>
             <item
                 android:id="@+id/webview"
+                android:checkable="true"
                 android:title="@string/webview" />
 
             <item
                 android:id="@+id/browser"
+                android:checkable="true"
                 android:title="@string/browser" />
         </menu>
     </item>

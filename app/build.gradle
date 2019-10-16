@@ -66,10 +66,17 @@ dependencies {
     implementation 'org.jetbrains:annotations:17.0.0'
 
     //TODO GITHUB sign in to save backup data to cloud
-    implementation 'com.github.kohsuke:github-api:github-api-1.95'
+    //implementation 'com.github.kohsuke:github-api:github-api-1.95'
 
     implementation 'com.github.javiersantos:AppUpdater:2.7'
+
     implementation 'us.feras.mdv:markdownview:1.1.0'
+    implementation 'com.mittsu:markedview:1.0.7'
+
+
     implementation 'joda-time:joda-time:2.10.3'
-    implementation "org.mozilla.components:feature-readerview:1.0.0"
+
+    // TODO Implement readerview provided by Mozilla
+    //implementation "org.mozilla.components:feature-readerview:1.0.0"
+    //implementation 'org.mozilla.components:support-base:1.0.0'
 }

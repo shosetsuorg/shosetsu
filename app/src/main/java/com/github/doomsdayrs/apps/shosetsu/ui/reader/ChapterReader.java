@@ -21,6 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChapterViewHideBar;
@@ -33,8 +34,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import us.feras.mdv.MarkdownView;
+
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeIndentSize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeParagraphSpacing;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.demarkMenuItems;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
@@ -43,7 +47,10 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setTextSize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderColor;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.setReaderType;
 import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.getNextChapter;
+import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.novelURL;
 
 /*
  * This file is part of Shosetsu.
@@ -73,9 +80,13 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.getNextCh
 public class ChapterReader extends AppCompatActivity {
     public boolean ready = false;
 
+    public TextView textView;
+    public MarkdownView markdownView;
+    int readerType;
 
     public ScrollView scrollView;
-    public TextView textView;
+
+
     public ProgressBar progressBar;
     public Chip nextChapter;
 
@@ -89,22 +100,18 @@ public class ChapterReader extends AppCompatActivity {
     private boolean bookmarked;
 
     private MenuItem tap_to_scroll;
+    // Order of values. Small,Medium,Large
+    private MenuItem[] textSizes = new MenuItem[3];
 
-    private MenuItem textSmall;
-    private MenuItem textMedium;
-    private MenuItem textLarge;
+    // Order of values. Non,Small,Medium,Large
+    private MenuItem[] paragraphSpaces = new MenuItem[4];
 
-    private MenuItem pspaceNon;
-    private MenuItem pspaceSmall;
-    private MenuItem pspaceMedium;
-    private MenuItem pspaceLarge;
+    // Order of values. Non,Small,Medium,Large
+    private MenuItem[] indentSpaces = new MenuItem[4];
 
 
-    private MenuItem ispaceNon;
-    private MenuItem ispaceSmall;
-    private MenuItem ispaceMedium;
-    private MenuItem ispaceLarge;
-
+    private MenuItem defaultReader;
+    private MenuItem markdownReader;
 
     //Tap to scroll
     private View scroll_up;
@@ -115,6 +122,7 @@ public class ChapterReader extends AppCompatActivity {
     public ConstraintLayout errorView;
     public TextView errorMessage;
     public Button errorButton;
+
 
     /**
      * Save data of view before destroyed
@@ -161,72 +169,66 @@ public class ChapterReader extends AppCompatActivity {
         }
         // Text size
         {
-            textSmall = menu.findItem(R.id.chapter_view_textSize_small);
-            textMedium = menu.findItem(R.id.chapter_view_textSize_medium);
-            textLarge = menu.findItem(R.id.chapter_view_textSize_large);
+            textSizes[0] = menu.findItem(R.id.chapter_view_textSize_small);
+            textSizes[1] = menu.findItem(R.id.chapter_view_textSize_medium);
+            textSizes[2] = menu.findItem(R.id.chapter_view_textSize_large);
 
             switch ((int) Settings.ReaderTextSize) {
                 default:
                     setTextSize(14);
                 case 14:
-                    textSmall.setChecked(true);
+                    textSizes[0].setChecked(true);
                     break;
                 case 17:
-                    textMedium.setChecked(true);
+                    textSizes[1].setChecked(true);
                     break;
                 case 20:
-                    textLarge.setChecked(true);
+                    textSizes[2].setChecked(true);
                     break;
             }
         }
 
         // Paragraph Space
         {
-            pspaceNon = menu.findItem(R.id.chapter_view_paragraphSpace_none);
-            pspaceSmall = menu.findItem(R.id.chapter_view_paragraphSpace_small);
-            pspaceMedium = menu.findItem(R.id.chapter_view_paragraphSpace_medium);
-            pspaceLarge = menu.findItem(R.id.chapter_view_paragraphSpace_large);
+            paragraphSpaces[0] = menu.findItem(R.id.chapter_view_paragraphSpace_none);
+            paragraphSpaces[1] = menu.findItem(R.id.chapter_view_paragraphSpace_small);
+            paragraphSpaces[2] = menu.findItem(R.id.chapter_view_paragraphSpace_medium);
+            paragraphSpaces[3] = menu.findItem(R.id.chapter_view_paragraphSpace_large);
 
-            switch (Settings.paragraphSpacing) {
-                case 0:
-                    pspaceNon.setChecked(true);
-                    break;
-                case 1:
-                    pspaceSmall.setChecked(true);
-                    break;
-                case 2:
-                    pspaceMedium.setChecked(true);
-                    break;
-                case 3:
-                    pspaceLarge.setChecked(true);
-                    break;
-            }
+            paragraphSpaces[Settings.paragraphSpacing].setChecked(true);
         }
 
         // Indent Space
         {
-            ispaceNon = menu.findItem(R.id.chapter_view_indent_none);
-            ispaceSmall = menu.findItem(R.id.chapter_view_indent_small);
-            ispaceMedium = menu.findItem(R.id.chapter_view_indent_medium);
-            ispaceLarge = menu.findItem(R.id.chapter_view_indent_large);
+            indentSpaces[0] = menu.findItem(R.id.chapter_view_indent_none);
+            indentSpaces[1] = menu.findItem(R.id.chapter_view_indent_small);
+            indentSpaces[2] = menu.findItem(R.id.chapter_view_indent_medium);
+            indentSpaces[3] = menu.findItem(R.id.chapter_view_indent_large);
 
-            switch (Settings.indentSize) {
-                case 0:
-                    ispaceNon.setChecked(true);
-                    break;
-                case 1:
-                    ispaceSmall.setChecked(true);
-                    break;
-                case 2:
-                    ispaceMedium.setChecked(true);
-                    break;
-                case 3:
-                    ispaceLarge.setChecked(true);
-                    break;
-            }
+            indentSpaces[Settings.indentSize].setChecked(true);
         }
 
+        // Reader
+        {
+            defaultReader = menu.findItem(R.id.reader_0);
+            markdownReader = menu.findItem(R.id.reader_1);
+            readerType = getReaderType(novelURL);
 
+            switch (readerType) {
+                case 1:
+                    defaultReader.setChecked(false);
+                    markdownReader.setChecked(true);
+                    break;
+                case 0:
+                case -1:
+                    defaultReader.setChecked(true);
+                    markdownReader.setChecked(false);
+                    break;
+                case -2:
+                default:
+                    throw new RuntimeException("Invalid chapter?!? How are you reading this without the novel loaded in");
+            }
+        }
         return true;
     }
 
@@ -240,6 +242,8 @@ public class ChapterReader extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         Log.d("item", item.toString());
         switch (item.getItemId()) {
+            default:
+                return false;
             case R.id.chapter_view_nightMode:
                 if (!item.isChecked()) {
                     swapReaderColor();
@@ -254,8 +258,6 @@ public class ChapterReader extends AppCompatActivity {
                 tap_to_scroll.setChecked(toggleTapToScroll());
                 return true;
             case R.id.chapter_view_bookmark:
-
-
                 bookmarked = toggleBookmarkChapter(chapterURL);
                 if (bookmarked)
                     bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
@@ -263,103 +265,61 @@ public class ChapterReader extends AppCompatActivity {
                 return true;
 
             case R.id.chapter_view_textSize_small:
-                setTextSize(14);
-                setUpReader();
-
-                item.setChecked(true);
-                textMedium.setChecked(false);
-                textLarge.setChecked(false);
+                demarkMenuItems(indentSpaces, 0, new TextSizeChange());
                 return true;
             case R.id.chapter_view_textSize_medium:
-                setTextSize(17);
-                setUpReader();
-
-                item.setChecked(true);
-                textSmall.setChecked(false);
-                textLarge.setChecked(false);
+                demarkMenuItems(textSizes, 1, new TextSizeChange());
                 return true;
             case R.id.chapter_view_textSize_large:
-                setTextSize(20);
-                setUpReader();
-                item.setChecked(true);
-                textSmall.setChecked(false);
-                textMedium.setChecked(false);
+                demarkMenuItems(textSizes, 2, new TextSizeChange());
                 return true;
 
             case R.id.chapter_view_paragraphSpace_none:
-                changeParagraphSpacing(0);
-                setUpReader();
-                pspaceNon.setChecked(true);
-                pspaceSmall.setChecked(false);
-                pspaceMedium.setChecked(false);
-                pspaceLarge.setChecked(false);
+                demarkMenuItems(paragraphSpaces, 0, new ParaSpacingChange());
                 return true;
             case R.id.chapter_view_paragraphSpace_small:
-                changeParagraphSpacing(1);
-                setUpReader();
-                pspaceNon.setChecked(false);
-                pspaceSmall.setChecked(true);
-                pspaceMedium.setChecked(false);
-                pspaceLarge.setChecked(false);
+                demarkMenuItems(paragraphSpaces, 1, new ParaSpacingChange());
                 return true;
             case R.id.chapter_view_paragraphSpace_medium:
-                changeParagraphSpacing(2);
-                setUpReader();
-                pspaceNon.setChecked(false);
-                pspaceSmall.setChecked(false);
-                pspaceMedium.setChecked(true);
-                pspaceLarge.setChecked(false);
+                demarkMenuItems(paragraphSpaces, 2, new ParaSpacingChange());
                 return true;
             case R.id.chapter_view_paragraphSpace_large:
-                changeParagraphSpacing(3);
-                setUpReader();
-                pspaceNon.setChecked(false);
-                pspaceSmall.setChecked(false);
-                pspaceMedium.setChecked(false);
-                pspaceLarge.setChecked(true);
+                demarkMenuItems(paragraphSpaces, 3, new ParaSpacingChange());
                 return true;
-
 
             case R.id.chapter_view_indent_none:
-                changeIndentSize(0);
-                setUpReader();
-                ispaceNon.setChecked(true);
-                ispaceSmall.setChecked(false);
-                ispaceMedium.setChecked(false);
-                ispaceLarge.setChecked(false);
+                demarkMenuItems(indentSpaces, 0, new IndentChange());
                 return true;
             case R.id.chapter_view_indent_small:
-                changeIndentSize(1);
-                setUpReader();
-                ispaceNon.setChecked(false);
-                ispaceSmall.setChecked(true);
-                ispaceMedium.setChecked(false);
-                ispaceLarge.setChecked(false);
+                demarkMenuItems(indentSpaces, 1, new IndentChange());
                 return true;
             case R.id.chapter_view_indent_medium:
-                changeIndentSize(2);
-                setUpReader();
-                ispaceNon.setChecked(false);
-                ispaceSmall.setChecked(false);
-                ispaceMedium.setChecked(true);
-                ispaceLarge.setChecked(false);
+                demarkMenuItems(indentSpaces, 2, new IndentChange());
                 return true;
             case R.id.chapter_view_indent_large:
-                changeIndentSize(3);
-                setUpReader();
-                ispaceNon.setChecked(false);
-                ispaceSmall.setChecked(false);
-                ispaceMedium.setChecked(false);
-                ispaceLarge.setChecked(true);
+                demarkMenuItems(indentSpaces, 3, new IndentChange());
                 return true;
+
             case R.id.browser:
                 openInBrowser(this, chapterURL);
                 return true;
             case R.id.webview:
                 openInWebview(this, chapterURL);
                 return true;
+            case R.id.reader_0:
+                readerType = 0;
+                defaultReader.setChecked(true);
+                markdownReader.setChecked(false);
+                setReaderType(novelURL, 0);
+                return true;
+            case R.id.reader_1:
+                readerType = 1;
+                defaultReader.setChecked(false);
+                markdownReader.setChecked(true);
+                setReaderType(novelURL, 1);
+                return true;
+
         }
-        return false;
     }
 
     /**
@@ -382,7 +342,7 @@ public class ChapterReader extends AppCompatActivity {
                 setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
         }
 
-        setContentView(R.layout.fragment_novel_chapter_reader);
+        setContentView(R.layout.chapter_reader);
 
         if (savedInstanceState != null) {
             unformattedText = savedInstanceState.getString("unformattedText");
@@ -408,8 +368,21 @@ public class ChapterReader extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        textView = findViewById(R.id.fragment_novel_chapter_view_text);
-        textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
+        switch (readerType) {
+            case 1:
+                markdownView = findViewById(R.id.fragment_novel_chapter_view_markdown);
+                markdownView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
+                break;
+            case 0:
+            case -1:
+                textView = findViewById(R.id.fragment_novel_chapter_view_text);
+                textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
+                break;
+            case -2:
+            default:
+                throw new RuntimeException("Invalid chapter?!? How are you reading this without the novel loaded in");
+        }
+
 
         // Scroll up listener
         scroll_up = findViewById(R.id.scroll_up);
@@ -438,6 +411,83 @@ public class ChapterReader extends AppCompatActivity {
         });
 
         loadChapter();
+    }
+
+    /**
+     * Changes the theme of the reader
+     * TODO change the scroll position bars color
+     */
+    public void setUpReader() {
+        scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        switch (readerType) {
+            case -1:
+            case 0:
+                textView.setTextColor(Settings.ReaderTextColor);
+                textView.setTextSize(Settings.ReaderTextSize);
+                break;
+            default:
+                break;
+        }
+
+
+        if (unformattedText != null) {
+            StringBuilder replaceSpacing = new StringBuilder("\n");
+            for (int x = 0; x < Settings.paragraphSpacing; x++)
+                replaceSpacing.append("\n");
+
+            for (int x = 0; x < Settings.indentSize; x++)
+                replaceSpacing.append("\t");
+
+            text = unformattedText.replaceAll("\n", replaceSpacing.toString());
+
+            switch (readerType) {
+                case -1:
+                case 0:
+                    textView.setText(text);
+                    break;
+                case 1:
+                    markdownView.loadMarkdown(text);
+            }
+        }
+    }
+
+    /**
+     * What to do when scroll hits bottom
+     */
+    public void bottom() {
+        int total = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
+        if (ready)
+            if ((scrollView.getScrollY() / (float) total) < .99) {
+                int y = scrollView.getScrollY();
+                if (y % 5 == 0) {
+                    // Log.d("YMAX", String.valueOf(total));
+                    // Log.d("YC", String.valueOf(y));
+                    // Log.d("YD", String.valueOf((scrollView.getScrollY() / (float) total)));
+
+                    //   Log.d("TY", String.valueOf(textView.getScrollY()));
+
+                    if (chapterURL != null && Database.DatabaseChapter.getStatus(chapterURL) != Status.READ)
+                        Database.DatabaseChapter.updateY(chapterURL, y);
+                }
+            } else {
+                Log.i("Scroll", "Marking chapter as READ");
+                if (chapterURL != null) {
+                    Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
+                    Database.DatabaseChapter.updateY(chapterURL, 0);
+                    nextChapter.setVisibility(View.VISIBLE);
+                }
+                //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
+            }
+    }
+
+    private class TextSizeChange implements Utilities.DemarkAction {
+        @Override
+        public void action(int spared) {
+            int[] a = {14, 17, 20};
+            setTextSize(a[spared]);
+            setUpReader();
+        }
     }
 
     /**
@@ -491,27 +541,11 @@ public class ChapterReader extends AppCompatActivity {
         }
     }
 
-
-    /**
-     * Changes the theme of the reader
-     * TODO change the scroll position bars color
-     */
-    public void setUpReader() {
-        scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-        textView.setTextColor(Settings.ReaderTextColor);
-        textView.setTextSize(Settings.ReaderTextSize);
-
-        if (unformattedText != null) {
-            StringBuilder replaceSpacing = new StringBuilder("\n");
-            for (int x = 0; x < Settings.paragraphSpacing; x++)
-                replaceSpacing.append("\n");
-
-            for (int x = 0; x < Settings.indentSize; x++)
-                replaceSpacing.append("\t");
-
-            text = unformattedText.replaceAll("\n", replaceSpacing.toString());
-            textView.setText(text);
+    private class ParaSpacingChange implements Utilities.DemarkAction {
+        @Override
+        public void action(int spared) {
+            changeParagraphSpacing(spared);
+            setUpReader();
         }
     }
 
@@ -526,32 +560,12 @@ public class ChapterReader extends AppCompatActivity {
         }
     }
 
-    /**
-     * What to do when scroll hits bottom
-     */
-    public void bottom() {
-        int total = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
-        if (ready)
-            if ((scrollView.getScrollY() / (float) total) < .99) {
-                int y = scrollView.getScrollY();
-                if (y % 5 == 0) {
-                    Log.d("YMAX", String.valueOf(total));
-                    Log.d("YC", String.valueOf(y));
-                    Log.d("YD", String.valueOf((scrollView.getScrollY() / (float) total)));
-                    Log.d("TY", String.valueOf(textView.getScrollY()));
-
-                    if (chapterURL != null && Database.DatabaseChapter.getStatus(chapterURL) != Status.READ)
-                        Database.DatabaseChapter.updateY(chapterURL, y);
-                }
-            } else {
-                Log.i("Scroll", "Marking chapter as READ");
-                if (chapterURL != null) {
-                    Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
-                    Database.DatabaseChapter.updateY(chapterURL, 0);
-                    nextChapter.setVisibility(View.VISIBLE);
-                }
-                //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
-            }
+    private class IndentChange implements Utilities.DemarkAction {
+        @Override
+        public void action(int spared) {
+            changeIndentSize(spared);
+            setUpReader();
+        }
     }
 
 
