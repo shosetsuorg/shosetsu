@@ -250,7 +250,7 @@ public class NovelFragmentChapters extends Fragment {
             case R.id.chapter_download_selected:
                 for (NovelChapter novelChapter : selectedChapters)
                     if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
-                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link);
                         Download_Manager.addToDownload(downloadItem);
                     }
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
@@ -259,7 +259,7 @@ public class NovelFragmentChapters extends Fragment {
             case R.id.chapter_delete_selected:
                 for (NovelChapter novelChapter : selectedChapters)
                     if (Database.DatabaseChapter.isSaved(novelChapter.link))
-                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link));
+                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link));
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
 

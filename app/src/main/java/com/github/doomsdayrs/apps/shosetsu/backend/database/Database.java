@@ -629,7 +629,7 @@ public class Database {
             if (!hasChapter(novelChapter.link))
                 DatabaseIdentification.addChapter(novelID, novelChapter.link);
 
-            String title = checkStringSerialize(novelChapter.chapterNum);
+            String title = checkStringSerialize(novelChapter.title);
             String release = checkStringSerialize(novelChapter.release);
 
             try {
@@ -680,7 +680,7 @@ public class Database {
                         String url = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())));
 
                         NovelChapter novelChapter = new NovelChapter();
-                        novelChapter.chapterNum = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
+                        novelChapter.title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
                         novelChapter.link = url;
                         novelChapter.release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
                         novelChapters.add(novelChapter);
@@ -702,7 +702,7 @@ public class Database {
                 NovelChapter novelChapter = null;
                 try {
                     novelChapter = new NovelChapter();
-                    novelChapter.chapterNum = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
+                    novelChapter.title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
                     novelChapter.link = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())));
                     novelChapter.release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
                 } catch (Exception e) {

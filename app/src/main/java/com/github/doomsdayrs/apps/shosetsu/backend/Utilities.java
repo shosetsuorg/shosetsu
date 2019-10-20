@@ -424,7 +424,7 @@ public class Utilities {
     public static void openChapter(Activity activity, NovelChapter novelChapter, String nurl, int formatterID) {
         Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
         Intent intent = new Intent(activity, ChapterReader.class);
-        intent.putExtra("title", novelChapter.chapterNum);
+        intent.putExtra("title", novelChapter.title);
         intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelURL", nurl);
         intent.putExtra("formatter", formatterID);
@@ -672,8 +672,8 @@ public class Utilities {
                     break;
                 case "chapterNum":
                     if (response.equals("null"))
-                        novelChapter.chapterNum = null;
-                    else novelChapter.chapterNum = response;
+                        novelChapter.title = null;
+                    else novelChapter.title = response;
                     break;
                 case "link":
                     if (response.equals("null"))
@@ -688,7 +688,7 @@ public class Utilities {
     private static JSONObject novelChapterToJSON(NovelChapter novelChapter) throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("release", serializeToString(novelChapter.release));
-        jsonObject.put("chapterNum", serializeToString(novelChapter.chapterNum));
+        jsonObject.put("chapterNum", serializeToString(novelChapter.title));
         jsonObject.put("link", serializeToString(novelChapter.link));
         return jsonObject;
     }

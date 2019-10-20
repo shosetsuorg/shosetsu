@@ -36,24 +36,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/fragment_novel_chapter_view_text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                android:text="@string/todo"
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-                tools:ignore="ScrollViewSize" />
+                <TextView
+                    android:id="@+id/fragment_novel_chapter_view_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:padding="5dp"
+                    android:text="@string/todo" />
+
+                <us.feras.mdv.MarkdownView
+                    android:id="@+id/fragment_novel_chapter_view_markdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:visibility="gone" />
+            </View>
+
         </ScrollView>
 
-        <us.feras.mdv.MarkdownView
-            android:id="@+id/fragment_novel_chapter_view_markdown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:visibility="gone"
-            tools:ignore="MissingConstraints" />
+
         <View
             android:id="@+id/scroll_down"
             android:layout_width="match_parent"

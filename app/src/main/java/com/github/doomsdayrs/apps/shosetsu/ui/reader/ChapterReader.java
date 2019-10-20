@@ -109,9 +109,9 @@ public class ChapterReader extends AppCompatActivity {
     // Order of values. Non,Small,Medium,Large
     private MenuItem[] indentSpaces = new MenuItem[4];
 
+    // Order of values. Default, Markdown
+    private MenuItem[] readers = new MenuItem[2];
 
-    private MenuItem defaultReader;
-    private MenuItem markdownReader;
 
     //Tap to scroll
     private View scroll_up;
@@ -210,19 +210,18 @@ public class ChapterReader extends AppCompatActivity {
 
         // Reader
         {
-            defaultReader = menu.findItem(R.id.reader_0);
-            markdownReader = menu.findItem(R.id.reader_1);
+
+            readers[0] = menu.findItem(R.id.reader_0);
+            readers[1] = menu.findItem(R.id.reader_1);
             readerType = getReaderType(novelURL);
 
             switch (readerType) {
                 case 1:
-                    defaultReader.setChecked(false);
-                    markdownReader.setChecked(true);
+                    demarkMenuItems(readers, 1, null);
                     break;
                 case 0:
                 case -1:
-                    defaultReader.setChecked(true);
-                    markdownReader.setChecked(false);
+                    demarkMenuItems(readers, 0, null);
                     break;
                 case -2:
                 default:
@@ -307,16 +306,10 @@ public class ChapterReader extends AppCompatActivity {
                 openInWebview(this, chapterURL);
                 return true;
             case R.id.reader_0:
-                readerType = 0;
-                defaultReader.setChecked(true);
-                markdownReader.setChecked(false);
-                setReaderType(novelURL, 0);
+                demarkMenuItems(readers, 0, new ReaderChange());
                 return true;
             case R.id.reader_1:
-                readerType = 1;
-                defaultReader.setChecked(false);
-                markdownReader.setChecked(true);
-                setReaderType(novelURL, 1);
+                demarkMenuItems(readers, 1, new ReaderChange());
                 return true;
 
         }
@@ -398,7 +391,7 @@ public class ChapterReader extends AppCompatActivity {
 
             if (novelChapter != null) {
                 if (!novelChapter.link.equalsIgnoreCase(chapterURL)) {
-                    title = novelChapter.chapterNum;
+                    title = novelChapter.title;
                     chapterURL = novelChapter.link;
                     loadChapter();
                 } else
@@ -481,14 +474,6 @@ public class ChapterReader extends AppCompatActivity {
             }
     }
 
-    private class TextSizeChange implements Utilities.DemarkAction {
-        @Override
-        public void action(int spared) {
-            int[] a = {14, 17, 20};
-            setTextSize(a[spared]);
-            setUpReader();
-        }
-    }
 
     /**
      * Loads the chapter to be read
@@ -510,7 +495,6 @@ public class ChapterReader extends AppCompatActivity {
 
         Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READING);
     }
-
 
     /**
      * Scrolls the text upwards
@@ -541,14 +525,6 @@ public class ChapterReader extends AppCompatActivity {
         }
     }
 
-    private class ParaSpacingChange implements Utilities.DemarkAction {
-        @Override
-        public void action(int spared) {
-            changeParagraphSpacing(spared);
-            setUpReader();
-        }
-    }
-
     /**
      * Sets up the hitting bottom listener
      */
@@ -560,6 +536,24 @@ public class ChapterReader extends AppCompatActivity {
         }
     }
 
+
+    private class TextSizeChange implements Utilities.DemarkAction {
+        @Override
+        public void action(int spared) {
+            int[] a = {14, 17, 20};
+            setTextSize(a[spared]);
+            setUpReader();
+        }
+    }
+
+    private class ParaSpacingChange implements Utilities.DemarkAction {
+        @Override
+        public void action(int spared) {
+            changeParagraphSpacing(spared);
+            setUpReader();
+        }
+    }
+
     private class IndentChange implements Utilities.DemarkAction {
         @Override
         public void action(int spared) {
@@ -568,5 +562,13 @@ public class ChapterReader extends AppCompatActivity {
         }
     }
 
+    private class ReaderChange implements Utilities.DemarkAction {
+        @Override
+        public void action(int spared) {
+            readerType = spared;
+            setReaderType(novelURL, spared);
+            setUpReader();
+        }
+    }
 
 }

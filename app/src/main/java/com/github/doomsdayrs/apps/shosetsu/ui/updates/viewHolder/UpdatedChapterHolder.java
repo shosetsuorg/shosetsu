@@ -69,7 +69,7 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
 
     public void setNovelChapter(NovelChapter novelChapter) {
         this.novelChapter = novelChapter;
-        title.setText(novelChapter.chapterNum);
+        title.setText(novelChapter.title);
         Picasso.get()
                 .load(
                         Objects.requireNonNull(

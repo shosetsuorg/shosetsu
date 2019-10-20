@@ -71,7 +71,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
         NovelChapter novelChapter = StaticNovel.novelChapters.get(i);
         chaptersViewHolder.novelChapter = novelChapter;
-        chaptersViewHolder.library_card_title.setText(novelChapter.chapterNum);
+        chaptersViewHolder.library_card_title.setText(novelChapter.title);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
 
         //TODO The getNovelID in this method likely will cause slowdowns due to IO

@@ -100,10 +100,10 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     return true;
                 case R.id.popup_chapter_menu_download:
                     if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
-                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link);
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link);
                         Download_Manager.addToDownload(downloadItem);
                     } else {
-                        if (Download_Manager.delete(itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.chapterNum, StaticNovel.novelURL, novelChapter.link))) {
+                        if (Download_Manager.delete(itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link))) {
                             downloadTag.setVisibility(View.INVISIBLE);
                         }
                     }

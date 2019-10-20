@@ -251,8 +251,8 @@ public class Serialize {
                     break;
                 case "chapterNum":
                     if (response.equals("null"))
-                        novelChapter.chapterNum = null;
-                    else novelChapter.chapterNum = response;
+                        novelChapter.title = null;
+                    else novelChapter.title = response;
                     break;
                 case "link":
                     if (response.equals("null"))
@@ -275,7 +275,7 @@ public class Serialize {
     private static JSONObject novelChapterToJSON(NovelChapter novelChapter) throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("release", serializeToString(novelChapter.release));
-        jsonObject.put("chapterNum", serializeToString(novelChapter.chapterNum));
+        jsonObject.put("chapterNum", serializeToString(novelChapter.title));
         jsonObject.put("link", serializeToString(novelChapter.link));
         return jsonObject;
     }

@@ -107,10 +107,10 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
                         return true;
                     case R.id.popup_chapter_menu_download:
                         if (!Database.DatabaseChapter.isSaved(updatedChapterHolder.novelChapter.link)) {
-                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.chapterNum, nURL, updatedChapterHolder.novelChapter.link);
+                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, nURL, updatedChapterHolder.novelChapter.link);
                             Download_Manager.addToDownload(downloadItem);
                         } else {
-                            if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.chapterNum, nURL, updatedChapterHolder.novelChapter.link))) {
+                            if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, nURL, updatedChapterHolder.novelChapter.link))) {
                                 updatedChapterHolder.downloadTag.setVisibility(View.INVISIBLE);
                             }
                         }
