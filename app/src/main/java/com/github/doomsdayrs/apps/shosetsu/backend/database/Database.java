@@ -113,7 +113,7 @@ public class Database {
         MAX_CHAPTER_PAGE("max_chapter_page"),
 
         RELEASE_DATE("release_date"),
-
+        ORDER("order"),
 
         FORMATTER_ID("formatterID"),
         READ_CHAPTER("read"),
@@ -449,6 +449,9 @@ public class Database {
             return count;
         }
 
+        public static void updateOrder(String chapterURL, int order) {
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.ORDER + "='" + order + "' where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
+        }
 
         /**
          * Updates the Y coordinate
@@ -461,6 +464,24 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
         }
 
+        /**
+         * Precondition is the chapter is already in the database
+         *
+         * @param chapterURL chapterURL to the chapter
+         * @return order of chapter
+         */
+        public static int getY(String chapterURL) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return 0;
+            } else {
+                cursor.moveToNext();
+                int y = cursor.getInt(cursor.getColumnIndex(Columns.Y.toString()));
+                cursor.close();
+                return y;
+            }
+        }
 
         /**
          * @param chapterURL chapter to check
@@ -494,25 +515,7 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
         }
 
-        /**
-         * returns Y coordinate
-         * Precondition is the chapter is already in the database
-         *
-         * @param chapterURL imageURL to the chapter
-         * @return if bookmarked?
-         */
-        public static int getY(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return 0;
-            } else {
-                cursor.moveToNext();
-                int y = cursor.getInt(cursor.getColumnIndex(Columns.Y.toString()));
-                cursor.close();
-                return y;
-            }
-        }
+
 
         /**
          * Sets bookmark true or false (1 for true, 0 is false)
@@ -639,6 +642,7 @@ public class Database {
                         Columns.PARENT_ID + "," +
                         Columns.TITLE + "," +
                         Columns.RELEASE_DATE + "," +
+                        Columns.ORDER + "," +
                         Columns.Y + "," +
                         Columns.READ_CHAPTER + "," +
                         Columns.BOOKMARKED + "," +
@@ -650,6 +654,7 @@ public class Database {
                         novelID + ",'" +
                         title + "','" +
                         release + "'," +
+                        novelChapter.order + "," +
                         0 + "," + 0 + "," + 0 + "," + 0 +
                         ")");
             } catch (Exception e) {

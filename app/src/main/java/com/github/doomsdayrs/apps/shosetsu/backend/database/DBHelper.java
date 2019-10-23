@@ -56,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             Columns.TITLE + " text," +
             Columns.RELEASE_DATE + " text," +
+            Columns.ORDER + " integer not null," +
 
             // > Scroll position, either 0 for top, or X for the position
             Columns.Y + " integer not null," +
@@ -150,6 +151,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 9) {
+            //TODO Convert tables
             db.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTERS);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.NOVELS);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.DOWNLOADS);
