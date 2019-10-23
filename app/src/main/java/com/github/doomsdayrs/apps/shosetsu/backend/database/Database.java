@@ -20,6 +20,9 @@ import org.joda.time.Days;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringDeserialize;
@@ -113,7 +116,7 @@ public class Database {
         MAX_CHAPTER_PAGE("max_chapter_page"),
 
         RELEASE_DATE("release_date"),
-        ORDER("order"),
+        ORDER("order_of"),
 
         FORMATTER_ID("formatterID"),
         READ_CHAPTER("read"),
@@ -515,8 +518,6 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
         }
 
-
-
         /**
          * Sets bookmark true or false (1 for true, 0 is false)
          *
@@ -694,6 +695,13 @@ public class Database {
                     }
                 }
                 cursor.close();
+                Collections.sort(novelChapters, (novelChapter, t1) -> {
+                    if (novelChapter.order < t1.order)
+                        return -1;
+                    else if (novelChapter.order > t1.order)
+                        return 1;
+                    else return 0;
+                });
                 return novelChapters;
             }
         }
