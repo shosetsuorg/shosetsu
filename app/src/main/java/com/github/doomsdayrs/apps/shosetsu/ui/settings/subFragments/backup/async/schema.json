@@ -1,7 +1,6 @@
 {
   "ignoreThis": "This is an example of schema for the backup, use it for reference. Strings should be serialized before being put into json, and each sub JSON should be serialized aswell",
   "ignoreThis2": "the type of data is specified in KEY, remove them and the spaces for a proper key for actual JSON files",
-
   "settings": {
     "reader_text_color": "Settings.ReaderTextColor",
     "reader_text_background_color": "Settings.ReaderTextBackgroundColor",
@@ -18,38 +17,39 @@
       "novelURL": "serialize",
       "FORMATTER_ID": "",
       "STATUS": "ignore",
-      "bookmarked": "",
-      "novelPage": {
-        "title": "serialize",
-        "imageURL": "serialize",
-        "description": "serialize",
-        "genres": "serialize",
-        "authors": "serialize",
-        "status": "convert stati to an int and use a switch to set them",
-        "tags": [
-          "Array of serialized strings"
-        ],
-        "artists": [
-          "Array of serialized strings"
-        ],
-        "language": "serialize",
-        "maxChapterPage": "",
-        "novelChapters": "Just set this ARRAY to an empty one."
-      }
+      "bookmarked": "ignore, always true",
+      "reading_status": "ignore",
+      "reader_type": "",
+      "title": "serialize",
+      "imageURL": "serialize",
+      "description": "serialize",
+      "genres": "serialize",
+      "authors": "serialize",
+      "status": "convert stati to an int and use a switch to set them",
+      "tags": [
+        "Array of serialized strings"
+      ],
+      "artists": [
+        "Array of serialized strings"
+      ],
+      "language": "serialize",
+      "maxChapterPage": ""
     }
   ],
+
   "chapters": [
     {
       "novelURL": "serialize",
       "chapterURL": "serialize",
-      "SAVED_DATA": {
-        "": "This is some form of object, to decrypt on a later date"
-      },
+      "title": "serialize",
+      "release_date": "serialize",
+      "order": "",
+
       "Y": "",
       "READ_CHAPTER": "",
       "BOOKMARKED": "",
-      "IS_SAVED": "",
-      "SAVE_PATH": "serialize"
+      "IS_SAVED": "ignore, always 0",
+      "SAVE_PATH": "ignore"
     }
   ],
   "ignoreThis3": "No longer transferring download data"

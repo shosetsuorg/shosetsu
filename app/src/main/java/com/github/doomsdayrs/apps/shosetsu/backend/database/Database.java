@@ -20,9 +20,7 @@ import org.joda.time.Days;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringDeserialize;
@@ -675,7 +673,7 @@ public class Database {
          * @return List of chapters saved of novel
          */
         public static List<NovelChapter> getChapters(int novelID) {
-            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null);
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -689,6 +687,7 @@ public class Database {
                         novelChapter.title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
                         novelChapter.link = url;
                         novelChapter.release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
+                        novelChapter.order = cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString()));
                         novelChapters.add(novelChapter);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -706,8 +705,14 @@ public class Database {
             }
         }
 
+        /**
+         * Gets a chapter by it's URL
+         *
+         * @param chapterURL
+         * @return
+         */
         public static NovelChapter getChapter(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -718,6 +723,7 @@ public class Database {
                     novelChapter.title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
                     novelChapter.link = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())));
                     novelChapter.release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
+                    novelChapter.order = cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -747,8 +753,13 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.ID + "=" + getNovelIDFromNovelURL(novelURL));
         }
 
-        public static boolean isBookmarked(@NotNull String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL), null);
+
+        public static boolean isBookmarked(String novelURL) {
+            return isBookmarked(getNovelIDFromNovelURL(novelURL));
+        }
+
+        public static boolean isBookmarked(int novelID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID , null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;

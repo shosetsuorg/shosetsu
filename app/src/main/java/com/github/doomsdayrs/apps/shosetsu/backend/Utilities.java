@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -27,16 +26,12 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -470,226 +465,10 @@ public class Utilities {
     public static void addTracker() {
     }
 
-
-    private static final String[] NOVELPAGEKEYS = {"title", "imageURL", "description", "genres", "authors", "status", "tags", "artists", "language", "maxChapterPage", "novelChapters"};
-    private static final String[] NOVELCHAPTERKEYS = {"release", "chapterNum", "link"};
     private static boolean debug = false;
 
     public static void toggleDebug() {
         debug = !debug;
     }
 
-    /**
-     * Turns an object into a JSON counterpart, then serializes it along with data in it
-     *
-     * @param object NovelPage or NovelChapter
-     * @return Serialized JSON
-     */
-    public static String serializeOBJECT(Object object) throws Exception {
-        if (object.getClass().equals(NovelChapter.class)) {
-            NovelChapter novelChapter = (NovelChapter) object;
-            return serializeToString(novelChapterToJSON(novelChapter).toString());
-        } else if (object.getClass().equals(NovelPage.class)) {
-            NovelPage novelPage = (NovelPage) object;
-            JSONObject jsonObject = new JSONObject();
-
-            if (novelPage.title != null)
-                jsonObject.put("title", serializeToString(novelPage.title));
-            else jsonObject.put("title", "null");
-
-            if (novelPage.imageURL != null)
-                jsonObject.put("imageURL", serializeToString(novelPage.imageURL));
-            else jsonObject.put("imageURL", "null");
-
-            if (novelPage.description != null)
-                jsonObject.put("description", serializeToString(novelPage.description));
-            else jsonObject.put("description", "null");
-
-            if (novelPage.genres != null) {
-                JSONArray jsonArray = new JSONArray();
-                for (String genre : novelPage.genres)
-                    jsonArray.put(serializeToString(genre));
-                jsonObject.put("genres", jsonArray);
-            } else jsonObject.put("genres", new JSONArray());
-
-            if (novelPage.authors != null) {
-                JSONArray jsonArray = new JSONArray();
-                for (String author : novelPage.authors)
-                    jsonArray.put(serializeToString(author));
-                jsonObject.put("authors", jsonArray);
-            } else jsonObject.put("authors", new JSONArray());
-
-            if (novelPage.status != null) {
-                jsonObject.put("status", novelPage.status.toString());
-            } else jsonObject.put("status", "Unknown");
-
-            if (novelPage.tags != null) {
-                JSONArray jsonArray = new JSONArray();
-                for (String tag : novelPage.tags)
-                    jsonArray.put(serializeToString(tag));
-                jsonObject.put("tags", jsonArray);
-            } else jsonObject.put("tags", new JSONArray());
-
-            if (novelPage.artists != null) {
-                JSONArray jsonArray = new JSONArray();
-                for (String artist : novelPage.artists)
-                    jsonArray.put(serializeToString(artist));
-                jsonObject.put("artists", jsonArray);
-            } else jsonObject.put("artists", new JSONArray());
-
-            if (novelPage.language != null) {
-                jsonObject.put("language", serializeToString(novelPage.language));
-            } else jsonObject.put("language", "null");
-
-            jsonObject.put("maxChapterPage", novelPage.maxChapterPage);
-
-            if (novelPage.novelChapters != null) {
-                JSONArray jsonArray = new JSONArray();
-                for (NovelChapter novelChapter : novelPage.novelChapters)
-                    jsonArray.put(serializeToString(novelChapterToJSON(novelChapter).toString()));
-                jsonObject.put("novelChapters", jsonArray);
-            } else jsonObject.put("novelChapters", new JSONArray());
-
-            if (debug)
-                System.out.println("JSON to be serialized: " + jsonObject.toString());
-
-            return serializeToString(jsonObject.toString());
-        } else throw new Exception("Illegal class");
-    }
-
-    public static NovelPage deserializeNovelPageJSON(String serial) throws Exception {
-        NovelPage novelPage = new NovelPage();
-        JSONObject jsonObject = new JSONObject((String) deserializeString(serial));
-        if (debug)
-            System.out.println("Deserialize-d json: " + jsonObject);
-        for (String key : NOVELPAGEKEYS) {
-            if (!jsonObject.has(key))
-                throw new Exception("JSON is invalid due to missing key[" + key + "]");
-
-            switch (key) {
-                case "maxChapterPage":
-                    novelPage.maxChapterPage = jsonObject.getInt(key);
-                    break;
-
-                case "status":
-                    switch (jsonObject.getString(key)) {
-                        case "Publishing":
-                            novelPage.status = Stati.PUBLISHING;
-                            break;
-                        case "Completed":
-                            novelPage.status = Stati.COMPLETED;
-                            break;
-                        case "Paused":
-                            novelPage.status = Stati.PAUSED;
-                            break;
-                        case "Unknown":
-                            novelPage.status = Stati.UNKNOWN;
-                            break;
-                    }
-                    break;
-
-                case "genres":
-                case "authors":
-                case "tags":
-                case "artists":
-                    JSONArray array = jsonObject.getJSONArray(key);
-                    String[] strings = new String[array.length()];
-                    for (int x = 0; x < array.length(); x++) {
-                        String s = array.getString(x);
-                        strings[x] = (String) deserializeString(s);
-                    }
-                    switch (key) {
-                        case "genres":
-                            novelPage.genres = strings;
-                            break;
-                        case "authors":
-                            novelPage.authors = strings;
-                            break;
-                        case "tags":
-                            novelPage.tags = strings;
-                            break;
-                        case "artists":
-                            novelPage.artists = strings;
-                            break;
-                    }
-                    break;
-                case "novelChapters":
-                    JSONArray jsonArray = jsonObject.getJSONArray(key);
-                    ArrayList<NovelChapter> novelChapters = new ArrayList<>();
-                    for (int x = 0; x < jsonArray.length(); x++) {
-                        novelChapters.add(deserializeNovelChapterJSON(jsonArray.getString(x)));
-                    }
-                    novelPage.novelChapters = novelChapters;
-                    break;
-                default:
-                    String response = jsonObject.getString(key);
-                    if (!response.equals("null")) {
-                        if (debug)
-                            System.out.println("Serial response of novelChapter key [" + key + "]: " + response);
-                        response = (String) deserializeString(response);
-                    }
-                    switch (key) {
-                        case "title":
-                            if (response.equals("null"))
-                                novelPage.title = null;
-                            else novelPage.title = response;
-                            break;
-                        case "imageURL":
-                            if (response.equals("null"))
-                                novelPage.imageURL = null;
-                            else novelPage.imageURL = response;
-                            break;
-                        case "description":
-                            if (response.equals("null"))
-                                novelPage.description = null;
-                            else novelPage.description = response;
-                            break;
-                        case "language":
-                            if (response.equals("null"))
-                                novelPage.language = null;
-                            else novelPage.language = response;
-                            break;
-                    }
-                    break;
-            }
-        }
-        return novelPage;
-    }
-
-    public static NovelChapter deserializeNovelChapterJSON(String serial) throws Exception {
-        NovelChapter novelChapter = new NovelChapter();
-        JSONObject jsonObject = new JSONObject((String) deserializeString(serial));
-        for (String key : NOVELCHAPTERKEYS) {
-            if (!jsonObject.has(key))
-                throw new Exception("JSON is invalid due to missing key[" + key + "]");
-
-            String response = (String) deserializeString(jsonObject.getString(key));
-            switch (key) {
-                case "release":
-                    if (response.equals("null"))
-                        novelChapter.release = null;
-                    else novelChapter.release = response;
-                    break;
-                case "chapterNum":
-                    if (response.equals("null"))
-                        novelChapter.title = null;
-                    else novelChapter.title = response;
-                    break;
-                case "link":
-                    if (response.equals("null"))
-                        novelChapter.link = null;
-                    else novelChapter.link = response;
-                    break;
-            }
-        }
-        return novelChapter;
-    }
-
-    private static JSONObject novelChapterToJSON(NovelChapter novelChapter) throws IOException, JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("release", serializeToString(novelChapter.release));
-        jsonObject.put("chapterNum", serializeToString(novelChapter.title));
-        jsonObject.put("link", serializeToString(novelChapter.link));
-        return jsonObject;
-    }
 }

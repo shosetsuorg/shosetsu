@@ -36,8 +36,10 @@ import java.io.IOException;
 import java.util.Date;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.intToBoolean;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromNovelURL;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelURLfromNovelID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase;
 
 /**
@@ -77,28 +79,37 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                 if (!(cursor.getCount() <= 0))
                     while (cursor.moveToNext()) {
 
-                        // Gets the novelURL
-                        //String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
-                        //  Log.i("NovelBack", nurl);
 
                         // Gets if it is in library, if not then it skips
                         boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
                         Log.i("NovelBack", "Valid?: " + bookmarked);
                         if (bookmarked) {
-                            //SHOULD BE IN JSON ALREADY
-                            //  JSONObject npage = new JSONObject(cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())));
-                            // npage.put("novelChapters", new JSONArray());
-
-                            // ID of formatter
-                            int formatter_id = cursor.getInt(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString()));
-
-                            //IGNORED: int status = cursor.getInt(cursor.getColumnIndex(Database.Columns.STATUS.toString()));
+                            String nurl = getNovelURLfromNovelID(cursor.getInt(cursor.getColumnIndex(Database.Columns.PARENT_ID.toString())));
 
                             JSONObject novel = new JSONObject();
-                            //novel.put("novelURL", serializeToString(nurl));
-                            novel.put("bookmarked", true);
-                            novel.put("FORMATTER_ID", formatter_id);
-                            //novel.put("novelPage", npage);
+                            novel.put("novelURL", nurl);
+                            novel.put("FORMATTER_ID", getFormatterIDFromNovelURL(nurl));
+
+                            novel.put("title", cursor.getString(cursor.getColumnIndex(Database.Columns.TITLE.toString())));
+
+                            novel.put("imageURL", cursor.getString(cursor.getColumnIndex(Database.Columns.IMAGE_URL.toString())));
+
+                            novel.put("description", cursor.getString(cursor.getColumnIndex(Database.Columns.DESCRIPTION.toString())));
+
+                            novel.put("genres", cursor.getString(cursor.getColumnIndex(Database.Columns.GENRES.toString())));
+
+                            novel.put("authors", cursor.getString(cursor.getColumnIndex(Database.Columns.AUTHORS.toString())));
+
+                            novel.put("status", cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())));
+
+                            novel.put("tags", cursor.getString(cursor.getColumnIndex(Database.Columns.TAGS.toString())));
+
+                            novel.put("artists", cursor.getString(cursor.getColumnIndex(Database.Columns.ARTISTS.toString())));
+
+                            novel.put("language", cursor.getString(cursor.getColumnIndex(Database.Columns.LANGUAGE.toString())));
+
+                            novel.put("maxChapterPage", cursor.getInt(cursor.getColumnIndex(Database.Columns.MAX_CHAPTER_PAGE.toString())));
+
                             NOVELS.put(novel);
                         }
                     }
@@ -112,35 +123,22 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                 Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Database.Tables.CHAPTERS, null);
                 if (!(cursor.getCount() <= 0))
                     while (cursor.moveToNext()) {
-                        //String nurl = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString()));
+                        int novelID = cursor.getInt(cursor.getColumnIndex(Database.Columns.PARENT_ID.toString()));
+                        boolean b = Database.DatabaseNovels.isBookmarked(novelID);
 
-                        //TODO Fix this shit
-                        boolean inLibrary = false;
-                        //Database.DatabaseNovels.isBookmarked(nurl);
-                        if (inLibrary) {
-                            // String curl = cursor.getString(cursor.getColumnIndex(Database.Columns.CHAPTER_URL.toString()));
-                            // very dirty logger
-                            //Log.i("ChapterBack", curl);
-
-                            // String saved_data = cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_CHAPTER.toString()));
-                            int y = cursor.getInt(cursor.getColumnIndex(Database.Columns.Y.toString()));
-                            int read_chapter = cursor.getInt(cursor.getColumnIndex(Database.Columns.READ_CHAPTER.toString()));
-                            boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
-                            boolean is_saved = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.IS_SAVED.toString())));
-                            String path = cursor.getString(cursor.getColumnIndex(Database.Columns.SAVE_PATH.toString()));
-
+                        if (b) {
+                            int id = cursor.getInt(cursor.getColumnIndex(Database.Columns.ID.toString()));
                             JSONObject chapter = new JSONObject();
-                            //chapter.put("novelURL", serializeToString(nurl));
-                            // chapter.put("chapterURL", serializeToString(curl));
+                            chapter.put("novelURL", getNovelURLfromNovelID(novelID));
+                            chapter.put("chapterURL", getChapterURLFromChapterID(id));
 
-                            //TODO Figure out where i use this
-                            //chapter.put("SAVED_DATA",);
+                            chapter.put("title", cursor.getString(cursor.getColumnIndex(Database.Columns.TITLE.toString())));
+                            chapter.put("release_date", cursor.getString(cursor.getColumnIndex(Database.Columns.RELEASE_DATE.toString())));
+                            chapter.put("order", cursor.getInt(cursor.getColumnIndex(Database.Columns.ORDER.toString())));
 
-                            chapter.put("Y", y);
-                            chapter.put("READ_CHAPTER", read_chapter);
-                            chapter.put("BOOKMARKED", bookmarked);
-                            chapter.put("IS_SAVED", is_saved);
-                            chapter.put("SAVE_PATH", serializeToString(path));
+                            chapter.put("Y", cursor.getInt(cursor.getColumnIndex(Database.Columns.Y.toString())));
+                            chapter.put("READ_CHAPTER", cursor.getInt(cursor.getColumnIndex(Database.Columns.READ_CHAPTER.toString())));
+                            chapter.put("BOOKMARKED", cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
                             CHAPTERS.put(chapter);
                         }
                     }
@@ -159,7 +157,7 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
             FileOutputStream fileOutputStream = new FileOutputStream(
                     (folder.getPath() + "/backup-" + (new Date().toString()) + ".shoback")
             );
-            fileOutputStream.write(BACKUP.toString().getBytes());
+            fileOutputStream.write(("JSON+-=" + BACKUP.toString()).getBytes());
             fileOutputStream.close();
         } catch (IOException | JSONException e) {
             e.printStackTrace();

@@ -30,7 +30,17 @@ import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.inChapters;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.inLibrary;
 
 /**
  * shosetsu
@@ -89,12 +99,13 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... voids) {
         File file = new File("" + file_path);
-        /*
+
         if (file.exists()) {
             try {
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 
                 textView.post(() -> textView.setText(R.string.reading_file));
+
                 StringBuilder string = new StringBuilder();
                 {
                     String line;
@@ -103,114 +114,53 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                     }
                     bufferedReader.close();
                 }
+                final JSONObject BACKUP = new JSONObject(string.substring(6));
+                JSONArray novels = BACKUP.getJSONArray("novels");
+                JSONArray chapters = BACKUP.getJSONArray("chapters");
 
-                textView.post(() -> textView.setText(R.string.reading_file));
-                progressBar.post(() -> progressBar.setMax(superserialzied.DBChapters.size() + superserialzied.libraries.size() + superserialzied.DBDownloadItems.size() + 1));
 
-                Log.i("Progress", "Restoring downloads");
-                for (com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBDownloadItem DBDownloadItem : superserialzied.DBDownloadItems) {
-                    textView.post(() -> textView.setText("Restoring download: " + DBDownloadItem.CHAPTER_URL));
-                    progressBar.post(() -> progressBar.incrementProgressBy(1));
-                    DownloadItem downloadItem = new DownloadItem(DefaultScrapers.getByID(DBDownloadItem.FORMATTER_ID), DBDownloadItem.NOVEL_NAME, DBDownloadItem.CHAPTER_NAME, DBDownloadItem.NOVEL_URL, DBDownloadItem.CHAPTER_URL);
-                    if (!Database.DatabaseDownloads.inDownloads(downloadItem))
-                        Database.DatabaseDownloads.addToDownloads(downloadItem);
-                }
+                progressBar.post(() -> progressBar.setMax(novels.length() + chapters.length() + 1));
 
-                Log.i("Progress", "Restoring libraries");
-                for (com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBNovel DBNovel : superserialzied.libraries) {
-                    progressBar.post(() -> progressBar.incrementProgressBy(1));
-                    textView.post(() -> textView.setText("Restoring: " + DBNovel.NOVEL_URL));
-                    if (!Database.DatabaseLibrary.inLibrary(DBNovel.NOVEL_URL))
-                        Database.DatabaseLibrary.addToLibrary(DBNovel.FORMATTER_ID, DBNovel.NOVEL_PAGE, DBNovel.NOVEL_URL, DBNovel.STATUS);
 
-                    com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
-                    switch (DBNovel.STATUS) {
-                        case 0:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD;
-                            break;
-                        case 1:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READING;
-                            break;
-                        case 2:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READ;
-                            break;
-                        case 3:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.ONHOLD;
-                            break;
-                        case 4:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.DROPPED;
-                            break;
-                        default:
-                            status = null;
-                            break;
+                Log.i("Progress", "Restoring novels");
+                for (int x = 0; x < novels.length(); x++) {
+                    JSONObject novel = novels.getJSONObject(x);
+                    String novelURL = novel.getString("novelURL");
+                    textView.post(() -> textView.setText("Restoring: " + novelURL));
+
+                    if (!inLibrary(novelURL)) {
+                        //TODO Novel
                     }
-                    if (status != null)
-                        Database.DatabaseLibrary.setStatus(DBNovel.NOVEL_URL, status);
 
-                    if (DBNovel.BOOKMARKED)
-                        Database.DatabaseLibrary.bookMark(DBNovel.NOVEL_URL);
+
+                    progressBar.post(() -> progressBar.incrementProgressBy(1));
                 }
 
                 Log.i("Progress", "Restoring chapters");
-                for (com.github.doomsdayrs.apps.shosetsu.backend.database.objects.DBChapter DBChapter : superserialzied.DBChapters) {
-                    textView.post(() -> textView.setText("Restoring: " + DBChapter.CHAPTER_URL));
+                for (int x = 0; x < chapters.length(); x++) {
+                    JSONObject chapter = chapters.getJSONObject(x);
+                    String chapterURL = chapter.getString("chapterURL");
+                    String novelURL = chapter.getString("novelURL");
+
+                    textView.post(() -> textView.setText("Restoring: " + novelURL + "|" + chapterURL));
                     progressBar.post(() -> progressBar.incrementProgressBy(1));
-                    if (!Database.DatabaseChapter.inChapters(DBChapter.CHAPTER_URL))
-                        Database.DatabaseChapter.addToChapters(DBChapter.NOVEL_URL, DBChapter.CHAPTER_URL, DBChapter.SAVED_DATA);
-
-                    Database.DatabaseChapter.updateY(DBChapter.CHAPTER_URL, DBChapter.Y);
-
-                    com.github.doomsdayrs.apps.shosetsu.variables.enums.Status status;
-                    switch (DBChapter.READ_CHAPTER) {
-                        case 0:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD;
-                            break;
-                        case 1:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READING;
-                            break;
-                        case 2:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.READ;
-                            break;
-                        case 3:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.ONHOLD;
-                            break;
-                        case 4:
-                            status = com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.DROPPED;
-                            break;
-                        default:
-                            status = null;
-                            break;
+                    if (!inChapters(chapterURL)) {
+                        //TODO Chapter=
                     }
-                    if (status != null)
-                        Database.DatabaseChapter.setChapterStatus(DBChapter.CHAPTER_URL, status);
 
-                    if (DBChapter.BOOKMARKED)
-                        Database.DatabaseChapter.setBookMark(DBChapter.CHAPTER_URL, 1);
-
-                    //TODO settings backup
                 }
 
                 textView.post(() -> textView.setText("Restoring settings"));
                 progressBar.post(() -> progressBar.incrementProgressBy(1));
-                Settings.ReaderTextColor = superserialzied.settingsSerialized.reader_text_color;
-                Settings.ReaderTextBackgroundColor = superserialzied.settingsSerialized.reader_text_background_color;
-                shoDir = superserialzied.settingsSerialized.shoDir;
-                Settings.downloadPaused = superserialzied.settingsSerialized.paused;
-                Settings.ReaderTextSize = superserialzied.settingsSerialized.textSize;
-                Settings.themeMode = superserialzied.settingsSerialized.themeMode;
-                Settings.paragraphSpacing = superserialzied.settingsSerialized.paraSpace;
-                Settings.indentSize = superserialzied.settingsSerialized.indent;
 
-                if (isTapToScroll() != superserialzied.settingsSerialized.tap_to_scroll)
-                    toggleTapToScroll();
-
+                //TODO Settings
                 progressBar.post(() -> progressBar.incrementProgressBy(1));
                 return true;
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
         }
-        */
+
         return false;
     }
 }
