@@ -29,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +42,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.inChapters;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.addNovel;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.inLibrary;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase;
 
 /**
  * shosetsu
@@ -125,11 +130,50 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                 Log.i("Progress", "Restoring novels");
                 for (int x = 0; x < novels.length(); x++) {
                     JSONObject novel = novels.getJSONObject(x);
-                    String novelURL = novel.getString("novelURL");
+                    String novelURL = novel.getString(Columns.URL.toString());
                     textView.post(() -> textView.setText("Restoring: " + novelURL));
 
                     if (!inLibrary(novelURL)) {
-                        //TODO Novel
+                        addNovel(novelURL, novel.getInt(Columns.FORMATTER_ID.toString()));
+                        int id = getNovelIDFromNovelURL(novelURL);
+                        try {
+                            sqLiteDatabase.execSQL("insert into " + Tables.NOVELS + "(" +
+                                    Columns.PARENT_ID + "," +
+                                    Columns.BOOKMARKED + "," +
+                                    Columns.READING_STATUS + "," +
+                                    Columns.READER_TYPE + "," +
+                                    Columns.TITLE + "," +
+                                    Columns.IMAGE_URL + "," +
+                                    Columns.DESCRIPTION + "," +
+                                    Columns.GENRES + "," +
+                                    Columns.AUTHORS + "," +
+                                    Columns.STATUS + "," +
+                                    Columns.TAGS + "," +
+                                    Columns.ARTISTS + "," +
+                                    Columns.LANGUAGE + "," +
+                                    Columns.MAX_CHAPTER_PAGE +
+                                    ")" + "values" + "(" +
+                                    id + "," +
+                                    1 + "," +
+                                    novel.getInt(Columns.READING_STATUS.toString()) + "," +
+                                    novel.getInt(Columns.READER_TYPE.toString()) + "," +
+                                    "'" + novel.getString(Columns.TITLE.toString()) + "'," +
+                                    "'" + novel.getString(Columns.IMAGE_URL.toString()) + "'," +
+                                    "'" + novel.getString(Columns.DESCRIPTION.toString()) + "'," +
+                                    "'" + novel.getString(Columns.GENRES.toString()) + "'," +
+                                    "'" + novel.getString(Columns.AUTHORS.toString()) + "'," +
+                                    "'" + novel.getInt(Columns.STATUS.toString()) + "'," +
+                                    "'" + novel.getString(Columns.TAGS.toString()) + "'," +
+                                    "'" + novel.getString(Columns.ARTISTS.toString()) + "'," +
+                                    "'" + novel.getString(Columns.LANGUAGE.toString()) + "'," +
+                                    novel.getInt(Columns.MAX_CHAPTER_PAGE.toString()) +
+                                    ")");
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //TODO Novel if exists
                     }
 
 

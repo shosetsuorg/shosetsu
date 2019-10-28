@@ -24,7 +24,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.Serialize;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,40 +77,43 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
             Log.i("Progress", "Backing up novels");
             {
                 final JSONArray NOVELS = new JSONArray();
-                Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Database.Tables.NOVELS + " where " + Database.Columns.BOOKMARKED + "=1", null);
+                Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null);
                 if (!(cursor.getCount() <= 0))
                     while (cursor.moveToNext()) {
 
 
                         // Gets if it is in library, if not then it skips
-                        boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
+                        boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
                         Log.i("NovelBack", "Valid?: " + bookmarked);
                         if (bookmarked) {
-                            String nurl = getNovelURLfromNovelID(cursor.getInt(cursor.getColumnIndex(Database.Columns.PARENT_ID.toString())));
+                            String nurl = getNovelURLfromNovelID(cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())));
 
                             JSONObject novel = new JSONObject();
-                            novel.put("novelURL", nurl);
-                            novel.put("FORMATTER_ID", getFormatterIDFromNovelURL(nurl));
+                            novel.put(Columns.URL.toString(), nurl);
+                            novel.put(Columns.FORMATTER_ID.toString(), getFormatterIDFromNovelURL(nurl));
 
-                            novel.put("title", cursor.getString(cursor.getColumnIndex(Database.Columns.TITLE.toString())));
+                            novel.put(Columns.READING_STATUS.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READING_STATUS.toString())));
+                            novel.put(Columns.READER_TYPE.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READER_TYPE.toString())));
 
-                            novel.put("imageURL", cursor.getString(cursor.getColumnIndex(Database.Columns.IMAGE_URL.toString())));
+                            novel.put(Columns.TITLE.toString(), cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
 
-                            novel.put("description", cursor.getString(cursor.getColumnIndex(Database.Columns.DESCRIPTION.toString())));
+                            novel.put(Columns.IMAGE_URL.toString(), cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())));
 
-                            novel.put("genres", cursor.getString(cursor.getColumnIndex(Database.Columns.GENRES.toString())));
+                            novel.put(Columns.DESCRIPTION.toString(), cursor.getString(cursor.getColumnIndex(Columns.DESCRIPTION.toString())));
 
-                            novel.put("authors", cursor.getString(cursor.getColumnIndex(Database.Columns.AUTHORS.toString())));
+                            novel.put(Columns.GENRES.toString(), cursor.getString(cursor.getColumnIndex(Columns.GENRES.toString())));
 
-                            novel.put("status", cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())));
+                            novel.put(Columns.AUTHORS.toString(), cursor.getString(cursor.getColumnIndex(Columns.AUTHORS.toString())));
 
-                            novel.put("tags", cursor.getString(cursor.getColumnIndex(Database.Columns.TAGS.toString())));
+                            novel.put(Columns.STATUS.toString(), cursor.getString(cursor.getColumnIndex(Columns.STATUS.toString())));
 
-                            novel.put("artists", cursor.getString(cursor.getColumnIndex(Database.Columns.ARTISTS.toString())));
+                            novel.put(Columns.TAGS.toString(), cursor.getString(cursor.getColumnIndex(Columns.TAGS.toString())));
 
-                            novel.put("language", cursor.getString(cursor.getColumnIndex(Database.Columns.LANGUAGE.toString())));
+                            novel.put(Columns.ARTISTS.toString(), cursor.getString(cursor.getColumnIndex(Columns.ARTISTS.toString())));
 
-                            novel.put("maxChapterPage", cursor.getInt(cursor.getColumnIndex(Database.Columns.MAX_CHAPTER_PAGE.toString())));
+                            novel.put(Columns.LANGUAGE.toString(), cursor.getString(cursor.getColumnIndex(Columns.LANGUAGE.toString())));
+
+                            novel.put(Columns.MAX_CHAPTER_PAGE.toString(), cursor.getInt(cursor.getColumnIndex(Columns.MAX_CHAPTER_PAGE.toString())));
 
                             NOVELS.put(novel);
                         }
@@ -120,25 +125,25 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
             Log.i("Progress", "Backing up Chapters");
             {
                 final JSONArray CHAPTERS = new JSONArray();
-                Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Database.Tables.CHAPTERS, null);
+                Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Tables.CHAPTERS, null);
                 if (!(cursor.getCount() <= 0))
                     while (cursor.moveToNext()) {
-                        int novelID = cursor.getInt(cursor.getColumnIndex(Database.Columns.PARENT_ID.toString()));
-                        boolean b = Database.DatabaseNovels.isBookmarked(novelID);
+                        int novelID = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
+                        boolean b = DatabaseNovels.isBookmarked(novelID);
 
                         if (b) {
-                            int id = cursor.getInt(cursor.getColumnIndex(Database.Columns.ID.toString()));
+                            int id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()));
                             JSONObject chapter = new JSONObject();
                             chapter.put("novelURL", getNovelURLfromNovelID(novelID));
-                            chapter.put("chapterURL", getChapterURLFromChapterID(id));
+                            chapter.put(Columns.URL.toString(), getChapterURLFromChapterID(id));
 
-                            chapter.put("title", cursor.getString(cursor.getColumnIndex(Database.Columns.TITLE.toString())));
-                            chapter.put("release_date", cursor.getString(cursor.getColumnIndex(Database.Columns.RELEASE_DATE.toString())));
-                            chapter.put("order", cursor.getInt(cursor.getColumnIndex(Database.Columns.ORDER.toString())));
+                            chapter.put(Columns.TITLE.toString(), cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
+                            chapter.put(Columns.RELEASE_DATE.toString(), cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
+                            chapter.put(Columns.ORDER.toString(), cursor.getInt(cursor.getColumnIndex(Columns.ORDER.toString())));
 
-                            chapter.put("Y", cursor.getInt(cursor.getColumnIndex(Database.Columns.Y.toString())));
-                            chapter.put("READ_CHAPTER", cursor.getInt(cursor.getColumnIndex(Database.Columns.READ_CHAPTER.toString())));
-                            chapter.put("BOOKMARKED", cursor.getInt(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())));
+                            chapter.put(Columns.Y.toString(), cursor.getInt(cursor.getColumnIndex(Columns.Y.toString())));
+                            chapter.put(Columns.READ_CHAPTER.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString())));
+                            chapter.put(Columns.BOOKMARKED.toString(), cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
                             CHAPTERS.put(chapter);
                         }
                     }
