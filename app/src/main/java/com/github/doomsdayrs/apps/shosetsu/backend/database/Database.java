@@ -633,7 +633,7 @@ public class Database {
 
             String title = checkStringSerialize(novelChapter.title);
             String release = checkStringSerialize(novelChapter.release);
-
+            System.out.println(novelChapter.link + " | " + novelChapter.order);
             try {
                 sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS +
                         "(" +
@@ -759,7 +759,7 @@ public class Database {
         }
 
         public static boolean isBookmarked(int novelID) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID , null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;

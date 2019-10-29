@@ -43,6 +43,7 @@ import java.io.IOException;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.inChapters;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.addNovel;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.inLibrary;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase;
@@ -173,7 +174,12 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                         }
                     } else {
-                        //TODO Novel if exists
+                        sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " +
+                                Columns.BOOKMARKED + "=1," +
+                                Columns.READING_STATUS + "=" + novel.get(Columns.READING_STATUS.toString()) + "," +
+                                Columns.READER_TYPE + "=" + novel.get(Columns.READER_TYPE.toString()) +
+                                " where " + Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL)
+                        );
                     }
 
 
@@ -189,7 +195,40 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                     textView.post(() -> textView.setText("Restoring: " + novelURL + "|" + chapterURL));
                     progressBar.post(() -> progressBar.incrementProgressBy(1));
                     if (!inChapters(chapterURL)) {
-                        //TODO Chapter=
+                        int novelID = getNovelIDFromNovelURL(novelURL);
+                        int chapterID = getChapterIDFromChapterURL(chapterURL);
+
+                        sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS +
+                                "(" +
+                                Columns.ID + "," +
+                                Columns.PARENT_ID + "," +
+                                Columns.TITLE + "," +
+                                Columns.RELEASE_DATE + "," +
+                                Columns.ORDER + "," +
+                                Columns.Y + "," +
+                                Columns.READ_CHAPTER + "," +
+                                Columns.BOOKMARKED + "," +
+                                Columns.IS_SAVED +
+                                ") " +
+                                "values" +
+                                "(" +
+                                chapterID + "," +
+                                novelID + ",'" +
+                                chapter.getString(Columns.TITLE.toString()) + "','" +
+                                chapter.getString(Columns.RELEASE_DATE.toString()) + "'," +
+                                chapter.getInt(Columns.ORDER.toString()) + "," +
+                                chapter.getInt(Columns.Y.toString()) + "," +
+                                chapter.getInt(Columns.READ_CHAPTER.toString()) + "," +
+                                chapter.getInt(Columns.BOOKMARKED.toString()) + "," +
+                                0 + ")")
+                        ;
+                    } else {
+                        sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " +
+                                Columns.Y + "=1," +
+                                Columns.READ_CHAPTER + "=" + chapter.get(Columns.READING_STATUS.toString()) + "," +
+                                Columns.BOOKMARKED + "=" + chapter.get(Columns.READER_TYPE.toString()) +
+                                " where " + Columns.ID + "=" + getChapterIDFromChapterURL(chapter.getString(Columns.URL.toString()))
+                        );
                     }
 
                 }

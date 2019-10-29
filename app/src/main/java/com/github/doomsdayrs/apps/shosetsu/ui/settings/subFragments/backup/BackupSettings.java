@@ -80,7 +80,8 @@ public class BackupSettings extends Fragment {
                     String fileEnding = path.substring(i + 1);
                     if (fileEnding.equalsIgnoreCase("shoback")) {
                         Log.i("Selected Folder", "Uri: " + path);
-                        new RestoreProcess(path.substring(path.indexOf("storage")), getContext()).execute();
+                        //TODO Fix this shit, need's a proper intergrated file manager
+                        new RestoreProcess("/Shosetsu/backup/backup-Mon Oct 28 20:46:16 EDT 2019.shoback", getContext()).execute();
                     } else
                         Toast.makeText(getContext(), "Invalid file to use!", Toast.LENGTH_LONG).show();
                 }
