@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
 
@@ -120,7 +121,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                     }
                     bufferedReader.close();
                 }
-                final JSONObject BACKUP = new JSONObject(string.substring(6));
+                final JSONObject BACKUP = new JSONObject(string.substring(7));
                 JSONArray novels = BACKUP.getJSONArray("novels");
                 JSONArray chapters = BACKUP.getJSONArray("chapters");
 
@@ -163,7 +164,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                                     "'" + novel.getString(Columns.DESCRIPTION.toString()) + "'," +
                                     "'" + novel.getString(Columns.GENRES.toString()) + "'," +
                                     "'" + novel.getString(Columns.AUTHORS.toString()) + "'," +
-                                    "'" + novel.getInt(Columns.STATUS.toString()) + "'," +
+                                    "'" + novel.getString(Columns.STATUS.toString()) + "'," +
                                     "'" + novel.getString(Columns.TAGS.toString()) + "'," +
                                     "'" + novel.getString(Columns.ARTISTS.toString()) + "'," +
                                     "'" + novel.getString(Columns.LANGUAGE.toString()) + "'," +
@@ -189,13 +190,15 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                 Log.i("Progress", "Restoring chapters");
                 for (int x = 0; x < chapters.length(); x++) {
                     JSONObject chapter = chapters.getJSONObject(x);
-                    String chapterURL = chapter.getString("chapterURL");
+                    String chapterURL = chapter.getString(Columns.URL.toString());
                     String novelURL = chapter.getString("novelURL");
 
                     textView.post(() -> textView.setText("Restoring: " + novelURL + "|" + chapterURL));
                     progressBar.post(() -> progressBar.incrementProgressBy(1));
                     if (!inChapters(chapterURL)) {
                         int novelID = getNovelIDFromNovelURL(novelURL);
+
+                        Database.DatabaseIdentification.addChapter(novelID, chapterURL);
                         int chapterID = getChapterIDFromChapterURL(chapterURL);
 
                         sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS +
@@ -224,9 +227,9 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                         ;
                     } else {
                         sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " +
-                                Columns.Y + "=1," +
-                                Columns.READ_CHAPTER + "=" + chapter.get(Columns.READING_STATUS.toString()) + "," +
-                                Columns.BOOKMARKED + "=" + chapter.get(Columns.READER_TYPE.toString()) +
+                                Columns.Y + "=" + chapter.getString(Columns.Y.toString()) + "," +
+                                Columns.READ_CHAPTER + "=" + chapter.getString(Columns.READ_CHAPTER.toString()) + "," +
+                                Columns.BOOKMARKED + "=" + chapter.getString(Columns.BOOKMARKED.toString()) +
                                 " where " + Columns.ID + "=" + getChapterIDFromChapterURL(chapter.getString(Columns.URL.toString()))
                         );
                     }

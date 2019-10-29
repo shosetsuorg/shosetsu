@@ -38,6 +38,11 @@ import androidx.fragment.app.Fragment;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess;
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
+
+import java.util.ArrayList;
 
 public class BackupSettings extends Fragment {
 
@@ -61,17 +66,24 @@ public class BackupSettings extends Fragment {
     private void performFileSelection() {
         Toast.makeText(getContext(), "Please make sure this is on the main storage, SD card storage is not functional yet", Toast.LENGTH_LONG).show();
 
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, 69);
+
+        Intent intent = new Intent(getContext(), NormalFilePickActivity.class);
+        intent.putExtra(Constant.MAX_NUMBER, 9);
+        intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"shoback", "json"});
+        startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 69 && resultCode == Activity.RESULT_OK) {
-            if (data != null && data.getData() != null && data.getData().getPath() != null) {
+        if (Constant.REQUEST_CODE_PICK_FILE == requestCode && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                if (list != null && list.size() > 0) {
+                    NormalFile normalFile = list.get(0);
+                    new RestoreProcess(normalFile.getPath(), getContext()).execute();
+                }
+                /*
                 String path = data.getData().getPath();
                 Log.i("SelectedPath", path);
 
@@ -84,7 +96,7 @@ public class BackupSettings extends Fragment {
                         new RestoreProcess("/Shosetsu/backup/backup-Mon Oct 28 20:46:16 EDT 2019.shoback", getContext()).execute();
                     } else
                         Toast.makeText(getContext(), "Invalid file to use!", Toast.LENGTH_LONG).show();
-                }
+                }*/
             }
         }
     }
