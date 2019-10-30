@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
@@ -21,7 +22,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
@@ -79,7 +79,14 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
     @Override
     public void onBindViewHolder(@NonNull UpdatedChapterHolder updatedChapterHolder, int i) {
         Log.d("Binding", updates.get(i).CHAPTER_URL);
-        updatedChapterHolder.setNovelChapter(Objects.requireNonNull(DatabaseChapter.getChapter(updates.get(i).CHAPTER_URL)));
+        NovelChapter novelChapter = DatabaseChapter.getChapter(updates.get(i).CHAPTER_URL);
+        if (novelChapter != null) {
+            updatedChapterHolder.setNovelChapter(novelChapter);
+        } else {
+
+            throw new NullPointerException("NovelChapter returned null");
+        }
+
         updatedChapterHolder.popupMenu.setOnMenuItemClickListener(menuItem -> {
             NovelPage novelPage = new NovelPage();
             String nURL = Database.DatabaseIdentification.getNovelURLFromChapterURL(updatedChapterHolder.novelChapter.link);

@@ -712,21 +712,25 @@ public class Database {
          * @return
          */
         public static NovelChapter getChapter(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
             } else {
-                NovelChapter novelChapter = null;
-                try {
-                    novelChapter = new NovelChapter();
-                    novelChapter.title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
-                    novelChapter.link = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())));
-                    novelChapter.release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
-                    novelChapter.order = cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                NovelChapter novelChapter = new NovelChapter();
+
+                String title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
+                String link = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())));
+                String release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())));
+                double order = cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString()));
+
+                novelChapter.title = title;
+
+                novelChapter.link = link;
+                novelChapter.release = release;
+                novelChapter.order = order;
+
+
                 return novelChapter;
             }
         }

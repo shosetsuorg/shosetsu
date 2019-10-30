@@ -31,9 +31,8 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.squareup.picasso.Picasso;
-
-import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromNovelURL;
@@ -70,13 +69,10 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
     public void setNovelChapter(NovelChapter novelChapter) {
         this.novelChapter = novelChapter;
         title.setText(novelChapter.title);
+        NovelCard novelCard = Database.DatabaseNovels.getNovel(Database.DatabaseIdentification.getNovelURLFromChapterURL(novelChapter.link));
         Picasso.get()
                 .load(
-                        Objects.requireNonNull(
-                                Database.DatabaseNovels.getNovel(
-                                        Database.DatabaseIdentification.getNovelURLFromChapterURL(novelChapter.link)
-                                )
-                        ).imageURL)
+                        novelCard.imageURL)
                 .into(image);
         itemView.setOnClickListener(this);
     }
