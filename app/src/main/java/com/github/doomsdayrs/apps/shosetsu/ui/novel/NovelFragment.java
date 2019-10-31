@@ -69,7 +69,6 @@ public class NovelFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -87,6 +86,7 @@ public class NovelFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "NovelFragment");
         View view = inflater.inflate(R.layout.fragment_novel, container, false);
+        // Attach UI to program
         {
             progressBar = view.findViewById(R.id.fragment_novel_progress);
             viewPager = view.findViewById(R.id.fragment_novel_viewpager);
@@ -95,15 +95,19 @@ public class NovelFragment extends Fragment {
             errorMessage = view.findViewById(R.id.error_message);
             errorButton = view.findViewById(R.id.error_button);
         }
-        novelFragmentMain = new NovelFragmentMain();
-        novelFragmentMain.setNovelFragment(this);
-        novelFragmentChapters = new NovelFragmentChapters();
-        novelFragmentChapters.setNovelFragment(this);
+
+        // Create sub-fragments
+        {
+            novelFragmentMain = new NovelFragmentMain();
+            novelFragmentMain.setNovelFragment(this);
+            novelFragmentChapters = new NovelFragmentChapters();
+            novelFragmentChapters.setNovelFragment(this);
+        }
         //TODO FINISH TRACKING
         //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
-            if (isOnline() && !Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
+            if (isOnline() && !Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
                 setViewPager();
 
                 if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {
@@ -114,7 +118,7 @@ public class NovelFragment extends Fragment {
 
                 StaticNovel.novelLoader.execute(getActivity());
             } else {
-                StaticNovel.novelPage = Database.DatabaseNovels.getNovelPage(StaticNovel.novelURL);
+                StaticNovel.novelPage = Database.DatabaseNovels.getNovelPage(StaticNovel.novelID);
                 StaticNovel.status = Database.DatabaseNovels.getStatus(StaticNovel.novelURL);
                 if (StaticNovel.novelPage != null)
                     Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);

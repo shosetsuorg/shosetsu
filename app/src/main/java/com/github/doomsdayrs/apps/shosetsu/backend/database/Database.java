@@ -190,7 +190,7 @@ public class Database {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.URL + " ='" + url + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return 0;
+                return -1;
             } else {
                 cursor.moveToNext();
                 int id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()));
@@ -741,10 +741,14 @@ public class Database {
         /**
          * Bookmarks the novel
          *
-         * @param novelURL novelURL of the novel
+         * @param novelID novelID of the novel
          */
-        public static void bookMark(@NotNull String novelURL) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL));
+        public static void bookMark(int novelID) {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.PARENT_ID + "=" + novelID);
+        }
+
+        public static void bookMark(String novelURL) {
+            bookMark(getNovelIDFromNovelURL(novelURL));
         }
 
         /**
@@ -775,18 +779,22 @@ public class Database {
             return a > 0;
         }
 
+        public static void setReaderType(@NotNull int novelID, int reader) {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READER_TYPE + "=" + reader + " where " + Columns.ID + "=" + novelID);
+        }
+
         public static void setReaderType(@NotNull String novelURL, int reader) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READER_TYPE + "=" + reader + " where " + Columns.ID + "=" + getNovelIDFromNovelURL(novelURL));
+            setReaderType(getNovelIDFromNovelURL(novelURL), reader);
         }
 
         /**
          * Gets reader type for novel
          *
-         * @param novelURL Novel URL
+         * @param novelID novelID
          * @return -2 is no such novel, -1 is default, 0 is the same as -1, and 1+ is a specific reading type
          */
-        public static int getReaderType(@NotNull String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READER_TYPE + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL), null);
+        public static int getReaderType(int novelID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READER_TYPE + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return -2;
@@ -798,10 +806,13 @@ public class Database {
             return a;
         }
 
+        public static int getReaderType(String novelURL) {
+            return getReaderType(getNovelIDFromNovelURL(novelURL));
+        }
 
-        public static void addToLibrary(int formatter, @NotNull NovelPage novelPage, @NotNull String novelURL, int readingStatus) {
+
+        public static void addToLibrary(int formatter, @NotNull NovelPage novelPage, String novelURL, int readingStatus) {
             addNovel(novelURL, formatter);
-            int id = getNovelIDFromNovelURL(novelURL);
             String imageURL = novelPage.imageURL;
             if (imageURL == null)
                 imageURL = "";
@@ -823,7 +834,7 @@ public class Database {
                         Columns.LANGUAGE + "," +
                         Columns.MAX_CHAPTER_PAGE +
                         ")" + "values" + "(" +
-                        id + "," +
+                        getNovelIDFromNovelURL(novelURL) + "," +
                         0 + "," +
                         readingStatus + "," +
                         -1 + "," +
@@ -859,17 +870,21 @@ public class Database {
         /**
          * Is a novel in the library or not
          *
-         * @param novelURL Novel novelURL
+         * @param novelID Novel novelID
          * @return yes or no
          */
-        public static boolean inLibrary(@NotNull String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.URL + " ='" + novelURL + "'", null);
+        public static boolean inDatabase(int novelID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " ='" + novelID + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
             }
             cursor.close();
             return true;
+        }
+
+        public static boolean inDatabase(String novelURL) {
+            return -1 != getNovelIDFromNovelURL(novelURL);
         }
 
         /**
@@ -938,11 +953,10 @@ public class Database {
         /**
          * Gets saved novelPage
          *
-         * @param novelURL novelURL to retrieve
+         * @param novelID novel to retrieve
          * @return Saved novelPage
          */
-        public static NovelPage getNovelPage(@NotNull String novelURL) {
-            int ID = getNovelIDFromNovelURL(novelURL);
+        public static NovelPage getNovelPage(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " +
                     Columns.TITLE + "," +
                     Columns.IMAGE_URL + "," +
@@ -954,7 +968,7 @@ public class Database {
                     Columns.ARTISTS + "," +
                     Columns.LANGUAGE + "," +
                     Columns.MAX_CHAPTER_PAGE +
-                    " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + ID, null);
+                    " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -985,8 +999,12 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READING_STATUS + "=" + status + " where " + Columns.PARENT_ID + "='" + getNovelIDFromNovelURL(novelURL) + "'");
         }
 
-        public static Status getStatus(@NotNull String novelURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READING_STATUS + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + " =" + getNovelIDFromNovelURL(novelURL), null);
+        public static Status getStatus(String novelURL) {
+            return getStatus(getNovelIDFromNovelURL(novelURL));
+        }
+
+        public static Status getStatus(int novelID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READING_STATUS + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + " =" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return Status.UNREAD;
@@ -1025,9 +1043,9 @@ public class Database {
 
         }
 
-        public static void migrateNovel(@NotNull String oldURL, @NotNull String newURL, int formatterID, @NotNull NovelPage newNovel, int status) {
+        public static void migrateNovel(@NotNull String oldURL, String newURL, int formatterID, @NotNull NovelPage newNovel, int status) {
             unBookmark(oldURL);
-            if (!DatabaseNovels.inLibrary(newURL))
+            if (!DatabaseNovels.inDatabase(newURL))
                 addToLibrary(formatterID, newNovel, newURL, status);
             bookMark(newURL);
         }

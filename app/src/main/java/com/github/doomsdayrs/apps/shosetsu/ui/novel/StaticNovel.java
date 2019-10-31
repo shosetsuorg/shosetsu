@@ -42,7 +42,7 @@ public class StaticNovel {
     /**
      * Global variable of the current loaded novel
      */
-    public static String novelURL;
+    public static int novelID;
     public static NovelPage novelPage;
 
     public static List<NovelChapter> novelChapters = new ArrayList<>();
@@ -110,37 +110,5 @@ public class StaticNovel {
                 return 0;
             } else return -2;
         } else return -1;
-    }
-
-
-    public static void destroy() {
-        formatter = null;
-        novelChapters = null;
-        novelURL = null;
-        novelPage = null;
-
-        if (novelLoader != null) {
-            if (!novelLoader.isCancelled()) {
-                novelLoader.setC(false);
-                novelLoader.cancel(true);
-            }
-            novelLoader = null;
-        }
-        if (novelLoader != null) {
-            if (!novelLoader.isCancelled()) {
-                novelLoader.setC(false);
-                novelLoader.cancel(true);
-            }
-            novelLoader = null;
-        }
-
-        if (chapterLoader != null) {
-            if (!chapterLoader.isCancelled()) {
-                chapterLoader.setC(false);
-                chapterLoader.cancel(true);
-            }
-            chapterLoader = null;
-        }
-        status = Status.UNREAD;
     }
 }

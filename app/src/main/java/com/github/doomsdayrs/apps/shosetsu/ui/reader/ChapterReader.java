@@ -50,7 +50,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToS
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.setReaderType;
 import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.getNextChapter;
-import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.novelURL;
+import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.novelID;
 
 /*
  * This file is part of Shosetsu.
@@ -213,7 +213,7 @@ public class ChapterReader extends AppCompatActivity {
 
             readers[0] = menu.findItem(R.id.reader_0);
             readers[1] = menu.findItem(R.id.reader_1);
-            readerType = getReaderType(novelURL);
+            readerType = getReaderType(novelID);
 
             switch (readerType) {
                 case 1:
@@ -566,7 +566,7 @@ public class ChapterReader extends AppCompatActivity {
         @Override
         public void action(int spared) {
             readerType = spared;
-            setReaderType(novelURL, spared);
+            setReaderType(novelID, spared);
             setUpReader();
         }
     }
