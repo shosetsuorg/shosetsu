@@ -34,19 +34,19 @@ public class SettingsItem {
     protected TextView itemTitle;
     protected TextView itemDesc;
 
-    public SettingsItem(@NonNull View view){
+    public SettingsItem(@NonNull View view) {
         itemView = view;
         itemTitle = itemView.findViewById(R.id.settings_item_title);
-        if (itemTitle == null){
+        if (itemTitle == null) {
             // TODO: Log error & quit gracefully
         }
         itemDesc = itemView.findViewById(R.id.settings_item_desc);
-        if (itemDesc == null){
+        if (itemDesc == null) {
             // TODO: Log error & quit gracefully
         }
     }
 
-    public void invalidate(){
+    public void invalidate() {
         itemView.invalidate();
     }
 
@@ -66,7 +66,7 @@ public class SettingsItem {
         itemDesc.setText(desc);
     }
 
-    public void setOnClickListener(View.OnClickListener onClickListener){
+    public void setOnClickListener(View.OnClickListener onClickListener) {
         itemView.setOnClickListener(onClickListener);
     }
 }

@@ -24,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
  * @author github.com/doomsdayrs
  */
 public class NovelCard extends RecycleCard {
+
+    public final int novelID;
     /**
      * NovelURL
      */
@@ -42,12 +44,14 @@ public class NovelCard extends RecycleCard {
      * Constructor
      *
      * @param title       title
+     * @param novelID
      * @param novelURL    novelURL
      * @param imageURL    imageURL
      * @param formatterID id of formatter
      */
-    public NovelCard(String title, String novelURL, String imageURL, int formatterID) {
+    public NovelCard(String title, int novelID, String novelURL, String imageURL, int formatterID) {
         super(title);
+        this.novelID = novelID;
         this.novelURL = novelURL;
         this.imageURL = imageURL;
         this.formatterID = formatterID;

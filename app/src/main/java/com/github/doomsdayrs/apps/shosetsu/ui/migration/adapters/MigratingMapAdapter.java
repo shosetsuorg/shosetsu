@@ -72,7 +72,7 @@ public class MigratingMapAdapter extends RecyclerView.Adapter<CompressedHolder> 
 
     @Override
     public int getItemCount() {
-        if (migrationView.novelResults.size()> 0)
+        if (migrationView.novelResults.size() > 0)
             return migrationView.novelResults.get(migrationView.selection).size();
         else return 0;
     }

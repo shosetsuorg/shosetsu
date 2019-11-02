@@ -39,15 +39,16 @@ public class NovelFragmentMainAddToLibrary implements FloatingActionButton.OnCli
     @Override
     public void onClick(View v) {
         if (!novelFragmentMain.inLibrary) {
-            if (!Database.DatabaseNovels.inLibrary(StaticNovel.novelURL))
-                Database.DatabaseNovels.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, StaticNovel.status.getA());
-            Database.DatabaseNovels.bookMark(StaticNovel.novelURL);
+            // Thinking about this, this is an impossible combination as the novel should've loaded before this
+            //  if (!Database.DatabaseNovels.inLibrary(StaticNovel.novelID))
+            //      Database.DatabaseNovels.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel, StaticNovel.status.getA());
+            Database.DatabaseNovels.bookMark(StaticNovel.novelID);
             novelFragmentMain.inLibrary = true;
             novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
         } else {
-            Database.DatabaseNovels.unBookmark(StaticNovel.novelURL);
-                novelFragmentMain.inLibrary = false;
-                novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
+            Database.DatabaseNovels.unBookmark(StaticNovel.novelID);
+            novelFragmentMain.inLibrary = false;
+            novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
 
         }
     }

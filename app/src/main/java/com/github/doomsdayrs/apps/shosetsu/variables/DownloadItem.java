@@ -2,6 +2,10 @@ package com.github.doomsdayrs.apps.shosetsu.variables;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromChapterID;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelURLfromNovelID;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -34,6 +38,8 @@ public class DownloadItem {
     public final String chapterName;
     public final String novelURL;
     public final String chapterURL;
+    public final int novelID;
+    public final int chapterID;
 
     //Variables only for download manager
 
@@ -41,19 +47,19 @@ public class DownloadItem {
 
     /**
      * Constructor
-     *
-     * @param formatter   formatter to work with
+     *  @param formatter   formatter to work with
      * @param novelName   name of the novel
      * @param chapterName name of the chapter
-     * @param novelURL    NovelURL
-     * @param chapterURL  ChapterURL
+     * @param chapterID ChapterID
      */
-    public DownloadItem(Formatter formatter, String novelName, String chapterName, String novelURL, String chapterURL) {
+    public DownloadItem(Formatter formatter, String novelName, String chapterName, int chapterID) {
         this.formatter = formatter;
         this.novelName = cleanse(novelName);
         this.chapterName = cleanse(chapterName);
-        this.novelURL = novelURL;
-        this.chapterURL = chapterURL;
+        this.novelID = getNovelIDFromChapterID(chapterID);
+        this.novelURL = getNovelURLfromNovelID(novelID);
+        this.chapterURL = getChapterURLFromChapterID(chapterID);
+        this.chapterID = chapterID;
     }
 
     /**

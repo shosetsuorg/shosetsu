@@ -348,7 +348,7 @@ public class Database {
                 String nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
-                downloadItems.add(new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, DatabaseIdentification.getNovelURLFromChapterID(id), DatabaseIdentification.getChapterURLFromChapterID(id)));
+                downloadItems.add(new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, id));
             }
             cursor.close();
 
@@ -372,7 +372,7 @@ public class Database {
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = getFormatterIDFromChapterID(id);
                 cursor.close();
-                return new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, DatabaseIdentification.getNovelURLFromChapterID(id), DatabaseIdentification.getChapterURLFromChapterID(id));
+                return new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, id);
             }
         }
 
@@ -439,40 +439,50 @@ public class Database {
         }
 
         /**
-         * @param novelURL URL of novel
+         * @param novelID ID of novel
          * @return Count of chapters left to read
          */
-        public static int getCountOfChaptersUnread(String novelURL) {
-            int novelID = getNovelIDFromNovelURL(novelURL);
+        public static int getCountOfChaptersUnread(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + "=" + novelID + "" + " and " + Columns.READ_CHAPTER + "!=" + Status.READ, null);
             int count = cursor.getCount();
             cursor.close();
             return count;
         }
 
-        public static void updateOrder(String chapterURL, int order) {
-            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.ORDER + "='" + order + "' where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
+        @Deprecated
+        public static int getCountOfChaptersUnread(String novelURL) {
+            return getCountOfChaptersUnread(getNovelIDFromNovelURL(novelURL));
+        }
+
+        public static void updateOrder(int chapterID, int order) {
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.ORDER + "='" + order + "' where " + Columns.ID + "=" + chapterID);
         }
 
         /**
          * Updates the Y coordinate
          * Precondition is the chapter is already in the database.
          *
-         * @param chapterURL novelURL to update
-         * @param y          integer value scroll
+         * @param chapterID ID to update
+         * @param y         integer value scroll
          */
+
+        public static void updateY(int chapterID, int y) {
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.ID + "=" + chapterID);
+        }
+
+        @Deprecated
         public static void updateY(String chapterURL, int y) {
-            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
+            updateY(DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), y);
         }
 
         /**
          * Precondition is the chapter is already in the database
          *
-         * @param chapterURL chapterURL to the chapter
+         * @param chapterID chapterID to the chapter
          * @return order of chapter
          */
-        public static int getY(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+        public static int getY(int chapterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return 0;
@@ -484,12 +494,17 @@ public class Database {
             }
         }
 
+        @Deprecated
+        public static int getY(String chapterURL) {
+            return getY(DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
+        }
+
         /**
-         * @param chapterURL chapter to check
+         * @param chapterID chapter to check
          * @return returns chapter status
          */
-        public static Status getStatus(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+        public static Status getStatus(int chapterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return Status.UNREAD;
@@ -506,35 +521,49 @@ public class Database {
             }
         }
 
+        @Deprecated
+        public static Status getStatus(String chapterURL) {
+            return getStatus(getChapterIDFromChapterURL(chapterURL));
+        }
+
         /**
          * Sets chapter status
          *
-         * @param chapterURL chapter to be set
-         * @param status     status to be set
+         * @param chapterID chapter to be set
+         * @param status    status to be set
          */
+        public static void setChapterStatus(int chapterID, Status status) {
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.ID + "=" + chapterID);
+        }
+
+        @Deprecated
         public static void setChapterStatus(String chapterURL, Status status) {
-            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
+            setChapterStatus(getChapterIDFromChapterURL(chapterURL), status);
         }
 
         /**
          * Sets bookmark true or false (1 for true, 0 is false)
          *
-         * @param chapterURL chapter chapterURL
-         * @param b          1 is true, 0 is false
+         * @param chapterID chapterID
+         * @param b         1 is true, 0 is false
          */
-        public static void setBookMark(String chapterURL, int b) {
-            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.BOOKMARKED + "=" + b + " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
+        public static void setBookMark(int chapterID, int b) {
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.BOOKMARKED + "=" + b + " where " + Columns.ID + "=" + chapterID);
+        }
 
+        @Deprecated
+        public static void setBookMark(String chapterURL, int b) {
+            setBookMark(getChapterIDFromChapterURL(chapterURL), b);
         }
 
         /**
          * is this chapter bookmarked?
          *
-         * @param chapterURL imageURL to the chapter
+         * @param chapterID
          * @return if bookmarked?
          */
-        public static boolean isBookMarked(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+        public static boolean isBookMarked(int chapterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
@@ -547,34 +576,48 @@ public class Database {
 
         }
 
+        @Deprecated
+        public static boolean isBookMarked(String chapterURL) {
+            return isBookMarked(getChapterIDFromChapterURL(chapterURL));
+        }
+
         /**
          * Removes save path from chapter
          *
-         * @param chapterURL chapter to remove save path of
+         * @param chapterID chapter to remove save path of
          */
+        public static void removePath(int chapterID) {
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=null," + Columns.IS_SAVED + "=0 where " + Columns.ID + "=" + chapterID);
+        }
+
+        @Deprecated
         public static void removePath(String chapterURL) {
-            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=null," + Columns.IS_SAVED + "=0 where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
+            removePath(getChapterIDFromChapterURL(chapterURL));
         }
 
         /**
          * Adds save path
          *
-         * @param chapterURL  chapter to update
+         * @param chapterID   chapter to update
          * @param chapterPath save path to set
          */
+        public static void addSavedPath(int chapterID, String chapterPath) {
+            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "='" + chapterPath + "'," + Columns.IS_SAVED + "=1 where " + Columns.ID + "=" + chapterID);
+        }
+
         public static void addSavedPath(String chapterURL, String chapterPath) {
-            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "='" + chapterPath + "'," + Columns.IS_SAVED + "=1 where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
+            addSavedPath(getChapterIDFromChapterURL(chapterURL), chapterPath);
         }
 
         /**
          * Is the chapter saved
          *
-         * @param chapterURL novelURL of the chapter
+         * @param chapterID novelURL of the chapter
          * @return true if saved, false otherwise
          */
-        public static boolean isSaved(String chapterURL) {
+        public static boolean isSaved(int chapterID) {
             //   Log.d("CheckSave", chapterURL);
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 //   Log.d("CheckSave", chapterURL + " FALSE");
@@ -589,14 +632,19 @@ public class Database {
             }
         }
 
+        @Deprecated
+        public static boolean isSaved(String chapterURL) {
+            return isSaved(getChapterIDFromChapterURL(chapterURL));
+        }
+
         /**
          * Gets the novel from local storage
          *
-         * @param chapterURL novelURL of the chapter
+         * @param chapterID novelURL of the chapter
          * @return String of passage
          */
-        public static String getSavedNovelPassage(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.SAVE_PATH + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+        public static String getSavedNovelPassage(int chapterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.SAVE_PATH + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -606,6 +654,11 @@ public class Database {
                 cursor.close();
                 return Download_Manager.getText(savedData);
             }
+        }
+
+        @Deprecated
+        public static String getSavedNovelPassage(String chapterURL) {
+            return getSavedNovelPassage(getChapterIDFromChapterURL(chapterURL));
         }
 
         /**
@@ -661,9 +714,9 @@ public class Database {
             }
         }
 
+        @Deprecated
         public static List<NovelChapter> getChapters(String novelURL) {
-            int novelID = getNovelIDFromNovelURL(novelURL);
-            return getChapters(novelID);
+            return getChapters(getNovelIDFromNovelURL(novelURL));
         }
 
         /**
@@ -708,11 +761,11 @@ public class Database {
         /**
          * Gets a chapter by it's URL
          *
-         * @param chapterURL
+         * @param chapterID
          * @return
          */
-        public static NovelChapter getChapter(String chapterURL) {
-            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.TITLE + "," + Columns.ID + "," + Columns.RELEASE_DATE + "," + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
+        public static NovelChapter getChapter(int chapterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.TITLE + "," + Columns.ID + "," + Columns.RELEASE_DATE + "," + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return null;
@@ -733,6 +786,11 @@ public class Database {
 
                 return novelChapter;
             }
+        }
+
+        @Deprecated
+        public static NovelChapter getChapter(String chapterURL) {
+            return getChapter(getChapterIDFromChapterURL(chapterURL));
         }
     }
 
@@ -758,7 +816,11 @@ public class Database {
          * @return if removed successfully
          */
         public static void unBookmark(@NotNull String novelURL) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.ID + "=" + getNovelIDFromNovelURL(novelURL));
+            unBookmark(getNovelIDFromNovelURL(novelURL));
+        }
+
+        public static void unBookmark(int novelID) {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.ID + "=" + novelID);
         }
 
 
@@ -908,7 +970,7 @@ public class Database {
                         int parent = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
                         novelCards.add(new NovelCard(
                                 checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
-                                DatabaseIdentification.getNovelURLfromNovelID(parent),
+                                parent, DatabaseIdentification.getNovelURLfromNovelID(parent),
                                 cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
                                 DatabaseIdentification.getFormatterIDFromNovelID(parent)
                         ));
@@ -937,7 +999,7 @@ public class Database {
                 try {
                     NovelCard novelCard = new NovelCard(
                             checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
-                            novelURL,
+                            parent, novelURL,
                             cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
                             DatabaseIdentification.getFormatterIDFromNovelID(parent)
                     );
@@ -993,6 +1055,10 @@ public class Database {
                 }
             }
             return null;
+        }
+
+        public static NovelPage getNovelPage(String novelURL) {
+            return getNovelPage(getNovelIDFromNovelURL(novelURL));
         }
 
         public static void setStatus(@NotNull String novelURL, @NotNull Status status) {

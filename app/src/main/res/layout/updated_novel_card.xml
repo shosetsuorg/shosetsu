@@ -13,6 +13,7 @@
         android:cropToPadding="true"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/todo"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

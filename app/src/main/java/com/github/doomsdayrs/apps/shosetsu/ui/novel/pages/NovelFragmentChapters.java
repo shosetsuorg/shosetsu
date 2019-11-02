@@ -96,6 +96,7 @@ public class NovelFragmentChapters extends Fragment {
                     max = x;
         return max;
     }
+
     public static ChaptersAdapter adapter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public NovelFragment novelFragment;
@@ -205,7 +206,7 @@ public class NovelFragmentChapters extends Fragment {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-            if (Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
+            if (Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
                 StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(StaticNovel.novelURL);
                 if (StaticNovel.novelChapters != null && StaticNovel.novelChapters.size() != 0)
                     resumeRead.setVisibility(View.VISIBLE);
@@ -250,7 +251,7 @@ public class NovelFragmentChapters extends Fragment {
             case R.id.chapter_download_selected:
                 for (NovelChapter novelChapter : selectedChapters)
                     if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
-                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link);
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link, novelID, chapterID);
                         Download_Manager.addToDownload(downloadItem);
                     }
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
@@ -259,7 +260,7 @@ public class NovelFragmentChapters extends Fragment {
             case R.id.chapter_delete_selected:
                 for (NovelChapter novelChapter : selectedChapters)
                     if (Database.DatabaseChapter.isSaved(novelChapter.link))
-                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link));
+                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link, novelID, chapterID));
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
 

@@ -51,6 +51,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookma
 public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public NovelChapter novelChapter;
+    public int chapterID = -1;
 
     private final ImageView moreOptions;
     public final MaterialCardView cardView;
@@ -99,11 +100,11 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
                     return true;
                 case R.id.popup_chapter_menu_download:
-                    if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
-                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link);
+                    if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link, novelID, chapterID);
                         Download_Manager.addToDownload(downloadItem);
                     } else {
-                        if (Download_Manager.delete(itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link))) {
+                        if (Download_Manager.delete(itemView.getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link, novelID, chapterID))) {
                             downloadTag.setVisibility(View.INVISIBLE);
                         }
                     }
@@ -111,15 +112,15 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     return true;
 
                 case R.id.popup_chapter_menu_mark_read:
-                    Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READ);
+                    Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
                     return true;
                 case R.id.popup_chapter_menu_mark_unread:
-                    Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.UNREAD);
+                    Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD);
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
                     return true;
                 case R.id.popup_chapter_menu_mark_reading:
-                    Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
+                    Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
                     NovelFragmentChapters.adapter.notifyDataSetChanged();
                     return true;
                 case R.id.browser:

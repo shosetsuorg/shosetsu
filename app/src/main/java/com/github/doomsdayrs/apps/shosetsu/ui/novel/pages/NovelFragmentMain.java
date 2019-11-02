@@ -100,7 +100,7 @@ public class NovelFragmentMain extends Fragment {
                 Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
                     ArrayList<NovelCard> novelCards = new ArrayList<>();
-                    novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID()));
+                    novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelID, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID()));
                     intent.putExtra("selected", serializeToString(novelCards));
                 } catch (IOException e) {
                     e.printStackTrace();

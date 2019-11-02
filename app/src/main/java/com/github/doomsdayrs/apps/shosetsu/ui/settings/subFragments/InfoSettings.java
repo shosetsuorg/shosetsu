@@ -40,32 +40,32 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItem
 
 public class InfoSettings extends Fragment {
 
-    private void onClickAppVer(View v){
-         // TODO: Add the app version number after consultation
+    private void onClickAppVer(View v) {
+        // TODO: Add the app version number after consultation
         Toast.makeText(v.getContext(), "AppVer", Toast.LENGTH_SHORT).show();
     }
 
-    private void onClickReportBug(View v){
+    private void onClickReportBug(View v) {
         Toast.makeText(v.getContext(), "ReportBug", Toast.LENGTH_SHORT).show();
         String bugReportLink = getString(R.string.report_bug_link);
         Intent bugReportingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(bugReportLink));
         startActivity(bugReportingIntent);
     }
 
-    private void onClickAuthor(View v){
+    private void onClickAuthor(View v) {
         Toast.makeText(v.getContext(), "Author", Toast.LENGTH_SHORT).show();
         String authorGitHubLink = getString(R.string.author_github);
         Intent authorGitHubIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(authorGitHubLink));
         startActivity(authorGitHubIntent);
     }
 
-    private void onClickDisclaimer(View v){
+    private void onClickDisclaimer(View v) {
         // TODO: Show full disclaimer on click
         Toast.makeText(v.getContext(), "Disclaimer", Toast.LENGTH_SHORT).show();
     }
 
-    private void onClickLicense(View v){
-         // TODO: Show full license on click
+    private void onClickLicense(View v) {
+        // TODO: Show full license on click
         Toast.makeText(v.getContext(), "License", Toast.LENGTH_SHORT).show();
     }
 

@@ -36,7 +36,6 @@
       "maxChapterPage": ""
     }
   ],
-
   "chapters": [
     {
       "novelURL": "serialize",
@@ -44,7 +43,6 @@
       "title": "serialize",
       "release_date": "serialize",
       "order": "",
-
       "Y": "",
       "READ_CHAPTER": "",
       "BOOKMARKED": "",

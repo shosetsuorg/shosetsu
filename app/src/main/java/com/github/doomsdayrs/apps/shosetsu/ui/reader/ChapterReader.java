@@ -92,6 +92,8 @@ public class ChapterReader extends AppCompatActivity {
 
     public String title;
     public Formatter formatter;
+
+    public int chapterID;
     public String chapterURL;
     public String unformattedText = null;
     public String text = null;
@@ -134,6 +136,7 @@ public class ChapterReader extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putString("unformattedText", text);
         outState.putString("text", text);
+        outState.putInt("chapterID", chapterID);
         outState.putString("chapterURL", chapterURL);
         outState.putInt("formatter", formatter.getID());
         outState.putString("title", title);
@@ -156,7 +159,7 @@ public class ChapterReader extends AppCompatActivity {
         // Bookmark
         {
             bookmark = menu.findItem(R.id.chapter_view_bookmark);
-            bookmarked = Database.DatabaseChapter.isBookMarked(chapterURL);
+            bookmarked = Database.DatabaseChapter.isBookMarked(chapterID);
             if (bookmarked)
                 bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
 
@@ -340,10 +343,12 @@ public class ChapterReader extends AppCompatActivity {
         if (savedInstanceState != null) {
             unformattedText = savedInstanceState.getString("unformattedText");
             title = savedInstanceState.getString("title");
+            chapterID = savedInstanceState.getInt("chapterID");
             chapterURL = savedInstanceState.getString("chapterURL");
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
             text = savedInstanceState.getString("text");
         } else {
+            chapterID = getIntent().getIntExtra("chapterID", -1);
             chapterURL = getIntent().getStringExtra("chapterURL");
             title = getIntent().getStringExtra("title");
             formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
@@ -460,14 +465,14 @@ public class ChapterReader extends AppCompatActivity {
 
                     //   Log.d("TY", String.valueOf(textView.getScrollY()));
 
-                    if (chapterURL != null && Database.DatabaseChapter.getStatus(chapterURL) != Status.READ)
-                        Database.DatabaseChapter.updateY(chapterURL, y);
+                    if (chapterURL != null && Database.DatabaseChapter.getStatus(chapterID) != Status.READ)
+                        Database.DatabaseChapter.updateY(chapterID, y);
                 }
             } else {
                 Log.i("Scroll", "Marking chapter as READ");
                 if (chapterURL != null) {
-                    Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READ);
-                    Database.DatabaseChapter.updateY(chapterURL, 0);
+                    Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
+                    Database.DatabaseChapter.updateY(chapterID, 0);
                     nextChapter.setVisibility(View.VISIBLE);
                 }
                 //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
@@ -480,10 +485,10 @@ public class ChapterReader extends AppCompatActivity {
      */
     public void loadChapter() {
         ready = false;
-        if (Database.DatabaseChapter.isSaved(chapterURL)) {
-            unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterURL));
+        if (Database.DatabaseChapter.isSaved(chapterID)) {
+            unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterID));
             setUpReader();
-            scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterURL)));
+            scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)));
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(title);
             ready = true;
@@ -493,7 +498,7 @@ public class ChapterReader extends AppCompatActivity {
             new ReaderViewLoader(this).execute();
         }
 
-        Database.DatabaseChapter.setChapterStatus(chapterURL, Status.READING);
+        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
     }
 
     /**

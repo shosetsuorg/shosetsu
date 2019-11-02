@@ -27,7 +27,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.tracking;
 class Anilist {
 
     @SuppressWarnings("EmptyMethod")
-    void auth(String username, String password){
+    void auth(String username, String password) {
 
     }
 }

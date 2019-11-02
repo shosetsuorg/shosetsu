@@ -44,6 +44,7 @@ import java.util.Objects;
  */
 public class SettingsFragment extends Fragment {
     private static final ArrayList<SettingsCard> cards = new ArrayList<>();
+
     static {
         cards.add(new SettingsCard(Types.DOWNLOAD));
         cards.add(new SettingsCard(Types.VIEW));

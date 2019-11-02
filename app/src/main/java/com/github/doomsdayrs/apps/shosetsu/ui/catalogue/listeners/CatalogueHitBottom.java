@@ -39,13 +39,13 @@ public class CatalogueHitBottom extends RecyclerView.OnScrollListener {
 
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-        if (!catalogueFragment.isQuery&&!catalogueFragment.isInSearch)
+        if (!catalogueFragment.isQuery && !catalogueFragment.isInSearch)
             if (!running)
                 if (!catalogueFragment.library_view.canScrollVertically(1)) {
                     Log.d("CatalogueFragmentLoad", "Getting next page");
                     running = true;
                     catalogueFragment.currentMaxPage++;
-                  new CataloguePageLoader(catalogueFragment, this).execute(catalogueFragment.currentMaxPage);
+                    new CataloguePageLoader(catalogueFragment, this).execute(catalogueFragment.currentMaxPage);
                 }
     }
 }

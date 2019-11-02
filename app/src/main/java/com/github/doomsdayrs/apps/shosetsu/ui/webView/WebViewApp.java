@@ -72,5 +72,4 @@ public class WebViewApp extends AppCompatActivity {
     }
 
 
-
 }

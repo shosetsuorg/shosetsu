@@ -23,7 +23,7 @@
         android:theme="@style/Theme.MaterialComponents"
         tools:ignore="GoogleAppIndexingWarning"
         android:requestLegacyExternalStorage="true"
-        tools:targetApi="n">
+        tools:targetApi="q">
 
 
         <activity

@@ -97,7 +97,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
         try {
             StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
-            if (C && !Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
+            if (C && !Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
                 Database.DatabaseNovels.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
             }
             //TODO The getNovelID in this method likely will cause slowdowns due to IO
@@ -174,7 +174,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         } else {
             assert novelFragmentMain != null;
             novelFragmentMain.swipeRefreshLayout.setRefreshing(false);
-            if (Database.DatabaseNovels.inLibrary(StaticNovel.novelURL)) {
+            if (Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
                 try {
                     Database.DatabaseNovels.updateData(StaticNovel.novelURL, StaticNovel.novelPage);
                 } catch (Exception e) {

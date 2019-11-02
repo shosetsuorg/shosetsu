@@ -51,7 +51,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
     }
 
     /**
-     * @param catalogueFragment          the fragment this is assigned to (reference to parent)
+     * @param catalogueFragment  the fragment this is assigned to (reference to parent)
      * @param catalogueHitBottom The listener to update once new page is loaded
      */
     public CataloguePageLoader(CatalogueFragment catalogueFragment, CatalogueHitBottom catalogueHitBottom) {

@@ -20,6 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 
 /*
@@ -74,11 +75,14 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
         chaptersViewHolder.library_card_title.setText(novelChapter.title);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
 
+        int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+        chaptersViewHolder.chapterID = chapterID;
+
         //TODO The getNovelID in this method likely will cause slowdowns due to IO
         if (!Database.DatabaseChapter.inChapters(novelChapter.link))
             Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(StaticNovel.novelURL), novelChapter);
 
-        if (Database.DatabaseChapter.isBookMarked(novelChapter.link)) {
+        if (Database.DatabaseChapter.isBookMarked(chapterID)) {
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
             chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_bookmark).setTitle("UnBookmark");
         } else {
@@ -99,7 +103,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
         } else chaptersViewHolder.checkBox.setVisibility(View.GONE);
 
 
-        if (Database.DatabaseChapter.isSaved(novelChapter.link)) {
+        if (Database.DatabaseChapter.isSaved(chapterID)) {
             chaptersViewHolder.downloadTag.setVisibility(View.VISIBLE);
             chaptersViewHolder.popupMenu.getMenu().findItem(R.id.popup_chapter_menu_download).setTitle("Delete");
         } else {
@@ -107,7 +111,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
             chaptersViewHolder.downloadTag.setVisibility(View.INVISIBLE);
         }
 
-        switch (Database.DatabaseChapter.getStatus(novelChapter.link)) {
+        switch (Database.DatabaseChapter.getStatus(chapterID)) {
 
             case READING:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -118,7 +122,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
                 chaptersViewHolder.status.setText(Status.READING.getStatus());
                 chaptersViewHolder.readTag.setVisibility(View.VISIBLE);
                 chaptersViewHolder.read.setVisibility(View.VISIBLE);
-                chaptersViewHolder.read.setText(String.valueOf(Database.DatabaseChapter.getY(novelChapter.link)));
+                chaptersViewHolder.read.setText(String.valueOf(Database.DatabaseChapter.getY(chapterID)));
                 break;
             case UNREAD:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

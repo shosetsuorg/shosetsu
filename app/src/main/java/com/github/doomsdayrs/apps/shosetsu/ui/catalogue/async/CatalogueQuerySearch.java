@@ -40,6 +40,7 @@ public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<Cata
 
     /**
      * Search catalogue
+     *
      * @param strings ignored
      * @return List of results
      */

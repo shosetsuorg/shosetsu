@@ -35,6 +35,8 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
+
 
 /*
  * This file is part of Shosetsu.
@@ -399,6 +401,7 @@ public class Utilities {
      * @return true means added, false means removed
      */
     public static boolean toggleBookmarkChapter(String chapterURL) {
+        //TODO Simplify
         if (Database.DatabaseChapter.isBookMarked(chapterURL)) {
             Database.DatabaseChapter.setBookMark(chapterURL, 0);
             return false;
@@ -416,10 +419,20 @@ public class Utilities {
                 .apply();
     }
 
+    /**
+     * Pre resquite requires chapter to already have been added to library
+     *
+     * @param activity
+     * @param novelChapter
+     * @param nurl
+     * @param formatterID
+     */
     public static void openChapter(Activity activity, NovelChapter novelChapter, String nurl, int formatterID) {
-        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
+        int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
         Intent intent = new Intent(activity, ChapterReader.class);
         intent.putExtra("title", novelChapter.title);
+        intent.putExtra("chapterID", chapterID);
         intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelURL", nurl);
         intent.putExtra("formatter", formatterID);

@@ -43,6 +43,19 @@ public class StaticNovel {
      * Global variable of the current loaded novel
      */
     public static int novelID;
+    public static String novelURL;
+
+    public static void setNovelID(int novelID) {
+        StaticNovel.novelID = novelID;
+        novelURL = Database.DatabaseIdentification.getNovelURLfromNovelID(novelID);
+    }
+
+    public static void setBaseValues(int novelID, String novelURL) {
+        StaticNovel.novelID = novelID;
+        StaticNovel.novelURL = novelURL;
+    }
+
+
     public static NovelPage novelPage;
 
     public static List<NovelChapter> novelChapters = new ArrayList<>();
