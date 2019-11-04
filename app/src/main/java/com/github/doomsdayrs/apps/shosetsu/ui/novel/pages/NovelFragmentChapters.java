@@ -37,6 +37,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -249,18 +251,22 @@ public class NovelFragmentChapters extends Fragment {
                 return true;
 
             case R.id.chapter_download_selected:
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (!Database.DatabaseChapter.isSaved(novelChapter.link)) {
-                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link, novelID, chapterID);
+                for (NovelChapter novelChapter : selectedChapters) {
+                    int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+                    if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, chapterID);
                         Download_Manager.addToDownload(downloadItem);
                     }
+                }
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
 
             case R.id.chapter_delete_selected:
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (Database.DatabaseChapter.isSaved(novelChapter.link))
-                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, StaticNovel.novelURL, novelChapter.link, novelID, chapterID));
+                for (NovelChapter novelChapter : selectedChapters) {
+                    int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+                    if (Database.DatabaseChapter.isSaved(chapterID))
+                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, chapterID));
+                }
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
 
@@ -271,23 +277,31 @@ public class NovelFragmentChapters extends Fragment {
                 return true;
 
             case R.id.chapter_mark_read:
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 2)
-                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READ);
+                for (NovelChapter novelChapter : selectedChapters) {
+                    int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+
+                    if (Database.DatabaseChapter.getStatus(chapterID).getA() != 2)
+                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
+                }
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
 
             case R.id.chapter_mark_unread:
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
-                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.UNREAD);
+                for (NovelChapter novelChapter : selectedChapters) {
+                    int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+
+                    if (Database.DatabaseChapter.getStatus(chapterID).getA() != 0)
+                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD);
+                }
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
 
             case R.id.chapter_mark_reading:
-                for (NovelChapter novelChapter : selectedChapters)
-                    if (Database.DatabaseChapter.getStatus(novelChapter.link).getA() != 0)
-                        Database.DatabaseChapter.setChapterStatus(novelChapter.link, Status.READING);
+                for (NovelChapter novelChapter : selectedChapters) {
+                    int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+                    if (Database.DatabaseChapter.getStatus(chapterID).getA() != 0)
+                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
+                }
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
 

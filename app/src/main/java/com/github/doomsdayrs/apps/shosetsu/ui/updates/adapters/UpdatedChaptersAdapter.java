@@ -27,6 +27,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowse
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromNovelURL;
 
 /*
@@ -101,6 +102,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
 
             Formatter formatter = DefaultScrapers.getByID(getFormatterIDFromNovelURL(nURL));
 
+            int chapterID = getChapterIDFromChapterURL(novelChapter.link);
             if (novelPage != null)
                 switch (menuItem.getItemId()) {
                     case R.id.popup_chapter_menu_bookmark:
@@ -112,30 +114,31 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
                         }
                         notifyDataSetChanged();
                         return true;
-                    case R.id.popup_chapter_menu_download:
-                        if (!Database.DatabaseChapter.isSaved(updatedChapterHolder.novelChapter.link)) {
-                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, nURL, updatedChapterHolder.novelChapter.link, novelID, chapterID);
+                    case R.id.popup_chapter_menu_download: {
+                        if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, chapterID);
                             Download_Manager.addToDownload(downloadItem);
                         } else {
-                            if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, nURL, updatedChapterHolder.novelChapter.link, novelID, chapterID))) {
+                            if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, chapterID))) {
                                 updatedChapterHolder.downloadTag.setVisibility(View.INVISIBLE);
                             }
                         }
-                        notifyDataSetChanged();
-                        return true;
+                    }
+                    notifyDataSetChanged();
+                    return true;
 
                     case R.id.popup_chapter_menu_mark_read:
-                        Database.DatabaseChapter.setChapterStatus(updatedChapterHolder.novelChapter.link, Status.READ);
+                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
                         notifyDataSetChanged();
 
                         return true;
                     case R.id.popup_chapter_menu_mark_unread:
-                        Database.DatabaseChapter.setChapterStatus(updatedChapterHolder.novelChapter.link, Status.UNREAD);
+                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD);
                         notifyDataSetChanged();
 
                         return true;
                     case R.id.popup_chapter_menu_mark_reading:
-                        Database.DatabaseChapter.setChapterStatus(updatedChapterHolder.novelChapter.link, Status.READING);
+                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
                         notifyDataSetChanged();
 
                         return true;
