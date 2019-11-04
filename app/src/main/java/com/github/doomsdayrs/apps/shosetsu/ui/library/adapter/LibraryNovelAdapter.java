@@ -80,7 +80,7 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
             }
         }
 
-        int count = Database.DatabaseChapter.getCountOfChaptersUnread(novelCard.novelURL);
+        int count = Database.DatabaseChapter.getCountOfChaptersUnread(novelCard.novelID);
         if (count != 0) {
             libraryViewHolder.chip.setVisibility(View.VISIBLE);
             libraryViewHolder.chip.setText(String.valueOf(count));

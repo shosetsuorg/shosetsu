@@ -78,6 +78,9 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.novelID;
  */
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
+    int chapterID;
+
+
     public boolean ready = false;
 
     public TextView textView;

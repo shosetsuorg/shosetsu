@@ -51,7 +51,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
  * @author github.com/doomsdayrs
  */
 public class NovelFragment extends Fragment {
-
+    public int novelID;
 
     public NovelFragmentMain novelFragmentMain;
     public NovelFragmentChapters novelFragmentChapters;
@@ -79,6 +79,11 @@ public class NovelFragment extends Fragment {
 
         StaticNovel.chapterLoader = null;
         StaticNovel.novelLoader = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt("novelID", novelID);
     }
 
     @Nullable
@@ -125,6 +130,7 @@ public class NovelFragment extends Fragment {
                 setViewPager();
             }
         } else {
+            novelID = savedInstanceState.getInt("novelID");
             setViewPager();
         }
         return view;

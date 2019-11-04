@@ -66,6 +66,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
 public class NovelFragmentChapters extends Fragment {
+
     public ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
 
     public boolean contains(NovelChapter novelChapter) {
@@ -168,6 +169,7 @@ public class NovelFragmentChapters extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             selectedChapters = (ArrayList<NovelChapter>) savedInstanceState.getSerializable("selChapter");
+            currentMaxPage = savedInstanceState.getInt("maxPage");
         }
         Log.d("NovelFragmentChapters", "Creating");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
@@ -209,7 +211,7 @@ public class NovelFragmentChapters extends Fragment {
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
             if (Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
-                StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(StaticNovel.novelURL);
+                StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(novelFragment.novelID);
                 if (StaticNovel.novelChapters != null && StaticNovel.novelChapters.size() != 0)
                     resumeRead.setVisibility(View.VISIBLE);
             }
