@@ -20,16 +20,22 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
+ * <p>
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
+ *
+ * This is a recycle card, it is used for the recyclers in the program.
  */
-public class RecycleCard implements Serializable {
+public class RecycleCard {
     /**
      * If there isn't an image loaded in, this will be the image
      */
-    public final int libraryImageResource;
+    public final int libraryImageResource = R.drawable.ic_close_black_24dp;
 
     /**
      * Text of the card
@@ -42,7 +48,6 @@ public class RecycleCard implements Serializable {
      * @param title text of card
      */
     RecycleCard(String title) {
-        this.libraryImageResource = R.drawable.ic_close_black_24dp;
         this.title = title;
     }
 

@@ -22,13 +22,14 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 16 / 06 / 2019
  *
  * @author github.com/doomsdayrs
- */
-
-/**
+ * <p>
  * These items symbolize download items and their data
  */
 public class DownloadItem {
@@ -47,10 +48,11 @@ public class DownloadItem {
 
     /**
      * Constructor
-     *  @param formatter   formatter to work with
+     *
+     * @param formatter   formatter to work with
      * @param novelName   name of the novel
      * @param chapterName name of the chapter
-     * @param chapterID ChapterID
+     * @param chapterID   ChapterID
      */
     public DownloadItem(Formatter formatter, String novelName, String chapterName, int chapterID) {
         this.formatter = formatter;
