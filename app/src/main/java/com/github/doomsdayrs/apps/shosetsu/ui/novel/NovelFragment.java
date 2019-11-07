@@ -124,7 +124,7 @@ public class NovelFragment extends Fragment {
                 StaticNovel.novelLoader.execute(getActivity());
             } else {
                 StaticNovel.novelPage = Database.DatabaseNovels.getNovelPage(StaticNovel.novelID);
-                StaticNovel.status = Database.DatabaseNovels.getStatus(StaticNovel.novelURL);
+                StaticNovel.status = Database.DatabaseNovels.getStatus(novelID);
                 if (StaticNovel.novelPage != null)
                     Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
                 setViewPager();

@@ -233,7 +233,7 @@ public class LibraryFragment extends Fragment {
 
             case R.id.remove_from_library:
                 for (NovelCard novelCard : selectedNovels) {
-                    Database.DatabaseNovels.unBookmark(novelCard.novelURL);
+                    Database.DatabaseNovels.unBookmark(novelCard.novelID);
                     libraryNovelCards.remove(novelCard);
                 }
                 selectedNovels = new ArrayList<>();

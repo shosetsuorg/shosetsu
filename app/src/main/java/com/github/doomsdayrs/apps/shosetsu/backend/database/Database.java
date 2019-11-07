@@ -754,27 +754,14 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.PARENT_ID + "=" + novelID);
         }
 
-        public static void bookMark(String novelURL) {
-            bookMark(getNovelIDFromNovelURL(novelURL));
-        }
-
         /**
          * UnBookmarks the novel
          *
-         * @param novelURL novelURL
+         * @param novelID id
          * @return if removed successfully
          */
-        public static void unBookmark(@NotNull String novelURL) {
-            unBookmark(getNovelIDFromNovelURL(novelURL));
-        }
-
         public static void unBookmark(int novelID) {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.PARENT_ID + "=" + novelID);
-        }
-
-
-        public static boolean isBookmarked(String novelURL) {
-            return isBookmarked(getNovelIDFromNovelURL(novelURL));
         }
 
         public static boolean isBookmarked(int novelID) {
@@ -792,10 +779,6 @@ public class Database {
 
         public static void setReaderType(@NotNull int novelID, int reader) {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READER_TYPE + "=" + reader + " where " + Columns.ID + "=" + novelID);
-        }
-
-        public static void setReaderType(@NotNull String novelURL, int reader) {
-            setReaderType(getNovelIDFromNovelURL(novelURL), reader);
         }
 
         /**
@@ -816,11 +799,6 @@ public class Database {
             cursor.close();
             return a;
         }
-
-        public static int getReaderType(String novelURL) {
-            return getReaderType(getNovelIDFromNovelURL(novelURL));
-        }
-
 
         public static void addToLibrary(int formatter, @NotNull NovelPage novelPage, String novelURL, int readingStatus) {
             addNovel(novelURL, formatter);
@@ -932,13 +910,12 @@ public class Database {
             }
         }
 
-        public static NovelCard getNovel(String novelURL) {
+        public static NovelCard getNovel(int novelID) {
             Log.d("DL", "Getting");
-            int parent = getNovelIDFromNovelURL(novelURL);
 
             Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
                     new String[]{Columns.PARENT_ID.toString(), Columns.TITLE.toString(), Columns.IMAGE_URL.toString()},
-                    Columns.BOOKMARKED + "=1 and " + Columns.PARENT_ID + "=" + parent, null, null, null, null);
+                    Columns.BOOKMARKED + "=1 and " + Columns.PARENT_ID + "=" + novelID, null, null, null, null);
 
             if (cursor.getCount() <= 0) {
                 cursor.close();
@@ -948,9 +925,9 @@ public class Database {
                 try {
                     NovelCard novelCard = new NovelCard(
                             checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
-                            parent, novelURL,
+                            novelID, getNovelURLfromNovelID(novelID),
                             cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
-                            DatabaseIdentification.getFormatterIDFromNovelID(parent)
+                            DatabaseIdentification.getFormatterIDFromNovelID(novelID)
                     );
                     cursor.close();
                     return novelCard;
@@ -1006,16 +983,8 @@ public class Database {
             return null;
         }
 
-        public static NovelPage getNovelPage(String novelURL) {
-            return getNovelPage(getNovelIDFromNovelURL(novelURL));
-        }
-
-        public static void setStatus(@NotNull String novelURL, @NotNull Status status) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READING_STATUS + "=" + status + " where " + Columns.PARENT_ID + "='" + getNovelIDFromNovelURL(novelURL) + "'");
-        }
-
-        public static Status getStatus(String novelURL) {
-            return getStatus(getNovelIDFromNovelURL(novelURL));
+        public static void setStatus(int novelID, @NotNull Status status) {
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READING_STATUS + "=" + status + " where " + Columns.PARENT_ID + "=" + novelID);
         }
 
         public static Status getStatus(int novelID) {
@@ -1058,11 +1027,11 @@ public class Database {
 
         }
 
-        public static void migrateNovel(@NotNull String oldURL, String newURL, int formatterID, @NotNull NovelPage newNovel, int status) {
-            unBookmark(oldURL);
+        public static void migrateNovel(int oldID, String newURL, int formatterID, @NotNull NovelPage newNovel, int status) {
+            unBookmark(oldID);
             if (!DatabaseNovels.inDatabase(newURL))
                 addToLibrary(formatterID, newNovel, newURL, status);
-            bookMark(newURL);
+            bookMark(getNovelIDFromNovelURL(newURL));
         }
 
     }

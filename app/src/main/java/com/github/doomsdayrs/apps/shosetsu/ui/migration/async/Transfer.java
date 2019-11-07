@@ -120,7 +120,8 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
                     }
                     if (C) {
                         migrationView.pageCount.post(() -> migrationView.pageCount.setText(""));
-                        Database.DatabaseNovels.migrateNovel(strings[0], strings[1], formatter.getID(), novelPage, Database.DatabaseNovels.getStatus(strings[0]).getA());
+                        int oldID = getNovelIDFromNovelURL(strings[0]);
+                        Database.DatabaseNovels.migrateNovel(oldID, strings[1], formatter.getID(), novelPage, Database.DatabaseNovels.getStatus(oldID).getA());
                     }
                 } catch (IOException e) {
                     if (e.getMessage() != null)

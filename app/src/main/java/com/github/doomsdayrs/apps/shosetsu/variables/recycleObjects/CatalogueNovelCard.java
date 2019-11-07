@@ -29,6 +29,7 @@ public class CatalogueNovelCard extends RecycleCard implements Serializable {
      */
     public final String imageURL;
 
+    public final int novelID;
     /**
      * link to the novel
      */
@@ -36,14 +37,15 @@ public class CatalogueNovelCard extends RecycleCard implements Serializable {
 
     /**
      * Constructor
-     *
-     * @param imageURL image chapterURL
+     *  @param imageURL image chapterURL
      * @param title    title
+     * @param novelID
      * @param novelURL novelURL
      */
-    public CatalogueNovelCard(String imageURL, String title, String novelURL) {
+    public CatalogueNovelCard(String imageURL, String title, int novelID, String novelURL) {
         super(title);
         this.imageURL = imageURL;
+        this.novelID = novelID;
         this.novelURL = novelURL;
     }
 

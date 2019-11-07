@@ -29,6 +29,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookma
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromNovelURL;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 
 /*
  * This file is part of Shosetsu.
@@ -93,7 +94,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
             String nURL = Database.DatabaseIdentification.getNovelURLFromChapterURL(updatedChapterHolder.novelChapter.link);
 
             if (nURL != null)
-                novelPage = Database.DatabaseNovels.getNovelPage(nURL);
+                novelPage = Database.DatabaseNovels.getNovelPage(getNovelIDFromNovelURL(nURL));
 
             if (novelPage == null) {
                 Log.e("DatabaseError", "No such novel in DB");

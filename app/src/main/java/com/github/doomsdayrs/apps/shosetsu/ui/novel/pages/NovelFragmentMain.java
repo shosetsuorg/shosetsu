@@ -124,7 +124,7 @@ public class NovelFragmentMain extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_novel, menu);
-        if (Database.DatabaseNovels.isBookmarked(StaticNovel.novelURL)) {
+        if (Database.DatabaseNovels.isBookmarked(novelFragment.novelID)) {
             menu.findItem(R.id.source_migrate).setVisible(true);
         } else menu.findItem(R.id.source_migrate).setVisible(false);
 
@@ -174,7 +174,7 @@ public class NovelFragmentMain extends Fragment {
         floatingActionButton.hide();
 
 
-        if (Database.DatabaseNovels.isBookmarked(StaticNovel.novelURL))
+        if (Database.DatabaseNovels.isBookmarked(novelFragment.novelID))
             inLibrary();
 
         if (inLibrary)

@@ -44,6 +44,7 @@ public class NovelCardViewHolder extends RecyclerView.ViewHolder implements View
     public CatalogueFragment catalogueFragment;
     public Formatter formatter;
     public String url;
+    public int novelID;
 
     public NovelCardViewHolder(@NonNull View itemView) {
         super(itemView);

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
@@ -91,7 +92,7 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
             }
 
             for (Novel novel : novels)
-                catalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, novel.link));
+                catalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link));
             catalogueFragment.library_view.post(() -> catalogueFragment.catalogueAdapter.notifyDataSetChanged());
 
             if (catalogueHitBottom != null) {

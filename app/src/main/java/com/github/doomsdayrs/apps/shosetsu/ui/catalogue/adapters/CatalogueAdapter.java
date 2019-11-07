@@ -67,6 +67,7 @@ public class CatalogueAdapter extends RecyclerView.Adapter<NovelCardViewHolder> 
     public void onBindViewHolder(@NonNull NovelCardViewHolder novelCardsViewHolder, int i) {
         CatalogueNovelCard recycleCard = recycleCards.get(i);
         if (recycleCard != null) {
+            novelCardsViewHolder.novelID = recycleCard.novelID;
             novelCardsViewHolder.url = recycleCard.novelURL;
             novelCardsViewHolder.library_card_title.setText(recycleCard.title);
             if (recycleCard.imageURL != null) {
@@ -77,7 +78,7 @@ public class CatalogueAdapter extends RecyclerView.Adapter<NovelCardViewHolder> 
             } else novelCardsViewHolder.library_card_image.setVisibility(View.GONE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (Database.DatabaseNovels.isBookmarked(recycleCard.novelURL)) {
+                if (Database.DatabaseNovels.isBookmarked(recycleCard.novelID)) {
                     if (catalogueFragment.getContext() != null)
                         novelCardsViewHolder.constraintLayout.setForeground(new ColorDrawable(ContextCompat.getColor(catalogueFragment.getContext(), R.color.shade)));
                 } else novelCardsViewHolder.constraintLayout.setForeground(new ColorDrawable());

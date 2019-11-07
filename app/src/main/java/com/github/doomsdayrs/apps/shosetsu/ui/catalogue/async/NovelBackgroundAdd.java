@@ -44,11 +44,11 @@ public class NovelBackgroundAdd extends AsyncTask<View, Void, Void> {
                 if (views[0] != null)
                     views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());
             }
-            if (Database.DatabaseNovels.isBookmarked(novelCardsViewHolder.url)) {
+            if (Database.DatabaseNovels.isBookmarked(novelCardsViewHolder.novelID)) {
                 if (views[0] != null)
                     views[0].post(() -> Toast.makeText(views[0].getContext(), "Already in the library", Toast.LENGTH_SHORT).show());
             } else {
-                Database.DatabaseNovels.bookMark(novelCardsViewHolder.url);
+                Database.DatabaseNovels.bookMark(novelCardsViewHolder.novelID);
                 if (views[0] != null)
                     views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());
             }
