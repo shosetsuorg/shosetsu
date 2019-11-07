@@ -32,8 +32,9 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromChapterID;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelURLFromChapterID;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelURLfromNovelID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.hasChapter;
 
 /*
@@ -449,10 +450,6 @@ public class Database {
             return count;
         }
 
-        @Deprecated
-        public static int getCountOfChaptersUnread(String novelURL) {
-            return getCountOfChaptersUnread(getNovelIDFromNovelURL(novelURL));
-        }
 
         public static void updateOrder(int chapterID, int order) {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.ORDER + "='" + order + "' where " + Columns.ID + "=" + chapterID);
@@ -470,10 +467,6 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.ID + "=" + chapterID);
         }
 
-        @Deprecated
-        public static void updateY(String chapterURL, int y) {
-            updateY(DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), y);
-        }
 
         /**
          * Precondition is the chapter is already in the database
@@ -494,10 +487,6 @@ public class Database {
             }
         }
 
-        @Deprecated
-        public static int getY(String chapterURL) {
-            return getY(DatabaseIdentification.getChapterIDFromChapterURL(chapterURL));
-        }
 
         /**
          * @param chapterID chapter to check
@@ -521,11 +510,6 @@ public class Database {
             }
         }
 
-        @Deprecated
-        public static Status getStatus(String chapterURL) {
-            return getStatus(getChapterIDFromChapterURL(chapterURL));
-        }
-
         /**
          * Sets chapter status
          *
@@ -534,11 +518,6 @@ public class Database {
          */
         public static void setChapterStatus(int chapterID, Status status) {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.ID + "=" + chapterID);
-        }
-
-        @Deprecated
-        public static void setChapterStatus(String chapterURL, Status status) {
-            setChapterStatus(getChapterIDFromChapterURL(chapterURL), status);
         }
 
         /**
@@ -551,10 +530,6 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.BOOKMARKED + "=" + b + " where " + Columns.ID + "=" + chapterID);
         }
 
-        @Deprecated
-        public static void setBookMark(String chapterURL, int b) {
-            setBookMark(getChapterIDFromChapterURL(chapterURL), b);
-        }
 
         /**
          * is this chapter bookmarked?
@@ -576,11 +551,6 @@ public class Database {
 
         }
 
-        @Deprecated
-        public static boolean isBookMarked(String chapterURL) {
-            return isBookMarked(getChapterIDFromChapterURL(chapterURL));
-        }
-
         /**
          * Removes save path from chapter
          *
@@ -588,11 +558,6 @@ public class Database {
          */
         public static void removePath(int chapterID) {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=null," + Columns.IS_SAVED + "=0 where " + Columns.ID + "=" + chapterID);
-        }
-
-        @Deprecated
-        public static void removePath(String chapterURL) {
-            removePath(getChapterIDFromChapterURL(chapterURL));
         }
 
         /**
@@ -632,10 +597,6 @@ public class Database {
             }
         }
 
-        @Deprecated
-        public static boolean isSaved(String chapterURL) {
-            return isSaved(getChapterIDFromChapterURL(chapterURL));
-        }
 
         /**
          * Gets the novel from local storage
@@ -656,10 +617,6 @@ public class Database {
             }
         }
 
-        @Deprecated
-        public static String getSavedNovelPassage(String chapterURL) {
-            return getSavedNovelPassage(getChapterIDFromChapterURL(chapterURL));
-        }
 
         /**
          * If the chapter URL is present or not
@@ -712,11 +669,6 @@ public class Database {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        @Deprecated
-        public static List<NovelChapter> getChapters(String novelURL) {
-            return getChapters(getNovelIDFromNovelURL(novelURL));
         }
 
         /**
@@ -788,10 +740,7 @@ public class Database {
             }
         }
 
-        @Deprecated
-        public static NovelChapter getChapter(String chapterURL) {
-            return getChapter(getChapterIDFromChapterURL(chapterURL));
-        }
+
     }
 
     public static class DatabaseNovels {
@@ -820,7 +769,7 @@ public class Database {
         }
 
         public static void unBookmark(int novelID) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.ID + "=" + novelID);
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.PARENT_ID + "=" + novelID);
         }
 
 
@@ -1226,11 +1175,12 @@ public class Database {
             } else {
                 while (cursor.moveToNext()) {
                     int id = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
+                    int parentID = getNovelIDFromChapterID(id);
                     novelCards.add(new Update(
-                            getNovelURLFromChapterID(id),
+                            getNovelURLfromNovelID(parentID),
                             getChapterURLFromChapterID(id),
-                            cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString()))
-                    ));
+                            cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString())),
+                            id, parentID));
                 }
                 cursor.close();
                 return novelCards;

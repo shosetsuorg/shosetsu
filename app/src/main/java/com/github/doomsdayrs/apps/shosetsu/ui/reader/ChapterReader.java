@@ -78,7 +78,6 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.novelID;
  */
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
-    int chapterID;
 
 
     public boolean ready = false;
@@ -263,7 +262,7 @@ public class ChapterReader extends AppCompatActivity {
                 tap_to_scroll.setChecked(toggleTapToScroll());
                 return true;
             case R.id.chapter_view_bookmark:
-                bookmarked = toggleBookmarkChapter(chapterURL);
+                bookmarked = toggleBookmarkChapter(chapterID);
                 if (bookmarked)
                     bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
                 else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);

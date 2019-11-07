@@ -90,7 +90,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.popup_chapter_menu_bookmark:
-                    if (toggleBookmarkChapter(novelChapter.link))
+                    if (toggleBookmarkChapter(chapterID))
                         library_card_title.setTextColor(itemView.getResources().getColor(R.color.bookmarked));
                     else {
                         Log.i("SetDefault", String.valueOf(ChaptersAdapter.DefaultTextColor));

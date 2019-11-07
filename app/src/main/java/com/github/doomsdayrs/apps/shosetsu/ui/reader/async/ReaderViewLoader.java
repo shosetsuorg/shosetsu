@@ -51,7 +51,7 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
             chapterReader.runOnUiThread(chapterReader::setUpReader);
             chapterReader.runOnUiThread(() ->
                     chapterReader.scrollView.post(() ->
-                            chapterReader.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterReader.chapterURL)))
+                            chapterReader.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterReader.chapterID)))
             );
             chapterReader.runOnUiThread(() -> chapterReader.ready = true);
         } catch (Exception e) {

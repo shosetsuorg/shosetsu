@@ -97,7 +97,7 @@ public class StaticNovel {
             if (StaticNovel.novelChapters.size() != 0) {
                 if (!NovelFragmentChapters.reversed) {
                     for (int x = novelChapters.size() - 1; x >= 0; x--) {
-                        Status status = Database.DatabaseChapter.getStatus(novelChapters.get(x).link);
+                        Status status = Database.DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters.get(x).link));
                         switch (status) {
                             default:
                                 break;
@@ -109,7 +109,7 @@ public class StaticNovel {
                     }
                 } else {
                     for (int x = 0; x < novelChapters.size(); x++) {
-                        Status status = Database.DatabaseChapter.getStatus(novelChapters.get(x).link);
+                        Status status = Database.DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters.get(x).link));
                         switch (status) {
                             default:
                                 break;

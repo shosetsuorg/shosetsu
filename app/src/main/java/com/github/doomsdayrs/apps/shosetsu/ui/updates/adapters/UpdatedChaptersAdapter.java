@@ -80,7 +80,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
     @Override
     public void onBindViewHolder(@NonNull UpdatedChapterHolder updatedChapterHolder, int i) {
         Log.d("Binding", updates.get(i).CHAPTER_URL);
-        NovelChapter novelChapter = DatabaseChapter.getChapter(updates.get(i).CHAPTER_URL);
+        NovelChapter novelChapter = DatabaseChapter.getChapter(updates.get(i).chapterID);
         if (novelChapter != null) {
             updatedChapterHolder.setNovelChapter(novelChapter);
         } else {
@@ -106,7 +106,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
             if (novelPage != null)
                 switch (menuItem.getItemId()) {
                     case R.id.popup_chapter_menu_bookmark:
-                        if (toggleBookmarkChapter(updatedChapterHolder.novelChapter.link))
+                        if (toggleBookmarkChapter(chapterID))
                             updatedChapterHolder.title.setTextColor(updatedChapterHolder.itemView.getResources().getColor(R.color.bookmarked));
                         else {
                             Log.i("SetDefault", String.valueOf(DefaultTextColor));

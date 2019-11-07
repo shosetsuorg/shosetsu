@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.NovelBackgroundAdd;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
@@ -58,6 +59,7 @@ public class NovelCardViewHolder extends RecyclerView.ViewHolder implements View
         NovelFragment novelFragment = new NovelFragment();
         StaticNovel.formatter = formatter;
         StaticNovel.novelURL = url;
+        novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url);
 
         if (catalogueFragment.getFragmentManager() != null)
             catalogueFragment.getFragmentManager().beginTransaction()

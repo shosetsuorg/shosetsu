@@ -83,6 +83,7 @@ public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.O
     @Override
     public void onClick(View v) {
         NovelFragment novelFragment = new NovelFragment();
+        novelFragment.novelID = novelCard.novelID;
         StaticNovel.formatter = formatter;
         StaticNovel.setNovelID(novelCard.novelID);
         assert libraryFragment.getFragmentManager() != null;

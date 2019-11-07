@@ -387,26 +387,26 @@ public class Utilities {
     /**
      * Gets y position of a bookmark
      *
-     * @param chapterURL chapter chapterURL
+     * @param chapterID chapter id
      * @return y position
      */
-    public static int getYBookmark(String chapterURL) {
-        return Database.DatabaseChapter.getY(chapterURL);
+    public static int getYBookmark(int chapterID) {
+        return Database.DatabaseChapter.getY(chapterID);
     }
 
     /**
      * Toggles bookmark
      *
-     * @param chapterURL imageURL of chapter
+     * @param chapterID id
      * @return true means added, false means removed
      */
-    public static boolean toggleBookmarkChapter(String chapterURL) {
+    public static boolean toggleBookmarkChapter(int chapterID) {
         //TODO Simplify
-        if (Database.DatabaseChapter.isBookMarked(chapterURL)) {
-            Database.DatabaseChapter.setBookMark(chapterURL, 0);
+        if (Database.DatabaseChapter.isBookMarked(chapterID)) {
+            Database.DatabaseChapter.setBookMark(chapterID, 0);
             return false;
         } else {
-            Database.DatabaseChapter.setBookMark(chapterURL, 1);
+            Database.DatabaseChapter.setBookMark(chapterID, 1);
             return true;
         }
     }
