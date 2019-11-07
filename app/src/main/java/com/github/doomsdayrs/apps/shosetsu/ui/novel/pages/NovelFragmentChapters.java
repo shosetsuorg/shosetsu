@@ -25,7 +25,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.ChapterLoader;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
@@ -79,9 +78,9 @@ public class NovelFragmentChapters extends Fragment {
     private int currentMaxPage = 1;
 
     private int findMinPosition() {
-        int min = StaticNovel.novelChapters.size();
-        for (int x = 0; x < StaticNovel.novelChapters.size(); x++)
-            if (contains(StaticNovel.novelChapters.get(x)))
+        int min = novelFragment.novelChapters.size();
+        for (int x = 0; x < novelFragment.novelChapters.size(); x++)
+            if (contains(novelFragment.novelChapters.get(x)))
                 if (x < min)
                     min = x;
         return min;
@@ -93,8 +92,8 @@ public class NovelFragmentChapters extends Fragment {
 
     private int findMaxPosition() {
         int max = -1;
-        for (int x = StaticNovel.novelChapters.size() - 1; x >= 0; x--)
-            if (contains(StaticNovel.novelChapters.get(x)))
+        for (int x = novelFragment.novelChapters.size() - 1; x >= 0; x--)
+            if (contains(novelFragment.novelChapters.get(x)))
                 if (x > max)
                     max = x;
         return max;
@@ -132,15 +131,6 @@ public class NovelFragmentChapters extends Fragment {
         Log.d("NFChapters", "Destroy");
         recyclerView = null;
         adapter = null;
-        if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {
-            StaticNovel.novelLoader.setC(false);
-            StaticNovel.novelLoader.cancel(true);
-        }
-
-        if (StaticNovel.chapterLoader != null && !StaticNovel.chapterLoader.isCancelled()) {
-            StaticNovel.chapterLoader.setC(false);
-            StaticNovel.chapterLoader.cancel(true);
-        }
     }
 
     /**
@@ -179,12 +169,7 @@ public class NovelFragmentChapters extends Fragment {
         resumeRead = view.findViewById(R.id.resume);
         resumeRead.setVisibility(View.GONE);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            if (StaticNovel.chapterLoader != null && !StaticNovel.chapterLoader.isCancelled()) {
-                StaticNovel.chapterLoader.setC(false);
-                StaticNovel.chapterLoader.cancel(true);
-            }
-            StaticNovel.chapterLoader = new ChapterLoader(this);
-            StaticNovel.chapterLoader.execute(getActivity());
+            new ChapterLoader(this).execute(getActivity());
         });
 
         if (savedInstanceState != null) {
@@ -193,9 +178,9 @@ public class NovelFragmentChapters extends Fragment {
         setNovels();
         onResume();
         resumeRead.setOnClickListener(view1 -> {
-            int i = StaticNovel.lastRead();
+            int i = novelFragment.lastRead();
             if (i != -1 && i != -2)
-                Utilities.openChapter(getActivity(), StaticNovel.novelChapters.get(i), StaticNovel.novelURL, StaticNovel.formatter.getID());
+                Utilities.openChapter(getActivity(), novelFragment.novelChapters.get(i), novelFragment.novelID, novelFragment.formatter.getID());
             else
                 Toast.makeText(getContext(), "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show();
         });
@@ -210,16 +195,16 @@ public class NovelFragmentChapters extends Fragment {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-            if (Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
-                StaticNovel.novelChapters = Database.DatabaseChapter.getChapters(novelFragment.novelID);
-                if (StaticNovel.novelChapters != null && StaticNovel.novelChapters.size() != 0)
+            if (Database.DatabaseNovels.inDatabase(novelFragment.novelID)) {
+                novelFragment.novelChapters = Database.DatabaseChapter.getChapters(novelFragment.novelID);
+                if (novelFragment.novelChapters != null && novelFragment.novelChapters.size() != 0)
                     resumeRead.setVisibility(View.VISIBLE);
             }
             adapter = new ChaptersAdapter(this);
             adapter.setHasStableIds(true);
             recyclerView.setLayoutManager(layoutManager);
 
-            //        if (StaticNovel.formatter.isIncrementingChapterList()) {
+            //        if (novelFragment.formatter.isIncrementingChapterList()) {
             //      if (SettingsController.isOnline())
             //        recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
 
@@ -246,7 +231,7 @@ public class NovelFragmentChapters extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.chapter_select_all:
-                for (NovelChapter novelChapter : StaticNovel.novelChapters)
+                for (NovelChapter novelChapter : novelFragment.novelChapters)
                     if (!contains(novelChapter))
                         selectedChapters.add(novelChapter);
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
@@ -256,7 +241,7 @@ public class NovelFragmentChapters extends Fragment {
                 for (NovelChapter novelChapter : selectedChapters) {
                     int chapterID = getChapterIDFromChapterURL(novelChapter.link);
                     if (!Database.DatabaseChapter.isSaved(chapterID)) {
-                        DownloadItem downloadItem = new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, chapterID);
+                        DownloadItem downloadItem = new DownloadItem(novelFragment.formatter, novelFragment.novelPage.title, novelChapter.title, chapterID);
                         Download_Manager.addToDownload(downloadItem);
                     }
                 }
@@ -267,7 +252,7 @@ public class NovelFragmentChapters extends Fragment {
                 for (NovelChapter novelChapter : selectedChapters) {
                     int chapterID = getChapterIDFromChapterURL(novelChapter.link);
                     if (Database.DatabaseChapter.isSaved(chapterID))
-                        Download_Manager.delete(getContext(), new DownloadItem(StaticNovel.formatter, StaticNovel.novelPage.title, novelChapter.title, chapterID));
+                        Download_Manager.delete(getContext(), new DownloadItem(novelFragment.formatter, novelFragment.novelPage.title, novelChapter.title, chapterID));
                 }
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
@@ -311,13 +296,13 @@ public class NovelFragmentChapters extends Fragment {
                 int min = findMinPosition();
                 int max = findMaxPosition();
                 for (int x = min; x < max; x++)
-                    if (!contains(StaticNovel.novelChapters.get(x)))
-                        selectedChapters.add(StaticNovel.novelChapters.get(x));
+                    if (!contains(novelFragment.novelChapters.get(x)))
+                        selectedChapters.add(novelFragment.novelChapters.get(x));
                 NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
                 return true;
 
             case R.id.chapter_filter:
-                Collections.reverse(StaticNovel.novelChapters);
+                Collections.reverse(novelFragment.novelChapters);
                 NovelFragmentChapters.reversed = !NovelFragmentChapters.reversed;
                 return NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
         }

@@ -14,7 +14,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.NovelBackgroundAdd;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 
 /*
  * This file is part of Shosetsu.

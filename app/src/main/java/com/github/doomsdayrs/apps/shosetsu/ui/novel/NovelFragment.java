@@ -15,14 +15,21 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.tabs.TabLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +58,76 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
  * @author github.com/doomsdayrs
  */
 public class NovelFragment extends Fragment {
+
+
     public int novelID;
+    public String novelURL;
+    public NovelPage novelPage;
+    public Formatter formatter;
+    public Status status = Status.UNREAD;
+
+    public List<NovelChapter> novelChapters = new ArrayList<>();
+
+    /**
+     * @param chapterURL Current chapter URL
+     * @return chapter after the input, returns the current chapter if no more
+     */
+    public static NovelChapter getNextChapter(@NotNull String chapterURL, String[] novelChapters) {
+        if (novelChapters != null && novelChapters.length != 0)
+            for (int x = 0; x < novelChapters.length; x++) {
+                if (novelChapters[x].equalsIgnoreCase(chapterURL)) {
+                    if (NovelFragmentChapters.reversed) {
+                        if (x - 1 != -1)
+                            return Database.DatabaseChapter.getChapter(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x - 1]));
+                        else
+                            return Database.DatabaseChapter.getChapter(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x]));
+                    } else {
+                        if (x + 1 != novelChapters.length)
+                            return Database.DatabaseChapter.getChapter(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x + 1]));
+                        else
+                            return Database.DatabaseChapter.getChapter(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x]));
+                    }
+                }
+            }
+        return null;
+    }
+
+    /**
+     * @return position of last read chapter, reads array from reverse. If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
+     */
+    public int lastRead() {
+        if (novelChapters != null) {
+            if (novelChapters.size() != 0) {
+                if (!NovelFragmentChapters.reversed) {
+                    for (int x = novelChapters.size() - 1; x >= 0; x--) {
+                        Status status = Database.DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters.get(x).link));
+                        switch (status) {
+                            default:
+                                break;
+                            case READ:
+                                return x + 1;
+                            case READING:
+                                return x;
+                        }
+                    }
+                } else {
+                    for (int x = 0; x < novelChapters.size(); x++) {
+                        Status status = Database.DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters.get(x).link));
+                        switch (status) {
+                            default:
+                                break;
+                            case READ:
+                                return x - 1;
+                            case READING:
+                                return x;
+                        }
+                    }
+                }
+                return 0;
+            } else return -2;
+        } else return -1;
+    }
+
 
     public NovelFragmentMain novelFragmentMain;
     public NovelFragmentChapters novelFragmentChapters;
@@ -72,18 +148,15 @@ public class NovelFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (StaticNovel.chapterLoader != null)
-            StaticNovel.chapterLoader.cancel(true);
-        if (StaticNovel.novelLoader != null)
-            StaticNovel.novelLoader.cancel(true);
-
-        StaticNovel.chapterLoader = null;
-        StaticNovel.novelLoader = null;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("novelID", novelID);
+        outState.putString("novelURL", novelURL);
+        outState.putInt("formatter", formatter.getID());
+        outState.putInt("status", status.getA());
+
     }
 
     @Nullable
@@ -112,25 +185,21 @@ public class NovelFragment extends Fragment {
         //boolean track = SettingsController.isTrackingEnabled();
 
         if (savedInstanceState == null) {
-            if (isOnline() && !Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
+            if (isOnline() && !Database.DatabaseNovels.inDatabase(novelID)) {
                 setViewPager();
-
-                if (StaticNovel.novelLoader != null && !StaticNovel.novelLoader.isCancelled()) {
-                    StaticNovel.novelLoader.setC(false);
-                    StaticNovel.novelLoader.cancel(true);
-                }
-                StaticNovel.novelLoader = new NovelLoader(this, true);
-
-                StaticNovel.novelLoader.execute(getActivity());
+                new NovelLoader(this, false).execute(getActivity());
             } else {
-                StaticNovel.novelPage = Database.DatabaseNovels.getNovelPage(StaticNovel.novelID);
-                StaticNovel.status = Database.DatabaseNovels.getStatus(novelID);
-                if (StaticNovel.novelPage != null)
-                    Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
+                novelPage = Database.DatabaseNovels.getNovelPage(novelID);
+                status = Database.DatabaseNovels.getStatus(novelID);
+                if (novelPage != null)
+                    Statics.mainActionBar.setTitle(novelPage.title);
                 setViewPager();
             }
         } else {
             novelID = savedInstanceState.getInt("novelID");
+            novelURL = savedInstanceState.getString("novelURL");
+            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
+            status = Status.getStatus(savedInstanceState.getInt("status"));
             setViewPager();
         }
         return view;

@@ -32,7 +32,6 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;

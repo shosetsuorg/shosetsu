@@ -21,7 +21,6 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentMainAddToLibrary;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
@@ -100,7 +99,7 @@ public class NovelFragmentMain extends Fragment {
                 Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
                     ArrayList<NovelCard> novelCards = new ArrayList<>();
-                    novelCards.add(new NovelCard(StaticNovel.novelPage.title, StaticNovel.novelID, StaticNovel.novelURL, StaticNovel.novelPage.imageURL, StaticNovel.formatter.getID()));
+                    novelCards.add(new NovelCard(novelFragment.novelPage.title, novelFragment.novelID, novelFragment.novelURL, novelFragment.novelPage.imageURL, novelFragment.formatter.getID()));
                     intent.putExtra("selected", serializeToString(novelCards));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -110,11 +109,11 @@ public class NovelFragmentMain extends Fragment {
                 return true;
             case R.id.webview:
                 if (getActivity() != null)
-                    openInWebview(getActivity(), StaticNovel.novelURL);
+                    openInWebview(getActivity(), novelFragment.novelURL);
                 return true;
             case R.id.browser:
                 if (getActivity() != null)
-                    openInBrowser(getActivity(), StaticNovel.novelURL);
+                    openInBrowser(getActivity(), novelFragment.novelURL);
                 return true;
         }
         return false;
@@ -180,7 +179,7 @@ public class NovelFragmentMain extends Fragment {
         if (inLibrary)
             floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
 
-        if (StaticNovel.novelPage != null && title != null)
+        if (novelFragment.novelPage != null && title != null)
             setData();
 
         floatingActionButton.setOnClickListener(new NovelFragmentMainAddToLibrary(this));
@@ -193,25 +192,25 @@ public class NovelFragmentMain extends Fragment {
      * Sets the data of this page
      */
     public void setData() {
-        if (StaticNovel.novelPage == null) {
+        if (novelFragment.novelPage == null) {
             Log.e("NULL", "Invalid novel page");
             return;
         }
 
-        title.setText(StaticNovel.novelPage.title);
+        title.setText(novelFragment.novelPage.title);
 
-        if (StaticNovel.novelPage.authors != null && StaticNovel.novelPage.authors.length > 0)
-            authors.setText(Arrays.toString(StaticNovel.novelPage.authors));
+        if (novelFragment.novelPage.authors != null && novelFragment.novelPage.authors.length > 0)
+            authors.setText(Arrays.toString(novelFragment.novelPage.authors));
 
-        description.setText(StaticNovel.novelPage.description);
+        description.setText(novelFragment.novelPage.description);
 
-        if (StaticNovel.novelPage.artists != null && StaticNovel.novelPage.artists.length > 0)
-            artists.setText(Arrays.toString(StaticNovel.novelPage.artists));
+        if (novelFragment.novelPage.artists != null && novelFragment.novelPage.artists.length > 0)
+            artists.setText(Arrays.toString(novelFragment.novelPage.artists));
 
-        status.setText(StaticNovel.status.getStatus());
-        if (StaticNovel.novelPage.status != null) {
+        status.setText(novelFragment.status.getStatus());
+        if (novelFragment.novelPage.status != null) {
             String s = "unknown";
-            switch (StaticNovel.novelPage.status) {
+            switch (novelFragment.novelPage.status) {
                 case PAUSED:
                     pStat.setText(R.string.paused);
                     s = "Paused";
@@ -229,9 +228,9 @@ public class NovelFragmentMain extends Fragment {
             }
             System.out.println("PS: " + s);
         }
-        if (StaticNovel.novelPage.genres != null && getContext() != null) {
+        if (novelFragment.novelPage.genres != null && getContext() != null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-            for (String string : StaticNovel.novelPage.genres) {
+            for (String string : novelFragment.novelPage.genres) {
                 Chip chip = (Chip) layoutInflater.inflate(R.layout.genre_chip, null, false);
                 chip.setText(string);
                 genres.addView(chip);
@@ -239,13 +238,13 @@ public class NovelFragmentMain extends Fragment {
         } else genres.setVisibility(View.GONE);
 
         Picasso.get()
-                .load(StaticNovel.novelPage.imageURL)
+                .load(novelFragment.novelPage.imageURL)
                 .into(imageView);
         Picasso.get()
-                .load(StaticNovel.novelPage.imageURL)
+                .load(novelFragment.novelPage.imageURL)
                 .into(imageView_background);
         floatingActionButton.show();
-        formatterName.setText(StaticNovel.formatter.getName());
+        formatterName.setText(novelFragment.formatter.getName());
     }
 
 }

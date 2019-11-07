@@ -32,7 +32,8 @@ public enum Status {
     READ(2, "Read"),
     // These two are for novels only
     ONHOLD(3, "OnHold"),
-    DROPPED(4, "Dropped");
+    DROPPED(4, "Dropped"),
+    UNKNOWN(-1, "Unknown");
 
     private final int a;
 
@@ -54,5 +55,22 @@ public enum Status {
     @Override
     public String toString() {
         return "" + a;
+    }
+
+    public static Status getStatus(int a) {
+        switch (a) {
+            case 0:
+                return UNREAD;
+            case 1:
+                return READING;
+            case 2:
+                return READ;
+            case 3:
+                return ONHOLD;
+            case 4:
+                return DROPPED;
+            default:
+                return UNKNOWN;
+        }
     }
 }

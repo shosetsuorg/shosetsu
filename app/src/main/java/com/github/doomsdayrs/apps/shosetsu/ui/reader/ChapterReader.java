@@ -49,8 +49,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookma
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.setReaderType;
-import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.getNextChapter;
-import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.novelID;
+import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNextChapter;
 
 /*
  * This file is part of Shosetsu.
@@ -78,8 +77,6 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.StaticNovel.novelID;
  */
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
-
-
     public boolean ready = false;
 
     public TextView textView;
@@ -96,6 +93,10 @@ public class ChapterReader extends AppCompatActivity {
     public Formatter formatter;
 
     public int chapterID;
+    public int novelID;
+
+    public String[] chapters;
+
     public String chapterURL;
     public String unformattedText = null;
     public String text = null;
@@ -349,10 +350,14 @@ public class ChapterReader extends AppCompatActivity {
             chapterURL = savedInstanceState.getString("chapterURL");
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
             text = savedInstanceState.getString("text");
+            novelID = savedInstanceState.getInt("novelID");
+            chapters = savedInstanceState.getStringArray("chapters");
         } else {
+            chapters = getIntent().getStringArrayExtra("chapters");
             chapterID = getIntent().getIntExtra("chapterID", -1);
             chapterURL = getIntent().getStringExtra("chapterURL");
             title = getIntent().getStringExtra("title");
+            novelID = getIntent().getIntExtra("novelID", -1);
             formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
         }
         Log.i("Reading", chapterURL);
@@ -394,7 +399,8 @@ public class ChapterReader extends AppCompatActivity {
 
         nextChapter = findViewById(R.id.next_chapter);
         nextChapter.setOnClickListener(view -> {
-            NovelChapter novelChapter = getNextChapter(chapterURL);
+
+            NovelChapter novelChapter = getNextChapter(chapterURL, chapters);
 
             if (novelChapter != null) {
                 if (!novelChapter.link.equalsIgnoreCase(chapterURL)) {

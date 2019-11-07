@@ -424,19 +424,25 @@ public class Utilities {
      *
      * @param activity
      * @param novelChapter
-     * @param nurl
+     * @param novelID
      * @param formatterID
      */
-    public static void openChapter(Activity activity, NovelChapter novelChapter, String nurl, int formatterID) {
+    public static void openChapter(Activity activity, NovelChapter novelChapter, int novelID, int formatterID) {
+        openChapter(activity, novelChapter, novelID, formatterID, null);
+    }
+
+    public static void openChapter(Activity activity, NovelChapter novelChapter, int novelID, int formatterID, String[] chapters) {
         int chapterID = getChapterIDFromChapterURL(novelChapter.link);
         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
         Intent intent = new Intent(activity, ChapterReader.class);
         intent.putExtra("title", novelChapter.title);
         intent.putExtra("chapterID", chapterID);
         intent.putExtra("chapterURL", novelChapter.link);
-        intent.putExtra("novelURL", nurl);
+        intent.putExtra("novelID", novelID);
         intent.putExtra("formatter", formatterID);
+        intent.putExtra("chapters", chapters);
         activity.startActivity(intent);
+
     }
 
     public static void openInWebview(@NotNull Activity activity, @NotNull String url) {

@@ -217,7 +217,6 @@ public class LibraryFragment extends Fragment {
             case R.id.updater_now:
                 Update_Manager.init(libraryNovelCards, context);
                 return true;
-
             case R.id.chapter_select_all:
                 for (NovelCard novelChapter : libraryNovelCards)
                     if (!contains(novelChapter))
