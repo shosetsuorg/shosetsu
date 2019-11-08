@@ -1,19 +1,19 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.async;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 
@@ -43,17 +43,15 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * This task loads a novel for the novel fragment
  */
 public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
+    String novelURL;
+    Formatter formatter;
+    NovelPage novelPage;
+    int novelID;
+
     // References
     private final NovelFragment novelFragment;
     private final NovelFragmentMain novelFragmentMain;
-    private boolean C = true;
 
-    public void setC(boolean c) {
-        C = c;
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private Activity activity;
     private boolean loadAll;
 
     /**
@@ -73,6 +71,11 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         this.novelFragmentMain = novelFragmentMain;
     }
 
+    NovelLoader(NovelLoader novelLoader) {
+        this.novelFragment = novelLoader.novelFragment;
+        this.loadAll = novelLoader.loadAll;
+        this.novelFragmentMain = novelLoader.novelFragmentMain;
+    }
 
     /**
      * Background process
@@ -83,9 +86,8 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     @Override
 
     protected Boolean doInBackground(Activity... voids) {
-        this.activity = voids[0];
-        StaticNovel.novelPage = null;
-        Log.d("Loading", StaticNovel.novelURL);
+        Activity activity = voids[0];
+        Log.d("Loading", novelURL);
         if (loadAll) {
             if (novelFragment != null && novelFragment.getActivity() != null)
                 novelFragment.getActivity().runOnUiThread(() -> novelFragment.errorView.setVisibility(View.GONE));
@@ -95,21 +97,18 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
 
         try {
-            StaticNovel.novelPage = StaticNovel.formatter.parseNovel(StaticNovel.novelURL);
-            if (C && !Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
-                Database.DatabaseNovels.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
+            novelPage = formatter.parseNovel(novelURL);
+            if (!activity.isDestroyed() && !Database.DatabaseNovels.inDatabase(novelID)) {
+                Database.DatabaseNovels.addToLibrary(formatter.getID(), novelPage, novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
             }
             //TODO The getNovelID in this method likely will cause slowdowns due to IO
-            int novelID = getNovelIDFromNovelURL(StaticNovel.novelURL);
-            for (NovelChapter novelChapter : StaticNovel.novelPage.novelChapters)
-                if (C && !Database.DatabaseChapter.inChapters(novelChapter.link))
+            int novelID = getNovelIDFromNovelURL(novelURL);
+            for (NovelChapter novelChapter : novelPage.novelChapters)
+                if (!activity.isDestroyed() && !Database.DatabaseChapter.inChapters(novelChapter.link))
                     Database.DatabaseChapter.addToChapters(novelID, novelChapter);
-            System.out.println(StaticNovel.novelChapters);
-            if (StaticNovel.novelChapters == null)
-                StaticNovel.novelChapters = new ArrayList<>();
-            StaticNovel.novelChapters.addAll(StaticNovel.novelPage.novelChapters);
 
-            Log.d("Loaded Novel:", StaticNovel.novelPage.title);
+
+            Log.d("Loaded Novel:", novelPage.title);
             return true;
         } catch (IOException e) {
             if (loadAll) {
@@ -117,13 +116,13 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
                     novelFragment.getActivity().runOnUiThread(() -> {
                         novelFragment.errorView.setVisibility(View.VISIBLE);
                         novelFragment.errorMessage.setText(e.getMessage());
-                        novelFragment.errorButton.setOnClickListener(this::refresh);
+                        novelFragment.errorButton.setOnClickListener(view -> refresh(activity));
                     });
             } else if (novelFragmentMain != null && novelFragmentMain.getActivity() != null)
                 novelFragmentMain.getActivity().runOnUiThread(() -> {
                     novelFragmentMain.novelFragment.errorView.setVisibility(View.VISIBLE);
                     novelFragmentMain.novelFragment.errorMessage.setText(e.getMessage());
-                    novelFragmentMain.novelFragment.errorButton.setOnClickListener(this::refresh);
+                    novelFragmentMain.novelFragment.errorButton.setOnClickListener(view -> refresh(activity));
                 });
 
 
@@ -131,13 +130,8 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         return false;
     }
 
-    private void refresh(View view) {
-        if (StaticNovel.novelLoader != null && StaticNovel.novelLoader.isCancelled())
-            StaticNovel.novelLoader.cancel(true);
-
-        if (StaticNovel.novelLoader == null || StaticNovel.novelLoader.isCancelled())
-            StaticNovel.novelLoader = new NovelLoader(novelFragmentMain, loadAll);
-        StaticNovel.novelLoader.execute(activity);
+    private void refresh(Activity activity) {
+        new NovelLoader(this).execute(activity);
     }
 
     /**
@@ -156,7 +150,6 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
-        C = false;
         onPostExecute(false);
     }
 
@@ -167,40 +160,46 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if (loadAll) {
-            assert novelFragment != null;
-            novelFragment.progressBar.setVisibility(View.GONE);
-        } else {
-            assert novelFragmentMain != null;
-            novelFragmentMain.swipeRefreshLayout.setRefreshing(false);
-            if (Database.DatabaseNovels.inDatabase(StaticNovel.novelID)) {
-                try {
-                    Database.DatabaseNovels.updateData(StaticNovel.novelURL, StaticNovel.novelPage);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        Activity activity = null;
+        if (novelFragmentMain != null)
+            activity = novelFragmentMain.getActivity();
+        else if (novelFragment != null) {
+            activity = novelFragment.getActivity();
         }
 
-        if (aBoolean) {
-            Statics.mainActionBar.setTitle(StaticNovel.novelPage.title);
-            activity.runOnUiThread(() -> {
-                assert novelFragment != null;
-                if (loadAll)
-                    novelFragment.novelFragmentMain.setData();
-                else {
-                    assert novelFragmentMain != null;
-                    novelFragmentMain.setData();
-                }
-            });
+        if (activity != null) {
             if (loadAll) {
-                if (StaticNovel.chapterLoader != null && StaticNovel.chapterLoader.isCancelled())
-                    StaticNovel.chapterLoader.cancel(true);
+                if (novelFragment != null) {
+                    novelFragment.progressBar.setVisibility(View.GONE);
+                }
+            } else {
+                if (novelFragmentMain != null) {
+                    novelFragmentMain.swipeRefreshLayout.setRefreshing(false);
+                }
+                if (novelFragment != null && Database.DatabaseNovels.inDatabase(novelFragment.novelID)) {
+                    try {
+                        Database.DatabaseNovels.updateData(novelURL, novelPage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
-                if ((StaticNovel.chapterLoader == null || StaticNovel.chapterLoader.isCancelled()) && novelFragment != null)
-                    StaticNovel.chapterLoader = new ChapterLoader(novelFragment);
-                activity.runOnUiThread(() -> StaticNovel.chapterLoader.execute(activity));
+            if (aBoolean) {
+                Statics.mainActionBar.setTitle(novelPage.title);
+                activity.runOnUiThread(() -> {
+                    if (loadAll)
+                        if (novelFragment != null) {
+                            novelFragment.novelFragmentMain.setData();
+                        } else {
+                            novelFragmentMain.setData();
+                        }
+                });
+                if (loadAll) {
+                    activity.runOnUiThread(() -> new ChapterLoader(novelPage, novelURL, formatter).execute());
+                }
             }
         }
+
     }
 }

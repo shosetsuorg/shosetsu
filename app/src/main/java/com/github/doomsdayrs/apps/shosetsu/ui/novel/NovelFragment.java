@@ -68,6 +68,7 @@ public class NovelFragment extends Fragment {
 
     public List<NovelChapter> novelChapters = new ArrayList<>();
 
+
     /**
      * @param chapterURL Current chapter URL
      * @return chapter after the input, returns the current chapter if no more

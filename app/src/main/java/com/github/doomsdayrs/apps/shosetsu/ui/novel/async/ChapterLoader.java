@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.async;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -11,12 +10,9 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 
@@ -47,34 +43,31 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * This task loads a novel for the novel fragment
  */
 public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
-    NovelPage novelPage;
-    String novelURL;
-    ArrayList<NovelChapter> novelChapters;
-    Formatter formatter;
+    private NovelPage novelPage;
+    private String novelURL;
+    private Formatter formatter;
 
-
-    // References
-    private final NovelFragmentChapters novelFragmentChapters;
-    private boolean C = true;
-
-    @SuppressLint("StaticFieldLeak")
-    private Activity activity;
+    private NovelFragmentChapters novelFragmentChapters;
 
     /**
      * Constructor
-     *
-     * @param novelFragment reference to the fragment
      */
-    ChapterLoader(NovelFragment novelFragment) {
-        novelFragmentChapters = novelFragment.novelFragmentChapters;
+    public ChapterLoader(NovelPage novelPage, String novelURL, Formatter formatter) {
+        this.novelPage = novelPage;
+        this.novelURL = novelURL;
+        this.formatter = formatter;
     }
 
-    public ChapterLoader(NovelFragmentChapters chapters) {
-        novelFragmentChapters = chapters;
+    ChapterLoader(ChapterLoader chapterLoader) {
+        this.novelPage = chapterLoader.novelPage;
+        this.novelURL = chapterLoader.novelURL;
+        this.formatter = chapterLoader.formatter;
+        this.novelFragmentChapters = chapterLoader.novelFragmentChapters;
     }
 
-    public void setC(boolean c) {
-        C = c;
+    public ChapterLoader setNovelFragmentChapters(NovelFragmentChapters novelFragmentChapters) {
+        this.novelFragmentChapters = novelFragmentChapters;
+        return this;
     }
 
     /**
@@ -85,7 +78,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected Boolean doInBackground(Activity... voids) {
-        this.activity = voids[0];
+        Activity activity = voids[0];
         novelPage = null;
         Log.d("ChapLoad", novelURL);
 
@@ -94,21 +87,19 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                 novelFragmentChapters.getActivity().runOnUiThread(() -> novelFragmentChapters.novelFragment.errorView.setVisibility(View.GONE));
 
         try {
-            if (novelChapters == null)
-                novelChapters = new ArrayList<>();
 
             int page = 1;
             if (formatter.isIncrementingChapterList()) {
                 novelPage = formatter.parseNovel(novelURL, page);
                 int mangaCount = 0;
-                while (page <= novelPage.maxChapterPage && C) {
+                while (page <= novelPage.maxChapterPage && !activity.isDestroyed()) {
                     if (novelFragmentChapters != null) {
                         String s = "Page: " + page + "/" + novelPage.maxChapterPage;
                         novelFragmentChapters.pageCount.post(() -> novelFragmentChapters.pageCount.setText(s));
                     }
                     novelPage = formatter.parseNovel(novelURL, page);
                     for (NovelChapter novelChapter : novelPage.novelChapters)
-                        add(mangaCount, novelChapter);
+                        add(activity, mangaCount, novelChapter);
                     page++;
 
                     Utilities.wait(300);
@@ -117,7 +108,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                 novelPage = formatter.parseNovel(novelURL, page);
                 int mangaCount = 0;
                 for (NovelChapter novelChapter : novelPage.novelChapters)
-                    add(mangaCount, novelChapter);
+                    add(activity, mangaCount, novelChapter);
             }
             return true;
         } catch (IOException e) {
@@ -126,25 +117,24 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                     novelFragmentChapters.getActivity().runOnUiThread(() -> {
                         novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
                         novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
-                        novelFragmentChapters.novelFragment.errorButton.setOnClickListener(this::refresh);
+                        novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> refresh(view, activity));
                     });
 
         }
         return false;
     }
 
-    private void add(int mangaCount, NovelChapter novelChapter) {
+    private void add(Activity activity, int mangaCount, NovelChapter novelChapter) {
         //TODO The getNovelID in this method likely will cause slowdowns due to IO
-        if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
+        if (!activity.isDestroyed() && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
             mangaCount++;
             System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
-            novelChapters.add(novelChapter);
             Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(novelURL), novelChapter);
         }
     }
 
-    private void refresh(View view) {
-        new ChapterLoader(novelFragmentChapters).execute(activity);
+    private void refresh(View view, Activity activity) {
+        new ChapterLoader(this).execute(activity);
     }
 
     /**
@@ -163,14 +153,12 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     @Override
     protected void onCancelled(Boolean aBoolean) {
         Log.d("ChapterLoader", "Cancel");
-        C = false;
         onPostExecute(false);
     }
 
     @Override
     protected void onCancelled() {
         Log.d("ChapterLoader", "Cancel");
-        C = false;
         onPostExecute(false);
     }
 
@@ -186,7 +174,8 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
             if (formatter.isIncrementingChapterList())
                 novelFragmentChapters.pageCount.setVisibility(View.GONE);
             if (aBoolean)
-                activity.runOnUiThread(novelFragmentChapters::setNovels);
+                if (novelFragmentChapters.getActivity() != null)
+                    novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setNovels);
             novelFragmentChapters.resumeRead.setVisibility(View.VISIBLE);
         }
 

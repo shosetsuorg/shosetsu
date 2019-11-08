@@ -169,7 +169,7 @@ public class NovelFragmentChapters extends Fragment {
         resumeRead = view.findViewById(R.id.resume);
         resumeRead.setVisibility(View.GONE);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            new ChapterLoader(this).execute(getActivity());
+            new ChapterLoader(novelFragment.novelPage, novelFragment.novelURL, novelFragment.formatter).setNovelFragmentChapters(this).execute(getActivity());
         });
 
         if (savedInstanceState != null) {
