@@ -33,20 +33,22 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 17 / 06 / 2019
  *
  * @author github.com/doomsdayrs
- */
-
-/**
+ * <p>
  * This task loads a novel for the novel fragment
+ * </p>
  */
 public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
-    String novelURL;
-    Formatter formatter;
-    NovelPage novelPage;
-    int novelID;
+    private String novelURL;
+    private Formatter formatter;
+    private NovelPage novelPage;
+    private int novelID;
 
     // References
     private final NovelFragment novelFragment;
@@ -71,7 +73,11 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         this.novelFragmentInfo = novelFragmentInfo;
     }
 
-    NovelLoader(NovelLoader novelLoader) {
+    private NovelLoader(NovelLoader novelLoader) {
+        this.novelURL = novelLoader.novelURL;
+        this.formatter = novelLoader.formatter;
+        this.novelPage = novelLoader.novelPage;
+        this.novelID = novelLoader.novelID;
         this.novelFragment = novelLoader.novelFragment;
         this.loadAll = novelLoader.loadAll;
         this.novelFragmentInfo = novelLoader.novelFragmentInfo;
