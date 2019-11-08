@@ -57,10 +57,9 @@ public class NovelCardViewHolder extends RecyclerView.ViewHolder implements View
     @Override
     public void onClick(View v) {
         NovelFragment novelFragment = new NovelFragment();
-        StaticNovel.formatter = formatter;
-        StaticNovel.novelURL = url;
+        novelFragment.novelURL = url;
+        novelFragment.formatter = formatter;
         novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url);
-
         if (catalogueFragment.getFragmentManager() != null)
             catalogueFragment.getFragmentManager().beginTransaction()
                     .addToBackStack("tag")

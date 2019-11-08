@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /*
@@ -29,25 +29,25 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * @author github.com/doomsdayrs
  */
 public class NovelFragmentMainAddToLibrary implements FloatingActionButton.OnClickListener {
-    private final NovelFragmentMain novelFragmentMain;
+    private final NovelFragmentInfo novelFragmentInfo;
 
-    public NovelFragmentMainAddToLibrary(NovelFragmentMain novelFragmentMain) {
-        this.novelFragmentMain = novelFragmentMain;
+    public NovelFragmentMainAddToLibrary(NovelFragmentInfo novelFragmentInfo) {
+        this.novelFragmentInfo = novelFragmentInfo;
     }
 
     @Override
     public void onClick(View v) {
-        if (!novelFragmentMain.inLibrary) {
+        if (!novelFragmentInfo.inLibrary) {
             // Thinking about this, this is an impossible combination as the novel should've loaded before this
             //  if (!Database.DatabaseNovels.inLibrary(StaticNovel.novelID))
             //      Database.DatabaseNovels.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel, StaticNovel.status.getA());
-            Database.DatabaseNovels.bookMark(StaticNovel.novelID);
-            novelFragmentMain.inLibrary = true;
-            novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
+            Database.DatabaseNovels.bookMark(novelFragmentInfo.novelFragment.novelID);
+            novelFragmentInfo.inLibrary = true;
+            novelFragmentInfo.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
         } else {
-            Database.DatabaseNovels.unBookmark(StaticNovel.novelID);
-            novelFragmentMain.inLibrary = false;
-            novelFragmentMain.floatingActionButton.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
+            Database.DatabaseNovels.unBookmark(novelFragmentInfo.novelFragment.novelID);
+            novelFragmentInfo.inLibrary = false;
+            novelFragmentInfo.floatingActionButton.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
 
         }
     }

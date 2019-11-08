@@ -37,6 +37,7 @@ import com.squareup.picasso.Picasso;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromNovelURL;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 
 /**
  * shosetsu
@@ -84,6 +85,6 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
         String nurl = Database.DatabaseIdentification.getNovelURLFromChapterURL(novelChapter.link);
         Formatter formatter = DefaultScrapers.getByID(getFormatterIDFromNovelURL(nurl));
         if (formatter != null)
-            openChapter((Activity) itemView.getContext(), novelChapter, nurl, formatter.getID());
+            openChapter((Activity) itemView.getContext(), novelChapter, getNovelIDFromNovelURL(nurl), formatter.getID());
     }
 }

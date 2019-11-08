@@ -69,7 +69,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
-        NovelChapter novelChapter = StaticNovel.novelChapters.get(i);
+        NovelChapter novelChapter = novelFragmentChapters.novelFragment.novelChapters.get(i);
         chaptersViewHolder.novelChapter = novelChapter;
         chaptersViewHolder.library_card_title.setText(novelChapter.title);
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
@@ -79,7 +79,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
         //TODO The getNovelID in this method likely will cause slowdowns due to IO
         if (!Database.DatabaseChapter.inChapters(novelChapter.link))
-            Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(StaticNovel.novelURL), novelChapter);
+            Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(novelFragmentChapters.novelFragment.novelURL), novelChapter);
 
         if (Database.DatabaseChapter.isBookMarked(chapterID)) {
             chaptersViewHolder.library_card_title.setTextColor(chaptersViewHolder.itemView.getResources().getColor(R.color.bookmarked));
@@ -154,8 +154,8 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (StaticNovel.novelChapters != null)
-            return StaticNovel.novelChapters.size();
+        if (novelFragmentChapters.novelFragment.novelChapters != null)
+            return novelFragmentChapters.novelFragment.novelChapters.size();
         else return 0;
     }
 

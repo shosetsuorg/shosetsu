@@ -23,7 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
@@ -130,7 +130,7 @@ public class NovelFragment extends Fragment {
     }
 
 
-    public NovelFragmentMain novelFragmentMain;
+    public NovelFragmentInfo novelFragmentInfo;
     public NovelFragmentChapters novelFragmentChapters;
     public ProgressBar progressBar;
 
@@ -177,8 +177,8 @@ public class NovelFragment extends Fragment {
 
         // Create sub-fragments
         {
-            novelFragmentMain = new NovelFragmentMain();
-            novelFragmentMain.setNovelFragment(this);
+            novelFragmentInfo = new NovelFragmentInfo();
+            novelFragmentInfo.setNovelFragment(this);
             novelFragmentChapters = new NovelFragmentChapters();
             novelFragmentChapters.setNovelFragment(this);
         }
@@ -211,7 +211,7 @@ public class NovelFragment extends Fragment {
         List<Fragment> fragments = new ArrayList<>();
         {
             Log.d("FragmentLoading", "Main");
-            fragments.add(novelFragmentMain);
+            fragments.add(novelFragmentInfo);
             Log.d("FragmentLoading", "Chapters");
             fragments.add(novelFragmentChapters);
         }

@@ -62,7 +62,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToS
 /**
  * The page you see when you select a novel
  */
-public class NovelFragmentMain extends Fragment {
+public class NovelFragmentInfo extends Fragment {
 
     private ImageView imageView;
     private ImageView imageView_background;
@@ -84,7 +84,7 @@ public class NovelFragmentMain extends Fragment {
     /**
      * Constructor
      */
-    public NovelFragmentMain() {
+    public NovelFragmentInfo() {
         setHasOptionsMenu(true);
     }
 

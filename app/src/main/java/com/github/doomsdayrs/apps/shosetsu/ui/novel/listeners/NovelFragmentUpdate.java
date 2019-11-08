@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo;
 
 /*
  * This file is part of Shosetsu.
@@ -28,14 +28,14 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentMain;
  */
 
 public class NovelFragmentUpdate implements SwipeRefreshLayout.OnRefreshListener {
-    private NovelFragmentMain novelFragmentMain;
+    private NovelFragmentInfo novelFragmentInfo;
 
-    public NovelFragmentUpdate(NovelFragmentMain novelFragmentMain) {
-        this.novelFragmentMain = novelFragmentMain;
+    public NovelFragmentUpdate(NovelFragmentInfo novelFragmentInfo) {
+        this.novelFragmentInfo = novelFragmentInfo;
     }
 
     @Override
     public void onRefresh() {
-        new NovelLoader(novelFragmentMain, false).execute(novelFragmentMain.getActivity());
+        new NovelLoader(novelFragmentInfo, false).execute(novelFragmentInfo.getActivity());
     }
 }
