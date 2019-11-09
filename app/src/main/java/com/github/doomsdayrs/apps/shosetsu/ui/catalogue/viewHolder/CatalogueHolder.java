@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
@@ -40,16 +41,18 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
  * @author github.com/doomsdayrs
  */
 public class CatalogueHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    WebViewScrapper webViewScrapper;
     public final ImageView library_card_image;
     public final TextView library_card_title;
     final FragmentManager fragmentManager;
     Formatter formatter;
 
-    public CatalogueHolder(@NonNull View itemView, FragmentManager fragmentManager) {
+    public CatalogueHolder(@NonNull View itemView, FragmentManager fragmentManager, WebViewScrapper webViewScrapper) {
         super(itemView);
         library_card_image = itemView.findViewById(R.id.catalogue_item_card_image);
         library_card_title = itemView.findViewById(R.id.catalogue_item_card_text);
         this.fragmentManager = fragmentManager;
+        this.webViewScrapper = webViewScrapper;
     }
 
     public void setFormatter(Formatter formatter) {
@@ -64,6 +67,7 @@ public class CatalogueHolder extends RecyclerView.ViewHolder implements View.OnC
         if (isOnline()) {
             CatalogueFragment catalogueFragment = new CatalogueFragment();
             catalogueFragment.setFormatter(formatter);
+            catalogueFragment.setWebViewScrapper(webViewScrapper);
             setFormatter(formatter);
             fragmentManager.beginTransaction()
                     .addToBackStack("tag")

@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.CatalogueHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 import com.squareup.picasso.Picasso;
@@ -37,12 +38,14 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class CataloguesAdapter extends RecyclerView.Adapter<CatalogueHolder> {
+    private final WebViewScrapper webViewScrapper;
     private final ArrayList<CatalogueCard> catalogues;
     private final FragmentManager fragmentManager;
 
-    public CataloguesAdapter(ArrayList<CatalogueCard> catalogues, FragmentManager fragmentManager) {
+    public CataloguesAdapter(ArrayList<CatalogueCard> catalogues, FragmentManager fragmentManager, WebViewScrapper webViewScrapper) {
         this.catalogues = catalogues;
         this.fragmentManager = fragmentManager;
+        this.webViewScrapper = webViewScrapper;
     }
 
 
@@ -50,7 +53,7 @@ public class CataloguesAdapter extends RecyclerView.Adapter<CatalogueHolder> {
     @Override
     public CatalogueHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.catalogue_item_card, viewGroup, false);
-        return new CatalogueHolder(view, fragmentManager);
+        return new CatalogueHolder(view, fragmentManager, webViewScrapper);
     }
 
     @Override

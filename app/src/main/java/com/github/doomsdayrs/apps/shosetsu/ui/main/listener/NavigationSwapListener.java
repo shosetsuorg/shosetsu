@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -57,7 +56,7 @@ public class NavigationSwapListener implements NavigationView.OnNavigationItemSe
                 Log.d("Nav", "Catalogue selected");
                 mainActivity.getSupportFragmentManager().beginTransaction()
                         .addToBackStack("tag")
-                        .replace(R.id.fragment_container, new CataloguesFragment())
+                        .replace(R.id.fragment_container, mainActivity.cataloguesFragment)
                         .commit();
             }
             break;

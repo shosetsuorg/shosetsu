@@ -11,7 +11,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -75,57 +74,42 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
                 catalogueFragment.getActivity().runOnUiThread(() -> Toast.makeText(catalogueFragment.getContext(), "CLOUDFLARE", Toast.LENGTH_SHORT).show());
         }
 
-        try {
-            List<Novel> novels;
-            if (catalogueFragment.formatter.hasCloudFlare()) {
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        List<Novel> novels;
+        if (catalogueFragment.formatter.hasCloudFlare()) {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            // Loads novel list
-            if (integers.length == 0)
-                novels = catalogueFragment.formatter.parseLatest(catalogueFragment.formatter.getLatestURL(1));
-            else {
-                novels = catalogueFragment.formatter.parseLatest(catalogueFragment.formatter.getLatestURL(integers[0]));
-            }
-
-            for (Novel novel : novels)
-                catalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link));
-            catalogueFragment.library_view.post(() -> catalogueFragment.catalogueAdapter.notifyDataSetChanged());
-
-            if (catalogueHitBottom != null) {
-                catalogueFragment.library_view.post(() -> {
-                    catalogueFragment.catalogueAdapter.notifyDataSetChanged();
-                    catalogueFragment.library_view.addOnScrollListener(catalogueHitBottom);
-                });
-                catalogueHitBottom.running = false;
-                Log.d("CatalogueFragmentLoad", "Completed");
-            }
-            Log.d("FragmentRefresh", "Complete");
-
-            if (catalogueFragment.getActivity() != null)
-                catalogueFragment.getActivity().runOnUiThread(() -> {
-                    catalogueFragment.catalogueAdapter.notifyDataSetChanged();
-                    catalogueFragment.swipeRefreshLayout.setRefreshing(false);
-                });
-
-            return true;
-        } catch (IOException e) {
-            if (catalogueFragment.getActivity() != null)
-                catalogueFragment.getActivity().runOnUiThread(() -> {
-                    catalogueFragment.errorView.setVisibility(View.VISIBLE);
-                    catalogueFragment.errorMessage.setText(e.getMessage());
-                    if (catalogueHitBottom == null)
-                        catalogueFragment.errorButton.setOnClickListener(view -> new CataloguePageLoader(catalogueFragment).execute(integers));
-                    else
-                        catalogueFragment.errorButton.setOnClickListener(view -> new CataloguePageLoader(catalogueFragment, catalogueHitBottom).execute(integers));
-
-                });
-
         }
-        return false;
+        // Loads novel list
+        if (integers.length == 0)
+            novels = catalogueFragment.formatter.parseLatest(catalogueFragment.webViewScrapper.docFromURL(catalogueFragment.formatter.getLatestURL(1)));
+        else {
+            novels = catalogueFragment.formatter.parseLatest(catalogueFragment.webViewScrapper.docFromURL(catalogueFragment.formatter.getLatestURL(integers[0])));
+        }
+
+        for (Novel novel : novels)
+            catalogueFragment.catalogueNovelCards.add(new CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link));
+        catalogueFragment.library_view.post(() -> catalogueFragment.catalogueAdapter.notifyDataSetChanged());
+
+        if (catalogueHitBottom != null) {
+            catalogueFragment.library_view.post(() -> {
+                catalogueFragment.catalogueAdapter.notifyDataSetChanged();
+                catalogueFragment.library_view.addOnScrollListener(catalogueHitBottom);
+            });
+            catalogueHitBottom.running = false;
+            Log.d("CatalogueFragmentLoad", "Completed");
+        }
+        Log.d("FragmentRefresh", "Complete");
+
+        if (catalogueFragment.getActivity() != null)
+            catalogueFragment.getActivity().runOnUiThread(() -> {
+                catalogueFragment.catalogueAdapter.notifyDataSetChanged();
+                catalogueFragment.swipeRefreshLayout.setRefreshing(false);
+            });
+
+        return true;
     }
 
     /**

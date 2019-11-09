@@ -7,7 +7,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +47,9 @@ public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<Cata
     @Override
     protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
         ArrayList<CatalogueNovelCard> result = new ArrayList<>();
-        try {
-            List<Novel> novels = catalogueFragment.formatter.search(strings[0]);
-            for (Novel novel : novels)
-                result.add(new CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        List<Novel> novels = catalogueFragment.formatter.parseSearch(catalogueFragment.webViewScrapper.docFromURL(catalogueFragment.formatter.getSearchString(strings[0])));
+        for (Novel novel : novels)
+            result.add(new CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link));
         return result;
     }
 }

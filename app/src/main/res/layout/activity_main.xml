@@ -9,6 +9,12 @@
     tools:context="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity"
     tools:openDrawer="start">
 
+    <WebView
+        android:id="@+id/absolute_webview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,11 +25,12 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBar"
             app:elevation="4dp">
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                app:elevation="4dp"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"/>
+                android:layout_height="?attr/actionBarSize"
+                app:elevation="4dp" />
         </com.google.android.material.appbar.AppBarLayout>
 
 

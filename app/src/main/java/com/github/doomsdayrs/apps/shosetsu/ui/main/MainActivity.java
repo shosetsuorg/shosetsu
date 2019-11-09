@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.webkit.WebView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener;
@@ -61,12 +64,14 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.initPreferen
 public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     public NavigationView navigationView;
+    public final CataloguesFragment cataloguesFragment = new CataloguesFragment();
+    private WebView webView;
 
     public final LibraryFragment libraryFragment = new LibraryFragment();
+    private WebViewScrapper webViewScrapper;
     public final UpdatesFragment updatesFragment = new UpdatesFragment();
     public final SettingsFragment settingsFragment = new SettingsFragment();
     public final DownloadsFragment downloadsFragment = new DownloadsFragment();
-
 
     /**
      * Main activity
@@ -163,11 +168,16 @@ public class MainActivity extends AppCompatActivity {
         //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+
         navigationView.setNavigationItemSelectedListener(new NavigationSwapListener(this));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        webView = findViewById(R.id.absolute_webview);
+        webViewScrapper = new WebViewScrapper(webView);
+        cataloguesFragment.setWebViewScrapper(webViewScrapper);
 
         // Sets up DB
         DBHelper helper = new DBHelper(this);
