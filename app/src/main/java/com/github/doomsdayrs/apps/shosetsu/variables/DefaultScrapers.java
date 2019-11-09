@@ -8,7 +8,10 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelGenre;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Ordering;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
+
+import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,11 +49,11 @@ import okhttp3.Request;
 // TODO Make this full dynamic, not needing to be predefined
 // > Make IDs built into the formatter
 public enum DefaultScrapers implements Formatter {
-    NOVELFULL(new NovelFull(1)),
-    BOXNOVEL(new BoxNovel(2)),
-    SYOSETU(new Syosetu(3)),
+    NOVELFULL(new NovelFull()),
+    BOXNOVEL(new BoxNovel()),
+    SYOSETU(new Syosetu()),
     //NOVELPLANENT(new NovelPlanet(4)),
-    BESTLIGHTNOVEL(new BestLightNovel(5));
+    BESTLIGHTNOVEL(new BestLightNovel());
 
     public static final ArrayList<Formatter> formatters = new ArrayList<>();
 
@@ -142,14 +145,37 @@ public enum DefaultScrapers implements Formatter {
         return formatter.latestOrder();
     }
 
+    @Override
+    public String getNovelPassage(Document document) {
+        return formatter.getNovelPassage(document);
+    }
+
+    @Deprecated
     public String getNovelPassage(String URL) throws IOException {
         return formatter.getNovelPassage(URL);
     }
 
+    @Override
+    public NovelPage parseNovel(Document document) {
+        return formatter.parseNovel(document);
+    }
+
+    @Override
+    public NovelPage parseNovel(Document document, int i) {
+        return formatter.parseNovel(document, i);
+    }
+
+    @Override
+    public String novelPageCombiner(String s, int i) {
+        return formatter.novelPageCombiner(s, i);
+    }
+
+    @Deprecated
     public NovelPage parseNovel(String URL) throws IOException {
         return formatter.parseNovel(URL);
     }
 
+    @Deprecated
     public NovelPage parseNovel(String URL, int increment) throws IOException {
         return formatter.parseNovel(URL, increment);
     }
@@ -158,11 +184,27 @@ public enum DefaultScrapers implements Formatter {
         return formatter.getLatestURL(page);
     }
 
+    @Override
+    public List<Novel> parseLatest(Document document) {
+        return formatter.parseLatest(document);
+    }
+
+    @Deprecated
     public List<Novel> parseLatest(String URL) throws IOException {
         return formatter.parseLatest(URL);
     }
 
     @Override
+    public String getSearchString(String s) {
+        return formatter.getSearchString(s);
+    }
+
+    @Override
+    public List<Novel> parseSearch(Document document) {
+        return formatter.parseSearch(document);
+    }
+
+    @Deprecated
     public List<Novel> search(String query) throws IOException {
         return formatter.search(query);
     }
