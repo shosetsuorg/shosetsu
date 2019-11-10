@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         webView = findViewById(R.id.absolute_webview);
-        webViewScrapper = new WebViewScrapper(webView);
+        webViewScrapper = new WebViewScrapper(webView, this);
         cataloguesFragment.setWebViewScrapper(webViewScrapper);
 
         // Sets up DB
