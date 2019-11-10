@@ -65,6 +65,12 @@ public class WebViewScrapper {
         //cf-browser-verification
     }
 
+
+    public void loadUrl(String url) {
+        webView.loadUrl(url);
+    }
+
+
     /**
      * Put this in an async task, or you will have a bad time.
      *
@@ -73,8 +79,6 @@ public class WebViewScrapper {
      * @throws InterruptedException This fucked up hard
      */
     public Document docFromURL(String url) {
-        webView.loadUrl(url);
-
         int count = 0;
         while (checked && returnedHTML == null) {
             try {
