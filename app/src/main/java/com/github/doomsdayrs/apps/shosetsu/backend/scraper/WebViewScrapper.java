@@ -69,13 +69,15 @@ public class WebViewScrapper {
      * @param url URL to retrieve;
      * @return Document of the URL
      */
-    public static Document docFromURL(String url, boolean cloudflare) {
+    public Document docFromURL(String url, boolean cloudflare) {
 
         try {
             if (!cloudflare)
                 return Jsoup.connect(url).get();
             else {
-                //TODO handle cookies
+                // Cloudflare cf = new Cloudflare(url);
+                //  cf.setUser_agent(webView.getSettings().getUserAgentString());
+
                 return Jsoup.connect(url).get();
             }
         } catch (IOException e) {
