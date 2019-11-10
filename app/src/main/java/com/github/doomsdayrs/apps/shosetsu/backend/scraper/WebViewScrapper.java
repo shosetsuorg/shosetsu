@@ -19,17 +19,12 @@ package com.github.doomsdayrs.apps.shosetsu.backend.scraper;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
 
 
 /**
@@ -39,130 +34,59 @@ import java.util.concurrent.TimeUnit;
  * @author github.com/doomsdayrs
  */
 public class WebViewScrapper {
-    private final WebView webView;
-    private static Looper looper;
-    private Activity activity;
-    private ArrayList<String> toBeProcessed = new ArrayList<>();
-    private ArrayList<StoredPage> storedPages = new ArrayList<>();
-    private boolean running = false;
-    private boolean next = false;
 
+    private final WebView webView;
+    private Activity activity;
+    public boolean completed = false;
+    String html;
+    private boolean working = false;
+
+
+    /**
+     * Constructor
+     *
+     * @param webView  Webview to use
+     * @param activity How to handle Scraping
+     */
     @SuppressLint("SetJavaScriptEnabled")
     public WebViewScrapper(WebView webView, Activity activity) {
         this.webView = webView;
         this.activity = activity;
-
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.addJavascriptInterface(this, "HTMLOUT");
-
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return false;
-            }
-
-            public void onPageFinished(WebView view, String url) {
-                view.loadUrl("javascript:window.HTMLOUT.processHTML('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>','" + url + "');");
-                StoredPage storedPage = getStoredPage(url);
-                if (storedPage.html.contains("cf-browser-verification")) {
-                    storedPage.html = null;
-                } else {
-                    next = true;
-                }
-            }
-        });
+        // webView.addJavascriptInterface(this, "HTMLOUT");
+        webView.setWebViewClient(new WebViewScrapperClient(this));
     }
 
-    public StoredPage getStoredPage(String url) {
-        for (StoredPage storedPage : storedPages)
-            if (storedPage.url.equals(url))
-                return storedPage;
-        return null;
-    }
-
-    @JavascriptInterface
-    public void processHTML(String html, String url) {
-        Log.i("ProcessingHTML", url);
-        StoredPage storedPage = new StoredPage(url);
-        storedPage.html = html;
-        storedPages.add(storedPage);
-    }
-
-    public void loadUrl(String url) {
-        toBeProcessed.add(url);
-        if (!running) {
-            looper = new Looper(this);
-            looper.execute();
-        }
-    }
+    // @JavascriptInterface
+    // public void processHTML(String html) {
+    //     Log.i("ProcessingHTML", "of latestURL");
+    //     this.html = html;
+    // }
 
     /**
-     * Put this in an async task, or you will have a bad time.
+     * Put this in an async task, or you will have a bad time
      *
      * @param url URL to retrieve;
      * @return Document of the URL
      */
-    public Document docFromURL(String url) {
-        activity.runOnUiThread(() -> loadUrl(url));
-        int a = 0;
-        Log.i("WaitingURL", url);
-        while (getStoredPage(url) == null) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    public static Document docFromURL(String url, boolean cloudflare) {
+
+        try {
+            if (!cloudflare)
+                return Jsoup.connect(url).get();
+            else {
+                //TODO handle cookies
+                return Jsoup.connect(url).get();
             }
-            Log.i("WaitLoop", String.valueOf(a));
-            a++;
-            if (a == 240) {
-                return null;
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return Jsoup.parse(getStoredPage(url).html);
+
+        return null;
     }
 
-    static class StoredPage {
-        final String url;
-        String html = null;
-
-        StoredPage(String url) {
-            this.url = url;
-        }
+    private void clear() {
+        activity.runOnUiThread(() -> webView.loadUrl("about:blank"));
     }
 
-    static class Looper extends AsyncTask<Void, Void, Void> {
-        final WebViewScrapper webViewScrapper;
-
-        Looper(WebViewScrapper webViewScrapper) {
-            this.webViewScrapper = webViewScrapper;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            Log.i("Starting", "ScraperLoop");
-            webViewScrapper.running = true;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            Log.i("Finished", "ScraperLoop");
-            webViewScrapper.running = false;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            while (webViewScrapper.toBeProcessed.size() > 0) {
-                String url = webViewScrapper.toBeProcessed.get(0);
-                Log.i("ProcessingURL", url);
-                webViewScrapper.activity.runOnUiThread(() -> webViewScrapper.webView.loadUrl(url));
-                int a = 0;
-                while (!webViewScrapper.next) {
-                    a++;
-                    Log.i("NextLoop", String.valueOf(a));
-                }
-            }
-            return null;
-        }
-    }
 }

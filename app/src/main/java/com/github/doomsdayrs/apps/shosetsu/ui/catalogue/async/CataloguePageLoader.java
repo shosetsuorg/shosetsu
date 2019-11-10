@@ -14,6 +14,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNov
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -84,9 +86,9 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
         }
         // Loads novel list
         if (integers.length == 0)
-            novels = catalogueFragment.formatter.parseLatest(catalogueFragment.webViewScrapper.docFromURL(catalogueFragment.formatter.getLatestURL(1)));
+            novels = catalogueFragment.formatter.parseLatest(docFromURL(catalogueFragment.formatter.getLatestURL(1), catalogueFragment.formatter.hasCloudFlare()));
         else {
-            novels = catalogueFragment.formatter.parseLatest(catalogueFragment.webViewScrapper.docFromURL(catalogueFragment.formatter.getLatestURL(integers[0])));
+            novels = catalogueFragment.formatter.parseLatest(docFromURL(catalogueFragment.formatter.getLatestURL(integers[0]), catalogueFragment.formatter.hasCloudFlare()));
         }
 
         for (Novel novel : novels)
