@@ -56,6 +56,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.togglePause;
 public class DownloadsFragment extends Fragment {
     public static List<DownloadItem> downloadItems = new ArrayList<>();
 
+
     @SuppressLint("StaticFieldLeak")
     private static RecyclerView recyclerView;
     private static DownloadAdapter adapter;

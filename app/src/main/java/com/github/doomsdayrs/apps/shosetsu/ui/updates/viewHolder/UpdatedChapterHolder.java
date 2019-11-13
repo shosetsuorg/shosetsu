@@ -47,10 +47,10 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  */
 public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final ImageView moreOptions;
-    public ImageView image;
+    public final TextView downloadTag;
     public NovelChapter novelChapter;
-    public TextView downloadTag;
-    public TextView title;
+    public final TextView title;
+    private final ImageView image;
     public PopupMenu popupMenu;
 
     public UpdatedChapterHolder(@NonNull View itemView) {

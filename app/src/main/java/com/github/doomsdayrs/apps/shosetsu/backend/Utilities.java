@@ -134,8 +134,7 @@ public class Utilities {
             byte[] bytes = Base64.decode(string, Base64.NO_WRAP);
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            Object object = objectInputStream.readObject();
-            return object;
+            return objectInputStream.readObject();
         }
         return null;
     }
@@ -431,7 +430,7 @@ public class Utilities {
         openChapter(activity, novelChapter, novelID, formatterID, null);
     }
 
-    public static void openChapter(Activity activity, NovelChapter novelChapter, int novelID, int formatterID, String[] chapters) {
+    private static void openChapter(Activity activity, NovelChapter novelChapter, int novelID, int formatterID, String[] chapters) {
         int chapterID = getChapterIDFromChapterURL(novelChapter.link);
         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
         Intent intent = new Intent(activity, ChapterReader.class);

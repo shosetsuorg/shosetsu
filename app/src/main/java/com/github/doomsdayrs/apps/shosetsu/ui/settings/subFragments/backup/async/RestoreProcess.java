@@ -56,20 +56,25 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLi
  * @author github.com/doomsdayrs
  */
 public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
-    String file_path;
+    private final String file_path;
 
     @SuppressLint("StaticFieldLeak")
+    private final
     Context context;
     @SuppressLint("StaticFieldLeak")
+    private final
     Button close;
     @SuppressLint("StaticFieldLeak")
+    private final
     ProgressBar progressBar;
     @SuppressLint("StaticFieldLeak")
+    private final
     ProgressBar progressBar2;
     @SuppressLint("StaticFieldLeak")
+    private final
     TextView textView;
 
-    Dialog dialog;
+    private final Dialog dialog;
 
     public RestoreProcess(String file_path, Context context) {
         this.file_path = file_path;

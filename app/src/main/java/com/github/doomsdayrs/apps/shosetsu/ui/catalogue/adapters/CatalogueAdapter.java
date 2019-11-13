@@ -43,7 +43,7 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class CatalogueAdapter extends RecyclerView.Adapter<NovelCardViewHolder> {
-    private List<CatalogueNovelCard> recycleCards;
+    private final List<CatalogueNovelCard> recycleCards;
     private final CatalogueFragment catalogueFragment;
     private final Formatter formatter;
 

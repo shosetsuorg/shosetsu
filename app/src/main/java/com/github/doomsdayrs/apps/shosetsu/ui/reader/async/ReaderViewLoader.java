@@ -7,6 +7,8 @@ import android.view.View;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -47,7 +49,7 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
     protected String doInBackground(ChapterReader... chapterReaders) {
         chapterReader.runOnUiThread(() -> chapterReader.errorView.setVisibility(View.GONE));
         try {
-            chapterReader.unformattedText = chapterReader.formatter.getNovelPassage(chapterReader.chapterURL);
+            chapterReader.unformattedText = chapterReader.formatter.getNovelPassage(docFromURL(chapterReader.chapterURL, chapterReader.formatter.hasCloudFlare()));
             chapterReader.runOnUiThread(chapterReader::setUpReader);
             chapterReader.runOnUiThread(() ->
                     chapterReader.scrollView.post(() ->

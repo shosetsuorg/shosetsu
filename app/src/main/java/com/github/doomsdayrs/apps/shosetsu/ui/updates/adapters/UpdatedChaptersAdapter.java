@@ -53,11 +53,11 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * @author github.com/doomsdayrs
  */
 public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterHolder> {
-    public static int DefaultTextColor;
+    private static int DefaultTextColor;
     private static boolean set = false;
 
-    public final ArrayList<Update> updates;
-    public final Activity activity;
+    private final ArrayList<Update> updates;
+    private final Activity activity;
 
     public UpdatedChaptersAdapter(ArrayList<Update> updates, Activity activity) {
         this.updates = updates;

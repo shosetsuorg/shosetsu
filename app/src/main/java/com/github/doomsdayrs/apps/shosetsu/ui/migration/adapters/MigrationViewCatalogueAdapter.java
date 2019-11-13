@@ -94,7 +94,7 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
             this.migrationView = migrationView;
         }
 
-        public void setFormatter(Formatter formatter) {
+        void setFormatter(Formatter formatter) {
             this.formatter = formatter;
         }
 

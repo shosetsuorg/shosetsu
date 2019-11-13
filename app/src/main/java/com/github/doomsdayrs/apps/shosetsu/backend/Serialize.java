@@ -235,7 +235,7 @@ public class Serialize {
      * @return NovelChapter
      * @throws Exception If something goes wrong
      */
-    public static NovelChapter deserializeNovelChapterJSON(String serial) throws Exception {
+    private static NovelChapter deserializeNovelChapterJSON(String serial) throws Exception {
         NovelChapter novelChapter = new NovelChapter();
         JSONObject jsonObject = new JSONObject((String) deserializeString(serial));
         for (String key : NOVELCHAPTERKEYS) {

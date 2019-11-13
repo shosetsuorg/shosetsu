@@ -38,7 +38,7 @@ import com.squareup.picasso.Picasso;
  * @author github.com/doomsdayrs
  */
 public class MigratingMapAdapter extends RecyclerView.Adapter<CompressedHolder> {
-    private MigrationView migrationView;
+    private final MigrationView migrationView;
 
     public MigratingMapAdapter(MigrationView migrationView) {
         this.migrationView = migrationView;

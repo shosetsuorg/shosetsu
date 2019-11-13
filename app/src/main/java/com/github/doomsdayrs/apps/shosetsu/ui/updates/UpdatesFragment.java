@@ -58,6 +58,7 @@ public class UpdatesFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+
     public UpdatesFragment() {
         setHasOptionsMenu(true);
     }

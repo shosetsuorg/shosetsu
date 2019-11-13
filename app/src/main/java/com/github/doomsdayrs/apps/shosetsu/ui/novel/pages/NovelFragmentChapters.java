@@ -168,9 +168,7 @@ public class NovelFragmentChapters extends Fragment {
         pageCount = view.findViewById(R.id.page_count);
         resumeRead = view.findViewById(R.id.resume);
         resumeRead.setVisibility(View.GONE);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            new ChapterLoader(novelFragment.novelPage, novelFragment.novelURL, novelFragment.formatter).setNovelFragmentChapters(this).execute(getActivity());
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> new ChapterLoader(novelFragment.novelPage, novelFragment.novelURL, novelFragment.formatter).setNovelFragmentChapters(this).execute(getActivity()));
 
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage");

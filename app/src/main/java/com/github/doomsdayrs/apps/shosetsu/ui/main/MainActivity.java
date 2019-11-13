@@ -65,10 +65,8 @@ public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     public NavigationView navigationView;
     public final CataloguesFragment cataloguesFragment = new CataloguesFragment();
-    private WebView webView;
 
     public final LibraryFragment libraryFragment = new LibraryFragment();
-    private WebViewScrapper webViewScrapper;
     public final UpdatesFragment updatesFragment = new UpdatesFragment();
     public final SettingsFragment settingsFragment = new SettingsFragment();
     public final DownloadsFragment downloadsFragment = new DownloadsFragment();
@@ -175,10 +173,8 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        webView = findViewById(R.id.absolute_webview);
-        webViewScrapper = new WebViewScrapper(webView, this);
-        cataloguesFragment.setWebViewScrapper(webViewScrapper);
-
+        WebView webView = findViewById(R.id.absolute_webview);
+        WebViewScrapper.setUa(webView.getSettings().getUserAgentString());
         // Sets up DB
         DBHelper helper = new DBHelper(this);
         Database.sqLiteDatabase = helper.getWritableDatabase();
@@ -186,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         Download_Manager.init();
 
         //Prevent the frag from changing on rotation
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()

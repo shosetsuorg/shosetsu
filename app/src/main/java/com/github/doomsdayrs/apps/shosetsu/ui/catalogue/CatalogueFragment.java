@@ -25,7 +25,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler;
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom;
@@ -66,7 +65,6 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoO
  */
 //TODO fix issue with not loading
 public class CatalogueFragment extends Fragment {
-    public WebViewScrapper webViewScrapper;
     public ArrayList<CatalogueNovelCard> catalogueNovelCards = new ArrayList<>();
     public Formatter formatter;
     public SwipeRefreshLayout swipeRefreshLayout;
@@ -82,8 +80,8 @@ public class CatalogueFragment extends Fragment {
     public boolean isQuery = false;
 
     public ConstraintLayout errorView;
-    public TextView errorMessage;
-    public Button errorButton;
+    private TextView errorMessage;
+    private Button errorButton;
     public TextView empty;
 
     /**
@@ -93,9 +91,6 @@ public class CatalogueFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    public void setWebViewScrapper(WebViewScrapper webViewScrapper) {
-        this.webViewScrapper = webViewScrapper;
-    }
 
     public void setFormatter(Formatter formatter) {
         this.formatter = formatter;

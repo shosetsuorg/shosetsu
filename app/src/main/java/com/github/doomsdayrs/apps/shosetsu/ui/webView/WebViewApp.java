@@ -35,8 +35,8 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 public class WebViewApp extends AppCompatActivity {
 
 
-    WebView webView;
-    Actions action = Actions.VIEW;
+    private WebView webView;
+    private Actions action = Actions.VIEW;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override

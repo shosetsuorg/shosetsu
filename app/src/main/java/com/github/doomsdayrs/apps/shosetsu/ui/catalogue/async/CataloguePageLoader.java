@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
 
+
 /*
  * This file is part of Shosetsu.
  *

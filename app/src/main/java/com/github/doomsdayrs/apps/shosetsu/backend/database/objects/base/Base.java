@@ -25,7 +25,7 @@ import java.io.Serializable;
  */public class Base implements Serializable {
     public final String NOVEL_URL;
 
-    public Base(String novel_url) {
+    Base(String novel_url) {
         NOVEL_URL = novel_url;
     }
 

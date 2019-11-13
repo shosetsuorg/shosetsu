@@ -25,8 +25,8 @@ import android.webkit.JavascriptInterface;
  *
  * @author github.com/doomsdayrs
  */
-public class JSInterface {
-    private Context ctx;
+class JSInterface {
+    private final Context ctx;
 
     JSInterface(Context ctx) {
         this.ctx = ctx;

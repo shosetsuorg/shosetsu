@@ -10,6 +10,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNov
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -32,7 +34,7 @@ import java.util.List;
  * @author github.com/doomsdayrs
  */
 public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<CatalogueNovelCard>> {
-    private CatalogueFragment catalogueFragment;
+    private final CatalogueFragment catalogueFragment;
 
     public CatalogueQuerySearch(CatalogueFragment catalogueFragment) {
         this.catalogueFragment = catalogueFragment;
@@ -47,7 +49,7 @@ public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<Cata
     @Override
     protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
         ArrayList<CatalogueNovelCard> result = new ArrayList<>();
-        List<Novel> novels = catalogueFragment.formatter.parseSearch(catalogueFragment.webViewScrapper.docFromURL(catalogueFragment.formatter.getSearchString(strings[0])));
+        List<Novel> novels = catalogueFragment.formatter.parseSearch(docFromURL(catalogueFragment.formatter.getSearchString(strings[0]), catalogueFragment.formatter.hasCloudFlare()));
         for (Novel novel : novels)
             result.add(new CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link));
         return result;

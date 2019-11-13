@@ -23,5 +23,5 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder;
  *
  * @author github.com/doomsdayrs
  */
-public class UpdatedNovelHolder {
+class UpdatedNovelHolder {
 }

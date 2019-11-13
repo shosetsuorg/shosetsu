@@ -34,8 +34,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.Backu
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 
 public class OnSettingsCardClick implements View.OnClickListener {
-    final Types type;
-    final FragmentManager fragmentManager;
+    private final Types type;
+    private final FragmentManager fragmentManager;
 
     public OnSettingsCardClick(Types id, FragmentManager fragmentManager) {
         type = id;

@@ -37,7 +37,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 
 public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    public MaterialCardView materialCardView;
+    public final MaterialCardView materialCardView;
     public final ImageView library_card_image;
     public final TextView library_card_title;
     public final Chip chip;

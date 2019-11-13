@@ -59,7 +59,6 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
  */
 public class NovelFragment extends Fragment {
 
-
     public int novelID;
     public String novelURL;
     public NovelPage novelPage;
@@ -131,7 +130,7 @@ public class NovelFragment extends Fragment {
 
 
     public NovelFragmentInfo novelFragmentInfo;
-    public NovelFragmentChapters novelFragmentChapters;
+    private NovelFragmentChapters novelFragmentChapters;
     public ProgressBar progressBar;
 
     private TabLayout tabLayout;
@@ -146,10 +145,6 @@ public class NovelFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

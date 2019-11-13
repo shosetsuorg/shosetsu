@@ -29,8 +29,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author github.com/doomsdayrs
  */
-public class WebViewScrapperClient extends WebViewClient {
-    private WebViewScrapper webViewScrapper;
+class WebViewScrapperClient extends WebViewClient {
+    private final WebViewScrapper webViewScrapper;
 
     WebViewScrapperClient(WebViewScrapper webViewScrapper) {
         this.webViewScrapper = webViewScrapper;

@@ -52,6 +52,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLi
  */
 public class BackupProcess extends AsyncTask<Void, Void, Void> {
     @SuppressLint("StaticFieldLeak")
+    private final
     Context context;
 
     public BackupProcess(Context context) {

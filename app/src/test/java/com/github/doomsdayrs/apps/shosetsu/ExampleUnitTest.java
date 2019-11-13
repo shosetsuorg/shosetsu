@@ -5,7 +5,7 @@ package com.github.doomsdayrs.apps.shosetsu;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+class ExampleUnitTest {
 
 
 

@@ -17,14 +17,19 @@ package com.github.doomsdayrs.apps.shosetsu.backend.scraper;
  * ====================================================================
  */
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.webkit.WebView;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.github.doomsdayrs.apps.shosetsu.backend.scraper.aria2.CloudFlareCallback;
+import com.github.doomsdayrs.apps.shosetsu.backend.scraper.aria2.Cloudflare;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.net.HttpCookie;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -35,19 +40,28 @@ import java.io.IOException;
  */
 public class WebViewScrapper {
 
-    private final WebView webView;
-    private Activity activity;
-    public boolean completed = false;
+    private static String ua;
     String html;
-    private boolean working = false;
+    // private final WebView webView;
+    //private Activity activity;
+    public boolean completed = false;
 
+    private WebViewScrapper() {
+    }
 
-    /**
+    public static void setUa(String ua) {
+        WebViewScrapper.ua = ua;
+    }
+    //private boolean working = false;
+
+    /*
      * Constructor
      *
      * @param webView  Webview to use
      * @param activity How to handle Scraping
      */
+            /*
+
     @SuppressLint("SetJavaScriptEnabled")
     public WebViewScrapper(WebView webView, Activity activity) {
         this.webView = webView;
@@ -62,6 +76,7 @@ public class WebViewScrapper {
     //     Log.i("ProcessingHTML", "of latestURL");
     //     this.html = html;
     // }
+*/
 
     /**
      * Put this in an async task, or you will have a bad time
@@ -69,26 +84,52 @@ public class WebViewScrapper {
      * @param url URL to retrieve;
      * @return Document of the URL
      */
-    public Document docFromURL(String url, boolean cloudflare) {
-
-        try {
-            if (!cloudflare)
-                return Jsoup.connect(url).get();
-            else {
-                // Cloudflare cf = new Cloudflare(url);
-                //  cf.setUser_agent(webView.getSettings().getUserAgentString());
-
-                return Jsoup.connect(url).get();
+    public static Document docFromURL(String url, boolean cloudflare) {
+        if (url != null) {
+            Log.i("URL load", url);
+            try {
+                if (cloudflare) {
+                    Cloudflare cf = new Cloudflare(url);
+                    cf.setUser_agent(ua);
+                    return Jsoup.connect(url).cookies(Cloudflare.List2Map(new GetCookies().execute(cf).get())).get();
+                } else {
+                    return Jsoup.connect(url).get();
+                }
+            } catch (IOException | InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
         return null;
     }
 
+    static class GetCookies extends AsyncTask<Cloudflare, Void, List<HttpCookie>> {
+        List<HttpCookie> cookies = null;
+        int status = 0;
+
+        @Override
+        protected List<HttpCookie> doInBackground(Cloudflare... cf) {
+            cf[0].getCookies(new CloudFlareCallback() {
+                @Override
+                public void onSuccess(List<HttpCookie> cookieList) {
+                    cookies = cookieList;
+                    status = 1;
+                }
+
+                @Override
+                public void onFail() {
+                    status = -1;
+                }
+            });
+            int a = 0;
+            while (status == 0) {
+                a++;
+            }
+            return cookies;
+        }
+    }
+/*
     private void clear() {
         activity.runOnUiThread(() -> webView.loadUrl("about:blank"));
     }
-
+*/
 }

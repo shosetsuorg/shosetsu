@@ -9,8 +9,9 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 
-import java.io.IOException;
 import java.util.ArrayList;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
 
 /*
  * This file is part of Shosetsu.
@@ -48,16 +49,12 @@ public class MigrationViewLoad extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         Log.d("Searching with", targetFormat.getName());
         for (int x = 0; x < migrationView.novels.size(); x++) {
-            try {
-                // Retrieves search results
-                ArrayList<Novel> N = (ArrayList<Novel>) targetFormat.search(migrationView.novels.get(x).title);
+            // Retrieves search results
+            ArrayList<Novel> N = (ArrayList<Novel>) targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels.get(x).title), targetFormat.hasCloudFlare()));
 
-                // Sets the results
-                migrationView.novelResults.set(x, N);
+            // Sets the results
+            migrationView.novelResults.set(x, N);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return null;
     }

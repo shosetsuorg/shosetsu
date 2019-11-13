@@ -33,7 +33,7 @@ public enum Actions {
         actions.add(Actions.CLOUD_FLARE);
     }
 
-    public final int action;
+    private final int action;
 
     Actions(int action) {
         this.action = action;

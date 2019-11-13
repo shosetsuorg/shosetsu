@@ -101,6 +101,7 @@ public class ViewSettings extends Fragment {
         }
     }
 
+    /*
     private void onClickTextSize(View v) {
 
     }
@@ -112,7 +113,7 @@ public class ViewSettings extends Fragment {
     private void onClickParaIndent(View v) {
 
     }
-
+*/
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -143,7 +143,7 @@ public class Database {
 
     public static class DatabaseIdentification {
 
-        public static boolean hasChapter(String chapterURL) {
+        static boolean hasChapter(String chapterURL) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.URL + " = '" + chapterURL + "'", null);
             int a = cursor.getCount();
             cursor.close();
@@ -256,7 +256,7 @@ public class Database {
          * @param id Chapter ID
          * @return Chapter URL
          */
-        public static String getNovelURLFromChapterID(int id) {
+        static String getNovelURLFromChapterID(int id) {
             return getNovelURLfromNovelID(getNovelIDFromChapterID(id));
         }
 
@@ -292,7 +292,7 @@ public class Database {
          * @param id Novel ID
          * @return Formatter ID
          */
-        public static int getFormatterIDFromNovelID(int id) {
+        static int getFormatterIDFromNovelID(int id) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " = " + id + "", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
@@ -330,7 +330,7 @@ public class Database {
          * @param id Chapter ID
          * @return Formatter ID
          */
-        public static int getFormatterIDFromChapterID(int id) {
+        static int getFormatterIDFromChapterID(int id) {
             return getFormatterIDFromNovelID(getNovelIDFromChapterID(id));
         }
     }
@@ -381,10 +381,9 @@ public class Database {
          * Removes download item
          *
          * @param downloadItem download item to remove
-         * @return if removed
          */
-        public static boolean removeDownload(DownloadItem downloadItem) {
-            return sqLiteDatabase.delete(Tables.DOWNLOADS.toString(), Columns.PARENT_ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null) > 0;
+        public static void removeDownload(DownloadItem downloadItem) {
+            sqLiteDatabase.delete(Tables.DOWNLOADS.toString(), Columns.PARENT_ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null);
         }
 
         /**
@@ -430,6 +429,7 @@ public class Database {
 
     public static class DatabaseChapter {
 
+        /*
         // TODO This will remove all chapter data
         public static void purgeCache() {
 
@@ -438,6 +438,7 @@ public class Database {
         //TODO purge not needed cache
         public static void purgeUneededCache() {
         }
+*/
 
         /**
          * @param novelID ID of novel
@@ -566,7 +567,7 @@ public class Database {
          * @param chapterID   chapter to update
          * @param chapterPath save path to set
          */
-        public static void addSavedPath(int chapterID, String chapterPath) {
+        static void addSavedPath(int chapterID, String chapterPath) {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "='" + chapterPath + "'," + Columns.IS_SAVED + "=1 where " + Columns.ID + "=" + chapterID);
         }
 
@@ -699,13 +700,7 @@ public class Database {
                     }
                 }
                 cursor.close();
-                Collections.sort(novelChapters, (novelChapter, t1) -> {
-                    if (novelChapter.order < t1.order)
-                        return -1;
-                    else if (novelChapter.order > t1.order)
-                        return 1;
-                    else return 0;
-                });
+                Collections.sort(novelChapters, (novelChapter, t1) -> Double.compare(novelChapter.order, t1.order));
                 return novelChapters;
             }
         }
@@ -1068,7 +1063,7 @@ public class Database {
             }
         }
 
-        public static long getLatestDay() {
+        static long getLatestDay() {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.TIME + " FROM " + Tables.UPDATES + " ORDER BY ROWID DESC LIMIT 1", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();

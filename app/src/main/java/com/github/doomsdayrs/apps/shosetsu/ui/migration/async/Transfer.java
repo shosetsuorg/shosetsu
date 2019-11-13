@@ -14,11 +14,11 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
 
 /*
  * This file is part of Shosetsu.
@@ -45,8 +45,7 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
     private final ArrayList<String[]> strings;
     private final Formatter formatter;
     @SuppressLint("StaticFieldLeak")
-    private
-    MigrationView migrationView;
+    private final MigrationView migrationView;
     private boolean C = true;
 
     public Transfer(ArrayList<String[]> strings, int target, MigrationView migrationView) {
@@ -81,51 +80,46 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
                 String s = strings[0] + "--->" + strings[1];
                 System.out.println(s);
                 migrationView.output.post(() -> migrationView.output.setText(s));
-                try {
-                    NovelPage novelPage = formatter.parseNovel(strings[1]);
-                    if (formatter.isIncrementingChapterList()) {
-                        int mangaCount = 0;
-                        int page = 1;
-                        while (page <= novelPage.maxChapterPage && C) {
-                            String p = "Page: " + page + "/" + novelPage.maxChapterPage;
-                            migrationView.pageCount.post(() -> migrationView.pageCount.setText(p));
+                NovelPage novelPage = formatter.parseNovel(docFromURL((strings[1]), formatter.hasCloudFlare()));
+                if (formatter.isIncrementingChapterList()) {
+                    int mangaCount = 0;
+                    int page = 1;
+                    while (page <= novelPage.maxChapterPage && C) {
+                        String p = "Page: " + page + "/" + novelPage.maxChapterPage;
+                        migrationView.pageCount.post(() -> migrationView.pageCount.setText(p));
 
-                            novelPage = formatter.parseNovel(strings[1], page);
-                            int novelID = getNovelIDFromNovelURL(strings[1]);
-                            for (NovelChapter novelChapter : novelPage.novelChapters)
-                                if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
-                                    mangaCount++;
-                                    System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
-
-                                    Database.DatabaseChapter.addToChapters(novelID, novelChapter);
-                                }
-                            page++;
-
-                            try {
-                                TimeUnit.MILLISECONDS.sleep(300);
-                            } catch (InterruptedException e) {
-                                if (e.getMessage() != null)
-                                    Log.e("Interrupt", e.getMessage());
-                            }
-                        }
-                    } else {
-                        int mangaCount = 0;
+                        novelPage = formatter.parseNovel(docFromURL(strings[1], formatter.hasCloudFlare()), page);
                         int novelID = getNovelIDFromNovelURL(strings[1]);
                         for (NovelChapter novelChapter : novelPage.novelChapters)
                             if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
                                 mangaCount++;
                                 System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+
                                 Database.DatabaseChapter.addToChapters(novelID, novelChapter);
                             }
+                        page++;
+
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(300);
+                        } catch (InterruptedException e) {
+                            if (e.getMessage() != null)
+                                Log.e("Interrupt", e.getMessage());
+                        }
                     }
-                    if (C) {
-                        migrationView.pageCount.post(() -> migrationView.pageCount.setText(""));
-                        int oldID = getNovelIDFromNovelURL(strings[0]);
-                        Database.DatabaseNovels.migrateNovel(oldID, strings[1], formatter.getID(), novelPage, Database.DatabaseNovels.getStatus(oldID).getA());
-                    }
-                } catch (IOException e) {
-                    if (e.getMessage() != null)
-                        Log.e("Interrupt", e.getMessage());
+                } else {
+                    int mangaCount = 0;
+                    int novelID = getNovelIDFromNovelURL(strings[1]);
+                    for (NovelChapter novelChapter : novelPage.novelChapters)
+                        if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                            mangaCount++;
+                            System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+                            Database.DatabaseChapter.addToChapters(novelID, novelChapter);
+                        }
+                }
+                if (C) {
+                    migrationView.pageCount.post(() -> migrationView.pageCount.setText(""));
+                    int oldID = getNovelIDFromNovelURL(strings[0]);
+                    Database.DatabaseNovels.migrateNovel(oldID, strings[1], formatter.getID(), novelPage, Database.DatabaseNovels.getStatus(oldID).getA());
                 }
             }
         return null;

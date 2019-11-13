@@ -47,9 +47,7 @@ public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
             ArrayList<CatalogueNovelCard> searchResults = new CatalogueQuerySearch(catalogueFragment).execute(query).get();
             catalogueFragment.setLibraryCards(searchResults);
             return true;
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return false;

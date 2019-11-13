@@ -35,7 +35,7 @@ import okhttp3.HttpUrl;
  * Provides a synchronization point between the webview cookie store and okhttp3.OkHttpClient cookie store
  */
 public final class WebviewCookieHandler implements CookieJar {
-    private CookieManager webviewCookieManager = CookieManager.getInstance();
+    private final CookieManager webviewCookieManager = CookieManager.getInstance();
 
     @Override
     public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {

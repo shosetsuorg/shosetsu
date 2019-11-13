@@ -24,9 +24,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseCha
  * @author github.com/doomsdayrs
  */
 public class Update extends BaseChapter {
-    public final long time;
+    private final long time;
     public final int chapterID;
-    public final int novelID;
+    private final int novelID;
 
     public Update(String novel_url, String chapter_url, long time, int chapterID, int novelID) {
         super(novel_url, chapter_url);

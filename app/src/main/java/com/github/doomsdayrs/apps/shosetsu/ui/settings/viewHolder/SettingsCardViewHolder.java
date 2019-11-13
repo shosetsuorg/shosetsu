@@ -34,9 +34,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.listener.OnSettingsCardCl
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 
 public class SettingsCardViewHolder extends RecyclerView.ViewHolder {
-    final TextView library_card_title;
-    final CardView cardView;
-    final FragmentManager fragmentManager;
+    private final TextView library_card_title;
+    private final CardView cardView;
+    private final FragmentManager fragmentManager;
 
     public SettingsCardViewHolder(@NonNull View itemView, FragmentManager fragmentManager) {
         super(itemView);

@@ -12,9 +12,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 
-import java.io.IOException;
-
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
 
 /*
  * This file is part of Shosetsu.
@@ -44,8 +43,8 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  */
 public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     private NovelPage novelPage;
-    private String novelURL;
-    private Formatter formatter;
+    private final String novelURL;
+    private final Formatter formatter;
 
     private NovelFragmentChapters novelFragmentChapters;
 
@@ -58,7 +57,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         this.formatter = formatter;
     }
 
-    ChapterLoader(ChapterLoader chapterLoader) {
+    private ChapterLoader(ChapterLoader chapterLoader) {
         this.novelPage = chapterLoader.novelPage;
         this.novelURL = chapterLoader.novelURL;
         this.formatter = chapterLoader.formatter;
@@ -82,44 +81,44 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         novelPage = null;
         Log.d("ChapLoad", novelURL);
 
-        if (novelFragmentChapters != null)
+        if (novelFragmentChapters != null) {
             if (novelFragmentChapters.getActivity() != null)
                 novelFragmentChapters.getActivity().runOnUiThread(() -> novelFragmentChapters.novelFragment.errorView.setVisibility(View.GONE));
 
-        try {
+            try {
 
-            int page = 1;
-            if (formatter.isIncrementingChapterList()) {
-                novelPage = formatter.parseNovel(novelURL, page);
-                int mangaCount = 0;
-                while (page <= novelPage.maxChapterPage && !activity.isDestroyed()) {
-                    if (novelFragmentChapters != null) {
+                int page = 1;
+                if (formatter.isIncrementingChapterList()) {
+                    novelPage = formatter.parseNovel(docFromURL(novelURL, formatter.hasCloudFlare()), page);
+                    int mangaCount = 0;
+                    while (page <= novelPage.maxChapterPage && !activity.isDestroyed()) {
                         String s = "Page: " + page + "/" + novelPage.maxChapterPage;
                         novelFragmentChapters.pageCount.post(() -> novelFragmentChapters.pageCount.setText(s));
+
+                        novelPage = formatter.parseNovel(docFromURL(novelURL, formatter.hasCloudFlare()), page);
+                        for (NovelChapter novelChapter : novelPage.novelChapters)
+                            add(activity, mangaCount, novelChapter);
+                        page++;
+
+                        Utilities.wait(300);
                     }
-                    novelPage = formatter.parseNovel(novelURL, page);
+                } else {
+                    novelPage = formatter.parseNovel(docFromURL(novelURL, formatter.hasCloudFlare()), page);
+                    int mangaCount = 0;
                     for (NovelChapter novelChapter : novelPage.novelChapters)
                         add(activity, mangaCount, novelChapter);
-                    page++;
-
-                    Utilities.wait(300);
                 }
-            } else {
-                novelPage = formatter.parseNovel(novelURL, page);
-                int mangaCount = 0;
-                for (NovelChapter novelChapter : novelPage.novelChapters)
-                    add(activity, mangaCount, novelChapter);
-            }
-            return true;
-        } catch (IOException e) {
-            if (novelFragmentChapters != null)
-                if (novelFragmentChapters.getActivity() != null)
-                    novelFragmentChapters.getActivity().runOnUiThread(() -> {
-                        novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
-                        novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
-                        novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> refresh(view, activity));
-                    });
+                return true;
+            } catch (Exception e) {
+                if (novelFragmentChapters != null)
+                    if (novelFragmentChapters.getActivity() != null)
+                        novelFragmentChapters.getActivity().runOnUiThread(() -> {
+                            novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
+                            novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
+                            novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> refresh(view, activity));
+                        });
 
+            }
         }
         return false;
     }

@@ -30,8 +30,8 @@ import java.util.ArrayList;
  *
  * @author github.com/doomsdayrs
  */
-public class UpdatedNovelsAdapter extends RecyclerView.Adapter {
-    public ArrayList<String> novelURLs = new ArrayList<>();
+class UpdatedNovelsAdapter extends RecyclerView.Adapter {
+    private ArrayList<String> novelURLs = new ArrayList<>();
 
     UpdatedNovelsAdapter(ArrayList<String> novelURLs) {
         this.novelURLs = novelURLs;

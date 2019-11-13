@@ -53,15 +53,13 @@ import java.util.ArrayList;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.deserializeString;
 
 public class MigrationView extends AppCompatActivity {
-    Transfer t;
-
+    public final ArrayList<ArrayList<Novel>> novelResults = new ArrayList<>();
     private ArrayList<CatalogueCard> catalogues = null;
 
 
     public ArrayList<NovelCard> novels = new ArrayList<>();
-    public ArrayList<ArrayList<Novel>> novelResults = new ArrayList<>();
-
-    private ArrayList<String[]> confirmedMappings = new ArrayList<>();
+    private final ArrayList<String[]> confirmedMappings = new ArrayList<>();
+    private Transfer t;
 
     public int target = -1;
     public int selection = 0;
@@ -73,9 +71,8 @@ public class MigrationView extends AppCompatActivity {
 
     public ConstraintLayout targetSelection;
     public ConstraintLayout migration;
-
-    public RecyclerView selectedNovels;
-    public RecyclerView.Adapter selectedNovelsAdapters;
+    private RecyclerView selectedNovels;
+    private RecyclerView.Adapter selectedNovelsAdapters;
 
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView mappingNovels;

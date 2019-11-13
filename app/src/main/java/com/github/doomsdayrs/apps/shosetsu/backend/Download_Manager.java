@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.cleanString;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
+import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
 
 /*
  * This file is part of Shosetsu.
@@ -87,8 +88,10 @@ public class Download_Manager {
         Database.DatabaseChapter.removePath(downloadItem.chapterID);
         if (file.exists())
             if (!file.delete())
-                if (context != null)
+                if (context != null) {
                     Toast.makeText(context, "Failed to delete, next download will correct", Toast.LENGTH_LONG).show();
+                    return false;
+                }
         return true;
     }
 
@@ -122,6 +125,7 @@ public class Download_Manager {
      * TODO Skip over paused chapters or move them to the bottom of the list
      */
     static class Downloading extends AsyncTask<Void, Void, Void> {
+
         @Override
         protected Void doInBackground(Void... voids) {
             while (Database.DatabaseDownloads.getDownloadCount() >= 1 && !Settings.downloadPaused) {
@@ -140,8 +144,7 @@ public class Download_Manager {
                                     throw new IOException("Failed to mkdirs");
                                 }
                             String formattedName = cleanString(downloadItem.chapterName);
-
-                            String passage = downloadItem.formatter.getNovelPassage(downloadItem.chapterURL);
+                            String passage = downloadItem.formatter.getNovelPassage(docFromURL(downloadItem.chapterURL, downloadItem.formatter.hasCloudFlare()));
                             FileOutputStream fileOutputStream = new FileOutputStream(
                                     (folder.getPath() + "/" + (formattedName) + ".txt")
                             );

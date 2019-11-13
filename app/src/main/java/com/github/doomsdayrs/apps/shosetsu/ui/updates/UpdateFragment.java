@@ -45,7 +45,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  */
 public class UpdateFragment extends Fragment {
     public long date = -1;
-    private ArrayList<String> novels = new ArrayList<>();
+    private final ArrayList<String> novels = new ArrayList<>();
 
     private ArrayList<Update> updates = new ArrayList<>();
     private RecyclerView recyclerView;

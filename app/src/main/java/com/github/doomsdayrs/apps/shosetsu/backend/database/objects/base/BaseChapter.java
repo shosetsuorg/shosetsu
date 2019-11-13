@@ -23,7 +23,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base;
  */public class BaseChapter extends Base {
     public final String CHAPTER_URL;
 
-    public BaseChapter(String novel_url, String chapter_url) {
+    protected BaseChapter(String novel_url, String chapter_url) {
         super(novel_url);
         CHAPTER_URL = chapter_url;
     }

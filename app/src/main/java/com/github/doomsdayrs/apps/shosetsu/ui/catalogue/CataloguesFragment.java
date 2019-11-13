@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
@@ -50,7 +49,6 @@ import java.util.Objects;
  */
 //TODO Searching mechanics here
 public class CataloguesFragment extends Fragment {
-    private WebViewScrapper webViewScrapper;
     private ArrayList<CatalogueCard> cards = null;
 
     /**
@@ -92,14 +90,11 @@ public class CataloguesFragment extends Fragment {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(Objects.requireNonNull(container).getContext());
-            RecyclerView.Adapter adapter = new CataloguesAdapter(cards, fragmentManager, webViewScrapper);
+            RecyclerView.Adapter adapter = new CataloguesAdapter(cards, fragmentManager);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
         }
         return view;
     }
 
-    public void setWebViewScrapper(WebViewScrapper webViewScrapper) {
-        this.webViewScrapper = webViewScrapper;
-    }
 }

@@ -8,6 +8,8 @@ import android.widget.Toast;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -30,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardView
  * @author github.com/doomsdayrs
  */
 public class NovelBackgroundAdd extends AsyncTask<View, Void, Void> {
-    private NovelCardViewHolder novelCardsViewHolder;
+    private final NovelCardViewHolder novelCardsViewHolder;
 
     public NovelBackgroundAdd(NovelCardViewHolder novelCardsViewHolder) {
         this.novelCardsViewHolder = novelCardsViewHolder;
@@ -40,7 +42,7 @@ public class NovelBackgroundAdd extends AsyncTask<View, Void, Void> {
     protected Void doInBackground(View... views) {
         try {
             if (!Database.DatabaseNovels.inDatabase(novelCardsViewHolder.url)) {
-                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.getID(), novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
+                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.getID(), novelCardsViewHolder.formatter.parseNovel(docFromURL(novelCardsViewHolder.url, novelCardsViewHolder.formatter.hasCloudFlare())), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
                 if (views[0] != null)
                     views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());
             }

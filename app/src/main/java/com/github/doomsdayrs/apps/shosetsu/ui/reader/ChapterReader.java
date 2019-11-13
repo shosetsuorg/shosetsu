@@ -23,6 +23,7 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChapterViewHideBar;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
@@ -77,45 +78,41 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
  */
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
+    // Order of values. Small,Medium,Large
+    private final MenuItem[] textSizes = new MenuItem[3];
     public boolean ready = false;
-
-    public TextView textView;
-    public MarkdownView markdownView;
-    int readerType;
+    // Order of values. Non,Small,Medium,Large
+    private final MenuItem[] paragraphSpaces = new MenuItem[4];
+    // Order of values. Non,Small,Medium,Large
+    private final MenuItem[] indentSpaces = new MenuItem[4];
+    // Order of values. Default, Markdown
+    private final MenuItem[] readers = new MenuItem[2];
 
     public ScrollView scrollView;
 
 
     public ProgressBar progressBar;
-    public Chip nextChapter;
+    public WebViewScrapper webViewScrapper;
 
     public String title;
     public Formatter formatter;
 
     public int chapterID;
-    public int novelID;
-
-    public String[] chapters;
+    private TextView textView;
+    private MarkdownView markdownView;
 
     public String chapterURL;
     public String unformattedText = null;
-    public String text = null;
+    private int readerType;
 
     private MenuItem bookmark;
     private boolean bookmarked;
 
     private MenuItem tap_to_scroll;
-    // Order of values. Small,Medium,Large
-    private MenuItem[] textSizes = new MenuItem[3];
-
-    // Order of values. Non,Small,Medium,Large
-    private MenuItem[] paragraphSpaces = new MenuItem[4];
-
-    // Order of values. Non,Small,Medium,Large
-    private MenuItem[] indentSpaces = new MenuItem[4];
-
-    // Order of values. Default, Markdown
-    private MenuItem[] readers = new MenuItem[2];
+    private Chip nextChapter;
+    private int novelID;
+    private String[] chapters;
+    private String text = null;
 
 
     //Tap to scroll
@@ -461,7 +458,7 @@ public class ChapterReader extends AppCompatActivity {
     /**
      * What to do when scroll hits bottom
      */
-    public void bottom() {
+    private void bottom() {
         int total = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
         if (ready)
             if ((scrollView.getScrollY() / (float) total) < .99) {
@@ -491,7 +488,7 @@ public class ChapterReader extends AppCompatActivity {
     /**
      * Loads the chapter to be read
      */
-    public void loadChapter() {
+    private void loadChapter() {
         ready = false;
         if (Database.DatabaseChapter.isSaved(chapterID)) {
             unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterID));
@@ -541,7 +538,7 @@ public class ChapterReader extends AppCompatActivity {
     /**
      * Sets up the hitting bottom listener
      */
-    public void addBottomListener() {
+    private void addBottomListener() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottom());
         } else {

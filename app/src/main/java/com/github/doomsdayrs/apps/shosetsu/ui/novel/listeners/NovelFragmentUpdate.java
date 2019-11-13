@@ -28,7 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo;
  */
 
 public class NovelFragmentUpdate implements SwipeRefreshLayout.OnRefreshListener {
-    private NovelFragmentInfo novelFragmentInfo;
+    private final NovelFragmentInfo novelFragmentInfo;
 
     public NovelFragmentUpdate(NovelFragmentInfo novelFragmentInfo) {
         this.novelFragmentInfo = novelFragmentInfo;

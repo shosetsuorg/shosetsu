@@ -37,9 +37,9 @@ public class DownloadItem {
     public final Formatter formatter;
     public final String novelName;
     public final String chapterName;
-    public final String novelURL;
+    private final String novelURL;
     public final String chapterURL;
-    public final int novelID;
+    private final int novelID;
     public final int chapterID;
 
     //Variables only for download manager
