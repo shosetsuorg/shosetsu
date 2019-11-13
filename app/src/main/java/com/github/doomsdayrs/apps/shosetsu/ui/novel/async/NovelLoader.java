@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.async;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
@@ -11,7 +10,6 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import org.jsoup.nodes.Document;
 
@@ -45,7 +43,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrappe
  * This task loads a novel for the novel fragment
  * </p>
  */
-public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
+public class NovelLoader extends NovelLoaderHolder {
     private String novelURL;
     private Formatter formatter;
     private NovelPage novelPage;
@@ -62,6 +60,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
      * @param novelFragment reference to the fragment
      */
     public NovelLoader(NovelFragment novelFragment, ErrorView errorView, boolean loadAll) {
+        super(novelFragment, null);
         this.novelURL = novelFragment.novelURL;
         this.formatter = novelFragment.formatter;
         this.novelID = novelFragment.novelID;
@@ -72,6 +71,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
 
 
     private NovelLoader(NovelLoader novelLoader) {
+        super(novelLoader.novelFragment, novelLoader.novelFragmentInfo);
         this.novelURL = novelLoader.novelURL;
         assert (novelLoader.formatter != null);
         this.formatter = novelLoader.formatter;
@@ -124,74 +124,10 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         new NovelLoader(this).execute(activity);
     }
 
-    /**
-     * Show progress bar
-     */
-    @Override
-    protected void onPreExecute() {
-        if (loadAll) {
-            if (novelFragment != null) {
-                novelFragment.progressBar.setVisibility(View.VISIBLE);
-            }
-        } else {
-            if (novelFragmentInfo != null) {
-                novelFragmentInfo.swipeRefreshLayout.setRefreshing(true);
-            }
-        }
-    }
-
     @Override
     protected void onCancelled() {
         onPostExecute(false);
     }
 
-    /**
-     * Hides progress and sets data
-     *
-     * @param aBoolean if completed
-     */
-    @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        Activity activity = null;
-        if (novelFragmentInfo != null)
-            activity = novelFragmentInfo.getActivity();
-        else if (novelFragment != null) {
-            activity = novelFragment.getActivity();
-        }
 
-        if (activity != null) {
-            if (loadAll) {
-                if (novelFragment != null) {
-                    novelFragment.progressBar.setVisibility(View.GONE);
-                }
-            } else {
-                if (novelFragmentInfo != null) {
-                    novelFragmentInfo.swipeRefreshLayout.setRefreshing(false);
-                }
-                if (novelFragment != null && Database.DatabaseNovels.inDatabase(novelFragment.novelID)) {
-                    try {
-                        Database.DatabaseNovels.updateData(novelURL, novelPage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            if (aBoolean) {
-                Statics.mainActionBar.setTitle(novelPage.title);
-                activity.runOnUiThread(() -> {
-                    if (loadAll)
-                        if (novelFragment != null) {
-                            novelFragment.novelFragmentInfo.setData();
-                        } else {
-                            novelFragmentInfo.setData();
-                        }
-                });
-                if (loadAll) {
-                    activity.runOnUiThread(() -> new ChapterLoader(novelPage, novelURL, formatter).execute());
-                }
-            }
-        }
-
-    }
 }
