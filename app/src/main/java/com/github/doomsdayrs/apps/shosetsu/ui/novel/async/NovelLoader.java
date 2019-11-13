@@ -8,9 +8,9 @@ import android.view.View;
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
+import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo;
 import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import org.jsoup.nodes.Document;
@@ -51,9 +51,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     private NovelPage novelPage;
     private int novelID;
 
-    // References
-    private final NovelFragment novelFragment;
-    private final NovelFragmentInfo novelFragmentInfo;
+    ErrorView errorView;
 
     private final boolean loadAll;
 
@@ -63,25 +61,15 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
      *
      * @param novelFragment reference to the fragment
      */
-    public NovelLoader(NovelFragment novelFragment, boolean loadAll) {
-        this.novelFragment = novelFragment;
+    public NovelLoader(NovelFragment novelFragment, ErrorView errorView, boolean loadAll) {
         this.novelURL = novelFragment.novelURL;
         this.formatter = novelFragment.formatter;
         this.novelID = novelFragment.novelID;
         this.novelPage = novelFragment.novelPage;
         this.loadAll = loadAll;
-        this.novelFragmentInfo = null;
+        this.errorView = errorView;
     }
 
-    public NovelLoader(NovelFragmentInfo novelFragmentInfo, boolean loadAll) {
-        this.formatter = novelFragmentInfo.novelFragment.formatter;
-        this.novelURL = novelFragmentInfo.novelFragment.novelURL;
-        this.novelID = novelFragmentInfo.novelFragment.novelID;
-        this.novelPage = novelFragmentInfo.novelFragment.novelPage;
-        this.novelFragment = null;
-        this.loadAll = loadAll;
-        this.novelFragmentInfo = novelFragmentInfo;
-    }
 
     private NovelLoader(NovelLoader novelLoader) {
         this.novelURL = novelLoader.novelURL;
@@ -89,9 +77,8 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
         this.formatter = novelLoader.formatter;
         this.novelPage = novelLoader.novelPage;
         this.novelID = novelLoader.novelID;
-        this.novelFragment = novelLoader.novelFragment;
         this.loadAll = novelLoader.loadAll;
-        this.novelFragmentInfo = novelLoader.novelFragmentInfo;
+        this.errorView = novelLoader.errorView;
     }
 
     /**
@@ -105,13 +92,7 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
     protected Boolean doInBackground(Activity... voids) {
         Activity activity = voids[0];
         Log.d("Loading", String.valueOf(novelURL));
-        if (loadAll) {
-            if (novelFragment != null && novelFragment.getActivity() != null)
-                novelFragment.getActivity().runOnUiThread(() -> novelFragment.errorView.setVisibility(View.GONE));
-
-        } else if (novelFragmentInfo != null && novelFragmentInfo.getActivity() != null)
-            novelFragmentInfo.getActivity().runOnUiThread(() -> novelFragmentInfo.novelFragment.errorView.setVisibility(View.GONE));
-
+        errorView.activity.runOnUiThread(() -> errorView.errorView.setVisibility(View.GONE));
 
         try {
             Document document = docFromURL(novelURL, formatter.hasCloudFlare());
@@ -130,19 +111,9 @@ public class NovelLoader extends AsyncTask<Activity, Void, Boolean> {
             Log.d("Loaded Novel:", novelPage.title);
             return true;
         } catch (Exception e) {
-            if (loadAll) {
-                if (novelFragment != null && novelFragment.getActivity() != null)
-                    novelFragment.getActivity().runOnUiThread(() -> {
-                        novelFragment.errorView.setVisibility(View.VISIBLE);
-                        novelFragment.errorMessage.setText(e.getMessage());
-                        novelFragment.errorButton.setOnClickListener(view -> refresh(activity));
-                    });
-            } else if (novelFragmentInfo != null && novelFragmentInfo.getActivity() != null)
-                novelFragmentInfo.getActivity().runOnUiThread(() -> {
-                    novelFragmentInfo.novelFragment.errorView.setVisibility(View.VISIBLE);
-                    novelFragmentInfo.novelFragment.errorMessage.setText(e.getMessage());
-                    novelFragmentInfo.novelFragment.errorButton.setOnClickListener(view -> refresh(activity));
-                });
+            errorView.activity.runOnUiThread(() -> errorView.errorView.setVisibility(View.VISIBLE));
+            errorView.activity.runOnUiThread(() -> errorView.errorMessage.setText(e.getMessage()));
+            errorView.activity.runOnUiThread(() -> errorView.errorButton.setOnClickListener(view -> refresh(activity)));
             e.printStackTrace();
 
         }
