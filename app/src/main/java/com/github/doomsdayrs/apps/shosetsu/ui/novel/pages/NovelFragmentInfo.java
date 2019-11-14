@@ -192,59 +192,64 @@ public class NovelFragmentInfo extends Fragment {
      * Sets the data of this page
      */
     public void setData() {
-        if (novelFragment.novelPage == null) {
-            Log.e("NULL", "Invalid novel page");
-            return;
-        }
+        assert novelFragment.getView() != null;
 
-        title.setText(novelFragment.novelPage.title);
+        novelFragment.getView().post(() -> {
 
-        if (novelFragment.novelPage.authors != null && novelFragment.novelPage.authors.length > 0)
-            authors.setText(Arrays.toString(novelFragment.novelPage.authors));
-
-        description.setText(novelFragment.novelPage.description);
-
-        if (novelFragment.novelPage.artists != null && novelFragment.novelPage.artists.length > 0)
-            artists.setText(Arrays.toString(novelFragment.novelPage.artists));
-
-        status.setText(novelFragment.status.getStatus());
-        if (novelFragment.novelPage.status != null) {
-            String s = "unknown";
-            switch (novelFragment.novelPage.status) {
-                case PAUSED:
-                    pStat.setText(R.string.paused);
-                    s = "Paused";
-                    break;
-                case COMPLETED:
-                    pStat.setText(R.string.completed);
-                    s = "Completed";
-                    break;
-                case PUBLISHING:
-                    pStat.setText(R.string.publishing);
-                    s = "Publishing";
-                    break;
-                default:
-                    pStat.setText(R.string.unknown);
+            if (novelFragment.novelPage == null) {
+                Log.e("NULL", "Invalid novel page");
+                return;
             }
-            System.out.println("PS: " + s);
-        }
-        if (novelFragment.novelPage.genres != null && getContext() != null) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-            for (String string : novelFragment.novelPage.genres) {
-                Chip chip = (Chip) layoutInflater.inflate(R.layout.genre_chip, null, false);
-                chip.setText(string);
-                genres.addView(chip);
-            }
-        } else genres.setVisibility(View.GONE);
 
-        Picasso.get()
-                .load(novelFragment.novelPage.imageURL)
-                .into(imageView);
-        Picasso.get()
-                .load(novelFragment.novelPage.imageURL)
-                .into(imageView_background);
-        floatingActionButton.show();
-        formatterName.setText(novelFragment.formatter.getName());
+            title.setText(novelFragment.novelPage.title);
+
+            if (novelFragment.novelPage.authors != null && novelFragment.novelPage.authors.length > 0)
+                authors.setText(Arrays.toString(novelFragment.novelPage.authors));
+
+            description.setText(novelFragment.novelPage.description);
+
+            if (novelFragment.novelPage.artists != null && novelFragment.novelPage.artists.length > 0)
+                artists.setText(Arrays.toString(novelFragment.novelPage.artists));
+
+            status.setText(novelFragment.status.getStatus());
+            if (novelFragment.novelPage.status != null) {
+                String s = "unknown";
+                switch (novelFragment.novelPage.status) {
+                    case PAUSED:
+                        pStat.setText(R.string.paused);
+                        s = "Paused";
+                        break;
+                    case COMPLETED:
+                        pStat.setText(R.string.completed);
+                        s = "Completed";
+                        break;
+                    case PUBLISHING:
+                        pStat.setText(R.string.publishing);
+                        s = "Publishing";
+                        break;
+                    default:
+                        pStat.setText(R.string.unknown);
+                }
+                System.out.println("PS: " + s);
+            }
+            if (novelFragment.novelPage.genres != null && getContext() != null) {
+                LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+                for (String string : novelFragment.novelPage.genres) {
+                    Chip chip = (Chip) layoutInflater.inflate(R.layout.genre_chip, null, false);
+                    chip.setText(string);
+                    genres.addView(chip);
+                }
+            } else genres.setVisibility(View.GONE);
+
+            Picasso.get()
+                    .load(novelFragment.novelPage.imageURL)
+                    .into(imageView);
+            Picasso.get()
+                    .load(novelFragment.novelPage.imageURL)
+                    .into(imageView_background);
+            floatingActionButton.show();
+            formatterName.setText(novelFragment.formatter.getName());
+        });
     }
 
 }

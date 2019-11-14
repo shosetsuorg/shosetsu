@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +18,7 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
@@ -131,7 +131,6 @@ public class NovelFragment extends Fragment {
 
     public NovelFragmentInfo novelFragmentInfo;
     private NovelFragmentChapters novelFragmentChapters;
-    public ProgressBar progressBar;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -162,7 +161,6 @@ public class NovelFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_novel, container, false);
         // Attach UI to program
         {
-            progressBar = view.findViewById(R.id.fragment_novel_progress);
             viewPager = view.findViewById(R.id.fragment_novel_viewpager);
             tabLayout = view.findViewById(R.id.fragment_novel_tabLayout);
             errorView = view.findViewById(R.id.network_error);
@@ -183,7 +181,7 @@ public class NovelFragment extends Fragment {
         if (savedInstanceState == null) {
             if (isOnline() && !Database.DatabaseNovels.inDatabase(novelID)) {
                 setViewPager();
-                new NovelLoader(this, false).execute(getActivity());
+                tabLayout.post(() -> new NovelLoader(this, new ErrorView(getActivity(), errorView, errorMessage, errorButton), false).execute());
             } else {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID);
                 status = Database.DatabaseNovels.getStatus(novelID);

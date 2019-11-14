@@ -141,12 +141,10 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPreExecute() {
-
-        if (novelFragmentChapters != null) {
-            novelFragmentChapters.swipeRefreshLayout.setRefreshing(true);
-            if (formatter.isIncrementingChapterList())
-                novelFragmentChapters.pageCount.setVisibility(View.VISIBLE);
-        }
+        assert novelFragmentChapters != null;
+        novelFragmentChapters.swipeRefreshLayout.setRefreshing(true);
+        if (formatter.isIncrementingChapterList())
+            novelFragmentChapters.pageCount.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -164,19 +162,21 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     /**
      * Hides progress and sets data
      *
-     * @param aBoolean if completed
+     * @param result if completed
      */
     @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        if (novelFragmentChapters != null) {
+    protected void onPostExecute(Boolean result) {
+        assert novelFragmentChapters != null;
+        assert novelFragmentChapters.novelFragment.getView() != null;
+
+        novelFragmentChapters.novelFragment.getView().post(() -> {
             novelFragmentChapters.swipeRefreshLayout.setRefreshing(false);
             if (formatter.isIncrementingChapterList())
                 novelFragmentChapters.pageCount.setVisibility(View.GONE);
-            if (aBoolean)
+            if (result)
                 if (novelFragmentChapters.getActivity() != null)
                     novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setNovels);
             novelFragmentChapters.resumeRead.setVisibility(View.VISIBLE);
-        }
-
+        });
     }
 }

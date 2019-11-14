@@ -1,15 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.async;
 
-import android.app.Activity;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
+import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import org.jsoup.nodes.Document;
 
@@ -43,85 +42,76 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrappe
  * This task loads a novel for the novel fragment
  * </p>
  */
-public class NovelLoader extends NovelLoaderHolder {
-    private String novelURL;
-    private Formatter formatter;
-    private NovelPage novelPage;
-    private int novelID;
-
-    ErrorView errorView;
-
-    private final boolean loadAll;
+public class NovelLoader extends AsyncTask<Void, Void, Boolean> {
+    private NovelFragment novelFragment;
+    private boolean loadAll;
+    private ErrorView errorView;
 
 
     /**
      * Constructor
      *
      * @param novelFragment reference to the fragment
+     * @param errorView     Holder that contains error view and needed code;
      */
     public NovelLoader(NovelFragment novelFragment, ErrorView errorView, boolean loadAll) {
-        super(novelFragment, null);
-        this.novelURL = novelFragment.novelURL;
-        this.formatter = novelFragment.formatter;
-        this.novelID = novelFragment.novelID;
-        this.novelPage = novelFragment.novelPage;
+        this.novelFragment = novelFragment;
         this.loadAll = loadAll;
         this.errorView = errorView;
     }
 
 
     private NovelLoader(NovelLoader novelLoader) {
-        super(novelLoader.novelFragment, novelLoader.novelFragmentInfo);
-        this.novelURL = novelLoader.novelURL;
-        assert (novelLoader.formatter != null);
-        this.formatter = novelLoader.formatter;
-        this.novelPage = novelLoader.novelPage;
-        this.novelID = novelLoader.novelID;
+        this.novelFragment = novelLoader.novelFragment;
         this.loadAll = novelLoader.loadAll;
         this.errorView = novelLoader.errorView;
+    }
+
+
+    @Override
+    protected void onPreExecute() {
+        novelFragment.novelFragmentInfo.swipeRefreshLayout.setRefreshing(true);
     }
 
     /**
      * Background process
      *
-     * @param voids activity to work with
+     * @param voids voided
      * @return if completed
      */
     @Override
-
-    protected Boolean doInBackground(Activity... voids) {
-        Activity activity = voids[0];
-        Log.d("Loading", String.valueOf(novelURL));
+    protected Boolean doInBackground(Void... voids) {
+        Log.d("Loading", String.valueOf(novelFragment.novelURL));
         errorView.activity.runOnUiThread(() -> errorView.errorView.setVisibility(View.GONE));
 
         try {
-            Document document = docFromURL(novelURL, formatter.hasCloudFlare());
+            Document document = docFromURL(novelFragment.novelURL, novelFragment.formatter.hasCloudFlare());
             assert (document != null);
-            novelPage = formatter.parseNovel(document);
-            if (!activity.isDestroyed() && !Database.DatabaseNovels.inDatabase(novelID)) {
-                Database.DatabaseNovels.addToLibrary(formatter.getID(), novelPage, novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
+            novelFragment.novelPage = novelFragment.formatter.parseNovel(document);
+            if (!errorView.activity.isDestroyed() && !Database.DatabaseNovels.inDatabase(novelFragment.novelID)) {
+                Database.DatabaseNovels.addToLibrary(novelFragment.formatter.getID(), novelFragment.novelPage, novelFragment.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
             }
             //TODO The getNovelID in this method likely will cause slowdowns due to IO
-            int novelID = getNovelIDFromNovelURL(novelURL);
-            for (NovelChapter novelChapter : novelPage.novelChapters)
-                if (!activity.isDestroyed() && !Database.DatabaseChapter.inChapters(novelChapter.link))
+            int novelID = getNovelIDFromNovelURL(novelFragment.novelURL);
+            for (NovelChapter novelChapter : novelFragment.novelPage.novelChapters)
+                if (!errorView.activity.isDestroyed() && !Database.DatabaseChapter.inChapters(novelChapter.link))
                     Database.DatabaseChapter.addToChapters(novelID, novelChapter);
 
 
-            Log.d("Loaded Novel:", novelPage.title);
+            Log.d("Loaded Novel:", novelFragment.novelPage.title);
             return true;
         } catch (Exception e) {
             errorView.activity.runOnUiThread(() -> errorView.errorView.setVisibility(View.VISIBLE));
             errorView.activity.runOnUiThread(() -> errorView.errorMessage.setText(e.getMessage()));
-            errorView.activity.runOnUiThread(() -> errorView.errorButton.setOnClickListener(view -> refresh(activity)));
+            errorView.activity.runOnUiThread(() -> errorView.errorButton.setOnClickListener(view -> refresh()));
             e.printStackTrace();
 
         }
         return false;
     }
 
-    private void refresh(Activity activity) {
-        new NovelLoader(this).execute(activity);
+    private void refresh() {
+        new NovelLoader(this).execute();
     }
 
     @Override
@@ -129,5 +119,30 @@ public class NovelLoader extends NovelLoaderHolder {
         onPostExecute(false);
     }
 
+    private void setData() {
+        novelFragment.novelFragmentInfo.setData();
+    }
 
+    @Override
+    protected void onPostExecute(Boolean result) {
+        assert (novelFragment != null);
+
+
+        novelFragment.novelFragmentInfo.swipeRefreshLayout.setRefreshing(false);
+        if (Database.DatabaseNovels.inDatabase(novelFragment.novelID)) {
+            try {
+                Database.DatabaseNovels.updateData(novelFragment.novelURL, novelFragment.novelPage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (result) {
+            assert novelFragment != null;
+            Statics.mainActionBar.setTitle(novelFragment.novelPage.title);
+            if (loadAll)
+                errorView.activity.runOnUiThread(() -> new ChapterLoader(novelFragment.novelPage, novelFragment.novelURL, novelFragment.formatter).execute());
+            errorView.activity.runOnUiThread(this::setData);
+        }
+    }
 }
