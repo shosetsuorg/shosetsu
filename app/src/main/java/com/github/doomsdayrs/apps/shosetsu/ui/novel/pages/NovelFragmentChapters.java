@@ -116,14 +116,6 @@ public class NovelFragmentChapters extends Fragment {
         this.novelFragment = novelFragment;
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapter.notifyDataSetChanged();
-    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -173,7 +165,7 @@ public class NovelFragmentChapters extends Fragment {
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }
-        setNovels();
+        setChapters();
         onResume();
         resumeRead.setOnClickListener(view1 -> {
             int i = novelFragment.lastRead();
@@ -188,11 +180,10 @@ public class NovelFragmentChapters extends Fragment {
     /**
      * Sets the novel chapters down
      */
-    public void setNovels() {
-        if (recyclerView != null) {
+    public void setChapters() {
+        recyclerView.post(() -> {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-
             if (Database.DatabaseNovels.inDatabase(novelFragment.novelID)) {
                 novelFragment.novelChapters = Database.DatabaseChapter.getChapters(novelFragment.novelID);
                 if (novelFragment.novelChapters != null && novelFragment.novelChapters.size() != 0)
@@ -201,21 +192,8 @@ public class NovelFragmentChapters extends Fragment {
             adapter = new ChaptersAdapter(this);
             adapter.setHasStableIds(true);
             recyclerView.setLayoutManager(layoutManager);
-
-            //        if (novelFragment.formatter.isIncrementingChapterList()) {
-            //      if (SettingsController.isOnline())
-            //        recyclerView.addOnScrollListener(new NovelFragmentChaptersHitBottom(this));
-
-            // else recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            //               @Override
-            //              public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            //             if (!recyclerView.canScrollVertically(1))
-            //                    Toast.makeText(getContext(), "You are offline, impossible to load more", Toast.LENGTH_SHORT).show();
-            //   }
-            //         });
-            //     }
             recyclerView.setAdapter(adapter);
-        }
+        });
     }
 
     public Menu menu;
