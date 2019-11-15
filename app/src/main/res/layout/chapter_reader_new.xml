@@ -17,7 +17,7 @@
 
     <!-- This is the new ideal for the reader, to be able to swipe left and right to change pages-->
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/constraintLayout"
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,6 +36,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.viewpager.widget.ViewPager
+                android:id="@+id/readerPager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 

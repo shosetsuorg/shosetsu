@@ -17,28 +17,37 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ReaderTypeAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.IndentChange;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ParaSpacingChange;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ReaderChange;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.TextSizeChange;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChapterViewHideBar;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.Reader;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.tabs.TabLayout;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import us.feras.mdv.MarkdownView;
 
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeIndentSize;
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.changeParagraphSpacing;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.demarkMenuItems;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
@@ -49,7 +58,6 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderCo
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.setReaderType;
 import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNextChapter;
 
 /*
@@ -78,6 +86,9 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
  */
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
+    private final Utilities.DemarkAction[] demarkActions = {new TextSizeChange(this), new ParaSpacingChange(this), new IndentChange(this), new ReaderChange(this)};
+    private final ArrayList<Reader> fragments = new ArrayList<>();
+
     // Order of values. Small,Medium,Large
     private final MenuItem[] textSizes = new MenuItem[3];
     public boolean ready = false;
@@ -92,25 +103,26 @@ public class ChapterReader extends AppCompatActivity {
 
 
     public ProgressBar progressBar;
-    public WebViewScrapper webViewScrapper;
 
     public String title;
     public Formatter formatter;
 
     public int chapterID;
+
+    private ViewPager readerViewPager;
     private TextView textView;
     private MarkdownView markdownView;
 
     public String chapterURL;
     public String unformattedText = null;
-    private int readerType;
+    public int readerType;
 
     private MenuItem bookmark;
     private boolean bookmarked;
 
     private MenuItem tap_to_scroll;
     private Chip nextChapter;
-    private int novelID;
+    public int novelID;
     private String[] chapters;
     private String text = null;
 
@@ -267,39 +279,39 @@ public class ChapterReader extends AppCompatActivity {
                 return true;
 
             case R.id.chapter_view_textSize_small:
-                demarkMenuItems(indentSpaces, 0, new TextSizeChange());
+                demarkMenuItems(indentSpaces, 0, demarkActions[0]);
                 return true;
             case R.id.chapter_view_textSize_medium:
-                demarkMenuItems(textSizes, 1, new TextSizeChange());
+                demarkMenuItems(textSizes, 1, demarkActions[0]);
                 return true;
             case R.id.chapter_view_textSize_large:
-                demarkMenuItems(textSizes, 2, new TextSizeChange());
+                demarkMenuItems(textSizes, 2, demarkActions[0]);
                 return true;
 
             case R.id.chapter_view_paragraphSpace_none:
-                demarkMenuItems(paragraphSpaces, 0, new ParaSpacingChange());
+                demarkMenuItems(paragraphSpaces, 0, demarkActions[1]);
                 return true;
             case R.id.chapter_view_paragraphSpace_small:
-                demarkMenuItems(paragraphSpaces, 1, new ParaSpacingChange());
+                demarkMenuItems(paragraphSpaces, 1, demarkActions[1]);
                 return true;
             case R.id.chapter_view_paragraphSpace_medium:
-                demarkMenuItems(paragraphSpaces, 2, new ParaSpacingChange());
+                demarkMenuItems(paragraphSpaces, 2, demarkActions[1]);
                 return true;
             case R.id.chapter_view_paragraphSpace_large:
-                demarkMenuItems(paragraphSpaces, 3, new ParaSpacingChange());
+                demarkMenuItems(paragraphSpaces, 3, demarkActions[1]);
                 return true;
 
             case R.id.chapter_view_indent_none:
-                demarkMenuItems(indentSpaces, 0, new IndentChange());
+                demarkMenuItems(indentSpaces, 0, demarkActions[2]);
                 return true;
             case R.id.chapter_view_indent_small:
-                demarkMenuItems(indentSpaces, 1, new IndentChange());
+                demarkMenuItems(indentSpaces, 1, demarkActions[2]);
                 return true;
             case R.id.chapter_view_indent_medium:
-                demarkMenuItems(indentSpaces, 2, new IndentChange());
+                demarkMenuItems(indentSpaces, 2, demarkActions[2]);
                 return true;
             case R.id.chapter_view_indent_large:
-                demarkMenuItems(indentSpaces, 3, new IndentChange());
+                demarkMenuItems(indentSpaces, 3, demarkActions[2]);
                 return true;
 
             case R.id.browser:
@@ -309,10 +321,10 @@ public class ChapterReader extends AppCompatActivity {
                 openInWebview(this, chapterURL);
                 return true;
             case R.id.reader_0:
-                demarkMenuItems(readers, 0, new ReaderChange());
+                demarkMenuItems(readers, 0, demarkActions[3]);
                 return true;
             case R.id.reader_1:
-                demarkMenuItems(readers, 1, new ReaderChange());
+                demarkMenuItems(readers, 1, demarkActions[3]);
                 return true;
 
         }
@@ -370,14 +382,16 @@ public class ChapterReader extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        readerViewPager = findViewById(R.id.readerPager);
+        markdownView = findViewById(R.id.fragment_novel_chapter_view_markdown);
+        textView = findViewById(R.id.fragment_novel_chapter_view_text);
+
         switch (readerType) {
             case 1:
-                markdownView = findViewById(R.id.fragment_novel_chapter_view_markdown);
                 markdownView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
                 break;
             case 0:
             case -1:
-                textView = findViewById(R.id.fragment_novel_chapter_view_text);
                 textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
                 break;
             case -2:
@@ -455,6 +469,12 @@ public class ChapterReader extends AppCompatActivity {
         }
     }
 
+    private void setViewPager() {
+        ReaderTypeAdapter pagerAdapter = new ReaderTypeAdapter(getSupportFragmentManager(),  fragments);
+        readerViewPager.setAdapter(pagerAdapter);
+    }
+
+
     /**
      * What to do when scroll hits bottom
      */
@@ -483,7 +503,6 @@ public class ChapterReader extends AppCompatActivity {
                 //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
             }
     }
-
 
     /**
      * Loads the chapter to be read
@@ -543,41 +562,6 @@ public class ChapterReader extends AppCompatActivity {
             scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottom());
         } else {
             scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
-        }
-    }
-
-
-    private class TextSizeChange implements Utilities.DemarkAction {
-        @Override
-        public void action(int spared) {
-            int[] a = {14, 17, 20};
-            setTextSize(a[spared]);
-            setUpReader();
-        }
-    }
-
-    private class ParaSpacingChange implements Utilities.DemarkAction {
-        @Override
-        public void action(int spared) {
-            changeParagraphSpacing(spared);
-            setUpReader();
-        }
-    }
-
-    private class IndentChange implements Utilities.DemarkAction {
-        @Override
-        public void action(int spared) {
-            changeIndentSize(spared);
-            setUpReader();
-        }
-    }
-
-    private class ReaderChange implements Utilities.DemarkAction {
-        @Override
-        public void action(int spared) {
-            readerType = spared;
-            setReaderType(novelID, spared);
-            setUpReader();
         }
     }
 
