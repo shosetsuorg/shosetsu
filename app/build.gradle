@@ -30,7 +30,7 @@ android {
 android.applicationVariants.all { variant ->
     variant.outputs.all {
         def appName = "shosetsu"
-        outputFileName = appName+"-${variant.versionName}.apk"
+        outputFileName = appName + "-${variant.versionName}.apk"
     }
 }
 android {
@@ -54,6 +54,7 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.google.android.material:material:1.2.0-alpha01'
     testImplementation 'junit:junit:4.13-rc-1'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
@@ -78,7 +79,7 @@ dependencies {
 
     implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
 
-    implementation 'org.mozilla:rhino:1.7.10'
+    implementation 'org.mozilla:rhino:1.7.11'
 
     // TODO Implement readerview provided by Mozilla
     //implementation "org.mozilla.components:feature-readerview:1.0.0"
