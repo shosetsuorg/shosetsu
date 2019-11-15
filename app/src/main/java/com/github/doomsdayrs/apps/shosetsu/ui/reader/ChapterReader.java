@@ -88,6 +88,8 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
     private final Utilities.DemarkAction[] demarkActions = {new TextSizeChange(this), new ParaSpacingChange(this), new IndentChange(this), new ReaderChange(this)};
+
+    private Reader selectedReader = null;
     private final ArrayList<Reader> fragments = new ArrayList<>();
 
     // Order of values. Small,Medium,Large
@@ -477,7 +479,7 @@ public class ChapterReader extends AppCompatActivity {
     }
 
     private void setViewPager() {
-        ReaderTypeAdapter pagerAdapter = new ReaderTypeAdapter(getSupportFragmentManager(),  fragments);
+        ReaderTypeAdapter pagerAdapter = new ReaderTypeAdapter(getSupportFragmentManager(), fragments);
         readerViewPager.setAdapter(pagerAdapter);
     }
 
