@@ -3,6 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.backend;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.async.ChapterUpdater;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
@@ -30,9 +33,10 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 public class Update_Manager {
+    @Nullable
     private static ChapterUpdater chapterUpdater = null;
 
-    public static void init(ArrayList<NovelCard> novelCards, Context context) {
+    public static void init(@NonNull ArrayList<NovelCard> novelCards, @NonNull Context context) {
         if (chapterUpdater == null) {
             chapterUpdater = new ChapterUpdater(novelCards, context);
             chapterUpdater.execute();

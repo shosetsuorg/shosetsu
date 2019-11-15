@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.annotation.NonNull;
+
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
 
@@ -131,7 +133,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param db db to fill
      */
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(@NonNull SQLiteDatabase db) {
         db.execSQL(NOVEL_IDENTIFICATION_CREATE);
         db.execSQL(CHAPTER_IDENTIFICATION_CREATE);
         db.execSQL(NOVELS);
@@ -149,7 +151,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param newVersion new version ID
      */
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 9) {
             //TODO Convert tables
             db.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTERS);

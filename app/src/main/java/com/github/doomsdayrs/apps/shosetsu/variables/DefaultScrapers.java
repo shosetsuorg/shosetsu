@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.variables;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.bestlightnovel.BestLightNovel;
 import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.box_novel.BoxNovel;
 import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.novel_full.NovelFull;
@@ -57,6 +60,7 @@ public enum DefaultScrapers implements Formatter {
 
     private static final ArrayList<Formatter> formatters = new ArrayList<>();
 
+    @Nullable
     public static Formatter getByID(int ID) {
         for (Formatter formatter : formatters) {
             if (formatter.getID() == ID)
@@ -65,6 +69,7 @@ public enum DefaultScrapers implements Formatter {
         return null;
     }
 
+    @NonNull
     public static ArrayList<CatalogueCard> getAsCatalogue() {
         ArrayList<CatalogueCard> catalogueCards = new ArrayList<>();
         for (Formatter formatter : DefaultScrapers.formatters)

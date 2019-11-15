@@ -2,6 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend.tracking;
 
 import android.content.res.Resources;
 
+import androidx.annotation.NonNull;
+
 import com.github.doomsdayrs.apps.shosetsu.R;
 
 /*
@@ -37,6 +39,7 @@ public enum Trackers {
         this.id = id;
     }
 
+    @NonNull
     private static String getString(int id) {
         return Resources.getSystem().getString(id);
     }
@@ -45,6 +48,7 @@ public enum Trackers {
         return id;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Trackers{" +

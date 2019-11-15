@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend;
 
+import androidx.annotation.NonNull;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
@@ -50,7 +52,8 @@ public class Serialize {
      * @param object NovelPage or NovelChapter
      * @return Serialized JSON
      */
-    public static String serializeOBJECT(Object object) throws Exception {
+    @NonNull
+    public static String serializeOBJECT(@NonNull Object object) throws Exception {
         if (object.getClass().equals(NovelChapter.class)) {
             NovelChapter novelChapter = (NovelChapter) object;
             return serializeToString(novelChapterToJSON(novelChapter).toString());
@@ -129,7 +132,8 @@ public class Serialize {
      * @return NovelPage
      * @throws Exception If something goes wrong
      */
-    public static NovelPage deserializeNovelPageJSON(String serial) throws Exception {
+    @NonNull
+    public static NovelPage deserializeNovelPageJSON(@NonNull String serial) throws Exception {
         NovelPage novelPage = new NovelPage();
         JSONObject jsonObject = new JSONObject((String) deserializeString(serial));
         if (debug)
@@ -235,7 +239,8 @@ public class Serialize {
      * @return NovelChapter
      * @throws Exception If something goes wrong
      */
-    private static NovelChapter deserializeNovelChapterJSON(String serial) throws Exception {
+    @NonNull
+    private static NovelChapter deserializeNovelChapterJSON(@NonNull String serial) throws Exception {
         NovelChapter novelChapter = new NovelChapter();
         JSONObject jsonObject = new JSONObject((String) deserializeString(serial));
         for (String key : NOVELCHAPTERKEYS) {
@@ -272,7 +277,8 @@ public class Serialize {
      * @throws IOException   EXCEPTION
      * @throws JSONException EXCEPTION
      */
-    private static JSONObject novelChapterToJSON(NovelChapter novelChapter) throws IOException, JSONException {
+    @NonNull
+    private static JSONObject novelChapterToJSON(@NonNull NovelChapter novelChapter) throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("release", serializeToString(novelChapter.release));
         jsonObject.put("chapterNum", serializeToString(novelChapter.title));
@@ -287,6 +293,7 @@ public class Serialize {
      * @throws JSONException EXCEPTION
      * @throws IOException   EXCEPTION IN SERIALIZING
      */
+    @NonNull
     public static JSONObject getSettingsInJSON() throws JSONException, IOException {
         JSONObject settings = new JSONObject();
         settings.put("reader_text_color", Settings.ReaderTextColor);

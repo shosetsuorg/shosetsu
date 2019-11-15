@@ -4,6 +4,8 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
+
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
@@ -43,7 +45,7 @@ public class LibrarySearchQuery implements SearchView.OnQueryTextListener {
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(@NonNull String newText) {
         Log.d("Library search", newText);
         ArrayList<NovelCard> recycleCards = new ArrayList<>(libraryFragment.libraryNovelCards);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

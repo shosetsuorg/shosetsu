@@ -28,6 +28,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
@@ -58,6 +60,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLi
 public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
     private final String file_path;
 
+    @NonNull
     @SuppressLint("StaticFieldLeak")
     private final
     Context context;
@@ -74,9 +77,10 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
     private final
     TextView textView;
 
+    @NonNull
     private final Dialog dialog;
 
-    public RestoreProcess(String file_path, Context context) {
+    public RestoreProcess(String file_path, @NonNull Context context) {
         this.file_path = file_path;
         this.context = context;
 
@@ -107,6 +111,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
+    @NonNull
     @SuppressLint("SetTextI18n")
     @Override
     protected Boolean doInBackground(Void... voids) {
@@ -247,7 +252,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                 //TODO Settings
                 progressBar.post(() -> progressBar.incrementProgressBy(1));
                 return true;
-            } catch (IOException | JSONException e) {
+            } catch (@NonNull IOException | JSONException e) {
                 e.printStackTrace();
             }
         }

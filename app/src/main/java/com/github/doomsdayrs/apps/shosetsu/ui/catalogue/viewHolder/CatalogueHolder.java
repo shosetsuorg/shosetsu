@@ -52,14 +52,14 @@ public class CatalogueHolder extends RecyclerView.ViewHolder implements View.OnC
         this.fragmentManager = fragmentManager;
     }
 
-    public void setFormatter(Formatter formatter) {
+    public void setFormatter(@NonNull Formatter formatter) {
         this.formatter = formatter;
         Log.d("FormatterSet", formatter.getName());
         itemView.setOnClickListener(this);
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(@NonNull View v) {
         Log.d("FormatterSelection", formatter.getName());
         if (isOnline()) {
             CatalogueFragment catalogueFragment = new CatalogueFragment();

@@ -45,7 +45,7 @@ public class SettingsCardViewHolder extends RecyclerView.ViewHolder {
         this.fragmentManager = fragmentManager;
     }
 
-    public void setType(Types type) {
+    public void setType(@NonNull Types type) {
         cardView.setOnClickListener(new OnSettingsCardClick(type, fragmentManager));
         library_card_title.setText(type.toString());
     }

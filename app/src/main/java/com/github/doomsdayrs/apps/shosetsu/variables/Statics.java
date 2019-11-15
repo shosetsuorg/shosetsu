@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 
 /*
@@ -28,5 +29,6 @@ import androidx.appcompat.app.ActionBar;
  * Static variables to work with
  */
 public class Statics {
+    @Nullable
     public static ActionBar mainActionBar;
 }

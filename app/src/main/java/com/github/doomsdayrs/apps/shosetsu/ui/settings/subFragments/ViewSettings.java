@@ -80,7 +80,7 @@ public class ViewSettings extends Fragment {
     private Switch tap_to_scroll;
 
     //TODO remove this abomination of code. We just need to make a simple old switch
-    private void onClickNIghtMode(View v) {
+    private void onClickNIghtMode(@NonNull View v) {
         if (this.getContext() != null) {
             SettingsItem nightMOdeItem = new SettingsItem(v);
             AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
@@ -168,7 +168,7 @@ public class ViewSettings extends Fragment {
 
                 textSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> adapterView, android.view.View view, int i, long l) {
+                    public void onItemSelected(@NonNull AdapterView<?> adapterView, android.view.View view, int i, long l) {
                         if (i >= 0 && i <= 2) {
                             int size = 14;
                             switch (i) {
@@ -214,7 +214,7 @@ public class ViewSettings extends Fragment {
 
                 paragraphSpacing.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> adapterView, android.view.View view, int i, long l) {
+                    public void onItemSelected(@NonNull AdapterView<?> adapterView, android.view.View view, int i, long l) {
                         if (i >= 0 && i <= 3) {
                             changeParagraphSpacing(i);
                             adapterView.setSelection(i);
@@ -252,7 +252,7 @@ public class ViewSettings extends Fragment {
                 indentSize.setAdapter(dataAdapter);
                 indentSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> adapterView, android.view.View view, int i, long l) {
+                    public void onItemSelected(@NonNull AdapterView<?> adapterView, android.view.View view, int i, long l) {
                         if (i >= 0 && i <= 3) {
                             changeIndentSize(i);
                             adapterView.setSelection(i);

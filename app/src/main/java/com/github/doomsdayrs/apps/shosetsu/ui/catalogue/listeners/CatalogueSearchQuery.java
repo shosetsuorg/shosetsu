@@ -4,6 +4,8 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
+
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CatalogueQuerySearch;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
@@ -47,14 +49,14 @@ public class CatalogueSearchQuery implements SearchView.OnQueryTextListener {
             ArrayList<CatalogueNovelCard> searchResults = new CatalogueQuerySearch(catalogueFragment).execute(query).get();
             catalogueFragment.setLibraryCards(searchResults);
             return true;
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (@NonNull ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return false;
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(@NonNull String newText) {
         Log.d("Library search", newText);
         catalogueFragment.isQuery = true;
         ArrayList<CatalogueNovelCard> recycleCards = new ArrayList<>(catalogueFragment.catalogueNovelCards);

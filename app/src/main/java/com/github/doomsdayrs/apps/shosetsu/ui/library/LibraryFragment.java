@@ -59,12 +59,14 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToS
  * @author github.com/doomsdayrs
  */
 public class LibraryFragment extends Fragment {
+    @NonNull
     public ArrayList<NovelCard> libraryNovelCards = new ArrayList<>();
+    @Nullable
     public ArrayList<NovelCard> selectedNovels = new ArrayList<>();
     public static boolean changedData = false;
 
 
-    public boolean contains(NovelCard novelCard) {
+    public boolean contains(@NonNull NovelCard novelCard) {
         for (NovelCard n : selectedNovels)
             if (n.novelURL.equalsIgnoreCase(novelCard.novelURL))
                 return true;
@@ -123,6 +125,7 @@ public class LibraryFragment extends Fragment {
         }
     }
 
+    @Nullable
     public MenuInflater getInflater() {
         return new MenuInflater(getContext());
     }

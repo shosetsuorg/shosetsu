@@ -39,7 +39,7 @@ public class CatalogueNovelCard extends RecycleCard implements Serializable {
      * Constructor
      *  @param imageURL image chapterURL
      * @param title    title
-     * @param novelID
+     * @param novelID id of novel
      * @param novelURL novelURL
      */
     public CatalogueNovelCard(String imageURL, String title, int novelID, String novelURL) {

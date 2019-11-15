@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 /*
@@ -29,6 +31,7 @@ import java.io.Serializable;
         NOVEL_URL = novel_url;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Base{" +

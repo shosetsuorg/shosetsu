@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -104,7 +105,9 @@ public class ChapterReader extends AppCompatActivity {
 
     public ProgressBar progressBar;
 
+    @Nullable
     public String title;
+    @Nullable
     public Formatter formatter;
 
     public int chapterID;
@@ -113,7 +116,9 @@ public class ChapterReader extends AppCompatActivity {
     private TextView textView;
     private MarkdownView markdownView;
 
+    @Nullable
     public String chapterURL;
+    @Nullable
     public String unformattedText = null;
     public int readerType;
 
@@ -123,7 +128,9 @@ public class ChapterReader extends AppCompatActivity {
     private MenuItem tap_to_scroll;
     private Chip nextChapter;
     public int novelID;
+    @Nullable
     private String[] chapters;
+    @Nullable
     private String text = null;
 
 
@@ -161,7 +168,7 @@ public class ChapterReader extends AppCompatActivity {
      * @return if made
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         MenuInflater inflater = getMenuInflater();
 
         inflater.inflate(R.menu.toolbar_chapter_view, menu);

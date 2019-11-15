@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
      * @param savedInstanceState savedData from destruction
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 .setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
                 .withListener(new AppUpdaterUtils.UpdateListener() {
                     @Override
-                    public void onSuccess(Update update, Boolean isUpdateAvailable) {
+                    public void onSuccess(@NonNull Update update, Boolean isUpdateAvailable) {
                         Log.d("Latest Version", String.valueOf(isUpdateAvailable));
                         Log.d("Latest Version", update.getLatestVersion());
                         Log.d("Latest Version", String.valueOf(update.getLatestVersionCode()));

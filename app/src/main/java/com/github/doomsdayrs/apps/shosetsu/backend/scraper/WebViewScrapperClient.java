@@ -21,6 +21,8 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.annotation.NonNull;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,12 +39,12 @@ class WebViewScrapperClient extends WebViewClient {
     }
 
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+    public boolean shouldOverrideUrlLoading(@NonNull WebView view, String url) {
         view.loadUrl(url);
         return false;
     }
 
-    public void onPageFinished(WebView view, String url) {
+    public void onPageFinished(@NonNull WebView view, String url) {
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {

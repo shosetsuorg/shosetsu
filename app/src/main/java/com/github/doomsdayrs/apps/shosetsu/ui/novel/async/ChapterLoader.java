@@ -5,6 +5,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
@@ -42,6 +45,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrappe
  * This task loads a novel for the novel fragment
  */
 public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
+    @Nullable
     private NovelPage novelPage;
     private final String novelURL;
     private final Formatter formatter;
@@ -57,13 +61,14 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         this.formatter = formatter;
     }
 
-    private ChapterLoader(ChapterLoader chapterLoader) {
+    private ChapterLoader(@NonNull ChapterLoader chapterLoader) {
         this.novelPage = chapterLoader.novelPage;
         this.novelURL = chapterLoader.novelURL;
         this.formatter = chapterLoader.formatter;
         this.novelFragmentChapters = chapterLoader.novelFragmentChapters;
     }
 
+    @NonNull
     public ChapterLoader setNovelFragmentChapters(NovelFragmentChapters novelFragmentChapters) {
         this.novelFragmentChapters = novelFragmentChapters;
         return this;
@@ -75,6 +80,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      * @param voids activity to work with
      * @return if completed
      */
+    @NonNull
     @Override
     protected Boolean doInBackground(Activity... voids) {
         Activity activity = voids[0];
@@ -123,7 +129,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         return false;
     }
 
-    private void add(Activity activity, int mangaCount, NovelChapter novelChapter) {
+    private void add(@NonNull Activity activity, int mangaCount, @NonNull NovelChapter novelChapter) {
         //TODO The getNovelID in this method likely will cause slowdowns due to IO
         if (!activity.isDestroyed() && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
             mangaCount++;

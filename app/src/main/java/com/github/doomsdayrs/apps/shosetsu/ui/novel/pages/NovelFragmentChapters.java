@@ -66,9 +66,10 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  */
 public class NovelFragmentChapters extends Fragment {
 
+    @NonNull
     public ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
 
-    public boolean contains(NovelChapter novelChapter) {
+    public boolean contains(@NonNull NovelChapter novelChapter) {
         for (NovelChapter n : selectedChapters)
             if (n.link.equalsIgnoreCase(novelChapter.link))
                 return true;
@@ -87,6 +88,7 @@ public class NovelFragmentChapters extends Fragment {
     }
 
     public static boolean reversed;
+    @Nullable
     @SuppressLint("StaticFieldLeak")
     public static RecyclerView recyclerView;
 
@@ -99,6 +101,7 @@ public class NovelFragmentChapters extends Fragment {
         return max;
     }
 
+    @Nullable
     public static ChaptersAdapter adapter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public NovelFragment novelFragment;
@@ -198,6 +201,7 @@ public class NovelFragmentChapters extends Fragment {
 
     public Menu menu;
 
+    @Nullable
     public MenuInflater getInflater() {
         return new MenuInflater(getContext());
     }

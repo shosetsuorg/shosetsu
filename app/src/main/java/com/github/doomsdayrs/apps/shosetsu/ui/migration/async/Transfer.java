@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
@@ -43,6 +45,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrappe
  */
 public class Transfer extends AsyncTask<Void, Void, Void> {
     private final ArrayList<String[]> strings;
+    @Nullable
     private final Formatter formatter;
     @SuppressLint("StaticFieldLeak")
     private final MigrationView migrationView;
@@ -73,6 +76,7 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
             migrationView.pageCount.setVisibility(View.VISIBLE);
     }
 
+    @Nullable
     @Override
     protected Void doInBackground(Void... voids) {
         for (String[] strings : strings)

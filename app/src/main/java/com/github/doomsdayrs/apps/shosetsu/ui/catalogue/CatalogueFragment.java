@@ -65,7 +65,9 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoO
  */
 //TODO fix issue with not loading
 public class CatalogueFragment extends Fragment {
+    @NonNull
     public ArrayList<CatalogueNovelCard> catalogueNovelCards = new ArrayList<>();
+    @Nullable
     public Formatter formatter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView library_view;
@@ -73,6 +75,7 @@ public class CatalogueFragment extends Fragment {
     public boolean isInSearch = false;
     private Context context;
 
+    @Nullable
     public CatalogueAdapter catalogueAdapter;
     public ProgressBar bottomProgressBar;
 
@@ -192,7 +195,7 @@ public class CatalogueFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.toolbar_library, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.library_search).getActionView();

@@ -4,6 +4,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
@@ -222,6 +225,7 @@ public class Database {
          * @param id ChapterID
          * @return ChapterURL
          */
+        @Nullable
         public static String getChapterURLFromChapterID(int id) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.URL + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.ID + " = " + id + "", null);
             if (cursor.getCount() <= 0) {
@@ -256,6 +260,7 @@ public class Database {
          * @param id Chapter ID
          * @return Chapter URL
          */
+        @Nullable
         static String getNovelURLFromChapterID(int id) {
             return getNovelURLfromNovelID(getNovelIDFromChapterID(id));
         }
@@ -264,6 +269,7 @@ public class Database {
          * @param url Chapter url
          * @return Novel URL
          */
+        @Nullable
         public static String getNovelURLFromChapterURL(String url) {
             return getNovelURLFromChapterID(getChapterIDFromChapterURL(url));
         }
@@ -272,6 +278,7 @@ public class Database {
          * @param id NovelID
          * @return NovelURL
          */
+        @Nullable
         public static String getNovelURLfromNovelID(int id) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.URL + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " = " + id + "", null);
             if (cursor.getCount() <= 0) {
@@ -341,6 +348,7 @@ public class Database {
          *
          * @return DownloadItems to download
          */
+        @NonNull
         public static List<DownloadItem> getDownloadList() {
             ArrayList<DownloadItem> downloadItems = new ArrayList<>();
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT * from " + Tables.DOWNLOADS + ";", null);
@@ -361,6 +369,7 @@ public class Database {
          *
          * @return DownloadItem to download
          */
+        @Nullable
         public static DownloadItem getFirstDownload() {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT * from " + Tables.DOWNLOADS + " LIMIT 1;", null);
             if (cursor.getCount() <= 0) {
@@ -382,7 +391,7 @@ public class Database {
          *
          * @param downloadItem download item to remove
          */
-        public static void removeDownload(DownloadItem downloadItem) {
+        public static void removeDownload(@NonNull DownloadItem downloadItem) {
             sqLiteDatabase.delete(Tables.DOWNLOADS.toString(), Columns.PARENT_ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null);
         }
 
@@ -391,7 +400,7 @@ public class Database {
          *
          * @param downloadItem Download item to add
          */
-        public static void addToDownloads(DownloadItem downloadItem) {
+        public static void addToDownloads(@NonNull DownloadItem downloadItem) {
             sqLiteDatabase.execSQL("insert into " + Tables.DOWNLOADS + " (" +
                     Columns.PARENT_ID + "," +
                     Columns.NOVEL_NAME + "," +
@@ -409,7 +418,7 @@ public class Database {
          * @param downloadItem download item to check
          * @return if is in list
          */
-        public static boolean inDownloads(DownloadItem downloadItem) {
+        public static boolean inDownloads(@NonNull DownloadItem downloadItem) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.DOWNLOADS + " where " + Columns.PARENT_ID + " = " + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null);
             int a = cursor.getCount();
             cursor.close();
@@ -493,6 +502,7 @@ public class Database {
          * @param chapterID chapter to check
          * @return returns chapter status
          */
+        @NonNull
         public static Status getStatus(int chapterID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
             if (cursor.getCount() <= 0) {
@@ -535,7 +545,7 @@ public class Database {
         /**
          * is this chapter bookmarked?
          *
-         * @param chapterID
+         * @param chapterID id of chapter
          * @return if bookmarked?
          */
         public static boolean isBookMarked(int chapterID) {
@@ -605,6 +615,7 @@ public class Database {
          * @param chapterID novelURL of the chapter
          * @return String of passage
          */
+        @Nullable
         public static String getSavedNovelPassage(int chapterID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.SAVE_PATH + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + chapterID, null);
             if (cursor.getCount() <= 0) {
@@ -638,7 +649,7 @@ public class Database {
          * @param novelID      ID of novel
          * @param novelChapter chapterURL
          */
-        public static void addToChapters(int novelID, NovelChapter novelChapter) {
+        public static void addToChapters(int novelID, @NonNull NovelChapter novelChapter) {
             if (!hasChapter(novelChapter.link))
                 DatabaseIdentification.addChapter(novelID, novelChapter.link);
 
@@ -678,6 +689,7 @@ public class Database {
          * @param novelID ID to retrieve from
          * @return List of chapters saved of novel
          */
+        @Nullable
         public static List<NovelChapter> getChapters(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null);
             if (cursor.getCount() <= 0) {
@@ -708,9 +720,10 @@ public class Database {
         /**
          * Gets a chapter by it's URL
          *
-         * @param chapterID
-         * @return
+         * @param chapterID id of chapter
+         * @return NovelChapter of said chapter
          */
+        @Nullable
         public static NovelChapter getChapter(int chapterID) {
             Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.TITLE + "," + Columns.ID + "," + Columns.RELEASE_DATE + "," + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
             if (cursor.getCount() <= 0) {
@@ -753,7 +766,6 @@ public class Database {
          * UnBookmarks the novel
          *
          * @param novelID id
-         * @return if removed successfully
          */
         public static void unBookmark(int novelID) {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.PARENT_ID + "=" + novelID);
@@ -876,6 +888,7 @@ public class Database {
          *
          * @return the library
          */
+        @NonNull
         public static ArrayList<NovelCard> getLibrary() {
             Log.d("DL", "Getting");
             Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
@@ -905,6 +918,7 @@ public class Database {
             }
         }
 
+        @Nullable
         public static NovelCard getNovel(int novelID) {
             Log.d("DL", "Getting");
 
@@ -939,6 +953,7 @@ public class Database {
          * @param novelID novel to retrieve
          * @return Saved novelPage
          */
+        @Nullable
         public static NovelPage getNovelPage(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " +
                     Columns.TITLE + "," +
@@ -982,6 +997,7 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READING_STATUS + "=" + status + " where " + Columns.PARENT_ID + "=" + novelID);
         }
 
+        @NonNull
         public static Status getStatus(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.READING_STATUS + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + " =" + novelID, null);
             if (cursor.getCount() <= 0) {
@@ -1033,7 +1049,8 @@ public class Database {
 
     public static class DatabaseUpdates {
 
-        public static DateTime trimDate(DateTime date) {
+        @NonNull
+        public static DateTime trimDate(@NonNull DateTime date) {
             Calendar cal = Calendar.getInstance();
             cal.clear(); // as per BalusC comment.
             cal.setTime(date.toDate());
@@ -1123,6 +1140,7 @@ public class Database {
          * @param date1 first
          * @param date2 second
          */
+        @NonNull
         public static ArrayList<Update> getTimeBetween(long date1, long date2) throws Exception {
             if (date2 <= date1)
                 throw new Exception("Dates implemented wrongly");

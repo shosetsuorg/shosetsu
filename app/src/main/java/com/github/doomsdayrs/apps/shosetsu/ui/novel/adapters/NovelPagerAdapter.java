@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -32,20 +33,22 @@ import java.util.List;
  */
 public class NovelPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragments;
+    @NonNull
     private String[] titles = {"Info", "Chapters"};
 
-    public NovelPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
+    public NovelPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
     }
 
     //TODO with tracker use this instead the of the above
-    public NovelPagerAdapter(FragmentManager fm, List<Fragment> fragments, boolean ignored) {
+    public NovelPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments, boolean ignored) {
         super(fm);
         this.fragments = fragments;
         titles = new String[]{titles[0], titles[1], "Tracker"};
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int i) {
         Log.d("SwapScreen", fragments.get(i).toString());

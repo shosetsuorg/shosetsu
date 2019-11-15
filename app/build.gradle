@@ -80,6 +80,7 @@ dependencies {
     implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
 
     implementation 'org.mozilla:rhino:1.7.11'
+    implementation 'androidx.annotation:annotation:1.1.0'
 
     // TODO Implement readerview provided by Mozilla
     //implementation "org.mozilla.components:feature-readerview:1.0.0"

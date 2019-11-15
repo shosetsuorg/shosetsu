@@ -47,6 +47,7 @@ public class UpdateFragment extends Fragment {
     public long date = -1;
     private final ArrayList<String> novels = new ArrayList<>();
 
+    @NonNull
     private ArrayList<Update> updates = new ArrayList<>();
     private RecyclerView recyclerView;
 

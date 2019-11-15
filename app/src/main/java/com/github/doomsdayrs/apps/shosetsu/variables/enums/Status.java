@@ -22,6 +22,8 @@ package com.github.doomsdayrs.apps.shosetsu.variables.enums;
  * @author github.com/doomsdayrs
  */
 
+import androidx.annotation.NonNull;
+
 /**
  * Status of novel/Chapter
  */
@@ -52,11 +54,13 @@ public enum Status {
         return status;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "" + a;
     }
 
+    @NonNull
     public static Status getStatus(int a) {
         switch (a) {
             case 0:

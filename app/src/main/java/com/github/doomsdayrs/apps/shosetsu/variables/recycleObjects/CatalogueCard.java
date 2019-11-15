@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
 
+import androidx.annotation.NonNull;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 
 /*
@@ -27,6 +29,7 @@ public class CatalogueCard extends RecycleCard {
     /**
      * Formatter
      */
+    @NonNull
     public final Formatter formatter;
 
     /**
@@ -34,7 +37,7 @@ public class CatalogueCard extends RecycleCard {
      *
      * @param formatter the formatter
      */
-    public CatalogueCard(Formatter formatter) {
+    public CatalogueCard(@NonNull Formatter formatter) {
         super(formatter.getName());
         this.formatter = formatter;
     }

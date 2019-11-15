@@ -23,6 +23,9 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.doomsdayrs.apps.shosetsu.backend.Serialize;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels;
@@ -70,6 +73,7 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
         Log.i("Progress", "Finished backup");
     }
 
+    @Nullable
     @Override
     protected Void doInBackground(Void... voids) {
         try {
@@ -165,7 +169,7 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
             );
             fileOutputStream.write(("JSON+-=" + BACKUP.toString()).getBytes());
             fileOutputStream.close();
-        } catch (IOException | JSONException e) {
+        } catch (@NonNull IOException | JSONException e) {
             e.printStackTrace();
         }
         return null;

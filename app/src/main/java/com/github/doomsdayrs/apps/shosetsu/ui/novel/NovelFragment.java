@@ -60,11 +60,16 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
 public class NovelFragment extends Fragment {
 
     public int novelID;
+    @Nullable
     public String novelURL;
+    @Nullable
     public NovelPage novelPage;
+    @Nullable
     public Formatter formatter;
+    @NonNull
     public Status status = Status.UNREAD;
 
+    @Nullable
     public List<NovelChapter> novelChapters = new ArrayList<>();
 
 
@@ -72,7 +77,8 @@ public class NovelFragment extends Fragment {
      * @param chapterURL Current chapter URL
      * @return chapter after the input, returns the current chapter if no more
      */
-    public static NovelChapter getNextChapter(@NotNull String chapterURL, String[] novelChapters) {
+    @Nullable
+    public static NovelChapter getNextChapter(@NotNull String chapterURL, @Nullable String[] novelChapters) {
         if (novelChapters != null && novelChapters.length != 0)
             for (int x = 0; x < novelChapters.length; x++) {
                 if (novelChapters[x].equalsIgnoreCase(chapterURL)) {
@@ -214,7 +220,7 @@ public class NovelFragment extends Fragment {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
+            public void onTabSelected(@NonNull TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
             }
 

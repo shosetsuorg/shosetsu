@@ -44,7 +44,7 @@ public class NovelCard extends RecycleCard {
      * Constructor
      *
      * @param title       title
-     * @param novelID
+     * @param novelID   novel ID
      * @param novelURL    novelURL
      * @param imageURL    imageURL
      * @param formatterID id of formatter

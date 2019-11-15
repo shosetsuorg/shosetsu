@@ -20,6 +20,9 @@ package com.github.doomsdayrs.apps.shosetsu.backend.scraper;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.aria2.CloudFlareCallback;
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.aria2.Cloudflare;
 
@@ -84,7 +87,8 @@ public class WebViewScrapper {
      * @param url URL to retrieve;
      * @return Document of the URL
      */
-    public static Document docFromURL(String url, boolean cloudflare) {
+    @Nullable
+    public static Document docFromURL(@Nullable String url, boolean cloudflare) {
         if (url != null) {
             Log.i("URL load", url);
             try {
@@ -95,7 +99,7 @@ public class WebViewScrapper {
                 } else {
                     return Jsoup.connect(url).get();
                 }
-            } catch (IOException | InterruptedException | ExecutionException e) {
+            } catch (@NonNull IOException | InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
@@ -103,9 +107,11 @@ public class WebViewScrapper {
     }
 
     static class GetCookies extends AsyncTask<Cloudflare, Void, List<HttpCookie>> {
+        @Nullable
         List<HttpCookie> cookies = null;
         int status = 0;
 
+        @Nullable
         @Override
         protected List<HttpCookie> doInBackground(Cloudflare... cf) {
             cf[0].getCookies(new CloudFlareCallback() {

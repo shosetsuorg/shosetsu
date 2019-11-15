@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -61,7 +63,7 @@ public class NovelLoader extends AsyncTask<Void, Void, Boolean> {
     }
 
 
-    private NovelLoader(NovelLoader novelLoader) {
+    private NovelLoader(@NonNull NovelLoader novelLoader) {
         this.novelFragment = novelLoader.novelFragment;
         this.loadAll = novelLoader.loadAll;
         this.errorView = novelLoader.errorView;
@@ -79,6 +81,7 @@ public class NovelLoader extends AsyncTask<Void, Void, Boolean> {
      * @param voids voided
      * @return if completed
      */
+    @NonNull
     @Override
     protected Boolean doInBackground(Void... voids) {
         Log.d("Loading", String.valueOf(novelFragment.novelURL));

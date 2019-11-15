@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -54,9 +55,11 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.deserializeS
 
 public class MigrationView extends AppCompatActivity {
     public final ArrayList<ArrayList<Novel>> novelResults = new ArrayList<>();
+    @Nullable
     private ArrayList<CatalogueCard> catalogues = null;
 
 
+    @Nullable
     public ArrayList<NovelCard> novels = new ArrayList<>();
     private final ArrayList<String[]> confirmedMappings = new ArrayList<>();
     private Transfer t;
@@ -82,6 +85,7 @@ public class MigrationView extends AppCompatActivity {
     private Button confirm;
 
 
+    @Nullable
     private MigrationViewLoad load = null;
 
     public MigrationView() {
@@ -102,7 +106,7 @@ public class MigrationView extends AppCompatActivity {
         Intent intent = getIntent();
         try {
             novels = (ArrayList<NovelCard>) deserializeString(intent.getStringExtra("selected"));
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (@NonNull IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         setContentView(R.layout.migrate_source_view);

@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import com.github.doomsdayrs.apps.shosetsu.R;
 
 public class SettingsItem {
+    @NonNull
     private final View itemView;
     private final TextView itemTitle;
     private final TextView itemDesc;

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
 
@@ -45,6 +47,7 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
         this.chapterReader = chapterReader;
     }
 
+    @Nullable
     @Override
     protected String doInBackground(ChapterReader... chapterReaders) {
         chapterReader.runOnUiThread(() -> chapterReader.errorView.setVisibility(View.GONE));

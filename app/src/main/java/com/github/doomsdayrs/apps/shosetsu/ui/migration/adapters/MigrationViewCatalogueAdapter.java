@@ -99,7 +99,7 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(@NonNull View v) {
             Log.d("FormatterSelection", formatter.getName());
             if (isOnline()) {
 

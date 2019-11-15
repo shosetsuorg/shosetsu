@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
@@ -36,15 +39,18 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrappe
  */
 public class MigrationViewLoad extends AsyncTask<Void, Void, Void> {
 
+    @NonNull
     @SuppressLint("StaticFieldLeak")
     private final MigrationView migrationView;
+    @Nullable
     private final Formatter targetFormat;
 
-    public MigrationViewLoad(MigrationView migrationView) {
+    public MigrationViewLoad(@NonNull MigrationView migrationView) {
         this.migrationView = migrationView;
         this.targetFormat = DefaultScrapers.getByID(migrationView.target);
     }
 
+    @Nullable
     @Override
     protected Void doInBackground(Void... voids) {
         Log.d("Searching with", targetFormat.getName());

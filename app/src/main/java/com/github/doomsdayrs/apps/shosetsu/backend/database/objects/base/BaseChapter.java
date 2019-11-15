@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base;
 
+import androidx.annotation.NonNull;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -28,6 +30,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base;
         CHAPTER_URL = chapter_url;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "BaseChapter{" +

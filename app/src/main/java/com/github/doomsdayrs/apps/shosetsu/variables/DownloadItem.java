@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.variables;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
@@ -35,9 +38,13 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
 public class DownloadItem {
 
     public final Formatter formatter;
+    @NonNull
     public final String novelName;
+    @NonNull
     public final String chapterName;
+    @Nullable
     private final String novelURL;
+    @Nullable
     public final String chapterURL;
     private final int novelID;
     public final int chapterID;

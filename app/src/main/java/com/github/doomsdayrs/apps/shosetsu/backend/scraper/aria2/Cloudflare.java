@@ -5,6 +5,9 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
@@ -30,6 +33,7 @@ import java.util.regex.Pattern;
 /**
  * author: zhkrb @ https://github.com/zhkrb
  */
+@SuppressWarnings("JavaDoc")
 public class Cloudflare {
 
     private static final int MAX_COUNT = 3;
@@ -62,7 +66,8 @@ public class Cloudflare {
      * @param list
      * @return
      */
-    private static String listToString(List list) {
+    @NonNull
+    private static String listToString(@NonNull List list) {
         char separator = ";".charAt(0);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
@@ -77,7 +82,8 @@ public class Cloudflare {
      * @param list HttpCookie列表
      * @return Hashmap
      */
-    public static Map<String, String> List2Map(List<HttpCookie> list) {
+    @NonNull
+    public static Map<String, String> List2Map(@Nullable List<HttpCookie> list) {
         Map<String, String> map = new HashMap<>();
         try {
             if (list != null) {
@@ -109,7 +115,7 @@ public class Cloudflare {
         new Thread(() -> urlThread(callback)).start();
     }
 
-    private void urlThread(CloudFlareCallback callback) {
+    private void urlThread(@Nullable CloudFlareCallback callback) {
         mCookieManager = new CookieManager();
         mCookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL); //接受所有cookies
         CookieHandler.setDefault(mCookieManager);
@@ -128,7 +134,7 @@ public class Cloudflare {
                 } else {
                     getVisiteCookie();
                 }
-            } catch (IOException | InterruptedException e) {
+            } catch (@NonNull IOException | InterruptedException e) {
                 if (mCookieList != null) {
                     mCookieList.clear();
                 }
@@ -199,7 +205,7 @@ public class Cloudflare {
      *
      * @param str
      */
-    private void getCheckAnswer(String str) throws InterruptedException, IOException {
+    private void getCheckAnswer(@NonNull String str) throws InterruptedException, IOException {
         String s = regex(str, "name=\"s\" value=\"(.+?)\"").get(0);   //正则取值
         String jschl_vc = regex(str, "name=\"jschl_vc\" value=\"(.+?)\"").get(0);
         String pass = regex(str, "name=\"pass\" value=\"(.+?)\"").get(0);            //
@@ -274,7 +280,7 @@ public class Cloudflare {
         }
     }
 
-    private double get_answer(String str) {  //取值
+    private double get_answer(@NonNull String str) {  //取值
         double a = 0;
 
         try {
@@ -327,7 +333,8 @@ public class Cloudflare {
      * @param pattern 正则式
      * @return List<String>
      */
-    private List<String> regex(String text, String pattern) {
+    @Nullable
+    private List<String> regex(@NonNull String text, @NonNull String pattern) {
         try {
             Pattern pt = Pattern.compile(pattern);
             Matcher mt = pt.matcher(text);
@@ -348,11 +355,11 @@ public class Cloudflare {
         return null;
     }
 
-    private void e(String tag, String content) {
+    private void e(String tag, @NonNull String content) {
         Log.e(tag, content);
     }
 
-    private void e(String content) {
+    private void e(@NonNull String content) {
         Log.e("cloudflare", content);
     }
 

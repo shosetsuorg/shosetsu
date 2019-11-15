@@ -7,6 +7,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
@@ -48,15 +51,17 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
     private static final int ID = 1917;
     private static final String channel_ID = "shosetsu_updater";
 
+    @NonNull
     private final ArrayList<NovelCard> novelCards;
     private boolean continueProcesss = true;
+    @Nullable
     private final NotificationManager notificationManager;
     private Notification.Builder builder;
     private final ArrayList<NovelCard> updatedNovels = new ArrayList<>();
 
 
 
-    public ChapterUpdater(@NotNull ArrayList<NovelCard> novelCards, Context context) {
+    public ChapterUpdater(@NotNull ArrayList<NovelCard> novelCards, @NonNull Context context) {
         this.novelCards = novelCards;
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -85,6 +90,7 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
         notificationManager.notify(ID, builder.build());
     }
 
+    @Nullable
     @Override
     protected Void doInBackground(Void... voids) {
         for (int x = 0; x < novelCards.size(); x++) {
@@ -137,7 +143,7 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
     }
 
 
-    private void add(int mangaCount, NovelChapter novelChapter, NovelCard novelCard) {
+    private void add(int mangaCount, @NonNull NovelChapter novelChapter, @NonNull NovelCard novelCard) {
         if (continueProcesss && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
             mangaCount++;
             System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);

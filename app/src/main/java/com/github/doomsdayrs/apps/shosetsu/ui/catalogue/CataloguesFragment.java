@@ -49,6 +49,7 @@ import java.util.Objects;
  */
 //TODO Searching mechanics here
 public class CataloguesFragment extends Fragment {
+    @Nullable
     private ArrayList<CatalogueCard> cards = null;
 
     /**
@@ -59,7 +60,7 @@ public class CataloguesFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_catalogues, menu);
     }
 

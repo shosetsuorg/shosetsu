@@ -2,6 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend;
 
 import android.webkit.CookieManager;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,15 +40,16 @@ public final class WebviewCookieHandler implements CookieJar {
     private final CookieManager webviewCookieManager = CookieManager.getInstance();
 
     @Override
-    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+    public void saveFromResponse(@NonNull HttpUrl url, @NonNull List<Cookie> cookies) {
         String urlString = url.toString();
         for (Cookie cookie : cookies) {
             webviewCookieManager.setCookie(urlString, cookie.toString());
         }
     }
 
+    @NonNull
     @Override
-    public List<Cookie> loadForRequest(HttpUrl url) {
+    public List<Cookie> loadForRequest(@NonNull HttpUrl url) {
         String urlString = url.toString();
         String cookiesString = webviewCookieManager.getCookie(urlString);
 

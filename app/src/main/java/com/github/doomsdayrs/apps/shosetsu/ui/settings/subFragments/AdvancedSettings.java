@@ -71,7 +71,7 @@ public class AdvancedSettings extends Fragment {
         }
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(@NonNull AdapterView<?> adapterView, View view, int i, long l) {
                 if (i >= 0 && i <= 2) {
                     changeMode(getActivity(), i);
                     adapterView.setSelection(i);

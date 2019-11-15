@@ -54,11 +54,14 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.togglePause;
  */
 //TODO selection mechanic with options to delete,  pause,  and more
 public class DownloadsFragment extends Fragment {
+    @NonNull
     public static List<DownloadItem> downloadItems = new ArrayList<>();
 
 
+    @Nullable
     @SuppressLint("StaticFieldLeak")
     private static RecyclerView recyclerView;
+    @Nullable
     private static DownloadAdapter adapter;
 
     /**
@@ -76,7 +79,7 @@ public class DownloadsFragment extends Fragment {
                     DownloadsFragment.adapter.downloadsFragment.getActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
 
-    public static void removeDownloads(DownloadItem downloadItem) {
+    public static void removeDownloads(@NonNull DownloadItem downloadItem) {
         for (int x = 0; x < downloadItems.size(); x++)
             if (downloadItems.get(x).chapterURL.equals(downloadItem.chapterURL)) {
                 downloadItems.remove(x);
@@ -86,14 +89,14 @@ public class DownloadsFragment extends Fragment {
         refreshList();
     }
 
-    public static void markError(DownloadItem d) {
+    public static void markError(@NonNull DownloadItem d) {
         for (DownloadItem downloadItem : downloadItems)
             if (downloadItem.chapterURL.equals(d.chapterURL))
                 d.setStatus("Error");
         refreshList();
     }
 
-    public static void toggleProcess(DownloadItem d) {
+    public static void toggleProcess(@NonNull DownloadItem d) {
         for (DownloadItem downloadItem : downloadItems)
             if (downloadItem.chapterURL.equals(d.chapterURL))
                 if (downloadItem.getStatus().equals("Pending") || downloadItem.getStatus().equals("Error"))
@@ -165,7 +168,7 @@ public class DownloadsFragment extends Fragment {
      * @param inflater Object to inflate the menu
      */
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_downloads, menu);
         MenuItem menuItem = menu.findItem(R.id.toolbar_downloads_pause);
         if (Settings.downloadPaused)

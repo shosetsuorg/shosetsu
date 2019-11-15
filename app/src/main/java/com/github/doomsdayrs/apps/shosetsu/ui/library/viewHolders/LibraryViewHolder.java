@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
@@ -43,6 +44,7 @@ public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.O
     public final Chip chip;
 
     public LibraryFragment libraryFragment;
+    @Nullable
     public Formatter formatter;
     public NovelCard novelCard;
 

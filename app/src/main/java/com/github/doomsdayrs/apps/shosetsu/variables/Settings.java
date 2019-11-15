@@ -3,6 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.variables;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 
+import androidx.annotation.Nullable;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -48,6 +50,7 @@ public class Settings {
     /**
      * global connectivity manager variable
      */
+    @Nullable
     public static ConnectivityManager connectivityManager;
 
     /**

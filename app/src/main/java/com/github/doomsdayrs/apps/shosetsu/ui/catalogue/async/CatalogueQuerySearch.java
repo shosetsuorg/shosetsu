@@ -2,6 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
@@ -46,6 +48,7 @@ public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<Cata
      * @param strings ignored
      * @return List of results
      */
+    @NonNull
     @Override
     protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
         ArrayList<CatalogueNovelCard> result = new ArrayList<>();

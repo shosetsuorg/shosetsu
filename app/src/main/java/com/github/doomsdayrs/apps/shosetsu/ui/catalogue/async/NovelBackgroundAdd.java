@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder;
 
@@ -38,6 +40,7 @@ public class NovelBackgroundAdd extends AsyncTask<View, Void, Void> {
         this.novelCardsViewHolder = novelCardsViewHolder;
     }
 
+    @Nullable
     @Override
     protected Void doInBackground(View... views) {
         try {

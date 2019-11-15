@@ -13,6 +13,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
@@ -68,7 +70,7 @@ public class Utilities {
      * @param positionSpared Item to set checked
      * @param demarkAction   Any action to proceed with
      */
-    public static void demarkMenuItems(@NotNull MenuItem[] menuItems, int positionSpared, DemarkAction demarkAction) {
+    public static void demarkMenuItems(@NotNull MenuItem[] menuItems, int positionSpared, @Nullable DemarkAction demarkAction) {
         for (int x = 0; x < menuItems.length; x++)
             if (x != positionSpared)
                 menuItems[x].setChecked(false);
@@ -91,14 +93,16 @@ public class Utilities {
      * @param input String to clean
      * @return string without specials
      */
-    public static String cleanString(String input) {
+    @NonNull
+    public static String cleanString(@NonNull String input) {
         return input.replaceAll("[^A-Za-z0-9]", "_");
     }
 
     public static final int SELECTED_STROKE_WIDTH = 8;
+    @Nullable
     public static String shoDir = "/Shosetsu/";
 
-    public static int calculateNoOfColumns(Context context, float columnWidthDp) { // For example columnWidthdp=180
+    public static int calculateNoOfColumns(@NonNull Context context, float columnWidthDp) { // For example columnWidthdp=180
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float screenWidthDp = displayMetrics.widthPixels / displayMetrics.density;
         return (int) (screenWidthDp / columnWidthDp + 0.5);
@@ -111,6 +115,7 @@ public class Utilities {
      * @return Serialised string
      * @throws IOException exception
      */
+    @NonNull
     public static String serializeToString(@NotNull Object object) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -127,6 +132,7 @@ public class Utilities {
      * @throws IOException            exception
      * @throws ClassNotFoundException exception
      */
+    @Nullable
     public static Object deserializeString(@NotNull String string) throws IOException, ClassNotFoundException {
         if (!string.equals("null")) {
             string = string.substring(7);
@@ -146,13 +152,14 @@ public class Utilities {
      * @param string String to be checked
      * @return Completed String
      */
-    public static String checkStringDeserialize(String string) {
+    @Nullable
+    public static String checkStringDeserialize(@Nullable String string) {
         if (string == null || string.isEmpty()) {
             return "";
         } else {
             try {
                 return (String) deserializeString(string);
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (@NonNull IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -166,7 +173,8 @@ public class Utilities {
      * @param string String to be checked
      * @return Completed String
      */
-    public static String checkStringSerialize(String string) {
+    @NonNull
+    public static String checkStringSerialize(@Nullable String string) {
         if (string == null || string.isEmpty()) {
             return "";
         } else {
@@ -186,7 +194,8 @@ public class Utilities {
      * @param s String title
      * @return Stati
      */
-    public static Stati convertStringToStati(String s) {
+    @NonNull
+    public static Stati convertStringToStati(@NonNull String s) {
         switch (s) {
             case "Publishing":
                 return Stati.PUBLISHING;
@@ -207,6 +216,7 @@ public class Utilities {
      * @param a array of strings
      * @return String Array
      */
+    @NonNull
     public static String convertArrayToString(@NotNull String[] a) {
         if (a != null && a.length != 0) {
             for (int x = 0; x < a.length; x++) {
@@ -224,6 +234,7 @@ public class Utilities {
      * @param s String array
      * @return Array of Strings
      */
+    @NonNull
     public static String[] convertStringToArray(@NotNull String s) {
         String[] a = s.substring(1, s.length() - 1).split(", ");
 
@@ -247,7 +258,7 @@ public class Utilities {
      *
      * @param
      */
-    public static void initPreferences(AppCompatActivity mainActivity) {
+    public static void initPreferences(@NonNull AppCompatActivity mainActivity) {
         Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
         Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
         String dir = mainActivity.getExternalFilesDir(null).getAbsolutePath();
@@ -292,7 +303,7 @@ public class Utilities {
     }
 
 
-    public static void changeMode(Activity activity, int newMode) {
+    public static void changeMode(@NonNull Activity activity, int newMode) {
         if (!(newMode >= 0 && newMode <= 2))
             throw new IndexOutOfBoundsException("Non valid int passed");
         Settings.themeMode = newMode;
@@ -426,11 +437,11 @@ public class Utilities {
      * @param novelID
      * @param formatterID
      */
-    public static void openChapter(Activity activity, NovelChapter novelChapter, int novelID, int formatterID) {
+    public static void openChapter(@NonNull Activity activity, @NonNull NovelChapter novelChapter, int novelID, int formatterID) {
         openChapter(activity, novelChapter, novelID, formatterID, null);
     }
 
-    private static void openChapter(Activity activity, NovelChapter novelChapter, int novelID, int formatterID, String[] chapters) {
+    private static void openChapter(@NonNull Activity activity, @NonNull NovelChapter novelChapter, int novelID, int formatterID, String[] chapters) {
         int chapterID = getChapterIDFromChapterURL(novelChapter.link);
         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
         Intent intent = new Intent(activity, ChapterReader.class);

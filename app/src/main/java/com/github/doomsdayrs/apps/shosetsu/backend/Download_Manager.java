@@ -5,6 +5,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
@@ -47,6 +50,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrappe
 public class Download_Manager {
 
 
+    @NonNull
     private static Downloading download = new Downloading();
 
     /**
@@ -64,7 +68,7 @@ public class Download_Manager {
      *
      * @param downloadItem download item to add
      */
-    public static void addToDownload(DownloadItem downloadItem) {
+    public static void addToDownload(@NonNull DownloadItem downloadItem) {
         if (!Database.DatabaseDownloads.inDownloads(downloadItem)) {
             Database.DatabaseDownloads.addToDownloads(downloadItem);
             if (download.isCancelled())
@@ -82,7 +86,7 @@ public class Download_Manager {
      * @param downloadItem download item to remove
      * @return if downloaded
      */
-    public static boolean delete(Context context, DownloadItem downloadItem) {
+    public static boolean delete(@Nullable Context context, @NonNull DownloadItem downloadItem) {
         Log.d("DeletingChapter", downloadItem.toString());
         File file = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt");
         Database.DatabaseChapter.removePath(downloadItem.chapterID);
@@ -101,7 +105,8 @@ public class Download_Manager {
      * @param path path of saved chapter
      * @return Passage of saved chapter
      */
-    public static String getText(String path) {
+    @Nullable
+    public static String getText(@NonNull String path) {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
@@ -126,6 +131,7 @@ public class Download_Manager {
      */
     static class Downloading extends AsyncTask<Void, Void, Void> {
 
+        @Nullable
         @Override
         protected Void doInBackground(Void... voids) {
             while (Database.DatabaseDownloads.getDownloadCount() >= 1 && !Settings.downloadPaused) {

@@ -68,7 +68,7 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
 
     }
 
-    public void setNovelChapter(NovelChapter novelChapter) {
+    public void setNovelChapter(@NonNull NovelChapter novelChapter) {
         this.novelChapter = novelChapter;
         title.setText(novelChapter.title);
         //TODO fix this disgust

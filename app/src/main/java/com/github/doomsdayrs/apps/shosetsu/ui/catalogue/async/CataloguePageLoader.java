@@ -5,6 +5,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
@@ -41,6 +44,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrappe
 public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
     // References to objects
     private final CatalogueFragment catalogueFragment;
+    @Nullable
     private final CatalogueHitBottom catalogueHitBottom;
 
     /**
@@ -68,8 +72,9 @@ public class CataloguePageLoader extends AsyncTask<Integer, Void, Boolean> {
      * @param integers if length = 0, loads first page otherwise loads the page # correlated to the integer
      * @return if this was completed or not
      */
+    @NonNull
     @Override
-    protected Boolean doInBackground(Integer... integers) {
+    protected Boolean doInBackground(@NonNull Integer... integers) {
         Log.d("Loading", "Catalogue");
         catalogueFragment.library_view.post(() -> catalogueFragment.errorView.setVisibility(View.GONE));
         if (catalogueFragment.formatter.hasCloudFlare()) {
