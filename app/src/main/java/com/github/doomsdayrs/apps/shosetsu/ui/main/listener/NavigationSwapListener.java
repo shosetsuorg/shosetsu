@@ -26,6 +26,9 @@ import com.google.android.material.navigation.NavigationView;
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 18 / 06 / 2019
  *
