@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout3"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
 
     <include
         android:id="@+id/toolbar"
@@ -16,9 +15,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+    <!-- This is the new ideal for the reader, to be able to swipe left and right to change pages-->
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +35,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <View
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/readerPager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:visibility="gone" />
-            </View>
+            </androidx.viewpager.widget.ViewPager>
 
         </ScrollView>
 
@@ -90,7 +90,8 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="gone" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.viewpager.widget.ViewPager>
+
 
     <ProgressBar
         android:id="@+id/fragment_novel_chapter_view_progress"
@@ -112,5 +113,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

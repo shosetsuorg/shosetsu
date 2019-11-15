@@ -104,6 +104,7 @@ public class ChapterReader extends AppCompatActivity {
 
     public ScrollView scrollView;
 
+    public Toolbar toolbar;
 
     public ProgressBar progressBar;
 
@@ -115,8 +116,6 @@ public class ChapterReader extends AppCompatActivity {
     public int chapterID;
 
     private ViewPager readerViewPager;
-    private TextView textView;
-    private MarkdownView markdownView;
 
     @Nullable
     public String chapterURL;
@@ -378,7 +377,8 @@ public class ChapterReader extends AppCompatActivity {
             novelID = getIntent().getIntExtra("novelID", -1);
             formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
         }
-        Log.i("Reading", chapterURL);
+        assert chapterURL != null;
+        Log.i("Reading", String.valueOf(chapterURL));
 
         errorView = findViewById(R.id.network_error);
         errorMessage = findViewById(R.id.error_message);
@@ -388,26 +388,23 @@ public class ChapterReader extends AppCompatActivity {
         scrollView = findViewById(R.id.fragment_novel_scroll);
         addBottomListener();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         readerViewPager = findViewById(R.id.readerPager);
-        markdownView = findViewById(R.id.fragment_novel_chapter_view_markdown);
-        textView = findViewById(R.id.fragment_novel_chapter_view_text);
-
         switch (readerType) {
             case 1:
-                markdownView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
+                selectedReader = fragments.get(1);
                 break;
             case 0:
             case -1:
-                textView.setOnClickListener(new NovelFragmentChapterViewHideBar(toolbar));
+                selectedReader = fragments.get(0);
                 break;
             case -2:
             default:
                 throw new RuntimeException("Invalid chapter?!? How are you reading this without the novel loaded in");
         }
-
+        setViewPager();
 
         // Scroll up listener
         scroll_up = findViewById(R.id.scroll_up);
@@ -433,9 +430,7 @@ public class ChapterReader extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Cannot move to next chapter, Please exit reader", Toast.LENGTH_LONG).show();
             }
             nextChapter.setVisibility(View.GONE);
-
         });
-
         loadChapter();
     }
 
@@ -445,18 +440,6 @@ public class ChapterReader extends AppCompatActivity {
      */
     public void setUpReader() {
         scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-        switch (readerType) {
-            case -1:
-            case 0:
-                textView.setTextColor(Settings.ReaderTextColor);
-                textView.setTextSize(Settings.ReaderTextSize);
-                break;
-            default:
-                break;
-        }
-
-
         if (unformattedText != null) {
             StringBuilder replaceSpacing = new StringBuilder("\n");
             for (int x = 0; x < Settings.paragraphSpacing; x++)
@@ -466,15 +449,8 @@ public class ChapterReader extends AppCompatActivity {
                 replaceSpacing.append("\t");
 
             text = unformattedText.replaceAll("\n", replaceSpacing.toString());
-
-            switch (readerType) {
-                case -1:
-                case 0:
-                    textView.setText(text);
-                    break;
-                case 1:
-                    markdownView.loadMarkdown(text);
-            }
+            assert selectedReader.getView() != null;
+            selectedReader.getView().post(() -> selectedReader.setText(text));
         }
     }
 
