@@ -26,10 +26,10 @@ public class MarkdownViewReader extends Reader {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chapter_reader_mark_down, container);
+        View view = inflater.inflate(R.layout.chapter_reader_mark_down, container, false);
         markdownView = view.findViewById(R.id.markdown_view);
         markdownView.setOnClickListener(new NovelFragmentChapterViewHideBar(chapterReader.toolbar));
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override
