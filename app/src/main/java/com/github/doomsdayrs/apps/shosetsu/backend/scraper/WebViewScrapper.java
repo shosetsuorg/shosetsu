@@ -23,7 +23,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.cloudflareScrape.Cloudflare;
+import com.zhkrb.cloudflare_scrape_android.Cloudflare;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
