@@ -23,8 +23,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.aria2.CloudFlareCallback;
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.aria2.Cloudflare;
+import com.github.doomsdayrs.apps.shosetsu.backend.scraper.cloudflareScrape.Cloudflare;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -114,9 +113,10 @@ public class WebViewScrapper {
         @Nullable
         @Override
         protected List<HttpCookie> doInBackground(Cloudflare... cf) {
-            cf[0].getCookies(new CloudFlareCallback() {
+            cf[0].getCookies(new Cloudflare.cfCallback() {
+
                 @Override
-                public void onSuccess(List<HttpCookie> cookieList) {
+                public void onSuccess(List<HttpCookie> cookieList, boolean hasNewUrl, String newUrl) {
                     cookies = cookieList;
                     status = 1;
                 }

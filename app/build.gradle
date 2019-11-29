@@ -47,12 +47,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.android.material:material:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.2.0-alpha02'
     implementation 'com.graphql-java:graphql-java:2019-11-07T04-06-09-70d9412'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     //noinspection GradleCompatible
-    implementation 'com.google.android.material:material:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.2.0-alpha02'
     testImplementation 'junit:junit:4.13-rc-1'
     testImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'

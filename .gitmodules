@@ -1,0 +1,3 @@
+[submodule "app/src/main/java/com/github/doomsdayrs/apps/shosetsu/backend/scraper/cloudflareScrape"]
+	path = app/src/main/java/com/github/doomsdayrs/apps/shosetsu/backend/scraper/cloudflareScrape
+	url = https://github.com/zhkrb/cloudflare-scrape-Android.git
