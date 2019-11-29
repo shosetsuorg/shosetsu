@@ -50,7 +50,7 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
     @Nullable
     @Override
     protected String doInBackground(ChapterReader... chapterReaders) {
-        chapterReader.runOnUiThread(() -> chapterReader.errorView.setVisibility(View.GONE));
+        chapterReader.runOnUiThread(() -> chapterReader.errorView.errorView.setVisibility(View.GONE));
         try {
             chapterReader.unformattedText = chapterReader.formatter.getNovelPassage(docFromURL(chapterReader.chapterURL, chapterReader.formatter.hasCloudFlare()));
             chapterReader.runOnUiThread(chapterReader::setUpReader);
@@ -61,9 +61,9 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
             chapterReader.runOnUiThread(() -> chapterReader.ready = true);
         } catch (Exception e) {
             chapterReader.runOnUiThread(() -> {
-                chapterReader.errorView.setVisibility(View.VISIBLE);
-                chapterReader.errorMessage.setText(e.getMessage());
-                chapterReader.errorButton.setOnClickListener(view -> new ReaderViewLoader(chapterReader).execute());
+                chapterReader.errorView.errorView.setVisibility(View.VISIBLE);
+                chapterReader.errorView.errorMessage.setText(e.getMessage());
+                chapterReader.errorView.errorButton.setOnClickListener(view -> new ReaderViewLoader(chapterReader).execute());
             });
 
         }

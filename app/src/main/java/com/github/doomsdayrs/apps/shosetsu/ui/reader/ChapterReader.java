@@ -7,54 +7,49 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ReaderTypeAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.IndentChange;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ParaSpacingChange;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ReaderChange;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.TextSizeChange;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChapterViewHideBar;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.MarkdownViewReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.Reader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.TextViewReader;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.tabs.TabLayout;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import us.feras.mdv.MarkdownView;
-
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.ASSERT;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.demarkMenuItems;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setTextSize;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setupTheme;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderColor;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
@@ -88,13 +83,9 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
     private final Utilities.DemarkAction[] demarkActions = {new TextSizeChange(this), new ParaSpacingChange(this), new IndentChange(this), new ReaderChange(this)};
-
-    private Reader selectedReader = null;
     private final ArrayList<Reader> fragments = new ArrayList<>();
-
     // Order of values. Small,Medium,Large
     private final MenuItem[] textSizes = new MenuItem[3];
-    public boolean ready = false;
     // Order of values. Non,Small,Medium,Large
     private final MenuItem[] paragraphSpaces = new MenuItem[4];
     // Order of values. Non,Small,Medium,Large
@@ -103,47 +94,29 @@ public class ChapterReader extends AppCompatActivity {
     private final MenuItem[] readers = new MenuItem[2];
 
     public ScrollView scrollView;
-
     public Toolbar toolbar;
-
     public ProgressBar progressBar;
-
     @Nullable
-    public String title;
-    @Nullable
-    public Formatter formatter;
 
-    public int chapterID;
-
-    private ViewPager readerViewPager;
-
-    @Nullable
-    public String chapterURL;
-    @Nullable
-    public String unformattedText = null;
-    public int readerType;
-
-    private MenuItem bookmark;
+    public String title, chapterURL, unformattedText = null, text = null;
+    public int chapterID, readerType, novelID;
+    public boolean ready = false;
+    //TODO Handle ERRORs on loading, EVERYWHERE
+    public ErrorView errorView;
     private boolean bookmarked;
 
-    private MenuItem tap_to_scroll;
+
+    @Nullable
+    public Formatter formatter;
+    private ViewPager readerViewPager;
     private Chip nextChapter;
-    public int novelID;
     @Nullable
     private String[] chapters;
-    @Nullable
-    private String text = null;
-
-
+    private MenuItem bookmark, tap_to_scroll;
+    private Reader selectedReader = null;
     //Tap to scroll
-    private View scroll_up;
-    private View scroll_down;
-
-    // ERROR SCREEN
-    //TODO Handle ERRORs on loading, EVERYWHERE
-    public ConstraintLayout errorView;
-    public TextView errorMessage;
-    public Button errorButton;
+    @SuppressWarnings("FieldCanBeLocal")
+    private View scroll_up, scroll_down;
 
 
     /**
@@ -347,19 +320,9 @@ public class ChapterReader extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("OnCreate", "NovelFragmentChapterReader");
-        switch (Settings.themeMode) {
-            case 0:
-                setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
-                break;
-            case 1:
-                setTheme(R.style.Theme_MaterialComponents_NoActionBar);
-                break;
-            case 2:
-                setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
-        }
-
+        setupTheme(this);
         setContentView(R.layout.chapter_reader);
-
+        // SetUp of data
         if (savedInstanceState != null) {
             unformattedText = savedInstanceState.getString("unformattedText");
             title = savedInstanceState.getString("title");
@@ -378,20 +341,30 @@ public class ChapterReader extends AppCompatActivity {
             formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
         }
         assert chapterURL != null;
-        Log.i("Reading", String.valueOf(chapterURL));
 
-        errorView = findViewById(R.id.network_error);
-        errorMessage = findViewById(R.id.error_message);
-        errorButton = findViewById(R.id.error_button);
-        progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);
+        ASSERT(chapterID != -1);
+        assert chapters != null;
+        Log.i("Reading", chapterURL);
 
-        scrollView = findViewById(R.id.fragment_novel_scroll);
+        // Declares view variables
+        {
+            errorView = new ErrorView(this, findViewById(R.id.network_error), findViewById(R.id.error_message), findViewById(R.id.error_button));
+            progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);
+            scrollView = findViewById(R.id.fragment_novel_scroll);
+            toolbar = findViewById(R.id.toolbar);
+            readerViewPager = findViewById(R.id.readerPager);
+            scroll_up = findViewById(R.id.scroll_up);
+            scroll_down = findViewById(R.id.scroll_down);
+            nextChapter = findViewById(R.id.next_chapter);
+        }
+
         addBottomListener();
 
-        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        readerViewPager = findViewById(R.id.readerPager);
+        fragments.add(new TextViewReader(this));
+        fragments.add(new MarkdownViewReader(this));
+
         switch (readerType) {
             case 1:
                 selectedReader = fragments.get(1);
@@ -407,18 +380,11 @@ public class ChapterReader extends AppCompatActivity {
         setViewPager();
 
         // Scroll up listener
-        scroll_up = findViewById(R.id.scroll_up);
         scroll_up.setOnClickListener(view -> scrollUp());
-
         // Scroll down listener
-        scroll_down = findViewById(R.id.scroll_down);
         scroll_down.setOnClickListener(view -> scrollDown());
-
-        nextChapter = findViewById(R.id.next_chapter);
         nextChapter.setOnClickListener(view -> {
-
             NovelChapter novelChapter = getNextChapter(chapterURL, chapters);
-
             if (novelChapter != null) {
                 if (!novelChapter.link.equalsIgnoreCase(chapterURL)) {
                     title = novelChapter.title;
@@ -458,7 +424,6 @@ public class ChapterReader extends AppCompatActivity {
         ReaderTypeAdapter pagerAdapter = new ReaderTypeAdapter(getSupportFragmentManager(), fragments);
         readerViewPager.setAdapter(pagerAdapter);
     }
-
 
     /**
      * What to do when scroll hits bottom

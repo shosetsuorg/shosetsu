@@ -121,7 +121,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                         novelFragmentChapters.getActivity().runOnUiThread(() -> {
                             novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
                             novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
-                            novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> refresh(view, activity));
+                            novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> refresh(activity));
                         });
 
             }
@@ -138,7 +138,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         }
     }
 
-    private void refresh(View view, Activity activity) {
+    private void refresh(Activity activity) {
         new ChapterLoader(this).execute(activity);
     }
 

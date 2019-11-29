@@ -64,6 +64,7 @@ public class Settings {
      * 0: Light mode
      * 1: Night mode
      * 2: Dark mode
+     * </p>
      */
     public static int themeMode;
 

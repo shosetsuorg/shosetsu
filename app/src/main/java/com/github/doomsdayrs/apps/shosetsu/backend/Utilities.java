@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
@@ -56,12 +57,24 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * shosetsu
  * 26 / 07 / 2019
  *
  * @author github.com/doomsdayrs
  */
 public class Utilities {
+
+    public static void ASSERT(boolean b) {
+        Log.e("ASSERT, D", String.valueOf(BuildConfig.DEBUG));
+        Log.e("ASSERT, B", String.valueOf(b));
+
+        if (BuildConfig.DEBUG && !b)
+            throw new RuntimeException();
+    }
+
 
     /**
      * Demarks a list of items, setting only one to be checked.
@@ -310,7 +323,10 @@ public class Utilities {
         advanced.edit()
                 .putInt("themeMode", newMode)
                 .apply();
+        setupTheme(activity);
+    }
 
+    public static void setupTheme(Activity activity) {
         switch (Settings.themeMode) {
             case 0:
                 activity.setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);

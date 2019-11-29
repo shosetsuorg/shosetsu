@@ -40,6 +40,7 @@ import com.github.javiersantos.appupdater.objects.Update;
 import com.google.android.material.navigation.NavigationView;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.initPreferences;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setupTheme;
 
 /*
  * This file is part of Shosetsu.
@@ -99,16 +100,7 @@ public class MainActivity extends AppCompatActivity {
         Utilities.backup = getSharedPreferences("backup", 0);
         initPreferences(this);
 
-        switch (Settings.themeMode) {
-            case 0:
-                setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar);
-                break;
-            case 1:
-                setTheme(R.style.Theme_MaterialComponents_NoActionBar);
-                break;
-            case 2:
-                setTheme(R.style.ThemeOverlay_MaterialComponents_Dark);
-        }
+        setupTheme(this);
         //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         Log.d("Updater", "Start");
