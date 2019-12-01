@@ -11,15 +11,13 @@ Join us on our:
   <a href="https://discord.gg/ttSX7gB"><img alt="Discord Channel" src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg" width=240px></a>
 
 ## Capabilities
-- [x] Parse a site and display novels
-  - [x] Parse a novel and display
-    - [x] parse a chapters of a novel and display
-    - [x] iterate multiple pages of novels
-- [x] Library saving
-- [X] Downloading
+- [x] Many sources to read from!
+- [x] Add the ones you like to your library!
+- [x] Single button press to get all the latest chapters!
+- [x] Settings that make you wonder what happened!
+- [x] A reader that lets you read! With variable tabbing, spacing, and sizing!
+- [x] Download your favorite chapters to read then, or later!
 - [ ] Tracking
-- [x] Multiple sources
-- [x] A proper fucking reader
 - [ ] Actually efficient coding
 
 ## ScreenShots *OUTDATED*
