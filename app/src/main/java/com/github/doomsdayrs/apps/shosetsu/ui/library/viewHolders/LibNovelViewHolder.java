@@ -15,15 +15,13 @@ package com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders;
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- * Shosetsu
- * 13 / 07 / 2019
- *
- * @author github.com/doomsdayrs
  */
+
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,7 +35,14 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 
-public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+/**
+ * Shosetsu
+ * 13 / 07 / 2019
+ *
+ * @author github.com/doomsdayrs
+ */
+
+public class LibNovelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final MaterialCardView materialCardView;
     public final ImageView library_card_image;
     public final TextView library_card_title;
@@ -48,13 +53,14 @@ public class LibraryViewHolder extends RecyclerView.ViewHolder implements View.O
     public Formatter formatter;
     public NovelCard novelCard;
 
-    public LibraryViewHolder(@NonNull View itemView) {
+    public LibNovelViewHolder(@NonNull View itemView) {
         super(itemView);
         materialCardView = itemView.findViewById(R.id.novel_item_card);
         library_card_image = itemView.findViewById(R.id.novel_item_image);
         library_card_title = itemView.findViewById(R.id.title);
 
         chip = itemView.findViewById(R.id.novel_item_left_to_read);
+        chip.setOnClickListener(view -> Toast.makeText(view.getContext(), libraryFragment.getResources().getString(R.string.chapters_unread_label) + chip.getText(), Toast.LENGTH_SHORT).show());
         itemView.setOnLongClickListener(view -> {
             addToSelect();
             return true;

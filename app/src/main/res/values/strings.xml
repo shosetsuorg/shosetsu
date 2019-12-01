@@ -100,6 +100,7 @@
     <string name="reader">Reader</string>
     <string name="default_reader">Default</string>
     <string name="markdown_reader">MarkDown reader</string>
+    <string name="chapters_unread_label">Chapters unread: </string>
 
 </resources>
 

@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
-import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibraryViewHolder;
+import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
  *
  * @author github.com/doomsdayrs
  */
-public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder> {
+public class LibraryNovelAdapter extends RecyclerView.Adapter<LibNovelViewHolder> {
     private final LibraryFragment libraryFragment;
     private final ArrayList<NovelCard> novelCards;
 
@@ -51,51 +51,51 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibraryViewHolder>
 
     @NonNull
     @Override
-    public LibraryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public LibNovelViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_novel_card, viewGroup, false);
-        return new LibraryViewHolder(view);
+        return new LibNovelViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LibraryViewHolder libraryViewHolder, int i) {
+    public void onBindViewHolder(@NonNull LibNovelViewHolder libNovelViewHolder, int i) {
         NovelCard novelCard = novelCards.get(i);
         //Sets values
         {
             Picasso.get()
                     .load(novelCard.imageURL)
-                    .into(libraryViewHolder.library_card_image);
-            libraryViewHolder.libraryFragment = libraryFragment;
-            libraryViewHolder.novelCard = novelCard;
-            libraryViewHolder.formatter = DefaultScrapers.getByID(novelCard.formatterID);
-            libraryViewHolder.library_card_title.setText(novelCard.title);
+                    .into(libNovelViewHolder.library_card_image);
+            libNovelViewHolder.libraryFragment = libraryFragment;
+            libNovelViewHolder.novelCard = novelCard;
+            libNovelViewHolder.formatter = DefaultScrapers.getByID(novelCard.formatterID);
+            libNovelViewHolder.library_card_title.setText(novelCard.title);
 
             switch (Settings.themeMode) {
                 case 0:
-                    libraryViewHolder.library_card_title.setBackgroundResource(R.color.white_trans);
+                    libNovelViewHolder.library_card_title.setBackgroundResource(R.color.white_trans);
                     break;
                 case 1:
                 case 2:
-                    libraryViewHolder.library_card_title.setBackgroundResource(R.color.black_trans);
+                    libNovelViewHolder.library_card_title.setBackgroundResource(R.color.black_trans);
                     break;
             }
         }
 
         int count = Database.DatabaseChapter.getCountOfChaptersUnread(novelCard.novelID);
         if (count != 0) {
-            libraryViewHolder.chip.setVisibility(View.VISIBLE);
-            libraryViewHolder.chip.setText(String.valueOf(count));
-        } else libraryViewHolder.chip.setVisibility(View.INVISIBLE);
+            libNovelViewHolder.chip.setVisibility(View.VISIBLE);
+            libNovelViewHolder.chip.setText(String.valueOf(count));
+        } else libNovelViewHolder.chip.setVisibility(View.INVISIBLE);
 
         if (libraryFragment.contains(novelCard)) {
-            libraryViewHolder.materialCardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
+            libNovelViewHolder.materialCardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
         } else {
-            libraryViewHolder.materialCardView.setStrokeWidth(0);
+            libNovelViewHolder.materialCardView.setStrokeWidth(0);
         }
 
         if (libraryFragment.selectedNovels.size() > 0) {
-            libraryViewHolder.itemView.setOnClickListener(view -> libraryViewHolder.addToSelect());
+            libNovelViewHolder.itemView.setOnClickListener(view -> libNovelViewHolder.addToSelect());
         } else {
-            libraryViewHolder.itemView.setOnClickListener(libraryViewHolder);
+            libNovelViewHolder.itemView.setOnClickListener(libNovelViewHolder);
         }
     }
 
