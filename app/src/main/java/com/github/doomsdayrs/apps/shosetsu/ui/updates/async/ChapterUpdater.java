@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getNovel;
 import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
 
 /*
@@ -52,7 +53,7 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
     private static final String channel_ID = "shosetsu_updater";
 
     @NonNull
-    private final ArrayList<NovelCard> novelCards;
+    private final ArrayList<Integer> novelCards;
     private boolean continueProcesss = true;
     @Nullable
     private final NotificationManager notificationManager;
@@ -60,8 +61,7 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
     private final ArrayList<NovelCard> updatedNovels = new ArrayList<>();
 
 
-
-    public ChapterUpdater(@NotNull ArrayList<NovelCard> novelCards, @NonNull Context context) {
+    public ChapterUpdater(@NotNull ArrayList<Integer> novelCards, @NonNull Context context) {
         this.novelCards = novelCards;
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -94,7 +94,7 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         for (int x = 0; x < novelCards.size(); x++) {
-            NovelCard novelCard = novelCards.get(x);
+            NovelCard novelCard = getNovel(novelCards.get(x));
             builder.setContentText(novelCard.title);
             builder.setProgress(novelCards.size(), x + 1, false);
             notificationManager.notify(ID, builder.build());

@@ -19,6 +19,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getNovel;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -42,9 +44,9 @@ import java.util.ArrayList;
  */
 public class LibraryNovelAdapter extends RecyclerView.Adapter<LibNovelViewHolder> {
     private final LibraryFragment libraryFragment;
-    private final ArrayList<NovelCard> novelCards;
+    private final ArrayList<Integer> novelCards;
 
-    public LibraryNovelAdapter(ArrayList<NovelCard> novelCards, LibraryFragment libraryFragment) {
+    public LibraryNovelAdapter(ArrayList<Integer> novelCards, LibraryFragment libraryFragment) {
         this.libraryFragment = libraryFragment;
         this.novelCards = novelCards;
     }
@@ -58,7 +60,7 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibNovelViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull LibNovelViewHolder libNovelViewHolder, int i) {
-        NovelCard novelCard = novelCards.get(i);
+        NovelCard novelCard = getNovel(novelCards.get(i));
         //Sets values
         {
             Picasso.get()
@@ -86,7 +88,7 @@ public class LibraryNovelAdapter extends RecyclerView.Adapter<LibNovelViewHolder
             libNovelViewHolder.chip.setText(String.valueOf(count));
         } else libNovelViewHolder.chip.setVisibility(View.INVISIBLE);
 
-        if (libraryFragment.contains(novelCard)) {
+        if (libraryFragment.contains(novelCard.novelID)) {
             libNovelViewHolder.materialCardView.setStrokeWidth(Utilities.SELECTED_STROKE_WIDTH);
         } else {
             libNovelViewHolder.materialCardView.setStrokeWidth(0);

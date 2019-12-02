@@ -918,6 +918,26 @@ public class Database {
             }
         }
 
+        public static ArrayList<Integer> getIntLibrary() {
+            Log.d("DL", "Getting");
+            Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
+                    new String[]{Columns.PARENT_ID.toString()},
+                    Columns.BOOKMARKED + "=1", null, null, null, null);
+
+            ArrayList<Integer> novelCards = new ArrayList<>();
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return new ArrayList<>();
+            } else {
+                while (cursor.moveToNext()) {
+                    int parent = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
+                    novelCards.add(parent);
+                }
+                cursor.close();
+                return novelCards;
+            }
+        }
+
         @Nullable
         public static NovelCard getNovel(int novelID) {
             Log.d("DL", "Getting");
@@ -945,6 +965,30 @@ public class Database {
                 }
             }
             return null;
+        }
+
+
+        public static String getNovelTitle(int novelID) {
+            Log.d("DL", "Getting");
+
+            Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
+                    new String[]{Columns.TITLE.toString()},
+                    Columns.BOOKMARKED + "=1 and " + Columns.PARENT_ID + "=" + novelID, null, null, null, null);
+
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return "unknown";
+            } else {
+                cursor.moveToNext();
+                try {
+                    String title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
+                    cursor.close();
+                    return title;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return "unknown";
         }
 
         /**

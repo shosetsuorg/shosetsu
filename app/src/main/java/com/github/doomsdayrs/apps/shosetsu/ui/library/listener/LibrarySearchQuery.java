@@ -11,6 +11,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import java.util.ArrayList;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getNovelTitle;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -47,11 +49,15 @@ public class LibrarySearchQuery implements SearchView.OnQueryTextListener {
     @Override
     public boolean onQueryTextChange(@NonNull String newText) {
         Log.d("Library search", newText);
-        ArrayList<NovelCard> recycleCards = new ArrayList<>(libraryFragment.libraryNovelCards);
+        ArrayList<Integer> novelIDs = new ArrayList<>(libraryFragment.libraryNovelCards);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            recycleCards.removeIf(recycleCard -> !recycleCard.title.toLowerCase().contains(newText.toLowerCase()));
+            novelIDs.removeIf(novelID -> !getNovelTitle(novelID).toLowerCase().contains(newText.toLowerCase()));
+        } else {
+            for (int x = novelIDs.size() - 1; x >= 0; x--)
+                if (!getNovelTitle(novelIDs.get(x)).toLowerCase().contains(newText.toLowerCase()))
+                    novelIDs.remove(x);
         }
-        libraryFragment.setLibraryCards(recycleCards);
-        return recycleCards.size() != 0;
+        libraryFragment.setLibraryCards(novelIDs);
+        return novelIDs.size() != 0;
     }
 }

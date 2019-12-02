@@ -67,7 +67,7 @@ public class UpdatesFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.updater_now:
-                Update_Manager.init(Database.DatabaseNovels.getLibrary(), getContext());
+                Update_Manager.init(Database.DatabaseNovels.getIntLibrary(), getContext());
                 return true;
         }
 

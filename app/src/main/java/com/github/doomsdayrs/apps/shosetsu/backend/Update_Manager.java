@@ -36,7 +36,7 @@ public class Update_Manager {
     @Nullable
     private static ChapterUpdater chapterUpdater = null;
 
-    public static void init(@NonNull ArrayList<NovelCard> novelCards, @NonNull Context context) {
+    public static void init(@NonNull ArrayList<Integer> novelCards, @NonNull Context context) {
         if (chapterUpdater == null) {
             chapterUpdater = new ChapterUpdater(novelCards, context);
             chapterUpdater.execute();

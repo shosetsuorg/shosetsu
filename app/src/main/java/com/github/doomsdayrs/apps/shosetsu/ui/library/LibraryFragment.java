@@ -36,6 +36,7 @@ import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoOfColumns;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getNovelTitle;
 
 /*
  * This file is part of Shosetsu.
@@ -65,9 +66,9 @@ public class LibraryFragment extends Fragment {
     public static boolean changedData = false;
 
 
-    public boolean contains(@NonNull NovelCard novelCard) {
-        for (Integer i : selectedNovels)
-            if (i == novelCard.novelID)
+    public boolean contains(@NonNull int i) {
+        for (Integer I : selectedNovels)
+            if (I == i)
                 return true;
         return false;
     }
@@ -86,9 +87,9 @@ public class LibraryFragment extends Fragment {
     }
 
     private void readFromDB() {
-        libraryNovelCards = Database.DatabaseNovels.getLibrary();
+        libraryNovelCards = Database.DatabaseNovels.getIntLibrary();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            libraryNovelCards.sort((novelCard, t1) -> novelCard.title.compareTo(t1.title));
+            libraryNovelCards.sort((novel, t1) -> getNovelTitle(novel).compareTo(getNovelTitle(t1)));
         } else {
             bubbleSortA_Z();
         }
@@ -97,22 +98,22 @@ public class LibraryFragment extends Fragment {
     private void bubbleSortA_Z() {
         for (int i = libraryNovelCards.size() - 1; i > 1; i--) {
             for (int j = 0; j < i; j++) {
-                if (libraryNovelCards.get(j).title.compareTo(libraryNovelCards.get(j + 1).title) > 0)
+                if (getNovelTitle(libraryNovelCards.get(j)).compareTo(getNovelTitle(libraryNovelCards.get(j + 1))) > 0)
                     swapValues(j, j + 1);
             }
         }
     }
 
     private void swapValues(int indexOne, int indexTwo) {
-        NovelCard novelCard = libraryNovelCards.get(indexOne);
+        int i = libraryNovelCards.get(indexOne);
         libraryNovelCards.set(indexOne, libraryNovelCards.get(indexTwo));
-        libraryNovelCards.set(indexTwo, novelCard);
+        libraryNovelCards.set(indexTwo, i);
     }
 
     /**
      * Sets the cards to display
      */
-    public void setLibraryCards(ArrayList<NovelCard> novelCards) {
+    public void setLibraryCards(ArrayList<Integer> novelCards) {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
             RecyclerView.LayoutManager library_layoutManager;
@@ -148,7 +149,7 @@ public class LibraryFragment extends Fragment {
         Log.d("Library", "Resumed");
         if (LibraryFragment.changedData) {
             Log.d("Library", "Updating data");
-            libraryNovelCards = Database.DatabaseNovels.getLibrary();
+            libraryNovelCards = Database.DatabaseNovels.getIntLibrary();
             changedData = !changedData;
         }
         libraryNovelCardsAdapter.notifyDataSetChanged();
@@ -157,15 +158,9 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        ArrayList<Integer> novelIDs = new ArrayList<>(), selectedIDs = new ArrayList<>();
 
-        for (NovelCard novelCard : libraryNovelCards)
-            novelIDs.add(novelCard.novelID);
-        for (NovelCard novelCard : selectedNovels)
-            selectedIDs.add(novelCard.novelID);
-
-        outState.putIntegerArrayList("selected", selectedIDs);
-        outState.putIntegerArrayList("lib", novelIDs);
+        outState.putIntegerArrayList("selected", selectedNovels);
+        outState.putIntegerArrayList("lib", libraryNovelCards);
     }
 
     /**
@@ -228,9 +223,9 @@ public class LibraryFragment extends Fragment {
                 Update_Manager.init(libraryNovelCards, context);
                 return true;
             case R.id.chapter_select_all:
-                for (NovelCard novelChapter : libraryNovelCards)
-                    if (!contains(novelChapter))
-                        selectedNovels.add(novelChapter);
+                for (int i : libraryNovelCards)
+                    if (!contains(i))
+                        selectedNovels.add(i);
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
                 return true;
 
@@ -241,9 +236,9 @@ public class LibraryFragment extends Fragment {
                 return true;
 
             case R.id.remove_from_library:
-                for (NovelCard novelCard : selectedNovels) {
-                    Database.DatabaseNovels.unBookmark(novelCard.novelID);
-                    libraryNovelCards.remove(novelCard);
+                for (int i : selectedNovels) {
+                    Database.DatabaseNovels.unBookmark(i);
+                    libraryNovelCards.remove(i);
                 }
                 selectedNovels = new ArrayList<>();
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());

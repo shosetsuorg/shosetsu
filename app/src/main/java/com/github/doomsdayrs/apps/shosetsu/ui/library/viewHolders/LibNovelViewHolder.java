@@ -68,8 +68,8 @@ public class LibNovelViewHolder extends RecyclerView.ViewHolder implements View.
     }
 
     public void addToSelect() {
-        if (!libraryFragment.contains(novelCard))
-            libraryFragment.selectedNovels.add(novelCard);
+        if (!libraryFragment.contains(novelCard.novelID))
+            libraryFragment.selectedNovels.add(novelCard.novelID);
         else
             removeFromSelect();
 
@@ -79,9 +79,9 @@ public class LibNovelViewHolder extends RecyclerView.ViewHolder implements View.
     }
 
     private void removeFromSelect() {
-        if (libraryFragment.contains(novelCard))
+        if (libraryFragment.contains(novelCard.novelID))
             for (int x = 0; x < libraryFragment.selectedNovels.size(); x++)
-                if (libraryFragment.selectedNovels.get(x).novelURL.equalsIgnoreCase(novelCard.novelURL)) {
+                if (libraryFragment.selectedNovels.get(x) == novelCard.novelID) {
                     libraryFragment.selectedNovels.remove(x);
                     return;
                 }
