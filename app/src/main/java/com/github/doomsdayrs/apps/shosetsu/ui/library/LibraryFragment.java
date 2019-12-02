@@ -60,15 +60,14 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToS
  */
 public class LibraryFragment extends Fragment {
     @NonNull
-    public ArrayList<NovelCard> libraryNovelCards = new ArrayList<>();
-    @Nullable
-    public ArrayList<NovelCard> selectedNovels = new ArrayList<>();
+    public ArrayList<Integer> libraryNovelCards = new ArrayList<>();
+    public ArrayList<Integer> selectedNovels = new ArrayList<>();
     public static boolean changedData = false;
 
 
     public boolean contains(@NonNull NovelCard novelCard) {
-        for (NovelCard n : selectedNovels)
-            if (n.novelURL.equalsIgnoreCase(novelCard.novelURL))
+        for (Integer i : selectedNovels)
+            if (i == novelCard.novelID)
                 return true;
         return false;
     }
@@ -158,8 +157,15 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("selected", selectedNovels);
-        outState.putSerializable("lib", libraryNovelCards);
+        ArrayList<Integer> novelIDs = new ArrayList<>(), selectedIDs = new ArrayList<>();
+
+        for (NovelCard novelCard : libraryNovelCards)
+            novelIDs.add(novelCard.novelID);
+        for (NovelCard novelCard : selectedNovels)
+            selectedIDs.add(novelCard.novelID);
+
+        outState.putIntegerArrayList("selected", selectedIDs);
+        outState.putIntegerArrayList("lib", novelIDs);
     }
 
     /**
@@ -178,8 +184,9 @@ public class LibraryFragment extends Fragment {
         if (savedInstanceState == null)
             readFromDB();
         else {
-            this.selectedNovels = (ArrayList<NovelCard>) savedInstanceState.getSerializable("selected");
-            this.libraryNovelCards = (ArrayList<NovelCard>) savedInstanceState.getSerializable("lib");
+            ArrayList<Integer> novelIDs = savedInstanceState.getIntegerArrayList("lib"), selectedIDs = savedInstanceState.getIntegerArrayList("selected");
+
+
         }
         View view = inflater.inflate(R.layout.fragment_library, container, false);
         recyclerView = view.findViewById(R.id.fragment_library_recycler);
