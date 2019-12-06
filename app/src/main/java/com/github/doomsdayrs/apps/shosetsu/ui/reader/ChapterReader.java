@@ -7,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,7 +33,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.TextViewReader;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
-import com.google.android.material.chip.Chip;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -93,31 +90,23 @@ public class ChapterReader extends AppCompatActivity {
     // Order of values. Default, Markdown
     private final MenuItem[] readers = new MenuItem[2];
 
-    public ScrollView scrollView;
     public Toolbar toolbar;
-    public ProgressBar progressBar;
     @Nullable
 
-    public String title, chapterURL, unformattedText = null, text = null;
-    public int chapterID, readerType, novelID;
     public boolean ready = false;
     //TODO Handle ERRORs on loading, EVERYWHERE
-    public ErrorView errorView;
-    private boolean bookmarked;
 
 
     @Nullable
     public Formatter formatter;
     private ViewPager readerViewPager;
-    private Chip nextChapter;
     @Nullable
     private String[] chapters;
-    private MenuItem bookmark, tap_to_scroll;
+    protected MenuItem bookmark;
+    protected int readerType, novelID;
     private Reader selectedReader = null;
-    //Tap to scroll
-    @SuppressWarnings("FieldCanBeLocal")
-    private View scroll_up, scroll_down;
-
+    protected ChapterView currentChapter;
+    private MenuItem tap_to_scroll;
 
     /**
      * Save data of view before destroyed
@@ -127,12 +116,8 @@ public class ChapterReader extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("unformattedText", text);
-        outState.putString("text", text);
-        outState.putInt("chapterID", chapterID);
-        outState.putString("chapterURL", chapterURL);
+
         outState.putInt("formatter", formatter.getID());
-        outState.putString("title", title);
     }
 
     /**
@@ -152,9 +137,7 @@ public class ChapterReader extends AppCompatActivity {
         // Bookmark
         {
             bookmark = menu.findItem(R.id.chapter_view_bookmark);
-            bookmarked = Database.DatabaseChapter.isBookMarked(chapterID);
-            if (bookmarked)
-                bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
+
 
         }
 
@@ -253,8 +236,8 @@ public class ChapterReader extends AppCompatActivity {
                 tap_to_scroll.setChecked(toggleTapToScroll());
                 return true;
             case R.id.chapter_view_bookmark:
-                bookmarked = toggleBookmarkChapter(chapterID);
-                if (bookmarked)
+                currentChapter.bookmarked = toggleBookmarkChapter(currentChapter.chapterID);
+                if (currentChapter.bookmarked)
                     bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
                 else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
                 return true;
@@ -296,10 +279,10 @@ public class ChapterReader extends AppCompatActivity {
                 return true;
 
             case R.id.browser:
-                openInBrowser(this, chapterURL);
+                openInBrowser(this, currentChapter.chapterURL);
                 return true;
             case R.id.webview:
-                openInWebview(this, chapterURL);
+                openInWebview(this, currentChapter.chapterURL);
                 return true;
             case R.id.reader_0:
                 demarkMenuItems(readers, 0, demarkActions[3]);
@@ -324,12 +307,7 @@ public class ChapterReader extends AppCompatActivity {
         setContentView(R.layout.chapter_reader);
         // SetUp of data
         if (savedInstanceState != null) {
-            unformattedText = savedInstanceState.getString("unformattedText");
-            title = savedInstanceState.getString("title");
-            chapterID = savedInstanceState.getInt("chapterID");
-            chapterURL = savedInstanceState.getString("chapterURL");
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
-            text = savedInstanceState.getString("text");
             novelID = savedInstanceState.getInt("novelID");
             chapters = savedInstanceState.getStringArray("chapters");
         } else {
