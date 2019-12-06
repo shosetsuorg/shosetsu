@@ -15,6 +15,6 @@ public class IndentChange implements Utilities.DemarkAction {
     @Override
     public void action(int spared) {
         changeIndentSize(spared);
-        chapterReader.setUpReader();
+        chapterReader.currentView.setUpReader();
     }
 }

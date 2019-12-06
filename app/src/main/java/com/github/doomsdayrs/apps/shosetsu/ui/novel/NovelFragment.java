@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isOnline;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapter;
 
 /*
  * This file is part of Shosetsu.
@@ -78,20 +79,20 @@ public class NovelFragment extends Fragment {
      * @return chapter after the input, returns the current chapter if no more
      */
     @Nullable
-    public static NovelChapter getNextChapter(@NotNull String chapterURL, @Nullable String[] novelChapters) {
+    public static NovelChapter getNextChapter(@NotNull int chapterURL, @Nullable int[] novelChapters) {
         if (novelChapters != null && novelChapters.length != 0)
             for (int x = 0; x < novelChapters.length; x++) {
-                if (novelChapters[x].equalsIgnoreCase(chapterURL)) {
+                if (novelChapters[x] == chapterURL) {
                     if (NovelFragmentChapters.reversed) {
                         if (x - 1 != -1)
-                            return Database.DatabaseChapter.getChapter(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x - 1]));
+                            return getChapter((novelChapters[x - 1]));
                         else
-                            return Database.DatabaseChapter.getChapter(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x]));
+                            return getChapter((novelChapters[x]));
                     } else {
                         if (x + 1 != novelChapters.length)
-                            return Database.DatabaseChapter.getChapter(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x + 1]));
+                            return getChapter((novelChapters[x + 1]));
                         else
-                            return Database.DatabaseChapter.getChapter(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x]));
+                            return getChapter((novelChapters[x]));
                     }
                 }
             }

@@ -16,7 +16,7 @@ public class ReaderChange implements Utilities.DemarkAction {
     public void action(int spared) {
         chapterReader.readerType = spared;
         setReaderType(chapterReader.novelID, spared);
-        chapterReader.setUpReader();
+        chapterReader.currentView.setUpReader();
     }
 
 }

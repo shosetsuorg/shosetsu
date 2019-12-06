@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.IndentChange;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ParaSpacingChange;
@@ -91,7 +92,8 @@ public class ChapterReader extends AppCompatActivity {
 
     public Formatter formatter;
     protected MenuItem bookmark;
-    protected int readerType, novelID;
+    public int readerType;
+    public int novelID;
     public ChapterView currentView;
 
     protected ChapterView currentChapter;
@@ -126,8 +128,11 @@ public class ChapterReader extends AppCompatActivity {
         // Bookmark
         {
             bookmark = menu.findItem(R.id.chapter_view_bookmark);
-
-
+            currentView.bookmarked = Database.DatabaseChapter.isBookMarked(currentView.chapterID);
+            if (currentView.bookmarked)
+                currentView.chapterReader.bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
+            else
+                currentView.chapterReader.bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
         }
 
         // Tap To Scroll
@@ -303,8 +308,8 @@ public class ChapterReader extends AppCompatActivity {
         } else {
             chapterIDs = getIntent().getIntArrayExtra("chapters");
             {
-                String chapterURL = null, title = null;
-                int chapterID = -1;
+                String chapterURL, title;
+                int chapterID;
 
                 chapterID = getIntent().getIntExtra("chapterID", -1);
                 chapterURL = getIntent().getStringExtra("chapterURL");
@@ -314,19 +319,20 @@ public class ChapterReader extends AppCompatActivity {
                 ASSERT(chapterID != -1);
                 Log.i("Reading", chapterURL);
 
-                chapters.add(new ChapterView(title, chapterURL, chapterID));
+                chapters.add(new ChapterView(this, title, chapterURL, chapterID));
             }
             novelID = getIntent().getIntExtra("novelID", -1);
             formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
         }
 
 
-        if (chapterIDs != null)
+        if (chapterIDs == null)
             chapterIDs = new int[]{0, 1};
+
         //TODO Get chapterID of novel via ID
 
         for (int id : chapterIDs)
-            chapters.add(new ChapterView(id));
+            chapters.add(new ChapterView(this, id));
 
 
         // Declares view variables
@@ -336,7 +342,6 @@ public class ChapterReader extends AppCompatActivity {
         }
         setSupportActionBar(toolbar);
         setViewPager();
-
     }
 
     private void setViewPager() {

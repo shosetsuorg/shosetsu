@@ -17,6 +17,6 @@ public class TextSizeChange implements Utilities.DemarkAction {
     public void action(int spared) {
         int[] a = {14, 17, 20};
         setTextSize(a[spared]);
-        chapterReader.setUpReader();
+        chapterReader.currentView.setUpReader();
     }
 }

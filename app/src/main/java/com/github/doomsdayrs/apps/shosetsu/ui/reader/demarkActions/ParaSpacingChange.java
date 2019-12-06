@@ -15,7 +15,7 @@ public class ParaSpacingChange implements Utilities.DemarkAction {
     @Override
     public void action(int spared) {
         changeParagraphSpacing(spared);
-        chapterReader. setUpReader();
+        chapterReader.currentView.setUpReader();
     }
 
 }

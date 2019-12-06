@@ -78,12 +78,15 @@ public class ChapterView extends Fragment {
     @SuppressWarnings("FieldCanBeLocal")
     private View scroll_up, scroll_down;
 
-    public ChapterView(int chapterID) {
+    public ChapterView(ChapterReader chapterReader,int chapterID) {
+        this.chapterReader = chapterReader;
         this.chapterID = chapterID;
         chapterURL = getChapterURLFromChapterID(chapterID);
     }
 
-    public ChapterView(String title, String chapterURL, int chapterID) {
+    public ChapterView(ChapterReader chapterReader,String title, String chapterURL, int chapterID) {
+        this.chapterReader = chapterReader;
+
         this.title = title;
         this.chapterURL = chapterURL;
         this.chapterID = chapterID;
@@ -119,14 +122,9 @@ public class ChapterView extends Fragment {
         scroll_down = chapterView.findViewById(R.id.scroll_down);
         nextChapter = chapterView.findViewById(R.id.next_chapter);
 
-        bookmarked = Database.DatabaseChapter.isBookMarked(chapterID);
-        if (bookmarked)
-            chapterReader.bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
-        else chapterReader.bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
 
         fragments.add(new TextViewReader(chapterReader));
         fragments.add(new MarkdownViewReader(chapterReader));
-
         switch (chapterReader.readerType) {
             case 1:
                 selectedReader = fragments.get(1);
@@ -148,7 +146,7 @@ public class ChapterView extends Fragment {
         // Scroll down listener
         scroll_down.setOnClickListener(view -> scrollDown());
         nextChapter.setOnClickListener(view -> {
-            NovelChapter novelChapter = getNextChapter(chapterURL, chapterReader.chapterURLs);
+            NovelChapter novelChapter = getNextChapter(chapterID, chapterReader.chapterIDs);
             if (novelChapter != null) {
                 if (!novelChapter.link.equalsIgnoreCase(chapterURL)) {
                     title = novelChapter.title;
