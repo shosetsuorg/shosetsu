@@ -28,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.ASSERT;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.demarkMenuItems;
@@ -40,6 +41,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setupTheme;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderColor;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChaptersOnlyIDs;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
 import static java.util.Arrays.binarySearch;
 
@@ -326,10 +328,17 @@ public class ChapterReader extends AppCompatActivity {
         }
 
 
-        if (chapterIDs == null)
-            chapterIDs = new int[]{0, 1};
-
-        //TODO Get chapterID of novel via ID
+        if (chapterIDs == null) {
+            List<Integer> integers = getChaptersOnlyIDs(novelID);
+            if (integers != null) {
+                chapterIDs = new int[integers.size()];
+                int y = 0;
+                for (int x = 1; x < integers.size(); x++) {
+                    chapterIDs[x] = integers.get(y);
+                    y++;
+                }
+            } else chapterIDs = new int[]{chapters.get(0).chapterID};
+        }
 
         for (int id : chapterIDs)
             chapters.add(new ChapterView(this, id));

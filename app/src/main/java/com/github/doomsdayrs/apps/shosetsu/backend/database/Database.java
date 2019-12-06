@@ -718,6 +718,46 @@ public class Database {
         }
 
         /**
+         * Gets chapters of a novel
+         *
+         * @param novelID ID to retrieve from
+         * @return List of chapters saved of novel (ID only)
+         */
+        @Nullable
+        public static List<Integer> getChaptersOnlyIDs(int novelID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return null;
+            } else {
+                ArrayList<MicroNovelChapter> novelChapters = new ArrayList<>();
+                while (cursor.moveToNext()) {
+                    try {
+                        int id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()));
+                        MicroNovelChapter novelChapter = new MicroNovelChapter();
+                        novelChapter.id = id;
+                        novelChapter.order = cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString()));
+                        novelChapters.add(novelChapter);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                cursor.close();
+                Collections.sort(novelChapters, (novelChapter, t1) -> Double.compare(novelChapter.order, t1.order));
+
+                ArrayList<Integer> integers = new ArrayList<>();
+                for (MicroNovelChapter novelChapter : novelChapters)
+                    integers.add(novelChapter.id);
+                return integers;
+            }
+        }
+
+        private static class MicroNovelChapter {
+            double order;
+            int id;
+        }
+
+        /**
          * Gets a chapter by it's URL
          *
          * @param chapterID id of chapter
