@@ -1,46 +1,32 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ReaderTypeAdapter;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.IndentChange;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ParaSpacingChange;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ReaderChange;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.TextSizeChange;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.MarkdownViewReader;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.Reader;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.TextViewReader;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.ASSERT;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.demarkMenuItems;
@@ -54,7 +40,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderCo
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
-import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNextChapter;
+import static java.util.Arrays.binarySearch;
 
 /*
  * This file is part of Shosetsu.
@@ -83,7 +69,9 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
     private final Utilities.DemarkAction[] demarkActions = {new TextSizeChange(this), new ParaSpacingChange(this), new IndentChange(this), new ReaderChange(this)};
-    public String[] chapterURLs;
+    public int[] chapterIDs;
+    public int currentChapterID;
+
     public final ArrayList<ChapterView> chapters = new ArrayList<>();
 
 
@@ -104,7 +92,6 @@ public class ChapterReader extends AppCompatActivity {
     public Formatter formatter;
     protected MenuItem bookmark;
     protected int readerType, novelID;
-    private Reader selectedReader = null;
     public ChapterView currentView;
 
     protected ChapterView currentChapter;
@@ -308,59 +295,58 @@ public class ChapterReader extends AppCompatActivity {
         setupTheme(this);
         setContentView(R.layout.chapter_reader);
         // SetUp of data
-        String chapterURL = null, title = null;
-        int chapterID = -1;
 
         if (savedInstanceState != null) {
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
             novelID = savedInstanceState.getInt("novelID");
-            chapterURLs = savedInstanceState.getStringArray("chapters");
+            chapterIDs = savedInstanceState.getIntArray("chapters");
         } else {
-            chapterURLs = getIntent().getStringArrayExtra("chapters");
-            chapterID = getIntent().getIntExtra("chapterID", -1);
-            chapterURL = getIntent().getStringExtra("chapterURL");
-            title = getIntent().getStringExtra("title");
+            chapterIDs = getIntent().getIntArrayExtra("chapters");
+            {
+                String chapterURL = null, title = null;
+                int chapterID = -1;
+
+                chapterID = getIntent().getIntExtra("chapterID", -1);
+                chapterURL = getIntent().getStringExtra("chapterURL");
+                title = getIntent().getStringExtra("title");
+
+                assert chapterURL != null;
+                ASSERT(chapterID != -1);
+                Log.i("Reading", chapterURL);
+
+                chapters.add(new ChapterView(title, chapterURL, chapterID));
+            }
             novelID = getIntent().getIntExtra("novelID", -1);
             formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
         }
-        assert chapterURL != null;
-
-        ASSERT(chapterID != -1);
 
 
-        Log.i("Reading", chapterURL);
+        if (chapterIDs != null)
+            chapterIDs = new int[]{0, 1};
+        //TODO Get chapterID of novel via ID
+
+        for (int id : chapterIDs)
+            chapters.add(new ChapterView(id));
+
+
         // Declares view variables
         {
             toolbar = findViewById(R.id.toolbar);
             chapterPager = findViewById(R.id.viewpager);
         }
-
-
         setSupportActionBar(toolbar);
-
-        fragments.add(new TextViewReader(this));
-        fragments.add(new MarkdownViewReader(this));
-
-        switch (readerType) {
-            case 1:
-                selectedReader = fragments.get(1);
-                break;
-            case 0:
-            case -1:
-                selectedReader = fragments.get(0);
-                break;
-            case -2:
-            default:
-                throw new RuntimeException("Invalid chapter?!? How are you reading this without the novel loaded in");
-        }
         setViewPager();
-
 
     }
 
     private void setViewPager() {
         ChapterReaderAdapter pagerAdapter = new ChapterReaderAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, this);
         chapterPager.setAdapter(pagerAdapter);
+        chapterPager.setCurrentItem(getPosition());
+    }
+
+    public int getPosition() {
+        return binarySearch(chapterIDs, currentChapterID);
     }
 
 

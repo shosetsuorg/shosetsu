@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
 
@@ -38,29 +39,29 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
      */
     @SuppressLint("StaticFieldLeak")
     private final
-    ChapterReader chapterReader;
+    ChapterView chapterReader;
 
     /**
      * Constructor
      */
-    public ReaderViewLoader(ChapterReader chapterReader) {
+    public ReaderViewLoader(ChapterView chapterReader) {
         this.chapterReader = chapterReader;
     }
 
     @Nullable
     @Override
     protected String doInBackground(ChapterReader... chapterReaders) {
-        chapterReader.runOnUiThread(() -> chapterReader.errorView.errorView.setVisibility(View.GONE));
+        chapterReader.chapterReader.runOnUiThread(() -> chapterReader.errorView.errorView.setVisibility(View.GONE));
         try {
-            chapterReader.unformattedText = chapterReader.formatter.getNovelPassage(docFromURL(chapterReader.chapterURL, chapterReader.formatter.hasCloudFlare()));
-            chapterReader.runOnUiThread(chapterReader::setUpReader);
-            chapterReader.runOnUiThread(() ->
+            chapterReader.unformattedText = chapterReader.chapterReader.formatter.getNovelPassage(docFromURL(chapterReader.chapterURL, chapterReader.chapterReader.formatter.hasCloudFlare()));
+            chapterReader.chapterReader.runOnUiThread(chapterReader::setUpReader);
+            chapterReader.chapterReader.runOnUiThread(() ->
                     chapterReader.scrollView.post(() ->
                             chapterReader.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterReader.chapterID)))
             );
-            chapterReader.runOnUiThread(() -> chapterReader.ready = true);
+            chapterReader.chapterReader.runOnUiThread(() -> chapterReader.ready = true);
         } catch (Exception e) {
-            chapterReader.runOnUiThread(() -> {
+            chapterReader.chapterReader.runOnUiThread(() -> {
                 chapterReader.errorView.errorView.setVisibility(View.VISIBLE);
                 chapterReader.errorView.errorMessage.setText(e.getMessage());
                 chapterReader.errorView.errorButton.setOnClickListener(view -> new ReaderViewLoader(chapterReader).execute());
@@ -92,7 +93,7 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
         if (chapterReader.progressBar != null)
             chapterReader.progressBar.setVisibility(View.GONE);
 
-        if (chapterReader.getSupportActionBar() != null)
-            chapterReader.getSupportActionBar().setTitle(chapterReader.title);
+        if (chapterReader.chapterReader.getSupportActionBar() != null)
+            chapterReader.chapterReader.getSupportActionBar().setTitle(chapterReader.title);
     }
 }

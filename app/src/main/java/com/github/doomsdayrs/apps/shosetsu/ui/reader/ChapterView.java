@@ -38,7 +38,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ReaderTypeAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.MarkdownViewReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.Reader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.readers.TextViewReader;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.chip.Chip;
@@ -47,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNextChapter;
 
 /**
@@ -58,6 +61,7 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
 public class ChapterView extends Fragment {
     private ViewPager readerViewPager;
     private final ArrayList<Reader> fragments = new ArrayList<>();
+    private Reader selectedReader = null;
 
 
     public ScrollView scrollView;
@@ -65,13 +69,25 @@ public class ChapterView extends Fragment {
     public String title, chapterURL, unformattedText = null, text = null;
     public int chapterID;
     public ErrorView errorView;
-    protected boolean bookmarked, ready = false;
+    protected boolean bookmarked;
+    public boolean ready = false;
 
-    ChapterReader chapterReader;
+    public ChapterReader chapterReader;
     private Chip nextChapter;
     //Tap to scroll
     @SuppressWarnings("FieldCanBeLocal")
     private View scroll_up, scroll_down;
+
+    public ChapterView(int chapterID) {
+        this.chapterID = chapterID;
+        chapterURL = getChapterURLFromChapterID(chapterID);
+    }
+
+    public ChapterView(String title, String chapterURL, int chapterID) {
+        this.title = title;
+        this.chapterURL = chapterURL;
+        this.chapterID = chapterID;
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -108,6 +124,21 @@ public class ChapterView extends Fragment {
             chapterReader.bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
         else chapterReader.bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
 
+        fragments.add(new TextViewReader(chapterReader));
+        fragments.add(new MarkdownViewReader(chapterReader));
+
+        switch (chapterReader.readerType) {
+            case 1:
+                selectedReader = fragments.get(1);
+                break;
+            case 0:
+            case -1:
+                selectedReader = fragments.get(0);
+                break;
+            case -2:
+            default:
+                throw new RuntimeException("Invalid chapter?!? How are you reading this without the novel loaded in");
+        }
 
         addBottomListener();
         setViewPager();

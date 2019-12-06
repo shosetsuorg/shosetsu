@@ -16,6 +16,7 @@ public class ChapterReaderAdapter extends FragmentPagerAdapter {
         this.chapterReader = chapterReader;
     }
 
+
     @NonNull
     @Override
     public Fragment getItem(int position) {
