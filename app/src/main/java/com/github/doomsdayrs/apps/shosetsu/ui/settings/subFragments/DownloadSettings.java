@@ -39,7 +39,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 
 import java.util.Objects;
 
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.download;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.downloadPreferences;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.shoDir;
 
 public class DownloadSettings extends Fragment {
@@ -61,7 +61,7 @@ public class DownloadSettings extends Fragment {
     }
 
     private void setDir(String dir) {
-        download.edit().putString("dir", dir).apply();
+        downloadPreferences.edit().putString("dir", dir).apply();
         shoDir = dir;
         textView.setText(dir);
     }

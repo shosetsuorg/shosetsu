@@ -93,11 +93,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Utilities.view = getSharedPreferences("view", 0);
-        Utilities.download = getSharedPreferences("download", 0);
-        Utilities.advanced = getSharedPreferences("advanced", 0);
-        Utilities.tracking = getSharedPreferences("tracking", 0);
-        Utilities.backup = getSharedPreferences("backup", 0);
+        Utilities.viewPreferences = getSharedPreferences("view", 0);
+        Utilities.downloadPreferences = getSharedPreferences("download", 0);
+        Utilities.advancedPreferences = getSharedPreferences("advanced", 0);
+        Utilities.trackingPreferences = getSharedPreferences("tracking", 0);
+        Utilities.backupPreferences = getSharedPreferences("backup", 0);
         initPreferences(this);
 
         setupTheme(this);

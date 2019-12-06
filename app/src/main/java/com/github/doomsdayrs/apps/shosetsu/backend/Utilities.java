@@ -260,11 +260,11 @@ public class Utilities {
 
 
     // Preference objects
-    public static SharedPreferences download;
-    public static SharedPreferences view;
-    public static SharedPreferences advanced;
-    public static SharedPreferences tracking;
-    public static SharedPreferences backup;
+    public static SharedPreferences downloadPreferences;
+    public static SharedPreferences viewPreferences;
+    public static SharedPreferences advancedPreferences;
+    public static SharedPreferences trackingPreferences;
+    public static SharedPreferences backupPreferences;
 
     /**
      * Initializes the settings
@@ -272,27 +272,27 @@ public class Utilities {
      * @param
      */
     public static void initPreferences(@NonNull AppCompatActivity mainActivity) {
-        Settings.ReaderTextColor = view.getInt("ReaderTextColor", Color.BLACK);
-        Settings.ReaderTextBackgroundColor = view.getInt("ReaderBackgroundColor", Color.WHITE);
+        Settings.ReaderTextColor = viewPreferences.getInt("ReaderTextColor", Color.BLACK);
+        Settings.ReaderTextBackgroundColor = viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE);
         String dir = mainActivity.getExternalFilesDir(null).getAbsolutePath();
         dir = dir.substring(0, dir.indexOf("/Android"));
-        shoDir = download.getString("dir", dir + "/Shosetsu/");
-        Settings.downloadPaused = download.getBoolean("paused", false);
-        Settings.ReaderTextSize = view.getInt("ReaderTextSize", 14);
-        Settings.themeMode = advanced.getInt("themeMode", 0);
-        Settings.paragraphSpacing = view.getInt("paragraphSpacing", 1);
-        Settings.indentSize = view.getInt("indentSize", 1);
+        shoDir = downloadPreferences.getString("dir", dir + "/Shosetsu/");
+        Settings.downloadPaused = downloadPreferences.getBoolean("paused", false);
+        Settings.ReaderTextSize = viewPreferences.getInt("ReaderTextSize", 14);
+        Settings.themeMode = advancedPreferences.getInt("themeMode", 0);
+        Settings.paragraphSpacing = viewPreferences.getInt("paragraphSpacing", 1);
+        Settings.indentSize = viewPreferences.getInt("indentSize", 1);
     }
 
     public static boolean toggleTapToScroll() {
         if (isTapToScroll())
-            view.edit().putBoolean("tapToScroll", false).apply();
-        else view.edit().putBoolean("tapToScroll", true).apply();
+            viewPreferences.edit().putBoolean("tapToScroll", false).apply();
+        else viewPreferences.edit().putBoolean("tapToScroll", true).apply();
         return isTapToScroll();
     }
 
     public static boolean isTapToScroll() {
-        return view.getBoolean("tapToScroll", false);
+        return viewPreferences.getBoolean("tapToScroll", false);
     }
 
     public static boolean intToBoolean(int a) {
@@ -307,12 +307,12 @@ public class Utilities {
 
     public static void changeIndentSize(int newIndent) {
         Settings.indentSize = newIndent;
-        view.edit().putInt("indentSize", newIndent).apply();
+        viewPreferences.edit().putInt("indentSize", newIndent).apply();
     }
 
     public static void changeParagraphSpacing(int newSpacing) {
         Settings.paragraphSpacing = newSpacing;
-        view.edit().putInt("paragraphSpacing", newSpacing).apply();
+        viewPreferences.edit().putInt("paragraphSpacing", newSpacing).apply();
     }
 
 
@@ -320,7 +320,7 @@ public class Utilities {
         if (!(newMode >= 0 && newMode <= 2))
             throw new IndexOutOfBoundsException("Non valid int passed");
         Settings.themeMode = newMode;
-        advanced.edit()
+        advancedPreferences.edit()
                 .putInt("themeMode", newMode)
                 .apply();
         setupTheme(activity);
@@ -347,7 +347,7 @@ public class Utilities {
      */
     public static boolean togglePause() {
         Settings.downloadPaused = !Settings.downloadPaused;
-        download.edit()
+        downloadPreferences.edit()
                 .putBoolean("paused", Settings.downloadPaused)
                 .apply();
         return Settings.downloadPaused;
@@ -392,7 +392,7 @@ public class Utilities {
     private static void setReaderColor(int text, int background) {
         Settings.ReaderTextColor = text;
         Settings.ReaderTextBackgroundColor = background;
-        view.edit()
+        viewPreferences.edit()
                 .putInt("ReaderTextColor", text)
                 .putInt("ReaderBackgroundColor", background)
                 .apply();
@@ -440,7 +440,7 @@ public class Utilities {
 
     public static void setTextSize(int size) {
         Settings.ReaderTextSize = size;
-        view.edit()
+        viewPreferences.edit()
                 .putInt("ReaderTextSize", size)
                 .apply();
     }
@@ -503,7 +503,7 @@ public class Utilities {
 
     @SuppressWarnings({"EmptyMethod", "unused"})
     public static boolean isTrackingEnabled() {
-        return tracking.getBoolean("enabled", false);
+        return trackingPreferences.getBoolean("enabled", false);
     }
 
     @SuppressWarnings({"EmptyMethod", "unused"})

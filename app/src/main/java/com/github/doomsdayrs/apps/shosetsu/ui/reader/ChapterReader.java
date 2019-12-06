@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
@@ -21,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ReaderTypeAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.IndentChange;
@@ -80,7 +83,10 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
     private final Utilities.DemarkAction[] demarkActions = {new TextSizeChange(this), new ParaSpacingChange(this), new IndentChange(this), new ReaderChange(this)};
-    private final ArrayList<Reader> fragments = new ArrayList<>();
+    public String[] chapterURLs;
+    public final ArrayList<ChapterView> chapters = new ArrayList<>();
+
+
     // Order of values. Small,Medium,Large
     private final MenuItem[] textSizes = new MenuItem[3];
     // Order of values. Non,Small,Medium,Large
@@ -91,20 +97,16 @@ public class ChapterReader extends AppCompatActivity {
     private final MenuItem[] readers = new MenuItem[2];
 
     public Toolbar toolbar;
-    @Nullable
-
-    public boolean ready = false;
-    //TODO Handle ERRORs on loading, EVERYWHERE
 
 
-    @Nullable
+    ViewPager chapterPager;
+
     public Formatter formatter;
-    private ViewPager readerViewPager;
-    @Nullable
-    private String[] chapters;
     protected MenuItem bookmark;
     protected int readerType, novelID;
     private Reader selectedReader = null;
+    public ChapterView currentView;
+
     protected ChapterView currentChapter;
     private MenuItem tap_to_scroll;
 
@@ -225,10 +227,10 @@ public class ChapterReader extends AppCompatActivity {
             case R.id.chapter_view_nightMode:
                 if (!item.isChecked()) {
                     swapReaderColor();
-                    setUpReader();
+                    currentView.setUpReader();
                 } else {
                     swapReaderColor();
-                    setUpReader();
+                    currentView.setUpReader();
                 }
                 item.setChecked(!item.isChecked());
                 return true;
@@ -306,12 +308,15 @@ public class ChapterReader extends AppCompatActivity {
         setupTheme(this);
         setContentView(R.layout.chapter_reader);
         // SetUp of data
+        String chapterURL = null, title = null;
+        int chapterID = -1;
+
         if (savedInstanceState != null) {
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
             novelID = savedInstanceState.getInt("novelID");
-            chapters = savedInstanceState.getStringArray("chapters");
+            chapterURLs = savedInstanceState.getStringArray("chapters");
         } else {
-            chapters = getIntent().getStringArrayExtra("chapters");
+            chapterURLs = getIntent().getStringArrayExtra("chapters");
             chapterID = getIntent().getIntExtra("chapterID", -1);
             chapterURL = getIntent().getStringExtra("chapterURL");
             title = getIntent().getStringExtra("title");
@@ -321,22 +326,15 @@ public class ChapterReader extends AppCompatActivity {
         assert chapterURL != null;
 
         ASSERT(chapterID != -1);
-        assert chapters != null;
-        Log.i("Reading", chapterURL);
 
+
+        Log.i("Reading", chapterURL);
         // Declares view variables
         {
-            errorView = new ErrorView(this, findViewById(R.id.network_error), findViewById(R.id.error_message), findViewById(R.id.error_button));
-            progressBar = findViewById(R.id.fragment_novel_chapter_view_progress);
-            scrollView = findViewById(R.id.fragment_novel_scroll);
             toolbar = findViewById(R.id.toolbar);
-            readerViewPager = findViewById(R.id.readerPager);
-            scroll_up = findViewById(R.id.scroll_up);
-            scroll_down = findViewById(R.id.scroll_down);
-            nextChapter = findViewById(R.id.next_chapter);
+            chapterPager = findViewById(R.id.viewpager);
         }
 
-        addBottomListener();
 
         setSupportActionBar(toolbar);
 
@@ -357,140 +355,13 @@ public class ChapterReader extends AppCompatActivity {
         }
         setViewPager();
 
-        // Scroll up listener
-        scroll_up.setOnClickListener(view -> scrollUp());
-        // Scroll down listener
-        scroll_down.setOnClickListener(view -> scrollDown());
-        nextChapter.setOnClickListener(view -> {
-            NovelChapter novelChapter = getNextChapter(chapterURL, chapters);
-            if (novelChapter != null) {
-                if (!novelChapter.link.equalsIgnoreCase(chapterURL)) {
-                    title = novelChapter.title;
-                    chapterURL = novelChapter.link;
-                    loadChapter();
-                } else
-                    Toast.makeText(getApplicationContext(), "No more chapters!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Cannot move to next chapter, Please exit reader", Toast.LENGTH_LONG).show();
-            }
-            nextChapter.setVisibility(View.GONE);
-        });
-        loadChapter();
-    }
 
-    /**
-     * Changes the theme of the reader
-     * TODO change the scroll position bars color
-     */
-    public void setUpReader() {
-        scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
-        if (unformattedText != null) {
-            StringBuilder replaceSpacing = new StringBuilder("\n");
-            for (int x = 0; x < Settings.paragraphSpacing; x++)
-                replaceSpacing.append("\n");
-
-            for (int x = 0; x < Settings.indentSize; x++)
-                replaceSpacing.append("\t");
-
-            text = unformattedText.replaceAll("\n", replaceSpacing.toString());
-            assert selectedReader.getView() != null;
-            selectedReader.getView().post(() -> selectedReader.setText(text));
-        }
     }
 
     private void setViewPager() {
-        ReaderTypeAdapter pagerAdapter = new ReaderTypeAdapter(getSupportFragmentManager(), fragments);
-        readerViewPager.setAdapter(pagerAdapter);
+        ChapterReaderAdapter pagerAdapter = new ChapterReaderAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, this);
+        chapterPager.setAdapter(pagerAdapter);
     }
 
-    /**
-     * What to do when scroll hits bottom
-     */
-    private void bottom() {
-        int total = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
-        if (ready)
-            if ((scrollView.getScrollY() / (float) total) < .99) {
-                int y = scrollView.getScrollY();
-                if (y % 5 == 0) {
-                    // Log.d("YMAX", String.valueOf(total));
-                    // Log.d("YC", String.valueOf(y));
-                    // Log.d("YD", String.valueOf((scrollView.getScrollY() / (float) total)));
-
-                    //   Log.d("TY", String.valueOf(textView.getScrollY()));
-
-                    if (chapterURL != null && Database.DatabaseChapter.getStatus(chapterID) != Status.READ)
-                        Database.DatabaseChapter.updateY(chapterID, y);
-                }
-            } else {
-                Log.i("Scroll", "Marking chapter as READ");
-                if (chapterURL != null) {
-                    Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
-                    Database.DatabaseChapter.updateY(chapterID, 0);
-                    nextChapter.setVisibility(View.VISIBLE);
-                }
-                //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
-            }
-    }
-
-    /**
-     * Loads the chapter to be read
-     */
-    private void loadChapter() {
-        ready = false;
-        if (Database.DatabaseChapter.isSaved(chapterID)) {
-            unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterID));
-            setUpReader();
-            scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)));
-            if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(title);
-            ready = true;
-        } else if (chapterURL != null) {
-            unformattedText = "";
-            setUpReader();
-            new ReaderViewLoader(this).execute();
-        }
-
-        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
-    }
-
-    /**
-     * Scrolls the text upwards
-     */
-    private void scrollUp() {
-        if (isTapToScroll()) {
-            Log.i("Scroll", "Up");
-            int y = scrollView.getScrollY();
-            if (y - 100 > 0)
-                y -= 100;
-            else y = 0;
-            scrollView.smoothScrollTo(0, y);
-        }
-    }
-
-    /**
-     * Scrolls the text downwards
-     */
-    private void scrollDown() {
-        if (isTapToScroll()) {
-            Log.i("Scroll", "Down");
-            int y = scrollView.getScrollY();
-            int my = scrollView.getMaxScrollAmount();
-            if (y + 100 < my)
-                y += 100;
-            else y = my;
-            scrollView.smoothScrollTo(0, y);
-        }
-    }
-
-    /**
-     * Sets up the hitting bottom listener
-     */
-    private void addBottomListener() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottom());
-        } else {
-            scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
-        }
-    }
 
 }
