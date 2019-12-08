@@ -46,6 +46,7 @@ public class TextViewReader extends Reader {
 
     @Override
     public void setText(@NotNull String text) {
-        textView.post(() -> textView.setText(text));
+        super.setText(text);
+        textView.setText(text);
     }
 }

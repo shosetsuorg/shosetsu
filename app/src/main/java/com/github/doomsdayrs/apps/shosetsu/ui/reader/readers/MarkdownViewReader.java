@@ -41,6 +41,7 @@ public class MarkdownViewReader extends Reader {
 
     @Override
     public void setText(@NotNull String text) {
-        markdownView.post(() -> markdownView.loadMarkdown(text));
+        super.setText(text);
+        markdownView.loadMarkdown(text);
     }
 }

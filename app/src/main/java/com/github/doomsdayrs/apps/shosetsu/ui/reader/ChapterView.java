@@ -59,6 +59,7 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
  * @author github.com/doomsdayrs
  */
 public class ChapterView extends Fragment {
+    private ReaderTypeAdapter readerTypeAdapter;
     private ViewPager readerViewPager;
     private final ArrayList<Reader> fragments = new ArrayList<>();
     private Reader selectedReader = null;
@@ -125,8 +126,8 @@ public class ChapterView extends Fragment {
 
         fragments.add(new TextViewReader(chapterReader));
         fragments.add(new MarkdownViewReader(chapterReader));
-        ReaderTypeAdapter pagerAdapter = new ReaderTypeAdapter(getChildFragmentManager(), fragments);
-        readerViewPager.setAdapter(pagerAdapter);
+        readerTypeAdapter = new ReaderTypeAdapter(getChildFragmentManager(), fragments);
+        readerViewPager.setAdapter(readerTypeAdapter);
         switch (chapterReader.readerType) {
             case 1:
                 selectedReader = fragments.get(1);
@@ -163,7 +164,7 @@ public class ChapterView extends Fragment {
             nextChapter.setVisibility(View.GONE);
         });
 
-        // loadChapter();
+        loadChapter();
 
         return chapterView;
     }
@@ -184,7 +185,12 @@ public class ChapterView extends Fragment {
                 replaceSpacing.append("\t");
 
             text = unformattedText.replaceAll("\n", replaceSpacing.toString());
-            selectedReader.setText(text);
+            if (text.length() > 100)
+                Log.d("TextSet", text.substring(0, 100).replace("\n", "\\n"));
+            else if (text.length() > 0)
+                Log.d("TextSet", text.substring(0, text.length() - 1).replace("\n", "\\n"));
+
+            readerViewPager.post(() -> selectedReader.setText(text));
         }
     }
 
