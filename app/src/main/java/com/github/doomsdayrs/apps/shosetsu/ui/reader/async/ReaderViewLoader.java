@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.async;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.view.View;
 
@@ -39,32 +40,33 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
      */
     @SuppressLint("StaticFieldLeak")
     private final
-    ChapterView chapterReader;
+    ChapterView chapterView;
 
     /**
      * Constructor
      */
     public ReaderViewLoader(ChapterView chapterReader) {
-        this.chapterReader = chapterReader;
+        this.chapterView = chapterReader;
     }
 
     @Nullable
     @Override
     protected String doInBackground(ChapterReader... chapterReaders) {
-        chapterReader.chapterReader.runOnUiThread(() -> chapterReader.errorView.errorView.setVisibility(View.GONE));
+        Activity activity = chapterView.getActivity();
+        activity.runOnUiThread(() -> chapterView.errorView.errorView.setVisibility(View.GONE));
         try {
-            chapterReader.unformattedText = chapterReader.chapterReader.formatter.getNovelPassage(docFromURL(chapterReader.chapterURL, chapterReader.chapterReader.formatter.hasCloudFlare()));
-            chapterReader.chapterReader.runOnUiThread(chapterReader::setUpReader);
-            chapterReader.chapterReader.runOnUiThread(() ->
-                    chapterReader.scrollView.post(() ->
-                            chapterReader.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterReader.chapterID)))
+            chapterView.unformattedText = chapterView.chapterReader.formatter.getNovelPassage(docFromURL(chapterView.chapterURL, chapterView.chapterReader.formatter.hasCloudFlare()));
+            activity.runOnUiThread(chapterView::setUpReader);
+            activity.runOnUiThread(() ->
+                    chapterView.scrollView.post(() ->
+                            chapterView.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterView.chapterID)))
             );
-            chapterReader.chapterReader.runOnUiThread(() -> chapterReader.ready = true);
+            activity.runOnUiThread(() -> chapterView.ready = true);
         } catch (Exception e) {
-            chapterReader.chapterReader.runOnUiThread(() -> {
-                chapterReader.errorView.errorView.setVisibility(View.VISIBLE);
-                chapterReader.errorView.errorMessage.setText(e.getMessage());
-                chapterReader.errorView.errorButton.setOnClickListener(view -> new ReaderViewLoader(chapterReader).execute());
+            activity.runOnUiThread(() -> {
+                chapterView.errorView.errorView.setVisibility(View.VISIBLE);
+                chapterView.errorView.errorMessage.setText(e.getMessage());
+                chapterView.errorView.errorButton.setOnClickListener(view -> new ReaderViewLoader(chapterView).execute());
             });
 
         }
@@ -78,8 +80,8 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (chapterReader != null)
-            chapterReader.progressBar.setVisibility(View.VISIBLE);
+        if (chapterView != null)
+            chapterView.progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -90,10 +92,10 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        if (chapterReader.progressBar != null)
-            chapterReader.progressBar.setVisibility(View.GONE);
+        if (chapterView.progressBar != null)
+            chapterView.progressBar.setVisibility(View.GONE);
 
-        if (chapterReader.chapterReader.getSupportActionBar() != null)
-            chapterReader.chapterReader.getSupportActionBar().setTitle(chapterReader.title);
+        if (chapterView.chapterReader.getSupportActionBar() != null)
+            chapterView.chapterReader.getSupportActionBar().setTitle(chapterView.title);
     }
 }

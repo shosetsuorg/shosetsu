@@ -825,7 +825,7 @@ public class Database {
         }
 
         public static void setReaderType(@NotNull int novelID, int reader) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READER_TYPE + "=" + reader + " where " + Columns.ID + "=" + novelID);
+            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READER_TYPE + "=" + reader + " where " + Columns.PARENT_ID + "=" + novelID);
         }
 
         /**

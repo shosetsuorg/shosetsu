@@ -14,4 +14,5 @@ public abstract class Reader extends Fragment {
     }
 
     public abstract void setText(@NotNull String text);
+
 }

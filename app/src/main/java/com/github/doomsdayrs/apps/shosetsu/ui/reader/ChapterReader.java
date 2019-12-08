@@ -98,7 +98,6 @@ public class ChapterReader extends AppCompatActivity {
     public int novelID;
     public ChapterView currentView;
 
-    protected ChapterView currentChapter;
     private MenuItem tap_to_scroll;
 
     /**
@@ -232,8 +231,8 @@ public class ChapterReader extends AppCompatActivity {
                 tap_to_scroll.setChecked(toggleTapToScroll());
                 return true;
             case R.id.chapter_view_bookmark:
-                currentChapter.bookmarked = toggleBookmarkChapter(currentChapter.chapterID);
-                if (currentChapter.bookmarked)
+                currentView.bookmarked = toggleBookmarkChapter(currentView.chapterID);
+                if (currentView.bookmarked)
                     bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
                 else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
                 return true;
@@ -275,10 +274,10 @@ public class ChapterReader extends AppCompatActivity {
                 return true;
 
             case R.id.browser:
-                openInBrowser(this, currentChapter.chapterURL);
+                openInBrowser(this, currentView.chapterURL);
                 return true;
             case R.id.webview:
-                openInWebview(this, currentChapter.chapterURL);
+                openInWebview(this, currentView.chapterURL);
                 return true;
             case R.id.reader_0:
                 demarkMenuItems(readers, 0, demarkActions[3]);

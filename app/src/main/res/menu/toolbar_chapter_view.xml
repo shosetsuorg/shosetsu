@@ -86,10 +86,12 @@
             <menu>
                 <item
                     android:id="@+id/reader_0"
+                    android:checkable="true"
                     android:title="@string/default_reader" />
 
                 <item
                     android:id="@+id/reader_1"
+                    android:checkable="true"
                     android:title="@string/markdown_reader" />
 
             </menu>

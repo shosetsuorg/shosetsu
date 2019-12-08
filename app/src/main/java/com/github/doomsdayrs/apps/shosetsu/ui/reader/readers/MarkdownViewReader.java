@@ -23,6 +23,13 @@ public class MarkdownViewReader extends Reader {
         super(chapterReader);
     }
 
+
+    @Nullable
+    @Override
+    public View getView() {
+        return markdownView;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,6 +41,6 @@ public class MarkdownViewReader extends Reader {
 
     @Override
     public void setText(@NotNull String text) {
-        markdownView.loadMarkdown(text);
+        markdownView.post(() -> markdownView.loadMarkdown(text));
     }
 }

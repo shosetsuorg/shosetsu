@@ -78,13 +78,13 @@ public class ChapterView extends Fragment {
     @SuppressWarnings("FieldCanBeLocal")
     private View scroll_up, scroll_down;
 
-    public ChapterView(ChapterReader chapterReader,int chapterID) {
+    public ChapterView(ChapterReader chapterReader, int chapterID) {
         this.chapterReader = chapterReader;
         this.chapterID = chapterID;
         chapterURL = getChapterURLFromChapterID(chapterID);
     }
 
-    public ChapterView(ChapterReader chapterReader,String title, String chapterURL, int chapterID) {
+    public ChapterView(ChapterReader chapterReader, String title, String chapterURL, int chapterID) {
         this.chapterReader = chapterReader;
 
         this.title = title;
@@ -113,25 +113,29 @@ public class ChapterView extends Fragment {
             chapterURL = savedInstanceState.getString("chapterURL");
             text = savedInstanceState.getString("text");
         }
-
-        errorView = new ErrorView(chapterReader, chapterView.findViewById(R.id.network_error), chapterView.findViewById(R.id.error_message), chapterView.findViewById(R.id.error_button));
-        progressBar = chapterView.findViewById(R.id.fragment_novel_chapter_view_progress);
-        scrollView = chapterView.findViewById(R.id.fragment_novel_scroll);
-        readerViewPager = chapterView.findViewById(R.id.readerPager);
-        scroll_up = chapterView.findViewById(R.id.scroll_up);
-        scroll_down = chapterView.findViewById(R.id.scroll_down);
-        nextChapter = chapterView.findViewById(R.id.next_chapter);
-
+        {
+            errorView = new ErrorView(chapterReader, chapterView.findViewById(R.id.network_error), chapterView.findViewById(R.id.error_message), chapterView.findViewById(R.id.error_button));
+            progressBar = chapterView.findViewById(R.id.fragment_novel_chapter_view_progress);
+            scrollView = chapterView.findViewById(R.id.fragment_novel_scroll);
+            readerViewPager = chapterView.findViewById(R.id.readerPager);
+            scroll_up = chapterView.findViewById(R.id.scroll_up);
+            scroll_down = chapterView.findViewById(R.id.scroll_down);
+            nextChapter = chapterView.findViewById(R.id.next_chapter);
+        }
 
         fragments.add(new TextViewReader(chapterReader));
         fragments.add(new MarkdownViewReader(chapterReader));
+        ReaderTypeAdapter pagerAdapter = new ReaderTypeAdapter(getChildFragmentManager(), fragments);
+        readerViewPager.setAdapter(pagerAdapter);
         switch (chapterReader.readerType) {
             case 1:
                 selectedReader = fragments.get(1);
+                readerViewPager.setCurrentItem(1);
                 break;
             case 0:
             case -1:
                 selectedReader = fragments.get(0);
+                readerViewPager.setCurrentItem(0);
                 break;
             case -2:
             default:
@@ -139,12 +143,11 @@ public class ChapterView extends Fragment {
         }
 
         addBottomListener();
-        setViewPager();
 
-        // Scroll up listener
+        // TapToScroll listeners
         scroll_up.setOnClickListener(view -> scrollUp());
-        // Scroll down listener
         scroll_down.setOnClickListener(view -> scrollDown());
+
         nextChapter.setOnClickListener(view -> {
             NovelChapter novelChapter = getNextChapter(chapterID, chapterReader.chapterIDs);
             if (novelChapter != null) {
@@ -159,7 +162,8 @@ public class ChapterView extends Fragment {
             }
             nextChapter.setVisibility(View.GONE);
         });
-        loadChapter();
+
+        // loadChapter();
 
         return chapterView;
     }
@@ -180,8 +184,7 @@ public class ChapterView extends Fragment {
                 replaceSpacing.append("\t");
 
             text = unformattedText.replaceAll("\n", replaceSpacing.toString());
-            assert selectedReader.getView() != null;
-            selectedReader.getView().post(() -> selectedReader.setText(text));
+            selectedReader.setText(text);
         }
     }
 
@@ -277,8 +280,5 @@ public class ChapterView extends Fragment {
         }
     }
 
-    private void setViewPager() {
-        ReaderTypeAdapter pagerAdapter = new ReaderTypeAdapter(getChildFragmentManager(), fragments);
-        readerViewPager.setAdapter(pagerAdapter);
-    }
+
 }

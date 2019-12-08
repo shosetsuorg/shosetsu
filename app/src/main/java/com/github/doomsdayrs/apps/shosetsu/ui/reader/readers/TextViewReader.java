@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.readers;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,15 @@ public class TextViewReader extends Reader {
 
     @Nullable
     @Override
+    public View getView() {
+        return textView;
+    }
+
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chapter_reader_text_view, container, false);
+        Log.d("Create", "TextViewReader");
         textView = view.findViewById(R.id.textview);
         textView.setOnClickListener(new NovelFragmentChapterViewHideBar(chapterReader.toolbar));
         textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
@@ -38,6 +46,6 @@ public class TextViewReader extends Reader {
 
     @Override
     public void setText(@NotNull String text) {
-        textView.setText(text);
+        textView.post(() -> textView.setText(text));
     }
 }
