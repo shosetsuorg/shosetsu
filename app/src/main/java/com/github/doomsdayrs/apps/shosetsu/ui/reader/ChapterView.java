@@ -59,7 +59,6 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
  * @author github.com/doomsdayrs
  */
 public class ChapterView extends Fragment {
-    private ReaderTypeAdapter readerTypeAdapter;
     private ViewPager readerViewPager;
     private final ArrayList<Reader> fragments = new ArrayList<>();
     private Reader selectedReader = null;
@@ -126,7 +125,7 @@ public class ChapterView extends Fragment {
 
         fragments.add(new TextViewReader(chapterReader));
         fragments.add(new MarkdownViewReader(chapterReader));
-        readerTypeAdapter = new ReaderTypeAdapter(getChildFragmentManager(), fragments);
+        ReaderTypeAdapter readerTypeAdapter = new ReaderTypeAdapter(getChildFragmentManager(), fragments);
         readerViewPager.setAdapter(readerTypeAdapter);
         switch (chapterReader.readerType) {
             case 1:
