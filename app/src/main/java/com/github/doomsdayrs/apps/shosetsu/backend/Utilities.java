@@ -461,9 +461,7 @@ public class Utilities {
         int chapterID = getChapterIDFromChapterURL(novelChapter.link);
         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
         Intent intent = new Intent(activity, ChapterReader.class);
-        intent.putExtra("title", novelChapter.title);
         intent.putExtra("chapterID", chapterID);
-        intent.putExtra("chapterURL", novelChapter.link);
         intent.putExtra("novelID", novelID);
         intent.putExtra("formatter", formatterID);
         intent.putExtra("chapters", chapters);

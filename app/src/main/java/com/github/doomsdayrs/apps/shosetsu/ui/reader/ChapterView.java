@@ -84,14 +84,6 @@ public class ChapterView extends Fragment {
         chapterURL = getChapterURLFromChapterID(chapterID);
     }
 
-    public ChapterView(ChapterReader chapterReader, String title, String chapterURL, int chapterID) {
-        this.chapterReader = chapterReader;
-
-        this.title = title;
-        this.chapterURL = chapterURL;
-        this.chapterID = chapterID;
-    }
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -113,6 +105,10 @@ public class ChapterView extends Fragment {
             chapterURL = savedInstanceState.getString("chapterURL");
             text = savedInstanceState.getString("text");
         }
+
+        if (chapterID == chapterReader.currentChapterID && chapterReader.first)
+            chapterReader.first = false;
+
         {
             errorView = new ErrorView(chapterReader, chapterView.findViewById(R.id.network_error), chapterView.findViewById(R.id.error_message), chapterView.findViewById(R.id.error_button));
             progressBar = chapterView.findViewById(R.id.fragment_novel_chapter_view_progress);
@@ -198,6 +194,7 @@ public class ChapterView extends Fragment {
      */
     private void loadChapter() {
         ready = false;
+        Log.i("Loading chapter", String.valueOf(chapterID));
         if (Database.DatabaseChapter.isSaved(chapterID)) {
             unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterID));
             setUpReader();

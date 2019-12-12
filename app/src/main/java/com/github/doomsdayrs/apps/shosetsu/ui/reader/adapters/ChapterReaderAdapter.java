@@ -22,10 +22,13 @@ public class ChapterReaderAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        chapterReader.currentView = chapterReader.cachedChapter(chapterReader.chapterIDs[position]);
-        if (chapterReader.currentView == null) {
-            chapterReader.currentView = new ChapterView(chapterReader, chapterReader.chapterIDs[position]);
-            chapterReader.chapters.add(chapterReader.currentView);
+        if (!chapterReader.first) {
+            chapterReader.currentView = chapterReader.cachedChapter(chapterReader.chapterIDs[position]);
+            if (chapterReader.currentView == null) {
+                chapterReader.currentView = new ChapterView(chapterReader, chapterReader.chapterIDs[position]);
+                chapterReader.chapters.add(chapterReader.currentView);
+            }
+            chapterReader.currentChapterID = chapterReader.currentView.chapterID;
         }
         return chapterReader.currentView;
     }

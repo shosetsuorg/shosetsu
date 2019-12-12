@@ -309,18 +309,9 @@ public class ChapterReader extends AppCompatActivity {
         } else {
             chapterIDs = getIntent().getIntArrayExtra("chapters");
             {
-                String chapterURL, title;
                 int chapterID;
-
                 chapterID = getIntent().getIntExtra("chapterID", -1);
-                chapterURL = getIntent().getStringExtra("chapterURL");
-                title = getIntent().getStringExtra("title");
-
-                assert chapterURL != null;
-                ASSERT(chapterID != -1);
-                Log.i("Reading", chapterURL);
-
-                chapters.add(new ChapterView(this, title, chapterURL, chapterID));
+                currentChapterID = chapterID;
             }
             novelID = getIntent().getIntExtra("novelID", -1);
             formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
