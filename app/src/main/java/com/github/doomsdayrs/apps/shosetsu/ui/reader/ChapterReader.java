@@ -74,7 +74,7 @@ public class ChapterReader extends AppCompatActivity {
     private final Utilities.DemarkAction[] demarkActions = {new TextSizeChange(this), new ParaSpacingChange(this), new IndentChange(this), new ReaderChange(this)};
     public int[] chapterIDs;
     public int currentChapterID;
-
+    public boolean first = false;
     public final ArrayList<ChapterView> chapters = new ArrayList<>();
 
 
@@ -339,10 +339,6 @@ public class ChapterReader extends AppCompatActivity {
             } else chapterIDs = new int[]{chapters.get(0).chapterID};
         }
 
-        for (int id : chapterIDs)
-            chapters.add(new ChapterView(this, id));
-
-
         // Declares view variables
         {
             toolbar = findViewById(R.id.toolbar);
@@ -363,4 +359,10 @@ public class ChapterReader extends AppCompatActivity {
     }
 
 
+    public ChapterView cachedChapter(int chapterID) {
+        for (ChapterView chapterView : chapters)
+            if (chapterView.chapterID == chapterID)
+                return chapterView;
+        return null;
+    }
 }

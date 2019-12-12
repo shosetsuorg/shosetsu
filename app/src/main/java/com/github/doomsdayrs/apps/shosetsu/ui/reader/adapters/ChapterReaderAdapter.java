@@ -6,6 +6,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView;
+
+import java.util.ArrayList;
 
 
 public class ChapterReaderAdapter extends FragmentPagerAdapter {
@@ -16,16 +19,19 @@ public class ChapterReaderAdapter extends FragmentPagerAdapter {
         this.chapterReader = chapterReader;
     }
 
-
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        chapterReader.currentView = chapterReader.chapters.get(position);
+        chapterReader.currentView = chapterReader.cachedChapter(chapterReader.chapterIDs[position]);
+        if (chapterReader.currentView == null) {
+            chapterReader.currentView = new ChapterView(chapterReader, chapterReader.chapterIDs[position]);
+            chapterReader.chapters.add(chapterReader.currentView);
+        }
         return chapterReader.currentView;
     }
 
     @Override
     public int getCount() {
-        return chapterReader.chapters.size();
+        return chapterReader.chapterIDs.length;
     }
 }
