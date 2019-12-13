@@ -17,6 +17,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters;
  * ====================================================================
  */
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.NewChapterReaderViewLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.NewChapterView;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+
+import java.util.Objects;
 
 /**
  * shosetsu
@@ -51,7 +58,23 @@ public class NewChapterReaderAdapter extends RecyclerView.Adapter<NewChapterView
 
     @Override
     public void onBindViewHolder(@NonNull NewChapterView holder, int position) {
-        holder.textView.setText("ChapterID: " + newChapterReader.chapterIDs[position]);
+        final int CHAPTER_ID = newChapterReader.chapterIDs[position];
+        Log.i("Loading chapter", String.valueOf(CHAPTER_ID));
+        holder.ready = false;
+        if (Database.DatabaseChapter.isSaved(CHAPTER_ID)) {
+            holder.unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(CHAPTER_ID));
+            holder.setUpReader();
+            //holder.scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)));
+            //if (chapterReader.getSupportActionBar() != null)
+            //   chapterReader.getSupportActionBar().setTitle(title);
+            holder.ready = true;
+        } else if (holder.chapterURL != null) {
+            holder.unformattedText = "";
+            holder.setUpReader();
+            new NewChapterReaderViewLoader(holder).execute();
+        }
+
+        Database.DatabaseChapter.setChapterStatus(CHAPTER_ID, Status.READING);
     }
 
 

@@ -33,9 +33,15 @@ import com.github.doomsdayrs.apps.shosetsu.R;
  */
 public class NewChapterView extends RecyclerView.ViewHolder {
     public TextView textView;
+    public boolean ready;
+    public String unformattedText;
+    public String chapterURL;
 
     public NewChapterView(@NonNull View itemView) {
         super(itemView);
         textView = itemView.findViewById(R.id.textView);
+    }
+
+    public void setUpReader() {
     }
 }

@@ -49,7 +49,6 @@ public class NewChapterReader extends AppCompatActivity {
         setContentView(R.layout.new_chapter_reader);
 
         viewPager2 = findViewById(R.id.viewpager);
-        NewChapterReaderAdapter newChapterReaderAdapter = new NewChapterReaderAdapter(this);
 
 
         if (savedInstanceState != null) {
@@ -66,6 +65,7 @@ public class NewChapterReader extends AppCompatActivity {
             novelID = getIntent().getIntExtra("novelID", -1);
             formatter = DefaultScrapers.getByID(getIntent().getIntExtra("formatter", -1));
         }
+
         if (chapterIDs == null) {
             List<Integer> integers = Database.DatabaseChapter.getChaptersOnlyIDs(novelID);
             chapterIDs = new int[integers.size()];
@@ -73,6 +73,7 @@ public class NewChapterReader extends AppCompatActivity {
                 chapterIDs[x] = integers.get(x);
         }
 
+        NewChapterReaderAdapter newChapterReaderAdapter = new NewChapterReaderAdapter(this);
         viewPager2.setAdapter(newChapterReaderAdapter);
         viewPager2.setCurrentItem(findCurrentPosition(currentChapterID));
     }

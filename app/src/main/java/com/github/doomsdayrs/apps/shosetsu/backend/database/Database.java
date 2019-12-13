@@ -723,12 +723,11 @@ public class Database {
          * @param novelID ID to retrieve from
          * @return List of chapters saved of novel (ID only)
          */
-        @Nullable
         public static List<Integer> getChaptersOnlyIDs(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return null;
+                return new ArrayList<>();
             } else {
                 ArrayList<MicroNovelChapter> novelChapters = new ArrayList<>();
                 while (cursor.moveToNext()) {
