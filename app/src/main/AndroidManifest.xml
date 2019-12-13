@@ -18,11 +18,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents"
         tools:ignore="GoogleAppIndexingWarning"
-        android:requestLegacyExternalStorage="true"
         tools:targetApi="q">
 
 
@@ -43,6 +43,9 @@
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".ui.migration.MigrationView"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".ui.reader.NewChapterReader"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
     </application>
 
