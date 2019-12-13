@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments;
+package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders;
 /*
  * This file is part of shosetsu.
  *
@@ -18,12 +18,14 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments;
  */
 
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChapterViewHideBar;
+
+import us.feras.mdv.MarkdownView;
 
 /**
  * shosetsu
@@ -31,17 +33,21 @@ import com.github.doomsdayrs.apps.shosetsu.R;
  *
  * @author github.com/doomsdayrs
  */
-public class NewChapterView extends RecyclerView.ViewHolder {
-    public TextView textView;
-    public boolean ready;
-    public String unformattedText;
-    public String chapterURL;
+public class NewMarkdownReader extends NewReader {
+    MarkdownView markdownView;
 
-    public NewChapterView(@NonNull View itemView) {
-        super(itemView);
-        textView = itemView.findViewById(R.id.textView);
+    public NewMarkdownReader(@NonNull View itemView, NewChapterReader newChapterReader) {
+        super(itemView, newChapterReader);
+        markdownView = itemView.findViewById(R.id.markdown_view);
     }
 
-    public void setUpReader() {
+    @Override
+    public void setText(String text) {
+        markdownView.loadMarkdown(text);
+    }
+
+    @Override
+    public void bind() {
+        markdownView.setOnClickListener(new NovelFragmentChapterViewHideBar(newChapterReader.toolbar));
     }
 }

@@ -29,11 +29,13 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.NewChapterReaderViewLoader;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ReaderViewLoader;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.NewChapterView;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewChapterView;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import java.util.Objects;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
 
 /**
  * shosetsu
@@ -52,19 +54,31 @@ public class NewChapterReaderAdapter extends RecyclerView.Adapter<NewChapterView
     @Override
     public NewChapterView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.new_chapter_view, parent, false);
-        return new NewChapterView(view);
+        return new NewChapterView(newChapterReader, view);
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull NewChapterView holder, int position) {
+        newChapterReader.currentView = holder;
+
         final int CHAPTER_ID = newChapterReader.chapterIDs[position];
-        Log.i("Loading chapter", String.valueOf(CHAPTER_ID));
+
+        holder.setChapterID(CHAPTER_ID);
+        holder.setChapterURL(getChapterURLFromChapterID(CHAPTER_ID));
+
+        holder.viewPager2.setUserInputEnabled(false);
+        NewChapterReaderTypeAdapter newChapterReaderTypeAdapter = new NewChapterReaderTypeAdapter(newChapterReader);
+        holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
+        holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
+
+        Log.i("Loading chapter", holder.chapterURL);
+
         holder.ready = false;
         if (Database.DatabaseChapter.isSaved(CHAPTER_ID)) {
             holder.unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(CHAPTER_ID));
             holder.setUpReader();
-            //holder.scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)));
+            holder.scrollView.post(() -> holder.scrollView.scrollTo(0, Database.DatabaseChapter.getY(holder.chapterID)));
             //if (chapterReader.getSupportActionBar() != null)
             //   chapterReader.getSupportActionBar().setTitle(title);
             holder.ready = true;

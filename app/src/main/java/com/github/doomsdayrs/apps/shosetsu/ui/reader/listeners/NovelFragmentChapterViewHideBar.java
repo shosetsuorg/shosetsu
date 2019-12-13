@@ -22,6 +22,9 @@ import androidx.appcompat.widget.Toolbar;
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 18 / 06 / 2019
  *
@@ -29,7 +32,7 @@ import androidx.appcompat.widget.Toolbar;
  */
 public class NovelFragmentChapterViewHideBar implements View.OnClickListener {
     private final Toolbar toolbar;
-    private boolean visible = true;
+
 
     public NovelFragmentChapterViewHideBar(Toolbar toolbar) {
         this.toolbar = toolbar;
@@ -37,12 +40,9 @@ public class NovelFragmentChapterViewHideBar implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (visible) {
+        if (toolbar.getY() == 0)
             toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
-            visible = !visible;
-        } else {
+        else
             toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
-            visible = !visible;
-        }
     }
 }
