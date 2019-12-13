@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.ASSERT;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.demarkMenuItems;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
@@ -130,10 +129,7 @@ public class ChapterReader extends AppCompatActivity {
         {
             bookmark = menu.findItem(R.id.chapter_view_bookmark);
             currentView.bookmarked = Database.DatabaseChapter.isBookMarked(currentView.chapterID);
-            if (currentView.bookmarked)
-                currentView.chapterReader.bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
-            else
-                currentView.chapterReader.bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
+            updateBookmark();
         }
 
         // Tap To Scroll
@@ -205,6 +201,13 @@ public class ChapterReader extends AppCompatActivity {
         return true;
     }
 
+    public void updateBookmark() {
+        if (bookmark != null)
+            if (currentView.bookmarked)
+                bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
+            else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
+    }
+
     /**
      * What to do when an menu item is selected
      *
@@ -232,11 +235,8 @@ public class ChapterReader extends AppCompatActivity {
                 return true;
             case R.id.chapter_view_bookmark:
                 currentView.bookmarked = toggleBookmarkChapter(currentView.chapterID);
-                if (currentView.bookmarked)
-                    bookmark.setIcon(R.drawable.ic_bookmark_black_24dp);
-                else bookmark.setIcon(R.drawable.ic_bookmark_border_black_24dp);
+                updateBookmark();
                 return true;
-
             case R.id.chapter_view_textSize_small:
                 demarkMenuItems(indentSpaces, 0, demarkActions[0]);
                 return true;

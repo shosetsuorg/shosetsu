@@ -18,9 +18,7 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/readerPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:visibility="visible"/>
+            android:layout_height="wrap_content" />
 
     </ScrollView>
 

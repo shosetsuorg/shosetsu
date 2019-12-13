@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isBookMarked;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNextChapter;
 
@@ -105,6 +106,9 @@ public class ChapterView extends Fragment {
             chapterURL = savedInstanceState.getString("chapterURL");
             text = savedInstanceState.getString("text");
         }
+
+        bookmarked = isBookMarked(chapterID);
+        chapterReader.updateBookmark();
 
         if (chapterID == chapterReader.currentChapterID && chapterReader.first)
             chapterReader.first = false;

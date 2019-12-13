@@ -172,17 +172,17 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPostExecute(Boolean result) {
-        assert novelFragmentChapters != null;
-        assert novelFragmentChapters.novelFragment.getView() != null;
 
-        novelFragmentChapters.novelFragment.getView().post(() -> {
-            novelFragmentChapters.swipeRefreshLayout.setRefreshing(false);
-            if (formatter.isIncrementingChapterList())
-                novelFragmentChapters.pageCount.setVisibility(View.GONE);
-            if (result)
-                if (novelFragmentChapters.getActivity() != null)
-                    novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setChapters);
-            novelFragmentChapters.resumeRead.setVisibility(View.VISIBLE);
-        });
+        View view = novelFragmentChapters.novelFragment.getView();
+        if (view != null)
+            novelFragmentChapters.novelFragment.getView().post(() -> {
+                novelFragmentChapters.swipeRefreshLayout.setRefreshing(false);
+                if (formatter.isIncrementingChapterList())
+                    novelFragmentChapters.pageCount.setVisibility(View.GONE);
+                if (result)
+                    if (novelFragmentChapters.getActivity() != null)
+                        novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setChapters);
+                novelFragmentChapters.resumeRead.setVisibility(View.VISIBLE);
+            });
     }
 }
