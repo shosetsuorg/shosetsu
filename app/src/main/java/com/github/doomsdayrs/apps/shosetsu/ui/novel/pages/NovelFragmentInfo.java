@@ -123,7 +123,7 @@ public class NovelFragmentInfo extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_novel, menu);
-        if (Database.DatabaseNovels.isBookmarked(novelFragment.novelID)) {
+        if (novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment.novelID)) {
             menu.findItem(R.id.source_migrate).setVisible(true);
         } else menu.findItem(R.id.source_migrate).setVisible(false);
 
@@ -172,14 +172,14 @@ public class NovelFragmentInfo extends Fragment {
 
         floatingActionButton.hide();
 
-
-        if (Database.DatabaseNovels.isBookmarked(novelFragment.novelID))
-            inLibrary();
+        if (novelFragment != null)
+            if (Database.DatabaseNovels.isBookmarked(novelFragment.novelID))
+                inLibrary();
 
         if (inLibrary)
             floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
 
-        if (novelFragment.novelPage != null && title != null)
+        if (novelFragment != null && novelFragment.novelPage != null && title != null)
             setData();
 
         floatingActionButton.setOnClickListener(new NovelFragmentMainAddToLibrary(this));

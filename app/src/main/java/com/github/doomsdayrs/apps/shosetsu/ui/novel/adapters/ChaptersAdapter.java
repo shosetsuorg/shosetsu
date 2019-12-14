@@ -154,7 +154,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (novelFragmentChapters.novelFragment.novelChapters != null)
+        if (novelFragmentChapters.novelFragment != null && novelFragmentChapters.novelFragment.novelChapters != null)
             return novelFragmentChapters.novelFragment.novelChapters.size();
         else return 0;
     }

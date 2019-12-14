@@ -22,9 +22,9 @@ public class NewChapterReaderViewLoader extends AsyncTask<Object, Void, Void> {
         Activity activity = newChapterView.newChapterReader;
         //activity.runOnUiThread(() -> chapterView.errorView.errorView.setVisibility(View.GONE));
         try {
-            newChapterView.unformattedText = newChapterView.newChapterReader.formatter.getNovelPassage(docFromURL(newChapterView.chapterURL, newChapterView.newChapterReader.formatter.hasCloudFlare()));
+            newChapterView.unformattedText = newChapterView.newChapterReader.formatter.getNovelPassage(docFromURL(newChapterView.CHAPTER_URL, newChapterView.newChapterReader.formatter.hasCloudFlare()));
             activity.runOnUiThread(newChapterView::setUpReader);
-            activity.runOnUiThread(() -> newChapterView.scrollView.post(() -> newChapterView.scrollView.scrollTo(0, getY(newChapterView.chapterID))));
+            activity.runOnUiThread(() -> newChapterView.scrollView.post(() -> newChapterView.scrollView.scrollTo(0, getY(newChapterView.CHAPTER_ID))));
             activity.runOnUiThread(() -> newChapterView.ready = true);
         } catch (Exception e) {
             // activity.runOnUiThread(() -> { chapterView.errorView.errorView.setVisibility(View.VISIBLE);chapterView.errorView.errorMessage.setText(e.getMessage());chapterView.errorView.errorButton.setOnClickListener(view -> new ReaderViewLoader(chapterView).execute()); });

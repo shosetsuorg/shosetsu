@@ -70,7 +70,7 @@ import static java.util.Arrays.binarySearch;
  */
 //TODO MarkDown support
 public class ChapterReader extends AppCompatActivity {
-    private final Utilities.DemarkAction[] demarkActions = {new TextSizeChange(this), new ParaSpacingChange(this), new IndentChange(this), new ReaderChange(this)};
+    private final Utilities.DemarkAction[] demarkActions = {new TextSizeChange(null), new ParaSpacingChange(null), new IndentChange(null), new ReaderChange(null)};
     public int[] chapterIDs;
     public int currentChapterID;
     public boolean first = false;

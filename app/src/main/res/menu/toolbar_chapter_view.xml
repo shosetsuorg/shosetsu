@@ -102,12 +102,12 @@
         <menu>
             <item
                 android:id="@+id/webview"
-                android:checkable="true"
+                android:checkable="false"
                 android:title="@string/webview" />
 
             <item
                 android:id="@+id/browser"
-                android:checkable="true"
+                android:checkable="false"
                 android:title="@string/browser" />
         </menu>
     </item>

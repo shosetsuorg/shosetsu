@@ -18,18 +18,29 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders;
  */
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.NewChapterReaderViewLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChapterViewHideBar;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+
+import java.util.Objects;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
 
 /**
  * shosetsu
@@ -37,17 +48,19 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
  *
  * @author github.com/doomsdayrs
  */
-public class NewChapterView extends RecyclerView.ViewHolder {
+public class NewChapterView extends Fragment {
     public final NewChapterReader newChapterReader;
-    public String chapterURL;
-    public int chapterID;
+
+    public final String CHAPTER_URL;
+    public final int CHAPTER_ID;
 
     public ScrollView scrollView;
-
+    public boolean bookmarked;
     //public View coverView;
     // public ViewPager2 viewPager2;
     //public NewReader currentReader;
     private TextView textView;
+
 
     public boolean ready;
     public String unformattedText;
@@ -55,28 +68,72 @@ public class NewChapterView extends RecyclerView.ViewHolder {
 
 
     @SuppressLint("ClickableViewAccessibility")
-    public NewChapterView(NewChapterReader newChapterReader, @NonNull View itemView) {
-        super(itemView);
+    public NewChapterView(NewChapterReader newChapterReader, int chapter_id) {
         this.newChapterReader = newChapterReader;
-        scrollView = itemView.findViewById(R.id.scrollView);
-        textView = itemView.findViewById(R.id.textView);
-        textView.setOnClickListener(new NovelFragmentChapterViewHideBar(newChapterReader.toolbar));
         //viewPager2 = itemView.findViewById(R.id.viewpager);
         //coverView = itemView.findViewById(R.id.viewCover);
         //coverView.setOnTouchListener((view, motionEvent) -> true);
+        CHAPTER_ID = chapter_id;
+        this.CHAPTER_URL = getChapterURLFromChapterID(CHAPTER_ID);
+    }
+
+    private void updateParent() {
+        newChapterReader.currentView = this;
+        newChapterReader.updateBookmark();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateParent();
+        String title = Database.DatabaseChapter.getTitle(CHAPTER_ID);
+        Log.i("Setting TITLE", title);
+        newChapterReader.toolbar.setTitle(title);
     }
 
 
-    public void setChapterURL(String chapterURL) {
-        this.chapterURL = chapterURL;
-    }
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.new_chapter_view, container, false);
 
-    public void setChapterID(int chapterID) {
-        this.chapterID = chapterID;
+        scrollView = view.findViewById(R.id.scrollView);
+        textView = view.findViewById(R.id.textView);
+        textView.setOnClickListener(new NovelFragmentChapterViewHideBar(newChapterReader.toolbar));
+        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setTextColor(Settings.ReaderTextColor);
+        textView.setTextSize(Settings.ReaderTextSize);
+
+        updateParent();
+
+
+        //holder.viewPager2.setUserInputEnabled(false);
+        //NewChapterReaderTypeAdapter newChapterReaderTypeAdapter = new NewChapterReaderTypeAdapter(newChapterReader);
+        //holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
+        //holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
+
+        Log.i("Loading chapter", CHAPTER_URL);
+        ready = false;
+        if (Database.DatabaseChapter.isSaved(CHAPTER_ID)) {
+            unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(CHAPTER_ID));
+            setUpReader();
+            scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(CHAPTER_ID)));
+            ready = true;
+        } else {
+            unformattedText = "";
+            setUpReader();
+            new NewChapterReaderViewLoader(this).execute();
+        }
+
+        Database.DatabaseChapter.setChapterStatus(CHAPTER_ID, Status.READING);
+        return view;
     }
 
     public void setUpReader() {
         scrollView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
+        textView.setTextColor(Settings.ReaderTextColor);
+        textView.setTextSize(Settings.ReaderTextSize);
         if (unformattedText != null) {
             StringBuilder replaceSpacing = new StringBuilder("\n");
             for (int x = 0; x < Settings.paragraphSpacing; x++)
