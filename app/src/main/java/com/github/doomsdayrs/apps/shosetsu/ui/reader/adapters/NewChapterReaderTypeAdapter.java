@@ -68,7 +68,7 @@ public class NewChapterReaderTypeAdapter extends RecyclerView.Adapter<NewReader>
     @Override
     public void onBindViewHolder(@NonNull NewReader holder, int position) {
         Log.i("LoadingReader", String.valueOf(position));
-        newChapterReader.currentView.currentReader = holder;
+        //newChapterReader.currentView.currentReader = holder;
         holder.bind();
         newChapterReader.currentView.setUpReader();
     }

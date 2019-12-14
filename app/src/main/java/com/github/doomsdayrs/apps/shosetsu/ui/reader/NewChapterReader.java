@@ -122,6 +122,7 @@ public class NewChapterReader extends AppCompatActivity {
 
         NewChapterReaderAdapter newChapterReaderAdapter = new NewChapterReaderAdapter(this);
         viewPager2.setAdapter(newChapterReaderAdapter);
+
         if (currentChapterID != -1)
             viewPager2.setCurrentItem(findCurrentPosition(currentChapterID));
     }

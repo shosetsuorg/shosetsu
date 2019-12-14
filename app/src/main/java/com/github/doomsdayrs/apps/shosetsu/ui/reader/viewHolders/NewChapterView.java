@@ -17,16 +17,18 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders;
  * ====================================================================
  */
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.View;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChapterViewHideBar;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
 /**
@@ -42,21 +44,28 @@ public class NewChapterView extends RecyclerView.ViewHolder {
 
     public ScrollView scrollView;
 
-
-    public ViewPager2 viewPager2;
-    public NewReader currentReader;
-
+    //public View coverView;
+    // public ViewPager2 viewPager2;
+    //public NewReader currentReader;
+    private TextView textView;
 
     public boolean ready;
     public String unformattedText;
     public String text;
 
+
+    @SuppressLint("ClickableViewAccessibility")
     public NewChapterView(NewChapterReader newChapterReader, @NonNull View itemView) {
         super(itemView);
         this.newChapterReader = newChapterReader;
         scrollView = itemView.findViewById(R.id.scrollView);
-        viewPager2 = itemView.findViewById(R.id.viewpager);
+        textView = itemView.findViewById(R.id.textView);
+        textView.setOnClickListener(new NovelFragmentChapterViewHideBar(newChapterReader.toolbar));
+        //viewPager2 = itemView.findViewById(R.id.viewpager);
+        //coverView = itemView.findViewById(R.id.viewCover);
+        //coverView.setOnTouchListener((view, motionEvent) -> true);
     }
+
 
     public void setChapterURL(String chapterURL) {
         this.chapterURL = chapterURL;
@@ -81,7 +90,8 @@ public class NewChapterView extends RecyclerView.ViewHolder {
                 Log.d("TextSet", text.substring(0, 100).replace("\n", "\\n"));
             else if (text.length() > 0)
                 Log.d("TextSet", text.substring(0, text.length() - 1).replace("\n", "\\n"));
-            viewPager2.post(() -> currentReader.setText(text));
+            textView.setText(text);
+            // viewPager2.post(() -> currentReader.setText(text));
         }
     }
 }

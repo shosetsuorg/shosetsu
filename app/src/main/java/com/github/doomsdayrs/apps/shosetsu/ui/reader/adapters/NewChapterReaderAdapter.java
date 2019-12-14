@@ -32,10 +32,10 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.NewChapterReaderViewL
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewChapterView;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
 
 /**
  * shosetsu
@@ -50,6 +50,13 @@ public class NewChapterReaderAdapter extends RecyclerView.Adapter<NewChapterView
         this.newChapterReader = newChapterReader;
     }
 
+    private void updateTitle(NewChapterView holder) {
+        newChapterReader.currentView = holder;
+        String title = Database.DatabaseChapter.getTitle(holder.chapterID);
+        Log.i("Setting TITLE", title);
+        newChapterReader.toolbar.setTitle(title);
+    }
+
     @NonNull
     @Override
     public NewChapterView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -57,6 +64,63 @@ public class NewChapterReaderAdapter extends RecyclerView.Adapter<NewChapterView
         return new NewChapterView(newChapterReader, view);
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        Log.i("Adapter", "onAttachedToRecyclerView");
+
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull NewChapterView holder, int position, @NonNull List<Object> payloads) {
+        super.onBindViewHolder(holder, position, payloads);
+        Log.i("Adapter", "onBindViewHolder");
+        updateTitle(holder);
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull NewChapterView holder) {
+        super.onViewRecycled(holder);
+        Log.i("Adapter", "onViewRecycled");
+        updateTitle(holder);
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(@NonNull NewChapterView holder) {
+        Log.i("Adapter", "onFailedToRecycleView");
+        return super.onFailedToRecycleView(holder);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull NewChapterView holder) {
+        super.onViewAttachedToWindow(holder);
+        Log.i("Adapter", "onViewAttachedToWindow");
+        updateTitle(holder);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull NewChapterView holder) {
+        super.onViewDetachedFromWindow(holder);
+        Log.i("Adapter", "onViewDetachedFromWindow");
+    }
+
+    @Override
+    public void registerAdapterDataObserver(@NonNull RecyclerView.AdapterDataObserver observer) {
+        super.registerAdapterDataObserver(observer);
+        Log.i("Adapter", "registerAdapterDataObserver");
+    }
+
+    @Override
+    public void unregisterAdapterDataObserver(@NonNull RecyclerView.AdapterDataObserver observer) {
+        super.unregisterAdapterDataObserver(observer);
+        Log.i("Adapter", "unregisterAdapterDataObserver");
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        Log.i("Adapter", "onDetachedFromRecyclerView");
+    }
 
     @Override
     public void onBindViewHolder(@NonNull NewChapterView holder, int position) {
@@ -67,20 +131,17 @@ public class NewChapterReaderAdapter extends RecyclerView.Adapter<NewChapterView
         holder.setChapterID(CHAPTER_ID);
         holder.setChapterURL(getChapterURLFromChapterID(CHAPTER_ID));
 
-        holder.viewPager2.setUserInputEnabled(false);
-        NewChapterReaderTypeAdapter newChapterReaderTypeAdapter = new NewChapterReaderTypeAdapter(newChapterReader);
-        holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
-        holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
+        //holder.viewPager2.setUserInputEnabled(false);
+        //NewChapterReaderTypeAdapter newChapterReaderTypeAdapter = new NewChapterReaderTypeAdapter(newChapterReader);
+        //holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
+        //holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
 
         Log.i("Loading chapter", holder.chapterURL);
-
         holder.ready = false;
         if (Database.DatabaseChapter.isSaved(CHAPTER_ID)) {
             holder.unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(CHAPTER_ID));
             holder.setUpReader();
             holder.scrollView.post(() -> holder.scrollView.scrollTo(0, Database.DatabaseChapter.getY(holder.chapterID)));
-            //if (chapterReader.getSupportActionBar() != null)
-            //   chapterReader.getSupportActionBar().setTitle(title);
             holder.ready = true;
         } else if (holder.chapterURL != null) {
             holder.unformattedText = "";
@@ -91,9 +152,9 @@ public class NewChapterReaderAdapter extends RecyclerView.Adapter<NewChapterView
         Database.DatabaseChapter.setChapterStatus(CHAPTER_ID, Status.READING);
     }
 
-
     @Override
     public int getItemCount() {
+        Log.i("size", String.valueOf(newChapterReader.chapterIDs.length));
         return newChapterReader.chapterIDs.length;
     }
 }

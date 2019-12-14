@@ -521,6 +521,32 @@ public class Database {
             }
         }
 
+        public static float getOrder(int chapterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return -1;
+            } else {
+                cursor.moveToNext();
+                float y = cursor.getFloat(cursor.getColumnIndex(Columns.ORDER.toString()));
+                cursor.close();
+                return y;
+            }
+        }
+
+        public static String getTitle(int chapterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.TITLE + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return "UNKNOWN";
+            } else {
+                cursor.moveToNext();
+                String y = cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()));
+                cursor.close();
+                return checkStringDeserialize(y);
+            }
+        }
+
         /**
          * Sets chapter status
          *
