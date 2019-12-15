@@ -147,7 +147,6 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPreExecute() {
-        assert novelFragmentChapters != null;
         novelFragmentChapters.swipeRefreshLayout.setRefreshing(true);
         if (formatter.isIncrementingChapterList())
             novelFragmentChapters.pageCount.setVisibility(View.VISIBLE);
