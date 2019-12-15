@@ -6,6 +6,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -42,6 +43,9 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookma
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 16 / 06 / 2019
  *
@@ -52,7 +56,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     public NovelChapter novelChapter;
     public int chapterID = -1;
 
-    private final ImageView moreOptions;
     public final MaterialCardView cardView;
     public final ConstraintLayout constraintLayout;
     public final CheckBox checkBox;
@@ -69,6 +72,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     public ChaptersViewHolder(@NonNull View itemView) {
         super(itemView);
+        ImageView moreOptions;
         {
             cardView = itemView.findViewById(R.id.recycler_novel_chapter_card);
             checkBox = itemView.findViewById(R.id.recycler_novel_chapter_selectCheck);
@@ -96,31 +100,35 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
                         library_card_title.setTextColor(ChaptersAdapter.DefaultTextColor);
                     }
-                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    novelFragmentChapters.updateAdapter();
                     return true;
                 case R.id.popup_chapter_menu_download:
-                    if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                    if (!Database.DatabaseChapter.isSaved(chapterID) && novelFragmentChapters.novelFragment.novelPage != null) {
                         DownloadItem downloadItem = new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.title, novelChapter.title, chapterID);
-                        Download_Manager.addToDownload(downloadItem);
+                        Download_Manager.addToDownload(novelFragmentChapters.getActivity(), downloadItem);
                     } else {
-                        if (Download_Manager.delete(itemView.getContext(), new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.title, novelChapter.title, chapterID))) {
+                        if (novelFragmentChapters.novelFragment.novelPage != null && Download_Manager.delete(itemView.getContext(), new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.title, novelChapter.title, chapterID))) {
                             downloadTag.setVisibility(View.INVISIBLE);
                         }
                     }
-                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    novelFragmentChapters.updateAdapter();
+
                     return true;
 
                 case R.id.popup_chapter_menu_mark_read:
                     Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
-                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    novelFragmentChapters.updateAdapter();
+
                     return true;
                 case R.id.popup_chapter_menu_mark_unread:
                     Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD);
-                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    novelFragmentChapters.updateAdapter();
+
                     return true;
                 case R.id.popup_chapter_menu_mark_reading:
                     Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
-                    NovelFragmentChapters.adapter.notifyDataSetChanged();
+                    novelFragmentChapters.updateAdapter();
+
                     return true;
                 case R.id.browser:
                     if (novelFragmentChapters.getActivity() != null)
@@ -149,9 +157,10 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
             novelFragmentChapters.selectedChapters.add(novelChapter);
         else
             removeFromSelect();
-        if (novelFragmentChapters.selectedChapters.size() == 1 || novelFragmentChapters.selectedChapters.size() <= 0)
+        if ((novelFragmentChapters.selectedChapters.size() == 1 || novelFragmentChapters.selectedChapters.size() <= 0) && novelFragmentChapters.getInflater() != null)
             novelFragmentChapters.onCreateOptionsMenu(novelFragmentChapters.menu, novelFragmentChapters.getInflater());
-        NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+        novelFragmentChapters.updateAdapter();
+
     }
 
     private void removeFromSelect() {
@@ -165,6 +174,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
 
     @Override
     public void onClick(View v) {
-        openChapter(novelFragmentChapters.getActivity(), novelChapter, novelFragmentChapters.novelFragment.novelID, novelFragmentChapters.novelFragment.formatter.getID());
+        if (novelFragmentChapters.getActivity() != null && novelFragmentChapters.novelFragment.formatter != null)
+            openChapter(novelFragmentChapters.getActivity(), novelChapter, novelFragmentChapters.novelFragment.novelID, novelFragmentChapters.novelFragment.formatter.getID());
     }
 }

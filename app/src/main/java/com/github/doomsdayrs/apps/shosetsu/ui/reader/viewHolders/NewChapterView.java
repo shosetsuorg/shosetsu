@@ -18,6 +18,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders;
  */
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,11 +26,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
@@ -37,10 +40,12 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.NewChapterReaderViewL
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChapterViewHideBar;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+import com.google.android.material.chip.Chip;
 
 import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
+import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNextChapter;
 
 /**
  * shosetsu
@@ -56,13 +61,14 @@ public class NewChapterView extends Fragment {
 
     public ScrollView scrollView;
     public boolean bookmarked;
+    public Chip nextChapter;
     //public View coverView;
     // public ViewPager2 viewPager2;
     //public NewReader currentReader;
     private TextView textView;
 
 
-    public boolean ready;
+    public boolean ready = false;
     public String unformattedText;
     public String text;
 
@@ -98,11 +104,25 @@ public class NewChapterView extends Fragment {
         View view = inflater.inflate(R.layout.new_chapter_view, container, false);
 
         scrollView = view.findViewById(R.id.scrollView);
+        addBottomListener();
+
         textView = view.findViewById(R.id.textView);
         textView.setOnClickListener(new NovelFragmentChapterViewHideBar(newChapterReader.toolbar));
         textView.setBackgroundColor(Settings.ReaderTextBackgroundColor);
         textView.setTextColor(Settings.ReaderTextColor);
         textView.setTextSize(Settings.ReaderTextSize);
+
+        nextChapter = view.findViewById(R.id.next_chapter);
+
+        nextChapter.setOnClickListener(view1 -> {
+            int position = newChapterReader.findCurrentPosition(this.CHAPTER_ID);
+            if (position + 1 < newChapterReader.chapterIDs.length) {
+                nextChapter.setVisibility(View.GONE);
+                newChapterReader.viewPager.setCurrentItem(position + 1);
+            } else
+                Toast.makeText(newChapterReader.getApplicationContext(), "No more chapters!", Toast.LENGTH_SHORT).show();
+            //   Toast.makeText(newChapterReader.getApplicationContext(), "Cannot move to next chapter, Please exit reader", Toast.LENGTH_LONG).show();
+        });
 
         updateParent();
 
@@ -149,6 +169,46 @@ public class NewChapterView extends Fragment {
                 Log.d("TextSet", text.substring(0, text.length() - 1).replace("\n", "\\n"));
             textView.setText(text);
             // viewPager2.post(() -> currentReader.setText(text));
+        }
+    }
+
+
+    /**
+     * What to do when scroll hits bottom
+     */
+    private void bottom() {
+        int total = scrollView.getChildAt(0).getHeight() - scrollView.getHeight();
+        if (ready)
+            if ((scrollView.getScrollY() / (float) total) < .99) {
+                int y = scrollView.getScrollY();
+                if (y % 5 == 0) {
+                    // Log.d("YMAX", String.valueOf(total));
+                    // Log.d("YC", String.valueOf(y));
+                    // Log.d("YD", String.valueOf((scrollView.getScrollY() / (float) total)));
+
+                    //   Log.d("TY", String.valueOf(textView.getScrollY()));
+
+                    if (Database.DatabaseChapter.getStatus(CHAPTER_ID) != Status.READ)
+                        Database.DatabaseChapter.updateY(CHAPTER_ID, y);
+                }
+            } else {
+                Log.i("Scroll", "Marking chapter as READ");
+                Database.DatabaseChapter.setChapterStatus(CHAPTER_ID, Status.READ);
+                Database.DatabaseChapter.updateY(CHAPTER_ID, 0);
+                nextChapter.setVisibility(View.VISIBLE);
+                //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
+            }
+    }
+
+
+    /**
+     * Sets up the hitting bottom listener
+     */
+    private void addBottomListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            scrollView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> bottom());
+        } else {
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(this::bottom);
         }
     }
 }

@@ -39,7 +39,6 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Update_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.google.android.material.tabs.TabLayout;
 
 import org.joda.time.DateTime;
@@ -47,6 +46,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getCountBetween;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getStartingDay;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.getTotalDays;
@@ -67,10 +67,11 @@ public class UpdatesFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.updater_now:
-                Update_Manager.init(Database.DatabaseNovels.getIntLibrary(), getContext());
-                return true;
+                if (getContext() != null) {
+                    Update_Manager.init(Database.DatabaseNovels.getIntLibrary(), getContext());
+                    return true;
+                } else return false;
         }
-
         return false;
     }
 
@@ -83,8 +84,7 @@ public class UpdatesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_update, container, false);
-        Statics.mainActionBar.setTitle("Updates");
-
+        setActivityTitle(getActivity(),"Updates");
         viewPager = view.findViewById(R.id.viewpager);
         tabLayout = view.findViewById(R.id.tabLayout);
 

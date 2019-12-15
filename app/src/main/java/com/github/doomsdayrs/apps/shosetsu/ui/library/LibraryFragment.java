@@ -25,8 +25,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +34,7 @@ import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoOfColumns;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getNovelTitle;
 
 /*
@@ -174,7 +173,7 @@ public class LibraryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Statics.mainActionBar.setTitle("Library");
+        setActivityTitle(getActivity(), "Library");
         Log.d("Library", "creating");
         if (savedInstanceState == null)
             readFromDB();

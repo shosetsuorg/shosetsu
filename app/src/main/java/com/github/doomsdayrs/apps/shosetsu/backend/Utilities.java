@@ -22,6 +22,7 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.Supporter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
@@ -67,12 +68,13 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  */
 public class Utilities {
 
-    public static void ASSERT(boolean b) {
-        Log.e("ASSERT, D", String.valueOf(BuildConfig.DEBUG));
-        Log.e("ASSERT, B", String.valueOf(b));
 
-        if (BuildConfig.DEBUG && !b)
-            throw new RuntimeException();
+    public static void setActivityTitle(Activity activity, String title){
+        Supporter supporter = (Supporter) activity;
+        if (supporter != null) {
+            supporter.setTitle(title);
+        }
+
     }
 
 

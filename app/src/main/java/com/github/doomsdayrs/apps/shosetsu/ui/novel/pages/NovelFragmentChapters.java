@@ -1,7 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages;
 
-import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,20 +55,33 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
- */
-
-/**
+ * <p>
  * Displays the chapters the novel contains
  * TODO Check filesystem if the chapter is saved, even if not in DB.
+ * </p>
  */
 public class NovelFragmentChapters extends Fragment {
+    public static boolean reversed;
 
+    public RecyclerView recyclerView;
+    private int currentMaxPage = 1;
     @NonNull
     public ArrayList<NovelChapter> selectedChapters = new ArrayList<>();
+
+    @Nullable
+    public ChaptersAdapter adapter;
+    public SwipeRefreshLayout swipeRefreshLayout;
+    public NovelFragment novelFragment;
+    public TextView pageCount;
+    public FloatingActionButton resumeRead;
+    public Menu menu;
 
     public boolean contains(@NonNull NovelChapter novelChapter) {
         for (NovelChapter n : selectedChapters)
@@ -76,37 +90,31 @@ public class NovelFragmentChapters extends Fragment {
         return false;
     }
 
-    private int currentMaxPage = 1;
 
     private int findMinPosition() {
-        int min = novelFragment.novelChapters.size();
-        for (int x = 0; x < novelFragment.novelChapters.size(); x++)
-            if (contains(novelFragment.novelChapters.get(x)))
-                if (x < min)
-                    min = x;
+        int min = 0;
+        if (novelFragment.novelChapters != null) {
+            min = novelFragment.novelChapters.size();
+        }
+        if (novelFragment.novelChapters != null) {
+            for (int x = 0; x < novelFragment.novelChapters.size(); x++)
+                if (contains(novelFragment.novelChapters.get(x)))
+                    if (x < min)
+                        min = x;
+        }
         return min;
     }
 
-    public static boolean reversed;
-    @Nullable
-    @SuppressLint("StaticFieldLeak")
-    public static RecyclerView recyclerView;
-
     private int findMaxPosition() {
         int max = -1;
-        for (int x = novelFragment.novelChapters.size() - 1; x >= 0; x--)
-            if (contains(novelFragment.novelChapters.get(x)))
-                if (x > max)
-                    max = x;
+        if (novelFragment.novelChapters != null)
+            for (int x = novelFragment.novelChapters.size() - 1; x >= 0; x--)
+                if (contains(novelFragment.novelChapters.get(x)))
+                    if (x > max)
+                        max = x;
         return max;
     }
 
-    @Nullable
-    public static ChaptersAdapter adapter;
-    public SwipeRefreshLayout swipeRefreshLayout;
-    public NovelFragment novelFragment;
-    public TextView pageCount;
-    public FloatingActionButton resumeRead;
 
     /**
      * Constructor
@@ -172,9 +180,10 @@ public class NovelFragmentChapters extends Fragment {
         onResume();
         resumeRead.setOnClickListener(view1 -> {
             int i = novelFragment.lastRead();
-            if (i != -1 && i != -2)
-                Utilities.openChapter(getActivity(), novelFragment.novelChapters.get(i), novelFragment.novelID, novelFragment.formatter.getID());
-            else
+            if (i != -1 && i != -2) {
+                if (getActivity() != null && novelFragment.novelChapters != null && novelFragment.formatter != null)
+                    Utilities.openChapter(getActivity(), novelFragment.novelChapters.get(i), novelFragment.novelID, novelFragment.formatter.getID());
+            } else
                 Toast.makeText(getContext(), "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show();
         });
         return view;
@@ -199,11 +208,17 @@ public class NovelFragmentChapters extends Fragment {
         });
     }
 
-    public Menu menu;
 
     @Nullable
     public MenuInflater getInflater() {
         return new MenuInflater(getContext());
+    }
+
+    public boolean updateAdapter() {
+        return recyclerView.post(() -> {
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -211,36 +226,40 @@ public class NovelFragmentChapters extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.chapter_select_all:
-                for (NovelChapter novelChapter : novelFragment.novelChapters)
-                    if (!contains(novelChapter))
-                        selectedChapters.add(novelChapter);
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                if (novelFragment.novelChapters != null)
+                    for (NovelChapter novelChapter : novelFragment.novelChapters)
+                        if (!contains(novelChapter))
+                            selectedChapters.add(novelChapter);
+                updateAdapter();
                 return true;
 
             case R.id.chapter_download_selected:
                 for (NovelChapter novelChapter : selectedChapters) {
                     int chapterID = getChapterIDFromChapterURL(novelChapter.link);
-                    if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                    if (novelFragment.novelPage != null && !Database.DatabaseChapter.isSaved(chapterID)) {
                         DownloadItem downloadItem = new DownloadItem(novelFragment.formatter, novelFragment.novelPage.title, novelChapter.title, chapterID);
-                        Download_Manager.addToDownload(downloadItem);
+                        Download_Manager.addToDownload(getActivity(), downloadItem);
                     }
                 }
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                updateAdapter();
                 return true;
 
             case R.id.chapter_delete_selected:
                 for (NovelChapter novelChapter : selectedChapters) {
                     int chapterID = getChapterIDFromChapterURL(novelChapter.link);
-                    if (Database.DatabaseChapter.isSaved(chapterID))
+
+                    if (novelFragment.novelPage != null && Database.DatabaseChapter.isSaved(chapterID))
                         Download_Manager.delete(getContext(), new DownloadItem(novelFragment.formatter, novelFragment.novelPage.title, novelChapter.title, chapterID));
                 }
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                updateAdapter();
+
                 return true;
 
             case R.id.chapter_deselect_all:
                 selectedChapters = new ArrayList<>();
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
-                onCreateOptionsMenu(menu, getInflater());
+                updateAdapter();
+                if (getInflater() != null)
+                    onCreateOptionsMenu(menu, getInflater());
                 return true;
 
             case R.id.chapter_mark_read:
@@ -250,7 +269,8 @@ public class NovelFragmentChapters extends Fragment {
                     if (Database.DatabaseChapter.getStatus(chapterID).getA() != 2)
                         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
                 }
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                updateAdapter();
+
                 return true;
 
             case R.id.chapter_mark_unread:
@@ -260,7 +280,8 @@ public class NovelFragmentChapters extends Fragment {
                     if (Database.DatabaseChapter.getStatus(chapterID).getA() != 0)
                         Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD);
                 }
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                updateAdapter();
+
                 return true;
 
             case R.id.chapter_mark_reading:
@@ -269,24 +290,35 @@ public class NovelFragmentChapters extends Fragment {
                     if (Database.DatabaseChapter.getStatus(chapterID).getA() != 0)
                         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
                 }
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                updateAdapter();
+
                 return true;
 
             case R.id.chapter_select_between:
                 int min = findMinPosition();
                 int max = findMaxPosition();
-                for (int x = min; x < max; x++)
-                    if (!contains(novelFragment.novelChapters.get(x)))
-                        selectedChapters.add(novelFragment.novelChapters.get(x));
-                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                if (novelFragment.novelChapters != null)
+                    for (int x = min; x < max; x++)
+                        if (!contains(novelFragment.novelChapters.get(x)))
+                            selectedChapters.add(novelFragment.novelChapters.get(x));
+                updateAdapter();
+
                 return true;
 
             case R.id.chapter_filter:
-                Collections.reverse(novelFragment.novelChapters);
+                if (novelFragment.novelChapters != null)
+                    Collections.reverse(novelFragment.novelChapters);
                 NovelFragmentChapters.reversed = !NovelFragmentChapters.reversed;
-                return NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                return updateAdapter();
         }
         return false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
     /**

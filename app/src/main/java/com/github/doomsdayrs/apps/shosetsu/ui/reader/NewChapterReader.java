@@ -77,7 +77,7 @@ public class NewChapterReader extends AppCompatActivity {
     private final MenuItem[] readers = new MenuItem[2];
     MenuItem bookmark, tap_to_scroll;
 
-    ViewPager viewPager;
+   public ViewPager viewPager;
     public Toolbar toolbar;
 
 

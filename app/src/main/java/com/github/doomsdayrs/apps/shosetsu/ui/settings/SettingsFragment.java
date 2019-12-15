@@ -14,12 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsCard;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle;
 
 /*
  * This file is part of Shosetsu.
@@ -83,7 +84,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "SettingsFragment");
-        Statics.mainActionBar.setTitle("Settings");
+        setActivityTitle(getActivity(),"Settings");
         View view = inflater.inflate(R.layout.settings, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.settings_recycler);
 

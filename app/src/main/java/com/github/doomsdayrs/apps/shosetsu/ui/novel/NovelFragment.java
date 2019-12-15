@@ -25,7 +25,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.google.android.material.tabs.TabLayout;
 
@@ -192,8 +191,8 @@ public class NovelFragment extends Fragment {
             } else {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID);
                 status = Database.DatabaseNovels.getStatus(novelID);
-                if (novelPage != null)
-                    Statics.mainActionBar.setTitle(novelPage.title);
+                if (novelPage != null && getActivity() != null && getActivity().getActionBar() != null)
+                    getActivity().getActionBar().setTitle(novelPage.title);
                 setViewPager();
             }
         } else {

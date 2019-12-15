@@ -118,7 +118,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
                     case R.id.popup_chapter_menu_download: {
                         if (!Database.DatabaseChapter.isSaved(chapterID)) {
                             DownloadItem downloadItem = new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, chapterID);
-                            Download_Manager.addToDownload(downloadItem);
+                            Download_Manager.addToDownload(activity, downloadItem);
                         } else {
                             if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, chapterID))) {
                                 updatedChapterHolder.downloadTag.setVisibility(View.INVISIBLE);

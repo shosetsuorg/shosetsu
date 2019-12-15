@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -7,7 +8,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
@@ -56,11 +59,11 @@ public class Download_Manager {
     /**
      * Initializes download manager
      */
-    public static void init() {
+    public static void init(Activity activity) {
         if (download.isCancelled())
             download = new Downloading();
         if (download.getStatus().equals(AsyncTask.Status.FINISHED) || download.getStatus().equals(AsyncTask.Status.PENDING))
-            download.execute();
+            download.execute(activity);
     }
 
     /**
@@ -68,13 +71,13 @@ public class Download_Manager {
      *
      * @param downloadItem download item to add
      */
-    public static void addToDownload(@NonNull DownloadItem downloadItem) {
+    public static void addToDownload(Activity activity, @NonNull DownloadItem downloadItem) {
         if (!Database.DatabaseDownloads.inDownloads(downloadItem)) {
             Database.DatabaseDownloads.addToDownloads(downloadItem);
             if (download.isCancelled())
                 if (Database.DatabaseDownloads.getDownloadCount() >= 1) {
                     download = new Downloading();
-                    download.execute();
+                    download.execute(activity);
                 }
         }
     }
@@ -129,16 +132,20 @@ public class Download_Manager {
      * TODO Notification of download progress (( What is being downloaded
      * TODO Skip over paused chapters or move them to the bottom of the list
      */
-    static class Downloading extends AsyncTask<Void, Void, Void> {
+    static class Downloading extends AsyncTask<Activity, Void, Void> {
+
 
         @Nullable
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(Activity... voids) {
+            Activity activity = voids[0];
             while (Database.DatabaseDownloads.getDownloadCount() >= 1 && !Settings.downloadPaused) {
 
                 DownloadItem downloadItem = Database.DatabaseDownloads.getFirstDownload();
                 // Starts up
-                DownloadsFragment.toggleProcess(downloadItem);
+                if (downloadItem != null) {
+                    DownloadsFragment.toggleProcess(downloadItem);
+                }
                 if (downloadItem != null)
                     try {
                         {
@@ -159,8 +166,14 @@ public class Download_Manager {
                             fileOutputStream.close();
                             Database.DatabaseChapter.addSavedPath(downloadItem.chapterURL, folder.getPath() + "/" + formattedName + ".txt");
 
-                            if (NovelFragmentChapters.recyclerView != null && NovelFragmentChapters.adapter != null)
-                                NovelFragmentChapters.recyclerView.post(() -> NovelFragmentChapters.adapter.notifyDataSetChanged());
+                            if (activity != null) {
+                                RecyclerView recyclerView = activity.findViewById(R.id.fragment_novel_chapters_recycler);
+                                if (recyclerView != null)
+                                    recyclerView.post(() -> {
+                                        if (recyclerView.getAdapter() != null)
+                                            recyclerView.getAdapter().notifyDataSetChanged();
+                                    });
+                            }
 
                             Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName);
                         }

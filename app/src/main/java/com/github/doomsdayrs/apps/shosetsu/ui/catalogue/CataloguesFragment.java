@@ -18,13 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle;
 
 /*
  * This file is part of Shosetsu.
@@ -76,7 +77,7 @@ public class CataloguesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "CataloguesFragment");
-        Statics.mainActionBar.setTitle("Catalogues");
+        setActivityTitle(getActivity(),"Catalogues");
         //TODO Conditional for turning formatter on and off
         // > Conditional for languages
         // > Conditional for categories, maybe

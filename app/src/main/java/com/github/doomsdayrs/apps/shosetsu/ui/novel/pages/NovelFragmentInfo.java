@@ -36,6 +36,7 @@ import java.util.Arrays;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInWebview;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle;
 
 /*
  * This file is part of Shosetsu.
@@ -192,6 +193,9 @@ public class NovelFragmentInfo extends Fragment {
      * Sets the data of this page
      */
     public void setData() {
+        if (novelFragment.novelPage != null) {
+            setActivityTitle(getActivity(), novelFragment.novelPage.title);
+        }
         if (novelFragment.getView() != null)
             novelFragment.getView().post(() -> {
 
@@ -247,7 +251,9 @@ public class NovelFragmentInfo extends Fragment {
                         .load(novelFragment.novelPage.imageURL)
                         .into(imageView_background);
                 floatingActionButton.show();
-                formatterName.setText(novelFragment.formatter.getName());
+                if (novelFragment.formatter != null) {
+                    formatterName.setText(novelFragment.formatter.getName());
+                }
             });
     }
 

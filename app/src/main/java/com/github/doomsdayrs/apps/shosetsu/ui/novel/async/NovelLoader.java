@@ -10,7 +10,6 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import org.jsoup.nodes.Document;
 
@@ -142,7 +141,6 @@ public class NovelLoader extends AsyncTask<Void, Void, Boolean> {
 
         if (result) {
             assert novelFragment != null;
-            Statics.mainActionBar.setTitle(novelFragment.novelPage.title);
             if (loadAll)
                 errorView.activity.runOnUiThread(() -> new ChapterLoader(novelFragment.novelPage, novelFragment.novelURL, novelFragment.formatter).execute());
             errorView.activity.runOnUiThread(this::setData);

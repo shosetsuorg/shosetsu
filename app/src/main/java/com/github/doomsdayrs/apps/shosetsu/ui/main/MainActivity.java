@@ -10,6 +10,7 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,7 +31,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListen
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.javiersantos.appupdater.AppUpdater;
 import com.github.javiersantos.appupdater.AppUpdaterUtils;
 import com.github.javiersantos.appupdater.enums.AppUpdaterError;
@@ -64,7 +64,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setupTheme;
  * @author github.com/doomsdayrs
  */
 //TODO Inform users to refresh their libraries
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Supporter {
     public DrawerLayout drawerLayout;
     public NavigationView navigationView;
     public final CataloguesFragment cataloguesFragment = new CataloguesFragment();
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         //Sets the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Statics.mainActionBar = getSupportActionBar();
+
         //Sets up the sidebar
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         DBHelper helper = new DBHelper(this);
         Database.sqLiteDatabase = helper.getWritableDatabase();
 
-        Download_Manager.init();
+        Download_Manager.init(this);
 
         //Prevent the frag from changing on rotation
 
@@ -198,4 +198,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public void setTitle(String name) {
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(name);
+    }
 }

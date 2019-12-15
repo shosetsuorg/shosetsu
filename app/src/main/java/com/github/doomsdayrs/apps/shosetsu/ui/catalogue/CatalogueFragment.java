@@ -32,7 +32,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefre
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
 
 import java.util.ArrayList;
@@ -41,6 +40,7 @@ import java.util.Objects;
 import okhttp3.OkHttpClient;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoOfColumns;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle;
 
 /*
  * This file is part of Shosetsu.
@@ -154,7 +154,7 @@ public class CatalogueFragment extends Fragment {
             catalogueNovelCards = (ArrayList<CatalogueNovelCard>) savedInstanceState.getSerializable("list");
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
         }
-        Statics.mainActionBar.setTitle(formatter.getName());
+        setActivityTitle(getActivity(), formatter.getName());
         swipeRefreshLayout.setOnRefreshListener(new CatalogueRefresh(this));
         this.context = Objects.requireNonNull(container).getContext();
 

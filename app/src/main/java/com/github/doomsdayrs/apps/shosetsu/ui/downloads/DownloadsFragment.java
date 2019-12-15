@@ -22,13 +22,13 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
-import com.github.doomsdayrs.apps.shosetsu.variables.Statics;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.togglePause;
 
 /*
@@ -141,7 +141,7 @@ public class DownloadsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "NovelFragmentChapters");
-        Statics.mainActionBar.setTitle("Downloads");
+        setActivityTitle(getActivity(), "Downloads");
         View view = inflater.inflate(R.layout.fragment_downloads, container, false);
         recyclerView = view.findViewById(R.id.fragment_downloads_recycler);
         downloadItems = Database.DatabaseDownloads.getDownloadList();
@@ -183,7 +183,7 @@ public class DownloadsFragment extends Fragment {
                     item.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
                 else {
                     item.setIcon(R.drawable.ic_pause_circle_outline_black_24dp);
-                    Download_Manager.init();
+                    Download_Manager.init(getActivity());
                 }
                 return true;
         }
