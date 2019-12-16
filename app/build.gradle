@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
@@ -87,4 +89,6 @@ dependencies {
     //implementation 'org.mozilla.components:support-base:1.0.0'
 
     implementation 'com.zhkrb.cloudflare-scrape-android:scrape-rhino:0.1.1'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

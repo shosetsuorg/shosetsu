@@ -37,17 +37,21 @@ public class NovelFragmentMainAddToLibrary implements FloatingActionButton.OnCli
 
     @Override
     public void onClick(View v) {
-        if (!novelFragmentInfo.inLibrary) {
+        if (!novelFragmentInfo.getInLibrary()) {
             // Thinking about this, this is an impossible combination as the novel should've loaded before this
             //  if (!Database.DatabaseNovels.inLibrary(StaticNovel.novelID))
             //      Database.DatabaseNovels.addToLibrary(StaticNovel.formatter.getID(), StaticNovel.novelPage, StaticNovel, StaticNovel.status.getA());
-            Database.DatabaseNovels.bookMark(novelFragmentInfo.novelFragment.novelID);
-            novelFragmentInfo.inLibrary = true;
-            novelFragmentInfo.floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
+            if (novelFragmentInfo.novelFragment != null) {
+                Database.DatabaseNovels.bookMark(novelFragmentInfo.novelFragment.novelID);
+                novelFragmentInfo.setInLibrary(true);
+                novelFragmentInfo.getNovelAdd().setImageResource(R.drawable.ic_add_circle_black_24dp);
+            }
         } else {
-            Database.DatabaseNovels.unBookmark(novelFragmentInfo.novelFragment.novelID);
-            novelFragmentInfo.inLibrary = false;
-            novelFragmentInfo.floatingActionButton.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
+            if (novelFragmentInfo.novelFragment != null) {
+                Database.DatabaseNovels.unBookmark(novelFragmentInfo.novelFragment.novelID);
+                novelFragmentInfo.setInLibrary(false);
+                novelFragmentInfo.getNovelAdd().setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
+            }
 
         }
     }

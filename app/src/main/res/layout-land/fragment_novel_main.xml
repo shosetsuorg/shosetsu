@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_novel_main_refresh"
     android:layout_width="match_parent"
 
@@ -43,17 +42,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/fragment_novel_author" />
 
             <ImageView
+                android:layout_height="wrap_content"
                 android:id="@+id/fragment_novel_image"
                 android:layout_width="200dp"
-                android:layout_height="match_parent"
+                android:scaleType="fitXY"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
                 android:contentDescription="@string/todo"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="9:16"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/fragment_novel_title"
@@ -90,7 +88,7 @@
 
             <TextView
                 android:id="@+id/fragment_novel_description"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"

@@ -15,6 +15,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
 
+import java.util.Objects;
+
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL;
 
@@ -55,7 +57,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     /**
      * Constructor
      */
-    public ChapterLoader(NovelPage novelPage, String novelURL, Formatter formatter) {
+    public ChapterLoader(@Nullable NovelPage novelPage, String novelURL, Formatter formatter) {
         this.novelPage = novelPage;
         this.novelURL = novelURL;
         this.formatter = formatter;
@@ -89,17 +91,20 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
 
         if (novelFragmentChapters != null) {
             if (novelFragmentChapters.getActivity() != null)
-                novelFragmentChapters.getActivity().runOnUiThread(() -> novelFragmentChapters.novelFragment.errorView.setVisibility(View.GONE));
+                novelFragmentChapters.getActivity().runOnUiThread(() -> {
+                    if (novelFragmentChapters.novelFragment != null) {
+                        novelFragmentChapters.novelFragment.errorView.setVisibility(View.GONE);
+                    }
+                });
 
             try {
-
                 int page = 1;
                 if (formatter.isIncrementingChapterList()) {
                     novelPage = formatter.parseNovel(docFromURL(novelURL, formatter.hasCloudFlare()), page);
                     int mangaCount = 0;
                     while (page <= novelPage.maxChapterPage && !activity.isDestroyed()) {
                         String s = "Page: " + page + "/" + novelPage.maxChapterPage;
-                        novelFragmentChapters.pageCount.post(() -> novelFragmentChapters.pageCount.setText(s));
+                        Objects.requireNonNull(novelFragmentChapters.getPageCount()).post(() -> novelFragmentChapters.getPageCount().setText(s));
 
                         novelPage = formatter.parseNovel(docFromURL(novelURL, formatter.hasCloudFlare()), page);
                         for (NovelChapter novelChapter : novelPage.novelChapters)
@@ -119,9 +124,15 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                 if (novelFragmentChapters != null)
                     if (novelFragmentChapters.getActivity() != null)
                         novelFragmentChapters.getActivity().runOnUiThread(() -> {
-                            novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
-                            novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
-                            novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> refresh(activity));
+                            if (novelFragmentChapters.novelFragment != null) {
+                                novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
+                            }
+                            if (novelFragmentChapters.novelFragment != null) {
+                                novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
+                            }
+                            if (novelFragmentChapters.novelFragment != null) {
+                                novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> refresh(activity));
+                            }
                         });
 
             }
@@ -147,9 +158,9 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPreExecute() {
-        novelFragmentChapters.swipeRefreshLayout.setRefreshing(true);
+        Objects.requireNonNull(novelFragmentChapters.getSwipeRefreshLayout()).setRefreshing(true);
         if (formatter.isIncrementingChapterList())
-            novelFragmentChapters.pageCount.setVisibility(View.VISIBLE);
+            Objects.requireNonNull(novelFragmentChapters.getPageCount()).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -172,16 +183,19 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
 
-        View view = novelFragmentChapters.novelFragment.getView();
-        if (view != null)
+        View view = null;
+        if (novelFragmentChapters.novelFragment != null) {
+            view = novelFragmentChapters.novelFragment.getView();
+        }
+        if (view != null && novelFragmentChapters.getSwipeRefreshLayout() != null && novelFragmentChapters.getPageCount() != null && novelFragmentChapters.getResumeRead() != null)
             novelFragmentChapters.novelFragment.getView().post(() -> {
-                novelFragmentChapters.swipeRefreshLayout.setRefreshing(false);
+                novelFragmentChapters.getSwipeRefreshLayout().setRefreshing(false);
                 if (formatter.isIncrementingChapterList())
-                    novelFragmentChapters.pageCount.setVisibility(View.GONE);
+                    novelFragmentChapters.getPageCount().setVisibility(View.GONE);
                 if (result)
                     if (novelFragmentChapters.getActivity() != null)
                         novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setChapters);
-                novelFragmentChapters.resumeRead.setVisibility(View.VISIBLE);
+                novelFragmentChapters.getResumeRead().setVisibility(View.VISIBLE);
             });
     }
 }

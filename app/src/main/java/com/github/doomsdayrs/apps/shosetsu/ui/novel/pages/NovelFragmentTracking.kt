@@ -1,14 +1,11 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages;
+package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 
 /*
  * This file is part of Shosetsu.
@@ -31,9 +28,7 @@ import androidx.fragment.app.Fragment;
  *
  * @author github.com/doomsdayrs
  */
-@SuppressWarnings("unused")
-public class NovelFragmentTracking extends Fragment {
-
+class NovelFragmentTracking : Fragment() {
     /**
      * Not yet implemented
      *
@@ -42,12 +37,8 @@ public class NovelFragmentTracking extends Fragment {
      * @param savedInstanceState notYet
      * @return notYet
      */
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("OnCreateView", "OnCreateView");
-        return super.onCreateView(inflater, container, savedInstanceState);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d("OnCreateView", "OnCreateView")
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
-
-
 }
