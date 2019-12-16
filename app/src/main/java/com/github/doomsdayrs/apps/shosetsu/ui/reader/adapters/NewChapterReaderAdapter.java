@@ -42,8 +42,12 @@ public class NewChapterReaderAdapter extends FragmentPagerAdapter {
     public NewChapterReaderAdapter(@NonNull FragmentManager fm, int behavior, NewChapterReader newChapterReader) {
         super(fm, behavior);
         this.newChapterReader = newChapterReader;
-        for (int i : newChapterReader.chapterIDs)
-            chapterViews.add(new NewChapterView(newChapterReader, i));
+        for (int i : newChapterReader.chapterIDs) {
+            NewChapterView newChapterView = new NewChapterView();
+            newChapterView.setCHAPTER_ID(i);
+            newChapterView.setNewChapterReader(newChapterReader);
+            chapterViews.add(newChapterView);
+        }
     }
 
     @NonNull

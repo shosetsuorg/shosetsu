@@ -32,7 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
@@ -45,7 +44,6 @@ import com.google.android.material.chip.Chip;
 import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
-import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNextChapter;
 
 /**
  * shosetsu
@@ -54,10 +52,10 @@ import static com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.getNext
  * @author github.com/doomsdayrs
  */
 public class NewChapterView extends Fragment {
-    public final NewChapterReader newChapterReader;
+    public NewChapterReader newChapterReader;
 
-    public final String CHAPTER_URL;
-    public final int CHAPTER_ID;
+    public String CHAPTER_URL;
+    public int CHAPTER_ID;
 
     public ScrollView scrollView;
     public boolean bookmarked;
@@ -74,12 +72,19 @@ public class NewChapterView extends Fragment {
 
 
     @SuppressLint("ClickableViewAccessibility")
-    public NewChapterView(NewChapterReader newChapterReader, int chapter_id) {
-        this.newChapterReader = newChapterReader;
+    public NewChapterView() {
         //viewPager2 = itemView.findViewById(R.id.viewpager);
         //coverView = itemView.findViewById(R.id.viewCover);
         //coverView.setOnTouchListener((view, motionEvent) -> true);
-        CHAPTER_ID = chapter_id;
+    }
+
+
+    public void setNewChapterReader(NewChapterReader newChapterReader) {
+        this.newChapterReader = newChapterReader;
+    }
+
+    public void setCHAPTER_ID(int CHAPTER_ID) {
+        this.CHAPTER_ID = CHAPTER_ID;
         this.CHAPTER_URL = getChapterURLFromChapterID(CHAPTER_ID);
     }
 
@@ -97,12 +102,30 @@ public class NewChapterView extends Fragment {
         newChapterReader.toolbar.setTitle(title);
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("id", CHAPTER_ID);
+        outState.putString("url", CHAPTER_URL);
+        outState.putString("text", text);
+        outState.putString("unform", unformattedText);
+        outState.putBoolean("book", bookmarked);
+        outState.putBoolean("ready", ready);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_chapter_view, container, false);
-
+        if (savedInstanceState != null) {
+            CHAPTER_ID = savedInstanceState.getInt("id");
+            CHAPTER_URL = savedInstanceState.getString("url");
+            newChapterReader = (NewChapterReader) getActivity();
+            unformattedText = savedInstanceState.getString("unfom");
+            text = savedInstanceState.getString("text");
+            bookmarked = savedInstanceState.getBoolean("book");
+            ready = savedInstanceState.getBoolean("ready");
+        }
         scrollView = view.findViewById(R.id.scrollView);
         addBottomListener();
 
@@ -134,17 +157,20 @@ public class NewChapterView extends Fragment {
 
         Log.i("Loading chapter", CHAPTER_URL);
         ready = false;
-        if (Database.DatabaseChapter.isSaved(CHAPTER_ID)) {
-            unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(CHAPTER_ID));
-            setUpReader();
-            scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(CHAPTER_ID)));
-            ready = true;
+        if (savedInstanceState == null) {
+            if (Database.DatabaseChapter.isSaved(CHAPTER_ID)) {
+                unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(CHAPTER_ID));
+                setUpReader();
+                scrollView.post(() -> scrollView.scrollTo(0, Database.DatabaseChapter.getY(CHAPTER_ID)));
+                ready = true;
+            } else {
+                unformattedText = "";
+                setUpReader();
+                new NewChapterReaderViewLoader(this).execute();
+            }
         } else {
-            unformattedText = "";
             setUpReader();
-            new NewChapterReaderViewLoader(this).execute();
         }
-
         Database.DatabaseChapter.setChapterStatus(CHAPTER_ID, Status.READING);
         return view;
     }
