@@ -234,7 +234,8 @@ public class LibraryFragment extends Fragment {
             case R.id.chapter_deselect_all:
                 selectedNovels = new ArrayList<>();
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());
-                onCreateOptionsMenu(menu, getInflater());
+                if (getInflater() != null)
+                    onCreateOptionsMenu(menu, getInflater());
                 return true;
 
             case R.id.remove_from_library:

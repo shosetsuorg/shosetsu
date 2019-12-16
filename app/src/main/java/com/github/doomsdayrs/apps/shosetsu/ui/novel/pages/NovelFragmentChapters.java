@@ -132,8 +132,6 @@ public class NovelFragmentChapters extends Fragment {
         super.onDestroy();
         reversed = false;
         Log.d("NFChapters", "Destroy");
-        recyclerView = null;
-        adapter = null;
     }
 
     /**
