@@ -54,14 +54,16 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityT
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
- */
-
-/**
+ * <p>
  * The page you see when you select a novel
+ * </p>
  */
 public class NovelFragmentInfo extends Fragment {
 
@@ -100,7 +102,9 @@ public class NovelFragmentInfo extends Fragment {
                 Intent intent = new Intent(getActivity(), MigrationView.class);
                 try {
                     ArrayList<NovelCard> novelCards = new ArrayList<>();
-                    novelCards.add(new NovelCard(novelFragment.novelPage.title, novelFragment.novelID, novelFragment.novelURL, novelFragment.novelPage.imageURL, novelFragment.formatter.getID()));
+                    if (novelFragment.novelPage != null) {
+                        novelCards.add(new NovelCard(novelFragment.novelPage.title, novelFragment.novelID, novelFragment.novelURL, novelFragment.novelPage.imageURL, novelFragment.formatter.getID()));
+                    }
                     intent.putExtra("selected", serializeToString(novelCards));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -110,11 +114,15 @@ public class NovelFragmentInfo extends Fragment {
                 return true;
             case R.id.webview:
                 if (getActivity() != null)
-                    openInWebview(getActivity(), novelFragment.novelURL);
+                    if (novelFragment.novelURL != null) {
+                        openInWebview(getActivity(), novelFragment.novelURL);
+                    }
                 return true;
             case R.id.browser:
                 if (getActivity() != null)
-                    openInBrowser(getActivity(), novelFragment.novelURL);
+                    if (novelFragment.novelURL != null) {
+                        openInBrowser(getActivity(), novelFragment.novelURL);
+                    }
                 return true;
         }
         return false;
@@ -154,7 +162,9 @@ public class NovelFragmentInfo extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "NovelFragmentMain");
         this.novelFragment = (NovelFragment) getParentFragment();
-        novelFragment.novelFragmentInfo = this;
+        if (novelFragment != null) {
+            novelFragment.novelFragmentInfo = this;
+        }
         View view = inflater.inflate(R.layout.fragment_novel_main, container, false);
         {
             imageView = view.findViewById(R.id.fragment_novel_image);
@@ -182,7 +192,7 @@ public class NovelFragmentInfo extends Fragment {
         if (inLibrary)
             floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
 
-            setData();
+        setData();
 
         floatingActionButton.setOnClickListener(new NovelFragmentMainAddToLibrary(this));
         swipeRefreshLayout.setOnRefreshListener(new NovelFragmentUpdate(this));
