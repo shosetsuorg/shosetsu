@@ -179,7 +179,10 @@ public class LibraryFragment extends Fragment {
             readFromDB();
         else {
             ArrayList<Integer> novelIDs = savedInstanceState.getIntegerArrayList("lib"), selectedIDs = savedInstanceState.getIntegerArrayList("selected");
-
+            if (novelIDs != null) {
+                libraryNovelCards = novelIDs;
+            }
+            selectedNovels = selectedIDs;
 
         }
         View view = inflater.inflate(R.layout.fragment_library, container, false);
