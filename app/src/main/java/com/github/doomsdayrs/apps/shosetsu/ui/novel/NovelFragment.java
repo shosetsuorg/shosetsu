@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
@@ -136,7 +137,7 @@ public class NovelFragment extends Fragment {
 
 
     public NovelFragmentInfo novelFragmentInfo;
-    private NovelFragmentChapters novelFragmentChapters;
+    public NovelFragmentChapters novelFragmentChapters;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -200,6 +201,7 @@ public class NovelFragment extends Fragment {
             novelURL = savedInstanceState.getString("novelURL");
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"));
             status = Status.getStatus(savedInstanceState.getInt("status"));
+            novelPage = Database.DatabaseNovels.getNovelPage(novelID);
             setViewPager();
         }
         return view;
@@ -215,7 +217,7 @@ public class NovelFragment extends Fragment {
             fragments.add(novelFragmentChapters);
         }
 
-        NovelPagerAdapter pagerAdapter = new NovelPagerAdapter(getChildFragmentManager(), fragments);
+        NovelPagerAdapter pagerAdapter = new NovelPagerAdapter(getChildFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, fragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

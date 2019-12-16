@@ -153,6 +153,8 @@ public class NovelFragmentInfo extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "NovelFragmentMain");
+        this.novelFragment = (NovelFragment) getParentFragment();
+        novelFragment.novelFragmentInfo = this;
         View view = inflater.inflate(R.layout.fragment_novel_main, container, false);
         {
             imageView = view.findViewById(R.id.fragment_novel_image);
@@ -180,7 +182,6 @@ public class NovelFragmentInfo extends Fragment {
         if (inLibrary)
             floatingActionButton.setImageResource(R.drawable.ic_add_circle_black_24dp);
 
-        if (novelFragment != null && novelFragment.novelPage != null && title != null)
             setData();
 
         floatingActionButton.setOnClickListener(new NovelFragmentMainAddToLibrary(this));

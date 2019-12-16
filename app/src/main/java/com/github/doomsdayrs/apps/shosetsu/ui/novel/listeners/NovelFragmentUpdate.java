@@ -37,14 +37,15 @@ public class NovelFragmentUpdate implements SwipeRefreshLayout.OnRefreshListener
 
     @Override
     public void onRefresh() {
-        new NovelLoader(
-                novelFragmentInfo.novelFragment,
-                new ErrorView(
-                        novelFragmentInfo.novelFragment.getActivity(),
-                        novelFragmentInfo.novelFragment.errorView,
-                        novelFragmentInfo.novelFragment.errorMessage,
-                        novelFragmentInfo.novelFragment.errorButton),
-                false)
-                .execute();
+        if (novelFragmentInfo.novelFragment != null)
+            new NovelLoader(
+                    novelFragmentInfo.novelFragment,
+                    new ErrorView(
+                            novelFragmentInfo.novelFragment.getActivity(),
+                            novelFragmentInfo.novelFragment.errorView,
+                            novelFragmentInfo.novelFragment.errorMessage,
+                            novelFragmentInfo.novelFragment.errorButton),
+                    false)
+                    .execute();
     }
 }

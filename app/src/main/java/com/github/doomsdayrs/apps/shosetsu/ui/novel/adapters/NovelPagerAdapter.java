@@ -36,17 +36,17 @@ public class NovelPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     private String[] titles = {"Info", "Chapters"};
 
-    public NovelPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments) {
-        super(fm);
+    public NovelPagerAdapter(@NonNull FragmentManager fm, int behavior, List<Fragment> fragments) {
+        super(fm, behavior);
         this.fragments = fragments;
     }
 
     //TODO with tracker use this instead the of the above
-    public NovelPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments, boolean ignored) {
+    /*public NovelPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments, boolean ignored) {
         super(fm);
         this.fragments = fragments;
         titles = new String[]{titles[0], titles[1], "Tracker"};
-    }
+    }*/
 
     @NonNull
     @Override

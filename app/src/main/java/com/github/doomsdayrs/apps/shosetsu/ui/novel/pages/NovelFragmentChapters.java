@@ -1,8 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages;
 
-import android.content.BroadcastReceiver;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -162,6 +160,8 @@ public class NovelFragmentChapters extends Fragment {
             selectedChapters = (ArrayList<NovelChapter>) savedInstanceState.getSerializable("selChapter");
             currentMaxPage = savedInstanceState.getInt("maxPage");
         }
+        this.novelFragment = (NovelFragment) getParentFragment();
+        novelFragment.novelFragmentChapters = this;
         Log.d("NovelFragmentChapters", "Creating");
         View view = inflater.inflate(R.layout.fragment_novel_chapters, container, false);
         recyclerView = view.findViewById(R.id.fragment_novel_chapters_recycler);
