@@ -231,8 +231,8 @@ public class Utilities {
      * @return String Array
      */
     @NonNull
-    public static String convertArrayToString(@NotNull String[] a) {
-        if (a.length != 0) {
+    public static String convertArrayToString(String[] a) {
+        if (a != null && a.length != 0) {
             for (int x = 0; x < a.length; x++) {
                 a[x] = a[x].replace(",", ">,<");
             }
