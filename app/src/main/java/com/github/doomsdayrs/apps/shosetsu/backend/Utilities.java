@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.Supporter;
@@ -69,7 +68,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
 public class Utilities {
 
 
-    public static void setActivityTitle(Activity activity, String title){
+    public static void setActivityTitle(Activity activity, String title) {
         Supporter supporter = (Supporter) activity;
         if (supporter != null) {
             supporter.setTitle(title);
@@ -85,7 +84,7 @@ public class Utilities {
      * @param positionSpared Item to set checked
      * @param demarkAction   Any action to proceed with
      */
-    public static void demarkMenuItems(@NotNull MenuItem[] menuItems, int positionSpared, @Nullable DemarkAction demarkAction) {
+    public static void unmarkMenuItems(MenuItem[] menuItems, int positionSpared, @Nullable DemarkAction demarkAction) {
         for (int x = 0; x < menuItems.length; x++)
             if (x != positionSpared)
                 menuItems[x].setChecked(false);
@@ -233,7 +232,7 @@ public class Utilities {
      */
     @NonNull
     public static String convertArrayToString(@NotNull String[] a) {
-        if (a != null && a.length != 0) {
+        if (a.length != 0) {
             for (int x = 0; x < a.length; x++) {
                 a[x] = a[x].replace(",", ">,<");
             }
@@ -271,7 +270,7 @@ public class Utilities {
     /**
      * Initializes the settings
      *
-     * @param
+     * @param mainActivity activity
      */
     public static void initPreferences(@NonNull AppCompatActivity mainActivity) {
         Settings.ReaderTextColor = viewPreferences.getInt("ReaderTextColor", Color.BLACK);
@@ -411,16 +410,6 @@ public class Utilities {
         }
     }
 
-
-    /**
-     * Gets y position of a bookmark
-     *
-     * @param chapterID chapter id
-     * @return y position
-     */
-    public static int getYBookmark(int chapterID) {
-        return Database.DatabaseChapter.getY(chapterID);
-    }
 
     /**
      * Toggles bookmark

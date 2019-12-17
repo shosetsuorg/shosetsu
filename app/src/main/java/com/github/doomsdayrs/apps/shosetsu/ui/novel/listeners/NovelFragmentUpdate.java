@@ -42,9 +42,9 @@ public class NovelFragmentUpdate implements SwipeRefreshLayout.OnRefreshListener
                     novelFragmentInfo.novelFragment,
                     new ErrorView(
                             novelFragmentInfo.novelFragment.getActivity(),
-                            novelFragmentInfo.novelFragment.errorView,
-                            novelFragmentInfo.novelFragment.errorMessage,
-                            novelFragmentInfo.novelFragment.errorButton),
+                            novelFragmentInfo.novelFragment.getErrorView(),
+                            novelFragmentInfo.novelFragment.getErrorMessage(),
+                            novelFragmentInfo.novelFragment.getErrorButton()),
                     false)
                     .execute();
     }

@@ -129,6 +129,7 @@ class NovelFragmentChapters : Fragment() {
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (savedInstanceState != null) {
+            //TODO Remove novelChapter as a valid data stream
             selectedChapters = (savedInstanceState.getSerializable("selChapter") as ArrayList<NovelChapter>?)!!
             currentMaxPage = savedInstanceState.getInt("maxPage")
         }
@@ -250,7 +251,7 @@ class NovelFragmentChapters : Fragment() {
                 return true
             }
             R.id.chapter_filter -> {
-                if (novelFragment!!.novelChapters != null) novelFragment!!.novelChapters?.reverse()
+                if (novelFragment!!.novelChapters != null) novelFragment!!.novelChapters = novelFragment!!.novelChapters?.reversed()
                 reversed = !reversed
                 return updateAdapter()
             }

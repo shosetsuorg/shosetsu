@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.demarkMenuItems;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isReaderNightMode;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.isTapToScroll;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openInBrowser;
@@ -40,6 +39,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setupTheme;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.swapReaderColor;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleBookmarkChapter;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.toggleTapToScroll;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.unmarkMenuItems;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChaptersOnlyIDs;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getReaderType;
 import static java.util.Arrays.binarySearch;
@@ -187,11 +187,11 @@ public class ChapterReader extends AppCompatActivity {
 
             switch (readerType) {
                 case 1:
-                    demarkMenuItems(readers, 1, null);
+                    unmarkMenuItems(readers, 1, null);
                     break;
                 case 0:
                 case -1:
-                    demarkMenuItems(readers, 0, null);
+                    unmarkMenuItems(readers, 0, null);
                     break;
                 case -2:
                 default:
@@ -238,39 +238,39 @@ public class ChapterReader extends AppCompatActivity {
                 updateBookmark();
                 return true;
             case R.id.chapter_view_textSize_small:
-                demarkMenuItems(indentSpaces, 0, demarkActions[0]);
+                unmarkMenuItems(indentSpaces, 0, demarkActions[0]);
                 return true;
             case R.id.chapter_view_textSize_medium:
-                demarkMenuItems(textSizes, 1, demarkActions[0]);
+                unmarkMenuItems(textSizes, 1, demarkActions[0]);
                 return true;
             case R.id.chapter_view_textSize_large:
-                demarkMenuItems(textSizes, 2, demarkActions[0]);
+                unmarkMenuItems(textSizes, 2, demarkActions[0]);
                 return true;
 
             case R.id.chapter_view_paragraphSpace_none:
-                demarkMenuItems(paragraphSpaces, 0, demarkActions[1]);
+                unmarkMenuItems(paragraphSpaces, 0, demarkActions[1]);
                 return true;
             case R.id.chapter_view_paragraphSpace_small:
-                demarkMenuItems(paragraphSpaces, 1, demarkActions[1]);
+                unmarkMenuItems(paragraphSpaces, 1, demarkActions[1]);
                 return true;
             case R.id.chapter_view_paragraphSpace_medium:
-                demarkMenuItems(paragraphSpaces, 2, demarkActions[1]);
+                unmarkMenuItems(paragraphSpaces, 2, demarkActions[1]);
                 return true;
             case R.id.chapter_view_paragraphSpace_large:
-                demarkMenuItems(paragraphSpaces, 3, demarkActions[1]);
+                unmarkMenuItems(paragraphSpaces, 3, demarkActions[1]);
                 return true;
 
             case R.id.chapter_view_indent_none:
-                demarkMenuItems(indentSpaces, 0, demarkActions[2]);
+                unmarkMenuItems(indentSpaces, 0, demarkActions[2]);
                 return true;
             case R.id.chapter_view_indent_small:
-                demarkMenuItems(indentSpaces, 1, demarkActions[2]);
+                unmarkMenuItems(indentSpaces, 1, demarkActions[2]);
                 return true;
             case R.id.chapter_view_indent_medium:
-                demarkMenuItems(indentSpaces, 2, demarkActions[2]);
+                unmarkMenuItems(indentSpaces, 2, demarkActions[2]);
                 return true;
             case R.id.chapter_view_indent_large:
-                demarkMenuItems(indentSpaces, 3, demarkActions[2]);
+                unmarkMenuItems(indentSpaces, 3, demarkActions[2]);
                 return true;
 
             case R.id.browser:
@@ -280,10 +280,10 @@ public class ChapterReader extends AppCompatActivity {
                 openInWebview(this, currentView.chapterURL);
                 return true;
             case R.id.reader_0:
-                demarkMenuItems(readers, 0, demarkActions[3]);
+                unmarkMenuItems(readers, 0, demarkActions[3]);
                 return true;
             case R.id.reader_1:
-                demarkMenuItems(readers, 1, demarkActions[3]);
+                unmarkMenuItems(readers, 1, demarkActions[3]);
                 return true;
 
         }

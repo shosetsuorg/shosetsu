@@ -93,7 +93,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
             if (novelFragmentChapters.getActivity() != null)
                 novelFragmentChapters.getActivity().runOnUiThread(() -> {
                     if (novelFragmentChapters.novelFragment != null) {
-                        novelFragmentChapters.novelFragment.errorView.setVisibility(View.GONE);
+                        novelFragmentChapters.novelFragment.getErrorView().setVisibility(View.GONE);
                     }
                 });
 
@@ -125,13 +125,13 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                     if (novelFragmentChapters.getActivity() != null)
                         novelFragmentChapters.getActivity().runOnUiThread(() -> {
                             if (novelFragmentChapters.novelFragment != null) {
-                                novelFragmentChapters.novelFragment.errorView.setVisibility(View.VISIBLE);
+                                Objects.requireNonNull(novelFragmentChapters.novelFragment.getErrorView()).setVisibility(View.VISIBLE);
                             }
                             if (novelFragmentChapters.novelFragment != null) {
-                                novelFragmentChapters.novelFragment.errorMessage.setText(e.getMessage());
+                                Objects.requireNonNull(novelFragmentChapters.novelFragment.getErrorMessage()).setText(e.getMessage());
                             }
                             if (novelFragmentChapters.novelFragment != null) {
-                                novelFragmentChapters.novelFragment.errorButton.setOnClickListener(view -> refresh(activity));
+                                Objects.requireNonNull(novelFragmentChapters.novelFragment.getErrorButton()).setOnClickListener(view -> refresh(activity));
                             }
                         });
 

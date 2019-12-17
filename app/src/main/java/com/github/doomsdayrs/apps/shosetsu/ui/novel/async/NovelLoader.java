@@ -71,7 +71,7 @@ public class NovelLoader extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        novelFragment.novelFragmentInfo.swipeRefreshLayout.setRefreshing(true);
+        novelFragment.novelFragmentInfo.getSwipeRefresh().setRefreshing(true);
     }
 
     /**
@@ -130,10 +130,14 @@ public class NovelLoader extends AsyncTask<Void, Void, Boolean> {
         assert (novelFragment != null);
 
 
-        novelFragment.novelFragmentInfo.swipeRefreshLayout.setRefreshing(false);
+        novelFragment.novelFragmentInfo.getSwipeRefresh().setRefreshing(false);
         if (Database.DatabaseNovels.inDatabase(novelFragment.novelID)) {
             try {
-                Database.DatabaseNovels.updateData(novelFragment.novelURL, novelFragment.novelPage);
+                if (novelFragment.novelURL != null) {
+                    if (novelFragment.novelPage != null) {
+                        Database.DatabaseNovels.updateData(novelFragment.novelURL, novelFragment.novelPage);
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
