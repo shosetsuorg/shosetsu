@@ -146,6 +146,29 @@ public class Database {
 
     public static class DatabaseIdentification {
 
+        /**
+         * Gets rid of novel completely
+         * @param novelID ID of novel to destroy
+         */
+        public static void purgeNovel(int novelID) {
+            sqLiteDatabase.execSQL("delete from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + "=" + novelID);
+            sqLiteDatabase.execSQL("delete from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID);
+            purgeChaptersOf(novelID);
+        }
+
+        /**
+         * Gets rid of chapters of novel. To fix issues
+         * @param novelID ID of novel
+         */
+        public static void purgeChaptersOf(int novelID) {
+            // Deletes chapters from identification
+            sqLiteDatabase.execSQL("delete from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.PARENT_ID + "=" + novelID);
+
+            // Removes all chapters from chapters DB
+            sqLiteDatabase.execSQL("delete from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + "=" + novelID);
+        }
+
+
         static boolean hasChapter(String chapterURL) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.URL + " = '" + chapterURL + "'", null);
             int a = cursor.getCount();
@@ -437,17 +460,14 @@ public class Database {
     }
 
     public static class DatabaseChapter {
+        //TODO Dev access code
 
-        /*
-        // TODO This will remove all chapter data
         public static void purgeCache() {
-
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTERS);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTER_IDENTIFICATION);
+            sqLiteDatabase.execSQL(DBHelper.CHAPTER_IDENTIFICATION_CREATE);
+            sqLiteDatabase.execSQL(DBHelper.CHAPTERS_CREATE);
         }
-
-        //TODO purge not needed cache
-        public static void purgeUneededCache() {
-        }
-*/
 
         /**
          * @param novelID ID of novel
@@ -917,8 +937,6 @@ public class Database {
         }
 
         /**
-         * TODO Create a cache cleaner
-         *
          * @param novelURL url of novel to remove
          * @return if successful
          */

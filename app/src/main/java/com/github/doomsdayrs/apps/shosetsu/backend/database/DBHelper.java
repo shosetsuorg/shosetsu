@@ -40,7 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Columns.FORMATTER_ID + " integer not null" +
             ")";
 
-    private static final String CHAPTER_IDENTIFICATION_CREATE = "create table if not exists " + Tables.CHAPTER_IDENTIFICATION + "(" +
+    public static final String CHAPTER_IDENTIFICATION_CREATE = "create table if not exists " + Tables.CHAPTER_IDENTIFICATION + "(" +
             Columns.ID + " integer primary key autoincrement," +
 
             // Refers to NOVEL
@@ -49,7 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
             ")";
 
 
-    private static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
+    public static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
             // Refers to CHAPERID
             Columns.ID + " integer primary key," +
 
