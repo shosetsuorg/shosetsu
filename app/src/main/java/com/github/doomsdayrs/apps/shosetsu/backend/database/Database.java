@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,6 +12,7 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.ViewSettings;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
@@ -148,6 +150,7 @@ public class Database {
 
         /**
          * Gets rid of novel completely
+         *
          * @param novelID ID of novel to destroy
          */
         public static void purgeNovel(int novelID) {
@@ -158,6 +161,7 @@ public class Database {
 
         /**
          * Gets rid of chapters of novel. To fix issues
+         *
          * @param novelID ID of novel
          */
         public static void purgeChaptersOf(int novelID) {
@@ -168,6 +172,20 @@ public class Database {
             sqLiteDatabase.execSQL("delete from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + "=" + novelID);
         }
 
+
+        public static void purgeUnSavedNovels(View view){
+            purgeUnSavedNovels();
+        }
+        /**
+         * Finds and deletes all novels that are unbookmarked
+         */
+        public static void purgeUnSavedNovels() {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=0", null);
+            while (cursor.moveToNext()) {
+                purgeNovel(cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())));
+            }
+            cursor.close();
+        }
 
         static boolean hasChapter(String chapterURL) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.URL + " = '" + chapterURL + "'", null);

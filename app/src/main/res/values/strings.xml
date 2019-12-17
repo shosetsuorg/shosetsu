@@ -101,6 +101,8 @@
     <string name="default_reader">Default</string>
     <string name="markdown_reader">MarkDown reader</string>
     <string name="chapters_unread_label">Chapters unread: </string>
+    <string name="remove_novel_cache">Remove Novel Cache</string>
+    <string name="removes_un_bookmarked_chapters">Removes un-bookmarked chapters</string>
 
 </resources>
 

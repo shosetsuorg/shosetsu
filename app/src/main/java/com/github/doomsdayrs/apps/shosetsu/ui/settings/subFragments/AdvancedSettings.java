@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
 import java.util.ArrayList;
@@ -49,10 +52,10 @@ public class AdvancedSettings extends Fragment {
     static {
         strings.add("Light");
         strings.add("Dark");
-        strings.add("Night");
     }
 
     private Spinner spinner;
+    private Button purgeCache;
 
     public AdvancedSettings() {
     }
@@ -82,6 +85,8 @@ public class AdvancedSettings extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+
+        purgeCache.setOnClickListener(Database.DatabaseIdentification::purgeUnSavedNovels);
         return view;
     }
 }
