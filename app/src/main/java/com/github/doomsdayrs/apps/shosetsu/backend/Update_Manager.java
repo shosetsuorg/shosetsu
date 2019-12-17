@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.async.ChapterUpdater;
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import java.util.ArrayList;
 

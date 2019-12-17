@@ -75,9 +75,6 @@ public class ChapterView extends Fragment {
 
     public ChapterReader chapterReader;
     private Chip nextChapter;
-    //Tap to scroll
-    @SuppressWarnings("FieldCanBeLocal")
-    private View scroll_up, scroll_down;
 
     public ChapterView(ChapterReader chapterReader, int chapterID) {
         this.chapterReader = chapterReader;
@@ -113,6 +110,9 @@ public class ChapterView extends Fragment {
         if (chapterID == chapterReader.currentChapterID && chapterReader.first)
             chapterReader.first = false;
 
+        //Tap to scroll
+        View scroll_up;
+        View scroll_down;
         {
             errorView = new ErrorView(chapterReader, chapterView.findViewById(R.id.network_error), chapterView.findViewById(R.id.error_message), chapterView.findViewById(R.id.error_button));
             progressBar = chapterView.findViewById(R.id.fragment_novel_chapter_view_progress);

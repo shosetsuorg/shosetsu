@@ -91,11 +91,11 @@ public class BackupProcess extends AsyncTask<Void, Void, Void> {
                         boolean bookmarked = intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())));
                         Log.i("NovelBack", "Valid?: " + bookmarked);
                         if (bookmarked) {
-                            String nurl = getNovelURLfromNovelID(cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())));
+                            String novelURL = getNovelURLfromNovelID(cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())));
 
                             JSONObject novel = new JSONObject();
-                            novel.put(Columns.URL.toString(), nurl);
-                            novel.put(Columns.FORMATTER_ID.toString(), getFormatterIDFromNovelURL(nurl));
+                            novel.put(Columns.URL.toString(), novelURL);
+                            novel.put(Columns.FORMATTER_ID.toString(), getFormatterIDFromNovelURL(novelURL));
 
                             novel.put(Columns.READING_STATUS.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READING_STATUS.toString())));
                             novel.put(Columns.READER_TYPE.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READER_TYPE.toString())));

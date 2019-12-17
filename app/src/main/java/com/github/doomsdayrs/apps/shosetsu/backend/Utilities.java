@@ -439,10 +439,10 @@ public class Utilities {
     /**
      * Pre resquite requires chapter to already have been added to library
      *
-     * @param activity
-     * @param novelChapter
-     * @param novelID
-     * @param formatterID
+     * @param activity     activity
+     * @param novelChapter novel chapter
+     * @param novelID      id of novel
+     * @param formatterID  formatter
      */
     public static void openChapter(@NonNull Activity activity, @NonNull NovelChapter novelChapter, int novelID, int formatterID) {
         openChapter(activity, novelChapter, novelID, formatterID, null);

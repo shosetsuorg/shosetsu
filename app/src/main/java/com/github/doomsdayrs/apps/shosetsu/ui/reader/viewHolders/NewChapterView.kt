@@ -119,7 +119,7 @@ class NewChapterView @SuppressLint("ClickableViewAccessibility") constructor() :
             if (newChapterReader!!.chapterIDs != null && newChapterReader!!.getViewPager() != null) {
                 if (position + 1 < newChapterReader!!.chapterIDs!!.size) {
                     next_chapter.visibility = View.GONE
-                    Objects.requireNonNull(newChapterReader!!.getViewPager()).currentItem = position + 1
+                    newChapterReader!!.getViewPager()?.currentItem = position + 1
                 } else Toast.makeText(newChapterReader!!.applicationContext, "No more chapters!", Toast.LENGTH_SHORT).show()
             }
         }

@@ -165,7 +165,7 @@ class NovelFragmentChapters : Fragment() {
             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
             if (novelFragment != null && Database.DatabaseNovels.inDatabase(novelFragment!!.novelID)) {
                 novelFragment!!.novelChapters = Database.DatabaseChapter.getChapters(novelFragment!!.novelID)
-                if (novelFragment!!.novelChapters != null && novelFragment!!.novelChapters!!.size != 0) resume!!.visibility = View.VISIBLE
+                if (novelFragment!!.novelChapters != null && novelFragment!!.novelChapters!!.isNotEmpty()) resume!!.visibility = View.VISIBLE
             }
             adapter = ChaptersAdapter(this)
             adapter!!.setHasStableIds(true)

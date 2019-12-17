@@ -8,8 +8,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView;
 
-import java.util.ArrayList;
-
 
 public class ChapterReaderAdapter extends FragmentPagerAdapter {
     private final ChapterReader chapterReader;

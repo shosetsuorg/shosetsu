@@ -10,7 +10,6 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements Supporter {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        WebView webView = findViewById(R.id.absolute_webview);
+        WebView webView = findViewById(R.id.absolute_webView);
         WebViewScrapper.setUa(webView.getSettings().getUserAgentString());
         // Sets up DB
         DBHelper helper = new DBHelper(this);

@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment
  *
  * @author github.com/doomsdayrs
  */
+@Suppress("unused")
 class NovelFragmentTracking : Fragment() {
     /**
      * Not yet implemented

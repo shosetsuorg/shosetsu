@@ -7,7 +7,6 @@ import android.widget.SearchView;
 import androidx.annotation.NonNull;
 
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import java.util.ArrayList;
 
