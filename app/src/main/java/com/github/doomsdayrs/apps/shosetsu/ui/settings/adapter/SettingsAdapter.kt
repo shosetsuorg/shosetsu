@@ -25,12 +25,14 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+/**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-class SettingsAdapter(private val settingsCards: ArrayList<SettingsCard>, private val fragmentManager: FragmentManager) : RecyclerView.Adapter<SettingsCardViewHolder>() {
+class SettingsAdapter(private val settingsCards: ArrayList<SettingsCard>, private val fragmentManager: FragmentManager?) : RecyclerView.Adapter<SettingsCardViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_settings_card, viewGroup, false)
         return SettingsCardViewHolder(view, fragmentManager)
