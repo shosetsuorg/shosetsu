@@ -12,7 +12,6 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.ViewSettings;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
@@ -173,16 +172,19 @@ public class Database {
         }
 
 
-        public static void purgeUnSavedNovels(View view){
+        public static void purgeUnSavedNovels(View view) {
             purgeUnSavedNovels();
         }
+
         /**
          * Finds and deletes all novels that are unbookmarked
          */
         public static void purgeUnSavedNovels() {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=0", null);
             while (cursor.moveToNext()) {
-                purgeNovel(cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())));
+                int i = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
+                Log.i("RemovingNovel", String.valueOf(i));
+                purgeNovel(i);
             }
             cursor.close();
         }

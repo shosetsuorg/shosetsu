@@ -80,12 +80,12 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
 
     @Override
     public void onBindViewHolder(@NonNull UpdatedChapterHolder updatedChapterHolder, int i) {
-        Log.d("Binding", updates.get(i).CHAPTER_URL);
+        if (updates.get(i).CHAPTER_URL != null)
+            Log.d("Binding", updates.get(i).CHAPTER_URL);
         NovelChapter novelChapter = DatabaseChapter.getChapter(updates.get(i).chapterID);
         if (novelChapter != null) {
             updatedChapterHolder.setNovelChapter(novelChapter);
         } else {
-
             throw new NullPointerException("NovelChapter returned null");
         }
 

@@ -241,7 +241,11 @@ public class LibraryFragment extends Fragment {
             case R.id.remove_from_library:
                 for (int i : selectedNovels) {
                     Database.DatabaseNovels.unBookmark(i);
-                    libraryNovelCards.remove(i);
+                    for (int x = 0; x < libraryNovelCards.size(); x++)
+                        if (libraryNovelCards.get(x) == i)
+                            //noinspection SuspiciousListRemoveInLoop
+                            libraryNovelCards.remove(x);
+
                 }
                 selectedNovels = new ArrayList<>();
                 recyclerView.post(() -> libraryNovelCardsAdapter.notifyDataSetChanged());

@@ -36,7 +36,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
 
@@ -66,6 +65,7 @@ public class AdvancedSettings extends Fragment {
         Log.d("OnCreateView", "ViewSettings");
         View view = inflater.inflate(R.layout.settings_advanced, container, false);
         spinner = view.findViewById(R.id.settings_advanced_spinner);
+        purgeCache = view.findViewById(R.id.purge_cache);
         // Creating adapter for spinner
         if (getContext() != null) {
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, strings);
