@@ -58,9 +58,11 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         settings_recycler.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(view.context)
-        val adapter: RecyclerView.Adapter<*> = SettingsAdapter(cards, fragmentManager)
-        settings_recycler.layoutManager = layoutManager
-        settings_recycler.adapter = adapter
+        if (fragmentManager != null) {
+            val adapter: RecyclerView.Adapter<*> = SettingsAdapter(cards, fragmentManager!!)
+            settings_recycler.layoutManager = layoutManager
+            settings_recycler.adapter = adapter
+        }
     }
 
     /**

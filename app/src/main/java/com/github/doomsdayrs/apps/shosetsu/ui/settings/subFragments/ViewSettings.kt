@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItem
 import kotlinx.android.synthetic.main.settings_view.*
 import java.util.*
 
@@ -35,6 +34,8 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+/**
  * Shosetsu
  * 13 / 07 / 2019
  *
@@ -63,7 +64,7 @@ class ViewSettings : Fragment() {
     //TODO remove this abomination of code. We just need to make a simple old switch
     private fun onClickNightMode(v: View) {
         if (this.context != null) {
-            val nightMOdeItem = SettingsItem(v)
+            //   val nightMOdeItem = SettingsItem(v, SettingsItem.SettingsType.INFORMATION)
             val builder = AlertDialog.Builder(this.context!!)
             builder.setTitle(R.string.reader_night_mode)
             val states = arrayOf(getString(R.string.on), getString(R.string.off))
@@ -71,8 +72,8 @@ class ViewSettings : Fragment() {
             ) { _: DialogInterface?, i: Int ->
                 if (i == 0) Utilities.setNightNode() else Utilities.unsetNightMode()
                 val nightModeStatus = if (Utilities.isReaderNightMode()) R.string.on else R.string.off
-                nightMOdeItem.setDesc(nightModeStatus)
-                nightMOdeItem.invalidate()
+                //      nightMOdeItem.setDescription(nightModeStatus)
+                //          nightMOdeItem.invalidate()
             }
             builder.show()
         }
@@ -80,8 +81,6 @@ class ViewSettings : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")
-
-
         return inflater.inflate(R.layout.settings_view, container, false)
     }
 
@@ -102,11 +101,11 @@ class ViewSettings : Fragment() {
         //TODO figure out why the itemSelectedListner runs without being selected
 
         // Setup Night Mode
-        val nightModeItem = SettingsItem(settings_reader_night_mode)
-        nightModeItem.setTitle(R.string.reader_night_mode)
+        //  val nightModeItem = SettingsItem(settings_reader_night_mode, SettingsItem.SettingsType.INFORMATION)
+        //  nightModeItem.setTitle(R.string.reader_night_mode)
         val nightModeStatus = if (Utilities.isReaderNightMode()) R.string.on else R.string.off
-        nightModeItem.setDesc(nightModeStatus)
-        nightModeItem.setOnClickListener { v: View -> onClickNightMode(v) }
+        //  nightModeItem.setDescription(nightModeStatus)
+        // nightModeItem.setOnClickListener { v: View -> onClickNightMode(v) }
 
         run {
             val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, textSizes)
@@ -148,7 +147,7 @@ class ViewSettings : Fragment() {
             reader_paragraphSpacing.adapter = dataAdapter
             reader_paragraphSpacing.onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                    if (i >= 0 && i <= 3) {
+                    if (i in 0..3) {
                         Utilities.changeParagraphSpacing(i)
                         adapterView.setSelection(i)
                     }
@@ -172,7 +171,7 @@ class ViewSettings : Fragment() {
             reader_indentSize!!.adapter = dataAdapter
             reader_indentSize!!.onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                    if (i >= 0 && i <= 3) {
+                    if (i in 0..3) {
                         Utilities.changeIndentSize(i)
                         adapterView.setSelection(i)
                     }

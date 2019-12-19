@@ -9,9 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItemData
+import kotlinx.android.synthetic.main.settings_advanced.*
 
 /*
  * This file is part of Shosetsu.
@@ -37,6 +40,32 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItem
  * @author github.com/doomsdayrs
  */
 class InfoSettings : Fragment() {
+    val settings: ArrayList<SettingsItemData> = arrayListOf(
+            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                    .setTitle(R.string.version)
+                    .setDescription(BuildConfig.VERSION_NAME)
+                    .setOnClickListener { v: View -> onClickAppVer(v) },
+            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                    .setTitle(R.string.version)
+                    .setDescription(BuildConfig.VERSION_NAME)
+                    .setOnClickListener { v: View -> onClickAppVer(v) },
+            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                    .setTitle(R.string.report_bug)
+                    .setDescription(R.string.report_bug_link)
+                    .setOnClickListener { v: View -> onClickReportBug(v) },
+            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                    .setTitle(R.string.author)
+                    .setDescription(R.string.author_name)
+                    .setOnClickListener { v: View -> onClickAuthor(v) },
+            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                    .setTitle(R.string.disclaimer)
+                    .setOnClickListener { v: View -> onClickDisclaimer(v) },
+            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                    .setTitle(R.string.license)
+                    .setOnClickListener { v: View -> onClickLicense(v) }
+    )
+
+
     private fun onClickAppVer(v: View) { // TODO: Add the app version number after consultation
         Toast.makeText(v.context, "AppVer", Toast.LENGTH_SHORT).show()
     }
@@ -65,30 +94,12 @@ class InfoSettings : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")
-        val settingsInfoView = inflater.inflate(R.layout.settings_info, container, false)
-        // Setup App version
-        val appVerItem = SettingsItem(settingsInfoView.findViewById(R.id.settings_info_app_version))
-        appVerItem.setTitle(R.string.version)
-        appVerItem.setDesc(BuildConfig.VERSION_NAME)
-        appVerItem.setOnClickListener { v: View -> onClickAppVer(v) }
-        // Setup Report Bug
-        val reportBugItem = SettingsItem(settingsInfoView.findViewById(R.id.settings_info_report_bug))
-        reportBugItem.setTitle(R.string.report_bug)
-        reportBugItem.setDesc(R.string.report_bug_link)
-        reportBugItem.setOnClickListener { v: View -> onClickReportBug(v) }
-        // Setup Author
-        val authorItem = SettingsItem(settingsInfoView.findViewById(R.id.settings_info_author))
-        authorItem.setTitle(R.string.author)
-        authorItem.setDesc(R.string.author_name)
-        authorItem.setOnClickListener { v: View -> onClickAuthor(v) }
-        // Setup Disclaimer
-        val disclaimerItem = SettingsItem(settingsInfoView.findViewById(R.id.settings_info_disclaimer))
-        disclaimerItem.setTitle(R.string.disclaimer)
-        disclaimerItem.setOnClickListener { v: View -> onClickDisclaimer(v) }
-        // Setup License
-        val licenseItem = SettingsItem(settingsInfoView.findViewById(R.id.settings_info_license))
-        licenseItem.setTitle(R.string.license)
-        licenseItem.setOnClickListener { v: View -> onClickLicense(v) }
-        return settingsInfoView
+        return inflater.inflate(R.layout.settings_info, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = SettingItemsAdapter(settings)
     }
 }

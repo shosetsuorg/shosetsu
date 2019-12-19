@@ -32,7 +32,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class SettingsAdapter(private val settingsCards: ArrayList<SettingsCard>, private val fragmentManager: FragmentManager?) : RecyclerView.Adapter<SettingsCardViewHolder>() {
+class SettingsAdapter(private val settingsCards: ArrayList<SettingsCard>, private val fragmentManager: FragmentManager) : RecyclerView.Adapter<SettingsCardViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_settings_card, viewGroup, false)
         return SettingsCardViewHolder(view, fragmentManager)

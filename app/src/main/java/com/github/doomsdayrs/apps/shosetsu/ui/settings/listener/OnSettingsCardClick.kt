@@ -55,8 +55,6 @@ class OnSettingsCardClick(private val type: Types, private val fragmentManager: 
                 //    Toast.makeText(v.getContext(), "Backup", Toast.LENGTH_SHORT).show();
                 fragmentManager.beginTransaction().addToBackStack("tag").replace(R.id.fragment_container, BackupSettings()).commit()
             }
-            else -> {
-            }
         }
     }
 

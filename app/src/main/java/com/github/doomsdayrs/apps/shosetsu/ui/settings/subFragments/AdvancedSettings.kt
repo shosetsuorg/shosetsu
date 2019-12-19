@@ -9,12 +9,15 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItemData
 import kotlinx.android.synthetic.main.settings_advanced.*
-import java.util.*
+
 
 /*
  * This file is part of Shosetsu.
@@ -32,18 +35,38 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 13 / 07 / 2019
  *
  * @author github.com/doomsdayrs
- */ //TODO add text size options
+ * <p>
+ *     TODO add text size options
+ * </p>
+ */
 class AdvancedSettings : Fragment() {
-    private val strings: MutableList<String> = ArrayList()
+    val settings: ArrayList<SettingsItemData> = arrayListOf(
+            SettingsItemData(SettingsItemData.SettingsType.SPINNER)
+                    .setTitle(R.string.theme)
+                    .setOnItemSelectedListener(
+                            object : OnItemSelectedListener {
+                                override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+                                    if (i in 0..2) {
+                                        Utilities.changeMode(activity!!, i)
+                                        adapterView.setSelection(i)
+                                    }
+                                }
 
-    init {
-        strings.add("Light")
-        strings.add("Dark")
-    }
+                                override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+                            })
+                    .setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, arrayListOf("Light", "Dark")))
+                    .setSpinnerSelection(Settings.themeMode),
+            SettingsItemData(SettingsItemData.SettingsType.BUTTON)
+                    .setTitle(R.string.remove_novel_cache)
+                    .setOnClickListenerButton { view1: View? -> Database.DatabaseIdentification.purgeUnSavedNovels(view1) }
+    )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")
@@ -52,23 +75,8 @@ class AdvancedSettings : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Creating adapter for spinner
-        if (context != null) {
-            val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, strings)
-            settings_advanced_spinner.adapter = dataAdapter
-            settings_advanced_spinner.setSelection(Settings.themeMode)
-        }
-        settings_advanced_spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                if (i in 0..2) {
-                    Utilities.changeMode(activity!!, i)
-                    adapterView.setSelection(i)
-                }
-            }
-
-            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-        }
-        purge_cache.setOnClickListener { view1: View? -> Database.DatabaseIdentification.purgeUnSavedNovels(view1) }
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = SettingItemsAdapter(settings)
     }
 
 
