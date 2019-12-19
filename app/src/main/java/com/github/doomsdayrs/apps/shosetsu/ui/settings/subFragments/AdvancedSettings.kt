@@ -61,7 +61,6 @@ class AdvancedSettings : Fragment() {
 
                                 override fun onNothingSelected(adapterView: AdapterView<*>?) {}
                             })
-                    .setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, arrayListOf("Light", "Dark")))
                     .setSpinnerSelection(Settings.themeMode),
             SettingsItemData(SettingsItemData.SettingsType.BUTTON)
                     .setTitle(R.string.remove_novel_cache)
@@ -75,6 +74,8 @@ class AdvancedSettings : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, arrayListOf("Light", "Dark")))
+
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = SettingItemsAdapter(settings)
     }

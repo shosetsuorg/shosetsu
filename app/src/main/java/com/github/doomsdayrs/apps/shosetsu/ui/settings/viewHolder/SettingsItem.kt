@@ -53,15 +53,16 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
         else
             itemDescription.text = data.descriptionText
 
-        if (data.textID != -1)
-            textView.setText(data.textID)
-        else
-            textView.text = data.textText
+
 
         when (type) {
             SettingsItemData.SettingsType.BUTTON -> {
+                if (data.textID != -1)
+                    button.setText(data.textID)
+                else
+                    button.text = data.textText
                 button.visibility = Button.VISIBLE
-                button.setOnClickListener { data.buttonOnClickListener }
+                button.setOnClickListener(data.buttonOnClickListener)
             }
             SettingsItemData.SettingsType.SPINNER -> {
                 spinner.visibility = Spinner.VISIBLE
@@ -74,13 +75,17 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
                 itemView.setOnClickListener(data.itemViewOnClick)
             }
             SettingsItemData.SettingsType.TEXT -> {
+                if (data.textID != -1)
+                    textView.setText(data.textID)
+                else
+                    textView.text = data.textText
                 textView.visibility = TextView.VISIBLE
                 textView.setOnClickListener(data.textViewOnClickListener)
             }
             SettingsItemData.SettingsType.SWITCH -> {
                 switchView.visibility = View.VISIBLE
+                switchView.isChecked = data.switchIsChecked
                 switchView.setOnCheckedChangeListener(data.switchOnCheckedListener)
-                switchView.isSelected = data.switchIsChecked
             }
         }
         return this
@@ -200,7 +205,7 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         fun setSwitchIsChecked(b: Boolean): SettingsItemData {
-            Log.d("Data-SwitchChecked",b.toString())
+            Log.d("Data-SwitchChecked", b.toString())
             switchIsChecked = b
             return this
         }

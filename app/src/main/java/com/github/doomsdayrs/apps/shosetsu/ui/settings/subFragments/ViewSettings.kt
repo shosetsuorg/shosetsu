@@ -22,6 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import kotlinx.android.synthetic.main.settings_download.*
 import kotlinx.android.synthetic.main.settings_view.*
 import kotlinx.android.synthetic.main.settings_view.recyclerView
+import okhttp3.internal.Util
 import java.util.*
 
 /*
@@ -58,7 +59,7 @@ class ViewSettings : Fragment() {
                     .setSwitchIsChecked(Utilities.isReaderNightMode())
                     .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
                         Log.d("NightMode", p1.toString())
-                        if (!p1) Utilities.setNightNode() else Utilities.unsetNightMode()
+                        if (!Utilities.isReaderNightMode()) Utilities.setNightNode() else Utilities.unsetNightMode()
                     }),
 
             SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
