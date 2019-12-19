@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItem
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 
 
 /*

@@ -7,10 +7,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import kotlinx.android.synthetic.main.settings_download.*
 import java.util.*
 
@@ -34,7 +38,18 @@ import java.util.*
  * 13 / 07 / 2019
  *
  * @author github.com/doomsdayrs
- */   class DownloadSettings : Fragment() {
+ */
+class DownloadSettings : Fragment() {
+    val settings: ArrayList<SettingsItem.SettingsItemData> = arrayListOf(
+            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.TEXT)
+                    .setTitle(R.string.download_directory)
+                    .setTextViewText(Utilities.shoDir)
+                    .setTextOnClickListener { performFileSearch() },
+            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+                    .setTitle(R.string.download_speed)
+    )
+    val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "DownloadSettings")
         return inflater.inflate(R.layout.settings_download, container, false)
@@ -42,15 +57,15 @@ import java.util.*
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        settings_download_dir.text = Utilities.shoDir
-        settings_download_dir.setOnClickListener { performFileSearch() }
-
+        settings[1].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, arrayListOf("String")))
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
     }
 
     private fun setDir(dir: String) {
         Utilities.downloadPreferences.edit().putString("dir", dir).apply()
         Utilities.shoDir = dir
-        settings_download_dir!!.text = dir
+        recyclerView.post { adapter.notifyDataSetChanged() }
     }
 
     private fun performFileSearch() {

@@ -14,8 +14,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItemData
 import kotlinx.android.synthetic.main.settings_advanced.*
 
 

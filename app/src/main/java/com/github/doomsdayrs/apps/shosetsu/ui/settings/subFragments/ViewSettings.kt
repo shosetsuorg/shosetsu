@@ -118,7 +118,7 @@ class ViewSettings : Fragment() {
             }
             reader_textSize!!.onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                    if (i >= 0 && i <= 2) {
+                    if (i in 0..2) {
                         var size = 14
                         when (i) {
                             0 -> {

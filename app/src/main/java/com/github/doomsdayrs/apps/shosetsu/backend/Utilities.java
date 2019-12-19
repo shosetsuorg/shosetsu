@@ -113,7 +113,6 @@ public class Utilities {
     }
 
     public static final int SELECTED_STROKE_WIDTH = 8;
-    @Nullable
     public static String shoDir = "/Shosetsu/";
 
     public static int calculateNoOfColumns(@NonNull Context context, float columnWidthDp) { // For example columnWidthdp=180

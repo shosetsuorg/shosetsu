@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import kotlinx.android.synthetic.main.settings_advanced.*
 
 /*
