@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search
 import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
 
@@ -39,9 +39,8 @@ open class SearchActivity : AppCompatActivity() {
         // Verify the action and get the query
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                TODO("Create a search activity")
+                Log.i("SearchQueryReceived", query)
             }
         }
-
     }
 }
