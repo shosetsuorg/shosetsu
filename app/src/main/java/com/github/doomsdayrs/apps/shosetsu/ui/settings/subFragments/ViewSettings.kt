@@ -12,10 +12,16 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import kotlinx.android.synthetic.main.settings_download.*
 import kotlinx.android.synthetic.main.settings_view.*
+import kotlinx.android.synthetic.main.settings_view.recyclerView
 import java.util.*
 
 /*
@@ -40,28 +46,82 @@ import java.util.*
  * 13 / 07 / 2019
  *
  * @author github.com/doomsdayrs
- */ // TODO: Migrate to using PreferenceScreen and PreferenceGroup.
+ */ // TODO: Migrate to using PreferenceScreen and PreferenceGroup. Maybe
 class ViewSettings : Fragment() {
-    private val textSizes: MutableList<String> = ArrayList()
-    private val paragraphSpaces: MutableList<String> = ArrayList()
-    private val indentSizes: MutableList<String> = ArrayList()
+    private val textSizes: Array<String> = arrayOf("Small", "Medium", "Large")
+    private val paragraphSpaces: Array<String> = arrayOf("None", "Small", "Medium", "Large")
+    private val indentSizes: Array<String> = arrayOf("None", "Small", "Medium", "Large")
 
-    init {
-        textSizes.add("Small")
-        textSizes.add("Medium")
-        textSizes.add("Large")
-        paragraphSpaces.add("None")
-        paragraphSpaces.add("Small")
-        paragraphSpaces.add("Medium")
-        paragraphSpaces.add("Large")
-        indentSizes.add("None")
-        indentSizes.add("Small")
-        indentSizes.add("Medium")
-        indentSizes.add("Large")
-    }
+    val settings: ArrayList<SettingsItem.SettingsItemData> = arrayListOf(
+            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
+                    .setTitle(R.string.reader_night_mode)
+                    .setSwitchIsChecked(Utilities.isReaderNightMode())
+                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+                        Log.d("NightMode", p1.toString())
+                        if (!p1) Utilities.setNightNode() else Utilities.unsetNightMode()
+                    }),
+
+            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+                    .setTitle(R.string.spacing)
+                    .setOnItemSelectedListener(object : OnItemSelectedListener {
+                        override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+                            Log.d("SpaceSelection", i.toString())
+                            if (i in 0..3) {
+                                Utilities.changeParagraphSpacing(i)
+                                adapterView.setSelection(i)
+                            }
+                        }
+
+                        override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+                    }),
+
+            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+                    .setTitle(R.string.text_size)
+                    .setOnItemSelectedListener(object : OnItemSelectedListener {
+                        override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+                            Log.d("TextSizeSelection", i.toString())
+                            if (i in 0..2) {
+                                var size = 14
+                                when (i) {
+                                    0 -> {
+                                    }
+                                    1 -> size = 17
+                                    2 -> size = 20
+                                }
+                                Utilities.setTextSize(size)
+                                adapterView.setSelection(i)
+                            }
+                        }
+
+                        override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+                    }),
+
+            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+                    .setTitle(R.string.indent_size)
+                    .setOnItemSelectedListener(object : OnItemSelectedListener {
+                        override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+                            Log.d("IndentSizeSelection", i.toString())
+                            if (i in 0..3) {
+                                Utilities.changeIndentSize(i)
+                                adapterView.setSelection(i)
+                            }
+                        }
+
+                        override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+                    }),
+
+            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
+                    .setTitle(R.string.tap_to_scroll)
+                    .setSwitchIsChecked(Utilities.isTapToScroll())
+                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+                        Log.d("NightMode", p1.toString())
+                        Utilities.toggleTapToScroll()
+                    })
+    )
+    val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
 
 
-    //TODO remove this abomination of code. We just need to make a simple old switch
+    /*
     private fun onClickNightMode(v: View) {
         if (this.context != null) {
             //   val nightMOdeItem = SettingsItem(v, SettingsItem.SettingsType.INFORMATION)
@@ -77,7 +137,7 @@ class ViewSettings : Fragment() {
             }
             builder.show()
         }
-    }
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")
@@ -86,106 +146,33 @@ class ViewSettings : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Setup Text size
-// SettingsItem textSizeItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_text_size));
-// textSizeItem.setTitle(R.string.text_size);
-// TODO: Get current Text size
-// Setup Paragraph Spacing
-// SettingsItem paraSpacingItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_para_spacing));
-// paraSpacingItem.setTitle(R.string.spacing);
-// TODO: Get current Paragraph spacing
-// Setup Indent Size
-// SettingsItem paraIndentItem = new SettingsItem(settingsReaderView.findViewById(R.id.settings_reader_para_indent));
-// paraIndentItem.setTitle(R.string.indent_size);
-// TODO: Get current Indent size
-        //TODO figure out why the itemSelectedListner runs without being selected
-
-        // Setup Night Mode
-        //  val nightModeItem = SettingsItem(settings_reader_night_mode, SettingsItem.SettingsType.INFORMATION)
-        //  nightModeItem.setTitle(R.string.reader_night_mode)
-        val nightModeStatus = if (Utilities.isReaderNightMode()) R.string.on else R.string.off
-        //  nightModeItem.setDescription(nightModeStatus)
-        // nightModeItem.setOnClickListener { v: View -> onClickNightMode(v) }
-
         run {
-            val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, textSizes)
-            reader_textSize!!.adapter = dataAdapter
-            when (Settings.ReaderTextSize.toInt()) {
-                14 -> reader_textSize!!.setSelection(0)
-                17 -> reader_textSize!!.setSelection(1)
-                20 -> reader_textSize!!.setSelection(2)
-                else -> reader_textSize!!.setSelection(0)
-            }
-            reader_textSize!!.onItemSelectedListener = object : OnItemSelectedListener {
-                override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                    if (i in 0..2) {
-                        var size = 14
-                        when (i) {
-                            0 -> {
-                            }
-                            1 -> size = 17
-                            2 -> size = 20
-                        }
-                        Utilities.setTextSize(size)
-                        adapterView.setSelection(i)
-                    }
-                }
 
-                override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+            val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, textSizes)
+            settings[2].setArrayAdapter(dataAdapter)
+            when (Settings.ReaderTextSize.toInt()) {
+                14 -> settings[2].spinnerSelection = 0
+                17 -> settings[2].spinnerSelection = 1
+                20 -> settings[2].spinnerSelection = 2
+                else -> settings[2].spinnerSelection = 0
             }
         }
 
         run {
             val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, paragraphSpaces)
-            val spaceBack = Settings.paragraphSpacing
-            when (Settings.paragraphSpacing) {
-                0 -> reader_paragraphSpacing!!.setSelection(0)
-                1 -> reader_paragraphSpacing!!.setSelection(1)
-                2 -> reader_paragraphSpacing!!.setSelection(2)
-                3 -> reader_paragraphSpacing!!.setSelection(3)
-            }
-            reader_paragraphSpacing.adapter = dataAdapter
-            reader_paragraphSpacing.onItemSelectedListener = object : OnItemSelectedListener {
-                override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                    if (i in 0..3) {
-                        Utilities.changeParagraphSpacing(i)
-                        adapterView.setSelection(i)
-                    }
-                }
-
-                override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-            }
-            Utilities.changeParagraphSpacing(spaceBack)
-            when (Settings.paragraphSpacing) {
-                0 -> reader_paragraphSpacing!!.setSelection(0)
-                1 -> reader_paragraphSpacing!!.setSelection(1)
-                2 -> reader_paragraphSpacing!!.setSelection(2)
-                3 -> reader_paragraphSpacing!!.setSelection(3)
-            }
+            settings[1].adapter = dataAdapter
+            settings[1].spinnerSelection = Settings.paragraphSpacing
         }
 
         run {
             val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, indentSizes)
             val spaceBack = Settings.indentSize
-            reader_indentSize!!.setSelection(Settings.indentSize)
-            reader_indentSize!!.adapter = dataAdapter
-            reader_indentSize!!.onItemSelectedListener = object : OnItemSelectedListener {
-                override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                    if (i in 0..3) {
-                        Utilities.changeIndentSize(i)
-                        adapterView.setSelection(i)
-                    }
-                }
-
-                override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-            }
-            Utilities.changeIndentSize(spaceBack)
-            reader_indentSize!!.setSelection(Settings.indentSize)
+            settings[3].adapter = dataAdapter
+            settings[3].spinnerSelection = (Settings.indentSize)
         }
 
-        run {
-            tap_to_scroll!!.isChecked = Utilities.isTapToScroll()
-            tap_to_scroll!!.setOnCheckedChangeListener { _: CompoundButton?, _: Boolean -> Utilities.toggleTapToScroll() }
-        }
+        Log.i("onViewCreated", "Finished creation")
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
     }
 }

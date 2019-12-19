@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder
 
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
@@ -66,6 +67,7 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
                 spinner.visibility = Spinner.VISIBLE
                 //spinner.setOnClickListener { data.spinnerOnClick }
                 spinner.adapter = data.adapter
+                spinner.setSelection(data.spinnerSelection)
                 spinner.onItemSelectedListener = data.spinnerOnItemSelectedListener
             }
             SettingsItemData.SettingsType.INFORMATION -> {
@@ -74,6 +76,11 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
             SettingsItemData.SettingsType.TEXT -> {
                 textView.visibility = TextView.VISIBLE
                 textView.setOnClickListener(data.textViewOnClickListener)
+            }
+            SettingsItemData.SettingsType.SWITCH -> {
+                switchView.visibility = View.VISIBLE
+                switchView.setOnCheckedChangeListener(data.switchOnCheckedListener)
+                switchView.isSelected = data.switchIsChecked
             }
         }
         return this
@@ -193,6 +200,7 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         fun setSwitchIsChecked(b: Boolean): SettingsItemData {
+            Log.d("Data-SwitchChecked",b.toString())
             switchIsChecked = b
             return this
         }
