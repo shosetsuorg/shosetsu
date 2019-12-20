@@ -2,7 +2,7 @@
     <shortcut
         android:shortcutId="update"
         android:enabled="true"
-        android:drawable="@mipmap/ic_refresh"
+        android:drawable="@drawable/ic_refresh"
         android:shortcutShortLabel="@string/refresh_shortcut"
         android:shortcutLongLabel="@string/refresh_shortcut">
         <intent

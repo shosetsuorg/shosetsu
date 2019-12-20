@@ -33,15 +33,16 @@ import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
  * @author github.com/doomsdayrs
  */
 open class SearchActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(search_activity)
         // Verify the action and get the query
         if (Intent.ACTION_SEARCH == intent.action) {
-            Intent.ACTION_USER_BACKGROUND
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 Log.i("SearchQueryReceived", query)
             }
         }
     }
+
 }

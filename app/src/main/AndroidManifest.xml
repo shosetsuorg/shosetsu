@@ -33,7 +33,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
@@ -53,12 +54,17 @@
             android:name=".ui.reader.NewChapterReader"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
+
         <activity android:name=".ui.search.SearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+                <action android:name="com.google.android.gms.actions.SEARCH_ACTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
     </application>
 
