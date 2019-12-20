@@ -5,7 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
+import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchAdapter
+import kotlinx.android.synthetic.main.search_activity.*
 
 /*
  * This file is part of Shosetsu.
@@ -33,7 +36,7 @@ import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
  * @author github.com/doomsdayrs
  */
 open class SearchActivity : AppCompatActivity() {
-
+    var adapter: SearchAdapter = SearchAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(search_activity)
@@ -43,6 +46,8 @@ open class SearchActivity : AppCompatActivity() {
                 Log.i("SearchQueryReceived", query)
             }
         }
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
     }
 
 }

@@ -5,8 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter;
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 
@@ -43,6 +47,9 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityT
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 9 / June / 2019
  *
@@ -63,6 +70,19 @@ public class CataloguesFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_catalogues, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.catalogues_search).getActionView();
+        searchView.setOnQueryTextListener(new CataloguesSearchQuery(getActivity()));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.catalogues_search:
+            case R.id.configure_parsers:
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -77,7 +97,7 @@ public class CataloguesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("OnCreateView", "CataloguesFragment");
-        setActivityTitle(getActivity(),"Catalogues");
+        setActivityTitle(getActivity(), "Catalogues");
         //TODO Conditional for turning formatter on and off
         // > Conditional for languages
         // > Conditional for categories, maybe

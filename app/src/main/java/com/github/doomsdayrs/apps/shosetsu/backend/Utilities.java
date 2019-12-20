@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.Supporter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchActivity;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
@@ -456,7 +458,13 @@ public class Utilities {
         intent.putExtra("formatter", formatterID);
         intent.putExtra("chapters", chapters);
         activity.startActivity(intent);
+    }
 
+    public static void search(@NonNull Activity activity, @NonNull String query) {
+        Intent intent = new Intent(activity, SearchActivity.class);
+        intent.setAction(Intent.ACTION_SEARCH);
+        intent.putExtra(SearchManager.QUERY, query);
+        activity.startActivity(intent);
     }
 
     public static void openInWebview(@NotNull Activity activity, @NotNull String url) {

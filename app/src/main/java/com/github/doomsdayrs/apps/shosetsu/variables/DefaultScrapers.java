@@ -58,7 +58,7 @@ public enum DefaultScrapers implements Formatter {
     //NOVELPLANENT(new NovelPlanet(4)),
     BESTLIGHTNOVEL(new BestLightNovel());
 
-    private static final ArrayList<Formatter> formatters = new ArrayList<>();
+    public static final ArrayList<Formatter> formatters = new ArrayList<>();
 
     @Nullable
     public static Formatter getByID(int ID) {
