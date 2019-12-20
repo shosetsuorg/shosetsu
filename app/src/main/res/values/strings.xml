@@ -104,6 +104,8 @@
     <string name="remove_novel_cache">Remove Novel Cache</string>
     <string name="removes_un_bookmarked_chapters">Removes un-bookmarked chapters</string>
 
+    <!-- Shortcuts -->
+    <string name="refresh_shortcut">Check for updates</string>
 </resources>
 
 

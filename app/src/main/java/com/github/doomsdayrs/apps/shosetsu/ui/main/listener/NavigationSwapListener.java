@@ -49,45 +49,27 @@ public class NavigationSwapListener implements NavigationView.OnNavigationItemSe
             case R.id.nav_library: {
                 mainActivity.getSupportFragmentManager().popBackStack();
                 Log.d("Nav", "Library selected");
-                mainActivity.getSupportFragmentManager().beginTransaction()
-                        .addToBackStack("tag")
-                        .replace(R.id.fragment_container, mainActivity.libraryFragment)
-                        .commit();
+                mainActivity.transitionView(mainActivity.libraryFragment);
             }
             break;
             case R.id.nav_catalogue: {
                 Log.d("Nav", "Catalogue selected");
-                mainActivity.getSupportFragmentManager().beginTransaction()
-                        .addToBackStack("tag")
-                        .replace(R.id.fragment_container, mainActivity.cataloguesFragment)
-                        .commit();
+                mainActivity.transitionView(mainActivity.cataloguesFragment);
             }
             break;
             case R.id.nav_settings: {
                 Log.d("Nav", "Settings selected");
-                mainActivity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack("tag")
-                        .replace(R.id.fragment_container, mainActivity.settingsFragment)
-                        .commit();
+                mainActivity.transitionView(mainActivity.settingsFragment);
             }
             break;
             case R.id.nav_downloads: {
                 Log.d("Nav", "Downloads Selected");
-                mainActivity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack("tag")
-                        .replace(R.id.fragment_container, mainActivity.downloadsFragment)
-                        .commit();
+                mainActivity.transitionView(mainActivity.downloadsFragment);
             }
             break;
             case R.id.nav_updater: {
                 Log.d("Nav", "Updater Selected");
-                mainActivity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack("tag")
-                        .replace(R.id.fragment_container, mainActivity.updatesFragment)
-                        .commit();
+                mainActivity.transitionView(mainActivity.updatesFragment);
             }
             break;
         }

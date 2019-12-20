@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.main;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -16,9 +17,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.Update_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -57,6 +60,9 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setupTheme;
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 9 / June / 2019
  *
@@ -81,22 +87,15 @@ public class MainActivity extends AppCompatActivity implements Supporter {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]
-                    {
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    }, 1);
-        }
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
         Utilities.viewPreferences = getSharedPreferences("view", 0);
         Utilities.downloadPreferences = getSharedPreferences("download", 0);
         Utilities.advancedPreferences = getSharedPreferences("advanced", 0);
         Utilities.trackingPreferences = getSharedPreferences("tracking", 0);
         Utilities.backupPreferences = getSharedPreferences("backup", 0);
+
         initPreferences(this);
 
         setupTheme(this);
@@ -175,13 +174,23 @@ public class MainActivity extends AppCompatActivity implements Supporter {
         Download_Manager.init(this);
 
         //Prevent the frag from changing on rotation
-
-        if (savedInstanceState == null) {
+        if (Intent.ACTION_USER_BACKGROUND.equals(getIntent().getAction())) {
+            Log.i("MainActivity", "Updating novels");
+            Update_Manager.init(Database.DatabaseNovels.getIntLibrary(), this);
+            transitionView(updatesFragment);
+        } else if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, libraryFragment).commit();
             navigationView.setCheckedItem(R.id.nav_library);
         }
+    }
+
+    public void transitionView(Fragment target) {
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack("tag")
+                .replace(R.id.fragment_container, target)
+                .commit();
     }
 
     /**

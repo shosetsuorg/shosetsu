@@ -38,6 +38,7 @@ open class SearchActivity : AppCompatActivity() {
         setContentView(search_activity)
         // Verify the action and get the query
         if (Intent.ACTION_SEARCH == intent.action) {
+            Intent.ACTION_USER_BACKGROUND
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 Log.i("SearchQueryReceived", query)
             }
