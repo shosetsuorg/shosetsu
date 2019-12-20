@@ -33,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
  *
  * @author github.com/doomsdayrs
  */
-class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>() {
+class SearchAdapter(val query: String) : RecyclerView.Adapter<SearchViewHolder>() {
     private val views: ArrayList<Int> = arrayListOf(-1)
 
     init {
@@ -44,7 +44,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_search_row, parent, false)
-        return SearchViewHolder(view)
+        return SearchViewHolder(view, query)
     }
 
     override fun getItemCount(): Int {

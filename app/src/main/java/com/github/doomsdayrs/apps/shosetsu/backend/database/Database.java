@@ -1041,7 +1041,7 @@ public class Database {
             }
         }
 
-        @Nullable
+        @NonNull
         public static NovelCard getNovel(int novelID) {
             Log.d("DL", "Getting");
 
@@ -1051,7 +1051,6 @@ public class Database {
 
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return null;
             } else {
                 cursor.moveToNext();
                 try {
@@ -1067,7 +1066,7 @@ public class Database {
                     e.printStackTrace();
                 }
             }
-            return null;
+            return new NovelCard("", -2, "", "", -1);
         }
 
 

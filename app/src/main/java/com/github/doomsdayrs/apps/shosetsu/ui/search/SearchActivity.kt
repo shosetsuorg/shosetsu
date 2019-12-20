@@ -36,7 +36,9 @@ import kotlinx.android.synthetic.main.search_activity.*
  * @author github.com/doomsdayrs
  */
 open class SearchActivity : AppCompatActivity() {
-    var adapter: SearchAdapter = SearchAdapter()
+    var adapter: SearchAdapter = SearchAdapter("")
+    private var query: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(search_activity)
@@ -44,8 +46,10 @@ open class SearchActivity : AppCompatActivity() {
         if (Intent.ACTION_SEARCH == intent.action) {
             intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 Log.i("SearchQueryReceived", query)
+                this.query = query
             }
         }
+        adapter = SearchAdapter(query)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
     }
