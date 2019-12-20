@@ -721,7 +721,7 @@ public class Database {
 
             String title = checkStringSerialize(novelChapter.title);
             String release = checkStringSerialize(novelChapter.release);
-            System.out.println(novelChapter.link + " | " + novelChapter.order);
+            Log.i("DatabaseChapter", novelChapter.link + " | " + novelChapter.order);
             try {
                 sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS +
                         "(" +

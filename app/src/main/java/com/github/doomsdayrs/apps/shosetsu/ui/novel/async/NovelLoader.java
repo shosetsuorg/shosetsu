@@ -93,7 +93,6 @@ public class NovelLoader extends AsyncTask<Void, Void, Boolean> {
             if (!errorView.activity.isDestroyed() && !Database.DatabaseNovels.inDatabase(novelFragment.novelID)) {
                 Database.DatabaseNovels.addToLibrary(novelFragment.formatter.getID(), novelFragment.novelPage, novelFragment.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
             }
-            //TODO The getNovelID in this method likely will cause slowdowns due to IO
             int novelID = getNovelIDFromNovelURL(novelFragment.novelURL);
             for (NovelChapter novelChapter : novelFragment.novelPage.novelChapters)
                 if (!errorView.activity.isDestroyed() && !Database.DatabaseChapter.inChapters(novelChapter.link))
@@ -107,7 +106,6 @@ public class NovelLoader extends AsyncTask<Void, Void, Boolean> {
             errorView.activity.runOnUiThread(() -> errorView.errorMessage.setText(e.getMessage()));
             errorView.activity.runOnUiThread(() -> errorView.errorButton.setOnClickListener(view -> refresh()));
             e.printStackTrace();
-
         }
         return false;
     }

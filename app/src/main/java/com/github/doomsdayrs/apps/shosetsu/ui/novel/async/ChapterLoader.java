@@ -144,7 +144,7 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
         //TODO The getNovelID in this method likely will cause slowdowns due to IO
         if (!activity.isDestroyed() && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
             mangaCount++;
-            System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+            Log.i("ChapterLoader", "Adding #" + mangaCount + ": " + novelChapter.link);
             Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(novelURL), novelChapter);
         }
     }
@@ -182,24 +182,23 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
      */
     @Override
     protected void onPostExecute(Boolean result) {
-
-        View view = null;
-        if (novelFragmentChapters.novelFragment != null) {
-            view = novelFragmentChapters.novelFragment.getView();
-        }
-        if (view != null && novelFragmentChapters.getSwipeRefreshLayout() != null && novelFragmentChapters.getPageCount() != null && novelFragmentChapters.getResumeRead() != null)
-            novelFragmentChapters.novelFragment.getView().post(() -> {
+        Activity activity = novelFragmentChapters.getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
                 novelFragmentChapters.getSwipeRefreshLayout().setRefreshing(false);
                 if (formatter.isIncrementingChapterList())
                     novelFragmentChapters.getPageCount().setVisibility(View.GONE);
                 if (result) {
                     if (novelFragmentChapters.getActivity() != null) {
-                        novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setChapters);
-                        novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setChapters);
-                    }
-                    else Log.e("ChapterLoader","Cannot set chapters");
-                }
-                novelFragmentChapters.getResumeRead().setVisibility(View.VISIBLE);
+                        novelFragmentChapters.getActivity().runOnUiThread(() -> {
+                            novelFragmentChapters.setChapters();
+                            novelFragmentChapters.getAdapter().notifyDataSetChanged();
+                            novelFragmentChapters.getResumeRead().setVisibility(View.VISIBLE);
+                        });
+                        novelFragmentChapters.getActivity().runOnUiThread(Objects.requireNonNull(novelFragmentChapters.getAdapter())::notifyDataSetChanged);
+                    } else Log.e("ChapterLoader", "Cannot set chapters");
+                } else Log.e("ChapterLoader", "Result is a negative");
             });
+        } else Log.e("ChapterLoader", "Failed to retrieve an activity");
     }
 }
