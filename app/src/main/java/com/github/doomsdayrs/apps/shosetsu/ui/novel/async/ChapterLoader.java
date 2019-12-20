@@ -192,9 +192,13 @@ public class ChapterLoader extends AsyncTask<Activity, Void, Boolean> {
                 novelFragmentChapters.getSwipeRefreshLayout().setRefreshing(false);
                 if (formatter.isIncrementingChapterList())
                     novelFragmentChapters.getPageCount().setVisibility(View.GONE);
-                if (result)
-                    if (novelFragmentChapters.getActivity() != null)
+                if (result) {
+                    if (novelFragmentChapters.getActivity() != null) {
                         novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setChapters);
+                        novelFragmentChapters.getActivity().runOnUiThread(novelFragmentChapters::setChapters);
+                    }
+                    else Log.e("ChapterLoader","Cannot set chapters");
+                }
                 novelFragmentChapters.getResumeRead().setVisibility(View.VISIBLE);
             });
     }
