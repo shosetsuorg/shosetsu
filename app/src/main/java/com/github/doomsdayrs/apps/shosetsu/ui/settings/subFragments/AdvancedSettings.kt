@@ -47,20 +47,24 @@ import kotlinx.android.synthetic.main.settings_advanced.*
  * </p>
  */
 class AdvancedSettings : Fragment() {
+    var ready = false
+
+    private class ThemeChange(val advancedSettings: AdvancedSettings) : OnItemSelectedListener {
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+        }
+
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            if (position in 0..2 && advancedSettings.ready) {
+                Utilities.changeMode(advancedSettings.activity!!, position)
+                parent?.setSelection(position)
+            } else advancedSettings.ready = true
+        }
+    }
+
     val settings: ArrayList<SettingsItemData> = arrayListOf(
             SettingsItemData(SettingsItemData.SettingsType.SPINNER)
                     .setTitle(R.string.theme)
-                    .setOnItemSelectedListener(
-                            object : OnItemSelectedListener {
-                                override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                                    if (i in 0..2) {
-                                        Utilities.changeMode(activity!!, i)
-                                        adapterView.setSelection(i)
-                                    }
-                                }
-
-                                override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-                            })
+                    .setOnItemSelectedListener(ThemeChange(this))
                     .setSpinnerSelection(Settings.themeMode),
             SettingsItemData(SettingsItemData.SettingsType.BUTTON)
                     .setTitle(R.string.remove_novel_cache)
@@ -75,7 +79,6 @@ class AdvancedSettings : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, arrayListOf("Light", "Dark")))
-
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = SettingItemsAdapter(settings)
     }

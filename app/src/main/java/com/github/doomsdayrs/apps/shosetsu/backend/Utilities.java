@@ -325,7 +325,8 @@ public class Utilities {
         advancedPreferences.edit()
                 .putInt("themeMode", newMode)
                 .apply();
-        setupTheme(activity);
+        activity.recreate();
+        // setupTheme(activity);
     }
 
     public static void setupTheme(Activity activity) {
