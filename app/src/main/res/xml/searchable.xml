@@ -3,5 +3,4 @@
     android:hint="@string/action_global_search_hint"
     android:label="@string/app_name"
     android:voiceSearchMode="showVoiceSearchButton|launchRecognizer">
-
 </searchable>

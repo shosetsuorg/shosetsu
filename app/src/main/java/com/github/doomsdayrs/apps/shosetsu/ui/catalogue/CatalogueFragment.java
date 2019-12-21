@@ -216,7 +216,6 @@ public class CatalogueFragment extends Fragment {
 
             if (getContext() != null) {
                 library_layoutManager = new GridLayoutManager(context, calculateNoOfColumns(getContext(), 200), RecyclerView.VERTICAL, false);
-
                 catalogueAdapter = new CatalogueAdapter(recycleCards, this, formatter);
                 library_view.setLayoutManager(library_layoutManager);
                 library_view.addOnScrollListener(new CatalogueHitBottom(this));

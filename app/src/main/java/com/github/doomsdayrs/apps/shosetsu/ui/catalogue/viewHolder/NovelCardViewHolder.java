@@ -13,6 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.NovelBackgroundAdd;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment;
 
 /*
@@ -60,11 +61,8 @@ public class NovelCardViewHolder extends RecyclerView.ViewHolder implements View
         novelFragment.novelURL = url;
         novelFragment.formatter = formatter;
         novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url);
-        if (catalogueFragment.getFragmentManager() != null)
-            catalogueFragment.getFragmentManager().beginTransaction()
-                    .addToBackStack("tag")
-                    .replace(R.id.fragment_container, novelFragment)
-                    .commit();
+        if (catalogueFragment.getActivity() != null)
+            ((MainActivity) catalogueFragment.getActivity()).transitionView(novelFragment);
     }
 
     @Override

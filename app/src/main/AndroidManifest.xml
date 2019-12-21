@@ -55,7 +55,7 @@
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
 
-        <activity android:name=".ui.search.SearchActivity">
+        <activity android:name=".ui.search.SearchFragment">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
                 <action android:name="com.google.android.gms.actions.SEARCH_ACTION" />

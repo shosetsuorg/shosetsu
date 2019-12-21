@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend;
 
 import android.app.Activity;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,9 +21,10 @@ import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
+import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.Supporter;
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchActivity;
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
@@ -461,10 +461,10 @@ public class Utilities {
     }
 
     public static void search(@NonNull Activity activity, @NonNull String query) {
-        Intent intent = new Intent(activity, SearchActivity.class);
-        intent.setAction(Intent.ACTION_SEARCH);
-        intent.putExtra(SearchManager.QUERY, query);
-        activity.startActivity(intent);
+        MainActivity mainActivity = (MainActivity) activity;
+        SearchFragment searchFragment = new SearchFragment();
+        searchFragment.setQuery(query);
+        mainActivity.transitionView(searchFragment);
     }
 
     public static void openInWebview(@NotNull Activity activity, @NotNull String url) {

@@ -3,11 +3,19 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
+import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.squareup.picasso.Picasso
+
 
 /*
  * This file is part of shosetsu.
@@ -31,11 +39,16 @@ import com.squareup.picasso.Picasso
  *
  * @author github.com/doomsdayrs
  */
-class SearchResultsAdapter() : RecyclerView.Adapter<ResultViewHolder>() {
+class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : RecyclerView.Adapter<ResultViewHolder>() {
     var intArray: ArrayList<Int> = arrayListOf(-1)
+    var novelArray: List<Novel> = arrayListOf()
 
-    constructor(intArray: ArrayList<Int>) : this() {
-        this.intArray = intArray
+    constructor(array: ArrayList<Int>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
+        this.intArray = array
+    }
+
+    constructor(array: List<Novel>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
+        novelArray = array
     }
 
     private fun isWebsiteSearch(): Boolean {
@@ -48,23 +61,55 @@ class SearchResultsAdapter() : RecyclerView.Adapter<ResultViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
+        val title: String?
+        val url: String?
+        val imageURL: String?
+        val formatter: Formatter?
+        val id: Int
+
         if (isWebsiteSearch()) {
-            TODO("Loader")
+            val novel: Novel = novelArray[position]
+            title = novel.title
+            url = novel.link
+            imageURL = novel.imageURL
+            formatter = searchViewHolder.formatter
+            id = Database.DatabaseIdentification.getNovelIDFromNovelURL(imageURL)
         } else {
             val novel: NovelCard = Database.DatabaseNovels.getNovel(intArray[position])
+            title = novel.title
+            url = novel.novelURL
+            imageURL = novel.imageURL
+            formatter = DefaultScrapers.getByID(novel.formatterID)
+            id = novel.novelID
+        }
+
+        if (title != null)
+            holder.textView.text = title
+        if (imageURL != null)
             Picasso.get()
-                    .load(novel.imageURL)
+                    .load(imageURL)
                     .into(holder.imageView)
-            holder.textView.text = novel.title
+
+        holder.itemView.setOnClickListener {
+            val novelFragment = NovelFragment()
+            novelFragment.novelURL = url
+            novelFragment.formatter = formatter
+            novelFragment.novelID = id
+            (searchViewHolder.searchFragment.activity as MainActivity).transitionView(novelFragment)
+        }
+
+        when (Settings.themeMode) {
+            0 -> holder.textView.setBackgroundResource(R.color.white_trans)
+            1, 2 -> holder.textView.setBackgroundResource(R.color.black_trans)
         }
     }
 
+
     override fun getItemCount(): Int {
-        return if (isWebsiteSearch()) {
-            //TODO Loader
-            0
-        } else {
+        return if (isWebsiteSearch())
+            novelArray.size
+        else
             intArray.size
-        }
+
     }
 }

@@ -1,8 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search.async
 
-import android.app.Activity
 import android.os.AsyncTask
 import android.view.View
+import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 
 
 /*
@@ -28,10 +32,36 @@ import android.view.View
  *
  * @author github.com/doomsdayrs
  */
-class SearchLoader(val activity: Activity) : AsyncTask<View, Void, Void>() {
+class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<String, Void, Boolean>() {
+    var array: List<Novel> = arrayListOf()
 
-    override fun doInBackground(vararg params: View?): Void {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onPreExecute() {
+        super.onPreExecute()
+        searchViewHolder.itemView.post {
+            searchViewHolder.progressBar.visibility = View.VISIBLE
+        }
+    }
+
+    override fun doInBackground(vararg params: String?): Boolean {
+        array = CatalogueLoader(searchViewHolder.query, searchViewHolder.formatter).execute()
+        return true
+    }
+
+    override fun onPostExecute(result: Boolean?) {
+        super.onPostExecute(result)
+        searchViewHolder.itemView.post {
+            searchViewHolder.progressBar.visibility = View.GONE
+        }
+        searchViewHolder.itemView.post {
+            // Stores DATA
+            val data: SearchFragment.StoredData = SearchFragment.StoredData(searchViewHolder.formatter.id)
+            data.novelArray = array
+            searchViewHolder.searchFragment.array.add(data)
+
+            // Displays DATA
+            searchViewHolder.searchResultsAdapter = SearchResultsAdapter(array, searchViewHolder)
+            searchViewHolder.setAdapter()
+        }
     }
 
 }

@@ -70,8 +70,7 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
         if (catalogueFragment.formatter!!.hasCloudFlare()) {
             if (catalogueFragment.activity != null) catalogueFragment.activity!!.runOnUiThread { Toast.makeText(catalogueFragment.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
         }
-        val novels: List<Novel> = CatalogueLoader(catalogueFragment.formatter!!).execute(integers[0]).get()
-
+        val novels: List<Novel> = if (integers.isNotEmpty()) CatalogueLoader(catalogueFragment.formatter!!).execute(integers[0]) else CatalogueLoader(catalogueFragment.formatter!!).execute()
         for (novel in novels) catalogueFragment.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
         catalogueFragment.library_view.post { catalogueFragment.catalogueAdapter!!.notifyDataSetChanged() }
         if (catalogueHitBottom != null) {
