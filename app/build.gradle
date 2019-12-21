@@ -23,7 +23,8 @@ android {
             versionNameSuffix = '-debug'
         }
         dev {
-            applicationIdSuffix '.-dev'
+            versionNameSuffix = '-debug'
+            applicationIdSuffix '.dev'
             debuggable true
         }
     }
