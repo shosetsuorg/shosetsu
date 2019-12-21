@@ -39,8 +39,12 @@ class SearchViewHolder(itemView: View, val query: String) : RecyclerView.ViewHol
     private lateinit var formatter: Formatter
 
     private val textView: TextView = itemView.findViewById(R.id.textView)
-    private val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
-    private var searchResultsAdapter: SearchResultsAdapter = SearchResultsAdapter()
+    val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
+    var searchResultsAdapter: SearchResultsAdapter = SearchResultsAdapter()
+
+    init {
+        recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+    }
 
     fun setId(id: Int) {
         this.id = id
@@ -48,21 +52,19 @@ class SearchViewHolder(itemView: View, val query: String) : RecyclerView.ViewHol
             -2 -> throw RuntimeException("InvalidValue")
             -1 -> {
                 textView.setText(R.string.my_library)
-                recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-
                 val intArray: ArrayList<Int> = getIntLibrary()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     intArray.removeIf { novelID: Int? -> !DatabaseNovels.getNovelTitle(novelID!!).toLowerCase().contains(query.toLowerCase()) }
                 } else {
                     for (x in intArray.indices.reversed()) if (!DatabaseNovels.getNovelTitle(intArray.get(x)).toLowerCase().contains(query.toLowerCase())) intArray.removeAt(x)
                 }
-
                 searchResultsAdapter = SearchResultsAdapter(intArray)
                 recyclerView.adapter = searchResultsAdapter
             }
             else -> {
                 formatter = DefaultScrapers.getByID(id)!!
                 textView.text = formatter.name
+
             }
         }
     }
