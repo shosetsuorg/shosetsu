@@ -7,8 +7,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 
@@ -42,12 +42,15 @@ public class MigrationViewLoad extends AsyncTask<Void, Void, Void> {
     @NonNull
     @SuppressLint("StaticFieldLeak")
     private final MigrationView migrationView;
-    @Nullable
+    @NonNull
     private final Formatter targetFormat;
 
     public MigrationViewLoad(@NonNull MigrationView migrationView) {
         this.migrationView = migrationView;
-        this.targetFormat = DefaultScrapers.getByID(migrationView.target);
+        Formatter formatter = DefaultScrapers.getByID(migrationView.target);
+        if (formatter != null)
+            targetFormat = formatter;
+        else throw new NullPointerException("Target ID is completely invalid");
     }
 
     @Nullable
@@ -56,7 +59,7 @@ public class MigrationViewLoad extends AsyncTask<Void, Void, Void> {
         Log.d("Searching with", targetFormat.getName());
         for (int x = 0; x < migrationView.novels.size(); x++) {
             // Retrieves search results
-            ArrayList<Novel> N = (ArrayList<Novel>) targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels.get(x).title), targetFormat.hasCloudFlare()));
+            ArrayList<Novel> N = (ArrayList<Novel>) targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels.get(x).title), targetFormat.getHasCloudFlare()));
 
             // Sets the results
             migrationView.novelResults.set(x, N);

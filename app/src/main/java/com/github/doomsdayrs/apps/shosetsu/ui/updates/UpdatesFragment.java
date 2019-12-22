@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
@@ -65,12 +66,11 @@ public class UpdatesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.updater_now:
-                if (getContext() != null) {
-                    Update_Manager.init(Database.DatabaseNovels.getIntLibrary(), getContext());
-                    return true;
-                } else return false;
+        if (item.getItemId() == R.id.updater_now) {
+            if (getContext() != null) {
+                Update_Manager.init(Database.DatabaseNovels.getIntLibrary(), getContext());
+                return true;
+            } else return false;
         }
         return false;
     }
@@ -84,7 +84,7 @@ public class UpdatesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_update, container, false);
-        setActivityTitle(getActivity(),"Updates");
+        setActivityTitle(getActivity(), "Updates");
         viewPager = view.findViewById(R.id.viewpager);
         tabLayout = view.findViewById(R.id.tabLayout);
 
@@ -126,7 +126,7 @@ public class UpdatesFragment extends Fragment {
 
         Collections.reverse(updatesFragments);
 
-        UpdatedDaysPager pagerAdapter = new UpdatedDaysPager(getChildFragmentManager(), updatesFragments);
+        UpdatedDaysPager pagerAdapter = new UpdatedDaysPager(getChildFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, updatesFragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

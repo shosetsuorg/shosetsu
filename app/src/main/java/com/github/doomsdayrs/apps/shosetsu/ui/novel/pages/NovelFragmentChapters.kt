@@ -143,7 +143,8 @@ class NovelFragmentChapters : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         resume.visibility = View.GONE
-        fragment_novel_chapters_refresh.setOnRefreshListener { ChapterLoader(novelFragment!!.novelPage, novelFragment!!.novelURL!!, novelFragment!!.formatter!!).setNovelFragmentChapters(this).execute(activity) }
+        if (novelFragment != null && novelFragment!!.novelPage != null)
+            fragment_novel_chapters_refresh.setOnRefreshListener { ChapterLoader(novelFragment!!.novelPage!!, novelFragment!!.novelURL!!, novelFragment!!.formatter!!).setNovelFragmentChapters(this).execute(activity) }
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage")
         }
@@ -164,7 +165,7 @@ class NovelFragmentChapters : Fragment() {
         fragment_novel_chapters_recycler!!.post {
             fragment_novel_chapters_recycler!!.setHasFixedSize(false)
             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-            if (novelFragment != null && Database.DatabaseNovels.inDatabase(novelFragment!!.novelID)) {
+            if (novelFragment != null && Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
                 novelFragment!!.novelChapters = getChapters(novelFragment!!.novelID)
                 if (novelFragment!!.novelChapters != null && novelFragment!!.novelChapters!!.isNotEmpty()) resume!!.visibility = View.VISIBLE
             }

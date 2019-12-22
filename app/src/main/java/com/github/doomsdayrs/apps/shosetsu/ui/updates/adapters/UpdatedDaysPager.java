@@ -41,8 +41,8 @@ public class UpdatedDaysPager extends FragmentPagerAdapter {
 
     private final ArrayList<UpdateFragment> fragments;
 
-    public UpdatedDaysPager(@NonNull FragmentManager fm, ArrayList<UpdateFragment> fragments) {
-        super(fm);
+    public UpdatedDaysPager(@NonNull FragmentManager fm, int behavior, ArrayList<UpdateFragment> fragments) {
+        super(fm, behavior);
         this.fragments = fragments;
     }
 
@@ -69,7 +69,9 @@ public class UpdatedDaysPager extends FragmentPagerAdapter {
         return fragments.size();
     }
 
-    public void addToFragments(UpdateFragment f) {
-        fragments.add(0, f);
-    }
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+//    public void addToFragments(UpdateFragment f) {
+//        fragments.add(0, f);
+//    }
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
 }

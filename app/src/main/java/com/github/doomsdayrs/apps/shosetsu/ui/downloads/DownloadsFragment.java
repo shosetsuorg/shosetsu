@@ -177,15 +177,14 @@ public class DownloadsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.toolbar_downloads_pause:
-                if (togglePause())
-                    item.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
-                else {
-                    item.setIcon(R.drawable.ic_pause_circle_outline_black_24dp);
-                    Download_Manager.init(getActivity());
-                }
-                return true;
+        if (item.getItemId() == R.id.toolbar_downloads_pause) {
+            if (togglePause())
+                item.setIcon(R.drawable.ic_pause_circle_filled_black_24dp);
+            else {
+                item.setIcon(R.drawable.ic_pause_circle_outline_black_24dp);
+                Download_Manager.init(getActivity());
+            }
+            return true;
         }
 
         return false;

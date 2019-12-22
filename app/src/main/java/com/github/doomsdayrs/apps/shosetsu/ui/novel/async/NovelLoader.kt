@@ -75,17 +75,17 @@ class NovelLoader : AsyncTask<Void?, Void?, Boolean> {
         try {
             val document = WebViewScrapper.docFromURL(novelFragment!!.novelURL, novelFragment!!.formatter!!.hasCloudFlare)!!
             novelFragment!!.novelPage = novelFragment!!.formatter!!.parseNovel(document)
-            if (!errorView.activity.isDestroyed && !Database.DatabaseNovels.inDatabase(novelFragment!!.novelID)) {
+            if (!errorView.activity.isDestroyed && !Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
                 novelFragment!!.novelPage?.let { Database.DatabaseNovels.addToLibrary(novelFragment!!.formatter!!.formatterID, it, novelFragment!!.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a) }
             }
             val novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelFragment!!.novelURL)
-            for (novelChapter in novelFragment!!.novelPage?.novelChapters!!) if (!errorView.activity.isDestroyed && !Database.DatabaseChapter.inChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(novelID, novelChapter)
+            for (novelChapter in novelFragment!!.novelPage?.novelChapters!!) if (!errorView.activity.isDestroyed && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(novelID, novelChapter)
             Log.d("Loaded Novel:", novelFragment!!.novelPage!!.title)
             return true
         } catch (e: Exception) {
             errorView.activity.runOnUiThread { errorView.errorView.visibility = View.VISIBLE }
             errorView.activity.runOnUiThread { errorView.errorMessage.text = e.message }
-            errorView.activity.runOnUiThread { errorView.errorButton.setOnClickListener { view: View? -> refresh() } }
+            errorView.activity.runOnUiThread { errorView.errorButton.setOnClickListener { refresh() } }
             e.printStackTrace()
         }
         return false
@@ -106,7 +106,7 @@ class NovelLoader : AsyncTask<Void?, Void?, Boolean> {
     override fun onPostExecute(result: Boolean) {
         assert(novelFragment != null)
         novelFragment!!.novelFragmentInfo!!.getSwipeRefresh()!!.isRefreshing = false
-        if (Database.DatabaseNovels.inDatabase(novelFragment!!.novelID)) {
+        if (Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
             try {
                 if (novelFragment!!.novelURL != null) {
                     if (novelFragment!!.novelPage != null) {
@@ -118,8 +118,9 @@ class NovelLoader : AsyncTask<Void?, Void?, Boolean> {
             }
         }
         if (result) {
-            assert(novelFragment != null)
-            if (loadAll) errorView.activity.runOnUiThread { novelFragment!!.formatter?.let { novelFragment!!.novelURL?.let { it1 -> ChapterLoader(novelFragment!!.novelPage, it1, it).execute() } } }
+
+            if (loadAll && novelFragment != null && novelFragment!!.novelPage != null)
+                errorView.activity.runOnUiThread { novelFragment!!.formatter?.let { novelFragment!!.novelURL?.let { it1 -> ChapterLoader(novelFragment!!.novelPage!!, it1, it).execute() } } }
             errorView.activity.runOnUiThread { setData() }
         }
     }

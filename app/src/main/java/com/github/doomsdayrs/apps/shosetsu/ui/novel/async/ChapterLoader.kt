@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.AsyncTask
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
@@ -12,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
-import java.util.*
+import org.jsoup.nodes.Document
 
 /*
  * This file is part of Shosetsu.
@@ -41,7 +42,7 @@ import java.util.*
  * This task loads a novel for the novel fragment
  */
 class ChapterLoader : AsyncTask<Activity?, Void?, Boolean> {
-    private var novelPage: NovelPage?
+    private var novelPage: NovelPage
     private val novelURL: String
     private val formatter: Formatter
     private var novelFragmentChapters: NovelFragmentChapters? = null
@@ -49,7 +50,7 @@ class ChapterLoader : AsyncTask<Activity?, Void?, Boolean> {
     /**
      * Constructor
      */
-    constructor(novelPage: NovelPage?, novelURL: String, formatter: Formatter) {
+    constructor(novelPage: NovelPage, novelURL: String, formatter: Formatter) {
         this.novelPage = novelPage
         this.novelURL = novelURL
         this.formatter = formatter
@@ -67,6 +68,19 @@ class ChapterLoader : AsyncTask<Activity?, Void?, Boolean> {
         return this
     }
 
+    private fun toastError(@Suppress("SameParameterValue") errorString: String, error: Throwable) {
+        Log.e("ChapterLoader", errorString, error)
+        if (novelFragmentChapters != null && novelFragmentChapters!!.activity != null && novelFragmentChapters!!.context != null)
+            novelFragmentChapters!!.activity!!.runOnUiThread { Toast.makeText(novelFragmentChapters!!.context, errorString, Toast.LENGTH_SHORT).show() }
+
+    }
+
+    private fun toastError(error: String) {
+        Log.e("ChapterLoader", error)
+        if (novelFragmentChapters != null && novelFragmentChapters!!.activity != null && novelFragmentChapters!!.context != null)
+            novelFragmentChapters!!.activity!!.runOnUiThread { Toast.makeText(novelFragmentChapters!!.context, error, Toast.LENGTH_SHORT).show() }
+    }
+
     /**
      * Background process
      *
@@ -75,54 +89,67 @@ class ChapterLoader : AsyncTask<Activity?, Void?, Boolean> {
      */
     override fun doInBackground(vararg voids: Activity?): Boolean {
         val activity = voids[0]
-        novelPage = null
-        Log.d("ChapLoad", novelURL)
-        if (novelFragmentChapters != null) {
-            if (novelFragmentChapters!!.activity != null) novelFragmentChapters!!.activity!!.runOnUiThread {
-                if (novelFragmentChapters!!.novelFragment != null) {
-                    novelFragmentChapters!!.novelFragment!!.getErrorView()!!.visibility = View.GONE
+        if (activity != null) {
+            novelPage = NovelPage()
+            Log.d("ChapterLoader", novelURL)
+            if (novelFragmentChapters != null) {
+                if (novelFragmentChapters!!.activity != null) novelFragmentChapters!!.activity!!.runOnUiThread {
+                    if (novelFragmentChapters!!.novelFragment != null) {
+                        novelFragmentChapters!!.novelFragment!!.getErrorView()!!.visibility = View.GONE
+                    }
                 }
-            }
-            try {
-                var page = 1
-                if (formatter.isIncrementingChapterList) {
-                    novelPage = formatter.parseNovel(WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare()), page)
-                    val mangaCount = 0
-                    while (page <= novelPage.maxChapterPage && !activity.isDestroyed) {
-                        val s = "Page: " + page + "/" + novelPage.maxChapterPage
-                        Objects.requireNonNull(novelFragmentChapters!!.getPageCount()).post { novelFragmentChapters!!.getPageCount()!!.text = s }
-                        novelPage = formatter.parseNovel(WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare()), page)
-                        for (novelChapter in novelPage.novelChapters) add(activity, mangaCount, novelChapter)
-                        page++
-                        Utilities.wait(300)
+                try {
+                    var page = 1
+                    if (formatter.isIncrementingChapterList) {
+                        var doc: Document? = WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare)
+                        if (doc != null) {
+                            novelPage = formatter.parseNovel(doc, page)
+                            var mangaCount = 0
+                            while (page <= novelPage.maxChapterPage && !activity.isDestroyed) {
+
+                                if (novelFragmentChapters!!.getPageCount() != null) {
+                                    val s = "Page: " + page + "/" + novelPage.maxChapterPage
+                                    novelFragmentChapters!!.getPageCount()!!.post { novelFragmentChapters!!.getPageCount()!!.text = s }
+                                } else toastError("PageCount returned null")
+
+                                doc = WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare)
+                                if (doc != null) {
+                                    novelPage = formatter.parseNovel(doc, page)
+                                    for (novelChapter in novelPage.novelChapters) {
+                                        add(activity, mangaCount, novelChapter)
+                                        mangaCount++
+                                    }
+                                } else toastError("Page returned null,Skipping")
+                                page++
+                                Utilities.wait(300)
+                            }
+                        }
+                    } else {
+                        val doc: Document? = WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare)
+                        if (doc != null) {
+                            novelPage = formatter.parseNovel(doc, page)
+                            for ((mangaCount, novelChapter) in novelPage.novelChapters.withIndex())
+                                add(activity, mangaCount, novelChapter)
+                        }
                     }
-                } else {
-                    novelPage = formatter.parseNovel(WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare()), page)
-                    val mangaCount = 0
-                    for (novelChapter in novelPage.novelChapters) add(activity, mangaCount, novelChapter)
-                }
-                return true
-            } catch (e: Exception) {
-                if (novelFragmentChapters != null) if (novelFragmentChapters!!.activity != null) novelFragmentChapters!!.activity!!.runOnUiThread {
-                    if (novelFragmentChapters!!.novelFragment != null) {
-                        Objects.requireNonNull(novelFragmentChapters!!.novelFragment!!.getErrorView()).visibility = View.VISIBLE
-                    }
-                    if (novelFragmentChapters!!.novelFragment != null) {
-                        Objects.requireNonNull(novelFragmentChapters!!.novelFragment!!.getErrorMessage()).text = e.message
-                    }
-                    if (novelFragmentChapters!!.novelFragment != null) {
-                        Objects.requireNonNull(novelFragmentChapters!!.novelFragment!!.getErrorButton()).setOnClickListener { view: View? -> refresh(activity) }
-                    }
+                    return true
+                } catch (e: Exception) {
+                    if (novelFragmentChapters != null) if (novelFragmentChapters!!.activity != null) novelFragmentChapters!!.activity!!.runOnUiThread {
+                        if (novelFragmentChapters!!.novelFragment != null && novelFragmentChapters!!.novelFragment!!.getErrorView() != null && novelFragmentChapters!!.novelFragment!!.getErrorMessage() != null && novelFragmentChapters!!.novelFragment!!.getErrorButton() != null) {
+                            novelFragmentChapters!!.novelFragment!!.getErrorView()!!.visibility = View.VISIBLE
+                            novelFragmentChapters!!.novelFragment!!.getErrorMessage()!!.text = e.message
+                            novelFragmentChapters!!.novelFragment!!.getErrorButton()!!.setOnClickListener { refresh(activity) }
+                        } else toastError("Cannot dump error via ErrorView", e)
+                    } else toastError("Cannot dump error via ErrorView", e)
                 }
             }
         }
+
         return false
     }
 
     private fun add(activity: Activity, mangaCount: Int, novelChapter: NovelChapter) { //TODO The getNovelID in this method likely will cause slowdowns due to IO
-        var mangaCount = mangaCount
-        if (!activity.isDestroyed && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
-            mangaCount++
+        if (!activity.isDestroyed && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
             Log.i("ChapterLoader", "Adding #" + mangaCount + ": " + novelChapter.link)
             Database.DatabaseChapter.addToChapters(DatabaseIdentification.getNovelIDFromNovelURL(novelURL), novelChapter)
         }
@@ -136,8 +163,11 @@ class ChapterLoader : AsyncTask<Activity?, Void?, Boolean> {
      * Show progress bar
      */
     override fun onPreExecute() {
-        Objects.requireNonNull(novelFragmentChapters!!.getSwipeRefreshLayout()).isRefreshing = true
-        if (formatter.isIncrementingChapterList) Objects.requireNonNull(novelFragmentChapters!!.getPageCount()).visibility = View.VISIBLE
+        if (novelFragmentChapters != null && novelFragmentChapters!!.getSwipeRefreshLayout() != null) {
+            novelFragmentChapters!!.getSwipeRefreshLayout()!!.isRefreshing = true
+            if (formatter.isIncrementingChapterList && novelFragmentChapters!!.getPageCount() != null)
+                novelFragmentChapters!!.getPageCount()!!.visibility = View.VISIBLE
+        }
     }
 
     override fun onCancelled(aBoolean: Boolean) {
@@ -156,21 +186,22 @@ class ChapterLoader : AsyncTask<Activity?, Void?, Boolean> {
      * @param result if completed
      */
     override fun onPostExecute(result: Boolean) {
-        val activity: Activity? = novelFragmentChapters!!.activity
-        activity?.runOnUiThread {
-            novelFragmentChapters!!.getSwipeRefreshLayout()!!.isRefreshing = false
-            if (formatter.isIncrementingChapterList) novelFragmentChapters!!.getPageCount()!!.visibility = View.GONE
-            if (result) {
-                if (novelFragmentChapters!!.activity != null) {
-                    novelFragmentChapters!!.activity!!.runOnUiThread {
-                        novelFragmentChapters!!.setChapters()
-                        novelFragmentChapters!!.adapter!!.notifyDataSetChanged()
-                        novelFragmentChapters!!.getResumeRead()!!.visibility = View.VISIBLE
-                    }
-                    novelFragmentChapters!!.activity!!.runOnUiThread { Objects.requireNonNull(novelFragmentChapters!!.adapter).notifyDataSetChanged() }
-                } else Log.e("ChapterLoader", "Cannot set chapters")
-            } else Log.e("ChapterLoader", "Result is a negative")
-        }
-                ?: Log.e("ChapterLoader", "Failed to retrieve an activity")
+        if (novelFragmentChapters != null) {
+            val activity: Activity? = novelFragmentChapters!!.activity
+            if (activity != null) {
+                activity.runOnUiThread {
+                    if (novelFragmentChapters!!.getSwipeRefreshLayout() != null) {
+                        novelFragmentChapters!!.getSwipeRefreshLayout()!!.isRefreshing = false
+                        if (formatter.isIncrementingChapterList)
+                            novelFragmentChapters!!.getPageCount()!!.visibility = View.GONE
+                        if (result && novelFragmentChapters!!.adapter != null) {
+                            novelFragmentChapters!!.setChapters()
+                            novelFragmentChapters!!.getResumeRead()!!.visibility = View.VISIBLE
+                            novelFragmentChapters!!.adapter!!.notifyDataSetChanged()
+                        } else toastError("Result is a negative")
+                    } else toastError("SwipeRefreshLayout null")
+                }
+            } else toastError("Activity is null")
+        } else toastError("NovelFragmentChapters is null")
     }
 }

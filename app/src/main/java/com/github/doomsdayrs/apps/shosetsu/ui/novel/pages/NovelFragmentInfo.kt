@@ -154,9 +154,9 @@ class NovelFragmentInfo : Fragment() {
                 return@post
             }
             fragment_novel_title!!.text = novelFragment!!.novelPage!!.title
-            if (novelFragment!!.novelPage!!.authors.isNotEmpty()) fragment_novel_author!!.text = Arrays.toString(novelFragment!!.novelPage!!.authors)
+            if (novelFragment!!.novelPage!!.authors.isNotEmpty()) fragment_novel_author!!.text = novelFragment!!.novelPage!!.authors.contentToString()
             fragment_novel_description!!.text = novelFragment!!.novelPage!!.description
-            if (novelFragment!!.novelPage!!.artists.isNotEmpty()) fragment_novel_artists!!.text = Arrays.toString(novelFragment!!.novelPage!!.artists)
+            if (novelFragment!!.novelPage!!.artists.isNotEmpty()) fragment_novel_artists!!.text = novelFragment!!.novelPage!!.artists.contentToString()
             fragment_novel_status!!.text = novelFragment!!.status.status
             var s = "unknown"
             when (novelFragment!!.novelPage!!.status) {

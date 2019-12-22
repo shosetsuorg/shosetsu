@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard;
@@ -52,9 +52,9 @@ public class CatalogueQuerySearch extends AsyncTask<String, Void, ArrayList<Cata
     @Override
     protected ArrayList<CatalogueNovelCard> doInBackground(String... strings) {
         ArrayList<CatalogueNovelCard> result = new ArrayList<>();
-        List<Novel> novels = catalogueFragment.formatter.parseSearch(docFromURL(catalogueFragment.formatter.getSearchString(strings[0]), catalogueFragment.formatter.hasCloudFlare()));
+        List<Novel> novels = catalogueFragment.formatter.parseSearch(docFromURL(catalogueFragment.formatter.getSearchString(strings[0]), catalogueFragment.formatter.getHasCloudFlare()));
         for (Novel novel : novels)
-            result.add(new CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link));
+            result.add(new CatalogueNovelCard(novel.getImageURL(), novel.getTitle(), Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.getLink()), novel.getLink()));
         return result;
     }
 }

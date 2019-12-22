@@ -67,7 +67,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityT
 public class CatalogueFragment extends Fragment {
     @NonNull
     public ArrayList<CatalogueNovelCard> catalogueNovelCards = new ArrayList<>();
-    @Nullable
+    @NonNull
     public Formatter formatter;
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView library_view;
@@ -83,8 +83,6 @@ public class CatalogueFragment extends Fragment {
     public boolean isQuery = false;
 
     public ConstraintLayout errorView;
-    private TextView errorMessage;
-    private Button errorButton;
     public TextView empty;
 
     /**
@@ -95,7 +93,7 @@ public class CatalogueFragment extends Fragment {
     }
 
 
-    public void setFormatter(Formatter formatter) {
+    public void setFormatter(@org.jetbrains.annotations.Nullable Formatter formatter) {
         this.formatter = formatter;
     }
 
@@ -105,7 +103,7 @@ public class CatalogueFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putSerializable("list", catalogueNovelCards);
         if (formatter != null)
-            outState.putInt("formatter", formatter.getID());
+            outState.putInt("formatter", formatter.getFormatterID());
     }
 
     @Override
@@ -145,8 +143,8 @@ public class CatalogueFragment extends Fragment {
             swipeRefreshLayout = view.findViewById(R.id.fragment_catalogue_refresh);
             bottomProgressBar = view.findViewById(R.id.fragment_catalogue_progress_bottom);
             errorView = view.findViewById(R.id.network_error);
-            errorMessage = view.findViewById(R.id.error_message);
-            errorButton = view.findViewById(R.id.error_button);
+            TextView errorMessage = view.findViewById(R.id.error_message);
+            Button errorButton = view.findViewById(R.id.error_button);
             empty = view.findViewById(R.id.fragment_catalogue_empty);
         }
 
@@ -162,11 +160,11 @@ public class CatalogueFragment extends Fragment {
         if (savedInstanceState == null && !dontRefresh) {
             Log.d("Process", "Loading up latest");
             setLibraryCards(catalogueNovelCards);
-            if (catalogueNovelCards.size() > 0) {
+            if (catalogueNovelCards.size() > 0 && catalogueAdapter != null) {
                 catalogueNovelCards = new ArrayList<>();
                 catalogueAdapter.notifyDataSetChanged();
             }
-            if (!formatter.hasCloudFlare())
+            if (!formatter.getHasCloudFlare())
                 new CataloguePageLoader(this).execute();
             else webView();
         } else

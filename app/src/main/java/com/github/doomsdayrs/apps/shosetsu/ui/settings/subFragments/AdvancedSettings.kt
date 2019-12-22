@@ -68,7 +68,7 @@ class AdvancedSettings : Fragment() {
                     .setSpinnerSelection(Settings.themeMode),
             SettingsItemData(SettingsItemData.SettingsType.BUTTON)
                     .setTitle(R.string.remove_novel_cache)
-                    .setOnClickListenerButton { view1: View? -> Database.DatabaseIdentification.purgeUnSavedNovels(view1) }
+                    .setOnClickListenerButton { Database.DatabaseIdentification.purgeUnSavedNovels() }
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -34,7 +34,7 @@ import us.feras.mdv.MarkdownView;
  * @author github.com/doomsdayrs
  */
 public class NewMarkdownReader extends NewReader {
-    MarkdownView markdownView;
+    private final MarkdownView markdownView;
 
     public NewMarkdownReader(@NonNull View itemView, NewChapterReader newChapterReader) {
         super(itemView, newChapterReader);

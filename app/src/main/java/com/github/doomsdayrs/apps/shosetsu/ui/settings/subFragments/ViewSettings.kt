@@ -161,7 +161,6 @@ class ViewSettings : Fragment() {
 
         run {
             val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, indentSizes)
-            val spaceBack = Settings.indentSize
             settings[3].adapter = dataAdapter
             settings[3].spinnerSelection = (Settings.indentSize)
         }

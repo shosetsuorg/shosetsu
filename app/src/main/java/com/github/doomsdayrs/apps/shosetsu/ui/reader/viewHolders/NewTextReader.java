@@ -33,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.NovelFragmentChap
  * @author github.com/doomsdayrs
  */
 public class NewTextReader extends NewReader {
-    public final TextView textView;
+    private final TextView textView;
 
     public NewTextReader(@NonNull View itemView, NewChapterReader newChapterReader) {
         super(itemView, newChapterReader);

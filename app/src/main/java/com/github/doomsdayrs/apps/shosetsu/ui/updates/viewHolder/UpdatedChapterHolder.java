@@ -26,8 +26,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
@@ -70,9 +70,9 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
 
     public void setNovelChapter(@NonNull NovelChapter novelChapter) {
         this.novelChapter = novelChapter;
-        title.setText(novelChapter.title);
+        title.setText(novelChapter.getTitle());
         //TODO fix this disgust
-        NovelCard novelCard = Database.DatabaseNovels.getNovel(Database.DatabaseIdentification.getNovelIDFromChapterID(getChapterIDFromChapterURL(novelChapter.link)));
+        NovelCard novelCard = Database.DatabaseNovels.getNovel(Database.DatabaseIdentification.getNovelIDFromChapterID(getChapterIDFromChapterURL(novelChapter.getLink())));
         Picasso.get()
                 .load(
                         novelCard.imageURL)
@@ -82,9 +82,9 @@ public class UpdatedChapterHolder extends RecyclerView.ViewHolder implements Vie
 
     @Override
     public void onClick(View view) {
-        String nurl = Database.DatabaseIdentification.getNovelURLFromChapterURL(novelChapter.link);
+        String nurl = Database.DatabaseIdentification.getNovelURLFromChapterURL(novelChapter.getLink());
         Formatter formatter = DefaultScrapers.getByID(getFormatterIDFromNovelURL(nurl));
         if (formatter != null)
-            openChapter((Activity) itemView.getContext(), novelChapter, getNovelIDFromNovelURL(nurl), formatter.getID());
+            openChapter((Activity) itemView.getContext(), novelChapter, getNovelIDFromNovelURL(nurl), formatter.getFormatterID());
     }
 }

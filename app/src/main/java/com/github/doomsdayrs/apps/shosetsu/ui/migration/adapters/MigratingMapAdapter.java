@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
@@ -54,8 +54,8 @@ public class MigratingMapAdapter extends RecyclerView.Adapter<CompressedHolder> 
     @Override
     public void onBindViewHolder(@NonNull CompressedHolder holder, int position) {
         Novel novel = migrationView.novelResults.get(migrationView.selection).get(position);
-        Picasso.get().load(novel.imageURL).into(holder.image);
-        holder.title.setText(novel.title);
+        Picasso.get().load(novel.getImageURL()).into(holder.image);
+        holder.title.setText(novel.getTitle());
         MaterialCardView materialCardView = holder.itemView.findViewById(R.id.materialCardView);
 
         if (position == migrationView.secondSelection) {

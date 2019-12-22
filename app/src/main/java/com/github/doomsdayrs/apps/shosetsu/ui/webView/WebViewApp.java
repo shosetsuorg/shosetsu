@@ -36,7 +36,6 @@ public class WebViewApp extends AppCompatActivity {
 
 
     private WebView webView;
-    private Actions action = Actions.VIEW;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -45,7 +44,7 @@ public class WebViewApp extends AppCompatActivity {
         setContentView(R.layout.webview);
         webView = findViewById(R.id.webview);
         Intent intent = getIntent();
-        action = Actions.actions.get(intent.getIntExtra("action", 0));
+        Actions action = Actions.actions.get(intent.getIntExtra("action", 0));
         webView.getSettings().setJavaScriptEnabled(true);
 
         switch (action) {

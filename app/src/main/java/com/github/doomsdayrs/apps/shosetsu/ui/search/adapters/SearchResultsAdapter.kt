@@ -40,8 +40,8 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : RecyclerView.Adapter<ResultViewHolder>() {
-    var intArray: ArrayList<Int> = arrayListOf(-1)
-    var novelArray: List<Novel> = arrayListOf()
+    private var intArray: ArrayList<Int> = arrayListOf(-1)
+    private var novelArray: List<Novel> = arrayListOf()
 
     constructor(array: ArrayList<Int>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
         this.intArray = array

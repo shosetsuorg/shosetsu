@@ -7,9 +7,9 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment;
@@ -84,20 +84,20 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
                 String s = strings[0] + "--->" + strings[1];
                 System.out.println(s);
                 migrationView.output.post(() -> migrationView.output.setText(s));
-                NovelPage novelPage = formatter.parseNovel(docFromURL((strings[1]), formatter.hasCloudFlare()));
+                NovelPage novelPage = formatter.parseNovel(docFromURL((strings[1]), formatter.getHasCloudFlare()));
                 if (formatter.isIncrementingChapterList()) {
                     int mangaCount = 0;
                     int page = 1;
-                    while (page <= novelPage.maxChapterPage && C) {
-                        String p = "Page: " + page + "/" + novelPage.maxChapterPage;
+                    while (page <= novelPage.getMaxChapterPage() && C) {
+                        String p = "Page: " + page + "/" + novelPage.getMaxChapterPage();
                         migrationView.pageCount.post(() -> migrationView.pageCount.setText(p));
 
-                        novelPage = formatter.parseNovel(docFromURL(strings[1], formatter.hasCloudFlare()), page);
+                        novelPage = formatter.parseNovel(docFromURL(strings[1], formatter.getHasCloudFlare()), page);
                         int novelID = getNovelIDFromNovelURL(strings[1]);
-                        for (NovelChapter novelChapter : novelPage.novelChapters)
-                            if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                        for (NovelChapter novelChapter : novelPage.getNovelChapters())
+                            if (C && !Database.DatabaseChapter.isNotInChapters(novelChapter.getLink())) {
                                 mangaCount++;
-                                System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+                                System.out.println("Adding #" + mangaCount + ": " + novelChapter.getLink());
 
                                 Database.DatabaseChapter.addToChapters(novelID, novelChapter);
                             }
@@ -113,17 +113,17 @@ public class Transfer extends AsyncTask<Void, Void, Void> {
                 } else {
                     int mangaCount = 0;
                     int novelID = getNovelIDFromNovelURL(strings[1]);
-                    for (NovelChapter novelChapter : novelPage.novelChapters)
-                        if (C && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
+                    for (NovelChapter novelChapter : novelPage.getNovelChapters())
+                        if (C && !Database.DatabaseChapter.isNotInChapters(novelChapter.getLink())) {
                             mangaCount++;
-                            System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+                            System.out.println("Adding #" + mangaCount + ": " + novelChapter.getLink());
                             Database.DatabaseChapter.addToChapters(novelID, novelChapter);
                         }
                 }
                 if (C) {
                     migrationView.pageCount.post(() -> migrationView.pageCount.setText(""));
                     int oldID = getNovelIDFromNovelURL(strings[0]);
-                    Database.DatabaseNovels.migrateNovel(oldID, strings[1], formatter.getID(), novelPage, Database.DatabaseNovels.getStatus(oldID).getA());
+                    Database.DatabaseNovels.migrateNovel(oldID, strings[1], formatter.getFormatterID(), novelPage, Database.DatabaseNovels.getStatus(oldID).getA());
                 }
             }
         return null;

@@ -32,11 +32,13 @@ import java.util.concurrent.TimeUnit;
  * @author github.com/doomsdayrs
  */
 class WebViewScrapperClient extends WebViewClient {
-    private final WebViewScrapper webViewScrapper;
+    //  private final WebViewScrapper webViewScrapper;
 
-    WebViewScrapperClient(WebViewScrapper webViewScrapper) {
-        this.webViewScrapper = webViewScrapper;
-    }
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+//    WebViewScrapperClient(WebViewScrapper webViewScrapper) {
+//        this.webViewScrapper = webViewScrapper;
+//    }
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
 
     @Override
     public boolean shouldOverrideUrlLoading(@NonNull WebView view, String url) {
@@ -56,8 +58,8 @@ class WebViewScrapperClient extends WebViewClient {
                 "(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
                 html -> {
                     Log.d("HTML", html);
-                    webViewScrapper.html = html;
-                    webViewScrapper.completed = true;
+                    //         webViewScrapper.html = html;
+                    //      webViewScrapper.completed = true;
                 });
         // view.loadUrl("javascript:window.HTMLOUT.processHTML('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
 

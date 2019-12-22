@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -89,12 +89,12 @@ public class ChapterReader extends AppCompatActivity {
     public Toolbar toolbar;
 
 
-    ViewPager chapterPager;
+    private ViewPager chapterPager;
 
     public Formatter formatter;
-    protected MenuItem bookmark;
+    private MenuItem bookmark;
     public int readerType;
-    public int novelID;
+    private int novelID;
     public ChapterView currentView;
 
     private MenuItem tap_to_scroll;
@@ -108,7 +108,7 @@ public class ChapterReader extends AppCompatActivity {
     protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt("formatter", formatter.getID());
+        outState.putInt("formatter", formatter.getFormatterID());
     }
 
     /**
@@ -320,14 +320,12 @@ public class ChapterReader extends AppCompatActivity {
 
         if (chapterIDs == null) {
             List<Integer> integers = getChaptersOnlyIDs(novelID);
-            if (integers != null) {
-                chapterIDs = new int[integers.size()];
-                int y = 0;
-                for (int x = 1; x < integers.size(); x++) {
-                    chapterIDs[x] = integers.get(y);
-                    y++;
-                }
-            } else chapterIDs = new int[]{chapters.get(0).chapterID};
+            chapterIDs = new int[integers.size()];
+            int y = 0;
+            for (int x = 1; x < integers.size(); x++) {
+                chapterIDs[x] = integers.get(y);
+                y++;
+            }
         }
 
         // Declares view variables
@@ -345,7 +343,7 @@ public class ChapterReader extends AppCompatActivity {
         chapterPager.setCurrentItem(getPosition());
     }
 
-    public int getPosition() {
+    private int getPosition() {
         return binarySearch(chapterIDs, currentChapterID);
     }
 

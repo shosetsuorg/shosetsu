@@ -1,7 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
 
-import org.jetbrains.annotations.NotNull;
-
 /*
  * This file is part of Shosetsu.
  *
@@ -37,7 +35,6 @@ public class NovelCard extends RecycleCard {
     /**
      * ID of formatter
      */
-    @NotNull
     public final int formatterID;
 
     /**

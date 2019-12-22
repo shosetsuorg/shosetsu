@@ -33,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
 public abstract class NewReader extends RecyclerView.ViewHolder {
     final NewChapterReader newChapterReader;
 
-    public NewReader(@NonNull View itemView, NewChapterReader newChapterReader) {
+    NewReader(@NonNull View itemView, NewChapterReader newChapterReader) {
         super(itemView);
         this.newChapterReader = newChapterReader;
     }

@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
@@ -63,7 +63,8 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
     public void onBindViewHolder(@NonNull CatalogueHolder catalogueHolder, int i) {
 
         CatalogueCard catalogueCard = catalogues.get(i);
-        if (catalogueCard.formatter.getImageURL() != null && !catalogueCard.formatter.getImageURL().isEmpty())
+        catalogueCard.formatter.getImageURL();
+        if (!catalogueCard.formatter.getImageURL().isEmpty())
             Picasso.get()
                     .load(catalogueCard.formatter.getImageURL())
                     .into(catalogueHolder.image);
@@ -103,14 +104,14 @@ public class MigrationViewCatalogueAdapter extends RecyclerView.Adapter<Migratio
             Log.d("FormatterSelection", formatter.getName());
             if (isOnline()) {
 
-                Log.d("Target", String.valueOf(formatter.getID()));
-                migrationView.target = formatter.getID();
+                Log.d("Target", String.valueOf(formatter.getFormatterID()));
+                migrationView.target = formatter.getFormatterID();
                 migrationView.targetSelection.setVisibility(View.GONE);
                 migrationView.migration.setVisibility(View.VISIBLE);
 
                 //TODO, popup window saying novels rejected because the formatter ID is the same.
                 for (int x = migrationView.novels.size() - 1; x >= 0; x--) {
-                    if (migrationView.novels.get(x).formatterID == formatter.getID()) {
+                    if (migrationView.novels.get(x).formatterID == formatter.getFormatterID()) {
                         migrationView.novels.remove(x);
                     }
                 }

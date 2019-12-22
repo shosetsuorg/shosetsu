@@ -37,7 +37,7 @@ import java.util.ArrayList;
  */
 public class NewChapterReaderAdapter extends FragmentPagerAdapter {
     private final NewChapterReader newChapterReader;
-    private ArrayList<NewChapterView> chapterViews = new ArrayList<>();
+    private final ArrayList<NewChapterView> chapterViews = new ArrayList<>();
 
     public NewChapterReaderAdapter(@NonNull FragmentManager fm, int behavior, NewChapterReader newChapterReader) {
         super(fm, behavior);

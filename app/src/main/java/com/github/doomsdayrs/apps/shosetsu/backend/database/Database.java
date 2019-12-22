@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -172,14 +171,10 @@ public class Database {
         }
 
 
-        public static void purgeUnSavedNovels(View ignored) {
-            purgeUnSavedNovels();
-        }
-
         /**
          * Finds and deletes all novels that are unbookmarked
          */
-        static void purgeUnSavedNovels() {
+        public static void purgeUnSavedNovels() {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=0", null);
             while (cursor.moveToNext()) {
                 int i = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
@@ -482,12 +477,14 @@ public class Database {
     public static class DatabaseChapter {
         //TODO Dev access code
 
-        public static void purgeCache() {
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTERS);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTER_IDENTIFICATION);
-            sqLiteDatabase.execSQL(DBHelper.CHAPTER_IDENTIFICATION_CREATE);
-            sqLiteDatabase.execSQL(DBHelper.CHAPTERS_CREATE);
-        }
+// --Commented out by Inspection START (12/22/19 11:09 AM):
+//        public static void purgeCache() {
+//            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTERS);
+//            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTER_IDENTIFICATION);
+//            sqLiteDatabase.execSQL(DBHelper.CHAPTER_IDENTIFICATION_CREATE);
+//            sqLiteDatabase.execSQL(DBHelper.CHAPTERS_CREATE);
+//        }
+// --Commented out by Inspection STOP (12/22/19 11:09 AM)
 
         /**
          * @param novelID ID of novel
@@ -501,9 +498,9 @@ public class Database {
         }
 
 
-        public static void updateOrder(int chapterID, int order) {
-            sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.ORDER + "='" + order + "' where " + Columns.ID + "=" + chapterID);
-        }
+        //      public static void updateOrder(int chapterID, int order) {
+        //        sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.ORDER + "='" + order + "' where " + Columns.ID + "=" + chapterID);
+        //   }
 
         /**
          * Updates the Y coordinate
@@ -561,18 +558,20 @@ public class Database {
             }
         }
 
-        public static float getOrder(int chapterID) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return -1;
-            } else {
-                cursor.moveToNext();
-                float y = cursor.getFloat(cursor.getColumnIndex(Columns.ORDER.toString()));
-                cursor.close();
-                return y;
-            }
-        }
+// --Commented out by Inspection START (12/22/19 11:09 AM):
+//        public static float getOrder(int chapterID) {
+//            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
+//            if (cursor.getCount() <= 0) {
+//                cursor.close();
+//                return -1;
+//            } else {
+//                cursor.moveToNext();
+//                float y = cursor.getFloat(cursor.getColumnIndex(Columns.ORDER.toString()));
+//                cursor.close();
+//                return y;
+//            }
+//        }
+// --Commented out by Inspection STOP (12/22/19 11:09 AM)
 
         public static String getTitle(int chapterID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.TITLE + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
@@ -702,7 +701,7 @@ public class Database {
          * @param chapterURL chapter url
          * @return if present
          */
-        public static boolean inChapters(String chapterURL) {
+        public static boolean isNotInChapters(String chapterURL) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
             int a = cursor.getCount();
             cursor.close();
@@ -950,15 +949,17 @@ public class Database {
             }
         }
 
-        /**
-         * @param novelURL url of novel to remove
-         * @return if successful
-         */
-        public static boolean removeFromLibrary(@NotNull String novelURL) {
-            boolean a = sqLiteDatabase.delete(Tables.NOVELS.toString(), Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL), null) > 0;
-            boolean b = sqLiteDatabase.delete(Tables.NOVEL_IDENTIFICATION.toString(), Columns.ID + "=" + getNovelIDFromNovelURL(novelURL), null) > 0;
-            return a && b;
-        }
+// --Commented out by Inspection START (12/22/19 11:09 AM):
+//        /**
+//         * @param novelURL url of novel to remove
+//         * @return if successful
+//         */
+//        public static boolean removeFromLibrary(@NotNull String novelURL) {
+//            boolean a = sqLiteDatabase.delete(Tables.NOVELS.toString(), Columns.PARENT_ID + "=" + getNovelIDFromNovelURL(novelURL), null) > 0;
+//            boolean b = sqLiteDatabase.delete(Tables.NOVEL_IDENTIFICATION.toString(), Columns.ID + "=" + getNovelIDFromNovelURL(novelURL), null) > 0;
+//            return a && b;
+//        }
+// --Commented out by Inspection STOP (12/22/19 11:09 AM)
 
         /**
          * Is a novel in the library or not
@@ -966,54 +967,56 @@ public class Database {
          * @param novelID Novel novelID
          * @return yes or no
          */
-        public static boolean inDatabase(int novelID) {
+        public static boolean isNotInDatabase(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " ='" + novelID + "'", null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return false;
+                return true;
             }
             cursor.close();
-            return true;
+            return false;
         }
 
-        public static boolean inDatabase(String novelURL) {
-            return -1 != getNovelIDFromNovelURL(novelURL);
+        public static boolean isNotInDatabase(String novelURL) {
+            return -1 == getNovelIDFromNovelURL(novelURL);
         }
 
-        /**
-         * Get's the entire library to be listed
-         *
-         * @return the library
-         */
-        @NonNull
-        public static ArrayList<NovelCard> getLibrary() {
-            Log.d("DL", "Getting");
-            Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
-                    new String[]{Columns.PARENT_ID.toString(), Columns.TITLE.toString(), Columns.IMAGE_URL.toString()},
-                    Columns.BOOKMARKED + "=1", null, null, null, null);
-
-            ArrayList<NovelCard> novelCards = new ArrayList<>();
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return new ArrayList<>();
-            } else {
-                while (cursor.moveToNext()) {
-                    try {
-                        int parent = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
-                        novelCards.add(new NovelCard(
-                                checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
-                                parent, DatabaseIdentification.getNovelURLfromNovelID(parent),
-                                cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
-                                DatabaseIdentification.getFormatterIDFromNovelID(parent)
-                        ));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                cursor.close();
-                return novelCards;
-            }
-        }
+// --Commented out by Inspection START (12/22/19 11:09 AM):
+//        /**
+//         * Get's the entire library to be listed
+//         *
+//         * @return the library
+//         */
+//        @NonNull
+//        public static ArrayList<NovelCard> getLibrary() {
+//            Log.d("DL", "Getting");
+//            Cursor cursor = sqLiteDatabase.query(Tables.NOVELS.toString(),
+//                    new String[]{Columns.PARENT_ID.toString(), Columns.TITLE.toString(), Columns.IMAGE_URL.toString()},
+//                    Columns.BOOKMARKED + "=1", null, null, null, null);
+//
+//            ArrayList<NovelCard> novelCards = new ArrayList<>();
+//            if (cursor.getCount() <= 0) {
+//                cursor.close();
+//                return new ArrayList<>();
+//            } else {
+//                while (cursor.moveToNext()) {
+//                    try {
+//                        int parent = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
+//                        novelCards.add(new NovelCard(
+//                                checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
+//                                parent, DatabaseIdentification.getNovelURLfromNovelID(parent),
+//                                cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
+//                                DatabaseIdentification.getFormatterIDFromNovelID(parent)
+//                        ));
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                cursor.close();
+//                return novelCards;
+//            }
+//        }
+// --Commented out by Inspection STOP (12/22/19 11:09 AM)
 
         public static ArrayList<Integer> getIntLibrary() {
             Log.d("DL", "Getting");
@@ -1133,9 +1136,11 @@ public class Database {
             return null;
         }
 
-        public static void setStatus(int novelID, @NotNull Status status) {
-            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READING_STATUS + "=" + status + " where " + Columns.PARENT_ID + "=" + novelID);
-        }
+// --Commented out by Inspection START (12/22/19 11:09 AM):
+//        public static void setStatus(int novelID, @NotNull Status status) {
+//            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READING_STATUS + "=" + status + " where " + Columns.PARENT_ID + "=" + novelID);
+//        }
+// --Commented out by Inspection STOP (12/22/19 11:09 AM)
 
         @NonNull
         public static Status getStatus(int novelID) {
@@ -1178,7 +1183,7 @@ public class Database {
 
         public static void migrateNovel(int oldID, String newURL, int formatterID, @NotNull NovelPage newNovel, int status) {
             unBookmark(oldID);
-            if (!DatabaseNovels.inDatabase(newURL))
+            if (DatabaseNovels.isNotInDatabase(newURL))
                 addToLibrary(formatterID, newNovel, newURL, status);
             bookMark(getNovelIDFromNovelURL(newURL));
         }
@@ -1314,12 +1319,16 @@ public class Database {
                     +time + ")");
         }
 
-        public static boolean removeNovelFromUpdates(int novelID) {
-            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.PARENT_ID + "=" + novelID, null) > 0;
-        }
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+//        public static boolean removeNovelFromUpdates(int novelID) {
+//            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.PARENT_ID + "=" + novelID, null) > 0;
+//        }
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
 
-        public static boolean removeFromUpdates(@NotNull String chapterURL) {
-            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.ID + "=" + getChapterIDFromChapterURL(chapterURL), null) > 0;
-        }
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+//        public static boolean removeFromUpdates(@NotNull String chapterURL) {
+//            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.ID + "=" + getChapterIDFromChapterURL(chapterURL), null) > 0;
+//        }
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
     }
 }

@@ -9,9 +9,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Reader extends Fragment {
-    protected final ChapterReader chapterReader;
+    final ChapterReader chapterReader;
 
-    protected Reader(ChapterReader chapterReader) {
+    Reader(ChapterReader chapterReader) {
         this.chapterReader = chapterReader;
     }
 

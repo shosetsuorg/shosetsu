@@ -16,7 +16,6 @@
             android:title="@string/reader_night_mode"
             app:showAsAction="never" />
         <item
-            android:id="@+id/chapter_view_textSize"
             android:title="@string/text_size"
             app:showAsAction="never">
             <menu>

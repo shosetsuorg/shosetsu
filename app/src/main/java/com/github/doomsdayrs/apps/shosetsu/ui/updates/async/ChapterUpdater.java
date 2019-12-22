@@ -10,9 +10,9 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -74,9 +74,6 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
         } else builder = new Notification.Builder(context);
     }
 
-    public void setContinueProcesss(boolean continueProcesses) {
-        this.continueProcesss = continueProcesses;
-    }
 
     @Override
     protected void onPreExecute() {
@@ -104,19 +101,19 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
                 int page = 1;
                 NovelPage tempPage;
                 if (formatter.isIncrementingChapterList()) {
-                    tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.hasCloudFlare()), page);
+                    tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.getHasCloudFlare()), page);
                     int mangaCount = 0;
-                    while (page <= tempPage.maxChapterPage && continueProcesss) {
-                        tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.hasCloudFlare()), page);
-                        for (NovelChapter novelChapter : tempPage.novelChapters)
+                    while (page <= tempPage.getMaxChapterPage() && continueProcesss) {
+                        tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.getHasCloudFlare()), page);
+                        for (NovelChapter novelChapter : tempPage.getNovelChapters())
                             add(mangaCount, novelChapter, novelCard);
                         page++;
                         Utilities.wait(300);
                     }
                 } else {
-                    tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.hasCloudFlare()), page);
+                    tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.getHasCloudFlare()), page);
                     int mangaCount = 0;
-                    for (NovelChapter novelChapter : tempPage.novelChapters)
+                    for (NovelChapter novelChapter : tempPage.getNovelChapters())
                         add(mangaCount, novelChapter, novelCard);
                 }
             }
@@ -144,12 +141,12 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
 
 
     private void add(int mangaCount, @NonNull NovelChapter novelChapter, @NonNull NovelCard novelCard) {
-        if (continueProcesss && !Database.DatabaseChapter.inChapters(novelChapter.link)) {
+        if (continueProcesss && !Database.DatabaseChapter.isNotInChapters(novelChapter.getLink())) {
             mangaCount++;
-            System.out.println("Adding #" + mangaCount + ": " + novelChapter.link);
+            System.out.println("Adding #" + mangaCount + ": " + novelChapter.getLink());
             int novelID = getNovelIDFromNovelURL(novelCard.novelURL);
             Database.DatabaseChapter.addToChapters(novelID, novelChapter);
-            Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis());
+            Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.getLink(), System.currentTimeMillis());
 
             if (!updatedNovels.contains(novelCard))
                 updatedNovels.add(novelCard);

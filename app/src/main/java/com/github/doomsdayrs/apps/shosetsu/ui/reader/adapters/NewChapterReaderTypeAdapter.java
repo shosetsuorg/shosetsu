@@ -37,8 +37,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader;
  *
  * @author github.com/doomsdayrs
  */
-public class NewChapterReaderTypeAdapter extends RecyclerView.Adapter<NewReader> {
-    final NewChapterReader newChapterReader;
+class NewChapterReaderTypeAdapter extends RecyclerView.Adapter<NewReader> {
+    private final NewChapterReader newChapterReader;
 
     public NewChapterReaderTypeAdapter(NewChapterReader newChapterReader) {
         this.newChapterReader = newChapterReader;

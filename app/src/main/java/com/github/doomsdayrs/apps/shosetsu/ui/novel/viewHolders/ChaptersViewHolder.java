@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -103,10 +103,10 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     return true;
                 case R.id.popup_chapter_menu_download:
                     if (!Database.DatabaseChapter.isSaved(chapterID) && novelFragmentChapters.novelFragment.novelPage != null) {
-                        DownloadItem downloadItem = new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.title, novelChapter.title, chapterID);
+                        DownloadItem downloadItem = new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.getTitle(), novelChapter.getTitle(), chapterID);
                         Download_Manager.addToDownload(novelFragmentChapters.getActivity(), downloadItem);
                     } else {
-                        if (novelFragmentChapters.novelFragment.novelPage != null && Download_Manager.delete(itemView.getContext(), new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.title, novelChapter.title, chapterID))) {
+                        if (novelFragmentChapters.novelFragment.novelPage != null && Download_Manager.delete(itemView.getContext(), new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.getTitle(), novelChapter.getTitle(), chapterID))) {
                             downloadTag.setVisibility(View.INVISIBLE);
                         }
                     }
@@ -131,11 +131,11 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                     return true;
                 case R.id.browser:
                     if (novelFragmentChapters.getActivity() != null)
-                        openInBrowser(novelFragmentChapters.getActivity(), novelChapter.link);
+                        openInBrowser(novelFragmentChapters.getActivity(), novelChapter.getLink());
                     return true;
                 case R.id.webview:
                     if (novelFragmentChapters.getActivity() != null)
-                        openInWebview(novelFragmentChapters.getActivity(), novelChapter.link);
+                        openInWebview(novelFragmentChapters.getActivity(), novelChapter.getLink());
                     return true;
                 default:
                     return false;
@@ -165,7 +165,7 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     private void removeFromSelect() {
         if (novelFragmentChapters.contains(novelChapter))
             for (int x = 0; x < novelFragmentChapters.selectedChapters.size(); x++)
-                if (novelFragmentChapters.selectedChapters.get(x).link.equalsIgnoreCase(novelChapter.link)) {
+                if (novelFragmentChapters.selectedChapters.get(x).getLink().equalsIgnoreCase(novelChapter.getLink())) {
                     novelFragmentChapters.selectedChapters.remove(x);
                     return;
                 }
@@ -174,6 +174,6 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View v) {
         if (novelFragmentChapters.getActivity() != null && novelFragmentChapters.novelFragment.formatter != null)
-            openChapter(novelFragmentChapters.getActivity(), novelChapter, novelFragmentChapters.novelFragment.novelID, novelFragmentChapters.novelFragment.formatter.getID());
+            openChapter(novelFragmentChapters.getActivity(), novelChapter, novelFragmentChapters.novelFragment.novelID, novelFragmentChapters.novelFragment.formatter.getFormatterID());
     }
 }

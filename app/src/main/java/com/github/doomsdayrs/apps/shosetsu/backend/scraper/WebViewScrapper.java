@@ -43,10 +43,12 @@ import java.util.concurrent.ExecutionException;
 public class WebViewScrapper {
 
     private static String ua;
-    String html;
-    // private final WebView webView;
-    //private Activity activity;
-    public boolean completed = false;
+    // --Commented out by Inspection (12/22/19 11:10 AM):String html;
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+//    // private final WebView webView;
+//    //private Activity activity;
+//    public boolean completed = false;
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
 
     private WebViewScrapper() {
     }

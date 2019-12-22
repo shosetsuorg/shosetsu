@@ -31,11 +31,13 @@ import java.util.ArrayList;
  * @author github.com/doomsdayrs
  */
 class UpdatedNovelsAdapter extends RecyclerView.Adapter {
-    private ArrayList<String> novelURLs = new ArrayList<>();
+    private ArrayList<String> novelURLs;
 
-    UpdatedNovelsAdapter(ArrayList<String> novelURLs) {
-        this.novelURLs = novelURLs;
-    }
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+//    UpdatedNovelsAdapter(ArrayList<String> novelURLs) {
+//        this.novelURLs = novelURLs;
+//    }
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
 
     @NonNull
     @Override

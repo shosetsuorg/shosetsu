@@ -34,7 +34,7 @@ import java.util.List;
 public class NovelPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragments;
     @NonNull
-    private String[] titles = {"Info", "Chapters"};
+    private final String[] titles = {"Info", "Chapters"};
 
     public NovelPagerAdapter(@NonNull FragmentManager fm, int behavior, List<Fragment> fragments) {
         super(fm, behavior);

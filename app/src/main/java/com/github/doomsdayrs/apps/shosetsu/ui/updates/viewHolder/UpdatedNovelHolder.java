@@ -17,11 +17,15 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder;
  * ====================================================================
  */
 
-/**
- * shosetsu
- * 03 / 09 / 2019
- *
- * @author github.com/doomsdayrs
- */
-class UpdatedNovelHolder {
-}
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+/////**
+//// * shosetsu
+//// * 03 / 09 / 2019
+//// *
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
+// * @author github.com/doomsdayrs
+// */
+//class UpdatedNovelHolder {
+//}
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)

@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
 
 import androidx.annotation.NonNull;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 
 /*
  * This file is part of Shosetsu.

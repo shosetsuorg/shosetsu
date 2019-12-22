@@ -1,8 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.webView;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.webkit.JavascriptInterface;
 
 /*
  * This file is part of Shosetsu.
@@ -32,9 +30,11 @@ class JSInterface {
         this.ctx = ctx;
     }
 
-    @JavascriptInterface
-    public void showHTML(String html) {
-        new AlertDialog.Builder(ctx).setTitle("HTML").setMessage(html)
-                .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
-    }
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+//    @JavascriptInterface
+//    public void showHTML(String html) {
+//        new AlertDialog.Builder(ctx).setTitle("HTML").setMessage(html)
+//                .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
+//    }
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
 }

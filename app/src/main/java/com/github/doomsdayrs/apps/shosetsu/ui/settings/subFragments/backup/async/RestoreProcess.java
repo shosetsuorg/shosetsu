@@ -44,11 +44,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.inChapters;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isNotInChapters;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.addNovel;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.inDatabase;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInDatabase;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase;
 
 /**
@@ -145,7 +145,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                     String novelURL = novel.getString(Columns.URL.toString());
                     textView.post(() -> textView.setText("Restoring: " + novelURL));
 
-                    if (!inDatabase(novelURL)) {
+                    if (isNotInDatabase(novelURL)) {
                         addNovel(novelURL, novel.getInt(Columns.FORMATTER_ID.toString()));
                         int id = getNovelIDFromNovelURL(novelURL);
                         try {
@@ -205,7 +205,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
 
                     textView.post(() -> textView.setText("Restoring: " + novelURL + "|" + chapterURL));
                     progressBar.post(() -> progressBar.incrementProgressBy(1));
-                    if (!inChapters(chapterURL)) {
+                    if (!isNotInChapters(chapterURL)) {
                         int novelID = getNovelIDFromNovelURL(novelURL);
 
                         Database.DatabaseIdentification.addChapter(novelID, chapterURL);

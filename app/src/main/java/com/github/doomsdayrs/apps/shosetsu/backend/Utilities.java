@@ -304,11 +304,11 @@ public class Utilities {
         return a == 1;
     }
 
-    public static int booleanToInt(boolean a) {
-        if (a)
-            return 1;
-        else return 0;
-    }
+//    public static int booleanToInt(boolean a) {
+//        if (a)
+    //      return 1;
+    //      else return 0;
+    // }
 
     public static void changeIndentSize(int newIndent) {
         Settings.indentSize = newIndent;
@@ -502,13 +502,15 @@ public class Utilities {
     //Methods below when tracking system setup
 
     @SuppressWarnings({"EmptyMethod", "unused"})
-    public static boolean isTrackingEnabled() {
-        return trackingPreferences.getBoolean("enabled", false);
-    }
-
-    @SuppressWarnings({"EmptyMethod", "unused"})
-    public static void addTracker() {
-    }
+    //   public static boolean isTrackingEnabled() {
+// --Commented out by Inspection START (12/22/19 11:10 AM):
+//        return trackingPreferences.getBoolean("enabled", false);
+//    }
+//
+//    @SuppressWarnings({"EmptyMethod", "unused"})
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
+    //       public static void addTracker () {
+    //      }
 
     private static boolean debug = false;
 

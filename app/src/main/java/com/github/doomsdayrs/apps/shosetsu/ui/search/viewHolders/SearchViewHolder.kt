@@ -14,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.search.async.SearchLoader
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -61,9 +62,9 @@ class SearchViewHolder(itemView: View, val searchFragment: SearchFragment) : Rec
                 if (!searchFragment.containsData(id)) {
                     val intArray: ArrayList<Int> = getIntLibrary()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        intArray.removeIf { novelID: Int? -> !DatabaseNovels.getNovelTitle(novelID!!).toLowerCase().contains(query.toLowerCase()) }
+                        intArray.removeIf { novelID: Int? -> !DatabaseNovels.getNovelTitle(novelID!!).toLowerCase().contains(query.toLowerCase(Locale.ROOT)) }
                     } else {
-                        for (x in intArray.indices.reversed()) if (!DatabaseNovels.getNovelTitle(intArray[x]).toLowerCase().contains(query.toLowerCase())) intArray.removeAt(x)
+                        for (x in intArray.indices.reversed()) if (!DatabaseNovels.getNovelTitle(intArray[x]).toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) intArray.removeAt(x)
                     }
                     val data: SearchFragment.StoredData = SearchFragment.StoredData(id)
                     data.intArray = intArray

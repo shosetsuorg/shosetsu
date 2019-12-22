@@ -17,8 +17,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.asyn
  * ====================================================================
  */
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -54,13 +52,6 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLi
  * @author github.com/doomsdayrs
  */
 public class BackupProcess extends AsyncTask<Void, Void, Void> {
-    @SuppressLint("StaticFieldLeak")
-    private final
-    Context context;
-
-    public BackupProcess(Context context) {
-        this.context = context;
-    }
 
 
     @Override

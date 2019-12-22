@@ -43,10 +43,7 @@ public class DownloadItem {
     @NonNull
     public final String chapterName;
     @Nullable
-    private final String novelURL;
-    @Nullable
     public final String chapterURL;
-    private final int novelID;
     public final int chapterID;
 
     //Variables only for download manager
@@ -65,8 +62,8 @@ public class DownloadItem {
         this.formatter = formatter;
         this.novelName = cleanse(novelName);
         this.chapterName = cleanse(chapterName);
-        this.novelID = getNovelIDFromChapterID(chapterID);
-        this.novelURL = getNovelURLfromNovelID(novelID);
+        int novelID = getNovelIDFromChapterID(chapterID);
+        String novelURL = getNovelURLfromNovelID(novelID);
         this.chapterURL = getChapterURLFromChapterID(chapterID);
         this.chapterID = chapterID;
     }

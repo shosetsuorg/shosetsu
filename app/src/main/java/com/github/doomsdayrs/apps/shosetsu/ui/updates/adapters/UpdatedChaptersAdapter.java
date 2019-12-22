@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -91,7 +91,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
 
         updatedChapterHolder.popupMenu.setOnMenuItemClickListener(menuItem -> {
             NovelPage novelPage = new NovelPage();
-            String nURL = Database.DatabaseIdentification.getNovelURLFromChapterURL(updatedChapterHolder.novelChapter.link);
+            String nURL = Database.DatabaseIdentification.getNovelURLFromChapterURL(updatedChapterHolder.novelChapter.getLink());
 
             if (nURL != null)
                 novelPage = Database.DatabaseNovels.getNovelPage(getNovelIDFromNovelURL(nURL));
@@ -103,7 +103,7 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
 
             Formatter formatter = DefaultScrapers.getByID(getFormatterIDFromNovelURL(nURL));
 
-            int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+            int chapterID = getChapterIDFromChapterURL(novelChapter.getLink());
             if (novelPage != null)
                 switch (menuItem.getItemId()) {
                     case R.id.popup_chapter_menu_bookmark:
@@ -117,10 +117,10 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
                         return true;
                     case R.id.popup_chapter_menu_download: {
                         if (!Database.DatabaseChapter.isSaved(chapterID)) {
-                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, chapterID);
+                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.getTitle(), updatedChapterHolder.novelChapter.getTitle(), chapterID);
                             Download_Manager.addToDownload(activity, downloadItem);
                         } else {
-                            if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter.title, chapterID))) {
+                            if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.getTitle(), updatedChapterHolder.novelChapter.getTitle(), chapterID))) {
                                 updatedChapterHolder.downloadTag.setVisibility(View.INVISIBLE);
                             }
                         }
@@ -145,11 +145,11 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
                         return true;
                     case R.id.browser:
                         if (activity != null)
-                            openInBrowser(activity, updatedChapterHolder.novelChapter.link);
+                            openInBrowser(activity, updatedChapterHolder.novelChapter.getLink());
                         return true;
                     case R.id.webview:
                         if (activity != null)
-                            openInWebview(activity, updatedChapterHolder.novelChapter.link);
+                            openInWebview(activity, updatedChapterHolder.novelChapter.getLink());
                         return true;
                     default:
                         return false;

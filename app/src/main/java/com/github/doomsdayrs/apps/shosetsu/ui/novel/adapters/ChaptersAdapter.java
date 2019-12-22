@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -71,14 +71,14 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
         NovelChapter novelChapter = novelFragmentChapters.novelFragment.novelChapters.get(i);
         chaptersViewHolder.novelChapter = novelChapter;
-        chaptersViewHolder.library_card_title.setText(novelChapter.title);
+        chaptersViewHolder.library_card_title.setText(novelChapter.getLink());
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
 
-        int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+        int chapterID = getChapterIDFromChapterURL(novelChapter.getLink());
         chaptersViewHolder.chapterID = chapterID;
 
         //TODO The getNovelID in this method likely will cause slowdowns due to IO
-        if (!Database.DatabaseChapter.inChapters(novelChapter.link))
+        if (!Database.DatabaseChapter.isNotInChapters(novelChapter.getLink()))
             Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(novelFragmentChapters.novelFragment.novelURL), novelChapter);
 
         if (Database.DatabaseChapter.isBookMarked(chapterID)) {

@@ -32,7 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -67,13 +67,15 @@ public class ChapterView extends Fragment {
 
     public ScrollView scrollView;
     public ProgressBar progressBar;
-    public String title, chapterURL, unformattedText = null, text = null;
+    public final ChapterReader chapterReader;
+    public String title;
+    public String chapterURL;
+    public String unformattedText = null;
     public int chapterID;
     public ErrorView errorView;
-    protected boolean bookmarked;
+    boolean bookmarked;
     public boolean ready = false;
-
-    public ChapterReader chapterReader;
+    private String text = null;
     private Chip nextChapter;
 
     public ChapterView(ChapterReader chapterReader, int chapterID) {
@@ -151,9 +153,9 @@ public class ChapterView extends Fragment {
         nextChapter.setOnClickListener(view -> {
             NovelChapter novelChapter = getNextChapter(chapterID, chapterReader.chapterIDs);
             if (novelChapter != null) {
-                if (!novelChapter.link.equalsIgnoreCase(chapterURL)) {
-                    title = novelChapter.title;
-                    chapterURL = novelChapter.link;
+                if (!novelChapter.getLink().equalsIgnoreCase(chapterURL)) {
+                    title = novelChapter.getTitle();
+                    chapterURL = novelChapter.getLink();
                     loadChapter();
                 } else
                     Toast.makeText(chapterReader.getApplicationContext(), "No more chapters!", Toast.LENGTH_SHORT).show();

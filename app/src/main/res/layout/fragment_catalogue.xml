@@ -8,7 +8,6 @@
     tools:context="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

@@ -7,13 +7,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
@@ -21,9 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.NormalFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
-import kotlinx.android.synthetic.main.settings_advanced.*
 import kotlinx.android.synthetic.main.settings_backup.*
-import kotlinx.android.synthetic.main.settings_backup.recyclerView
 import java.util.*
 
 /*
@@ -53,7 +48,7 @@ import java.util.*
 class BackupSettings : Fragment() {
     val settings: ArrayList<SettingsItem.SettingsItemData> = arrayListOf(
             SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.BUTTON)
-                    .setOnClickListenerButton { view?.post { BackupProcess(context).execute() } }
+                    .setOnClickListenerButton { view?.post { BackupProcess().execute() } }
                     .setTitle(R.string.backup_now)
                     .setTextViewText(R.string.restore_now),
             SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.BUTTON)

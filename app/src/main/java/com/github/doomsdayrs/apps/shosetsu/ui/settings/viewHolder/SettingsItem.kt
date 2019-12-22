@@ -33,12 +33,12 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
     private var type: SettingsItemData.SettingsType = SettingsItemData.SettingsType.INFORMATION
 
-    val itemTitle: TextView = itemView.findViewById(R.id.settings_item_title)
-    val itemDescription: TextView = itemView.findViewById(R.id.settings_item_desc)
+    private val itemTitle: TextView = itemView.findViewById(R.id.settings_item_title)
+    private val itemDescription: TextView = itemView.findViewById(R.id.settings_item_desc)
     val button: Button = itemView.findViewById(R.id.button)
-    val spinner: Spinner = itemView.findViewById(R.id.spinner)
+    private val spinner: Spinner = itemView.findViewById(R.id.spinner)
     val textView: TextView = itemView.findViewById(R.id.text)
-    val switchView: Switch = itemView.findViewById(R.id.switchView)
+    private val switchView: Switch = itemView.findViewById(R.id.switchView)
 
 
     fun setData(data: SettingsItemData): SettingsItem {
@@ -91,10 +91,6 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
         return this
     }
 
-    fun invalidate() {
-        itemView.invalidate()
-    }
-
     class SettingsItemData(val type: SettingsType) {
         enum class SettingsType {
             INFORMATION,
@@ -118,7 +114,7 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
 
         var itemViewOnClick: (View) -> Unit
 
-        var spinnerOnClick: (View) -> Unit
+        private var spinnerOnClick: (View) -> Unit
         var spinnerOnItemSelectedListener: AdapterView.OnItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }

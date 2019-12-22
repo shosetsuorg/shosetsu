@@ -90,7 +90,7 @@ public class Download_Manager {
      */
     public static boolean delete(@Nullable Context context, @NonNull DownloadItem downloadItem) {
         Log.d("DeletingChapter", downloadItem.toString());
-        File file = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt");
+        File file = new File(shoDir + "/download/" + downloadItem.formatter.getFormatterID() + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt");
         Database.DatabaseChapter.removePath(downloadItem.chapterID);
         if (file.exists())
             if (!file.delete())
@@ -149,14 +149,14 @@ public class Download_Manager {
                     try {
                         {
                             Log.d("Dir", shoDir + "download/");
-                            File folder = new File(shoDir + "/download/" + downloadItem.formatter.getID() + "/" + cleanString(downloadItem.novelName));
+                            File folder = new File(shoDir + "/download/" + downloadItem.formatter.getFormatterID() + "/" + cleanString(downloadItem.novelName));
                             Log.d("Des", folder.toString());
                             if (!folder.exists())
                                 if (!folder.mkdirs()) {
                                     throw new IOException("Failed to mkdirs");
                                 }
                             String formattedName = cleanString(downloadItem.chapterName);
-                            String passage = downloadItem.formatter.getNovelPassage(docFromURL(downloadItem.chapterURL, downloadItem.formatter.hasCloudFlare()));
+                            String passage = downloadItem.formatter.getNovelPassage(docFromURL(downloadItem.chapterURL, downloadItem.formatter.getHasCloudFlare()));
                             FileOutputStream fileOutputStream = new FileOutputStream(
                                     (folder.getPath() + "/" + (formattedName) + ".txt")
                             );

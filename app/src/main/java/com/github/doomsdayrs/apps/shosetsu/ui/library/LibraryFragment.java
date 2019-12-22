@@ -65,7 +65,7 @@ public class LibraryFragment extends Fragment {
     public static boolean changedData = false;
 
 
-    public boolean contains(@NonNull int i) {
+    public boolean contains(int i) {
         for (Integer I : selectedNovels)
             if (I == i)
                 return true;

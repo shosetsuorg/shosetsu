@@ -37,7 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingMapAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingNovelAdapter;
@@ -75,14 +75,11 @@ public class MigrationView extends AppCompatActivity {
     public ConstraintLayout targetSelection;
     public ConstraintLayout migration;
     private RecyclerView selectedNovels;
-    private RecyclerView.Adapter selectedNovelsAdapters;
+    public MigratingMapAdapter mappingNovelsAdapter;
 
     public SwipeRefreshLayout swipeRefreshLayout;
     public RecyclerView mappingNovels;
-    public RecyclerView.Adapter mappingNovelsAdapter;
-
-    private Button cancel;
-    private Button confirm;
+    private MigratingNovelAdapter selectedNovelsAdapters;
 
 
     @Nullable
@@ -132,7 +129,7 @@ public class MigrationView extends AppCompatActivity {
 
         // Sets cancel button
         {
-            cancel = findViewById(R.id.cancel);
+            Button cancel = findViewById(R.id.cancel);
             cancel.setOnClickListener(view -> {
                 secondSelection = -1;
                 refresh();
@@ -146,14 +143,14 @@ public class MigrationView extends AppCompatActivity {
 
         // Sets confirm button
         {
-            confirm = findViewById(R.id.confirm);
+            Button confirm = findViewById(R.id.confirm);
             confirm.setOnClickListener(view -> {
                 if (secondSelection != -1) {
                     //Adds mapping targets
                     {
                         String[] map = new String[2];
                         map[0] = novels.get(selection).novelURL;
-                        map[1] = novelResults.get(selection).get(secondSelection).link;
+                        map[1] = novelResults.get(selection).get(secondSelection).getLink();
                         confirmedMappings.add(map);
                     }
                     novelResults.remove(selection);
@@ -194,7 +191,7 @@ public class MigrationView extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.catalogues_recycler);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        RecyclerView.Adapter adapter = new MigrationViewCatalogueAdapter(catalogues, this);
+        MigrationViewCatalogueAdapter adapter = new MigrationViewCatalogueAdapter(catalogues, this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 

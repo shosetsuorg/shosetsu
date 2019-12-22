@@ -55,7 +55,7 @@ public class ReaderViewLoader extends AsyncTask<ChapterReader, Void, String> {
         Activity activity = chapterView.getActivity();
         activity.runOnUiThread(() -> chapterView.errorView.errorView.setVisibility(View.GONE));
         try {
-            chapterView.unformattedText = chapterView.chapterReader.formatter.getNovelPassage(docFromURL(chapterView.chapterURL, chapterView.chapterReader.formatter.hasCloudFlare()));
+            chapterView.unformattedText = chapterView.chapterReader.formatter.getNovelPassage(docFromURL(chapterView.chapterURL, chapterView.chapterReader.formatter.getHasCloudFlare()));
             activity.runOnUiThread(chapterView::setUpReader);
             activity.runOnUiThread(() ->
                     chapterView.scrollView.post(() ->

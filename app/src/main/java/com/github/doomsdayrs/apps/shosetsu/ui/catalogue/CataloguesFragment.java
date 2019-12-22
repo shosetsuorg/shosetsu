@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
@@ -112,7 +111,7 @@ public class CataloguesFragment extends Fragment {
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(Objects.requireNonNull(container).getContext());
-            RecyclerView.Adapter adapter = new CataloguesAdapter(cards, fragmentManager);
+            CataloguesAdapter adapter = new CataloguesAdapter(cards, fragmentManager);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
         }
