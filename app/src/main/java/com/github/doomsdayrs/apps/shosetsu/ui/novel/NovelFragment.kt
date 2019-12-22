@@ -10,9 +10,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -105,7 +105,7 @@ class NovelFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt("novelID", novelID)
         outState.putString("novelURL", novelURL)
-        outState.putInt("formatter", formatter!!.id)
+        outState.putInt("formatter", formatter!!.formatterID)
         outState.putInt("status", status.a)
     }
 

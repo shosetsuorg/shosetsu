@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromChapterID;

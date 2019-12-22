@@ -3,20 +3,14 @@ package com.github.doomsdayrs.apps.shosetsu.variables;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.bestlightnovel.BestLightNovel;
-import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.box_novel.BoxNovel;
-import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.novel_full.NovelFull;
-import com.github.Doomsdayrs.api.shosetsu.extensions.lang.en.syosetu.Syosetu;
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelGenre;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Ordering;
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelGenre;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard;
 
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,10 +95,6 @@ public enum DefaultScrapers implements Formatter {
         formatter.setClient(okHttpClient);
     }
 
-    @Override
-    public boolean hasCloudFlare() {
-        return formatter.hasCloudFlare();
-    }
 
     @Override
     public String getName() {
@@ -116,20 +106,6 @@ public enum DefaultScrapers implements Formatter {
         return formatter.getImageURL();
     }
 
-    @Override
-    public int getID() {
-        return formatter.getID();
-    }
-
-    @Override
-    public boolean hasSearch() {
-        return formatter.hasSearch();
-    }
-
-    @Override
-    public boolean hasGenres() {
-        return formatter.hasGenres();
-    }
 
     public boolean isIncrementingChapterList() {
         return formatter.isIncrementingChapterList();
@@ -140,25 +116,12 @@ public enum DefaultScrapers implements Formatter {
         return formatter.isIncrementingPassagePage();
     }
 
-    @Override
-    public Ordering chapterOrder() {
-        return formatter.chapterOrder();
-    }
-
-    @Override
-    public Ordering latestOrder() {
-        return formatter.latestOrder();
-    }
 
     @Override
     public String getNovelPassage(Document document) {
         return formatter.getNovelPassage(document);
     }
 
-    @Deprecated
-    public String getNovelPassage(String URL) throws IOException {
-        return formatter.getNovelPassage(URL);
-    }
 
     @Override
     public NovelPage parseNovel(Document document) {
@@ -175,15 +138,6 @@ public enum DefaultScrapers implements Formatter {
         return formatter.novelPageCombiner(s, i);
     }
 
-    @Deprecated
-    public NovelPage parseNovel(String URL) throws IOException {
-        return formatter.parseNovel(URL);
-    }
-
-    @Deprecated
-    public NovelPage parseNovel(String URL, int increment) throws IOException {
-        return formatter.parseNovel(URL, increment);
-    }
 
     public String getLatestURL(int page) {
         return formatter.getLatestURL(page);
@@ -194,10 +148,6 @@ public enum DefaultScrapers implements Formatter {
         return formatter.parseLatest(document);
     }
 
-    @Deprecated
-    public List<Novel> parseLatest(String URL) throws IOException {
-        return formatter.parseLatest(URL);
-    }
 
     @Override
     public String getSearchString(String s) {
@@ -209,10 +159,6 @@ public enum DefaultScrapers implements Formatter {
         return formatter.parseSearch(document);
     }
 
-    @Deprecated
-    public List<Novel> search(String query) throws IOException {
-        return formatter.search(query);
-    }
 
     @Override
     public NovelGenre[] getGenres() {

@@ -4,7 +4,7 @@ import android.os.AsyncTask
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
@@ -58,6 +58,10 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
         this.catalogueHitBottom = catalogueHitBottom
     }
 
+    fun check(novels: List<Novel>?): List<Novel> {
+        return novels ?: arrayListOf()
+    }
+
     /**
      * Loads up the category
      *
@@ -67,10 +71,10 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
     override fun doInBackground(vararg integers: Int?): Boolean {
         Log.d("Loading", "Catalogue")
         catalogueFragment.library_view.post { catalogueFragment.errorView.visibility = View.GONE }
-        if (catalogueFragment.formatter!!.hasCloudFlare()) {
+        if (catalogueFragment.formatter!!.hasCloudFlare) {
             if (catalogueFragment.activity != null) catalogueFragment.activity!!.runOnUiThread { Toast.makeText(catalogueFragment.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
         }
-        val novels: List<Novel> = if (integers.isNotEmpty()) CatalogueLoader(catalogueFragment.formatter!!).execute(integers[0]) else CatalogueLoader(catalogueFragment.formatter!!).execute()
+        val novels: List<Novel> = if (integers.isNotEmpty()) check(CatalogueLoader(catalogueFragment.formatter!!).execute(integers[0])) else check(CatalogueLoader(catalogueFragment.formatter!!).execute())
         for (novel in novels) catalogueFragment.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
         catalogueFragment.library_view.post { catalogueFragment.catalogueAdapter!!.notifyDataSetChanged() }
         if (catalogueHitBottom != null) {

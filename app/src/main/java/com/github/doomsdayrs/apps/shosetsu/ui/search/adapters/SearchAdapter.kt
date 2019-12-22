@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
@@ -39,7 +39,7 @@ class SearchAdapter(private val searchFragment: SearchFragment) : RecyclerView.A
 
     init {
         for (formatter: Formatter in DefaultScrapers.formatters)
-            views.add(formatter.id)
+            views.add(formatter.formatterID)
 
     }
 

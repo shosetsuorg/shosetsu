@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,19 +9,14 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import kotlinx.android.synthetic.main.settings_download.*
 import kotlinx.android.synthetic.main.settings_view.*
-import kotlinx.android.synthetic.main.settings_view.recyclerView
-import okhttp3.internal.Util
 import java.util.*
 
 /*

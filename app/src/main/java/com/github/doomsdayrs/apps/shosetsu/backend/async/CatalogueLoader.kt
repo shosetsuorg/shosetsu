@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.async
 
 import android.util.Log
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 
@@ -44,20 +44,20 @@ open class CatalogueLoader(val formatter: Formatter) {
      * @param integers if length = 0, loads first page otherwise loads the page # correlated to the integer
      * @return if this was completed or not
      */
-    fun execute(vararg integers: Int?): List<Novel> {
+    fun execute(vararg integers: Int?): List<Novel>? {
         Log.d("Loading", "Catalogue")
-        if (formatter.hasCloudFlare()) {
+        if (formatter.hasCloudFlare) {
             Log.i("CatalogueLoader", "CLOUDFLARE DETECED")
             wait(5)
         }
         // Loads novel list
         return if (integers.isEmpty())
             if (query.isEmpty())
-                formatter.parseLatest(WebViewScrapper.docFromURL(formatter.getLatestURL(1), formatter.hasCloudFlare()))
+                WebViewScrapper.docFromURL(formatter.getLatestURL(1), formatter.hasCloudFlare)?.let { formatter.parseLatest(it) }
             else
-                formatter.parseSearch(WebViewScrapper.docFromURL(formatter.getSearchString(query), formatter.hasCloudFlare()))
+                WebViewScrapper.docFromURL(formatter.getSearchString(query), formatter.hasCloudFlare)?.let { formatter.parseSearch(it) }
         else
-            formatter.parseLatest(WebViewScrapper.docFromURL(formatter.getLatestURL(integers[0]!!), formatter.hasCloudFlare()))
+            WebViewScrapper.docFromURL(formatter.getLatestURL(integers[0]!!), formatter.hasCloudFlare)?.let { formatter.parseLatest(it) }
 
     }
 }

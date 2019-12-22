@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -74,7 +74,7 @@ class NovelFragmentInfo : Fragment() {
                 try {
                     val novelCards = ArrayList<NovelCard>()
                     if (novelFragment!!.novelPage != null) {
-                        novelCards.add(NovelCard(novelFragment!!.novelPage!!.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage!!.imageURL, novelFragment!!.formatter!!.id))
+                        novelCards.add(NovelCard(novelFragment!!.novelPage!!.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage!!.imageURL, novelFragment!!.formatter!!.formatterID))
                     }
                     intent.putExtra("selected", Utilities.serializeToString(novelCards))
                 } catch (e: IOException) {
@@ -154,30 +154,28 @@ class NovelFragmentInfo : Fragment() {
                 return@post
             }
             fragment_novel_title!!.text = novelFragment!!.novelPage!!.title
-            if (novelFragment!!.novelPage!!.authors != null && novelFragment!!.novelPage!!.authors.isNotEmpty()) fragment_novel_author!!.text = Arrays.toString(novelFragment!!.novelPage!!.authors)
+            if (novelFragment!!.novelPage!!.authors.isNotEmpty()) fragment_novel_author!!.text = Arrays.toString(novelFragment!!.novelPage!!.authors)
             fragment_novel_description!!.text = novelFragment!!.novelPage!!.description
-            if (novelFragment!!.novelPage!!.artists != null && novelFragment!!.novelPage!!.artists.isNotEmpty()) fragment_novel_artists!!.text = Arrays.toString(novelFragment!!.novelPage!!.artists)
+            if (novelFragment!!.novelPage!!.artists.isNotEmpty()) fragment_novel_artists!!.text = Arrays.toString(novelFragment!!.novelPage!!.artists)
             fragment_novel_status!!.text = novelFragment!!.status.status
-            if (novelFragment!!.novelPage!!.status != null) {
-                var s = "unknown"
-                when (novelFragment!!.novelPage!!.status) {
-                    Stati.PAUSED -> {
-                        fragment_novel_publish!!.setText(R.string.paused)
-                        s = "Paused"
-                    }
-                    Stati.COMPLETED -> {
-                        fragment_novel_publish!!.setText(R.string.completed)
-                        s = "Completed"
-                    }
-                    Stati.PUBLISHING -> {
-                        fragment_novel_publish!!.setText(R.string.publishing)
-                        s = "Publishing"
-                    }
-                    else -> fragment_novel_publish!!.setText(R.string.unknown)
+            var s = "unknown"
+            when (novelFragment!!.novelPage!!.status) {
+                NovelStatus.PAUSED -> {
+                    fragment_novel_publish!!.setText(R.string.paused)
+                    s = "Paused"
                 }
-                println("PS: $s")
+                NovelStatus.COMPLETED -> {
+                    fragment_novel_publish!!.setText(R.string.completed)
+                    s = "Completed"
+                }
+                NovelStatus.PUBLISHING -> {
+                    fragment_novel_publish!!.setText(R.string.publishing)
+                    s = "Publishing"
+                }
+                else -> fragment_novel_publish!!.setText(R.string.unknown)
             }
-            if (novelFragment!!.novelPage!!.genres != null && context != null) {
+            println("PS: $s")
+            if (context != null) {
                 val layoutInflater = LayoutInflater.from(context)
                 for (string in novelFragment!!.novelPage!!.genres) {
                     val chip = layoutInflater.inflate(R.layout.genre_chip, null, false) as Chip

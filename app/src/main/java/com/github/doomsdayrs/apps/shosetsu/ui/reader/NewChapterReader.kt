@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.github.Doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -249,7 +249,7 @@ class NewChapterReader : AppCompatActivity() {
         super.onSaveInstanceState(outState, outPersistentState)
         outPersistentState.putIntArray("chapters", chapterIDs)
         outPersistentState.putInt("novelID", novelID)
-        outPersistentState.putInt("formatter", formatter!!.id)
+        outPersistentState.putInt("formatter", formatter!!.formatterID)
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {

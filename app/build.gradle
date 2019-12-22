@@ -54,20 +54,20 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
     implementation 'com.graphql-java:graphql-java:2019-12-09T21-46-27-74aed1a'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     //noinspection GradleCompatible
-    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
     testImplementation 'junit:junit:4.13-rc-2'
     testImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
-    implementation 'com.github.Doomsdayrs:shosetsu-extensions:0.1.5'
-    implementation 'com.github.Doomsdayrs:shosetsu-services:0.1.4'
+    implementation 'com.github.doomsdayrs:shosetsu-extensions:0.2.1'
+    implementation 'com.github.doomsdayrs:shosetsu-services:0.2.4'
 
 
     implementation 'com.squareup.picasso:picasso:2.71828'

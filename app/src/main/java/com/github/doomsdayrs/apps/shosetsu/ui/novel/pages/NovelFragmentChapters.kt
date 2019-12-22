@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapters
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
@@ -142,7 +143,7 @@ class NovelFragmentChapters : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         resume.visibility = View.GONE
-        fragment_novel_chapters_refresh.setOnRefreshListener { ChapterLoader(novelFragment!!.novelPage, novelFragment!!.novelURL, novelFragment!!.formatter).setNovelFragmentChapters(this).execute(activity) }
+        fragment_novel_chapters_refresh.setOnRefreshListener { ChapterLoader(novelFragment!!.novelPage, novelFragment!!.novelURL!!, novelFragment!!.formatter!!).setNovelFragmentChapters(this).execute(activity) }
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage")
         }
@@ -151,7 +152,7 @@ class NovelFragmentChapters : Fragment() {
         resume.setOnClickListener {
             val i = novelFragment!!.lastRead()
             if (i != -1 && i != -2) {
-                if (activity != null && novelFragment!!.novelChapters != null && novelFragment!!.formatter != null) Utilities.openChapter(activity!!, novelFragment!!.novelChapters!![i], novelFragment!!.novelID, novelFragment!!.formatter!!.id)
+                if (activity != null && novelFragment!!.novelChapters != null && novelFragment!!.formatter != null) openChapter(activity!!, novelFragment!!.novelChapters!![i], novelFragment!!.novelID, novelFragment!!.formatter!!.formatterID)
             } else Toast.makeText(context, "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -164,7 +165,7 @@ class NovelFragmentChapters : Fragment() {
             fragment_novel_chapters_recycler!!.setHasFixedSize(false)
             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
             if (novelFragment != null && Database.DatabaseNovels.inDatabase(novelFragment!!.novelID)) {
-                novelFragment!!.novelChapters = Database.DatabaseChapter.getChapters(novelFragment!!.novelID)
+                novelFragment!!.novelChapters = getChapters(novelFragment!!.novelID)
                 if (novelFragment!!.novelChapters != null && novelFragment!!.novelChapters!!.isNotEmpty()) resume!!.visibility = View.VISIBLE
             }
             adapter = ChaptersAdapter(this)

@@ -17,8 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
-import com.github.Doomsdayrs.api.shosetsu.services.core.objects.Stati;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus;
 import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity;
@@ -167,13 +167,16 @@ public class Utilities {
      * @param string String to be checked
      * @return Completed String
      */
-    @Nullable
-    public static String checkStringDeserialize(@Nullable String string) {
-        if (string == null || string.isEmpty()) {
+    @NotNull
+    public static String checkStringDeserialize(@NonNull String string) {
+        if (string.isEmpty()) {
             return "";
         } else {
             try {
-                return (String) deserializeString(string);
+                Object object = deserializeString(string);
+                if (object == null)
+                    return "";
+                return (String) object;
             } catch (@NonNull IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -210,17 +213,17 @@ public class Utilities {
      * @return Stati
      */
     @NonNull
-    public static Stati convertStringToStati(@NonNull String s) {
+    public static NovelStatus convertStringToStati(@NonNull String s) {
         switch (s) {
             case "Publishing":
-                return Stati.PUBLISHING;
+                return NovelStatus.PUBLISHING;
             case "Completed":
-                return Stati.COMPLETED;
+                return NovelStatus.COMPLETED;
             case "Paused":
-                return Stati.PAUSED;
+                return NovelStatus.PAUSED;
             default:
             case "Unknown":
-                return Stati.UNKNOWN;
+                return NovelStatus.UNKNOWN;
         }
     }
 
@@ -451,7 +454,7 @@ public class Utilities {
     }
 
     private static void openChapter(@NonNull Activity activity, @NonNull NovelChapter novelChapter, int novelID, int formatterID, String[] chapters) {
-        int chapterID = getChapterIDFromChapterURL(novelChapter.link);
+        int chapterID = getChapterIDFromChapterURL(novelChapter.getLink());
         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
         Intent intent = new Intent(activity, NewChapterReader.class);
         intent.putExtra("chapterID", chapterID);

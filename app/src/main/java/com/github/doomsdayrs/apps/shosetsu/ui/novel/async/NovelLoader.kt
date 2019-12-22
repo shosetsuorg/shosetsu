@@ -73,14 +73,14 @@ class NovelLoader : AsyncTask<Void?, Void?, Boolean> {
         Log.d("Loading", novelFragment!!.novelURL.toString())
         errorView.activity.runOnUiThread { errorView.errorView.visibility = View.GONE }
         try {
-            val document = WebViewScrapper.docFromURL(novelFragment!!.novelURL, novelFragment!!.formatter!!.hasCloudFlare())!!
+            val document = WebViewScrapper.docFromURL(novelFragment!!.novelURL, novelFragment!!.formatter!!.hasCloudFlare)!!
             novelFragment!!.novelPage = novelFragment!!.formatter!!.parseNovel(document)
             if (!errorView.activity.isDestroyed && !Database.DatabaseNovels.inDatabase(novelFragment!!.novelID)) {
-                Database.DatabaseNovels.addToLibrary(novelFragment!!.formatter!!.id, novelFragment!!.novelPage, novelFragment!!.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
+                novelFragment!!.novelPage?.let { Database.DatabaseNovels.addToLibrary(novelFragment!!.formatter!!.formatterID, it, novelFragment!!.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a) }
             }
             val novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelFragment!!.novelURL)
-            for (novelChapter in novelFragment!!.novelPage.novelChapters) if (!errorView.activity.isDestroyed && !Database.DatabaseChapter.inChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(novelID, novelChapter)
-            Log.d("Loaded Novel:", novelFragment!!.novelPage.title)
+            for (novelChapter in novelFragment!!.novelPage?.novelChapters!!) if (!errorView.activity.isDestroyed && !Database.DatabaseChapter.inChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(novelID, novelChapter)
+            Log.d("Loaded Novel:", novelFragment!!.novelPage!!.title)
             return true
         } catch (e: Exception) {
             errorView.activity.runOnUiThread { errorView.errorView.visibility = View.VISIBLE }
@@ -119,7 +119,7 @@ class NovelLoader : AsyncTask<Void?, Void?, Boolean> {
         }
         if (result) {
             assert(novelFragment != null)
-            if (loadAll) errorView.activity.runOnUiThread { ChapterLoader(novelFragment!!.novelPage, novelFragment!!.novelURL, novelFragment!!.formatter).execute() }
+            if (loadAll) errorView.activity.runOnUiThread { novelFragment!!.formatter?.let { novelFragment!!.novelURL?.let { it1 -> ChapterLoader(novelFragment!!.novelPage, it1, it).execute() } } }
             errorView.activity.runOnUiThread { setData() }
         }
     }
