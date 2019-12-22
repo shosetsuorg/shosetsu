@@ -168,6 +168,9 @@ public class Database {
 
             // Removes all chapters from chapters DB
             sqLiteDatabase.execSQL("delete from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + "=" + novelID);
+
+            // Removes chapters from updates
+            sqLiteDatabase.execSQL("delete from " + Tables.UPDATES + " where " + Columns.PARENT_ID + "=" + novelID);
         }
 
 
@@ -705,7 +708,7 @@ public class Database {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
             int a = cursor.getCount();
             cursor.close();
-            return !(a <= 0);
+            return a <= 0;
         }
 
         /**

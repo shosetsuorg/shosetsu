@@ -85,78 +85,75 @@ public class UpdatedChaptersAdapter extends RecyclerView.Adapter<UpdatedChapterH
         NovelChapter novelChapter = DatabaseChapter.getChapter(updates.get(i).chapterID);
         if (novelChapter != null) {
             updatedChapterHolder.setNovelChapter(novelChapter);
-        } else {
-            throw new NullPointerException("NovelChapter returned null");
-        }
+            updatedChapterHolder.popupMenu.setOnMenuItemClickListener(menuItem -> {
+                NovelPage novelPage = new NovelPage();
+                String nURL = Database.DatabaseIdentification.getNovelURLFromChapterURL(updatedChapterHolder.novelChapter.getLink());
 
-        updatedChapterHolder.popupMenu.setOnMenuItemClickListener(menuItem -> {
-            NovelPage novelPage = new NovelPage();
-            String nURL = Database.DatabaseIdentification.getNovelURLFromChapterURL(updatedChapterHolder.novelChapter.getLink());
+                if (nURL != null)
+                    novelPage = Database.DatabaseNovels.getNovelPage(getNovelIDFromNovelURL(nURL));
 
-            if (nURL != null)
-                novelPage = Database.DatabaseNovels.getNovelPage(getNovelIDFromNovelURL(nURL));
+                if (novelPage == null) {
+                    Log.e("DatabaseError", "No such novel in DB");
+                    System.exit(-1);
+                }
 
-            if (novelPage == null) {
-                Log.e("DatabaseError", "No such novel in DB");
-                System.exit(-1);
-            }
+                Formatter formatter = DefaultScrapers.getByID(getFormatterIDFromNovelURL(nURL));
 
-            Formatter formatter = DefaultScrapers.getByID(getFormatterIDFromNovelURL(nURL));
-
-            int chapterID = getChapterIDFromChapterURL(novelChapter.getLink());
-            if (novelPage != null)
-                switch (menuItem.getItemId()) {
-                    case R.id.popup_chapter_menu_bookmark:
-                        if (toggleBookmarkChapter(chapterID))
-                            updatedChapterHolder.title.setTextColor(updatedChapterHolder.itemView.getResources().getColor(R.color.bookmarked));
-                        else {
-                            Log.i("SetDefault", String.valueOf(DefaultTextColor));
-                            updatedChapterHolder.title.setTextColor(DefaultTextColor);
-                        }
-                        notifyDataSetChanged();
-                        return true;
-                    case R.id.popup_chapter_menu_download: {
-                        if (!Database.DatabaseChapter.isSaved(chapterID)) {
-                            DownloadItem downloadItem = new DownloadItem(formatter, novelPage.getTitle(), updatedChapterHolder.novelChapter.getTitle(), chapterID);
-                            Download_Manager.addToDownload(activity, downloadItem);
-                        } else {
-                            if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.getTitle(), updatedChapterHolder.novelChapter.getTitle(), chapterID))) {
-                                updatedChapterHolder.downloadTag.setVisibility(View.INVISIBLE);
+                int chapterID = getChapterIDFromChapterURL(novelChapter.getLink());
+                if (novelPage != null)
+                    switch (menuItem.getItemId()) {
+                        case R.id.popup_chapter_menu_bookmark:
+                            if (toggleBookmarkChapter(chapterID))
+                                updatedChapterHolder.title.setTextColor(updatedChapterHolder.itemView.getResources().getColor(R.color.bookmarked));
+                            else {
+                                Log.i("SetDefault", String.valueOf(DefaultTextColor));
+                                updatedChapterHolder.title.setTextColor(DefaultTextColor);
+                            }
+                            notifyDataSetChanged();
+                            return true;
+                        case R.id.popup_chapter_menu_download: {
+                            if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                                DownloadItem downloadItem = new DownloadItem(formatter, novelPage.getTitle(), updatedChapterHolder.novelChapter.getTitle(), chapterID);
+                                Download_Manager.addToDownload(activity, downloadItem);
+                            } else {
+                                if (Download_Manager.delete(updatedChapterHolder.itemView.getContext(), new DownloadItem(formatter, novelPage.getTitle(), updatedChapterHolder.novelChapter.getTitle(), chapterID))) {
+                                    updatedChapterHolder.downloadTag.setVisibility(View.INVISIBLE);
+                                }
                             }
                         }
+                        notifyDataSetChanged();
+                        return true;
+
+                        case R.id.popup_chapter_menu_mark_read:
+                            Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
+                            notifyDataSetChanged();
+
+                            return true;
+                        case R.id.popup_chapter_menu_mark_unread:
+                            Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD);
+                            notifyDataSetChanged();
+
+                            return true;
+                        case R.id.popup_chapter_menu_mark_reading:
+                            Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
+                            notifyDataSetChanged();
+
+                            return true;
+                        case R.id.browser:
+                            if (activity != null)
+                                openInBrowser(activity, updatedChapterHolder.novelChapter.getLink());
+                            return true;
+                        case R.id.webview:
+                            if (activity != null)
+                                openInWebview(activity, updatedChapterHolder.novelChapter.getLink());
+                            return true;
+                        default:
+                            return false;
                     }
-                    notifyDataSetChanged();
-                    return true;
-
-                    case R.id.popup_chapter_menu_mark_read:
-                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ);
-                        notifyDataSetChanged();
-
-                        return true;
-                    case R.id.popup_chapter_menu_mark_unread:
-                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD);
-                        notifyDataSetChanged();
-
-                        return true;
-                    case R.id.popup_chapter_menu_mark_reading:
-                        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
-                        notifyDataSetChanged();
-
-                        return true;
-                    case R.id.browser:
-                        if (activity != null)
-                            openInBrowser(activity, updatedChapterHolder.novelChapter.getLink());
-                        return true;
-                    case R.id.webview:
-                        if (activity != null)
-                            openInWebview(activity, updatedChapterHolder.novelChapter.getLink());
-                        return true;
-                    default:
-                        return false;
-                }
-            return false;
-        });
-        updatedChapterHolder.moreOptions.setOnClickListener(view -> updatedChapterHolder.popupMenu.show());
+                return false;
+            });
+            updatedChapterHolder.moreOptions.setOnClickListener(view -> updatedChapterHolder.popupMenu.show());
+        }
     }
 
     @Override

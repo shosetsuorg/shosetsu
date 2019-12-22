@@ -70,11 +70,8 @@ public class CatalogueAdapter extends RecyclerView.Adapter<NovelCardViewHolder> 
             novelCardsViewHolder.novelID = recycleCard.novelID;
             novelCardsViewHolder.url = recycleCard.novelURL;
             novelCardsViewHolder.library_card_title.setText(recycleCard.title);
-            if (recycleCard.imageURL != null) {
+            if (!recycleCard.imageURL.isEmpty()) {
                 Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.library_card_image);
-                Picasso.get()
-                        .load(recycleCard.imageURL)
-                        .into(novelCardsViewHolder.library_card_image);
             } else novelCardsViewHolder.library_card_image.setVisibility(View.GONE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

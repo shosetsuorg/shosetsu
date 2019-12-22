@@ -183,12 +183,10 @@ class NovelFragmentInfo : Fragment() {
                     fragment_novel_genres!!.addView(chip)
                 }
             } else fragment_novel_genres!!.visibility = View.GONE
-            Picasso.get()
-                    .load(novelFragment!!.novelPage!!.imageURL)
-                    .into(fragment_novel_image)
-            Picasso.get()
-                    .load(novelFragment!!.novelPage!!.imageURL)
-                    .into(fragment_novel_image_background)
+            if (novelFragment!!.novelPage!!.imageURL.isNotEmpty()) {
+                Picasso.get().load(novelFragment!!.novelPage!!.imageURL).into(fragment_novel_image)
+                Picasso.get().load(novelFragment!!.novelPage!!.imageURL).into(fragment_novel_image_background)
+            }
             fragment_novel_add!!.show()
             if (novelFragment!!.formatter != null) {
                 fragment_novel_formatter!!.text = novelFragment!!.formatter!!.name

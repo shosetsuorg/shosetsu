@@ -20,6 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;
+import org.jsoup.nodes.Document;
 
 import java.util.ArrayList;
 
@@ -68,7 +69,9 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(channel_ID, "Shosetsu Update", NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(notificationChannel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
 
             builder = new Notification.Builder(context, channel_ID);
         } else builder = new Notification.Builder(context);
@@ -84,7 +87,9 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
                 .setProgress(novelCards.size(), 0, false)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true);
-        notificationManager.notify(ID, builder.build());
+        if (notificationManager != null) {
+            notificationManager.notify(ID, builder.build());
+        }
     }
 
     @Nullable
@@ -92,29 +97,41 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         for (int x = 0; x < novelCards.size(); x++) {
             NovelCard novelCard = getNovel(novelCards.get(x));
+            int novelID = getNovelIDFromNovelURL(novelCard.novelURL);
             builder.setContentText(novelCard.title);
             builder.setProgress(novelCards.size(), x + 1, false);
-            notificationManager.notify(ID, builder.build());
+            if (notificationManager != null) {
+                notificationManager.notify(ID, builder.build());
+            }
 
             Formatter formatter = DefaultScrapers.getByID(novelCard.formatterID);
             if (formatter != null) {
                 int page = 1;
                 NovelPage tempPage;
                 if (formatter.isIncrementingChapterList()) {
-                    tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.getHasCloudFlare()), page);
-                    int mangaCount = 0;
-                    while (page <= tempPage.getMaxChapterPage() && continueProcesss) {
-                        tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.getHasCloudFlare()), page);
-                        for (NovelChapter novelChapter : tempPage.getNovelChapters())
-                            add(mangaCount, novelChapter, novelCard);
-                        page++;
-                        Utilities.wait(300);
+                    Document document = docFromURL(formatter.novelPageCombiner(novelCard.novelURL, page), formatter.getHasCloudFlare());
+                    if (document != null) {
+                        tempPage = formatter.parseNovel(document, page);
+                        int mangaCount = 0;
+                        while (page <= tempPage.getMaxChapterPage() && continueProcesss) {
+                            document = docFromURL(formatter.novelPageCombiner(novelCard.novelURL, page), formatter.getHasCloudFlare());
+                            if (document != null) {
+                                tempPage = formatter.parseNovel(document, page);
+                                for (NovelChapter novelChapter : tempPage.getNovelChapters())
+                                    add(mangaCount, novelID, novelChapter, novelCard);
+                                page++;
+                            }
+                            Utilities.wait(300);
+                        }
                     }
                 } else {
-                    tempPage = formatter.parseNovel(docFromURL(novelCard.novelURL, formatter.getHasCloudFlare()), page);
-                    int mangaCount = 0;
-                    for (NovelChapter novelChapter : tempPage.getNovelChapters())
-                        add(mangaCount, novelChapter, novelCard);
+                    Document document = docFromURL(novelCard.novelURL, formatter.getHasCloudFlare());
+                    if (document != null) {
+                        tempPage = formatter.parseNovel(document, page);
+                        int mangaCount = 0;
+                        for (NovelChapter novelChapter : tempPage.getNovelChapters())
+                            add(mangaCount, novelID, novelChapter, novelCard);
+                    }
                 }
             }
             Utilities.wait(1000);
@@ -136,15 +153,16 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
         builder.setContentText(stringBuilder.toString());
         builder.setProgress(0, 0, false);
         builder.setOngoing(false);
-        notificationManager.notify(ID, builder.build());
+        if (notificationManager != null) {
+            notificationManager.notify(ID, builder.build());
+        }
     }
 
 
-    private void add(int mangaCount, @NonNull NovelChapter novelChapter, @NonNull NovelCard novelCard) {
-        if (continueProcesss && !Database.DatabaseChapter.isNotInChapters(novelChapter.getLink())) {
+    private void add(int mangaCount, int novelID, @NonNull NovelChapter novelChapter, @NonNull NovelCard novelCard) {
+        if (continueProcesss && Database.DatabaseChapter.isNotInChapters(novelChapter.getLink())) {
             mangaCount++;
             System.out.println("Adding #" + mangaCount + ": " + novelChapter.getLink());
-            int novelID = getNovelIDFromNovelURL(novelCard.novelURL);
             Database.DatabaseChapter.addToChapters(novelID, novelChapter);
             Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.getLink(), System.currentTimeMillis());
 
