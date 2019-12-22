@@ -754,12 +754,12 @@ public class Database {
          * @param novelID ID to retrieve from
          * @return List of chapters saved of novel
          */
-        @Nullable
+        @NonNull
         public static List<NovelChapter> getChapters(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return null;
+                return new ArrayList<>();
             } else {
                 ArrayList<NovelChapter> novelChapters = new ArrayList<>();
                 while (cursor.moveToNext()) {
@@ -937,7 +937,7 @@ public class Database {
                         "'" + checkStringSerialize(novelPage.getDescription()) + "'," +
                         "'" + checkStringSerialize(convertArrayToString(novelPage.getGenres())) + "'," +
                         "'" + checkStringSerialize(convertArrayToString(novelPage.getAuthors())) + "'," +
-                        "'" + novelPage.getStatus() + "'," +
+                        "'" + novelPage.getStatus().getTitle() + "'," +
                         "'" + checkStringSerialize(convertArrayToString(novelPage.getTags())) + "'," +
                         "'" + checkStringSerialize(convertArrayToString(novelPage.getArtists())) + "'," +
                         "'" + checkStringSerialize(novelPage.getLanguage()) + "'," +
@@ -1172,7 +1172,7 @@ public class Database {
                     Columns.DESCRIPTION + "='" + checkStringSerialize(novelPage.getDescription()) + "'," +
                     Columns.GENRES + "='" + checkStringSerialize(convertArrayToString(novelPage.getGenres())) + "'," +
                     Columns.AUTHORS + "='" + checkStringSerialize(convertArrayToString(novelPage.getAuthors())) + "'," +
-                    Columns.STATUS + "='" + novelPage.getStatus() + "'," +
+                    Columns.STATUS + "='" + novelPage.getStatus().getTitle() + "'," +
                     Columns.TAGS + "='" + checkStringSerialize(convertArrayToString(novelPage.getTags())) + "'," +
                     Columns.ARTISTS + "='" + checkStringSerialize(convertArrayToString(novelPage.getArtists())) + "'," +
                     Columns.LANGUAGE + "='" + checkStringSerialize(novelPage.getLanguage()) + "'," +

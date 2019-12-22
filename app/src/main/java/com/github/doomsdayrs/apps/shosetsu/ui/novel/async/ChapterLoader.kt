@@ -112,7 +112,7 @@ class ChapterLoader : AsyncTask<Activity?, Void?, Boolean> {
                                     novelFragmentChapters!!.getPageCount()!!.post { novelFragmentChapters!!.getPageCount()!!.text = s }
                                 } else toastError("PageCount returned null")
 
-                                doc = WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare)
+                                doc = WebViewScrapper.docFromURL(formatter.novelPageCombiner(novelURL, page), formatter.hasCloudFlare)
                                 if (doc != null) {
                                     novelPage = formatter.parseNovel(doc, page)
                                     for (novelChapter in novelPage.novelChapters) {

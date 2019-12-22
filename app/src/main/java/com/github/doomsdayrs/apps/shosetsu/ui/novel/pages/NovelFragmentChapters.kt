@@ -85,17 +85,17 @@ class NovelFragmentChapters : Fragment() {
     private fun findMinPosition(): Int {
         var min = 0
         if (novelFragment!!.novelChapters != null) {
-            min = novelFragment!!.novelChapters!!.size
+            min = novelFragment!!.novelChapters.size
         }
         if (novelFragment!!.novelChapters != null) {
-            for (x in novelFragment!!.novelChapters!!.indices) if (contains(novelFragment!!.novelChapters!![x])) if (x < min) min = x
+            for (x in novelFragment!!.novelChapters.indices) if (contains(novelFragment!!.novelChapters[x])) if (x < min) min = x
         }
         return min
     }
 
     private fun findMaxPosition(): Int {
         var max = -1
-        if (novelFragment!!.novelChapters != null) for (x in novelFragment!!.novelChapters!!.indices.reversed()) if (contains(novelFragment!!.novelChapters!![x])) if (x > max) max = x
+        if (novelFragment!!.novelChapters != null) for (x in novelFragment!!.novelChapters.indices.reversed()) if (contains(novelFragment!!.novelChapters[x])) if (x > max) max = x
         return max
     }
 
@@ -144,7 +144,9 @@ class NovelFragmentChapters : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         resume.visibility = View.GONE
         if (novelFragment != null && novelFragment!!.novelPage != null)
-            fragment_novel_chapters_refresh.setOnRefreshListener { ChapterLoader(novelFragment!!.novelPage!!, novelFragment!!.novelURL!!, novelFragment!!.formatter!!).setNovelFragmentChapters(this).execute(activity) }
+            fragment_novel_chapters_refresh.setOnRefreshListener {
+                ChapterLoader(novelFragment!!.novelPage!!, novelFragment!!.novelURL!!, novelFragment!!.formatter!!).setNovelFragmentChapters(this).execute(activity)
+            }
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage")
         }
@@ -153,7 +155,7 @@ class NovelFragmentChapters : Fragment() {
         resume.setOnClickListener {
             val i = novelFragment!!.lastRead()
             if (i != -1 && i != -2) {
-                if (activity != null && novelFragment!!.novelChapters != null && novelFragment!!.formatter != null) openChapter(activity!!, novelFragment!!.novelChapters!![i], novelFragment!!.novelID, novelFragment!!.formatter!!.formatterID)
+                if (activity != null && novelFragment!!.novelChapters != null && novelFragment!!.formatter != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter!!.formatterID)
             } else Toast.makeText(context, "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -165,9 +167,9 @@ class NovelFragmentChapters : Fragment() {
         fragment_novel_chapters_recycler!!.post {
             fragment_novel_chapters_recycler!!.setHasFixedSize(false)
             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-            if (novelFragment != null && Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
+            if (novelFragment != null && !Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
                 novelFragment!!.novelChapters = getChapters(novelFragment!!.novelID)
-                if (novelFragment!!.novelChapters != null && novelFragment!!.novelChapters!!.isNotEmpty()) resume!!.visibility = View.VISIBLE
+                if (novelFragment!!.novelChapters.isNotEmpty()) resume!!.visibility = View.VISIBLE
             }
             adapter = ChaptersAdapter(this)
             adapter!!.setHasStableIds(true)
@@ -186,7 +188,7 @@ class NovelFragmentChapters : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.chapter_select_all -> {
-                if (novelFragment!!.novelChapters != null) for (novelChapter in novelFragment!!.novelChapters!!) if (!contains(novelChapter)) selectedChapters.add(novelChapter)
+                if (novelFragment!!.novelChapters != null) for (novelChapter in novelFragment!!.novelChapters) if (!contains(novelChapter)) selectedChapters.add(novelChapter)
                 updateAdapter()
                 return true
             }
@@ -245,7 +247,7 @@ class NovelFragmentChapters : Fragment() {
                 if (novelFragment!!.novelChapters != null) {
                     var x = min
                     while (x < max) {
-                        if (!contains(novelFragment!!.novelChapters!![x])) selectedChapters.add(novelFragment!!.novelChapters!![x])
+                        if (!contains(novelFragment!!.novelChapters[x])) selectedChapters.add(novelFragment!!.novelChapters[x])
                         x++
                     }
                 }
@@ -253,7 +255,7 @@ class NovelFragmentChapters : Fragment() {
                 return true
             }
             R.id.chapter_filter -> {
-                if (novelFragment!!.novelChapters != null) novelFragment!!.novelChapters = novelFragment!!.novelChapters?.reversed()
+                if (novelFragment!!.novelChapters != null) novelFragment!!.novelChapters = novelFragment!!.novelChapters.reversed()
                 reversed = !reversed
                 return updateAdapter()
             }

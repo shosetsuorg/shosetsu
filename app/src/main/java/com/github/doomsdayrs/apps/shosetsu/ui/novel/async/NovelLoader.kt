@@ -8,6 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
+import kotlinx.android.synthetic.main.fragment_novel_chapters.*
 
 /*
  * This file is part of Shosetsu.
@@ -75,7 +76,7 @@ class NovelLoader : AsyncTask<Void?, Void?, Boolean> {
         try {
             val document = WebViewScrapper.docFromURL(novelFragment!!.novelURL, novelFragment!!.formatter!!.hasCloudFlare)!!
             novelFragment!!.novelPage = novelFragment!!.formatter!!.parseNovel(document)
-            if (!errorView.activity.isDestroyed && !Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
+            if (!errorView.activity.isDestroyed && Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
                 novelFragment!!.novelPage?.let { Database.DatabaseNovels.addToLibrary(novelFragment!!.formatter!!.formatterID, it, novelFragment!!.novelURL, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a) }
             }
             val novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelFragment!!.novelURL)
@@ -99,12 +100,8 @@ class NovelLoader : AsyncTask<Void?, Void?, Boolean> {
         onPostExecute(false)
     }
 
-    private fun setData() {
-        novelFragment!!.novelFragmentInfo!!.setData()
-    }
 
     override fun onPostExecute(result: Boolean) {
-        assert(novelFragment != null)
         novelFragment!!.novelFragmentInfo!!.getSwipeRefresh()!!.isRefreshing = false
         if (Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
             try {
@@ -118,10 +115,18 @@ class NovelLoader : AsyncTask<Void?, Void?, Boolean> {
             }
         }
         if (result) {
-
             if (loadAll && novelFragment != null && novelFragment!!.novelPage != null)
                 errorView.activity.runOnUiThread { novelFragment!!.formatter?.let { novelFragment!!.novelURL?.let { it1 -> ChapterLoader(novelFragment!!.novelPage!!, it1, it).execute() } } }
-            errorView.activity.runOnUiThread { setData() }
+            errorView.activity.runOnUiThread {
+                novelFragment!!.novelFragmentInfo!!.setData()
+            }
+            if (!novelFragment!!.formatter!!.isIncrementingChapterList) {
+                novelFragment!!.novelFragmentChapters!!.fragment_novel_chapters_recycler!!.post {
+                    novelFragment!!.novelChapters = novelFragment!!.novelPage!!.novelChapters
+                    novelFragment!!.novelFragmentChapters!!.setChapters()
+                    novelFragment!!.novelFragmentChapters!!.adapter!!.notifyDataSetChanged()
+                }
+            }
         }
     }
 }

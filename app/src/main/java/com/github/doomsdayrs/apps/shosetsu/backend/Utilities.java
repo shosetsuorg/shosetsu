@@ -238,7 +238,8 @@ public class Utilities {
     public static String convertArrayToString(String[] a) {
         if (a != null && a.length != 0) {
             for (int x = 0; x < a.length; x++) {
-                a[x] = a[x].replace(",", ">,<");
+                if (a[x] != null)
+                    a[x] = a[x].replace(",", ">,<");
             }
             return Arrays.toString(a);
         }

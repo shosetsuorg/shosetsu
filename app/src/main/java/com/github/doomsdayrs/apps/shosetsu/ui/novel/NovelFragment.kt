@@ -65,36 +65,34 @@ class NovelFragment : Fragment() {
     var formatter: Formatter? = null
     var status = Status.UNREAD
     @JvmField
-    var novelChapters: List<NovelChapter>? = ArrayList()
+    var novelChapters: List<NovelChapter> = ArrayList()
 
     /**
      * @return position of last read chapter, reads array from reverse. If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
      */
     fun lastRead(): Int {
-        return if (novelChapters != null) {
-            if (novelChapters!!.isNotEmpty()) {
-                if (!NovelFragmentChapters.reversed) {
-                    for (x in novelChapters!!.indices.reversed()) {
-                        when (DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters!![x].link))) {
-                            Status.READ -> return x + 1
-                            Status.READING -> return x
-                            else -> {
-                            }
-                        }
-                    }
-                } else {
-                    for (x in novelChapters!!.indices) {
-                        when (DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters!![x].link))) {
-                            Status.READ -> return x - 1
-                            Status.READING -> return x
-                            else -> {
-                            }
+        return if (novelChapters.isNotEmpty()) {
+            if (!NovelFragmentChapters.reversed) {
+                for (x in novelChapters.indices.reversed()) {
+                    when (DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x].link))) {
+                        Status.READ -> return x + 1
+                        Status.READING -> return x
+                        else -> {
                         }
                     }
                 }
-                0
-            } else -2
-        } else -1
+            } else {
+                for (x in novelChapters.indices) {
+                    when (DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x].link))) {
+                        Status.READ -> return x - 1
+                        Status.READING -> return x
+                        else -> {
+                        }
+                    }
+                }
+            }
+            0
+        } else -2
     }
 
     @JvmField
@@ -127,11 +125,12 @@ class NovelFragment : Fragment() {
         //TODO FINISH TRACKING
 //boolean track = SettingsController.isTrackingEnabled();
         if (savedInstanceState == null) {
-            if (Utilities.isOnline() && !Database.DatabaseNovels.isNotInDatabase(novelID)) {
+            if (Utilities.isOnline() && Database.DatabaseNovels.isNotInDatabase(novelID)) {
                 setViewPager()
                 fragment_novel_tabLayout!!.post { NovelLoader(this, ErrorView(activity, network_error, error_message, error_button), false).execute() }
             } else {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID)
+                //   novelChapters = DatabaseChapter.getChapters(novelID)
                 status = Database.DatabaseNovels.getStatus(novelID)
                 if (novelPage != null && activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage!!.title
                 setViewPager()

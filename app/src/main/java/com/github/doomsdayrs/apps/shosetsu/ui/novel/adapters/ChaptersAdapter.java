@@ -71,7 +71,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
     public void onBindViewHolder(@NonNull ChaptersViewHolder chaptersViewHolder, int i) {
         NovelChapter novelChapter = novelFragmentChapters.novelFragment.novelChapters.get(i);
         chaptersViewHolder.novelChapter = novelChapter;
-        chaptersViewHolder.library_card_title.setText(novelChapter.getLink());
+        chaptersViewHolder.library_card_title.setText(novelChapter.getTitle());
         chaptersViewHolder.novelFragmentChapters = novelFragmentChapters;
 
         int chapterID = getChapterIDFromChapterURL(novelChapter.getLink());
