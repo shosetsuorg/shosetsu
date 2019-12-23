@@ -14,12 +14,11 @@ import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NewNovelLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
@@ -56,13 +55,14 @@ import java.util.*
  */
 class NovelFragment : Fragment() {
     @JvmField
-    var novelID = 0
+    var novelID = -2
     @JvmField
-    var novelURL: String? = null
+    var novelURL: String = ""
     @JvmField
-    var novelPage: NovelPage? = null
+    var novelPage: NovelPage = NovelPage()
     @JvmField
     var formatter: Formatter? = null
+
     var status = Status.UNREAD
     @JvmField
     var novelChapters: List<NovelChapter> = ArrayList()
@@ -127,17 +127,18 @@ class NovelFragment : Fragment() {
         if (savedInstanceState == null) {
             if (Utilities.isOnline() && Database.DatabaseNovels.isNotInDatabase(novelID)) {
                 setViewPager()
-                fragment_novel_tabLayout!!.post { NovelLoader(this, ErrorView(activity, network_error, error_message, error_button), false).execute() }
+                if (formatter != null)
+                    fragment_novel_tabLayout!!.post { NewNovelLoader(novelURL, novelID, formatter!!, this, true).execute() }
             } else {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID)
                 //   novelChapters = DatabaseChapter.getChapters(novelID)
                 status = Database.DatabaseNovels.getStatus(novelID)
-                if (novelPage != null && activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage!!.title
+                if (activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage.title
                 setViewPager()
             }
         } else {
             novelID = savedInstanceState.getInt("novelID")
-            novelURL = savedInstanceState.getString("novelURL")
+            novelURL = savedInstanceState.getString("novelURL", "")
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
             status = Status.getStatus(savedInstanceState.getInt("status"))
             novelPage = Database.DatabaseNovels.getNovelPage(novelID)

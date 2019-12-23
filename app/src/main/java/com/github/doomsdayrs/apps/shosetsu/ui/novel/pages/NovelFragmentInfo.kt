@@ -74,7 +74,7 @@ class NovelFragmentInfo : Fragment() {
                 try {
                     val novelCards = ArrayList<NovelCard>()
                     if (novelFragment!!.novelPage != null) {
-                        novelCards.add(NovelCard(novelFragment!!.novelPage!!.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage!!.imageURL, novelFragment!!.formatter!!.formatterID))
+                        novelCards.add(NovelCard(novelFragment!!.novelPage.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage.imageURL, novelFragment!!.formatter!!.formatterID))
                     }
                     intent.putExtra("selected", Utilities.serializeToString(novelCards))
                 } catch (e: IOException) {
@@ -86,13 +86,13 @@ class NovelFragmentInfo : Fragment() {
             }
             R.id.webview -> {
                 if (activity != null) if (novelFragment!!.novelURL != null) {
-                    Utilities.openInWebview(activity!!, novelFragment!!.novelURL!!)
+                    Utilities.openInWebview(activity!!, novelFragment!!.novelURL)
                 }
                 return true
             }
             R.id.browser -> {
                 if (activity != null) if (novelFragment!!.novelURL != null) {
-                    Utilities.openInBrowser(activity!!, novelFragment!!.novelURL!!)
+                    Utilities.openInBrowser(activity!!, novelFragment!!.novelURL)
                 }
                 return true
             }
@@ -145,53 +145,49 @@ class NovelFragmentInfo : Fragment() {
      * Sets the data of this page
      */
     fun setData() {
-        if (novelFragment!!.novelPage != null) {
-            Utilities.setActivityTitle(activity, novelFragment!!.novelPage!!.title)
-        }
-        if (novelFragment!!.view != null) novelFragment!!.view!!.post {
-            if (novelFragment!!.novelPage == null) {
-                Log.e("NULL", "Invalid novel page")
-                return@post
-            }
-            fragment_novel_title!!.text = novelFragment!!.novelPage!!.title
-            if (novelFragment!!.novelPage!!.authors.isNotEmpty()) fragment_novel_author!!.text = novelFragment!!.novelPage!!.authors.contentToString()
-            fragment_novel_description!!.text = novelFragment!!.novelPage!!.description
-            if (novelFragment!!.novelPage!!.artists.isNotEmpty()) fragment_novel_artists!!.text = novelFragment!!.novelPage!!.artists.contentToString()
-            fragment_novel_status!!.text = novelFragment!!.status.status
-            var s = "unknown"
-            when (novelFragment!!.novelPage!!.status) {
-                NovelStatus.PAUSED -> {
-                    fragment_novel_publish!!.setText(R.string.paused)
-                    s = "Paused"
+        Utilities.setActivityTitle(activity, novelFragment!!.novelPage.title)
+        if (view != null) {
+            view!!.post {
+                fragment_novel_title.text = novelFragment!!.novelPage.title
+                if (novelFragment!!.novelPage.authors.isNotEmpty()) fragment_novel_author.text = novelFragment!!.novelPage.authors.contentToString()
+                fragment_novel_description.text = novelFragment!!.novelPage.description
+                if (novelFragment!!.novelPage.artists.isNotEmpty()) fragment_novel_artists.text = novelFragment!!.novelPage.artists.contentToString()
+                fragment_novel_status.text = novelFragment!!.status.status
+                var s = "unknown"
+                when (novelFragment!!.novelPage.status) {
+                    NovelStatus.PAUSED -> {
+                        fragment_novel_publish!!.setText(R.string.paused)
+                        s = "Paused"
+                    }
+                    NovelStatus.COMPLETED -> {
+                        fragment_novel_publish!!.setText(R.string.completed)
+                        s = "Completed"
+                    }
+                    NovelStatus.PUBLISHING -> {
+                        fragment_novel_publish!!.setText(R.string.publishing)
+                        s = "Publishing"
+                    }
+                    else -> fragment_novel_publish!!.setText(R.string.unknown)
                 }
-                NovelStatus.COMPLETED -> {
-                    fragment_novel_publish!!.setText(R.string.completed)
-                    s = "Completed"
+                println("PS: $s")
+                if (context != null) {
+                    val layoutInflater = LayoutInflater.from(context)
+                    for (string in novelFragment!!.novelPage.genres) {
+                        val chip = layoutInflater.inflate(R.layout.genre_chip, null, false) as Chip
+                        chip.text = string
+                        fragment_novel_genres!!.addView(chip)
+                    }
+                } else fragment_novel_genres!!.visibility = View.GONE
+                if (novelFragment!!.novelPage.imageURL.isNotEmpty()) {
+                    Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragment_novel_image)
+                    Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragment_novel_image_background)
                 }
-                NovelStatus.PUBLISHING -> {
-                    fragment_novel_publish!!.setText(R.string.publishing)
-                    s = "Publishing"
+                fragment_novel_add!!.show()
+                if (novelFragment!!.formatter != null) {
+                    fragment_novel_formatter!!.text = novelFragment!!.formatter!!.name
                 }
-                else -> fragment_novel_publish!!.setText(R.string.unknown)
             }
-            println("PS: $s")
-            if (context != null) {
-                val layoutInflater = LayoutInflater.from(context)
-                for (string in novelFragment!!.novelPage!!.genres) {
-                    val chip = layoutInflater.inflate(R.layout.genre_chip, null, false) as Chip
-                    chip.text = string
-                    fragment_novel_genres!!.addView(chip)
-                }
-            } else fragment_novel_genres!!.visibility = View.GONE
-            if (novelFragment!!.novelPage!!.imageURL.isNotEmpty()) {
-                Picasso.get().load(novelFragment!!.novelPage!!.imageURL).into(fragment_novel_image)
-                Picasso.get().load(novelFragment!!.novelPage!!.imageURL).into(fragment_novel_image_background)
-            }
-            fragment_novel_add!!.show()
-            if (novelFragment!!.formatter != null) {
-                fragment_novel_formatter!!.text = novelFragment!!.formatter!!.name
-            }
-        }
+        } else Log.e("NovelFragmentInfo", "NovelFragmentInfo view is null")
     }
 
     /**

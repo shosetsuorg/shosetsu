@@ -1099,7 +1099,6 @@ public class Database {
          * @param novelID novel to retrieve
          * @return Saved novelPage
          */
-        @Nullable
         public static NovelPage getNovelPage(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " +
                     Columns.TITLE + "," +
@@ -1115,7 +1114,7 @@ public class Database {
                     " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return null;
+                return new NovelPage();
             } else {
                 cursor.moveToNext();
                 try {
@@ -1136,7 +1135,7 @@ public class Database {
                     e.printStackTrace();
                 }
             }
-            return null;
+            return new NovelPage();
         }
 
 // --Commented out by Inspection START (12/22/19 11:09 AM):

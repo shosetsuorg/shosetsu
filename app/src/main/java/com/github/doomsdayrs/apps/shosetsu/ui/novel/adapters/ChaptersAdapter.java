@@ -78,7 +78,7 @@ public class ChaptersAdapter extends RecyclerView.Adapter<ChaptersViewHolder> {
         chaptersViewHolder.chapterID = chapterID;
 
         //TODO The getNovelID in this method likely will cause slowdowns due to IO
-        if (!Database.DatabaseChapter.isNotInChapters(novelChapter.getLink()))
+        if (Database.DatabaseChapter.isNotInChapters(novelChapter.getLink()))
             Database.DatabaseChapter.addToChapters(getNovelIDFromNovelURL(novelFragmentChapters.novelFragment.novelURL), novelChapter);
 
         if (Database.DatabaseChapter.isBookMarked(chapterID)) {

@@ -153,17 +153,17 @@ class NewChapterView @SuppressLint("ClickableViewAccessibility") constructor() :
     }
 
     fun setUpReader() {
-        scrollView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-        textView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-        textView!!.setTextColor(Settings.ReaderTextColor)
-        textView!!.textSize = Settings.ReaderTextSize
+        scrollView?.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+        textView?.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+        textView?.setTextColor(Settings.ReaderTextColor)
+        textView?.textSize = Settings.ReaderTextSize
         if (unformattedText != null) {
             val replaceSpacing = StringBuilder("\n")
             for (x in 0 until Settings.paragraphSpacing) replaceSpacing.append("\n")
             for (x in 0 until Settings.indentSize) replaceSpacing.append("\t")
             text = unformattedText!!.replace("\n".toRegex(), replaceSpacing.toString())
             if (text!!.length > 100) Log.d("TextSet", text!!.substring(0, 100).replace("\n", "\\n")) else if (text!!.isNotEmpty()) Log.d("TextSet", text!!.substring(0, text!!.length - 1).replace("\n", "\\n"))
-            textView!!.text = text
+            textView?.text = text
             // viewPager2.post(() -> currentReader.setText(text));
         }
     }

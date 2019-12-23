@@ -2,8 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.ErrorView;
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader;
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NewNovelLoader;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo;
 
 /*
@@ -37,15 +36,8 @@ public class NovelFragmentUpdate implements SwipeRefreshLayout.OnRefreshListener
 
     @Override
     public void onRefresh() {
-        if (novelFragmentInfo.novelFragment != null)
-            new NovelLoader(
-                    novelFragmentInfo.novelFragment,
-                    new ErrorView(
-                            novelFragmentInfo.novelFragment.getActivity(),
-                            novelFragmentInfo.novelFragment.getErrorView(),
-                            novelFragmentInfo.novelFragment.getErrorMessage(),
-                            novelFragmentInfo.novelFragment.getErrorButton()),
-                    false)
+        if (novelFragmentInfo.novelFragment != null && novelFragmentInfo.novelFragment.formatter != null)
+            new NewNovelLoader(novelFragmentInfo.novelFragment.novelURL, novelFragmentInfo.novelFragment.novelID, novelFragmentInfo.novelFragment.formatter, novelFragmentInfo.novelFragment, false)
                     .execute();
     }
 }
