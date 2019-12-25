@@ -91,7 +91,8 @@ class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Form
                 else updateNovel(novelURL, novelPage)
 
                 // Updates novelID
-                novelID = if (novelID == -2) getNovelIDFromNovelURL(novelURL) else novelID
+                novelID = if (novelID <= 0) getNovelIDFromNovelURL(novelURL) else novelID
+                novelFragment?.novelID = novelID
 
                 // Goes through the chapterList
                 for (chapter: NovelChapter in novelPage.novelChapters) if (isNotInChapters(chapter.link)) addToChapters(novelID, chapter) else updateChapter(chapter)

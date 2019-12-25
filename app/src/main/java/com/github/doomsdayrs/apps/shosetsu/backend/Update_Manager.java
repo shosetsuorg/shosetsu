@@ -6,7 +6,8 @@ import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.async.ChapterUpdater;
+
+import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterUpdater;
 
 import java.util.ArrayList;
 
@@ -33,15 +34,15 @@ import java.util.ArrayList;
  */
 public class Update_Manager {
     @Nullable
-    private static ChapterUpdater chapterUpdater = null;
+    private static NewChapterUpdater chapterUpdater = null;
 
     public static void init(@NonNull ArrayList<Integer> novelCards, @NonNull Context context) {
         if (chapterUpdater == null) {
-            chapterUpdater = new ChapterUpdater(novelCards, context);
+            chapterUpdater = new NewChapterUpdater(novelCards, context);
             chapterUpdater.execute();
         } else {
             if (chapterUpdater.isCancelled() || chapterUpdater.getStatus().equals(AsyncTask.Status.FINISHED)) {
-                chapterUpdater = new ChapterUpdater(novelCards, context);
+                chapterUpdater = new NewChapterUpdater(novelCards, context);
                 chapterUpdater.execute();
             }
             if (chapterUpdater.getStatus().equals(AsyncTask.Status.PENDING))

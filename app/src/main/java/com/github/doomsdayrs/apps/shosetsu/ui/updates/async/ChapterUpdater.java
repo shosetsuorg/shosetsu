@@ -142,7 +142,6 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-
         StringBuilder stringBuilder = new StringBuilder();
         if (updatedNovels.size() > 0) {
             builder.setContentTitle("Completed Update");

@@ -12,7 +12,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentMainAddToLibrary
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.google.android.material.chip.Chip
@@ -51,7 +50,6 @@ import java.util.*
  */
 class NovelFragmentInfo : Fragment() {
 
-    var inLibrary: Boolean = false
     @JvmField
     var novelFragment: NovelFragment? = null
 
@@ -99,12 +97,6 @@ class NovelFragmentInfo : Fragment() {
         menu.findItem(R.id.source_migrate).isVisible = novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)
     }
 
-    /**
-     * Tells this file that it is already in the library
-     */
-    private fun inLibrary() {
-        inLibrary = true
-    }
 
     /**
      * Save data of view before destroyed
@@ -127,10 +119,18 @@ class NovelFragmentInfo : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fragment_novel_add!!.hide()
-        if (novelFragment != null) if (Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) inLibrary()
-        if (inLibrary) fragment_novel_add!!.setImageResource(R.drawable.ic_add_circle_black_24dp)
+        if (novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) fragment_novel_add!!.setImageResource(R.drawable.ic_add_circle_black_24dp)
         setData()
-        fragment_novel_add!!.setOnClickListener(NovelFragmentMainAddToLibrary(this))
+        fragment_novel_add!!.setOnClickListener {
+            if (novelFragment != null)
+                if (!Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) {
+                    Database.DatabaseNovels.bookMark(novelFragment!!.novelID)
+                    fragment_novel_add?.setImageResource(R.drawable.ic_add_circle_black_24dp)
+                } else {
+                    Database.DatabaseNovels.unBookmark(novelFragment!!.novelID)
+                    fragment_novel_add?.setImageResource(R.drawable.ic_add_circle_outline_black_24dp)
+                }
+        }
         fragment_novel_main_refresh!!.setOnRefreshListener(NovelFragmentUpdate(this))
         super.onViewCreated(view, savedInstanceState)
     }

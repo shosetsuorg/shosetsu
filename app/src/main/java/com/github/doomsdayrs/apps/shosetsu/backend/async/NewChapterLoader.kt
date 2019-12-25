@@ -34,7 +34,7 @@ import org.jsoup.nodes.Document
  *
  * @author github.com/doomsdayrs
  */
-class NewChapterLoader(val action: ChapterLoaderAction, val formatter: Formatter, val novelURL: String) : AsyncTask<Void, Void, Boolean>() {
+class NewChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, var novelURL: String) : AsyncTask<Void, Void, Boolean>() {
     interface ChapterLoaderAction {
         // What to do before task
         fun onPreExecute()
@@ -64,9 +64,9 @@ class NewChapterLoader(val action: ChapterLoaderAction, val formatter: Formatter
 
     private val nullPage: String = "Page returned null, Skipping"
 
-    override fun doInBackground(vararg p0: Void?): Boolean {
+    public override fun doInBackground(vararg p0: Void?): Boolean {
         var novelPage: NovelPage = NovelPage()
-        if (formatter.isIncrementingChapterList) {
+        return if (formatter.isIncrementingChapterList) {
             // sets the max page to one higher then normal
             novelPage.maxChapterPage = 2
 
@@ -101,7 +101,7 @@ class NewChapterLoader(val action: ChapterLoaderAction, val formatter: Formatter
                 page++
             }
             action.onJustBeforePost(finalChapters)
-            return true
+            true
         } else {
             // loads page
             val doc: Document? = WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare)
@@ -116,7 +116,7 @@ class NewChapterLoader(val action: ChapterLoaderAction, val formatter: Formatter
                 }
             } else action.errorReceived(nullPage)
             action.onJustBeforePost(finalChapters)
-            return true
+            true
         }
     }
 

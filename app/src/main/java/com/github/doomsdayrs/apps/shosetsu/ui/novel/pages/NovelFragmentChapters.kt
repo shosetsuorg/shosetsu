@@ -77,14 +77,16 @@ class NovelFragmentChapters : Fragment() {
 
             override fun onJustBeforePost(finalChapters: ArrayList<NovelChapter>) {
                 val s = getString(R.string.processing_data)
-                page_count?.post { page_count.text =  s}
+                page_count?.post { page_count.text = s }
                 for ((count: Int, novelChapter: NovelChapter) in finalChapters.withIndex()) {
-                    val sc = s  + ": $count/${finalChapters.size}"
+                    val sc = s + ": $count/${finalChapters.size}"
                     page_count?.post { page_count.text = sc }
-                    if (Database.DatabaseChapter.isNotInChapters(novelChapter.link) && novelFragment != null) {
-                        Log.i("ChapterLoader", "Adding ${novelChapter.link}")
-                        Database.DatabaseChapter.addToChapters(novelFragment!!.novelID, novelChapter)
-                    } else updateChapter(novelChapter)
+                    if (novelFragment != null && novelFragment!!.novelID != -1) {
+                        if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
+                            Log.i("ChapterLoader", "Adding ${novelChapter.link}")
+                            Database.DatabaseChapter.addToChapters(novelFragment!!.novelID, novelChapter)
+                        } else updateChapter(novelChapter)
+                    } else Log.e("ChapterLoader", "Invalid novelID")
                 }
             }
 
