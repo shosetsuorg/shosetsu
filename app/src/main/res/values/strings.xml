@@ -103,6 +103,7 @@
     <!-- Shortcuts -->
     <string name="refresh_shortcut">Check for updates</string>
     <string name="action_global_search_hint">Global search…</string>
+    <string name="processing_data">Processing data</string>
 </resources>
 
 

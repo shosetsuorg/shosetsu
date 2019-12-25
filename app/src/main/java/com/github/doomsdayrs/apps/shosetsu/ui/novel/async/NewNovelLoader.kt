@@ -5,7 +5,10 @@ import android.view.View
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterLoader
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.*
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD
@@ -45,16 +48,33 @@ class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Form
 
     override fun onPreExecute() {
         super.onPreExecute()
+        // Sets the refresh layout to give the user a visible cue
         novelFragment?.activity?.runOnUiThread { novelFragment.fragment_novel_main_refresh.isRefreshing = true }
     }
 
     override fun onPostExecute(result: Boolean) {
         super.onPostExecute(result)
+        // If successful, it will complete the task
         if (result)
             novelFragment?.fragment_novel_viewpager?.post {
+                // Set's the novel page to the fragment
                 novelFragment.novelPage = novelPage
-                novelFragment.novelFragmentInfo?.setData(); novelFragment.fragment_novel_main_refresh.isRefreshing = false
-                if (formatter.isIncrementingChapterList && loadChapters) TODO("New chapter loader") else novelFragment.novelChapters = novelFragment.novelPage.novelChapters
+
+                // After setting the page, it will tell the view to set data
+                novelFragment.novelFragmentInfo?.setData();
+
+                // Turns off refresh view
+                novelFragment.fragment_novel_main_refresh.isRefreshing = false
+
+                // This is based on incrementation, If there is none it will just set chapters to those stored in novelFragment.novelPage, otherwise it will run a loader
+                if (formatter.isIncrementingChapterList && loadChapters) {
+                    if (novelFragment.novelFragmentChapters != null) {
+                        NewChapterLoader(novelFragment.novelFragmentChapters!!.chaptersLoadedAction, formatter, novelURL).execute()
+                    }
+                } else {
+                    novelFragment.novelChapters = novelFragment.novelPage.novelChapters
+                    novelFragment.novelFragmentChapters?.setChapters()
+                }
             }
     }
 
@@ -66,15 +86,15 @@ class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Form
                 novelPage = formatter.parseNovel(document)
 
                 // Checks if it is not in DB, if true then it adds else it updates
-                if (Database.DatabaseNovels.isNotInDatabase(novelURL))
-                    Database.DatabaseNovels.addToLibrary(formatter.formatterID, novelPage, novelURL, UNREAD.a)
-                else Database.DatabaseNovels.updateData(novelURL, novelPage)
+                if (isNotInNovels(novelURL))
+                    addToLibrary(formatter.formatterID, novelPage, novelURL, UNREAD.a)
+                else updateNovel(novelURL, novelPage)
 
                 // Updates novelID
-                novelID = if (novelID == -2) Database.DatabaseIdentification.getNovelIDFromNovelURL(novelURL) else novelID
+                novelID = if (novelID == -2) getNovelIDFromNovelURL(novelURL) else novelID
 
                 // Goes through the chapterList
-                for (chapter: NovelChapter in novelPage.novelChapters) if (Database.DatabaseChapter.isNotInChapters(chapter.link)) Database.DatabaseChapter.addToChapters(novelID, chapter) else TODO("Didn't create an update condition yet")
+                for (chapter: NovelChapter in novelPage.novelChapters) if (isNotInChapters(chapter.link)) addToChapters(novelID, chapter) else updateChapter(chapter)
                 true
             } catch (e: Exception) {
                 // Errors out the program and returns a false

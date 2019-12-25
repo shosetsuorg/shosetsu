@@ -3,27 +3,27 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter
+import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterLoader
+import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterLoader.ChapterLoaderAction
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapters
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.updateChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import com.google.android.material.chip.Chip
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_novel_chapters.*
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -54,25 +54,59 @@ import java.util.*
  *
  */
 class NovelFragmentChapters : Fragment() {
+    val chaptersLoadedAction: ChapterLoaderAction
+
+    init {
+        chaptersLoadedAction = object : ChapterLoaderAction {
+            override fun onPreExecute() {
+                fragment_novel_chapters_refresh.isRefreshing = true
+                if (novelFragment?.formatter?.isIncrementingChapterList!!)
+                    page_count.visibility = VISIBLE
+            }
+
+            override fun onPostExecute(result: Boolean, finalChapters: ArrayList<NovelChapter>) {
+                fragment_novel_chapters_refresh.isRefreshing = false
+                if (novelFragment?.formatter?.isIncrementingChapterList!!)
+                    page_count.visibility = GONE
+
+                if (result) {
+                    novelFragment?.novelChapters = finalChapters
+                    adapter?.notifyDataSetChanged()
+                }
+            }
+
+            override fun onJustBeforePost(finalChapters: ArrayList<NovelChapter>) {
+                val s = getString(R.string.processing_data)
+                page_count?.post { page_count.text =  s}
+                for ((count: Int, novelChapter: NovelChapter) in finalChapters.withIndex()) {
+                    val sc = s  + ": $count/${finalChapters.size}"
+                    page_count?.post { page_count.text = sc }
+                    if (Database.DatabaseChapter.isNotInChapters(novelChapter.link) && novelFragment != null) {
+                        Log.i("ChapterLoader", "Adding ${novelChapter.link}")
+                        Database.DatabaseChapter.addToChapters(novelFragment!!.novelID, novelChapter)
+                    } else updateChapter(novelChapter)
+                }
+            }
+
+            override fun onIncrementingProgress(page: Int, max: Int) {
+                val s = "Page: $page/$max"
+                page_count?.post { page_count.text = s }
+            }
+
+            override fun errorReceived(errorString: String) {
+                Log.e("ChapterLoader", errorString)
+                activity?.runOnUiThread { Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show() }
+            }
+        }
+    }
+
     private var currentMaxPage = 1
     @JvmField
     var selectedChapters = ArrayList<NovelChapter>()
-    var adapter: ChaptersAdapter? = null
+    var adapter: ChaptersAdapter? = ChaptersAdapter(this)
     @JvmField
     var novelFragment: NovelFragment? = null
 
-
-    fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
-        return fragment_novel_chapters_refresh
-    }
-
-    fun getPageCount(): Chip? {
-        return page_count
-    }
-
-    fun getResumeRead(): FloatingActionButton? {
-        return resume
-    }
 
     @JvmField
     var menu: Menu? = null
@@ -83,19 +117,14 @@ class NovelFragmentChapters : Fragment() {
     }
 
     private fun findMinPosition(): Int {
-        var min = 0
-        if (novelFragment!!.novelChapters != null) {
-            min = novelFragment!!.novelChapters.size
-        }
-        if (novelFragment!!.novelChapters != null) {
-            for (x in novelFragment!!.novelChapters.indices) if (contains(novelFragment!!.novelChapters[x])) if (x < min) min = x
-        }
+        var min: Int = novelFragment!!.novelChapters.size
+        for (x in novelFragment!!.novelChapters.indices) if (contains(novelFragment!!.novelChapters[x])) if (x < min) min = x
         return min
     }
 
     private fun findMaxPosition(): Int {
         var max = -1
-        if (novelFragment!!.novelChapters != null) for (x in novelFragment!!.novelChapters.indices.reversed()) if (contains(novelFragment!!.novelChapters[x])) if (x > max) max = x
+        for (x in novelFragment!!.novelChapters.indices.reversed()) if (contains(novelFragment!!.novelChapters[x])) if (x > max) max = x
         return max
     }
 
@@ -142,10 +171,11 @@ class NovelFragmentChapters : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        resume.visibility = View.GONE
-        if (novelFragment != null && novelFragment!!.novelPage != null)
+        resume.visibility = GONE
+        if (novelFragment != null)
             fragment_novel_chapters_refresh.setOnRefreshListener {
-                ChapterLoader(novelFragment!!.novelPage!!, novelFragment!!.novelURL!!, novelFragment!!.formatter!!).setNovelFragmentChapters(this).execute(activity)
+                if (novelFragment != null && novelFragment!!.formatter != null && novelFragment!!.novelURL.isNotEmpty())
+                    NewChapterLoader(chaptersLoadedAction, novelFragment!!.formatter!!, novelFragment!!.novelURL).execute()
             }
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage")
@@ -155,7 +185,7 @@ class NovelFragmentChapters : Fragment() {
         resume.setOnClickListener {
             val i = novelFragment!!.lastRead()
             if (i != -1 && i != -2) {
-                if (activity != null && novelFragment!!.novelChapters != null && novelFragment!!.formatter != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter!!.formatterID)
+                if (activity != null && novelFragment!!.formatter != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter!!.formatterID)
             } else Toast.makeText(context, "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -167,7 +197,7 @@ class NovelFragmentChapters : Fragment() {
         fragment_novel_chapters_recycler!!.post {
             fragment_novel_chapters_recycler!!.setHasFixedSize(false)
             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-            if (novelFragment != null && !Database.DatabaseNovels.isNotInDatabase(novelFragment!!.novelID)) {
+            if (novelFragment != null && !Database.DatabaseNovels.isNotInNovels(novelFragment!!.novelID)) {
                 novelFragment!!.novelChapters = getChapters(novelFragment!!.novelID)
                 if (novelFragment!!.novelChapters.isNotEmpty()) resume!!.visibility = View.VISIBLE
             }
@@ -188,15 +218,15 @@ class NovelFragmentChapters : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.chapter_select_all -> {
-                if (novelFragment!!.novelChapters != null) for (novelChapter in novelFragment!!.novelChapters) if (!contains(novelChapter)) selectedChapters.add(novelChapter)
+                for (novelChapter in novelFragment!!.novelChapters) if (!contains(novelChapter)) selectedChapters.add(novelChapter)
                 updateAdapter()
                 return true
             }
             R.id.chapter_download_selected -> {
                 for (novelChapter in selectedChapters) {
                     val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (novelFragment!!.novelPage != null && !Database.DatabaseChapter.isSaved(chapterID)) {
-                        val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage!!.title, novelChapter.title, chapterID)
+                    if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                        val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID)
                         Download_Manager.addToDownload(activity, downloadItem)
                     }
                 }
@@ -206,7 +236,7 @@ class NovelFragmentChapters : Fragment() {
             R.id.chapter_delete_selected -> {
                 for (novelChapter in selectedChapters) {
                     val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (novelFragment!!.novelPage != null && Database.DatabaseChapter.isSaved(chapterID)) Download_Manager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage!!.title, novelChapter.title, chapterID))
+                    if (Database.DatabaseChapter.isSaved(chapterID)) Download_Manager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID))
                 }
                 updateAdapter()
                 return true
@@ -244,18 +274,16 @@ class NovelFragmentChapters : Fragment() {
             R.id.chapter_select_between -> {
                 val min = findMinPosition()
                 val max = findMaxPosition()
-                if (novelFragment!!.novelChapters != null) {
-                    var x = min
-                    while (x < max) {
-                        if (!contains(novelFragment!!.novelChapters[x])) selectedChapters.add(novelFragment!!.novelChapters[x])
-                        x++
-                    }
+                var x = min
+                while (x < max) {
+                    if (!contains(novelFragment!!.novelChapters[x])) selectedChapters.add(novelFragment!!.novelChapters[x])
+                    x++
                 }
                 updateAdapter()
                 return true
             }
             R.id.chapter_filter -> {
-                if (novelFragment!!.novelChapters != null) novelFragment!!.novelChapters = novelFragment!!.novelChapters.reversed()
+                novelFragment!!.novelChapters = novelFragment!!.novelChapters.reversed()
                 reversed = !reversed
                 return updateAdapter()
             }

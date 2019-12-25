@@ -125,7 +125,7 @@ class NovelFragment : Fragment() {
         //TODO FINISH TRACKING
 //boolean track = SettingsController.isTrackingEnabled();
         if (savedInstanceState == null) {
-            if (Utilities.isOnline() && Database.DatabaseNovels.isNotInDatabase(novelID)) {
+            if (Utilities.isOnline() && Database.DatabaseNovels.isNotInNovels(novelID)) {
                 setViewPager()
                 if (formatter != null)
                     fragment_novel_tabLayout!!.post { NewNovelLoader(novelURL, novelID, formatter!!, this, true).execute() }

@@ -73,9 +73,7 @@ class NovelFragmentInfo : Fragment() {
                 val intent = Intent(activity, MigrationView::class.java)
                 try {
                     val novelCards = ArrayList<NovelCard>()
-                    if (novelFragment!!.novelPage != null) {
-                        novelCards.add(NovelCard(novelFragment!!.novelPage.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage.imageURL, novelFragment!!.formatter!!.formatterID))
-                    }
+                    novelCards.add(NovelCard(novelFragment!!.novelPage.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage.imageURL, novelFragment!!.formatter!!.formatterID))
                     intent.putExtra("selected", Utilities.serializeToString(novelCards))
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -85,15 +83,11 @@ class NovelFragmentInfo : Fragment() {
                 return true
             }
             R.id.webview -> {
-                if (activity != null) if (novelFragment!!.novelURL != null) {
-                    Utilities.openInWebview(activity!!, novelFragment!!.novelURL)
-                }
+                if (activity != null) Utilities.openInWebview(activity!!, novelFragment!!.novelURL)
                 return true
             }
             R.id.browser -> {
-                if (activity != null) if (novelFragment!!.novelURL != null) {
-                    Utilities.openInBrowser(activity!!, novelFragment!!.novelURL)
-                }
+                if (activity != null) Utilities.openInBrowser(activity!!, novelFragment!!.novelURL)
                 return true
             }
         }

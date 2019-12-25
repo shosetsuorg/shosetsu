@@ -48,7 +48,7 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.addNovel;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInDatabase;
+import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInNovels;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase;
 
 /**
@@ -145,7 +145,7 @@ public class RestoreProcess extends AsyncTask<Void, Void, Boolean> {
                     String novelURL = novel.getString(Columns.URL.toString());
                     textView.post(() -> textView.setText("Restoring: " + novelURL));
 
-                    if (isNotInDatabase(novelURL)) {
+                    if (Database.DatabaseNovels.isNotInNovels(novelURL)) {
                         addNovel(novelURL, novel.getInt(Columns.FORMATTER_ID.toString()));
                         int id = getNovelIDFromNovelURL(novelURL);
                         try {

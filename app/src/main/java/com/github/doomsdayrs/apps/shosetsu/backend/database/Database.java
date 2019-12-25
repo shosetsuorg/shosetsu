@@ -704,11 +704,28 @@ public class Database {
          * @param chapterURL chapter url
          * @return if present
          */
-        public static boolean isNotInChapters(String chapterURL) {
+        public static boolean isNotInChapters(@NonNull String chapterURL) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
             int a = cursor.getCount();
             cursor.close();
             return a <= 0;
+        }
+
+
+        public static void updateChapter(@NonNull NovelChapter novelChapter) {
+            String title = checkStringSerialize(novelChapter.getTitle());
+            String release = checkStringSerialize(novelChapter.getRelease());
+            Log.i("DatabaseChapter", novelChapter.getLink() + " | " + novelChapter.getOrder());
+            try {
+                sqLiteDatabase.execSQL("update " + Tables.CHAPTERS +
+                        " set " +
+                        Columns.TITLE + "='" + title + "'," +
+                        Columns.RELEASE_DATE + "='" + release + "'," +
+                        Columns.ORDER + "=" + novelChapter.getOrder() +
+                        " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.getLink()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         /**
@@ -970,17 +987,14 @@ public class Database {
          * @param novelID Novel novelID
          * @return yes or no
          */
-        public static boolean isNotInDatabase(int novelID) {
+        public static boolean isNotInNovels(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " ='" + novelID + "'", null);
-            if (cursor.getCount() <= 0) {
-                cursor.close();
-                return true;
-            }
+            int i = cursor.getCount();
             cursor.close();
-            return false;
+            return i <= 0;
         }
 
-        public static boolean isNotInDatabase(String novelURL) {
+        public static boolean isNotInNovels(String novelURL) {
             return -1 == getNovelIDFromNovelURL(novelURL);
         }
 
@@ -1166,7 +1180,7 @@ public class Database {
             }
         }
 
-        public static void updateData(@NotNull String novelURL, @NotNull NovelPage novelPage) {
+        public static void updateNovel(@NotNull String novelURL, @NotNull NovelPage novelPage) {
             String imageURL = novelPage.getImageURL();
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " +
                     Columns.TITLE + "='" + checkStringSerialize(novelPage.getTitle()) + "'," +
@@ -1185,7 +1199,7 @@ public class Database {
 
         public static void migrateNovel(int oldID, String newURL, int formatterID, @NotNull NovelPage newNovel, int status) {
             unBookmark(oldID);
-            if (DatabaseNovels.isNotInDatabase(newURL))
+            if (DatabaseNovels.isNotInNovels(newURL))
                 addToLibrary(formatterID, newNovel, newURL, status);
             bookMark(getNovelIDFromNovelURL(newURL));
         }

@@ -44,7 +44,7 @@ public class NovelBackgroundAdd extends AsyncTask<View, Void, Void> {
     @Override
     protected Void doInBackground(View... views) {
         try {
-            if (Database.DatabaseNovels.isNotInDatabase(novelCardsViewHolder.url)) {
+            if (Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url)) {
                 Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.getFormatterID(), novelCardsViewHolder.formatter.parseNovel(docFromURL(novelCardsViewHolder.url, novelCardsViewHolder.formatter.getHasCloudFlare())), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.getA());
                 if (views[0] != null)
                     views[0].post(() -> Toast.makeText(views[0].getContext(), "Added " + novelCardsViewHolder.library_card_title.getText().toString(), Toast.LENGTH_SHORT).show());

@@ -92,6 +92,7 @@ public class ChapterUpdater extends AsyncTask<Void, Void, Void> {
         }
     }
 
+
     @Nullable
     @Override
     protected Void doInBackground(Void... voids) {
