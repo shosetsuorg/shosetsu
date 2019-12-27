@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Update_Manager
+import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates
@@ -47,7 +47,7 @@ class UpdatesFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.updater_now) {
             if (context != null) {
-                Update_Manager.init(Database.DatabaseNovels.getIntLibrary(), context!!)
+                UpdateManager.init(Database.DatabaseNovels.getIntLibrary(), context!!)
                 true
             } else false
         } else false

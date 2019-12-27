@@ -20,8 +20,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
-import com.github.doomsdayrs.apps.shosetsu.backend.Update_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager;
+import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager;
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
@@ -171,12 +171,12 @@ public class MainActivity extends AppCompatActivity implements Supporter {
         DBHelper helper = new DBHelper(this);
         Database.sqLiteDatabase = helper.getWritableDatabase();
 
-        Download_Manager.init(this);
+        DownloadManager.init(this);
 
         //Prevent the frag from changing on rotation
         if (Intent.ACTION_USER_BACKGROUND.equals(getIntent().getAction())) {
             Log.i("MainActivity", "Updating novels");
-            Update_Manager.init(Database.DatabaseNovels.getIntLibrary(), this);
+            UpdateManager.init(Database.DatabaseNovels.getIntLibrary(), this);
             transitionView(updatesFragment);
         } else if (savedInstanceState == null) {
             getSupportFragmentManager()

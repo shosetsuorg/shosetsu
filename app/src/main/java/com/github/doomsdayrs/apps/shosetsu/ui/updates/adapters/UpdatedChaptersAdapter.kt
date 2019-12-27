@@ -18,7 +18,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters
  * ====================================================================
  */
 
-import android.app.Activity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -27,22 +26,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isSaved
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.*
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import java.util.*
 
 /**
  * Shosetsu
@@ -88,9 +83,9 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
                         run {
                             if (!isSaved(chapterID)) {
                                 val downloadItem = DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter?.title, chapterID)
-                                Download_Manager.addToDownload(updatedNovelHolder.activity, downloadItem)
+                                DownloadManager.addToDownload(updatedNovelHolder.activity, downloadItem)
                             } else {
-                                if (Download_Manager.delete(updatedChapterHolder.itemView.context, DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter?.title, chapterID))) {
+                                if (DownloadManager.delete(updatedChapterHolder.itemView.context, DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter?.title, chapterID))) {
                                     updatedChapterHolder.downloadTag.visibility = View.INVISIBLE
                                 }
                             }

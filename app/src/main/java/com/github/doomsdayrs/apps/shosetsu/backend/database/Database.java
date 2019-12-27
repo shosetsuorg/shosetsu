@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
@@ -34,7 +34,6 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStrin
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.addNovel;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromChapterID;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelURLfromNovelID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.hasChapter;
@@ -389,14 +388,14 @@ public class Database {
          * @return DownloadItems to download
          */
         @NonNull
-        public static List<DownloadItem> getDownloadList() {
+        public static ArrayList<DownloadItem> getDownloadList() {
             ArrayList<DownloadItem> downloadItems = new ArrayList<>();
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT * from " + Tables.DOWNLOADS + ";", null);
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
                 String nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
-                int formatter = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+                int formatter = DatabaseIdentification.getFormatterIDFromChapterID(id);
                 downloadItems.add(new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, id));
             }
             cursor.close();
@@ -692,7 +691,7 @@ public class Database {
                 cursor.moveToNext();
                 String savedData = cursor.getString(cursor.getColumnIndex(Columns.SAVE_PATH.toString()));
                 cursor.close();
-                return Download_Manager.getText(savedData);
+                return DownloadManager.getText(savedData);
             }
         }
 

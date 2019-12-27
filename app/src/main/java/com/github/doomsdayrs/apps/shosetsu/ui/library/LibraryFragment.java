@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Update_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery;
@@ -222,7 +222,7 @@ public class LibraryFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.updater_now:
-                Update_Manager.init(libraryNovelCards, context);
+                UpdateManager.init(libraryNovelCards, context);
                 return true;
             case R.id.chapter_select_all:
                 for (int i : libraryNovelCards)

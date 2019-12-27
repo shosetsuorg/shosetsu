@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterLoader.ChapterLoaderAction
@@ -233,7 +233,7 @@ class NovelFragmentChapters : Fragment() {
                     val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
                     if (!Database.DatabaseChapter.isSaved(chapterID)) {
                         val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID)
-                        Download_Manager.addToDownload(activity, downloadItem)
+                        DownloadManager.addToDownload(activity, downloadItem)
                     }
                 }
                 updateAdapter()
@@ -242,7 +242,7 @@ class NovelFragmentChapters : Fragment() {
             R.id.chapter_delete_selected -> {
                 for (novelChapter in selectedChapters) {
                     val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (Database.DatabaseChapter.isSaved(chapterID)) Download_Manager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID))
+                    if (Database.DatabaseChapter.isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID))
                 }
                 updateAdapter()
                 return true

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.apps.shosetsu.R;
-import com.github.doomsdayrs.apps.shosetsu.backend.Download_Manager;
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter;
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters;
@@ -104,9 +104,9 @@ public class ChaptersViewHolder extends RecyclerView.ViewHolder implements View.
                 case R.id.popup_chapter_menu_download:
                     if (!Database.DatabaseChapter.isSaved(chapterID) && novelFragmentChapters.novelFragment.novelPage != null) {
                         DownloadItem downloadItem = new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.getTitle(), novelChapter.getTitle(), chapterID);
-                        Download_Manager.addToDownload(novelFragmentChapters.getActivity(), downloadItem);
+                        DownloadManager.addToDownload(novelFragmentChapters.getActivity(), downloadItem);
                     } else {
-                        if (novelFragmentChapters.novelFragment.novelPage != null && Download_Manager.delete(itemView.getContext(), new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.getTitle(), novelChapter.getTitle(), chapterID))) {
+                        if (novelFragmentChapters.novelFragment.novelPage != null && DownloadManager.delete(itemView.getContext(), new DownloadItem(novelFragmentChapters.novelFragment.formatter, novelFragmentChapters.novelFragment.novelPage.getTitle(), novelChapter.getTitle(), chapterID))) {
                             downloadTag.setVisibility(View.INVISIBLE);
                         }
                     }
