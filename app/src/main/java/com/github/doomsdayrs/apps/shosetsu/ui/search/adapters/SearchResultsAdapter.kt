@@ -85,10 +85,8 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
 
         if (title != null)
             holder.textView.text = title
-        if (imageURL != null)
-            Picasso.get()
-                    .load(imageURL)
-                    .into(holder.imageView)
+        if (imageURL != null && imageURL.isNotEmpty())
+            Picasso.get().load(imageURL).into(holder.imageView)
 
         holder.itemView.setOnClickListener {
             val novelFragment = NovelFragment()
