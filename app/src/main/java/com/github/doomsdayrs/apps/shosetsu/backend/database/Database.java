@@ -33,7 +33,6 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStrin
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStringToStati;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.addNovel;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL;
-import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromChapterID;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL;
@@ -1305,7 +1304,7 @@ public class Database {
                 throw new Exception("Dates implemented wrongly");
             Log.i("UL", "Getting dates between [" + new DateTime(date1) + "] and [" + new DateTime(date2) + "]");
             Cursor cursor = sqLiteDatabase.rawQuery(
-                    "SELECT " + Columns.PARENT_ID + "," + Columns.TIME + " from " + Tables.UPDATES +
+                    "SELECT " + Columns.ID + "," + Columns.PARENT_ID + "," + Columns.TIME + " from " + Tables.UPDATES +
                             " where " + Columns.TIME + "<" + date2 + " and " + Columns.TIME + ">=" + date1, null);
 
 
@@ -1315,13 +1314,11 @@ public class Database {
                 return new ArrayList<>();
             } else {
                 while (cursor.moveToNext()) {
-                    int id = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()));
-                    int parentID = getNovelIDFromChapterID(id);
-                    novelCards.add(new Update(
-                            getNovelURLfromNovelID(parentID),
-                            getChapterURLFromChapterID(id),
-                            cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString())),
-                            id, parentID));
+                    novelCards.add(
+                            new Update(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())),
+                                    cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())),
+                                    cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString())))
+                    );
                 }
                 cursor.close();
                 return novelCards;

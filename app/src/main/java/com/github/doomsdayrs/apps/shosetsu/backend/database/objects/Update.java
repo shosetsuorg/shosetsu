@@ -1,7 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.objects;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseChapter;
-
 /*
  * This file is part of Shosetsu.
  *
@@ -23,11 +21,14 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.base.BaseCha
  *
  * @author github.com/doomsdayrs
  */
-public class Update extends BaseChapter {
+public class Update {
     public final int chapterID;
+    public final int novelID;
+    public final long date;
 
-    public Update(String novel_url, String chapter_url, long time, int chapterID, int novelID) {
-        super(novel_url, chapter_url);
+    public Update(int chapterID, int novelID, long date) {
         this.chapterID = chapterID;
+        this.novelID = novelID;
+        this.date = date;
     }
 }

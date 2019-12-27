@@ -85,7 +85,11 @@ class NovelFragmentChapters : Fragment() {
                         if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
                             Log.i("ChapterLoader", "Adding ${novelChapter.link}")
                             Database.DatabaseChapter.addToChapters(novelFragment!!.novelID, novelChapter)
-                        } else updateChapter(novelChapter)
+                            if (!novelFragment!!.new)
+                                Database.DatabaseUpdates.addToUpdates(novelFragment!!.novelID, novelChapter.link, System.currentTimeMillis())
+                        } else {
+                            updateChapter(novelChapter)
+                        }
                     } else Log.e("ChapterLoader", "Invalid novelID")
                 }
             }

@@ -54,6 +54,9 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class NovelFragment : Fragment() {
+    // This is a never before loaded novel
+    var new: Boolean = true
+
     @JvmField
     var novelID = -2
     @JvmField
@@ -105,6 +108,7 @@ class NovelFragment : Fragment() {
         outState.putString("novelURL", novelURL)
         outState.putInt("formatter", formatter!!.formatterID)
         outState.putInt("status", status.a)
+        outState.putBoolean("new", new)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -131,6 +135,7 @@ class NovelFragment : Fragment() {
                     fragment_novel_tabLayout!!.post { NewNovelLoader(novelURL, novelID, formatter!!, this, true).execute() }
             } else {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID)
+                new = false
                 //   novelChapters = DatabaseChapter.getChapters(novelID)
                 status = Database.DatabaseNovels.getStatus(novelID)
                 if (activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage.title
@@ -142,6 +147,7 @@ class NovelFragment : Fragment() {
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
             status = Status.getStatus(savedInstanceState.getInt("status"))
             novelPage = Database.DatabaseNovels.getNovelPage(novelID)
+            new = savedInstanceState.getBoolean("new")
             setViewPager()
         }
     }

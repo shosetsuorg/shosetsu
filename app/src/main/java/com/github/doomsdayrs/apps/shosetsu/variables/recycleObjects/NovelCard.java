@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects;
 
+import androidx.annotation.NonNull;
+
 /*
  * This file is part of Shosetsu.
  *
@@ -27,6 +29,7 @@ public class NovelCard extends RecycleCard {
     /**
      * NovelURL
      */
+    @NonNull
     public final String novelURL;
     /**
      * ImageURL
