@@ -61,9 +61,9 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
     }
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        val title: String?
+        var title: String = ""
         val url: String
-        val imageURL: String?
+        var imageURL: String = ""
         val formatter: Formatter?
         val id: Int
 
@@ -83,9 +83,9 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             id = novel.novelID
         }
 
-        if (title != null)
+        if (title.isNotEmpty())
             holder.textView.text = title
-        if (imageURL != null && imageURL.isNotEmpty())
+        if (imageURL.isNotEmpty())
             Picasso.get().load(imageURL).into(holder.imageView)
 
         holder.itemView.setOnClickListener {
