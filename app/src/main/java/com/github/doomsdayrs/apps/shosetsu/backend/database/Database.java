@@ -681,12 +681,11 @@ public class Database {
          * @param chapterID novelURL of the chapter
          * @return String of passage
          */
-        @Nullable
         public static String getSavedNovelPassage(int chapterID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.SAVE_PATH + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return null;
+                return "";
             } else {
                 cursor.moveToNext();
                 String savedData = cursor.getString(cursor.getColumnIndex(Columns.SAVE_PATH.toString()));

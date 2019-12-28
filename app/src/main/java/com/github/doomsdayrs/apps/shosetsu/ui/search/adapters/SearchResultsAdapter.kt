@@ -61,9 +61,9 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
     }
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        var title: String = ""
+        val title: String
         val url: String
-        var imageURL: String = ""
+        val imageURL: String
         val formatter: Formatter?
         val id: Int
 

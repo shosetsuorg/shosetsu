@@ -58,7 +58,7 @@ class NewChapterView @SuppressLint("ClickableViewAccessibility") constructor() :
     @JvmField
     var ready = false
     @JvmField
-    var unformattedText: String? = null
+    var unformattedText: String = ""
     var text: String? = null
 
     fun setNewChapterReader(newChapterReader: NewChapterReader?) {
@@ -99,7 +99,7 @@ class NewChapterView @SuppressLint("ClickableViewAccessibility") constructor() :
             chapterID = savedInstanceState.getInt("id")
             url = savedInstanceState.getString("url")
             newChapterReader = activity as NewChapterReader?
-            unformattedText = savedInstanceState.getString("unfom")
+            unformattedText = savedInstanceState.getString("unfom", "")
             text = savedInstanceState.getString("text")
             bookmarked = savedInstanceState.getBoolean("book")
             ready = savedInstanceState.getBoolean("ready")
@@ -128,11 +128,11 @@ class NewChapterView @SuppressLint("ClickableViewAccessibility") constructor() :
 //NewChapterReaderTypeAdapter newChapterReaderTypeAdapter = new NewChapterReaderTypeAdapter(newChapterReader);
 //holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
 //holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
-        Log.i("Loading chapter", url)
+        Log.i("Loading chapter", url.toString())
         ready = false
         if (savedInstanceState == null) {
             if (Database.DatabaseChapter.isSaved(chapterID)) {
-                unformattedText = Objects.requireNonNull(Database.DatabaseChapter.getSavedNovelPassage(chapterID))
+                unformattedText = (Database.DatabaseChapter.getSavedNovelPassage(chapterID))
                 setUpReader()
                 scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
                 ready = true
@@ -157,11 +157,11 @@ class NewChapterView @SuppressLint("ClickableViewAccessibility") constructor() :
         textView?.setBackgroundColor(Settings.ReaderTextBackgroundColor)
         textView?.setTextColor(Settings.ReaderTextColor)
         textView?.textSize = Settings.ReaderTextSize
-        if (unformattedText != null) {
+        if (unformattedText.isNotEmpty()) {
             val replaceSpacing = StringBuilder("\n")
             for (x in 0 until Settings.paragraphSpacing) replaceSpacing.append("\n")
             for (x in 0 until Settings.indentSize) replaceSpacing.append("\t")
-            text = unformattedText!!.replace("\n".toRegex(), replaceSpacing.toString())
+            text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
             if (text!!.length > 100) Log.d("TextSet", text!!.substring(0, 100).replace("\n", "\\n")) else if (text!!.isNotEmpty()) Log.d("TextSet", text!!.substring(0, text!!.length - 1).replace("\n", "\\n"))
             textView?.text = text
             // viewPager2.post(() -> currentReader.setText(text));

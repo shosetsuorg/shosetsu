@@ -14,6 +14,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import needle.CancelableTask
+import needle.Needle
 import java.io.*
 import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
@@ -42,8 +44,8 @@ import kotlin.system.exitProcess
  */
 object DownloadManager {
 
-
-    private var download: Downloading? = null
+    //   private var download: Downloading = Downloading(null)
+    private var downloadTask: DownloadTask = DownloadTask(null)
 
 
     /**
@@ -51,9 +53,10 @@ object DownloadManager {
      */
     @JvmStatic
     fun init(activity: Activity) {
-        if (download == null) download = Downloading(activity)
-        if (download?.isCancelled!!) download = Downloading(activity)
-        if (download?.status == AsyncTask.Status.FINISHED || download?.status == AsyncTask.Status.PENDING) download!!.execute()
+        if (downloadTask.isCanceled) downloadTask = DownloadTask(activity)
+        if (Database.DatabaseDownloads.getDownloadCount() >= 1)
+            Needle.onBackgroundThread().execute(downloadTask)
+        //if (downloadTask.status == AsyncTask.Status.FINISHED || download.status == AsyncTask.Status.PENDING) download.execute()
     }
 
     /**
@@ -65,9 +68,9 @@ object DownloadManager {
     fun addToDownload(activity: Activity?, downloadItem: DownloadItem) {
         if (!Database.DatabaseDownloads.inDownloads(downloadItem)) {
             Database.DatabaseDownloads.addToDownloads(downloadItem)
-            if (download?.isCancelled!!) if (Database.DatabaseDownloads.getDownloadCount() >= 1) {
-                download = Downloading(activity)
-                download!!.execute()
+            if (downloadTask.isCanceled && Database.DatabaseDownloads.getDownloadCount() >= 1) {
+                downloadTask = DownloadTask(activity)
+                Needle.onBackgroundThread().execute(downloadTask)
             }
         }
     }
@@ -116,6 +119,63 @@ object DownloadManager {
         return null
     }
 
+    internal class DownloadTask(val activity: Activity?) : CancelableTask() {
+        init {
+            if (activity == null) cancel()
+        }
+
+        override fun doWork() {
+            while (Database.DatabaseDownloads.getDownloadCount() >= 1 && !Settings.downloadPaused) {
+                val downloadItem = Database.DatabaseDownloads.getFirstDownload()
+                // Starts up
+                if (downloadItem != null) {
+                    DownloadsFragment.toggleProcess(downloadItem)
+                }
+                if (downloadItem != null) try {
+                    run {
+                        Log.d("Dir", Utilities.shoDir + "download/")
+                        val folder = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + Utilities.cleanString(downloadItem.novelName))
+                        Log.d("Des", folder.toString())
+                        if (!folder.exists()) if (!folder.mkdirs()) {
+                            throw IOException("Failed to mkdirs")
+                        }
+                        val formattedName = Utilities.cleanString(downloadItem.chapterName)
+                        val passage = downloadItem.formatter.getNovelPassage(WebViewScrapper.docFromURL(downloadItem.chapterURL, downloadItem.formatter.hasCloudFlare)!!)
+                        val fileOutputStream = FileOutputStream(
+                                folder.path + "/" + formattedName + ".txt"
+                        )
+                        fileOutputStream.write(passage.toByteArray())
+                        fileOutputStream.close()
+                        Database.DatabaseChapter.addSavedPath(downloadItem.chapterURL, folder.path + "/" + formattedName + ".txt")
+
+                        if (activity != null) {
+                            val recyclerView: RecyclerView? = activity.findViewById(R.id.fragment_novel_chapters_recycler)
+                            recyclerView?.post { if (recyclerView.adapter != null) recyclerView.adapter!!.notifyDataSetChanged() }
+                        }
+                        Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName)
+                    }
+                    // Clean up
+                    Database.DatabaseDownloads.removeDownload(downloadItem)
+                    DownloadsFragment.toggleProcess(downloadItem)
+                    DownloadsFragment.removeDownloads(downloadItem)
+                    // Rate limiting
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(10)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
+                } catch (e: SocketTimeoutException) { // Mark download as faulted
+                    DownloadsFragment.markError(downloadItem)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    exitProcess(1)
+                }
+            }
+            cancel()
+        }
+
+    }
+
     internal class DownloadWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
         override fun doWork(): Result {
             return Result.success()
@@ -128,6 +188,8 @@ object DownloadManager {
      * TODO Skip over paused chapters or move them to the bottom of the list
      */
     internal class Downloading(val activity: Activity?) : AsyncTask<Void?, Void?, Void?>() {
+
+
         override fun doInBackground(vararg voids: Void?): Void? {
             while (Database.DatabaseDownloads.getDownloadCount() >= 1 && !Settings.downloadPaused) {
                 val downloadItem = Database.DatabaseDownloads.getFirstDownload()
@@ -151,6 +213,7 @@ object DownloadManager {
                         fileOutputStream.write(passage.toByteArray())
                         fileOutputStream.close()
                         Database.DatabaseChapter.addSavedPath(downloadItem.chapterURL, folder.path + "/" + formattedName + ".txt")
+
                         if (activity != null) {
                             val recyclerView: RecyclerView? = activity.findViewById(R.id.fragment_novel_chapters_recycler)
                             recyclerView?.post { if (recyclerView.adapter != null) recyclerView.adapter!!.notifyDataSetChanged() }
