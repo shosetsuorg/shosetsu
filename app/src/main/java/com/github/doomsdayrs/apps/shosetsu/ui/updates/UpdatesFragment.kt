@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import kotlinx.android.synthetic.main.fragment_update.*
 import org.joda.time.DateTime
 import java.util.*
 
@@ -42,8 +43,6 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class UpdatesFragment : Fragment() {
-    private var tabLayout: TabLayout? = null
-    private var viewPager: ViewPager? = null
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.updater_now) {
             if (context != null) {
@@ -60,10 +59,12 @@ class UpdatesFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_update, container, false)
         Utilities.setActivityTitle(activity, "Updates")
-        viewPager = view.findViewById(R.id.viewpager)
-        tabLayout = view.findViewById(R.id.tabLayout)
-        setViewPager()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setViewPager()
     }
 
     private fun setViewPager() {
@@ -96,16 +97,16 @@ class UpdatesFragment : Fragment() {
         updatesFragments.add(updateFragment)
         updatesFragments.reverse()
         val pagerAdapter = UpdatedDaysPager(childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, updatesFragments)
-        viewPager!!.adapter = pagerAdapter
-        viewPager!!.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
-        tabLayout!!.addOnTabSelectedListener(object : OnTabSelectedListener {
+        viewpager.adapter = pagerAdapter
+        viewpager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager!!.currentItem = tab.position
+                viewpager!!.currentItem = tab.position
             }
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-        tabLayout!!.post { tabLayout!!.setupWithViewPager(viewPager) }
+        tabLayout!!.post { tabLayout!!.setupWithViewPager(viewpager) }
     }
 
     init {

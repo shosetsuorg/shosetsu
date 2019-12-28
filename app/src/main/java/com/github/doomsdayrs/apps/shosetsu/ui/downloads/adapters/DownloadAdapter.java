@@ -52,14 +52,14 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadItemView> {
 
     @Override
     public void onBindViewHolder(@NonNull DownloadItemView downloadItemView, int i) {
-        DownloadItem downloadItem = DownloadsFragment.downloadItems.get(i);
+        DownloadItem downloadItem = downloadsFragment.getDownloadItems().get(i);
         downloadItemView.title.setText(downloadItem.chapterURL);
         downloadItemView.status.setText(downloadItem.getStatus());
     }
 
     @Override
     public int getItemCount() {
-        return DownloadsFragment.downloadItems.size();
+        return downloadsFragment.getDownloadItems().size();
     }
 
     @Override

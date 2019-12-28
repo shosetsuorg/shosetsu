@@ -3,6 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 import android.content.Context
 import android.os.AsyncTask
 import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterUpdater
+import needle.CancelableTask
+import needle.Needle
 import java.util.*
 
 /*
@@ -21,6 +23,8 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+/**
  * Shosetsu
  * 16 / 06 / 2019
  *
@@ -32,13 +36,12 @@ object UpdateManager {
     fun init(novelCards: ArrayList<Int>, context: Context) {
         if (chapterUpdater == null) {
             chapterUpdater = NewChapterUpdater(novelCards, context)
-            chapterUpdater!!.execute()
+            Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
         } else {
-            if (chapterUpdater!!.isCancelled || chapterUpdater!!.status == AsyncTask.Status.FINISHED) {
+            if (chapterUpdater!!.isCanceled) {
                 chapterUpdater = NewChapterUpdater(novelCards, context)
-                chapterUpdater!!.execute()
+                Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
             }
-            if (chapterUpdater!!.status == AsyncTask.Status.PENDING) chapterUpdater!!.execute()
         }
     }
 }

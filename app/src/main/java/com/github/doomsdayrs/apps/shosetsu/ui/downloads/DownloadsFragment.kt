@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.init
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import java.util.*
+import kotlinx.android.synthetic.main.fragment_downloads.*
 import kotlin.collections.ArrayList
 
 /*
@@ -40,15 +40,16 @@ import kotlin.collections.ArrayList
  */
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsFragment : Fragment() {
+    var downloadItems: ArrayList<DownloadItem> = ArrayList()
+    var adapter: DownloadAdapter = DownloadAdapter(this)
+
     override fun onResume() {
         super.onResume()
-        adapter!!.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        recyclerView = null
-        adapter = null
     }
 
     /**
@@ -62,23 +63,25 @@ class DownloadsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "NovelFragmentChapters")
         Utilities.setActivityTitle(activity, "Downloads")
-        val view = inflater.inflate(R.layout.fragment_downloads, container, false)
-        recyclerView = view.findViewById(R.id.fragment_downloads_recycler)
+        return inflater.inflate(R.layout.fragment_downloads, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         downloadItems = Database.DatabaseDownloads.getDownloadList()
         setDownloads()
-        return view
     }
 
     /**
      * Sets the novel chapters down
      */
     private fun setDownloads() {
-        recyclerView!!.setHasFixedSize(false)
+        fragment_downloads_recycler.setHasFixedSize(false)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         adapter = DownloadAdapter(this)
-        adapter!!.setHasStableIds(true)
-        recyclerView!!.layoutManager = layoutManager
-        recyclerView!!.adapter = adapter
+        adapter.setHasStableIds(true)
+        fragment_downloads_recycler.layoutManager = layoutManager
+        fragment_downloads_recycler.adapter = adapter
     }
 
     /**
@@ -97,7 +100,7 @@ class DownloadsFragment : Fragment() {
         if (item.itemId == R.id.toolbar_downloads_pause) {
             if (Utilities.togglePause()) item.setIcon(R.drawable.ic_pause_circle_filled_black_24dp) else {
                 item.setIcon(R.drawable.ic_pause_circle_outline_black_24dp)
-                init(activity!!)
+                initDownloadManager(activity!!)
             }
             return true
         }
@@ -105,32 +108,8 @@ class DownloadsFragment : Fragment() {
     }
 
     companion object {
-        @JvmField
-        var downloadItems: ArrayList<DownloadItem> = ArrayList()
-        @SuppressLint("StaticFieldLeak")
-        private var recyclerView: RecyclerView? = null
-        private var adapter: DownloadAdapter? = null
-        private fun refreshList() {
-            adapter?.downloadsFragment?.activity?.runOnUiThread { adapter?.notifyDataSetChanged() }
-        }
 
-        fun removeDownloads(downloadItem: DownloadItem) {
-            for (x in downloadItems.indices) if (downloadItems[x].chapterURL == downloadItem.chapterURL) {
-                downloadItems.removeAt(x)
-                return
-            }
-            refreshList()
-        }
 
-        fun markError(d: DownloadItem) {
-            for (downloadItem in downloadItems) if (downloadItem.chapterURL == d.chapterURL) d.status = "Error"
-            refreshList()
-        }
-
-        fun toggleProcess(d: DownloadItem) {
-            for (downloadItem in downloadItems) if (downloadItem.chapterURL == d.chapterURL) if (downloadItem.status == "Pending" || downloadItem.status == "Error") downloadItem.status = "Downloading" else downloadItem.status = "Pending"
-            refreshList()
-        }
     }
 
     /**

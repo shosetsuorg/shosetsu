@@ -15,6 +15,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
+import needle.CancelableTask
+import needle.Needle
 
 /*
  * This file is part of Shosetsu.
@@ -41,7 +43,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
  *
  * @author github.com/doomsdayrs
  */
-class NewChapterUpdater(val novelCards: ArrayList<Int>, context: Context) : AsyncTask<Void, Void, Void>() {
+class NewChapterUpdater(val novelCards: ArrayList<Int>, context: Context) : CancelableTask() {
     private val ID = 1917
     private val channel_ID = "shosetsu_updater"
 
@@ -60,7 +62,19 @@ class NewChapterUpdater(val novelCards: ArrayList<Int>, context: Context) : Asyn
     }
 
 
-    override fun onPreExecute() {
+
+
+    private fun add(mangaCount: Int, novelID: Int, novelChapter: NovelChapter, novelCard: NovelCard) {
+        if (continueProcesss && Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
+            println("Adding #" + mangaCount + ": " + novelChapter.link)
+            Database.DatabaseChapter.addToChapters(novelID, novelChapter)
+            Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis())
+            if (!updatedNovels.contains(novelCard)) updatedNovels.add(novelCard)
+        }
+    }
+
+    override fun doWork() {
+        // Setup
         builder = builder
                 .setSmallIcon(R.drawable.ic_system_update_alt_black_24dp)
                 .setContentTitle("Update")
@@ -69,9 +83,8 @@ class NewChapterUpdater(val novelCards: ArrayList<Int>, context: Context) : Asyn
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
         notificationManager.notify(ID, builder.build())
-    }
 
-    override fun doInBackground(vararg voids: Void?): Void? {
+        // Main process
         for (x in novelCards.indices) {
 
             val novelCard = DatabaseNovels.getNovel(novelCards[x])
@@ -105,10 +118,8 @@ class NewChapterUpdater(val novelCards: ArrayList<Int>, context: Context) : Asyn
 
             Utilities.wait(1000)
         }
-        return null
-    }
 
-    override fun onPostExecute(aVoid: Void?) {
+        // Completion
         val stringBuilder = StringBuilder()
         if (updatedNovels.size > 0) {
             builder.setContentTitle("Completed Update")
@@ -119,15 +130,7 @@ class NewChapterUpdater(val novelCards: ArrayList<Int>, context: Context) : Asyn
         builder.setProgress(0, 0, false)
         builder.setOngoing(false)
         notificationManager.notify(ID, builder.build())
-    }
 
-
-    private fun add(mangaCount: Int, novelID: Int, novelChapter: NovelChapter, novelCard: NovelCard) {
-        if (continueProcesss && Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
-            println("Adding #" + mangaCount + ": " + novelChapter.link)
-            Database.DatabaseChapter.addToChapters(novelID, novelChapter)
-            Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis())
-            if (!updatedNovels.contains(novelCard)) updatedNovels.add(novelCard)
-        }
+        cancel()
     }
 }
