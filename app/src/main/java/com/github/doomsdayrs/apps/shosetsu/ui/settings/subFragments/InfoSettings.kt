@@ -90,7 +90,7 @@ class InfoSettings : Fragment() {
     }
 
     private fun onClickLicense(v: View) { // TODO: Show full license on click
-        (activity as MainActivity).transitionView(LargeText())
+        (activity as MainActivity).transitionView(LicenseReader())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
