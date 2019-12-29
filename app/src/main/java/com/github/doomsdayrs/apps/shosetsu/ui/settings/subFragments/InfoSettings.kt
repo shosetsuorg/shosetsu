@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import kotlinx.android.synthetic.main.settings_advanced.*
@@ -89,7 +90,7 @@ class InfoSettings : Fragment() {
     }
 
     private fun onClickLicense(v: View) { // TODO: Show full license on click
-        Toast.makeText(v.context, "License", Toast.LENGTH_SHORT).show()
+        (activity as MainActivity).transitionView(LargeText())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
