@@ -38,7 +38,8 @@ import kotlinx.android.synthetic.main.chapter_view.*
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */ /**
+ */
+/**
  * shosetsu
  * 13 / 12 / 2019
  *
@@ -251,9 +252,14 @@ class ChapterView : Fragment() {
     override fun onResume() {
         super.onResume()
         val title = Database.DatabaseChapter.getTitle(chapterID)
-        Log.i("Setting TITLE", title)
         chapterReader?.getToolbar()?.let { it.title = title }
+        Log.i("ChapterView", "Resuming:${appendID()}")
     }
+
+    fun appendID(): String {
+        return "\tURL/ID( $url | $chapterID )"
+    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -263,6 +269,7 @@ class ChapterView : Fragment() {
         outState.putString("unform", unformattedText)
         outState.putBoolean("book", bookmarked)
         outState.putBoolean("ready", ready)
+        Log.i("ChapterView", "Saved:${appendID()}")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -275,7 +282,9 @@ class ChapterView : Fragment() {
             text = savedInstanceState.getString("text")
             bookmarked = savedInstanceState.getBoolean("book")
             ready = savedInstanceState.getBoolean("ready")
+            Log.i("ChapterView", "Restored:${appendID()}")
         }
+        Log.i("ChapterView", "Created:${appendID()}")
         return view
     }
 
@@ -300,21 +309,25 @@ class ChapterView : Fragment() {
         //holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
         //holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
 
-        Log.i("Loading chapter", url)
         ready = false
 
         if (savedInstanceState == null) {
             if (Database.DatabaseChapter.isSaved(chapterID)) {
+                Log.d("ChapterView", "Loading from storage${appendID()}")
                 unformattedText = (Database.DatabaseChapter.getSavedNovelPassage(chapterID))
                 setUpReader()
                 scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
                 ready = true
             } else {
+                Log.d("ChapterView", "Loading from online${appendID()}")
                 unformattedText = ""
                 setUpReader()
                 ChapterViewLoader(this).execute()
             }
-        } else setUpReader()
+        } else {
+            Log.d("ChapterView", "Load, Data present${appendID()}")
+            setUpReader()
+        }
     }
 
 
@@ -328,7 +341,10 @@ class ChapterView : Fragment() {
             for (x in 0 until Settings.paragraphSpacing) replaceSpacing.append("\n")
             for (x in 0 until Settings.indentSize) replaceSpacing.append("\t")
             text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
-            if (text!!.length > 100) Log.d("TextSet", text!!.substring(0, 100).replace("\n", "\\n")) else if (text!!.isNotEmpty()) Log.d("TextSet", text!!.substring(0, text!!.length - 1).replace("\n", "\\n"))
+            if (text!!.length > 100)
+                Log.d("ChapterView", "TextSet\t" + text!!.substring(0, 100).replace("\n", "\\n") +"\n"+ appendID())
+            else if (text!!.isNotEmpty())
+                Log.d("ChapterView", "TextSet\t" +text!!.substring(0, text!!.length - 1).replace("\n", "\\n") +"\n"+ appendID())
             textView?.text = text
             // viewPager2.post(() -> currentReader.setText(text));
         }
@@ -343,7 +359,7 @@ class ChapterView : Fragment() {
         if (ready) if (scrollView!!.scrollY / total.toFloat() < .99) {
             // Inital mark of reading
             if (!marked && Settings.ReaderMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
-                Log.d("ChapterView","Marking as Reading")
+                Log.d("ChapterView", "Marking as Reading")
                 Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
                 marked = !marked
             }
@@ -353,7 +369,7 @@ class ChapterView : Fragment() {
             if (y % 5 == 0)
                 if (Database.DatabaseChapter.getStatus(chapterID) != Status.READ) Database.DatabaseChapter.updateY(chapterID, y)
         } else {
-            Log.i("Scroll", "Marking chapter as READ")
+            Log.i("Scroll", "Marking chapter as READ${appendID()}")
             Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
             Database.DatabaseChapter.updateY(chapterID, 0)
             next_chapter!!.visibility = View.VISIBLE

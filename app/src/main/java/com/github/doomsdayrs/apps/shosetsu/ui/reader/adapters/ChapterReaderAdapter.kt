@@ -1,9 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters
 
+import android.os.Parcelable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
@@ -32,8 +34,17 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class ChapterReaderAdapter(fm: FragmentManager, behavior: Int, private val chapterReader: ChapterReader) : FragmentPagerAdapter(fm, behavior) {
+class ChapterReaderAdapter(fm: FragmentManager, behavior: Int, private val chapterReader: ChapterReader) : FragmentStatePagerAdapter(fm, behavior) {
     val chapterViews = ArrayList<ChapterView>()
+
+    init {
+        for (i in chapterReader.chapterIDs) {
+            val newChapterView = ChapterView()
+            newChapterView.chapterID = (i)
+            newChapterView.chapterReader = chapterReader
+            chapterViews.add(newChapterView)
+        }
+    }
 
     override fun getItem(position: Int): Fragment {
         return chapterViews[position]
@@ -44,12 +55,4 @@ class ChapterReaderAdapter(fm: FragmentManager, behavior: Int, private val chapt
         return chapterReader.chapterIDs.size
     }
 
-    init {
-        for (i in chapterReader.chapterIDs) {
-            val newChapterView = ChapterView()
-            newChapterView.chapterID = (i)
-            newChapterView.chapterReader = (chapterReader)
-            chapterViews.add(newChapterView)
-        }
-    }
 }
