@@ -11,6 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import kotlinx.android.synthetic.main.chapter_reader.*
 
 /*
@@ -87,6 +88,17 @@ class ChapterReader : AppCompatActivity() {
         }
         val newChapterReaderAdapter = ChapterReaderAdapter(supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, this)
         viewpager.adapter = newChapterReaderAdapter
+        viewpager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                Database.DatabaseChapter.setChapterStatus(newChapterReaderAdapter.chapterViews[position].chapterID, Status.READING)
+            }
+        })
         if (currentChapterID != -1) viewpager.currentItem = findCurrentPosition(currentChapterID)
     }
 

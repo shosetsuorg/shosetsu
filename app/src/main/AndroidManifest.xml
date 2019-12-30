@@ -50,9 +50,6 @@
             android:name=".ui.migration.MigrationView"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
-        <activity
-            android:name=".ui.reader.ChapterReader"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
 
         <activity android:name=".ui.search.SearchFragment">

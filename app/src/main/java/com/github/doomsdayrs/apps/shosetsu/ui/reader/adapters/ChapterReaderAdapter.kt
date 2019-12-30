@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import java.util.*
 
 /*
@@ -31,7 +33,7 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class ChapterReaderAdapter(fm: FragmentManager, behavior: Int, private val chapterReader: ChapterReader) : FragmentPagerAdapter(fm, behavior) {
-    private val chapterViews = ArrayList<ChapterView>()
+    val chapterViews = ArrayList<ChapterView>()
 
     override fun getItem(position: Int): Fragment {
         return chapterViews[position]

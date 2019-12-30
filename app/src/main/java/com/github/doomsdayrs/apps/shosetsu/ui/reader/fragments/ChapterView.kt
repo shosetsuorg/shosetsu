@@ -82,6 +82,7 @@ class ChapterView : Fragment() {
     }
 
 
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_chapter_view, menu)
         // Night mode
@@ -315,7 +316,6 @@ class ChapterView : Fragment() {
                 ChapterViewLoader(this).execute()
             }
         } else setUpReader()
-        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
     }
 
 
