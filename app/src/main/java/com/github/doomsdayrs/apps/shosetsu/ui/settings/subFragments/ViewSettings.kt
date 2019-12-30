@@ -9,12 +9,17 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import kotlinx.android.synthetic.main.settings_view.*
 import java.util.*
@@ -43,20 +48,9 @@ import java.util.*
  * @author github.com/doomsdayrs
  */ // TODO: Migrate to using PreferenceScreen and PreferenceGroup. Maybe
 class ViewSettings : Fragment() {
-    private val textSizes: Array<String> = arrayOf("Small", "Medium", "Large")
-    private val paragraphSpaces: Array<String> = arrayOf("None", "Small", "Medium", "Large")
-    private val indentSizes: Array<String> = arrayOf("None", "Small", "Medium", "Large")
+    val settings: ArrayList<SettingsItemData> = arrayListOf(
 
-    val settings: ArrayList<SettingsItem.SettingsItemData> = arrayListOf(
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
-                    .setTitle(R.string.reader_night_mode)
-                    .setSwitchIsChecked(Utilities.isReaderNightMode())
-                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
-                        Log.d("NightMode", p1.toString())
-                        if (!Utilities.isReaderNightMode()) Utilities.setNightNode() else Utilities.unsetNightMode()
-                    }),
-
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+            SettingsItemData(SettingsType.SPINNER)
                     .setTitle(R.string.spacing)
                     .setOnItemSelectedListener(object : OnItemSelectedListener {
                         override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
@@ -70,7 +64,7 @@ class ViewSettings : Fragment() {
                         override fun onNothingSelected(adapterView: AdapterView<*>?) {}
                     }),
 
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+            SettingsItemData(SettingsType.SPINNER)
                     .setTitle(R.string.text_size)
                     .setOnItemSelectedListener(object : OnItemSelectedListener {
                         override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
@@ -91,7 +85,7 @@ class ViewSettings : Fragment() {
                         override fun onNothingSelected(adapterView: AdapterView<*>?) {}
                     }),
 
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+            SettingsItemData(SettingsType.SPINNER)
                     .setTitle(R.string.indent_size)
                     .setOnItemSelectedListener(object : OnItemSelectedListener {
                         override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
@@ -105,34 +99,51 @@ class ViewSettings : Fragment() {
                         override fun onNothingSelected(adapterView: AdapterView<*>?) {}
                     }),
 
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
+            SettingsItemData(SettingsType.SPINNER)
+                    .setTitle(R.string.marking_mode)
+                    .setOnItemSelectedListener(object : OnItemSelectedListener {
+                        override fun onNothingSelected(p0: AdapterView<*>?) {}
+                        override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                            Log.d("MarkingMode", p2.toString())
+                            when (p2) {
+                                0 -> {
+                                    Utilities.setReaderMarkingType(Settings.MarkingTypes.ONVIEW)
+                                }
+                                1 -> {
+                                    Utilities.setReaderMarkingType(Settings.MarkingTypes.ONSCROLL)
+                                }
+                                else -> {
+                                    Log.e("MarkingMode", "UnknownType")
+                                }
+                            }
+                        }
+                    }),
+
+            SettingsItemData(SettingsType.SWITCH)
+                    .setTitle(R.string.reader_night_mode)
+                    .setSwitchIsChecked(Utilities.isReaderNightMode())
+                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+                        Log.d("NightMode", p1.toString())
+                        if (!Utilities.isReaderNightMode()) Utilities.setNightNode() else Utilities.unsetNightMode()
+                    }),
+
+            SettingsItemData(SettingsType.SWITCH)
                     .setTitle(R.string.tap_to_scroll)
                     .setSwitchIsChecked(Utilities.isTapToScroll())
                     .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
-                        Log.d("NightMode", p1.toString())
+                        Log.d("Tap to scroll", p1.toString())
                         Utilities.toggleTapToScroll()
                     })
-    )
+            )
     val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
 
-
-    /*
-    private fun onClickNightMode(v: View) {
-        if (this.context != null) {
-            //   val nightMOdeItem = SettingsItem(v, SettingsItem.SettingsType.INFORMATION)
-            val builder = AlertDialog.Builder(this.context!!)
-            builder.setTitle(R.string.reader_night_mode)
-            val states = arrayOf(getString(R.string.on), getString(R.string.off))
-            builder.setItems(states
-            ) { _: DialogInterface?, i: Int ->
-                if (i == 0) Utilities.setNightNode() else Utilities.unsetNightMode()
-                val nightModeStatus = if (Utilities.isReaderNightMode()) R.string.on else R.string.off
-                //      nightMOdeItem.setDescription(nightModeStatus)
-                //          nightMOdeItem.invalidate()
-            }
-            builder.show()
+    private fun findDataByID(@StringRes id: Int): Int {
+        for ((index, data) in settings.withIndex()) {
+            if (data.titleID == id)
+                return index
         }
-    }*/
+        return -1
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")
@@ -142,27 +153,32 @@ class ViewSettings : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         run {
-
-            val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, textSizes)
-            settings[2].setArrayAdapter(dataAdapter)
+            val x = findDataByID(R.string.text_size)
+            settings[x].adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.sizes_no_none))
             when (Settings.ReaderTextSize.toInt()) {
-                14 -> settings[2].spinnerSelection = 0
-                17 -> settings[2].spinnerSelection = 1
-                20 -> settings[2].spinnerSelection = 2
-                else -> settings[2].spinnerSelection = 0
+                14 -> settings[x].spinnerSelection = 0
+                17 -> settings[x].spinnerSelection = 1
+                20 -> settings[x].spinnerSelection = 2
+                else -> settings[x].spinnerSelection = 0
             }
         }
 
         run {
-            val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, paragraphSpaces)
-            settings[1].adapter = dataAdapter
-            settings[1].spinnerSelection = Settings.paragraphSpacing
+            val x = findDataByID(R.string.spacing)
+            settings[x].adapter =  ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.sizes_with_none))
+            settings[x].spinnerSelection = Settings.paragraphSpacing
         }
 
         run {
-            val dataAdapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, indentSizes)
-            settings[3].adapter = dataAdapter
-            settings[3].spinnerSelection = (Settings.indentSize)
+            val x = findDataByID(R.string.indent_size)
+            settings[x].adapter =  ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.sizes_with_none))
+            settings[x].spinnerSelection = (Settings.indentSize)
+        }
+
+        run {
+            val x = findDataByID(R.string.marking_mode)
+            settings[x].adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.marking_names))
+            settings[x].spinnerSelection = Settings.ReaderMarkingType
         }
 
         Log.i("onViewCreated", "Finished creation")

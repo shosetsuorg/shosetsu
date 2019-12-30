@@ -1,6 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.enums;
+package com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners
 
-import org.jetbrains.annotations.NotNull;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NewNovelLoader
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
 
 /*
  * This file is part of Shosetsu.
@@ -19,43 +21,14 @@ import org.jetbrains.annotations.NotNull;
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  * Shosetsu
- * 14 / June / 2019
+ * 06 / 07 / 2019
  *
  * @author github.com/doomsdayrs
  */
-
-/**
- * Used for setting fragments
- */
-public enum Types {
-    DOWNLOAD("Download"),
-    VIEW("Reader View"),
-    ADVANCED("Advanced"),
-    INFO("Info"),
-    BACKUP("Backup");
-
-    /**
-     * Type name
-     */
-    private final String name;
-
-    /**
-     * Constructor
-     *
-     * @param name name of type
-     */
-    Types(String name) {
-        this.name = name;
+class NovelFragmentUpdate(private val novelFragmentInfo: NovelFragmentInfo) : OnRefreshListener {
+    override fun onRefresh() {
+        if (novelFragmentInfo.novelFragment != null && novelFragmentInfo.novelFragment!!.formatter != null) NewNovelLoader(novelFragmentInfo.novelFragment!!.novelURL, novelFragmentInfo.novelFragment!!.novelID, novelFragmentInfo.novelFragment!!.formatter!!, novelFragmentInfo.novelFragment, false)
+                .execute()
     }
 
-    /**
-     * toString overriding method
-     *
-     * @return name of type
-     */
-    @NotNull
-    @Override
-    public String toString() {
-        return name;
-    }
 }

@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentPagerAdapter
@@ -11,6 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import kotlinx.android.synthetic.main.chapter_reader.*
 
@@ -88,7 +90,7 @@ class ChapterReader : AppCompatActivity() {
         }
         val newChapterReaderAdapter = ChapterReaderAdapter(supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, this)
         viewpager.adapter = newChapterReaderAdapter
-        viewpager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+        viewpager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 
@@ -96,7 +98,10 @@ class ChapterReader : AppCompatActivity() {
             }
 
             override fun onPageSelected(position: Int) {
-                Database.DatabaseChapter.setChapterStatus(newChapterReaderAdapter.chapterViews[position].chapterID, Status.READING)
+                if (Settings.ReaderMarkingType == Settings.MarkingTypes.ONVIEW.i) {
+                    Log.d("ChapterReader","Marking as Reading")
+                    Database.DatabaseChapter.setChapterStatus(newChapterReaderAdapter.chapterViews[position].chapterID, Status.READING)
+                }
             }
         })
         if (currentChapterID != -1) viewpager.currentItem = findCurrentPosition(currentChapterID)

@@ -28,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings;
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings.MarkingTypes;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 
 import org.jetbrains.annotations.NotNull;
@@ -288,7 +289,14 @@ public class Utilities {
         Settings.themeMode = advancedPreferences.getInt("themeMode", 0);
         Settings.paragraphSpacing = viewPreferences.getInt("paragraphSpacing", 1);
         Settings.indentSize = viewPreferences.getInt("indentSize", 1);
+        Settings.ReaderMarkingType = viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.getI());
     }
+
+    public static void setReaderMarkingType(MarkingTypes markingType) {
+        Settings.ReaderMarkingType = markingType.getI();
+        viewPreferences.edit().putInt("markingType", markingType.getI()).apply();
+    }
+
 
     public static boolean toggleTapToScroll() {
         if (isTapToScroll())
@@ -456,7 +464,8 @@ public class Utilities {
 
     private static void openChapter(@NonNull Activity activity, @NonNull NovelChapter novelChapter, int novelID, int formatterID, String[] chapters) {
         int chapterID = getChapterIDFromChapterURL(novelChapter.getLink());
-        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
+        if (Settings.ReaderMarkingType == MarkingTypes.ONVIEW.getI())
+            Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
         Intent intent = new Intent(activity, ChapterReader.class);
         intent.putExtra("chapterID", chapterID);
         intent.putExtra("novelID", novelID);

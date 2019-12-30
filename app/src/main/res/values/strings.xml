@@ -31,9 +31,12 @@
     <string name="pending">Pending</string>
     <string name="downloaded">Downloaded</string>
     <string name="bookmark">Bookmark</string>
+
     <string name="large">Large</string>
     <string name="medium">Medium</string>
     <string name="small">Small</string>
+    <string name="none">None</string>
+
     <string name="select_all">Select All</string>
     <string name="delete_selected">Delete Selected</string>
     <string name="deselect_all">Deselect All</string>
@@ -77,6 +80,27 @@
     <string name="reading_status">Reading Status</string>
     <string name="publishing_state">Publishing State:</string>
 
+    <string name="marking_mode">Marking Method</string>
+
+    <string-array name="marking_names">
+        <item>On View Selected</item>
+        <item>On View Scrolled</item>
+    </string-array>
+
+    <string-array name="sizes_no_none">
+        <item>@string/small</item>
+        <item>@string/medium</item>
+        <item>@string/large</item>
+    </string-array>
+
+    <string-array name="sizes_with_none">
+        <item>@string/none</item>
+        <item>@string/small</item>
+        <item>@string/medium</item>
+        <item>@string/large</item>
+    </string-array>
+
+
     <!-- Publishing status-->
     <string name="paused">Paused</string>
     <string name="completed">Completed</string>
@@ -103,6 +127,8 @@
     <!-- Shortcuts -->
     <string name="refresh_shortcut">Check for updates</string>
     <string name="action_global_search_hint">Global search…</string>
+
+
     <string name="processing_data">Processing data</string>
 
 

@@ -75,7 +75,7 @@ class NovelFragment : Fragment() {
      */
     fun lastRead(): Int {
         return if (novelChapters.isNotEmpty()) {
-            if (!NovelFragmentChapters.reversed) {
+            if (!novelFragmentChapters?.reversed!!) {
                 for (x in novelChapters.indices.reversed()) {
                     when (DatabaseChapter.getStatus(Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapters[x].link))) {
                         Status.READ -> return x + 1
@@ -165,12 +165,12 @@ class NovelFragment : Fragment() {
     }
 
     private fun setViewPager() {
-        val fragments: MutableList<Fragment?> = ArrayList()
+        val fragments: MutableList<Fragment> = ArrayList()
         run {
             Log.d("FragmentLoading", "Main")
-            fragments.add(novelFragmentInfo)
+            fragments.add(novelFragmentInfo!!)
             Log.d("FragmentLoading", "Chapters")
-            fragments.add(novelFragmentChapters)
+            fragments.add(novelFragmentChapters!!)
         }
         val pagerAdapter = NovelPagerAdapter(childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, fragments)
         fragment_novel_viewpager!!.adapter = pagerAdapter
@@ -186,24 +186,21 @@ class NovelFragment : Fragment() {
         fragment_novel_tabLayout!!.post { fragment_novel_tabLayout!!.setupWithViewPager(fragment_novel_viewpager) }
     }
 
-    companion object {
-        /**
-         * @param chapterURL Current chapter URL
-         * @return chapter after the input, returns the current chapter if no more
-         */
-        @JvmStatic
-        fun getNextChapter(chapterURL: Int, novelChapters: IntArray?): NovelChapter? {
-            if (novelChapters != null && novelChapters.isNotEmpty()) for (x in novelChapters.indices) {
-                if (novelChapters[x] == chapterURL) {
-                    return if (NovelFragmentChapters.reversed) {
-                        if (x - 1 != -1) DatabaseChapter.getChapter(novelChapters[x - 1]) else DatabaseChapter.getChapter(novelChapters[x])
-                    } else {
-                        if (x + 1 != novelChapters.size) DatabaseChapter.getChapter(novelChapters[x + 1]) else DatabaseChapter.getChapter(novelChapters[x])
-                    }
+    /**
+     * @param chapterURL Current chapter URL
+     * @return chapter after the input, returns the current chapter if no more
+     */
+    fun getNextChapter(chapterURL: Int, novelChapters: IntArray?): NovelChapter? {
+        if (novelChapters != null && novelChapters.isNotEmpty()) for (x in novelChapters.indices) {
+            if (novelChapters[x] == chapterURL) {
+                return if (novelFragmentChapters?.reversed!!) {
+                    if (x - 1 != -1) DatabaseChapter.getChapter(novelChapters[x - 1]) else DatabaseChapter.getChapter(novelChapters[x])
+                } else {
+                    if (x + 1 != novelChapters.size) DatabaseChapter.getChapter(novelChapters[x + 1]) else DatabaseChapter.getChapter(novelChapters[x])
                 }
             }
-            return null
         }
+        return null
     }
 
     init {

@@ -63,7 +63,7 @@ class InfoSettings : Fragment() {
                     .setOnClickListener { v: View -> onClickDisclaimer(v) },
             SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
                     .setTitle(R.string.license)
-                    .setOnClickListener { v: View -> onClickLicense(v) }
+                    .setOnClickListener { v: View -> onClickLicense() }
     )
 
 
@@ -89,7 +89,7 @@ class InfoSettings : Fragment() {
         Toast.makeText(v.context, "Disclaimer", Toast.LENGTH_SHORT).show()
     }
 
-    private fun onClickLicense(v: View) { // TODO: Show full license on click
+    private fun onClickLicense() { // TODO: Show full license on click
         (activity as MainActivity).transitionView(LicenseReader())
     }
 

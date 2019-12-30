@@ -1,9 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.variables;
+package com.github.doomsdayrs.apps.shosetsu.variables
 
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-
-import androidx.annotation.Nullable;
+import android.graphics.Color
+import android.net.ConnectivityManager
 
 /*
  * This file is part of Shosetsu.
@@ -26,48 +24,75 @@ import androidx.annotation.Nullable;
  *
  * @author github.com/doomsdayrs
  */
-
 /**
  * Setting variables to work with
  */
-public class Settings {
+object Settings {
+    /**
+     * How to mark a chapter as reading
+     */
+    @JvmField
+    var ReaderMarkingType: Int = MarkingTypes.ONVIEW.i
+
+    enum class MarkingTypes(val i: Int) {
+        ONVIEW(0),
+        ONSCROLL(1)
+    }
+
+
     /**
      * Reader text size
      */
-    @SuppressWarnings("unused")
-    public static float ReaderTextSize = 14;
+    @JvmField
+    var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
+
+    //TODO Use this
+    enum class TextSizes(val i: Int) {
+        SMALL(14),
+        MEDIUM(17),
+        LARGE(20)
+    }
 
     /**
      * Reader text color
      */
-    public static int ReaderTextColor = Color.BLACK;
+    @JvmField
+    var ReaderTextColor = Color.BLACK
 
     /**
      * Reader background color
      */
-    public static int ReaderTextBackgroundColor = Color.WHITE;
+    @JvmField
+    var ReaderTextBackgroundColor = Color.WHITE
 
     /**
      * global connectivity manager variable
      */
-    @Nullable
-    public static ConnectivityManager connectivityManager;
+    @JvmField
+    var connectivityManager: ConnectivityManager? = null
 
     /**
      * If download manager is paused
      */
-    public static boolean downloadPaused;
+    @JvmField
+    var downloadPaused = false
 
     /**
      * Current theme to use
-     * <p>
-     * 0: Light mode
-     * 1: Night mode
-     * 2: Dark mode
-     * </p>
      */
-    public static int themeMode;
+    @JvmField
+    var themeMode = Themes.LIGHT.id
 
-    public static int paragraphSpacing;
-    public static int indentSize;
+    //TODO Use this
+    enum class Themes(val id: Int) {
+        LIGHT(0),
+        NIGHT(1),
+        DARK(2)
+    }
+
+    @JvmField
+    var paragraphSpacing = 0
+
+    @JvmField
+    var indentSize = 0
 }

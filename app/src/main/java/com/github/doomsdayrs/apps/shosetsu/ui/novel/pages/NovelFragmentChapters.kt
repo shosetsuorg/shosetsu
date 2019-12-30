@@ -314,10 +314,8 @@ class NovelFragmentChapters : Fragment() {
         if (selectedChapters.size <= 0) inflater.inflate(R.menu.toolbar_chapters, menu) else inflater.inflate(R.menu.toolbar_chapters_selected, menu)
     }
 
-    companion object {
-        @JvmField
-        var reversed = false
-    }
+    @JvmField
+    var reversed = false
 
     /**
      * Constructor

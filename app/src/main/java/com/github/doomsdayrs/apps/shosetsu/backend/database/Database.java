@@ -595,6 +595,8 @@ public class Database {
          */
         public static void setChapterStatus(int chapterID, Status status) {
             sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.ID + "=" + chapterID);
+            if (status == Status.READ)
+                updateY(chapterID, 0);
         }
 
         /**

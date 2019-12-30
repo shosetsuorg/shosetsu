@@ -82,7 +82,6 @@ class ChapterView : Fragment() {
     }
 
 
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_chapter_view, menu)
         // Night mode
@@ -335,19 +334,24 @@ class ChapterView : Fragment() {
         }
     }
 
+    private var marked: Boolean = false
     /**
      * What to do when scroll hits bottom
      */
     private fun scrollHitBottom() {
         val total = scrollView!!.getChildAt(0).height - scrollView!!.height
         if (ready) if (scrollView!!.scrollY / total.toFloat() < .99) {
-            val y = scrollView!!.scrollY
-            if (y % 5 == 0) { // Log.d("YMAX", String.valueOf(total));
-// Log.d("YC", String.valueOf(y));
-// Log.d("YD", String.valueOf((scrollView.getScrollY() / (float) total)));
-//   Log.d("TY", String.valueOf(textView.getScrollY()));
-                if (Database.DatabaseChapter.getStatus(chapterID) != Status.READ) Database.DatabaseChapter.updateY(chapterID, y)
+            // Inital mark of reading
+            if (!marked && Settings.ReaderMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
+                Log.d("ChapterView","Marking as Reading")
+                Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
+                marked = !marked
             }
+
+            val y = scrollView!!.scrollY
+
+            if (y % 5 == 0)
+                if (Database.DatabaseChapter.getStatus(chapterID) != Status.READ) Database.DatabaseChapter.updateY(chapterID, y)
         } else {
             Log.i("Scroll", "Marking chapter as READ")
             Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
