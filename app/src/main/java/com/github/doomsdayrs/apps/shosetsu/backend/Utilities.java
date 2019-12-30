@@ -23,7 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.R;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity;
 import com.github.doomsdayrs.apps.shosetsu.ui.main.Supporter;
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader;
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions;
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp;
@@ -457,7 +457,7 @@ public class Utilities {
     private static void openChapter(@NonNull Activity activity, @NonNull NovelChapter novelChapter, int novelID, int formatterID, String[] chapters) {
         int chapterID = getChapterIDFromChapterURL(novelChapter.getLink());
         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING);
-        Intent intent = new Intent(activity, NewChapterReader.class);
+        Intent intent = new Intent(activity, ChapterReader.class);
         intent.putExtra("chapterID", chapterID);
         intent.putExtra("novelID", novelID);
         intent.putExtra("formatter", formatterID);

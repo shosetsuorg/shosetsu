@@ -1,27 +1,26 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.reader
+package com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments
 
+import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
+import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.NewChapterReaderAdapter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.IndentChange
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ParaSpacingChange
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ReaderChange
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.TextSizeChange
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewChapterView
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import kotlinx.android.synthetic.main.new_chapter_reader.*
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import kotlinx.android.synthetic.main.chapter_view.*
 
 /*
  * This file is part of shosetsu.
@@ -45,7 +44,7 @@ import kotlinx.android.synthetic.main.new_chapter_reader.*
  *
  * @author github.com/doomsdayrs
  */
-class NewChapterReader : AppCompatActivity() {
+class ChapterView : Fragment() {
     private val demarkActions = arrayOf(TextSizeChange(this), ParaSpacingChange(this), IndentChange(this), ReaderChange(this))
     // Order of values. Small,Medium,Large
     private val textSizes = arrayOfNulls<MenuItem>(3)
@@ -55,35 +54,42 @@ class NewChapterReader : AppCompatActivity() {
     private val indentSpaces = arrayOfNulls<MenuItem>(4)
     // Order of values. Default, Markdown
     private val readers = arrayOfNulls<MenuItem>(2)
-    var bookmark: MenuItem? = null
+
+
+    var chapterReader: ChapterReader? = null
+    var url: String = ""
+    var chapterID: Int = 0
+        set(value) {
+            field = value
+            url = DatabaseIdentification.getChapterURLFromChapterID(value)
+        }
+
+    var bookmarked = false
+    //public View coverView;
+// public ViewPager2 viewPager2;
+//public NewReader currentReader;
+    var ready = false
+    var unformattedText: String = ""
+    var text: String? = null
+
+
+    private var bookmark: MenuItem? = null
     private var tapToScroll: MenuItem? = null
-    @JvmField
-    var toolbar: Toolbar? = null
-    // NovelData
-    @JvmField
-    var chapterIDs: IntArray? = null
-    @JvmField
-    var formatter: Formatter? = null
-    @JvmField
-    var novelID = 0
-    @JvmField
-    var currentView: NewChapterView? = null
-    private var currentChapterID = -1
-    /**
-     * Creates the option menu (on the top toolbar)
-     *
-     * @param menu Menu reference to fill
-     * @return if made
-     */
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
+
+
+    init {
+        setHasOptionsMenu(true)
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_chapter_view, menu)
         // Night mode
         menu.findItem(R.id.chapter_view_nightMode).isChecked = Utilities.isReaderNightMode()
         //  Bookmark
         run {
             bookmark = menu.findItem(R.id.chapter_view_bookmark)
-            currentView!!.bookmarked = Database.DatabaseChapter.isBookMarked(currentView!!.chapterID)
+            bookmarked = Database.DatabaseChapter.isBookMarked(chapterID)
             updateBookmark()
         }
         // Tap To Scroll
@@ -141,16 +147,9 @@ class NewChapterReader : AppCompatActivity() {
                 default:
                     throw new RuntimeException("Invalid chapter?!? How are you reading this without the novel loaded in");
             }
-        }*/return true
+        }*/
     }
 
-    fun updateBookmark() {
-        if (bookmark != null) if (currentView!!.bookmarked) bookmark!!.setIcon(R.drawable.ic_bookmark_black_24dp) else bookmark!!.setIcon(R.drawable.ic_bookmark_border_black_24dp)
-    }
-
-    fun getViewPager(): ViewPager? {
-        return viewpager
-    }
 
     /**
      * What to do when an menu item is selected
@@ -164,10 +163,10 @@ class NewChapterReader : AppCompatActivity() {
             R.id.chapter_view_nightMode -> {
                 if (!item.isChecked) {
                     Utilities.swapReaderColor()
-                    currentView!!.setUpReader()
+                    setUpReader()
                 } else {
                     Utilities.swapReaderColor()
-                    currentView!!.setUpReader()
+                    setUpReader()
                 }
                 item.isChecked = !item.isChecked
                 true
@@ -177,7 +176,7 @@ class NewChapterReader : AppCompatActivity() {
                 true
             }
             R.id.chapter_view_bookmark -> {
-                currentView!!.bookmarked = Utilities.toggleBookmarkChapter(currentView!!.chapterID)
+                bookmarked = Utilities.toggleBookmarkChapter(chapterID)
                 updateBookmark()
                 true
             }
@@ -226,11 +225,11 @@ class NewChapterReader : AppCompatActivity() {
                 true
             }
             R.id.browser -> {
-                currentView!!.url?.let { Utilities.openInBrowser(this, it) }
+                activity?.let { url.isNotEmpty().let { Utilities.openInBrowser(activity!!, url) } }
                 true
             }
             R.id.webview -> {
-                currentView!!.url?.let { Utilities.openInWebview(this, it) }
+                activity?.let { url.isNotEmpty().let { Utilities.openInWebview(activity!!, url) } }
                 true
             }
             R.id.reader_0 -> {
@@ -245,43 +244,127 @@ class NewChapterReader : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        outPersistentState.putIntArray("chapters", chapterIDs)
-        outPersistentState.putInt("novelID", novelID)
-        outPersistentState.putInt("formatter", formatter!!.formatterID)
+    private fun updateBookmark() {
+        if (bookmark != null) if (bookmarked) bookmark!!.setIcon(R.drawable.ic_bookmark_black_24dp) else bookmark!!.setIcon(R.drawable.ic_bookmark_border_black_24dp)
     }
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.new_chapter_reader)
-        toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+    override fun onResume() {
+        super.onResume()
+        val title = Database.DatabaseChapter.getTitle(chapterID)
+        Log.i("Setting TITLE", title)
+        chapterReader?.getToolbar()?.let { it.title = title }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("id", chapterID)
+        outState.putString("url", url)
+        outState.putString("text", text)
+        outState.putString("unform", unformattedText)
+        outState.putBoolean("book", bookmarked)
+        outState.putBoolean("ready", ready)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.chapter_view, container, false)
         if (savedInstanceState != null) {
-            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
-            novelID = savedInstanceState.getInt("novelID")
-            chapterIDs = savedInstanceState.getIntArray("chapters")
-        } else {
-            chapterIDs = intent.getIntArrayExtra("chapters")
-            run {
-                val chapterID: Int = intent.getIntExtra("chapterID", -1)
-                currentChapterID = chapterID
-            }
-            novelID = intent.getIntExtra("novelID", -1)
-            formatter = DefaultScrapers.getByID(intent.getIntExtra("formatter", -1))
+            chapterID = savedInstanceState.getInt("id")
+            url = savedInstanceState.getString("url", "")
+            chapterReader = activity as ChapterReader?
+            unformattedText = savedInstanceState.getString("unfom", "")
+            text = savedInstanceState.getString("text")
+            bookmarked = savedInstanceState.getBoolean("book")
+            ready = savedInstanceState.getBoolean("ready")
         }
-        if (chapterIDs == null) {
-            val integers = Database.DatabaseChapter.getChaptersOnlyIDs(novelID)
-            chapterIDs = IntArray(integers.size)
-            for (x in integers.indices) chapterIDs!![x] = integers[x]
-        }
-        val newChapterReaderAdapter = NewChapterReaderAdapter(supportFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, this)
-        viewpager.adapter = newChapterReaderAdapter
-        if (currentChapterID != -1) viewpager.currentItem = findCurrentPosition(currentChapterID)
+        return view
     }
 
-    fun findCurrentPosition(id: Int): Int {
-        for (x in chapterIDs!!.indices) if (chapterIDs!![x] == id) return x
-        return -1
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        addBottomListener()
+        chapterReader?.getToolbar()?.let { textView.setOnClickListener(ToolbarHideOnClickListener(it)) }
+        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+        textView.setTextColor(Settings.ReaderTextColor)
+        textView.textSize = Settings.ReaderTextSize
+        next_chapter.setOnClickListener {
+            val position = chapterReader!!.findCurrentPosition(chapterID)
+            if (chapterReader!!.chapterIDs.isNotEmpty() && chapterReader!!.getViewPager() != null) {
+                if (position + 1 < chapterReader!!.chapterIDs.size) {
+                    next_chapter.visibility = View.GONE
+                    chapterReader!!.getViewPager()?.currentItem = position + 1
+                } else Toast.makeText(chapterReader!!.applicationContext, "No more chapters!", Toast.LENGTH_SHORT).show()
+            }
+        }
+        //holder.viewPager2.setUserInputEnabled(false);
+        //NewChapterReaderTypeAdapter newChapterReaderTypeAdapter = new NewChapterReaderTypeAdapter(newChapterReader);
+        //holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
+        //holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
+
+        Log.i("Loading chapter", url)
+        ready = false
+
+        if (savedInstanceState == null) {
+            if (Database.DatabaseChapter.isSaved(chapterID)) {
+                unformattedText = (Database.DatabaseChapter.getSavedNovelPassage(chapterID))
+                setUpReader()
+                scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
+                ready = true
+            } else {
+                unformattedText = ""
+                setUpReader()
+                ChapterViewLoader(this).execute()
+            }
+        } else setUpReader()
+        Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
+    }
+
+
+    fun setUpReader() {
+        scrollView?.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+        textView?.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+        textView?.setTextColor(Settings.ReaderTextColor)
+        textView?.textSize = Settings.ReaderTextSize
+        if (unformattedText.isNotEmpty()) {
+            val replaceSpacing = StringBuilder("\n")
+            for (x in 0 until Settings.paragraphSpacing) replaceSpacing.append("\n")
+            for (x in 0 until Settings.indentSize) replaceSpacing.append("\t")
+            text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
+            if (text!!.length > 100) Log.d("TextSet", text!!.substring(0, 100).replace("\n", "\\n")) else if (text!!.isNotEmpty()) Log.d("TextSet", text!!.substring(0, text!!.length - 1).replace("\n", "\\n"))
+            textView?.text = text
+            // viewPager2.post(() -> currentReader.setText(text));
+        }
+    }
+
+    /**
+     * What to do when scroll hits bottom
+     */
+    private fun scrollHitBottom() {
+        val total = scrollView!!.getChildAt(0).height - scrollView!!.height
+        if (ready) if (scrollView!!.scrollY / total.toFloat() < .99) {
+            val y = scrollView!!.scrollY
+            if (y % 5 == 0) { // Log.d("YMAX", String.valueOf(total));
+// Log.d("YC", String.valueOf(y));
+// Log.d("YD", String.valueOf((scrollView.getScrollY() / (float) total)));
+//   Log.d("TY", String.valueOf(textView.getScrollY()));
+                if (Database.DatabaseChapter.getStatus(chapterID) != Status.READ) Database.DatabaseChapter.updateY(chapterID, y)
+            }
+        } else {
+            Log.i("Scroll", "Marking chapter as READ")
+            Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
+            Database.DatabaseChapter.updateY(chapterID, 0)
+            next_chapter!!.visibility = View.VISIBLE
+            //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
+        }
+    }
+
+    /**
+     * Sets up the hitting bottom listener
+     */
+    private fun addBottomListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            scrollView!!.setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int -> scrollHitBottom() }
+        } else {
+            scrollView!!.viewTreeObserver.addOnScrollChangedListener { scrollHitBottom() }
+        }
     }
 }

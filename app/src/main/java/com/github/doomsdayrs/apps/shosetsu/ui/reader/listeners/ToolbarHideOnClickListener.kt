@@ -1,10 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners;
+package com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners
 
-import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-
-import androidx.appcompat.widget.Toolbar;
+import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
+import androidx.appcompat.widget.Toolbar
 
 /*
  * This file is part of Shosetsu.
@@ -23,26 +22,16 @@ import androidx.appcompat.widget.Toolbar;
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  */
-
 /**
  * Shosetsu
  * 18 / 06 / 2019
  *
  * @author github.com/doomsdayrs
  */
-public class NovelFragmentChapterViewHideBar implements View.OnClickListener {
-    private final Toolbar toolbar;
-
-
-    public NovelFragmentChapterViewHideBar(Toolbar toolbar) {
-        this.toolbar = toolbar;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (toolbar.getY() == 0)
-            toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
-        else
-            toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
+class ToolbarHideOnClickListener(private val toolbar: Toolbar?) : View.OnClickListener {
+    override fun onClick(v: View) {
+        toolbar?.let {
+            if (it.y == 0f) toolbar.animate().translationY(-it.bottom.toFloat()).setInterpolator(AccelerateInterpolator()).start() else it.animate().translationY(0f).setInterpolator(DecelerateInterpolator()).start()
+        }
     }
 }

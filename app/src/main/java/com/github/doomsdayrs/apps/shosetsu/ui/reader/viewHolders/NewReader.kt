@@ -1,4 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders;
+package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders
+
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
+
 /*
  * This file is part of shosetsu.
  *
@@ -15,30 +20,13 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders;
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */
-
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.NewChapterReader;
-
-/**
+ */ /**
  * shosetsu
  * 13 / 12 / 2019
  *
  * @author github.com/doomsdayrs
  */
-public abstract class NewReader extends RecyclerView.ViewHolder {
-    final NewChapterReader newChapterReader;
-
-    NewReader(@NonNull View itemView, NewChapterReader newChapterReader) {
-        super(itemView);
-        this.newChapterReader = newChapterReader;
-    }
-
-    public abstract void setText(String text);
-
-    public abstract void bind();
+abstract class NewReader internal constructor(itemView: View, val chapterView: ChapterView) : RecyclerView.ViewHolder(itemView) {
+    abstract fun setText(text: String?)
+    abstract fun bind()
 }

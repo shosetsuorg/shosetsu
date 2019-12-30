@@ -51,7 +51,7 @@
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".ui.reader.NewChapterReader"
+            android:name=".ui.reader.ChapterReader"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
 
