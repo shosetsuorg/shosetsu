@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.asyn
 
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.Serialize
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
