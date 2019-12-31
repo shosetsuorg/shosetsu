@@ -4,8 +4,8 @@ import android.os.AsyncTask
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.backend.Serialize
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -102,7 +102,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
                 BACKUP.put("chapters", CHAPTERS)
                 cursor.close()
             }
-            BACKUP.put("settings", Serialize.getSettingsInJSON())
+            BACKUP.put("settings", getSettingsInJSON())
             Log.i("Progress", "Writing")
             val folder = File(Utilities.shoDir + "/backup/")
             if (!folder.exists()) if (!folder.mkdirs()) {
@@ -119,5 +119,27 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
             e.printStackTrace()
         }
         return null
+    }
+
+    /**
+     * Returns current settings in JSON format, Follows schema.json
+     *
+     * @return JSON of settings
+     * @throws JSONException EXCEPTION
+     * @throws IOException   EXCEPTION IN SERIALIZING
+     */
+    @Throws(JSONException::class, IOException::class)
+    fun getSettingsInJSON(): JSONObject {
+        val settings = JSONObject()
+        settings.put("reader_text_color", Settings.ReaderTextColor)
+        settings.put("reader_text_background_color", Settings.ReaderTextBackgroundColor)
+        settings.put("shoDir", Utilities.serializeToString(Utilities.shoDir))
+        settings.put("paused", Settings.downloadPaused)
+        settings.put("textSize", Settings.ReaderTextSize.toDouble())
+        settings.put("themeMode", Settings.themeMode)
+        settings.put("paraSpace", Settings.paragraphSpacing)
+        settings.put("indent", Settings.indentSize)
+        settings.put("tap_to_scroll", Utilities.isTapToScroll())
+        return settings
     }
 }
