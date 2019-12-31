@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
 
 /*
  * This file is part of Shosetsu.

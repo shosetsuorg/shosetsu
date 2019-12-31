@@ -51,10 +51,10 @@ class CatalogueSearchQuery(private val catalogueFragment: CatalogueFragment) : S
         catalogueFragment.isQuery = true
         val recycleCards = ArrayList(catalogueFragment.catalogueNovelCards)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            recycleCards.removeIf { recycleCard: CatalogueNovelCard? -> !recycleCard!!.title?.toLowerCase()?.contains(newText.toLowerCase())!! }
+            recycleCards.removeIf { recycleCard: CatalogueNovelCard? -> !recycleCard!!.title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT)) }
         } else {
             for (x in recycleCards.indices.reversed()) {
-                if (!recycleCards[x]!!.title?.toLowerCase()?.contains(newText.toLowerCase())!!) {
+                if (!recycleCards[x]!!.title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT))) {
                     recycleCards.removeAt(x)
                 }
             }

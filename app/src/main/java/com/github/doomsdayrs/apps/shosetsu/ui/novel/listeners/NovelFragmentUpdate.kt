@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
  */
 class NovelFragmentUpdate(private val novelFragmentInfo: NovelFragmentInfo) : OnRefreshListener {
     override fun onRefresh() {
-        if (novelFragmentInfo.novelFragment != null && novelFragmentInfo.novelFragment!!.formatter != null) NewNovelLoader(novelFragmentInfo.novelFragment!!.novelURL, novelFragmentInfo.novelFragment!!.novelID, novelFragmentInfo.novelFragment!!.formatter!!, novelFragmentInfo.novelFragment, false)
+        if (novelFragmentInfo.novelFragment != null && novelFragmentInfo.novelFragment!!.formatter != null) NewNovelLoader(novelFragmentInfo.novelFragment!!.novelURL, novelFragmentInfo.novelFragment!!.novelID, novelFragmentInfo.novelFragment!!.formatter, novelFragmentInfo.novelFragment, false)
                 .execute()
     }
 

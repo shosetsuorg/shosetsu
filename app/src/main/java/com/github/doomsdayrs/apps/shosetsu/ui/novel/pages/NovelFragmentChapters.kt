@@ -181,7 +181,7 @@ class NovelFragmentChapters : Fragment() {
         if (novelFragment != null)
             fragment_novel_chapters_refresh.setOnRefreshListener {
                 if (novelFragment != null && novelFragment!!.formatter != null && novelFragment!!.novelURL.isNotEmpty())
-                    ChapterLoader(chaptersLoadedAction, novelFragment!!.formatter!!, novelFragment!!.novelURL).execute()
+                    ChapterLoader(chaptersLoadedAction, novelFragment!!.formatter, novelFragment!!.novelURL).execute()
             }
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage")
@@ -191,7 +191,7 @@ class NovelFragmentChapters : Fragment() {
         resume.setOnClickListener {
             val i = novelFragment!!.lastRead()
             if (i != -1 && i != -2) {
-                if (activity != null && novelFragment!!.formatter != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter!!.formatterID)
+                if (activity != null && novelFragment!!.formatter != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter.formatterID)
             } else Toast.makeText(context, "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -205,7 +205,7 @@ class NovelFragmentChapters : Fragment() {
             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
             if (novelFragment != null && !Database.DatabaseNovels.isNotInNovels(novelFragment!!.novelID)) {
                 novelFragment!!.novelChapters = getChapters(novelFragment!!.novelID)
-                if (novelFragment!!.novelChapters.isNotEmpty()) resume!!.visibility = View.VISIBLE
+                if (novelFragment!!.novelChapters.isNotEmpty()) resume!!.visibility = VISIBLE
             }
             adapter = ChaptersAdapter(this)
             adapter!!.setHasStableIds(true)
@@ -231,7 +231,7 @@ class NovelFragmentChapters : Fragment() {
             R.id.chapter_download_selected -> {
                 for (novelChapter in selectedChapters) {
                     val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                    if (!Database.DatabaseChapter.isNotSaved(chapterID)) {
                         val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID)
                         DownloadManager.addToDownload(activity, downloadItem)
                     }
@@ -242,7 +242,7 @@ class NovelFragmentChapters : Fragment() {
             R.id.chapter_delete_selected -> {
                 for (novelChapter in selectedChapters) {
                     val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (Database.DatabaseChapter.isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID))
+                    if (Database.DatabaseChapter.isNotSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID))
                 }
                 updateAdapter()
                 return true

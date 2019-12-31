@@ -1,9 +1,13 @@
+@file:Suppress("unused")
+
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async
 
 import android.os.AsyncTask
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import org.json.JSONArray
 import org.json.JSONException
@@ -44,12 +48,12 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
         Log.i("Progress", "Finished backup")
     }
 
-    protected override fun doInBackground(vararg voids: Void?): Void? {
+    override fun doInBackground(vararg voids: Void?): Void? {
         try {
-            val BACKUP = JSONObject()
+            val backupJSON = JSONObject()
             Log.i("Progress", "Backing up novels")
             run {
-                val NOVELS = JSONArray()
+                val novelJSON = JSONArray()
                 val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)
                 if (cursor.count > 0) while (cursor.moveToNext()) { // Gets if it is in library, if not then it skips
                     val bookmarked = Utilities.intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
@@ -71,19 +75,19 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
                         novel.put(Columns.ARTISTS.toString(), cursor.getString(cursor.getColumnIndex(Columns.ARTISTS.toString())))
                         novel.put(Columns.LANGUAGE.toString(), cursor.getString(cursor.getColumnIndex(Columns.LANGUAGE.toString())))
                         novel.put(Columns.MAX_CHAPTER_PAGE.toString(), cursor.getInt(cursor.getColumnIndex(Columns.MAX_CHAPTER_PAGE.toString())))
-                        NOVELS.put(novel)
+                        novelJSON.put(novel)
                     }
                 }
-                BACKUP.put("novels", NOVELS)
+                backupJSON.put("novels", novelJSON)
                 cursor.close()
             }
             Log.i("Progress", "Backing up Chapters")
             run {
-                val CHAPTERS = JSONArray()
+                val chaptersJSON = JSONArray()
                 val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.CHAPTERS, null)
                 if (cursor.count > 0) while (cursor.moveToNext()) {
                     val novelID = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
-                    val b = DatabaseNovels.isBookmarked(novelID)
+                    val b = DatabaseNovels.isNotBookmarked(novelID)
                     if (b) {
                         val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
                         val chapter = JSONObject()
@@ -95,13 +99,13 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
                         chapter.put(Columns.Y.toString(), cursor.getInt(cursor.getColumnIndex(Columns.Y.toString())))
                         chapter.put(Columns.READ_CHAPTER.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString())))
                         chapter.put(Columns.BOOKMARKED.toString(), cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
-                        CHAPTERS.put(chapter)
+                        chaptersJSON.put(chapter)
                     }
                 }
-                BACKUP.put("chapters", CHAPTERS)
+                backupJSON.put("chapters", chaptersJSON)
                 cursor.close()
             }
-            BACKUP.put("settings", getSettingsInJSON())
+            backupJSON.put("settings", getSettingsInJSON())
             Log.i("Progress", "Writing")
             val folder = File(Utilities.shoDir + "/backup/")
             if (!folder.exists()) if (!folder.mkdirs()) {
@@ -110,7 +114,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
             val fileOutputStream = FileOutputStream(
                     folder.path + "/backup-" + Date().toString() + ".shoback"
             )
-            fileOutputStream.write("JSON+-=$BACKUP".toByteArray())
+            fileOutputStream.write("JSON+-=$backupJSON".toByteArray())
             fileOutputStream.close()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -138,7 +142,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
         settings.put("themeMode", Settings.themeMode)
         settings.put("paraSpace", Settings.paragraphSpacing)
         settings.put("indent", Settings.indentSize)
-        settings.put("tap_to_scroll", Utilities.isTapToScroll())
+        settings.put("tap_to_scroll", Utilities.isTapToScroll)
         return settings
     }
 }

@@ -36,10 +36,10 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelCardViewHolder?)
     override fun doInBackground(vararg views: View?): Void? {
         try {
             if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url)) {
-                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter?.formatterID!!, novelCardsViewHolder.formatter!!.parseNovel(WebViewScrapper.docFromURL(novelCardsViewHolder.url, novelCardsViewHolder.formatter!!.hasCloudFlare)!!), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
+                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.formatterID, novelCardsViewHolder.formatter.parseNovel(WebViewScrapper.docFromURL(novelCardsViewHolder.url, novelCardsViewHolder.formatter.hasCloudFlare)!!), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
                 views[0]?.post { Toast.makeText(views[0]!!.context, "Added " + novelCardsViewHolder.title.text.toString(), Toast.LENGTH_SHORT).show() }
             }
-            if (novelCardsViewHolder != null && Database.DatabaseNovels.isBookmarked(novelCardsViewHolder.novelID)) {
+            if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotBookmarked(novelCardsViewHolder.novelID)) {
                 views[0]?.post { Toast.makeText(views[0]!!.context, "Already in the library", Toast.LENGTH_SHORT).show() }
             } else {
                 if (novelCardsViewHolder != null) {

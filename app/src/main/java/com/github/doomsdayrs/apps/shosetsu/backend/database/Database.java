@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringDeserialize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringSerialize;
@@ -59,88 +60,12 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  *
  * @author github.com/doomsdayrs
  */
-// TODO cache clearing
-//  >Library, remove all where bookmark = 0
-//  >Chapters, remove all that are not from a bookmarked library
 
 public class Database {
     /**
      * SQLITEDatabase
      */
     public static SQLiteDatabase sqLiteDatabase;
-
-
-    /**
-     * Tables to work with
-     */
-    public enum Tables {
-        NOVEL_IDENTIFICATION("novel_identification"),
-        CHAPTER_IDENTIFICATION("chapter_identification"),
-        NOVELS("novels"),
-        UPDATES("updates"),
-        DOWNLOADS("downloads"),
-        CHAPTERS("chapters");
-
-        final String TABLE;
-
-        Tables(String table) {
-            this.TABLE = table;
-            System.currentTimeMillis();
-        }
-
-        @NotNull
-        @Override
-        public String toString() {
-            return TABLE;
-        }
-    }
-
-    /**
-     * Columns to work with
-     */
-    public enum Columns {
-        URL("url"),
-        PARENT_ID("parent_id"),
-        ID("id"),
-        READER_TYPE("reader_type"),
-
-        TITLE("title"),
-        IMAGE_URL("image_url"),
-        DESCRIPTION("description"),
-        GENRES("genres"),
-        AUTHORS("authors"),
-        STATUS("status"),
-        TAGS("tags"),
-        ARTISTS("artists"),
-        LANGUAGE("language"),
-        MAX_CHAPTER_PAGE("max_chapter_page"),
-
-        RELEASE_DATE("release_date"),
-        ORDER("order_of"),
-
-        FORMATTER_ID("formatterID"),
-        READ_CHAPTER("read"),
-        Y("y"),
-        BOOKMARKED("bookmarked"),
-        IS_SAVED("isSaved"),
-        SAVE_PATH("savePath"),
-        NOVEL_NAME("novelName"),
-        CHAPTER_NAME("chapterName"),
-        PAUSED("paused"),
-        READING_STATUS("reading_status"),
-        TIME("time");
-        final String COLUMN;
-
-        Columns(String column) {
-            this.COLUMN = column;
-        }
-
-        @NotNull
-        @Override
-        public String toString() {
-            return COLUMN;
-        }
-    }
 
     public static class DatabaseIdentification {
 
@@ -396,7 +321,7 @@ public class Database {
                 String nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = DatabaseIdentification.getFormatterIDFromChapterID(id);
-                downloadItems.add(new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, id));
+                downloadItems.add(new DownloadItem(Objects.requireNonNull(DefaultScrapers.getByID(formatter)), nName, cName, id));
             }
             cursor.close();
 
@@ -421,7 +346,7 @@ public class Database {
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = getFormatterIDFromChapterID(id);
                 cursor.close();
-                return new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, id);
+                return new DownloadItem(Objects.requireNonNull(DefaultScrapers.getByID(formatter)), nName, cName, id);
             }
         }
 
@@ -616,16 +541,16 @@ public class Database {
          * @param chapterID id of chapter
          * @return if bookmarked?
          */
-        public static boolean isBookMarked(int chapterID) {
+        public static boolean isNotBookMarked(int chapterID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return false;
+                return true;
             } else {
                 cursor.moveToNext();
                 int y = cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString()));
                 cursor.close();
-                return y == 1;
+                return y != 1;
             }
 
         }
@@ -659,20 +584,20 @@ public class Database {
          * @param chapterID novelURL of the chapter
          * @return true if saved, false otherwise
          */
-        public static boolean isSaved(int chapterID) {
+        public static boolean isNotSaved(int chapterID) {
             //   Log.d("CheckSave", chapterURL);
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + chapterID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 //   Log.d("CheckSave", chapterURL + " FALSE");
-                return false;
+                return true;
             } else {
                 cursor.moveToNext();
                 int y = cursor.getInt(cursor.getColumnIndex(Columns.IS_SAVED.toString()));
                 cursor.close();
                 //         if (y == 1)
                 //          Log.d("CheckSave", chapterURL + " TRUE");
-                return y == 1;
+                return y != 1;
             }
         }
 
@@ -891,17 +816,17 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.PARENT_ID + "=" + novelID);
         }
 
-        public static boolean isBookmarked(int novelID) {
+        public static boolean isNotBookmarked(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null);
             if (cursor.getCount() <= 0) {
                 cursor.close();
-                return false;
+                return true;
             }
             cursor.moveToNext();
             System.out.println(Arrays.toString(cursor.getColumnNames()));
             int a = cursor.getInt(cursor.getColumnIndex("bookmarked"));
             cursor.close();
-            return a > 0;
+            return a <= 0;
         }
 
         public static void setReaderType(int novelID, int reader) {
@@ -1069,7 +994,7 @@ public class Database {
                 try {
                     NovelCard novelCard = new NovelCard(
                             checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
-                            novelID, getNovelURLfromNovelID(novelID),
+                            novelID, Objects.requireNonNull(getNovelURLfromNovelID(novelID)),
                             cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
                             DatabaseIdentification.getFormatterIDFromNovelID(novelID)
                     );

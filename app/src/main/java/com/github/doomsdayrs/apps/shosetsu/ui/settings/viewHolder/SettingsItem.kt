@@ -160,6 +160,7 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
             return this
         }
 
+        @Suppress("unused")
         fun setOnClickListenerSpinner(onClickListener: (View) -> Unit): SettingsItemData {
             spinnerOnClick = onClickListener
             return this

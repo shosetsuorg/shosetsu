@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.migration.async
 
-import android.annotation.SuppressLint
 import android.os.AsyncTask
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
@@ -39,9 +38,8 @@ class MigrationViewLoad(private val migrationView: MigrationView) : AsyncTask<Vo
     override fun doInBackground(vararg voids: Void?): Void? {
         Log.d("Searching with", targetFormat.name)
         for (x in migrationView.novels!!.indices) { // Retrieves search results
-            val N = targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels!![x].title), targetFormat.hasCloudFlare)!!) as ArrayList<Novel>
             // Sets the results
-            migrationView.novelResults[x] = N
+            migrationView.novelResults[x] = targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels!![x].title), targetFormat.hasCloudFlare)!!) as ArrayList<Novel>
         }
         return null
     }

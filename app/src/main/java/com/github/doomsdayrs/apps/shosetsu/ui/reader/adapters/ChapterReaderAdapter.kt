@@ -1,15 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters
 
-import android.os.Parcelable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import java.util.*
 
 /*

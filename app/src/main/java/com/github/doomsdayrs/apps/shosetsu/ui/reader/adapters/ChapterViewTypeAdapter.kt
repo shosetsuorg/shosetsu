@@ -33,6 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
  *
  * @author github.com/doomsdayrs
  */
+@Suppress("unused")
 internal class ChapterViewTypeAdapter(private val chapterReader: ChapterView) : RecyclerView.Adapter<NewReader>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewReader {
         val view: View

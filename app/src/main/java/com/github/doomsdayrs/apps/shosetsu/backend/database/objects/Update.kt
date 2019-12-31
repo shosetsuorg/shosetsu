@@ -21,4 +21,5 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database.objects
  *
  * @author github.com/doomsdayrs
  */
+@Suppress("unused")
 class Update(val chapterID: Int, val novelID: Int, val date: Long)

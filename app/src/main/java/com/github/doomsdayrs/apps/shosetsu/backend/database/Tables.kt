@@ -1,6 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.webView
-
-import android.content.Context
+package com.github.doomsdayrs.apps.shosetsu.backend.database
 
 /*
  * This file is part of Shosetsu.
@@ -18,18 +16,18 @@ import android.content.Context
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- * shosetsu
- * 05 / 08 / 2019
+ */ /**
+ * Shosetsu
+ * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-internal class JSInterface // --Commented out by Inspection START (12/22/19 11:10 AM):
-(private val ctx: Context) {
+internal enum class Tables(private val TABLE: String) {
+    NOVEL_IDENTIFICATION("novel_identification"), CHAPTER_IDENTIFICATION("chapter_identification"), NOVELS("novels"), UPDATES("updates"), DOWNLOADS("downloads"), CHAPTERS("chapters");
 
-    //    @JavascriptInterface
-//    public void showHTML(String html) {
-//        new AlertDialog.Builder(ctx).setTitle("HTML").setMessage(html)
-//                .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
-//    }
-// --Commented out by Inspection STOP (12/22/19 11:10 AM)
+    override fun toString(): String {
+        return TABLE
+    }
+
+
 }

@@ -2,7 +2,9 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder
 
 import android.app.Activity
 import android.view.View
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -43,7 +45,7 @@ class UpdatedNovelHolder(itemView: View, val activity: Activity) : RecyclerView.
     val chip: Chip = itemView.findViewById(R.id.count)
     val button: ImageButton = itemView.findViewById(R.id.button)
     val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
-    val expand: ImageButton = itemView.findViewById(R.id.loadMore)
+    private val expand: ImageButton = itemView.findViewById(R.id.loadMore)
 
 
     private var expanded: Boolean = false
@@ -68,7 +70,7 @@ class UpdatedNovelHolder(itemView: View, val activity: Activity) : RecyclerView.
             updatersAdapter.notifyDataSetChanged()
         }
 
-    var updatersAdapter: UpdatedChaptersAdapter = UpdatedChaptersAdapter(this)
+    private var updatersAdapter: UpdatedChaptersAdapter = UpdatedChaptersAdapter(this)
 
     init {
         button.setOnClickListener {

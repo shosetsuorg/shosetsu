@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.async
 
-import android.app.Activity
 import android.os.AsyncTask
 import android.view.View.GONE
 import android.view.View.VISIBLE

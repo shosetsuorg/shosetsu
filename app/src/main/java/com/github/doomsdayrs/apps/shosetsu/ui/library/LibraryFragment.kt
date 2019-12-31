@@ -156,7 +156,7 @@ class LibraryFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         this.menu = menu
         menu.clear()
-        if (selectedNovels!!.size <= 0) {
+        if (selectedNovels.size <= 0) {
             inflater.inflate(R.menu.toolbar_library, menu)
             val searchView = menu.findItem(R.id.library_search).actionView as SearchView
             searchView.setOnQueryTextListener(LibrarySearchQuery(this))
@@ -174,7 +174,7 @@ class LibraryFragment : Fragment() {
                 return true
             }
             R.id.chapter_select_all -> {
-                for (i in libraryNovelCards) if (!contains(i)) selectedNovels!!.add(i)
+                for (i in libraryNovelCards) if (!contains(i)) selectedNovels.add(i)
                 recyclerView!!.post { libraryNovelCardsAdapter!!.notifyDataSetChanged() }
                 return true
             }
@@ -185,7 +185,7 @@ class LibraryFragment : Fragment() {
                 return true
             }
             R.id.remove_from_library -> {
-                for (i in selectedNovels!!) {
+                for (i in selectedNovels) {
                     DatabaseNovels.unBookmark(i)
                     var x = 0
                     while (x < libraryNovelCards.size) {
@@ -200,13 +200,13 @@ class LibraryFragment : Fragment() {
             R.id.source_migrate -> {
                 val intent = Intent(activity, MigrationView::class.java)
                 try {
-                    intent.putExtra("selected", Utilities.serializeToString(selectedNovels!!))
+                    intent.putExtra("selected", Utilities.serializeToString(selectedNovels))
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
                 intent.putExtra("target", 1)
                 //startActivity(intent);
-                Utilities.regret(context)
+                Utilities.regret(context!!)
                 return true
             }
         }

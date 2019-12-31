@@ -41,8 +41,8 @@ import org.jsoup.nodes.Document
  *
  * @author github.com/doomsdayrs
  */
-class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatter, val novelFragment: NovelFragment?, private val loadChapters: Boolean) : AsyncTask<Void, Void, Boolean>() {
-    var novelPage: NovelPage = NovelPage()
+class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatter, private val novelFragment: NovelFragment?, private val loadChapters: Boolean) : AsyncTask<Void, Void, Boolean>() {
+    private var novelPage: NovelPage = NovelPage()
 
     constructor(newNovelLoader: NewNovelLoader) : this(newNovelLoader.novelURL, newNovelLoader.novelID, newNovelLoader.formatter, newNovelLoader.novelFragment, newNovelLoader.loadChapters)
 
@@ -61,7 +61,7 @@ class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Form
                 novelFragment.novelPage = novelPage
 
                 // After setting the page, it will tell the view to set data
-                novelFragment.novelFragmentInfo?.setData();
+                novelFragment.novelFragmentInfo?.setData()
 
                 // Turns off refresh view
                 novelFragment.fragment_novel_main_refresh.isRefreshing = false

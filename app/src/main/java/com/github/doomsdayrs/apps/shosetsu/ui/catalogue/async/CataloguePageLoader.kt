@@ -78,10 +78,10 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
         }
         val novels: List<Novel> = if (integers.isNotEmpty()) check(CatalogueLoader(catalogueFragment.formatter).execute(integers[0])) else check(CatalogueLoader(catalogueFragment.formatter).execute())
         for (novel in novels) catalogueFragment.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
-        catalogueFragment.recyclerView?.post { catalogueFragment.catalogueAdapter!!.notifyDataSetChanged() }
+        catalogueFragment.recyclerView?.post { catalogueFragment.catalogueAdapter.notifyDataSetChanged() }
         if (catalogueHitBottom != null) {
             catalogueFragment.recyclerView?.post {
-                catalogueFragment.catalogueAdapter!!.notifyDataSetChanged()
+                catalogueFragment.catalogueAdapter.notifyDataSetChanged()
                 catalogueFragment.recyclerView!!.addOnScrollListener(catalogueHitBottom)
             }
             catalogueHitBottom.running = false
@@ -89,7 +89,7 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
         }
         Log.d("FragmentRefresh", "Complete")
         if (catalogueFragment.activity != null) catalogueFragment.activity!!.runOnUiThread {
-            catalogueFragment.catalogueAdapter!!.notifyDataSetChanged()
+            catalogueFragment.catalogueAdapter.notifyDataSetChanged()
             catalogueFragment.swipeRefreshLayout?.isRefreshing = false
         }
         return true

@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity(), Supporter {
             }
             Intent.ACTION_BOOT_COMPLETED -> {
                 Log.i("MainActivity", "Bootup")
-                if (Utilities.isOnline())
+                if (Utilities.isOnline)
                     init(Database.DatabaseNovels.getIntLibrary(), this)
             }
             else -> {

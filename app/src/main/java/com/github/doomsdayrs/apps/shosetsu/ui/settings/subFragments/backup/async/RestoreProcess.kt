@@ -11,8 +11,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -42,16 +43,12 @@ import java.io.IOException
  *
  * @author github.com/doomsdayrs
  */
-class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticFieldLeak") private val context: Context) : AsyncTask<Void?, Void?, Boolean>() {
-    @SuppressLint("StaticFieldLeak")
+class RestoreProcess(private val file_path: String, private val context: Context) : AsyncTask<Void?, Void?, Boolean>() {
     private val close: Button
-    @SuppressLint("StaticFieldLeak")
     private val progressBar: ProgressBar
-    @SuppressLint("StaticFieldLeak")
     private val progressBar2: ProgressBar
-    @SuppressLint("StaticFieldLeak")
     private val textView: TextView
-    private val dialog: Dialog
+    private val dialog: Dialog = Dialog(context)
     override fun onPreExecute() {
         Log.i("Progress", "Started restore")
         dialog.show()
@@ -70,7 +67,7 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
     }
 
     @SuppressLint("SetTextI18n")
-    protected override fun doInBackground(vararg voids: Void?): Boolean {
+    override fun doInBackground(vararg voids: Void?): Boolean {
         val file = File("" + file_path)
         if (file.exists()) {
             try {
@@ -84,9 +81,9 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
                     }
                     bufferedReader.close()
                 }
-                val BACKUP = JSONObject(string.substring(7))
-                val novels = BACKUP.getJSONArray("novels")
-                val chapters = BACKUP.getJSONArray("chapters")
+                val backupJSON = JSONObject(string.substring(7))
+                val novels = backupJSON.getJSONArray("novels")
+                val chapters = backupJSON.getJSONArray("chapters")
                 progressBar.post { progressBar.max = novels.length() + chapters.length() + 1 }
                 Log.i("Progress", "Restoring novels")
                 for (x in 0 until novels.length()) {
@@ -199,7 +196,6 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
     }
 
     init {
-        dialog = Dialog(context)
         dialog.setContentView(R.layout.backup_restore_view)
         close = dialog.findViewById(R.id.button)
         progressBar = dialog.findViewById(R.id.progress)

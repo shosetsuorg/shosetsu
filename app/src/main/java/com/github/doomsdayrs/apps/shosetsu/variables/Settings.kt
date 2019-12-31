@@ -47,6 +47,7 @@ object Settings {
     var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
 
     //TODO Use this
+    @Suppress("unused")
     enum class TextSizes(val i: Int) {
         SMALL(14),
         MEDIUM(17),

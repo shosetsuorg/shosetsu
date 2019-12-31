@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isSaved
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isNotSaved
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.*
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
@@ -39,7 +39,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHol
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import java.util.*
 
 /**
  * Shosetsu
@@ -83,7 +82,7 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
                     }
                     R.id.popup_chapter_menu_download -> {
                         run {
-                            if (!isSaved(chapterID)) {
+                            if (!isNotSaved(chapterID)) {
                                 val downloadItem = DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter?.title!!, chapterID)
                                 DownloadManager.addToDownload(updatedNovelHolder.activity, downloadItem)
                             } else {

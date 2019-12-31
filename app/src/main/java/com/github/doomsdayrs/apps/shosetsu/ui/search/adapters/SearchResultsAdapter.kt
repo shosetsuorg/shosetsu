@@ -76,7 +76,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             id = Database.DatabaseIdentification.getNovelIDFromNovelURL(imageURL)
         } else {
             val novel: NovelCard = Database.DatabaseNovels.getNovel(intArray[position])
-            title = novel.title.toString()
+            title = novel.title
             url = novel.novelURL
             imageURL = novel.imageURL
             formatter = DefaultScrapers.getByID(novel.formatterID)!!

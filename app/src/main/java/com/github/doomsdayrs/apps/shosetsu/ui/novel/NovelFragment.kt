@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
@@ -101,7 +100,7 @@ class NovelFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt("novelID", novelID)
         outState.putString("novelURL", novelURL)
-        outState.putInt("formatter", formatter!!.formatterID)
+        outState.putInt("formatter", formatter.formatterID)
         outState.putInt("status", status.a)
         outState.putBoolean("new", new)
     }
@@ -124,10 +123,9 @@ class NovelFragment : Fragment() {
         //TODO FINISH TRACKING
 //boolean track = SettingsController.isTrackingEnabled();
         if (savedInstanceState == null) {
-            if (Utilities.isOnline() && Database.DatabaseNovels.isNotInNovels(novelID)) {
+            if (Utilities.isOnline && Database.DatabaseNovels.isNotInNovels(novelID)) {
                 setViewPager()
-                if (formatter != null)
-                    fragment_novel_tabLayout!!.post { NewNovelLoader(novelURL, novelID, formatter!!, this, true).execute() }
+                fragment_novel_tabLayout!!.post { NewNovelLoader(novelURL, novelID, formatter, this, true).execute() }
             } else {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID)
                 new = false
@@ -145,10 +143,6 @@ class NovelFragment : Fragment() {
             new = savedInstanceState.getBoolean("new")
             setViewPager()
         }
-    }
-
-    fun getErrorView(): ConstraintLayout? {
-        return network_error
     }
 
     fun getErrorMessage(): TextView? {
@@ -185,6 +179,7 @@ class NovelFragment : Fragment() {
      * @param chapterURL Current chapter URL
      * @return chapter after the input, returns the current chapter if no more
      */
+    @Suppress("unused")
     fun getNextChapter(chapterURL: Int, novelChapters: IntArray?): NovelChapter? {
         if (novelChapters != null && novelChapters.isNotEmpty()) for (x in novelChapters.indices) {
             if (novelChapters[x] == chapterURL) {

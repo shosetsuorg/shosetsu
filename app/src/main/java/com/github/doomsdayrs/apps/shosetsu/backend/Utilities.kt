@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit
  */
 object Utilities {
     const val SELECTED_STROKE_WIDTH = 8
-    var shoDir: String? = "/Shosetsu/"
+    var shoDir: String = "/Shosetsu/"
 
     // Preference objects
     lateinit var downloadPreferences: SharedPreferences
@@ -80,9 +80,9 @@ object Utilities {
      * @param positionSpared Item to set checked
      * @param demarkAction   Any action to proceed with
      */
-    fun unmarkMenuItems(menuItems: Array<MenuItem>, positionSpared: Int, demarkAction: DeMarkAction?) {
+    fun unmarkMenuItems(menuItems: Array<MenuItem>, positionSpared: Int, demarkAction: DeMarkAction) {
         for (x in menuItems.indices) menuItems[x].isChecked = (x == positionSpared)
-        demarkAction?.action(positionSpared)
+        demarkAction.action(positionSpared)
     }
 
     /**
@@ -245,13 +245,13 @@ object Utilities {
         Settings.ReaderTextBackgroundColor = viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
         var dir = mainActivity.getExternalFilesDir(null)!!.absolutePath
         dir = dir.substring(0, dir.indexOf("/Android"))
-        shoDir = downloadPreferences.getString("dir", "$dir/Shosetsu/")
+        shoDir = downloadPreferences.getString("dir", "$dir/Shosetsu/")!!
         Settings.downloadPaused = downloadPreferences.getBoolean("paused", false)
         Settings.ReaderTextSize = viewPreferences.getInt("ReaderTextSize", 14).toFloat()
         Settings.themeMode = advancedPreferences.getInt("themeMode", 0)
         Settings.paragraphSpacing = viewPreferences.getInt("paragraphSpacing", 1)
         Settings.indentSize = viewPreferences.getInt("indentSize", 1)
-        Settings.ReaderMarkingType = viewPreferences!!.getInt("markingType", MarkingTypes.ONVIEW.i)
+        Settings.ReaderMarkingType = viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
     }
 
     fun setReaderMarkingType(markingType: MarkingTypes) {
@@ -349,7 +349,7 @@ object Utilities {
     private fun setReaderColor(text: Int, background: Int) {
         Settings.ReaderTextColor = text
         Settings.ReaderTextBackgroundColor = background
-        viewPreferences!!.edit()
+        viewPreferences.edit()
                 .putInt("ReaderTextColor", text)
                 .putInt("ReaderBackgroundColor", background)
                 .apply()
@@ -373,7 +373,7 @@ object Utilities {
      * @return true means added, false means removed
      */
     fun toggleBookmarkChapter(chapterID: Int): Boolean { //TODO Simplify
-        return if (Database.DatabaseChapter.isBookMarked(chapterID)) {
+        return if (Database.DatabaseChapter.isNotBookMarked(chapterID)) {
             Database.DatabaseChapter.setBookMark(chapterID, 0)
             false
         } else {
@@ -456,6 +456,8 @@ object Utilities {
 //       public static void addTracker () {
 //      }
     private var debug = false
+
+    @Suppress("unused")
 
     fun toggleDebug() {
         debug = !debug

@@ -1,7 +1,7 @@
+
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.vincent.filepicker.Constant
@@ -84,6 +83,7 @@ class BackupSettings : Fragment() {
         recyclerView.adapter = SettingItemsAdapter(settings)
     }
 
+    @Suppress("unused")
     private fun performFileSelection() {
         Toast.makeText(context, "Please make sure this is on the main storage, SD card storage is not functional yet", Toast.LENGTH_LONG).show()
         val intent = Intent(context, NormalFilePickActivity::class.java)

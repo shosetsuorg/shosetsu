@@ -52,11 +52,11 @@ class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, pri
             novelCardsViewHolder.novelID = recycleCard.novelID
             novelCardsViewHolder.url = recycleCard.novelURL
             novelCardsViewHolder.title.text = recycleCard.title
-            if (!recycleCard.imageURL.isEmpty()) {
+            if (recycleCard.imageURL.isNotEmpty()) {
                 Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.imageView)
             } else novelCardsViewHolder.imageView.visibility = View.GONE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (Database.DatabaseNovels.isBookmarked(recycleCard.novelID)) {
+                if (Database.DatabaseNovels.isNotBookmarked(recycleCard.novelID)) {
                     if (catalogueFragment.context != null) novelCardsViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(catalogueFragment.context!!, R.color.shade))
                 } else novelCardsViewHolder.constraintLayout.foreground = ColorDrawable()
             } else { //TODO Tint for cards before 22

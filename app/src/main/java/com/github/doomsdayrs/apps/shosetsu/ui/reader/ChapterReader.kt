@@ -9,7 +9,6 @@ import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ChapterViewChange
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import kotlinx.android.synthetic.main.chapter_reader.*
