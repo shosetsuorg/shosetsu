@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -69,6 +70,10 @@ import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Data
  * @author github.com/doomsdayrs
  */
 public class Utilities {
+
+    public static void regret(Context context) {
+        Toast.makeText(context, context.getString(R.string.regret), Toast.LENGTH_LONG).show();
+    }
 
 
     public static void setActivityTitle(Activity activity, String title) {

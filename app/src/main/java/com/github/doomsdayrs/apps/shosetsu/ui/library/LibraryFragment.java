@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.calculateNoOfColumns;
+import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.serializeToString;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle;
 import static com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getNovelTitle;
@@ -259,7 +260,8 @@ public class LibraryFragment extends Fragment {
                     e.printStackTrace();
                 }
                 intent.putExtra("target", 1);
-                startActivity(intent);
+                //startActivity(intent);
+                regret(context);
                 return true;
 
         }

@@ -9,6 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
@@ -77,7 +78,8 @@ class NovelFragmentInfo : Fragment() {
                     e.printStackTrace()
                 }
                 intent.putExtra("target", 1)
-                startActivity(intent)
+                regret(context)
+                // startActivity(intent)
                 return true
             }
             R.id.webview -> {
