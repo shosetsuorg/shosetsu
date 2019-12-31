@@ -10,6 +10,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
+import kotlinx.android.synthetic.main.fragment_catalogue.*
+import kotlinx.android.synthetic.main.network_error.*
 
 /*
  * This file is part of Shosetsu.
@@ -70,17 +72,17 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
      */
     override fun doInBackground(vararg integers: Int?): Boolean {
         Log.d("Loading", "Catalogue")
-        catalogueFragment.library_view.post { catalogueFragment.errorView.visibility = View.GONE }
+        catalogueFragment.recyclerView?.post { catalogueFragment.network_error?.visibility = View.GONE }
         if (catalogueFragment.formatter.hasCloudFlare) {
             if (catalogueFragment.activity != null) catalogueFragment.activity!!.runOnUiThread { Toast.makeText(catalogueFragment.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
         }
         val novels: List<Novel> = if (integers.isNotEmpty()) check(CatalogueLoader(catalogueFragment.formatter).execute(integers[0])) else check(CatalogueLoader(catalogueFragment.formatter).execute())
         for (novel in novels) catalogueFragment.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
-        catalogueFragment.library_view.post { catalogueFragment.catalogueAdapter!!.notifyDataSetChanged() }
+        catalogueFragment.recyclerView?.post { catalogueFragment.catalogueAdapter!!.notifyDataSetChanged() }
         if (catalogueHitBottom != null) {
-            catalogueFragment.library_view.post {
+            catalogueFragment.recyclerView?.post {
                 catalogueFragment.catalogueAdapter!!.notifyDataSetChanged()
-                catalogueFragment.library_view.addOnScrollListener(catalogueHitBottom)
+                catalogueFragment.recyclerView!!.addOnScrollListener(catalogueHitBottom)
             }
             catalogueHitBottom.running = false
             Log.d("CatalogueFragmentLoad", "Completed")
@@ -88,7 +90,7 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
         Log.d("FragmentRefresh", "Complete")
         if (catalogueFragment.activity != null) catalogueFragment.activity!!.runOnUiThread {
             catalogueFragment.catalogueAdapter!!.notifyDataSetChanged()
-            catalogueFragment.swipeRefreshLayout.isRefreshing = false
+            catalogueFragment.swipeRefreshLayout?.isRefreshing = false
         }
         return true
     }
@@ -97,14 +99,14 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
      * Ends progress bar
      */
     override fun onCancelled() {
-        if (catalogueHitBottom != null) catalogueFragment.bottomProgressBar.visibility = View.INVISIBLE else catalogueFragment.swipeRefreshLayout.isRefreshing = false
+        if (catalogueHitBottom != null) catalogueFragment.fragment_catalogue_progress_bottom?.visibility = View.INVISIBLE else catalogueFragment.swipeRefreshLayout?.isRefreshing = false
     }
 
     /**
      * Starts the loading action
      */
     override fun onPreExecute() {
-        if (catalogueHitBottom != null) catalogueFragment.bottomProgressBar.visibility = View.VISIBLE else catalogueFragment.swipeRefreshLayout.isRefreshing = true
+        if (catalogueHitBottom != null) catalogueFragment.fragment_catalogue_progress_bottom?.visibility = View.VISIBLE else catalogueFragment.swipeRefreshLayout?.isRefreshing = true
     }
 
     /**
@@ -114,9 +116,9 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
      */
     override fun onPostExecute(aBoolean: Boolean) {
         if (catalogueHitBottom != null) {
-            catalogueFragment.bottomProgressBar.visibility = View.GONE
-            if (catalogueFragment.catalogueNovelCards.size > 0) catalogueFragment.empty.visibility = View.GONE
-        } else catalogueFragment.swipeRefreshLayout.isRefreshing = false
+            catalogueFragment.fragment_catalogue_progress_bottom?.visibility = View.GONE
+            if (catalogueFragment.catalogueNovelCards.size > 0) catalogueFragment.empty?.visibility = View.GONE
+        } else catalogueFragment.swipeRefreshLayout?.isRefreshing = false
     }
 
 

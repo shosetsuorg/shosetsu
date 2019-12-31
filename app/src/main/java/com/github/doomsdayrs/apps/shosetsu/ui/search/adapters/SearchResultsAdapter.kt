@@ -64,7 +64,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
         val title: String
         val url: String
         val imageURL: String
-        val formatter: Formatter?
+        val formatter: Formatter
         val id: Int
 
         if (isWebsiteSearch()) {
@@ -76,10 +76,10 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             id = Database.DatabaseIdentification.getNovelIDFromNovelURL(imageURL)
         } else {
             val novel: NovelCard = Database.DatabaseNovels.getNovel(intArray[position])
-            title = novel.title
+            title = novel.title.toString()
             url = novel.novelURL
             imageURL = novel.imageURL
-            formatter = DefaultScrapers.getByID(novel.formatterID)
+            formatter = DefaultScrapers.getByID(novel.formatterID)!!
             id = novel.novelID
         }
 

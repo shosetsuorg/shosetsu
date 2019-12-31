@@ -1,10 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
+package com.github.doomsdayrs.apps.shosetsu.backend.tracking
 
-import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterUpdater
-import needle.CancelableTask
-import needle.Needle
-import java.util.*
+import android.content.res.Resources
+import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of Shosetsu.
@@ -22,25 +19,26 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */
-/**
  * Shosetsu
  * 16 / 06 / 2019
  *
  * @author github.com/doomsdayrs
  */
-object UpdateManager {
-    private var chapterUpdater: ChapterUpdater? = null
-    @JvmStatic
-    fun init(novelCards: ArrayList<Int>, context: Context) {
-        if (chapterUpdater == null) {
-            chapterUpdater = ChapterUpdater(novelCards, context)
-            Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-        } else {
-            if (chapterUpdater!!.isCanceled) {
-                chapterUpdater = ChapterUpdater(novelCards, context)
-                Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-            }
+enum class Trackers(private val internalName: String, val id: Int) {
+    ANILIST(com.github.doomsdayrs.apps.shosetsu.backend.tracking.Trackers.Companion.getString(R.string.anilist), 1),
+    MYANIMELIST(com.github.doomsdayrs.apps.shosetsu.backend.tracking.Trackers.Companion.getString(R.string.myanimelist), 2);
+
+    override fun toString(): String {
+        return "Trackers{" +
+                "name='" + internalName + '\'' +
+                ", id=" + id +
+                '}'
+    }
+
+    companion object {
+        private fun getString(id: Int): String {
+            return Resources.getSystem().getString(id)
         }
     }
+
 }

@@ -57,17 +57,12 @@ class NovelFragment : Fragment() {
     // This is a never before loaded novel
     var new: Boolean = true
 
-    @JvmField
     var novelID = -2
-    @JvmField
     var novelURL: String = ""
-    @JvmField
     var novelPage: NovelPage = NovelPage()
-    @JvmField
-    var formatter: Formatter? = null
+    lateinit var formatter: Formatter
 
     var status = Status.UNREAD
-    @JvmField
     var novelChapters: List<NovelChapter> = ArrayList()
 
     /**
@@ -144,7 +139,7 @@ class NovelFragment : Fragment() {
         } else {
             novelID = savedInstanceState.getInt("novelID")
             novelURL = savedInstanceState.getString("novelURL", "")
-            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
+            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))!!
             status = Status.getStatus(savedInstanceState.getInt("status"))
             novelPage = Database.DatabaseNovels.getNovelPage(novelID)
             new = savedInstanceState.getBoolean("new")

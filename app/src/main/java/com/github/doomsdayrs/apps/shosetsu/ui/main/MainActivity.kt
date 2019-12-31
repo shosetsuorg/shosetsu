@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity(), Supporter {
     fun getNavigationView(): NavigationView? {
         return nav_view
     }
+
     fun getDrawerLayout(): DrawerLayout? {
         return drawer_layout
     }
@@ -195,7 +196,7 @@ class MainActivity : AppCompatActivity(), Supporter {
         }
     }
 
-    override fun setTitle(name: String) {
+    override fun setTitle(name: String?) {
         if (supportActionBar != null) supportActionBar!!.title = name
     }
 }

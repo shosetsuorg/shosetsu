@@ -48,10 +48,6 @@ class DownloadsFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     /**
      * Creates view
      *

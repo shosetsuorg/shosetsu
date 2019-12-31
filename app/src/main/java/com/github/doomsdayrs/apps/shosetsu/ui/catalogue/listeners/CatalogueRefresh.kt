@@ -1,9 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
+package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
-import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterUpdater
-import needle.CancelableTask
-import needle.Needle
+import android.util.Log
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
+import kotlinx.android.synthetic.main.fragment_catalogue.*
 import java.util.*
 
 /*
@@ -22,25 +23,18 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */
-/**
  * Shosetsu
- * 16 / 06 / 2019
+ * 18 / 06 / 2019
  *
  * @author github.com/doomsdayrs
  */
-object UpdateManager {
-    private var chapterUpdater: ChapterUpdater? = null
-    @JvmStatic
-    fun init(novelCards: ArrayList<Int>, context: Context) {
-        if (chapterUpdater == null) {
-            chapterUpdater = ChapterUpdater(novelCards, context)
-            Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-        } else {
-            if (chapterUpdater!!.isCanceled) {
-                chapterUpdater = ChapterUpdater(novelCards, context)
-                Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-            }
-        }
+class CatalogueRefresh(private val catalogueFragment: CatalogueFragment) : OnRefreshListener {
+    override fun onRefresh() {
+        catalogueFragment.swipeRefreshLayout!!.isRefreshing = true
+        catalogueFragment.catalogueNovelCards = ArrayList()
+        catalogueFragment.currentMaxPage = 1
+        Log.d("FragmentRefresh", "Refreshing catalogue data")
+        CataloguePageLoader(catalogueFragment).execute()
     }
+
 }

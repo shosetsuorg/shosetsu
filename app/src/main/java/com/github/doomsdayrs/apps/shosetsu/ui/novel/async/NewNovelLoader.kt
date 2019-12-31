@@ -5,7 +5,7 @@ import android.view.View
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
-import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterLoader
+import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.*
@@ -69,7 +69,7 @@ class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Form
                 // This is based on incrementation, If there is none it will just set chapters to those stored in novelFragment.novelPage, otherwise it will run a loader
                 if (formatter.isIncrementingChapterList && loadChapters) {
                     if (novelFragment.novelFragmentChapters != null) {
-                        NewChapterLoader(novelFragment.novelFragmentChapters!!.chaptersLoadedAction, formatter, novelURL).execute()
+                        ChapterLoader(novelFragment.novelFragmentChapters!!.chaptersLoadedAction, formatter, novelURL).execute()
                     }
                 } else {
                     novelFragment.novelChapters = novelFragment.novelPage.novelChapters

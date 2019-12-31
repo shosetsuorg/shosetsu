@@ -1,10 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
-
-import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterUpdater
-import needle.CancelableTask
-import needle.Needle
-import java.util.*
+package com.github.doomsdayrs.apps.shosetsu.variables.enums
 
 /*
  * This file is part of Shosetsu.
@@ -22,25 +16,34 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */
-/**
  * Shosetsu
- * 16 / 06 / 2019
+ * 20 / 06 / 2019
  *
  * @author github.com/doomsdayrs
+ */ /**
+ * Status of novel/Chapter
  */
-object UpdateManager {
-    private var chapterUpdater: ChapterUpdater? = null
-    @JvmStatic
-    fun init(novelCards: ArrayList<Int>, context: Context) {
-        if (chapterUpdater == null) {
-            chapterUpdater = ChapterUpdater(novelCards, context)
-            Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-        } else {
-            if (chapterUpdater!!.isCanceled) {
-                chapterUpdater = ChapterUpdater(novelCards, context)
-                Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
+enum class Status(val a: Int, val status: String) {
+    // Novels and chapters
+    UNREAD(0, "Unread"),
+    READING(1, "Reading"), READ(2, "Read"),  // These two are for novels only
+    ONHOLD(3, "OnHold"), DROPPED(4, "Dropped"), UNKNOWN(-1, "Unknown");
+
+    override fun toString(): String {
+        return "" + a
+    }
+
+    companion object {
+        fun getStatus(a: Int): Status {
+            return when (a) {
+                0 -> UNREAD
+                1 -> READING
+                2 -> READ
+                3 -> ONHOLD
+                4 -> DROPPED
+                else -> UNKNOWN
             }
         }
     }
+
 }

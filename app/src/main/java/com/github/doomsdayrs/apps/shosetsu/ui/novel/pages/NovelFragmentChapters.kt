@@ -13,8 +13,8 @@ import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter
-import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterLoader
-import com.github.doomsdayrs.apps.shosetsu.backend.async.NewChapterLoader.ChapterLoaderAction
+import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
+import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader.ChapterLoaderAction
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapters
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.updateChapter
@@ -181,7 +181,7 @@ class NovelFragmentChapters : Fragment() {
         if (novelFragment != null)
             fragment_novel_chapters_refresh.setOnRefreshListener {
                 if (novelFragment != null && novelFragment!!.formatter != null && novelFragment!!.novelURL.isNotEmpty())
-                    NewChapterLoader(chaptersLoadedAction, novelFragment!!.formatter!!, novelFragment!!.novelURL).execute()
+                    ChapterLoader(chaptersLoadedAction, novelFragment!!.formatter!!, novelFragment!!.novelURL).execute()
             }
         if (savedInstanceState != null) {
             currentMaxPage = savedInstanceState.getInt("maxPage")

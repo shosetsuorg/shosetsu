@@ -89,7 +89,7 @@ object DownloadManager {
         val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt")
         Database.DatabaseChapter.removePath(downloadItem.chapterID)
         if (file.exists()) if (!file.delete()) if (context != null) {
-            Toast.makeText(context, "Failed to delete, next download will correct", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.download_fail_delete), Toast.LENGTH_LONG).show()
             return false
         }
         return true
@@ -160,9 +160,9 @@ object DownloadManager {
                 }
                 if (downloadItem != null) try {
                     run {
-                        Log.d("Dir", Utilities.shoDir + "download/")
+                        Log.d("DownloadManager", Utilities.shoDir + "download/")
                         val folder = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + Utilities.cleanString(downloadItem.novelName))
-                        Log.d("Des", folder.toString())
+                        Log.d("DownloadManager", folder.toString())
                         if (!folder.exists()) if (!folder.mkdirs()) {
                             throw IOException("Failed to mkdirs")
                         }
@@ -179,7 +179,7 @@ object DownloadManager {
                             val recyclerView: RecyclerView? = activity.findViewById(R.id.fragment_novel_chapters_recycler)
                             recyclerView?.post { if (recyclerView.adapter != null) recyclerView.adapter!!.notifyDataSetChanged() }
                         }
-                        Log.d("Downloaded", "Downloaded:" + downloadItem.novelName + " " + formattedName)
+                        Log.d("DownloadManager", "Downloaded:" + downloadItem.novelName + " " + formattedName)
                     }
                     // Clean up
                     Database.DatabaseDownloads.removeDownload(downloadItem)

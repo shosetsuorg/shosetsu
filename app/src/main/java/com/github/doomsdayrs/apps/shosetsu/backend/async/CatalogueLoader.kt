@@ -45,7 +45,7 @@ open class CatalogueLoader(val formatter: Formatter) {
      * @return if this was completed or not
      */
     fun execute(vararg integers: Int?): List<Novel>? {
-        Log.d("Loading", "Catalogue")
+        Log.d("CatalogueLoader", "Loading")
         if (formatter.hasCloudFlare) {
             Log.i("CatalogueLoader", "CLOUDFLARE DETECED")
             wait(5)

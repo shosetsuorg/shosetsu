@@ -12,7 +12,7 @@
     </androidx.gridlayout.widget.GridLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_library_recycler"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />

@@ -7,7 +7,7 @@ import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import kotlinx.android.synthetic.main.fragment_catalogue.*
 
 /*
  * This file is part of Shosetsu.
@@ -36,29 +36,29 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelCardViewHolder?)
     override fun doInBackground(vararg views: View?): Void? {
         try {
             if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url)) {
-                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.formatterID, novelCardsViewHolder.formatter.parseNovel(WebViewScrapper.docFromURL(novelCardsViewHolder.url, novelCardsViewHolder.formatter.hasCloudFlare)!!), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
-                views[0]?.post { Toast.makeText(views[0]!!.context, "Added " + novelCardsViewHolder.library_card_title.text.toString(), Toast.LENGTH_SHORT).show() }
+                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter?.formatterID!!, novelCardsViewHolder.formatter!!.parseNovel(WebViewScrapper.docFromURL(novelCardsViewHolder.url, novelCardsViewHolder.formatter!!.hasCloudFlare)!!), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
+                views[0]?.post { Toast.makeText(views[0]!!.context, "Added " + novelCardsViewHolder.title.text.toString(), Toast.LENGTH_SHORT).show() }
             }
             if (novelCardsViewHolder != null && Database.DatabaseNovels.isBookmarked(novelCardsViewHolder.novelID)) {
                 views[0]?.post { Toast.makeText(views[0]!!.context, "Already in the library", Toast.LENGTH_SHORT).show() }
             } else {
                 if (novelCardsViewHolder != null) {
                     Database.DatabaseNovels.bookMark(Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCardsViewHolder.url))
-                    views[0]?.post { Toast.makeText(views[0]!!.context, "Added " + novelCardsViewHolder.library_card_title.text.toString(), Toast.LENGTH_SHORT).show() }
+                    views[0]?.post { Toast.makeText(views[0]!!.context, "Added " + novelCardsViewHolder.title.text.toString(), Toast.LENGTH_SHORT).show() }
                 }
             }
         } catch (e: Exception) {
             if (novelCardsViewHolder != null) {
-                views[0]?.post { Toast.makeText(views[0]!!.context, "Failed to add to library: " + novelCardsViewHolder.library_card_title.text.toString(), Toast.LENGTH_LONG).show() }
-                views[0]?.post { Log.e("NovelBackgroundAdd", novelCardsViewHolder.library_card_title.text.toString() + " : " + e.message) }
+                views[0]?.post { Toast.makeText(views[0]!!.context, "Failed to add to library: " + novelCardsViewHolder.title.text.toString(), Toast.LENGTH_LONG).show() }
+                views[0]?.post { Log.e("NovelBackgroundAdd", novelCardsViewHolder.title.text.toString() + " : " + e.message) }
             }
         }
         return null
     }
 
     override fun onPostExecute(aVoid: Void?) {
-        novelCardsViewHolder?.catalogueFragment?.library_view?.post {
-            novelCardsViewHolder.catalogueFragment.catalogueAdapter?.notifyDataSetChanged()
+        novelCardsViewHolder?.catalogueFragment?.recyclerView?.post {
+            novelCardsViewHolder.catalogueFragment?.catalogueAdapter?.notifyDataSetChanged()
         }
     }
 

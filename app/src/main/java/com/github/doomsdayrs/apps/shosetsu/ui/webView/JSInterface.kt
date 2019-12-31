@@ -1,10 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
+package com.github.doomsdayrs.apps.shosetsu.ui.webView
 
 import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterUpdater
-import needle.CancelableTask
-import needle.Needle
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -22,25 +18,18 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */
-/**
- * Shosetsu
- * 16 / 06 / 2019
+ * shosetsu
+ * 05 / 08 / 2019
  *
  * @author github.com/doomsdayrs
  */
-object UpdateManager {
-    private var chapterUpdater: ChapterUpdater? = null
-    @JvmStatic
-    fun init(novelCards: ArrayList<Int>, context: Context) {
-        if (chapterUpdater == null) {
-            chapterUpdater = ChapterUpdater(novelCards, context)
-            Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-        } else {
-            if (chapterUpdater!!.isCanceled) {
-                chapterUpdater = ChapterUpdater(novelCards, context)
-                Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-            }
-        }
-    }
+internal class JSInterface // --Commented out by Inspection START (12/22/19 11:10 AM):
+(private val ctx: Context) {
+
+    //    @JavascriptInterface
+//    public void showHTML(String html) {
+//        new AlertDialog.Builder(ctx).setTitle("HTML").setMessage(html)
+//                .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
+//    }
+// --Commented out by Inspection STOP (12/22/19 11:10 AM)
 }
