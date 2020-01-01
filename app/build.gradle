@@ -67,35 +67,43 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
+    // Annotations
+    implementation 'org.jetbrains:annotations:18.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+
+    // Core libraries
     implementation 'com.github.doomsdayrs:shosetsu-extensions:0.2.3'
     implementation 'com.github.doomsdayrs:shosetsu-services:0.2.5'
 
-
+    // Image loading
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'org.jetbrains:annotations:18.0.0'
 
     //TODO GITHUB sign in to save backup data to cloud
     //implementation 'com.github.kohsuke:github-api:github-api-1.95'
 
+    // App updater
     implementation 'com.github.javiersantos:AppUpdater:2.7'
 
+    // Markdown view
     implementation 'us.feras.mdv:markdownview:1.1.0'
-    implementation 'com.mittsu:markedview:1.0.7'
 
-
+    // Time control
     implementation 'joda-time:joda-time:2.10.5'
 
+    // Choosing backup files
     implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
 
-    //implementation 'org.mozilla:rhino:1.7.11'
-    implementation 'androidx.annotation:annotation:1.1.0'
 
     // TODO Implement readerview provided by Mozilla
     //implementation "org.mozilla.components:feature-readerview:1.0.0"
     //implementation 'org.mozilla.components:support-base:1.0.0'
 
+    // Cloud flare calculator
     implementation 'com.zhkrb.cloudflare-scrape-android:scrape-rhino:0.1.1'
+
     implementation 'androidx.core:core-ktx:1.2.0-rc01'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Async controller
     implementation 'com.zsoltsafrany:needle:1.0.0'
 }

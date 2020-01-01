@@ -64,16 +64,12 @@ import kotlinx.android.synthetic.main.activity_main.*
  */
 //TODO Inform users to refresh their libraries
 class MainActivity : AppCompatActivity(), Supporter {
-    @JvmField
     val cataloguesFragment = CataloguesFragment()
-    @JvmField
     val libraryFragment = LibraryFragment()
-    @JvmField
     val updatesFragment = UpdatesFragment()
-    @JvmField
     val settingsFragment = SettingsFragment()
-    @JvmField
     val downloadsFragment = DownloadsFragment()
+
 
     fun getNavigationView(): NavigationView? {
         return nav_view
@@ -106,8 +102,6 @@ class MainActivity : AppCompatActivity(), Supporter {
                 .setUpdateFrom(UpdateFrom.XML)
                 .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/development/app/update.xml")
                 .setDisplay(Display.DIALOG)
-                .setDisplay(Display.NOTIFICATION)
-                //   .setDisplay(Display.SNACKBAR)
                 .setTitleOnUpdateAvailable(getString(R.string.app_update_available))
                 .setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
                 .setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
