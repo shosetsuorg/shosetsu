@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(), Supporter {
 
         val appUpdater = AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.XML)
-                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/development/app/update.xml")
+                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
                 .setDisplay(Display.DIALOG)
                 .setTitleOnUpdateAvailable(getString(R.string.app_update_available))
                 .setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
