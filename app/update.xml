@@ -1,11 +1,15 @@
 <AppUpdater>
 
     <update>
-        <latestVersion>0.1.0.1</latestVersion>
-        <latestVersionCode>21</latestVersionCode>
+        <latestVersion>1.0.0</latestVersion>
+        <latestVersionCode>22</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
         <releaseNotes>
-            - Fixed chapter formatting
+            - New DB structure, Incompatible to old releases
+            - Some UI differences
+            - New App icon
+            - Settings redesign
+            - Some features disabled for due to being untested with new DB
         </releaseNotes>
     </update>
 

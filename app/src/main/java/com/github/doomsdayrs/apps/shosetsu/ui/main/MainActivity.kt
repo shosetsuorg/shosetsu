@@ -100,23 +100,27 @@ class MainActivity : AppCompatActivity(), Supporter {
         Utilities.setupTheme(this)
         //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         Log.d("Updater", "Start")
+
+
         val appUpdater = AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.XML)
-                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/development/app/update.xml")
                 .setDisplay(Display.DIALOG)
                 .setDisplay(Display.NOTIFICATION)
-                .setDisplay(Display.SNACKBAR)
-                .setTitleOnUpdateAvailable("ChapterUpdate available")
-                .setContentOnUpdateAvailable("Check out the latest version available of my app!")
-                .setTitleOnUpdateNotAvailable("ChapterUpdate not available")
-                .setContentOnUpdateNotAvailable("No update available. Check for chapterUpdates again later!")
-                .setButtonUpdate("ChapterUpdate now?") //    .setButtonUpdateClickListener(...)
-                .setButtonDismiss("Maybe later") //       .setButtonDismissClickListener(...)
-                .setButtonDoNotShowAgain("Huh, not interested") //     .setButtonDoNotShowAgainClickListener(...)
+                //   .setDisplay(Display.SNACKBAR)
+                .setTitleOnUpdateAvailable(getString(R.string.app_update_available))
+                .setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
+                .setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
+                .setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
+                .setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
+                .setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
+                .setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
                 .setIcon(R.drawable.ic_system_update_alt_black_24dp)
                 .setCancelable(true)
                 .showEvery(5)
         appUpdater.start()
+
+
         val appUpdaterUtils = AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
                 .withListener(object : UpdateListener {

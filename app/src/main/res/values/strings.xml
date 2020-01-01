@@ -124,6 +124,16 @@
     <string name="chapters_unread_label">Chapters unread: </string>
     <string name="remove_novel_cache">Remove Novel Cache</string>
 
+
+    <!-- App Update -->
+    <string name="app_update_available">App Update available</string>
+    <string name="check_out_latest_app">Check out the latest version available of the app!</string>
+    <string name="app_update_unavaliable">App Update not available</string>
+    <string name="check_updates_later">No update available. Check for updates again later!</string>
+    <string name="update_app_now_question">Update app now?</string>
+    <string name="update_dismiss">Maybe later</string>
+    <string name="update_not_interested">Huh, not interested</string>
+
     <!-- Shortcuts -->
     <string name="refresh_shortcut">Check for updates</string>
     <string name="action_global_search_hint">Global search…</string>
