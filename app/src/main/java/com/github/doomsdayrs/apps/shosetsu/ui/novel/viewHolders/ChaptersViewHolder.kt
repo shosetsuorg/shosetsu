@@ -64,7 +64,7 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 
     fun addToSelect() {
         if (!novelFragmentChapters!!.contains(novelChapter!!)) novelFragmentChapters!!.selectedChapters.add(novelChapter!!) else removeFromSelect()
-        if ((novelFragmentChapters!!.selectedChapters.size == 1 || novelFragmentChapters!!.selectedChapters.size <= 0) && novelFragmentChapters!!.inflater != null) novelFragmentChapters!!.onCreateOptionsMenu(novelFragmentChapters!!.menu!!, novelFragmentChapters!!.inflater!!)
+        if ((novelFragmentChapters!!.selectedChapters.size == 1 || novelFragmentChapters!!.selectedChapters.size <= 0) && novelFragmentChapters!!.inflater != null) novelFragmentChapters!!.activity?.invalidateOptionsMenu()
         novelFragmentChapters!!.updateAdapter()
     }
 

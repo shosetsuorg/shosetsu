@@ -262,11 +262,13 @@ class ChapterView : Fragment() {
         chapterReader?.getToolbar()?.let { it.title = title }
         Log.i("ChapterView", "Resuming:${appendID()}")
         Log.i("ChapterView", "${appendID()} \n ${text.isNullOrEmpty()} | ${unformattedText.isEmpty()} | $bookmarked | $ready ")
-
-
+        if (text.isNullOrEmpty() && unformattedText.isEmpty()) {
+            Log.i("ChapterView", "Text and unformatted text is null, resetting${appendID()}")
+            dataSet()
+        } else progress.visibility = View.GONE
     }
 
-    private fun appendID(): String {
+    fun appendID(): String {
         return "\tURL/ID( $url | $chapterID )"
     }
 
@@ -288,7 +290,7 @@ class ChapterView : Fragment() {
             chapterID = savedInstanceState.getInt("id")
             url = savedInstanceState.getString("url", "")
             chapterReader = activity as ChapterReader?
-            unformattedText = savedInstanceState.getString("unfom", "")
+            unformattedText = savedInstanceState.getString("unform", "")
             text = savedInstanceState.getString("text")
             bookmarked = savedInstanceState.getBoolean("book")
             ready = savedInstanceState.getBoolean("ready")
@@ -322,30 +324,34 @@ class ChapterView : Fragment() {
         ready = false
 
         if (savedInstanceState == null) {
-            if (Database.DatabaseChapter.isSaved(chapterID)) {
-                Log.d("ChapterView", "Loading from storage${appendID()}")
-                unformattedText = (Database.DatabaseChapter.getSavedNovelPassage(chapterID))
-                setUpReader()
-                scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
-                ready = true
-            } else {
-                Log.d("ChapterView", "Loading from online${appendID()}")
-                unformattedText = ""
-                setUpReader()
-                ChapterViewLoader(this).execute()
-            }
+            dataSet()
         } else {
             Log.d("ChapterView", "Load, Data present${appendID()}")
             setUpReader()
         }
     }
 
+    private fun dataSet() {
+        if (Database.DatabaseChapter.isSaved(chapterID)) {
+            Log.d("ChapterView", "Loading from storage${appendID()}")
+            unformattedText = (Database.DatabaseChapter.getSavedNovelPassage(chapterID))
+            setUpReader()
+            scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
+            ready = true
+        } else {
+            Log.d("ChapterView", "Loading from online${appendID()}")
+            unformattedText = ""
+            setUpReader()
+            ChapterViewLoader(this).execute()
+        }
+    }
+
 
     fun setUpReader() {
-        scrollView?.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-        textView?.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-        textView?.setTextColor(Settings.ReaderTextColor)
-        textView?.textSize = Settings.ReaderTextSize
+        scrollView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+        textView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+        textView!!.setTextColor(Settings.ReaderTextColor)
+        textView!!.textSize = Settings.ReaderTextSize
         if (unformattedText.isNotEmpty()) {
             val replaceSpacing = StringBuilder("\n")
             for (x in 0 until Settings.paragraphSpacing) replaceSpacing.append("\n")
@@ -355,7 +361,7 @@ class ChapterView : Fragment() {
                 Log.d("ChapterView", "TextSet\t" + text!!.substring(0, 100).replace("\n", "\\n") + "\n" + appendID())
             else if (text!!.isNotEmpty())
                 Log.d("ChapterView", "TextSet\t" + text!!.substring(0, text!!.length - 1).replace("\n", "\\n") + "\n" + appendID())
-            textView?.text = text
+            textView!!.text = text
             // viewPager2.post(() -> currentReader.setText(text));
         }
     }

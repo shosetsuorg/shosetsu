@@ -250,7 +250,7 @@ class NovelFragmentChapters : Fragment() {
             R.id.chapter_deselect_all -> {
                 selectedChapters = ArrayList()
                 updateAdapter()
-                if (inflater != null) onCreateOptionsMenu(menu!!, inflater!!)
+                if (inflater != null) activity?.invalidateOptionsMenu()
                 return true
             }
             R.id.chapter_mark_read -> {

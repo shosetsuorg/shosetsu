@@ -51,7 +51,6 @@ class LibraryFragment : Fragment() {
     }
 
     var libraryNovelCardsAdapter: LibraryNovelAdapter? = null
-    var menu: Menu? = null
 
     private fun readFromDB() {
         libraryNovelCards = DatabaseNovels.getIntLibrary()
@@ -153,9 +152,8 @@ class LibraryFragment : Fragment() {
      * @param inflater inflater of layouts and shiz
      */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        this.menu = menu
-        menu.clear()
         if (selectedNovels.size <= 0) {
+            Log.d("LibraryFragment", "Creating default menu")
             inflater.inflate(R.menu.toolbar_library, menu)
             val searchView = menu.findItem(R.id.library_search).actionView as SearchView?
             searchView?.setOnQueryTextListener(LibrarySearchQuery(this))
@@ -163,7 +161,10 @@ class LibraryFragment : Fragment() {
                 setLibraryCards(libraryNovelCards)
                 false
             }
-        } else inflater.inflate(R.menu.toolbar_library_selected, menu)
+        } else {
+            Log.d("LibraryFragment", "Creating selected menu")
+            inflater.inflate(R.menu.toolbar_library_selected, menu)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -180,7 +181,7 @@ class LibraryFragment : Fragment() {
             R.id.chapter_deselect_all -> {
                 selectedNovels = ArrayList()
                 recyclerView!!.post { libraryNovelCardsAdapter!!.notifyDataSetChanged() }
-                if (inflater != null) onCreateOptionsMenu(menu!!, inflater!!)
+                if (inflater != null) activity?.invalidateOptionsMenu()
                 return true
             }
             R.id.remove_from_library -> {
