@@ -261,6 +261,9 @@ class ChapterView : Fragment() {
         val title = Database.DatabaseChapter.getTitle(chapterID)
         chapterReader?.getToolbar()?.let { it.title = title }
         Log.i("ChapterView", "Resuming:${appendID()}")
+        Log.i("ChapterView", "${appendID()} \n ${text.isNullOrEmpty()} | ${unformattedText.isEmpty()} | $bookmarked | $ready ")
+
+
     }
 
     private fun appendID(): String {

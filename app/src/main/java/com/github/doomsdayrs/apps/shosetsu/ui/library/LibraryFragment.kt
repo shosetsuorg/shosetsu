@@ -157,9 +157,9 @@ class LibraryFragment : Fragment() {
         menu.clear()
         if (selectedNovels.size <= 0) {
             inflater.inflate(R.menu.toolbar_library, menu)
-            val searchView = menu.findItem(R.id.library_search).actionView as SearchView
-            searchView.setOnQueryTextListener(LibrarySearchQuery(this))
-            searchView.setOnCloseListener {
+            val searchView = menu.findItem(R.id.library_search).actionView as SearchView?
+            searchView?.setOnQueryTextListener(LibrarySearchQuery(this))
+            searchView?.setOnCloseListener {
                 setLibraryCards(libraryNovelCards)
                 false
             }

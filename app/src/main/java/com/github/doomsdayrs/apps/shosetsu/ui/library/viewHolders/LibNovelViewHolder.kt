@@ -49,7 +49,8 @@ class LibNovelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 
     fun addToSelect() {
         if (!libraryFragment.contains(novelCard.novelID)) libraryFragment.selectedNovels.add(novelCard.novelID) else removeFromSelect()
-        if (libraryFragment.selectedNovels.size == 1 || libraryFragment.selectedNovels.size <= 0) libraryFragment.inflater?.let { libraryFragment.onCreateOptionsMenu(libraryFragment.menu!!, it) }
+        if (libraryFragment.selectedNovels.size <= 0)
+            libraryFragment.inflater?.let { libraryFragment.onCreateOptionsMenu(libraryFragment.menu!!, it) }
         libraryFragment.recyclerView.post { libraryFragment.libraryNovelCardsAdapter?.notifyDataSetChanged() }
     }
 

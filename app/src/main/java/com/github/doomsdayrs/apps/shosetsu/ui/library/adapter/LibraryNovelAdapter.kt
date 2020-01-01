@@ -67,7 +67,7 @@ class LibraryNovelAdapter(private val novelCards: ArrayList<Int>, private val li
             libNovelViewHolder.materialCardView.strokeWidth = 0
         }
         if (libraryFragment.selectedNovels.size > 0) {
-            libNovelViewHolder.itemView.setOnClickListener { view: View? -> libNovelViewHolder.addToSelect() }
+            libNovelViewHolder.itemView.setOnClickListener { libNovelViewHolder.addToSelect() }
         } else {
             libNovelViewHolder.itemView.setOnClickListener(libNovelViewHolder)
         }
