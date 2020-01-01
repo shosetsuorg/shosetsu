@@ -2,16 +2,12 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.app.Activity
 import android.content.Context
-import android.os.AsyncTask
 import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.Worker
-import androidx.work.WorkerParameters
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
-import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
@@ -129,7 +125,7 @@ object DownloadManager {
             adapter?.downloadsFragment?.activity?.runOnUiThread { adapter.notifyDataSetChanged() }
         }
 
-        fun removeDownloads(adapter: DownloadAdapter?, downloadItem: DownloadItem) {
+        private fun removeDownloads(adapter: DownloadAdapter?, downloadItem: DownloadItem) {
             if (adapter != null)
                 for (x in adapter.downloadsFragment.downloadItems.indices) if (adapter.downloadsFragment.downloadItems[x].chapterURL == downloadItem.chapterURL) {
                     adapter.downloadsFragment.downloadItems.removeAt(x)
@@ -138,13 +134,13 @@ object DownloadManager {
             refreshList(adapter)
         }
 
-        fun markError(adapter: DownloadAdapter?, d: DownloadItem) {
+        private fun markError(adapter: DownloadAdapter?, d: DownloadItem) {
             if (adapter != null)
                 for (downloadItem in adapter.downloadsFragment.downloadItems) if (downloadItem.chapterURL == d.chapterURL) d.status = "Error"
             refreshList(adapter)
         }
 
-        fun toggleProcess(adapter: DownloadAdapter?, d: DownloadItem) {
+        private fun toggleProcess(adapter: DownloadAdapter?, d: DownloadItem) {
             if (adapter != null)
                 for (downloadItem in adapter.downloadsFragment.downloadItems) if (downloadItem.chapterURL == d.chapterURL) if (downloadItem.status == "Pending" || downloadItem.status == "Error") downloadItem.status = "Downloading" else downloadItem.status = "Pending"
             refreshList(adapter)

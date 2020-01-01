@@ -9,15 +9,12 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
-import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
@@ -121,15 +118,15 @@ class ViewSettings : Fragment() {
 
             SettingsItemData(SettingsType.SWITCH)
                     .setTitle(R.string.reader_night_mode)
-                    .setSwitchIsChecked(Utilities.isReaderNightMode())
+                    .setSwitchIsChecked(Utilities.isReaderNightMode)
                     .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
                         Log.d("NightMode", p1.toString())
-                        if (!Utilities.isReaderNightMode()) Utilities.setNightNode() else Utilities.unsetNightMode()
+                        if (!Utilities.isReaderNightMode) Utilities.setNightNode() else Utilities.unsetNightMode()
                     }),
 
             SettingsItemData(SettingsType.SWITCH)
                     .setTitle(R.string.tap_to_scroll)
-                    .setSwitchIsChecked(Utilities.isTapToScroll())
+                    .setSwitchIsChecked(Utilities.isTapToScroll)
                     .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
                         Log.d("Tap to scroll", p1.toString())
                         Utilities.toggleTapToScroll()

@@ -52,7 +52,7 @@ class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, pri
             novelCardsViewHolder.novelID = recycleCard.novelID
             novelCardsViewHolder.url = recycleCard.novelURL
             novelCardsViewHolder.title.text = recycleCard.title
-            if (!recycleCard.imageURL.isEmpty()) {
+            if (recycleCard.imageURL.isNotEmpty()) {
                 Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.imageView)
             } else novelCardsViewHolder.imageView.visibility = View.GONE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

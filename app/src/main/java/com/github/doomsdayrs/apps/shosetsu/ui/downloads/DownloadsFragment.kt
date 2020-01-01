@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.downloads
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -15,7 +14,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import kotlinx.android.synthetic.main.fragment_downloads.*
-import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -103,10 +101,7 @@ class DownloadsFragment : Fragment() {
         return false
     }
 
-    companion object {
-
-
-    }
+    companion object;
 
     /**
      * Constructor

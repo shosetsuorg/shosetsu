@@ -35,6 +35,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
+@Suppress("unused")
 class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
     override fun onPreExecute() {
         Log.i("Progress", "Starting backup")
@@ -44,12 +45,12 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
         Log.i("Progress", "Finished backup")
     }
 
-    protected override fun doInBackground(vararg voids: Void?): Void? {
+    override fun doInBackground(vararg voids: Void?): Void? {
         try {
-            val BACKUP = JSONObject()
+            val backupJSON = JSONObject()
             Log.i("Progress", "Backing up novels")
             run {
-                val NOVELS = JSONArray()
+                val backupNovels = JSONArray()
                 val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)
                 if (cursor.count > 0) while (cursor.moveToNext()) { // Gets if it is in library, if not then it skips
                     val bookmarked = Utilities.intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
@@ -71,15 +72,15 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
                         novel.put(Columns.ARTISTS.toString(), cursor.getString(cursor.getColumnIndex(Columns.ARTISTS.toString())))
                         novel.put(Columns.LANGUAGE.toString(), cursor.getString(cursor.getColumnIndex(Columns.LANGUAGE.toString())))
                         novel.put(Columns.MAX_CHAPTER_PAGE.toString(), cursor.getInt(cursor.getColumnIndex(Columns.MAX_CHAPTER_PAGE.toString())))
-                        NOVELS.put(novel)
+                        backupNovels.put(novel)
                     }
                 }
-                BACKUP.put("novels", NOVELS)
+                backupJSON.put("novels", backupNovels)
                 cursor.close()
             }
             Log.i("Progress", "Backing up Chapters")
             run {
-                val CHAPTERS = JSONArray()
+                val backupChapters = JSONArray()
                 val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.CHAPTERS, null)
                 if (cursor.count > 0) while (cursor.moveToNext()) {
                     val novelID = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
@@ -95,13 +96,13 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
                         chapter.put(Columns.Y.toString(), cursor.getInt(cursor.getColumnIndex(Columns.Y.toString())))
                         chapter.put(Columns.READ_CHAPTER.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString())))
                         chapter.put(Columns.BOOKMARKED.toString(), cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
-                        CHAPTERS.put(chapter)
+                        backupChapters.put(chapter)
                     }
                 }
-                BACKUP.put("chapters", CHAPTERS)
+                backupJSON.put("chapters", backupChapters)
                 cursor.close()
             }
-            BACKUP.put("settings", getSettingsInJSON())
+            backupJSON.put("settings", getSettingsInJSON())
             Log.i("Progress", "Writing")
             val folder = File(Utilities.shoDir + "/backup/")
             if (!folder.exists()) if (!folder.mkdirs()) {
@@ -110,7 +111,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
             val fileOutputStream = FileOutputStream(
                     folder.path + "/backup-" + Date().toString() + ".shoback"
             )
-            fileOutputStream.write("JSON+-=$BACKUP".toByteArray())
+            fileOutputStream.write("JSON+-=$backupJSON".toByteArray())
             fileOutputStream.close()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -138,7 +139,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
         settings.put("themeMode", Settings.themeMode)
         settings.put("paraSpace", Settings.paragraphSpacing)
         settings.put("indent", Settings.indentSize)
-        settings.put("tap_to_scroll", Utilities.isTapToScroll())
+        settings.put("tap_to_scroll", Utilities.isTapToScroll)
         return settings
     }
 }

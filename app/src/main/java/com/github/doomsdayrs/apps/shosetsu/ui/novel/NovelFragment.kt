@@ -5,9 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
@@ -18,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NewNovelLoader
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
@@ -27,7 +24,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import kotlinx.android.synthetic.main.fragment_novel.*
-import kotlinx.android.synthetic.main.network_error.*
 import java.util.*
 
 /*
@@ -101,7 +97,7 @@ class NovelFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt("novelID", novelID)
         outState.putString("novelURL", novelURL)
-        outState.putInt("formatter", formatter!!.formatterID)
+        outState.putInt("formatter", formatter.formatterID)
         outState.putInt("status", status.a)
         outState.putBoolean("new", new)
     }
@@ -117,17 +113,17 @@ class NovelFragment : Fragment() {
         // Create sub-fragments
         run {
             novelFragmentInfo = NovelFragmentInfo()
-            novelFragmentInfo!!.setNovelFragment(this)
+            novelFragmentInfo!!.novelFragment = (this)
             novelFragmentChapters = NovelFragmentChapters()
             novelFragmentChapters!!.setNovelFragment(this)
         }
         //TODO FINISH TRACKING
 //boolean track = SettingsController.isTrackingEnabled();
         if (savedInstanceState == null) {
-            if (Utilities.isOnline() && Database.DatabaseNovels.isNotInNovels(novelID)) {
+            if (Utilities.isOnline && Database.DatabaseNovels.isNotInNovels(novelID)) {
                 setViewPager()
                 if (formatter != null)
-                    fragment_novel_tabLayout!!.post { NewNovelLoader(novelURL, novelID, formatter!!, this, true).execute() }
+                    fragment_novel_tabLayout!!.post { NovelLoader(novelURL, novelID, formatter, this, true).execute() }
             } else {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID)
                 new = false
@@ -147,17 +143,6 @@ class NovelFragment : Fragment() {
         }
     }
 
-    fun getErrorView(): ConstraintLayout? {
-        return network_error
-    }
-
-    fun getErrorMessage(): TextView? {
-        return error_message
-    }
-
-    fun getErrorButton(): Button? {
-        return error_button
-    }
 
     private fun setViewPager() {
         val fragments: MutableList<Fragment> = ArrayList()
@@ -181,10 +166,12 @@ class NovelFragment : Fragment() {
         fragment_novel_tabLayout!!.post { fragment_novel_tabLayout!!.setupWithViewPager(fragment_novel_viewpager) }
     }
 
-    /**
-     * @param chapterURL Current chapter URL
-     * @return chapter after the input, returns the current chapter if no more
-     */
+    @Suppress("unused")
+
+            /**
+             * @param chapterURL Current chapter URL
+             * @return chapter after the input, returns the current chapter if no more
+             */
     fun getNextChapter(chapterURL: Int, novelChapters: IntArray?): NovelChapter? {
         if (novelChapters != null && novelChapters.isNotEmpty()) for (x in novelChapters.indices) {
             if (novelChapters[x] == chapterURL) {

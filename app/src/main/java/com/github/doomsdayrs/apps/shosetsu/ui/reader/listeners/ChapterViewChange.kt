@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners
 import android.util.Log
 import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
@@ -33,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
  *
  * @author github.com/doomsdayrs
  */
-class ChapterViewChange(val chapterReaderAdapter: ChapterReaderAdapter) : ViewPager.OnPageChangeListener {
+class ChapterViewChange(private val chapterReaderAdapter: ChapterReaderAdapter) : ViewPager.OnPageChangeListener {
     override fun onPageScrollStateChanged(state: Int) {
     }
 

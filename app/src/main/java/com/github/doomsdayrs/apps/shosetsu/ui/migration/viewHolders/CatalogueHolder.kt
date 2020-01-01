@@ -45,7 +45,7 @@ class CatalogueHolder(itemView: View, private val migrationView: MigrationView) 
 
     override fun onClick(v: View) {
         Log.d("FormatterSelection", formatter.name)
-        if (Utilities.isOnline()) {
+        if (Utilities.isOnline) {
             Log.d("Target", formatter.formatterID.toString())
             migrationView.target = formatter.formatterID
             migrationView.target_selection.visibility = View.GONE

@@ -57,7 +57,7 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
     var read: TextView = itemView.findViewById(R.id.recycler_novel_chapter_read)
     var readTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_read_tag)
     var downloadTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_download)
-    var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+    private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 
     var popupMenu: PopupMenu? = null
     var novelFragmentChapters: NovelFragmentChapters? = null
@@ -78,7 +78,7 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
     override fun onClick(v: View) {
         if (novelFragmentChapters != null)
             if (novelFragmentChapters!!.activity != null && novelFragmentChapters!!.novelFragment != null && novelFragmentChapters!!.novelFragment!!.formatter != null)
-                Utilities.openChapter(novelFragmentChapters!!.activity!!, novelChapter!!, novelFragmentChapters!!.novelFragment!!.novelID, novelFragmentChapters!!.novelFragment!!.formatter!!.formatterID)
+                Utilities.openChapter(novelFragmentChapters!!.activity!!, novelChapter!!, novelFragmentChapters!!.novelFragment!!.novelID, novelFragmentChapters!!.novelFragment!!.formatter.formatterID)
     }
 
     init {

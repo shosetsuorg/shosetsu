@@ -37,16 +37,7 @@ class DownloadItem(val formatter: Formatter, novelName: String, chapterName: Str
     @JvmField
     val chapterURL: String?
     val chapterID: Int
-    /**
-     * Returns the status
-     *
-     * @return Status
-     */
-    /**
-     * Sets the status of the download item
-     *
-     * @param status status to set
-     */
+
     //Variables only for download manager
     var status = "Pending"
 
@@ -66,14 +57,7 @@ class DownloadItem(val formatter: Formatter, novelName: String, chapterName: Str
         }
     }
 
-    /**
-     * Constructor
-     *
-     * @param formatter   formatter to work with
-     * @param novelName   name of the novel
-     * @param chapterName name of the chapter
-     * @param chapterID   ChapterID
-     */
+
     init {
         this.novelName = cleanse(novelName)
         this.chapterName = cleanse(chapterName)

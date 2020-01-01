@@ -41,11 +41,11 @@ import needle.CancelableTask
  *
  * @author github.com/doomsdayrs
  */
-class ChapterUpdater(val novelCards: ArrayList<Int>, val context: Context?) : CancelableTask() {
-    private val ID = 1917
-    private val channel_ID = "shosetsu_updater"
+class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Context?) : CancelableTask() {
+    private val notificationID = 1917
+    private val channelID = "shosetsu_updater"
 
-    private val continueProcesss = true
+    private val continueProcess = true
     private var notificationManager: NotificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private var builder: Notification.Builder
     private val updatedNovels = ArrayList<NovelCard>()
@@ -53,15 +53,15 @@ class ChapterUpdater(val novelCards: ArrayList<Int>, val context: Context?) : Ca
 
     init {
         builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(channel_ID, "Shosetsu Update", NotificationManager.IMPORTANCE_HIGH)
+            val notificationChannel = NotificationChannel(channelID, "Shosetsu Update", NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(notificationChannel)
-            Notification.Builder(context, channel_ID)
+            Notification.Builder(context, channelID)
         } else Notification.Builder(context)
     }
 
 
     private fun add(mangaCount: Int, novelID: Int, novelChapter: NovelChapter, novelCard: NovelCard) {
-        if (continueProcesss && Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
+        if (continueProcess && Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
             Log.i("ChaperUpdater", "add #$mangaCount\t: ${novelChapter.link} ")
             Database.DatabaseChapter.addToChapters(novelID, novelChapter)
             Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis())
@@ -78,7 +78,7 @@ class ChapterUpdater(val novelCards: ArrayList<Int>, val context: Context?) : Ca
                 .setProgress(novelCards.size, 0, false)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
-        notificationManager.notify(ID, builder.build())
+        notificationManager.notify(notificationID, builder.build())
 
         // Main process
         for (x in novelCards.indices) {
@@ -90,7 +90,7 @@ class ChapterUpdater(val novelCards: ArrayList<Int>, val context: Context?) : Ca
             // Updates notification
             builder.setContentText(novelCard.title)
             builder.setProgress(novelCards.size, x + 1, false)
-            notificationManager.notify(ID, builder.build())
+            notificationManager.notify(notificationID, builder.build())
             // Runs process
             if (formatter != null)
                 ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
@@ -131,7 +131,7 @@ class ChapterUpdater(val novelCards: ArrayList<Int>, val context: Context?) : Ca
         builder.setContentText(stringBuilder.toString())
         builder.setProgress(0, 0, false)
         builder.setOngoing(false)
-        notificationManager.notify(ID, builder.build())
+        notificationManager.notify(notificationID, builder.build())
 
         cancel()
     }

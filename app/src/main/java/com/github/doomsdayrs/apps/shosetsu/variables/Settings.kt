@@ -46,6 +46,8 @@ object Settings {
     @JvmField
     var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
 
+    @Suppress("unused")
+
     //TODO Use this
     enum class TextSizes(val i: Int) {
         SMALL(14),

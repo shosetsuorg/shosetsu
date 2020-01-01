@@ -1,16 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.viewHolders.CatalogueHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
@@ -47,7 +40,7 @@ class MigrationViewCatalogueAdapter(private val catalogues: ArrayList<CatalogueC
     override fun onBindViewHolder(catalogueHolder: CatalogueHolder, i: Int) {
         val catalogueCard = catalogues[i]
         catalogueCard.formatter.imageURL
-        if (!catalogueCard.formatter.imageURL.isEmpty()) Picasso.get()
+        if (catalogueCard.formatter.imageURL.isNotEmpty()) Picasso.get()
                 .load(catalogueCard.formatter.imageURL)
                 .into(catalogueHolder.image) else catalogueHolder.image.setImageResource(catalogueCard.libraryImageResource)
         catalogueHolder.title.text = catalogueCard.title

@@ -11,9 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import kotlinx.android.synthetic.main.large_reader.*
 import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStream
 import java.io.InputStreamReader
-import java.lang.StringBuilder
 
 
 /*
@@ -60,9 +58,9 @@ class LicenseReader : Fragment() {
         if (message.isEmpty()) {
             val string = StringBuilder()
             if (activity != null) {
-                var reader: BufferedReader? = null;
+                var reader: BufferedReader? = null
                 try {
-                    reader = BufferedReader(InputStreamReader(activity!!.assets.open("license.txt")));
+                    reader = BufferedReader(InputStreamReader(activity!!.assets.open("license.txt")))
                     // do reading, usually loop until end of file reading
                     var mLine: String? = reader.readLine()
                     while (mLine != null) {
@@ -75,7 +73,7 @@ class LicenseReader : Fragment() {
                 } finally {
                     if (reader != null) {
                         try {
-                            reader.close();
+                            reader.close()
                         } catch (e: IOException) {
                             //log the exception
                         }

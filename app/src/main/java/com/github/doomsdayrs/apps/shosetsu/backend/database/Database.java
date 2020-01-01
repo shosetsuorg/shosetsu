@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringDeserialize;
 import static com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringSerialize;
@@ -396,7 +397,7 @@ public class Database {
                 String nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = DatabaseIdentification.getFormatterIDFromChapterID(id);
-                downloadItems.add(new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, id));
+                downloadItems.add(new DownloadItem(Objects.requireNonNull(DefaultScrapers.getByID(formatter)), nName, cName, id));
             }
             cursor.close();
 
@@ -421,7 +422,7 @@ public class Database {
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = getFormatterIDFromChapterID(id);
                 cursor.close();
-                return new DownloadItem(DefaultScrapers.getByID(formatter), nName, cName, id);
+                return new DownloadItem(Objects.requireNonNull(DefaultScrapers.getByID(formatter)), nName, cName, id);
             }
         }
 
@@ -616,6 +617,7 @@ public class Database {
          * @param chapterID id of chapter
          * @return if bookmarked?
          */
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         public static boolean isBookMarked(int chapterID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null);
             if (cursor.getCount() <= 0) {
@@ -659,6 +661,7 @@ public class Database {
          * @param chapterID novelURL of the chapter
          * @return true if saved, false otherwise
          */
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         public static boolean isSaved(int chapterID) {
             //   Log.d("CheckSave", chapterURL);
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + chapterID, null);
@@ -703,6 +706,7 @@ public class Database {
          * @param chapterURL chapter url
          * @return if present
          */
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         public static boolean isNotInChapters(@NonNull String chapterURL) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
             int a = cursor.getCount();
@@ -891,6 +895,7 @@ public class Database {
             sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.PARENT_ID + "=" + novelID);
         }
 
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         public static boolean isBookmarked(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null);
             if (cursor.getCount() <= 0) {
@@ -986,6 +991,7 @@ public class Database {
          * @param novelID Novel novelID
          * @return yes or no
          */
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         public static boolean isNotInNovels(int novelID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " ='" + novelID + "'", null);
             int i = cursor.getCount();
@@ -1069,7 +1075,7 @@ public class Database {
                 try {
                     NovelCard novelCard = new NovelCard(
                             checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
-                            novelID, getNovelURLfromNovelID(novelID),
+                            novelID, Objects.requireNonNull(getNovelURLfromNovelID(novelID)),
                             cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
                             DatabaseIdentification.getFormatterIDFromNovelID(novelID)
                     );

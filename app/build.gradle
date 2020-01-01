@@ -67,7 +67,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
-    implementation 'com.github.doomsdayrs:shosetsu-extensions:0.2.2'
+    implementation 'com.github.doomsdayrs:shosetsu-extensions:0.2.3'
     implementation 'com.github.doomsdayrs:shosetsu-services:0.2.5'
 
 

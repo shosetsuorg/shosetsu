@@ -2,16 +2,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.migration
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -63,7 +58,7 @@ import java.util.*
 
     override fun onDestroy() {
         if (t != null) {
-            t!!.C = false
+            t!!.isNotCanceled = false
             t!!.cancel(true)
         }
         super.onDestroy()

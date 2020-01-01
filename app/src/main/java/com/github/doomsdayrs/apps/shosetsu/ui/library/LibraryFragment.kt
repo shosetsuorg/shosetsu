@@ -55,6 +55,10 @@ class LibraryFragment : Fragment() {
 
     private fun readFromDB() {
         libraryNovelCards = DatabaseNovels.getIntLibrary()
+        sort()
+    }
+
+    private fun sort() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             libraryNovelCards.sortWith(Comparator { novel: Int?, t1: Int? -> DatabaseNovels.getNovelTitle(novel!!).compareTo(DatabaseNovels.getNovelTitle(t1!!)) })
         } else {
@@ -105,12 +109,11 @@ class LibraryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d("Library", "Resumed")
-        if (changedData) {
-            Log.d("Library", "Updating data")
-            libraryNovelCards = DatabaseNovels.getIntLibrary()
-            changedData = !changedData
-        }
-        libraryNovelCardsAdapter!!.notifyDataSetChanged()
+        if (libraryNovelCards.isEmpty()) {
+            readFromDB()
+            setLibraryCards(libraryNovelCards)
+        } else
+            libraryNovelCardsAdapter!!.notifyDataSetChanged()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -128,21 +131,17 @@ class LibraryFragment : Fragment() {
      * @return View
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.i("LibraryFragment", "onCreateView")
         Utilities.setActivityTitle(activity, "Library")
-        Log.d("Library", "creating")
+        if (savedInstanceState == null) readFromDB() else {
+            libraryNovelCards = savedInstanceState.getIntegerArrayList("lib")!!
+            selectedNovels = savedInstanceState.getIntegerArrayList("selected")!!
+        }
         return inflater.inflate(R.layout.fragment_library, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState == null) readFromDB() else {
-            val novelIDs = savedInstanceState.getIntegerArrayList("lib")
-            val selectedIDs = savedInstanceState.getIntegerArrayList("selected")!!
-            if (novelIDs != null) {
-                libraryNovelCards = novelIDs
-            }
-            selectedNovels = selectedIDs
-        }
         setLibraryCards(libraryNovelCards)
     }
 
@@ -156,7 +155,7 @@ class LibraryFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         this.menu = menu
         menu.clear()
-        if (selectedNovels!!.size <= 0) {
+        if (selectedNovels.size <= 0) {
             inflater.inflate(R.menu.toolbar_library, menu)
             val searchView = menu.findItem(R.id.library_search).actionView as SearchView
             searchView.setOnQueryTextListener(LibrarySearchQuery(this))
@@ -174,7 +173,7 @@ class LibraryFragment : Fragment() {
                 return true
             }
             R.id.chapter_select_all -> {
-                for (i in libraryNovelCards) if (!contains(i)) selectedNovels!!.add(i)
+                for (i in libraryNovelCards) if (!contains(i)) selectedNovels.add(i)
                 recyclerView!!.post { libraryNovelCardsAdapter!!.notifyDataSetChanged() }
                 return true
             }
@@ -185,7 +184,7 @@ class LibraryFragment : Fragment() {
                 return true
             }
             R.id.remove_from_library -> {
-                for (i in selectedNovels!!) {
+                for (i in selectedNovels) {
                     DatabaseNovels.unBookmark(i)
                     var x = 0
                     while (x < libraryNovelCards.size) {
@@ -200,23 +199,19 @@ class LibraryFragment : Fragment() {
             R.id.source_migrate -> {
                 val intent = Intent(activity, MigrationView::class.java)
                 try {
-                    intent.putExtra("selected", Utilities.serializeToString(selectedNovels!!))
+                    intent.putExtra("selected", Utilities.serializeToString(selectedNovels))
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
                 intent.putExtra("target", 1)
                 //startActivity(intent);
-                Utilities.regret(context)
+                Utilities.regret(context!!)
                 return true
             }
         }
         return false
     }
 
-    companion object {
-        @JvmField
-        var changedData = false
-    }
 
     /**
      * Constructor

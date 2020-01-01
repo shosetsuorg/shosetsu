@@ -4,7 +4,6 @@ import android.app.Activity
 import android.view.View
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter

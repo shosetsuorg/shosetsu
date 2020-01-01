@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -48,13 +47,13 @@ import kotlinx.android.synthetic.main.chapter_view.*
 class ChapterView : Fragment() {
     private val demarkActions = arrayOf(TextSizeChange(this), ParaSpacingChange(this), IndentChange(this), ReaderChange(this))
     // Order of values. Small,Medium,Large
-    private val textSizes = arrayOfNulls<MenuItem>(3)
+    private lateinit var textSizes: Array<MenuItem>
     // Order of values. Non,Small,Medium,Large
-    private val paragraphSpaces = arrayOfNulls<MenuItem>(4)
+    private lateinit var paragraphSpaces: Array<MenuItem>
     // Order of values. Non,Small,Medium,Large
-    private val indentSpaces = arrayOfNulls<MenuItem>(4)
+    private lateinit var indentSpaces: Array<MenuItem>
     // Order of values. Default, Markdown
-    private val readers = arrayOfNulls<MenuItem>(2)
+    private lateinit var readers: Array<MenuItem>
 
 
     var chapterReader: ChapterReader? = null
@@ -86,7 +85,7 @@ class ChapterView : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_chapter_view, menu)
         // Night mode
-        menu.findItem(R.id.chapter_view_nightMode).isChecked = Utilities.isReaderNightMode()
+        menu.findItem(R.id.chapter_view_nightMode).isChecked = Utilities.isReaderNightMode
         //  Bookmark
         run {
             bookmark = menu.findItem(R.id.chapter_view_bookmark)
@@ -96,38 +95,46 @@ class ChapterView : Fragment() {
         // Tap To Scroll
         run {
             tapToScroll = menu.findItem(R.id.tap_to_scroll)
-            tapToScroll?.setChecked(Utilities.isTapToScroll())
+            tapToScroll?.setChecked(Utilities.isTapToScroll)
         }
         // Text size
         run {
-            textSizes[0] = menu.findItem(R.id.chapter_view_textSize_small)
-            textSizes[1] = menu.findItem(R.id.chapter_view_textSize_medium)
-            textSizes[2] = menu.findItem(R.id.chapter_view_textSize_large)
+            textSizes = arrayOf(
+                    menu.findItem(R.id.chapter_view_textSize_small),
+                    menu.findItem(R.id.chapter_view_textSize_medium),
+                    menu.findItem(R.id.chapter_view_textSize_large)
+            )
             when (Settings.ReaderTextSize.toInt()) {
-                14 -> textSizes[0]?.setChecked(true)
-                17 -> textSizes[1]?.setChecked(true)
-                20 -> textSizes[2]?.setChecked(true)
+                14 -> textSizes[0].setChecked(true)
+                17 -> textSizes[1].setChecked(true)
+                20 -> textSizes[2].setChecked(true)
                 else -> {
                     Utilities.setTextSize(14)
-                    textSizes[0]?.setChecked(true)
+                    textSizes[0].setChecked(true)
                 }
             }
         }
         // Paragraph Space
         run {
-            paragraphSpaces[0] = menu.findItem(R.id.chapter_view_paragraphSpace_none)
-            paragraphSpaces[1] = menu.findItem(R.id.chapter_view_paragraphSpace_small)
-            paragraphSpaces[2] = menu.findItem(R.id.chapter_view_paragraphSpace_medium)
-            paragraphSpaces[3] = menu.findItem(R.id.chapter_view_paragraphSpace_large)
-            paragraphSpaces[Settings.paragraphSpacing]?.setChecked(true)
+            paragraphSpaces = arrayOf(
+                    menu.findItem(R.id.chapter_view_paragraphSpace_none),
+                    menu.findItem(R.id.chapter_view_paragraphSpace_small),
+                    menu.findItem(R.id.chapter_view_paragraphSpace_medium),
+                    menu.findItem(R.id.chapter_view_paragraphSpace_large)
+            )
+
+            paragraphSpaces[Settings.paragraphSpacing].setChecked(true)
         }
         // Indent Space
         run {
-            indentSpaces[0] = menu.findItem(R.id.chapter_view_indent_none)
-            indentSpaces[1] = menu.findItem(R.id.chapter_view_indent_small)
-            indentSpaces[2] = menu.findItem(R.id.chapter_view_indent_medium)
-            indentSpaces[3] = menu.findItem(R.id.chapter_view_indent_large)
-            indentSpaces[Settings.indentSize]?.setChecked(true)
+            indentSpaces = arrayOf(
+                    menu.findItem(R.id.chapter_view_indent_none),
+                    menu.findItem(R.id.chapter_view_indent_small),
+                    menu.findItem(R.id.chapter_view_indent_medium),
+                    menu.findItem(R.id.chapter_view_indent_large)
+            )
+
+            indentSpaces[Settings.indentSize].setChecked(true)
         }
         /* Reader
         {
@@ -256,7 +263,7 @@ class ChapterView : Fragment() {
         Log.i("ChapterView", "Resuming:${appendID()}")
     }
 
-    fun appendID(): String {
+    private fun appendID(): String {
         return "\tURL/ID( $url | $chapterID )"
     }
 
@@ -342,9 +349,9 @@ class ChapterView : Fragment() {
             for (x in 0 until Settings.indentSize) replaceSpacing.append("\t")
             text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
             if (text!!.length > 100)
-                Log.d("ChapterView", "TextSet\t" + text!!.substring(0, 100).replace("\n", "\\n") +"\n"+ appendID())
+                Log.d("ChapterView", "TextSet\t" + text!!.substring(0, 100).replace("\n", "\\n") + "\n" + appendID())
             else if (text!!.isNotEmpty())
-                Log.d("ChapterView", "TextSet\t" +text!!.substring(0, text!!.length - 1).replace("\n", "\\n") +"\n"+ appendID())
+                Log.d("ChapterView", "TextSet\t" + text!!.substring(0, text!!.length - 1).replace("\n", "\\n") + "\n" + appendID())
             textView?.text = text
             // viewPager2.post(() -> currentReader.setText(text));
         }

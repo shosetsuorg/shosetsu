@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.tracking
 
 import android.content.res.Resources
-import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of Shosetsu.
@@ -25,9 +24,9 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 enum class Trackers(private val internalName: String, val id: Int) {
-    ANILIST(com.github.doomsdayrs.apps.shosetsu.backend.tracking.Trackers.Companion.getString(R.string.anilist), 1),
-    MYANIMELIST(com.github.doomsdayrs.apps.shosetsu.backend.tracking.Trackers.Companion.getString(R.string.myanimelist), 2);
-
+    //ANILIST(getString(R.string.anilist), 1),
+    //MYANIMELIST(getString(R.string.myanimelist), 2);
+    ;
     override fun toString(): String {
         return "Trackers{" +
                 "name='" + internalName + '\'' +

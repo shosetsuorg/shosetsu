@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -16,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.google.android.material.chip.Chip
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_novel_main.*
 import java.io.IOException
@@ -51,20 +49,11 @@ import java.util.*
  */
 class NovelFragmentInfo : Fragment() {
 
-    @JvmField
     var novelFragment: NovelFragment? = null
 
-    fun getSwipeRefresh(): SwipeRefreshLayout? {
-        return fragment_novel_main_refresh
-    }
 
-    fun getNovelAdd(): FloatingActionButton? {
-        return fragment_novel_add
-    }
 
-    fun setNovelFragment(novelFragment: NovelFragment?) {
-        this.novelFragment = novelFragment
-    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -72,13 +61,13 @@ class NovelFragmentInfo : Fragment() {
                 val intent = Intent(activity, MigrationView::class.java)
                 try {
                     val novelCards = ArrayList<NovelCard>()
-                    novelCards.add(NovelCard(novelFragment!!.novelPage.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage.imageURL, novelFragment!!.formatter!!.formatterID))
+                    novelCards.add(NovelCard(novelFragment!!.novelPage.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage.imageURL, novelFragment!!.formatter.formatterID))
                     intent.putExtra("selected", Utilities.serializeToString(novelCards))
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
                 intent.putExtra("target", 1)
-                regret(context)
+                regret(context!!)
                 // startActivity(intent)
                 return true
             }
@@ -180,7 +169,7 @@ class NovelFragmentInfo : Fragment() {
                 }
                 fragment_novel_add!!.show()
                 if (novelFragment!!.formatter != null) {
-                    fragment_novel_formatter!!.text = novelFragment!!.formatter!!.name
+                    fragment_novel_formatter!!.text = novelFragment!!.formatter.name
                 }
             }
         } else Log.e("NovelFragmentInfo", "NovelFragmentInfo view is null")

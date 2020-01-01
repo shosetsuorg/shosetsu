@@ -41,7 +41,7 @@ class CataloguesAdapter(private val catalogues: ArrayList<CatalogueCard>, privat
         val catalogueCard = catalogues[i]
         catalogueHolder.formatter = (catalogueCard.formatter)
         catalogueCard.formatter.imageURL
-        if (!catalogueCard.formatter.imageURL.isEmpty()) Picasso.get()
+        if (catalogueCard.formatter.imageURL.isNotEmpty()) Picasso.get()
                 .load(catalogueCard.formatter.imageURL)
                 .into(catalogueHolder.imageView) else catalogueHolder.imageView.setImageResource(catalogueCard.libraryImageResource)
         catalogueHolder.title.text = catalogueCard.title

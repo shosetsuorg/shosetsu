@@ -39,7 +39,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHol
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import java.util.*
 
 /**
  * Shosetsu

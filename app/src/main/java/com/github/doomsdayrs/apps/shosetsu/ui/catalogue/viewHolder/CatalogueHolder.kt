@@ -47,7 +47,7 @@ class CatalogueHolder(itemView: View, private val fragmentManager: FragmentManag
 
     override fun onClick(v: View) {
         Log.d("FormatterSelection", formatter.name)
-        if (Utilities.isOnline()) {
+        if (Utilities.isOnline) {
             val catalogueFragment = CatalogueFragment()
             catalogueFragment.formatter = (formatter)
             fragmentManager.beginTransaction()
