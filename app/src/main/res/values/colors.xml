@@ -1,33 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="textColorLight">#000</color>
 
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
     <color name="selected_blue">#0078FF</color>
 
     <color name="white_trans">#CCFFFFFF</color>
     <color name="black_trans">#CC000000</color>
 
 
-    <color name="colorLightPrimary">#80FFEB3B</color>
-    <color name="colorLightPrimaryDark">#00A0B6</color>
     <color name="colorLightAccent">#0096AC</color>
-    <color name="colorLightBackground">#FFFFFF</color>
-
-    <color name="colorDarkPrimary">#80FFEB3B</color>
-    <color name="colorDarkPrimaryDark">#4B4B4B</color>
-    <color name="colorDarkAccent">#646464</color>
-    <color name="colorDarkBackground">#4B4B4B</color>
-
-    <color name="colorNightPrimary">#80FFEB3B</color>
-    <color name="colorNightPrimaryDark">#000</color>
-    <color name="colorNightAccent">#191919</color>
-    <color name="colorNightBackground">#000</color>
 
     <color name="bookmarked">#00A2FF</color>
 
     <color name="shade">#80000000</color>
 
 
+    <color name="transparent">#00000000</color>
 </resources>

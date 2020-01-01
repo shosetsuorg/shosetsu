@@ -1,9 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.NonNull;
 
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Columns;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
@@ -33,46 +34,74 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
 
+    private static final String NOVEL_IDENTIFICATION_CREATE = "create table if not exists " + Tables.NOVEL_IDENTIFICATION + "(" +
+            Columns.ID + " integer primary key autoincrement," +
+            Columns.URL + " text unique not null," +
+            Columns.FORMATTER_ID + " integer not null" +
+            ")";
+
+    private static final String CHAPTER_IDENTIFICATION_CREATE = "create table if not exists " + Tables.CHAPTER_IDENTIFICATION + "(" +
+            Columns.ID + " integer primary key autoincrement," +
+
+            // Refers to NOVEL
+            Columns.PARENT_ID + " integer not null," +
+            Columns.URL + " text unique not null" +
+            ")";
+
+
     private static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
-            // Novel URL this chapter belongs to
-            Columns.NOVEL_URL + " text not null," +
-            // The chapter chapterURL
-            Columns.CHAPTER_URL + " text not null unique," +
+            // Refers to CHAPERID
+            Columns.ID + " integer primary key," +
 
-            Columns.SAVED_DATA + " text," +
+            // Refers to NOVELID
+            Columns.PARENT_ID + " integer not null," +
 
-            // Saved Data
+            Columns.TITLE + " text," +
+            Columns.RELEASE_DATE + " text," +
+            Columns.ORDER + " integer not null," +
+
             // > Scroll position, either 0 for top, or X for the position
             Columns.Y + " integer not null," +
             // > Either 0 for none, or an incremented count (Status)
             Columns.READ_CHAPTER + " integer not null," +
             // > Either 0 for false or 1 for true.
-            Columns.BOOKMARKED + " integer not null," +
+            Columns.BOOKMARKED + " integer  not null," +
 
             // If 1 then true and SAVE_PATH has data, false otherwise
             Columns.IS_SAVED + " integer not null," +
-            Columns.SAVE_PATH + " text)";
+            Columns.SAVE_PATH + " text" +
+            ")";
 
     //TODO Figure out a legitimate way to structure all this data
 
     // Library that the user has saved their novels to
     private static final String NOVELS = "create TABLE if not exists " + Tables.NOVELS + " (" +
+            // Refers to NOVELID
+            Columns.PARENT_ID + " integer not null," +
             // If in the library
             Columns.BOOKMARKED + " integer not null," +
-            // URL of this novel
-            Columns.NOVEL_URL + " text not null unique, " +
-            // Saved DATA of the novel
-            Columns.NOVEL_PAGE + " text not null," +
-            // Formatter this novel comes from
-            Columns.FORMATTER_ID + " integer not null," +
-            Columns.STATUS + " integer not null" + ")";
+
+            Columns.READING_STATUS + " text," +
+            Columns.READER_TYPE + " integer," +
+
+            // This bulk is the data values
+            Columns.TITLE + " text," +
+            Columns.IMAGE_URL + " text," +
+            Columns.DESCRIPTION + " text," +
+            Columns.GENRES + " text," +
+            Columns.AUTHORS + " text," +
+            Columns.STATUS + " text not null," +
+            Columns.TAGS + " text," +
+            Columns.ARTISTS + " text," +
+            Columns.LANGUAGE + " text," +
+            Columns.MAX_CHAPTER_PAGE + " integer" +
+            ")";
 
 
     // Watches download listing
     private static final String DOWNLOADS_CREATE = "create TABLE if not exists " + Tables.DOWNLOADS + "(" +
-            Columns.FORMATTER_ID + " integer not null," +
-            Columns.NOVEL_URL + " text not null," +
-            Columns.CHAPTER_URL + " text not null," +
+            // Refers to CHAPERID
+            Columns.PARENT_ID + " integer not null," +
 
             Columns.NOVEL_NAME + " text not null," +
             Columns.CHAPTER_NAME + " text not null," +
@@ -83,8 +112,10 @@ public class DBHelper extends SQLiteOpenHelper {
             Columns.PAUSED + " integer not null)";
 
     private static final String UPDATES_CREATE = "create table if not exists " + Tables.UPDATES + "(" +
-            Columns.NOVEL_URL + " text not null," +
-            Columns.CHAPTER_URL + " text not null unique," +
+            // Refers to CHAPERID
+            Columns.ID + " integer not null," +
+            // Refers to NovelID
+            Columns.PARENT_ID + " integer not null," +
             Columns.TIME + " integer not null" + ")";
 
     /**
@@ -93,9 +124,8 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 7);
+        super(context, DB_NAME, null, 9);
     }
-
 
     /**
      * Creates DB things
@@ -103,12 +133,15 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param db db to fill
      */
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(@NonNull SQLiteDatabase db) {
+        db.execSQL(NOVEL_IDENTIFICATION_CREATE);
+        db.execSQL(CHAPTER_IDENTIFICATION_CREATE);
         db.execSQL(NOVELS);
         db.execSQL(DOWNLOADS_CREATE);
         db.execSQL(CHAPTERS_CREATE);
         db.execSQL(UPDATES_CREATE);
     }
+
 
     /**
      * Upgrades database
@@ -118,147 +151,22 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param newVersion new version ID
      */
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 4) {
-            db.execSQL("drop table if exists library");
-            db.execSQL("drop table if exists bookmarks");
-            db.execSQL("drop table if exists downloads");
-            db.execSQL("drop table if exists chapters");
-            db.execSQL("create TABLE if not exists library (" +
-                    // URL of this novel
-                    Database.Columns.NOVEL_URL + " text not null unique, " +
-                    // Saved DATA of the novel
-                    Database.Columns.NOVEL_PAGE + " text not null," +
-                    // Formatter this novel comes from
-                    Database.Columns.FORMATTER_ID + " integer not null," +
-                    Database.Columns.MAX_PAGE + " integer not null," +
-                    Database.Columns.STATUS + " integer not null" + ")");
+    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 9) {
+            //TODO Convert tables
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTERS);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.NOVELS);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.DOWNLOADS);
+            db.execSQL("DROP TABLE IF EXISTS " + Tables.UPDATES);
+
+            db.execSQL(NOVEL_IDENTIFICATION_CREATE);
+            db.execSQL(CHAPTER_IDENTIFICATION_CREATE);
+
+            db.execSQL(NOVELS);
             db.execSQL(DOWNLOADS_CREATE);
             db.execSQL(CHAPTERS_CREATE);
-        }
-        if (oldVersion < 5) {
-            // in between
-            db.execSQL("create TABLE if not exists libraryNext (" +
-                    // URL of this novel
-                    Database.Columns.NOVEL_URL + " text not null unique, " +
-                    // Saved DATA of the novel
-                    Database.Columns.NOVEL_PAGE + " text not null," +
-                    // Formatter this novel comes from
-                    Database.Columns.FORMATTER_ID + " integer not null," +
-                    Database.Columns.MAX_PAGE + " integer not null," +
-                    Database.Columns.STATUS + " integer not null" + ")");
-
-            // Move data to middle
-            Cursor cursor = db.rawQuery("select * from library", null);
-
-            while (cursor.moveToNext()) {
-                db.execSQL("insert into libraryNext (" +
-                        Database.Columns.NOVEL_URL + "," +
-                        Database.Columns.NOVEL_PAGE + "," +
-                        Database.Columns.FORMATTER_ID + "," +
-                        Database.Columns.MAX_PAGE + "," +
-                        Database.Columns.STATUS + ") values ('" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString())) + "','" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())) + "'," +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString())) + "," +
-                        0 + "," +
-                        0 + ")");
-            }
-            cursor.close();
-            // Drop old table
-            db.execSQL("drop table if exists library");
-            db.execSQL("create TABLE if not exists library (" +
-                    // URL of this novel
-                    Database.Columns.NOVEL_URL + " text not null unique, " +
-                    // Saved DATA of the novel
-                    Database.Columns.NOVEL_PAGE + " text not null," +
-                    // Formatter this novel comes from
-                    Database.Columns.FORMATTER_ID + " integer not null," +
-                    Database.Columns.MAX_PAGE + " integer not null," +
-                    Database.Columns.STATUS + " integer not null" + ")");
-
-            // Move middle to new
-            cursor = db.rawQuery("select * from libraryNext", null);
-            while (cursor.moveToNext()) {
-                db.execSQL("insert into library (" +
-                        Database.Columns.NOVEL_URL + "," +
-                        Database.Columns.NOVEL_PAGE + "," +
-                        Database.Columns.FORMATTER_ID + "," +
-                        Database.Columns.MAX_PAGE + "," +
-                        Database.Columns.STATUS + ") values ('" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString())) + "','" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())) + "'," +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString())) + "," +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.MAX_PAGE.toString())) + "," +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())) + ")");
-            }
-            db.execSQL("drop table if exists libraryNext");
-        }
-        if (oldVersion < 6) {
-            db.execSQL("drop table if exists libraryNext");
-            // in between
-            db.execSQL("create TABLE if not exists libraryNext (" +
-                    //If in library
-                    Database.Columns.BOOKMARKED + " text not null, " +
-                    // URL of this novel
-                    Database.Columns.NOVEL_URL + " text not null unique, " +
-                    // Saved DATA of the novel
-                    Database.Columns.NOVEL_PAGE + " text not null," +
-                    // Formatter this novel comes from
-                    Database.Columns.FORMATTER_ID + " integer not null," +
-                    Database.Columns.STATUS + " integer not null" + ")");
-
-            // Move data to middle
-            Cursor cursor = db.rawQuery("select * from library", null);
-
-            while (cursor.moveToNext()) {
-                db.execSQL("insert into libraryNext (" +
-                        Database.Columns.BOOKMARKED + "," +
-                        Database.Columns.NOVEL_URL + "," +
-                        Database.Columns.NOVEL_PAGE + "," +
-                        Database.Columns.FORMATTER_ID + "," +
-                        Database.Columns.STATUS + ") values (" +
-                        1 + ",'" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString())) + "','" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())) + "'," +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString())) + "," +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())) + ")");
-            }
-            cursor.close();
-
-            // Drop old table
-            db.execSQL("drop table if exists library");
-            db.execSQL("create TABLE if not exists " + Database.Tables.NOVELS + " (" +
-                    // If in library
-                    Database.Columns.BOOKMARKED + " integer not null, " +
-                    // URL of this novel
-                    Database.Columns.NOVEL_URL + " text not null unique, " +
-                    // Saved DATA of the novel
-                    Database.Columns.NOVEL_PAGE + " text not null," +
-                    // Formatter this novel comes from
-                    Database.Columns.FORMATTER_ID + " integer not null," +
-                    Database.Columns.STATUS + " integer not null" + ")");
-
-            // Move middle to new
-            cursor = db.rawQuery("select * from libraryNext", null);
-            while (cursor.moveToNext()) {
-                db.execSQL("insert into novels (" +
-                        Database.Columns.BOOKMARKED + "," +
-                        Database.Columns.NOVEL_URL + "," +
-                        Database.Columns.NOVEL_PAGE + "," +
-                        Database.Columns.FORMATTER_ID + "," +
-                        Database.Columns.STATUS + ") values (" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.BOOKMARKED.toString())) + ",'" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_URL.toString())) + "','" +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.NOVEL_PAGE.toString())) + "'," +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.FORMATTER_ID.toString())) + "," +
-                        cursor.getString(cursor.getColumnIndex(Database.Columns.STATUS.toString())) + ")");
-            }
-            cursor.close();
-            db.execSQL("drop table if exists libraryNext");
-        }
-        if (oldVersion < 7) {
             db.execSQL(UPDATES_CREATE);
         }
     }
+
 }

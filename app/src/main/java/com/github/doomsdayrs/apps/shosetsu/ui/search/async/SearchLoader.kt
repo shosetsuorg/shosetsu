@@ -1,0 +1,69 @@
+package com.github.doomsdayrs.apps.shosetsu.ui.search.async
+
+import android.os.AsyncTask
+import android.view.View
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
+
+
+/*
+ * This file is part of shosetsu.
+ * 
+ * shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *  
+ * shosetsu is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * ====================================================================
+ */
+/**
+ * shosetsu
+ * 20 / 12 / 2019
+ *
+ * @author github.com/doomsdayrs
+ */
+class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<String, Void, Boolean>() {
+    var array: List<Novel> = arrayListOf()
+
+    override fun onPreExecute() {
+        super.onPreExecute()
+        searchViewHolder.itemView.post {
+            searchViewHolder.progressBar.visibility = View.VISIBLE
+        }
+    }
+
+    override fun doInBackground(vararg params: String?): Boolean {
+        val a: List<Novel>? = CatalogueLoader(searchViewHolder.query, searchViewHolder.formatter).execute()
+        if (a != null)
+            array = a
+        return true
+    }
+
+    override fun onPostExecute(result: Boolean?) {
+        super.onPostExecute(result)
+        searchViewHolder.itemView.post {
+            searchViewHolder.progressBar.visibility = View.GONE
+        }
+        searchViewHolder.itemView.post {
+            // Stores DATA
+            val data: SearchFragment.StoredData = SearchFragment.StoredData(searchViewHolder.formatter.formatterID)
+            data.novelArray = array
+            searchViewHolder.searchFragment.array.add(data)
+
+            // Displays DATA
+            searchViewHolder.searchResultsAdapter = SearchResultsAdapter(array, searchViewHolder)
+            searchViewHolder.setAdapter()
+        }
+    }
+
+}

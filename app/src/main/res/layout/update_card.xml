@@ -64,7 +64,6 @@
             app:srcCompat="@drawable/ic_more_vert_black_24dp" />
 
         <TextView
-            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

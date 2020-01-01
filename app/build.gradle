@@ -1,13 +1,15 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.github.doomsdayrs.apps.shosetsu"
+        applicationId 'com.github.doomsdayrs.apps.shosetsu'
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 21
-        versionName "v0.1.0.1"
+        versionCode 22
+        versionName "v1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -20,6 +22,11 @@ android {
         debug {
             versionNameSuffix = '-debug'
         }
+        dev {
+            versionNameSuffix = '-dev'
+            applicationIdSuffix '.dev'
+            debuggable true
+        }
     }
     compileOptions {
         targetCompatibility = '1.8'
@@ -30,7 +37,7 @@ android {
 android.applicationVariants.all { variant ->
     variant.outputs.all {
         def appName = "shosetsu"
-        outputFileName = appName+"-${variant.versionName}.apk"
+        outputFileName = appName + "-${variant.versionName}.apk"
     }
 }
 android {
@@ -47,29 +54,56 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.android.material:material:1.1.0-alpha10'
-    implementation 'com.graphql-java:graphql-java:2019-08-20T01-08-54-018b57c'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
+    implementation 'com.graphql-java:graphql-java:2019-12-31T02-25-35-a83995a'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     //noinspection GradleCompatible
-    implementation 'com.google.android.material:material:1.1.0-alpha10'
-    testImplementation 'junit:junit:4.13-beta-3'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
+    implementation 'androidx.work:work-runtime:2.2.0'
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
-    implementation 'com.github.Doomsdayrs:shosetsu-extensions:0.1.1'
-    implementation 'com.github.Doomsdayrs:shosetsu-services:v0.1.1'
+    // Annotations
+    implementation 'org.jetbrains:annotations:18.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
 
-    implementation 'com.github.Doomsdayrs:novelreader-services:1.1.4'
+    // Core libraries
+    implementation 'com.github.doomsdayrs:shosetsu-extensions:0.2.3'
+    implementation 'com.github.doomsdayrs:shosetsu-services:0.2.5'
 
+    // Image loading
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'org.jetbrains:annotations:17.0.0'
 
     //TODO GITHUB sign in to save backup data to cloud
-    implementation 'com.github.kohsuke:github-api:github-api-1.95'
+    //implementation 'com.github.kohsuke:github-api:github-api-1.95'
+
+    // App updater
     implementation 'com.github.javiersantos:AppUpdater:2.7'
+
+    // Markdown view
     implementation 'us.feras.mdv:markdownview:1.1.0'
-    implementation 'joda-time:joda-time:2.10.3'
-    implementation "org.mozilla.components:feature-readerview:1.0.0"
+
+    // Time control
+    implementation 'joda-time:joda-time:2.10.5'
+
+    // Choosing backup files
+    implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
+
+
+    // TODO Implement readerview provided by Mozilla
+    //implementation "org.mozilla.components:feature-readerview:1.0.0"
+    //implementation 'org.mozilla.components:support-base:1.0.0'
+
+    // Cloud flare calculator
+    implementation 'com.zhkrb.cloudflare-scrape-android:scrape-rhino:0.1.1'
+
+    implementation 'androidx.core:core-ktx:1.2.0-rc01'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Async controller
+    implementation 'com.zsoltsafrany:needle:1.0.0'
 }

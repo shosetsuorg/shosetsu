@@ -6,10 +6,9 @@
         android:id="@+id/chapter_filter"
         android:icon="@drawable/ic_filter_list_black_24dp"
         android:title="@string/filter"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/download"
         android:title="@string/download"
         app:showAsAction="never" />
 </menu>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+  <group android:scaleX="0.648"
+      android:scaleY="0.648"
+      android:translateX="21.6"
+      android:translateY="21.6">
+
+      <path
+          android:name="path50"
+          android:fillColor="#ffffff"
+          android:strokeColor="#000000"
+          android:strokeWidth="5"
+          android:pathData="M 50 50 C 50 50 50 50 50 50 C 50 50 50 50 50 50 C 50 50 50 50 50 50 C 50 50 50 50 50 50 Z" />
+      <path
+          android:name="rect1380"
+          android:fillColor="#ff0000"
+          android:strokeWidth="5"
+          android:strokeLineJoin="round"
+          android:strokeLineCap="round"
+          android:pathData="M 0 0 H 100 V 100 H 0 V 0 Z" />
+      <path
+          android:name="path1383"
+          android:fillColor="#ffffff"
+          android:strokeColor="#000000"
+          android:strokeWidth="5"
+          android:strokeLineJoin="round"
+          android:strokeLineCap="round"
+          android:pathData="M 50 15 C 69.3299662441 15 85 30.6700337559 85 50 C 85 69.3299662441 69.3299662441 85 50 85 C 30.6700337559 85 15 69.3299662441 15 50 C 15 30.6700337559 30.6700337559 15 50 15 Z" />
+      <group
+              android:name="text875"
+              android:scaleX="1.0132481"
+              android:scaleY="0.98692508">
+          <path
+              android:name="path829"
+              android:fillColor="#000000"
+              android:strokeWidth="4.16297913"
+              android:pathData="M 73.719545,34.356472 C 71.388277,32.302736 66.781247,29.083366
+  63.284344,26.86311 l -2.442281,2.719813 c 3.552409,2.331268 8.103933,5.717158
+  10.324188,7.881907 z M 48.519646,38.85249 H 61.341621 V 49.676235 H 48.519646 Z
+  M 65.393587,49.676235 V 34.85603 H 48.519646 V 25.364438 H 44.412173 V 34.85603
+  H 28.315321 v 3.99646 H 44.412173 V 49.676235 H 24.6519 v 3.940953 h 19.760273 v
+  22.202555 h 4.107473 V 53.617188 h 20.481856 c -0.666077,8.048426
+  -1.443166,11.545329 -2.497787,12.488937 -0.610571,0.499558 -1.221141,0.555064
+  -2.331268,0.555064 -1.332154,0 -4.829056,0 -8.325958,-0.333038 0.721583,1.110127
+  1.276647,2.719813 1.332153,3.940953 3.441396,0.166519 6.771779,0.222026
+  8.436971,0.111013 1.887217,-0.111013 3.163864,-0.499558 4.329498,-1.665192
+  1.609685,-1.665191 2.442281,-6.050196 3.274876,-17.095967 0.111013,-0.61057
+  0.16652,-1.942723 0.16652,-1.942723 z" />
+      </group>
+  </group>
+</vector>
