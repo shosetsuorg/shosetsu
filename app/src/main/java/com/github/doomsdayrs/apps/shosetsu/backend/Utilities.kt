@@ -333,15 +333,6 @@ object Utilities {
             return if (activeNetwork != null) activeNetwork.type == ConnectivityManager.TYPE_WIFI || activeNetwork.type == ConnectivityManager.TYPE_MOBILE else false
         }//TODO: Check this also, this doesn't seem to be a nice way to do things.
 
-    /**
-     * Is reader in night mode
-     *
-     * @return true if so, otherwise false
-     */
-    val isReaderNightMode: Boolean
-        get() =//TODO: Check this also, this doesn't seem to be a nice way to do things.
-            Settings.ReaderTextColor == Color.WHITE
-
 
     fun setNightNode() {
         setReaderColor(Color.WHITE, Color.BLACK)
@@ -384,17 +375,6 @@ object Utilities {
             else -> {
                 1
             }
-        }
-    }
-
-    /**
-     * Swaps the reader colors
-     */
-    fun swapReaderColor() {
-        if (isReaderNightMode) {
-            setReaderColor(Color.BLACK, Color.WHITE)
-        } else {
-            setReaderColor(Color.WHITE, Color.BLACK)
         }
     }
 

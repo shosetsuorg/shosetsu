@@ -706,6 +706,7 @@ public class Database {
          * @param chapterURL chapter url
          * @return if present
          */
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         public static boolean isNotInChapters(@NonNull String chapterURL) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null);
             int a = cursor.getCount();
