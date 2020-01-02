@@ -22,6 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.addToUpdates
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.Custom
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
@@ -217,6 +218,18 @@ class NovelFragmentChapters : Fragment() {
         return fragment_novel_chapters_recycler!!.post { if (adapter != null) adapter!!.notifyDataSetChanged() }
     }
 
+    private fun customAdd(count: Int) {
+
+        val ten = novelFragment?.getCustom(count, object : Custom {
+            override fun customCheck(status: Status): Boolean {
+                return true
+            }
+        })
+        if (!ten.isNullOrEmpty())
+            for (chapter in ten)
+                DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter.title, getChapterIDFromChapterURL(chapter.link)))
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.download -> {
@@ -242,21 +255,19 @@ class NovelFragmentChapters : Fragment() {
                                     Utilities.regret(context!!)
                                 }
                                 3 -> {
-                                    // TODO Next 10
-                                    Utilities.regret(context!!)
+                                    Log.d("NovelFragmentChapters","Downloading next 10")
+                                    customAdd(10)
                                 }
                                 4 -> {
-                                    // TODO Next 5
-                                    Utilities.regret(context!!)
+                                    Log.d("NovelFragmentChapters","Downloading next 5")
+                                    customAdd(5)
                                 }
                                 5 -> {
                                     // Download next
                                     val last = novelFragment!!.getLastRead()
-                                    if (last != null) {
-                                        val next = novelFragment!!.getNextChapter(last.link, novelFragment!!.novelChapters)
-                                        if (next != null)
-                                            DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, next.title, getChapterIDFromChapterURL(next.link)))
-                                    }
+                                    val next = novelFragment!!.getNextChapter(last.link, novelFragment!!.novelChapters)
+                                    if (next != null)
+                                        DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, next.title, getChapterIDFromChapterURL(next.link)))
                                 }
                             }
                         }

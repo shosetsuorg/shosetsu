@@ -26,7 +26,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import kotlinx.android.synthetic.main.fragment_novel.*
-import java.util.*
 
 
 /*
@@ -200,7 +199,54 @@ class NovelFragment : Fragment() {
         return null
     }
 
-    fun getLastRead(): NovelChapter? {
+    interface Custom {
+        fun customCheck(status: Status): Boolean
+    }
+
+    fun getCustom(count: Int, check: Custom): List<NovelChapter> {
+        Log.d("NovelFragment", "CustomGet of chapters: Count:$count")
+        val customChapters: ArrayList<NovelChapter> = ArrayList()
+        val lastReadChapter = getLastRead()
+        var found = false
+        if (!novelChapters.isNullOrEmpty()) if (!novelFragmentChapters!!.reversed) {
+            for (x in novelChapters.size - 1 downTo 0) {
+                if (lastReadChapter.link == novelChapters[x].link)
+                    found = true
+                if (found) {
+                    var y = x
+                    while (y < novelChapters.size) {
+                        if (customChapters.size <= count) {
+                            if (check.customCheck(getStatus(getChapterIDFromChapterURL(novelChapters[y].link))))
+                                customChapters.add(novelChapters[y])
+                        }
+                        Log.d("NovelFragment", "Size ${customChapters.size}")
+                        y++
+                    }
+                }
+
+            }
+        } else {
+            for (x in novelChapters.indices) {
+                if (lastReadChapter.link == novelChapters[x].link)
+                    found = true
+                if (found) {
+                    var y = x
+                    while (y > 0) {
+                        if (customChapters.size <= count) {
+                            if (check.customCheck(getStatus(getChapterIDFromChapterURL(novelChapters[y].link))))
+                                customChapters.add(novelChapters[y])
+                        }
+                        y--
+                    }
+                }
+
+            }
+        }
+
+        return customChapters
+    }
+
+    fun getLastRead(): NovelChapter {
         if (!novelChapters.isNullOrEmpty())
             if (!novelFragmentChapters!!.reversed)
                 for (x in novelChapters.size - 1 downTo 0) {
