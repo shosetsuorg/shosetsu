@@ -13,6 +13,7 @@
 
     <color name="shade">#80000000</color>
 
+    <color name="wheat">#F5DEB3</color>
 
     <color name="transparent">#00000000</color>
 </resources>

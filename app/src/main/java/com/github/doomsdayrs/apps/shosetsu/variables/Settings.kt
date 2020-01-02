@@ -31,7 +31,6 @@ object Settings {
     /**
      * How to mark a chapter as reading
      */
-    @JvmField
     var ReaderMarkingType: Int = MarkingTypes.ONVIEW.i
 
     enum class MarkingTypes(val i: Int) {
@@ -43,7 +42,6 @@ object Settings {
     /**
      * Reader text size
      */
-    @JvmField
     var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
 
     @Suppress("unused")
@@ -58,31 +56,26 @@ object Settings {
     /**
      * Reader text color
      */
-    @JvmField
     var ReaderTextColor = Color.BLACK
 
     /**
      * Reader background color
      */
-    @JvmField
     var ReaderTextBackgroundColor = Color.WHITE
 
     /**
      * global connectivity manager variable
      */
-    @JvmField
     var connectivityManager: ConnectivityManager? = null
 
     /**
      * If download manager is paused
      */
-    @JvmField
     var downloadPaused = false
 
     /**
      * Current theme to use
      */
-    @JvmField
     var themeMode = Themes.LIGHT.id
 
     //TODO Use this
@@ -92,9 +85,7 @@ object Settings {
         DARK(2)
     }
 
-    @JvmField
     var paragraphSpacing = 0
 
-    @JvmField
     var indentSize = 0
 }

@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search.async
 import android.os.AsyncTask
 import android.view.View
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
@@ -33,7 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolde
  * @author github.com/doomsdayrs
  */
 class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<String, Void, Boolean>() {
-    var array: List<Novel> = arrayListOf()
+    var array: List<Array<String>> = arrayListOf()
 
     override fun onPreExecute() {
         super.onPreExecute()
@@ -44,8 +45,10 @@ class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<S
 
     override fun doInBackground(vararg params: String?): Boolean {
         val a: List<Novel>? = CatalogueLoader(searchViewHolder.query, searchViewHolder.formatter).execute()
-        if (a != null)
-            array = a
+        val correct: ArrayList<Array<String>> = if (a != null)
+            Utilities.convertNovelArrayToString2DArray(a)
+        else ArrayList()
+        array = correct
         return true
     }
 

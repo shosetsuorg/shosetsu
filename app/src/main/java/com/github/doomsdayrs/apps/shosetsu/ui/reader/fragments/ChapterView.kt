@@ -12,10 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.IndentChange
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ParaSpacingChange
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.ReaderChange
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.TextSizeChange
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
@@ -45,7 +42,11 @@ import kotlinx.android.synthetic.main.chapter_view.*
  * @author github.com/doomsdayrs
  */
 class ChapterView : Fragment() {
-    private val demarkActions = arrayOf(TextSizeChange(this), ParaSpacingChange(this), IndentChange(this), ReaderChange(this))
+    private val demarkActions = arrayOf(TextSizeChange(this), ParaSpacingChange(this), IndentChange(this), ReaderChange(this), ThemeChange(this))
+
+    // Order of values. Night, Light, Sepia
+    private lateinit var themes: Array<MenuItem>
+
     // Order of values. Small,Medium,Large
     private lateinit var textSizes: Array<MenuItem>
     // Order of values. Non,Small,Medium,Large
@@ -85,7 +86,27 @@ class ChapterView : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_chapter_view, menu)
         // Night mode
-        menu.findItem(R.id.chapter_view_nightMode).isChecked = Utilities.isReaderNightMode
+        run {
+            themes = arrayOf(
+                    menu.findItem(R.id.chapter_view_reader_night),
+                    menu.findItem(R.id.chapter_view_reader_light),
+                    menu.findItem(R.id.chapter_view_reader_sepia))
+            when (Utilities.getReaderColor(context!!)) {
+                0 -> {
+                    themes[0].setChecked(true)
+                }
+                1 -> {
+                    themes[1].setChecked(true)
+                }
+                2 -> {
+                    themes[2].setChecked(true)
+                }
+                else -> {
+                    Utilities.setLightMode()
+                    themes[1].setChecked(true)
+                }
+            }
+        }
         //  Bookmark
         run {
             bookmark = menu.findItem(R.id.chapter_view_bookmark)
@@ -168,19 +189,22 @@ class ChapterView : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d("item", item.toString())
         return when (item.itemId) {
-            R.id.chapter_view_nightMode -> {
-                if (!item.isChecked) {
-                    Utilities.swapReaderColor()
-                    setUpReader()
-                } else {
-                    Utilities.swapReaderColor()
-                    setUpReader()
-                }
-                item.isChecked = !item.isChecked
+            R.id.chapter_view_reader_night -> {
+                Utilities.unmarkMenuItems(themes, 0, demarkActions[4])
+                true
+            }
+
+            R.id.chapter_view_reader_light -> {
+                Utilities.unmarkMenuItems(themes, 1, demarkActions[4])
+                true
+            }
+            R.id.chapter_view_reader_sepia -> {
+                Utilities.unmarkMenuItems(themes, 2, demarkActions[4])
                 true
             }
             R.id.tap_to_scroll -> {
-                tapToScroll!!.isChecked = Utilities.toggleTapToScroll()
+                Utilities.regret(context!!)
+                // tapToScroll!!.isChecked = Utilities.toggleTapToScroll()
                 true
             }
             R.id.chapter_view_bookmark -> {
@@ -241,11 +265,13 @@ class ChapterView : Fragment() {
                 true
             }
             R.id.reader_0 -> {
-                Utilities.unmarkMenuItems(readers, 0, demarkActions[3])
+                Utilities.regret(context!!)
+                //Utilities.unmarkMenuItems(readers, 0, demarkActions[3])
                 true
             }
             R.id.reader_1 -> {
-                Utilities.unmarkMenuItems(readers, 1, demarkActions[3])
+                Utilities.regret(context!!)
+                //Utilities.unmarkMenuItems(readers, 1, demarkActions[3])
                 true
             }
             else -> false

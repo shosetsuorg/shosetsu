@@ -6,12 +6,12 @@ import android.view.*
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchAdapter
 import kotlinx.android.synthetic.main.search_activity.*
+import java.io.Serializable
 
 /*
  * This file is part of Shosetsu.
@@ -56,8 +56,9 @@ class SearchFragment : Fragment() {
         return StoredData(id)
     }
 
-    class StoredData(val id: Int) {
-        var novelArray: List<Novel> = arrayListOf()
+    class StoredData(val id: Int) : Serializable {
+        //TODO This is dirty, Maybe replace with CatalogueNovelCard later
+        var novelArray: List<Array<String>> = arrayListOf()
         var intArray: List<Int> = arrayListOf()
     }
 
