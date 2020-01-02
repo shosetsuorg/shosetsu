@@ -74,7 +74,7 @@ class UpdatesFragment : Fragment() {
         Log.d("StartingDay", DateTime(startTime).toString())
         for (x in 0 until days) {
             val updateFragment = UpdateFragment()
-            updateFragment.setDate(startTime)
+            updateFragment.date = (startTime)
             startTime += 86400000
             updatesFragments.add(updateFragment)
         }
@@ -92,7 +92,7 @@ class UpdatesFragment : Fragment() {
         }
         // TODAY
         val updateFragment = UpdateFragment()
-        updateFragment.setDate(DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis())).millis)
+        updateFragment.date = (DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis())).millis)
         updatesFragments.add(updateFragment)
         updatesFragments.reverse()
         val pagerAdapter = UpdatedDaysPager(childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, updatesFragments)
@@ -102,6 +102,7 @@ class UpdatesFragment : Fragment() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewpager!!.currentItem = tab.position
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })

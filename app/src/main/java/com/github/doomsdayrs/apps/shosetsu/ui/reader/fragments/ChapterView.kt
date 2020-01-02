@@ -180,7 +180,8 @@ class ChapterView : Fragment() {
                 true
             }
             R.id.tap_to_scroll -> {
-                tapToScroll!!.isChecked = Utilities.toggleTapToScroll()
+                Utilities.regret(context!!)
+                // tapToScroll!!.isChecked = Utilities.toggleTapToScroll()
                 true
             }
             R.id.chapter_view_bookmark -> {
@@ -241,11 +242,13 @@ class ChapterView : Fragment() {
                 true
             }
             R.id.reader_0 -> {
-                Utilities.unmarkMenuItems(readers, 0, demarkActions[3])
+                Utilities.regret(context!!)
+                //Utilities.unmarkMenuItems(readers, 0, demarkActions[3])
                 true
             }
             R.id.reader_1 -> {
-                Utilities.unmarkMenuItems(readers, 1, demarkActions[3])
+                Utilities.regret(context!!)
+                //Utilities.unmarkMenuItems(readers, 1, demarkActions[3])
                 true
             }
             else -> false

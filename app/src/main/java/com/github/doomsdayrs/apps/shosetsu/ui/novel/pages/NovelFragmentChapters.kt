@@ -107,14 +107,11 @@ class NovelFragmentChapters : Fragment() {
     }
 
     private var currentMaxPage = 1
-    @JvmField
     var selectedChapters = ArrayList<NovelChapter>()
     var adapter: ChaptersAdapter? = ChaptersAdapter(this)
-    @JvmField
     var novelFragment: NovelFragment? = null
 
 
-    @JvmField
     var menu: Menu? = null
 
     operator fun contains(novelChapter: NovelChapter): Boolean {
@@ -134,9 +131,7 @@ class NovelFragmentChapters : Fragment() {
         return max
     }
 
-    fun setNovelFragment(novelFragment: NovelFragment?) {
-        this.novelFragment = novelFragment
-    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -180,7 +175,7 @@ class NovelFragmentChapters : Fragment() {
         resume.visibility = GONE
         if (novelFragment != null)
             fragment_novel_chapters_refresh.setOnRefreshListener {
-                if (novelFragment != null && novelFragment!!.formatter != null && novelFragment!!.novelURL.isNotEmpty())
+                if (novelFragment != null && novelFragment!!.novelURL.isNotEmpty())
                     ChapterLoader(chaptersLoadedAction, novelFragment!!.formatter, novelFragment!!.novelURL).execute()
             }
         if (savedInstanceState != null) {
@@ -191,7 +186,7 @@ class NovelFragmentChapters : Fragment() {
         resume.setOnClickListener {
             val i = novelFragment!!.lastRead()
             if (i != -1 && i != -2) {
-                if (activity != null && novelFragment!!.formatter != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter.formatterID)
+                if (activity != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter.formatterID)
             } else Toast.makeText(context, "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -314,7 +309,6 @@ class NovelFragmentChapters : Fragment() {
         if (selectedChapters.size <= 0) inflater.inflate(R.menu.toolbar_chapters, menu) else inflater.inflate(R.menu.toolbar_chapters_selected, menu)
     }
 
-    @JvmField
     var reversed = false
 
     /**

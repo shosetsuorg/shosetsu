@@ -48,7 +48,6 @@ object DownloadManager {
     /**
      * Initializes download manager
      */
-    @JvmStatic
     fun initDownloadManager(activity: Activity) {
         if (downloadTask.isCanceled) downloadTask = DownloadTask(activity)
         if (Database.DatabaseDownloads.getDownloadCount() >= 1)
@@ -61,7 +60,6 @@ object DownloadManager {
      *
      * @param downloadItem download item to add
      */
-    @JvmStatic
     fun addToDownload(activity: Activity?, downloadItem: DownloadItem) {
         if (!Database.DatabaseDownloads.inDownloads(downloadItem)) {
             Database.DatabaseDownloads.addToDownloads(downloadItem)
@@ -79,7 +77,6 @@ object DownloadManager {
      * @param downloadItem download item to remove
      * @return if downloaded
      */
-    @JvmStatic
     fun delete(context: Context?, downloadItem: DownloadItem): Boolean {
         Log.d("DeletingChapter", downloadItem.toString())
         val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt")

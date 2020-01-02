@@ -37,7 +37,6 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class UpdateFragment : Fragment() {
-    @JvmField
     var date: Long = -1
     private val novels = ArrayList<Int>()
     private var updates = ArrayList<Update>()
@@ -45,10 +44,6 @@ class UpdateFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putLong("date", date)
-    }
-
-    fun setDate(date: Long) {
-        this.date = date
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -89,7 +89,6 @@ class NovelFragment : Fragment() {
         } else -2
     }
 
-    @JvmField
     var novelFragmentInfo: NovelFragmentInfo? = null
     var novelFragmentChapters: NovelFragmentChapters? = null
 
@@ -115,15 +114,14 @@ class NovelFragment : Fragment() {
             novelFragmentInfo = NovelFragmentInfo()
             novelFragmentInfo!!.novelFragment = (this)
             novelFragmentChapters = NovelFragmentChapters()
-            novelFragmentChapters!!.setNovelFragment(this)
+            novelFragmentChapters!!.novelFragment = (this)
         }
         //TODO FINISH TRACKING
 //boolean track = SettingsController.isTrackingEnabled();
         if (savedInstanceState == null) {
             if (Utilities.isOnline && Database.DatabaseNovels.isNotInNovels(novelID)) {
                 setViewPager()
-                if (formatter != null)
-                    fragment_novel_tabLayout!!.post { NovelLoader(novelURL, novelID, formatter, this, true).execute() }
+                fragment_novel_tabLayout!!.post { NovelLoader(novelURL, novelID, formatter, this, true).execute() }
             } else {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID)
                 new = false

@@ -31,7 +31,6 @@ import java.util.*
  */
 object UpdateManager {
     private var chapterUpdater: ChapterUpdater? = null
-    @JvmStatic
     fun init(novelCards: ArrayList<Int>, context: Context) {
         if (chapterUpdater == null) {
             chapterUpdater = ChapterUpdater(novelCards, context)

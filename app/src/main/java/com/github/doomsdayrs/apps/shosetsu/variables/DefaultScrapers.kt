@@ -48,7 +48,6 @@ enum class DefaultScrapers(private val formatter: Formatter) : Formatter {
 
     companion object {
         val formatters = ArrayList<Formatter>()
-        @JvmStatic
         fun getByID(ID: Int): Formatter? {
             for (formatter in formatters) {
                 if (formatter.formatterID == ID) return formatter
@@ -56,7 +55,6 @@ enum class DefaultScrapers(private val formatter: Formatter) : Formatter {
             return null
         }
 
-        @JvmStatic
         val asCatalogue: ArrayList<CatalogueCard>
             get() {
                 val catalogueCards = ArrayList<CatalogueCard>()

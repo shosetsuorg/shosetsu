@@ -91,7 +91,6 @@ object Utilities {
      * @param input String to clean
      * @return string without specials
      */
-    @JvmStatic
     fun cleanString(input: String): String {
         return input.replace("[^A-Za-z0-9]".toRegex(), "_")
     }
@@ -140,6 +139,7 @@ object Utilities {
         return null
     }
 
+    @JvmStatic
     /**
      * Checks string before deserialization
      * If null or empty, returns "". Else deserializes the string and returns
@@ -147,7 +147,6 @@ object Utilities {
      * @param string String to be checked
      * @return Completed String
      */
-    @JvmStatic
     fun checkStringDeserialize(string: String): String {
         if (string.isEmpty()) {
             return ""
@@ -164,6 +163,7 @@ object Utilities {
         return ""
     }
 
+    @JvmStatic
     /**
      * Checks string before serialization
      * If null or empty, returns "". Else serializes the string and returns
@@ -171,7 +171,6 @@ object Utilities {
      * @param string String to be checked
      * @return Completed String
      */
-    @JvmStatic
     fun checkStringSerialize(string: String?): String {
         if (string == null || string.isEmpty()) {
             return ""
@@ -185,13 +184,13 @@ object Utilities {
         return ""
     }
 
+    @JvmStatic
     /**
      * Converts String Stati back into Stati
      *
      * @param s String title
      * @return Stati
      */
-    @JvmStatic
     fun convertStringToStati(s: String): NovelStatus {
         return when (s) {
             "Publishing" -> NovelStatus.PUBLISHING
@@ -202,13 +201,13 @@ object Utilities {
         }
     }
 
+    @JvmStatic
     /**
      * Converts Array of Strings into a String
      *
      * @param a array of strings
      * @return String Array
      */
-    @JvmStatic
     fun convertArrayToString(a: Array<String?>?): String {
         if (a != null && a.isNotEmpty()) {
             for (x in a.indices) {
@@ -219,13 +218,13 @@ object Utilities {
         return "[]"
     }
 
+    @JvmStatic
     /**
      * Converts a String Array back into an Array of Strings
      *
      * @param s String array
      * @return Array of Strings
      */
-    @JvmStatic
     fun convertStringToArray(s: String): Array<String> {
         val a = s.substring(1, s.length - 1).split(", ".toRegex()).toTypedArray()
         for (x in a.indices) {
