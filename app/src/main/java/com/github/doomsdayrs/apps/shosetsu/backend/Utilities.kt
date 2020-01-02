@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -140,13 +141,13 @@ object Utilities {
     }
 
     @JvmStatic
-    /**
-     * Checks string before deserialization
-     * If null or empty, returns "". Else deserializes the string and returns
-     *
-     * @param string String to be checked
-     * @return Completed String
-     */
+            /**
+             * Checks string before deserialization
+             * If null or empty, returns "". Else deserializes the string and returns
+             *
+             * @param string String to be checked
+             * @return Completed String
+             */
     fun checkStringDeserialize(string: String): String {
         if (string.isEmpty()) {
             return ""
@@ -164,13 +165,13 @@ object Utilities {
     }
 
     @JvmStatic
-    /**
-     * Checks string before serialization
-     * If null or empty, returns "". Else serializes the string and returns
-     *
-     * @param string String to be checked
-     * @return Completed String
-     */
+            /**
+             * Checks string before serialization
+             * If null or empty, returns "". Else serializes the string and returns
+             *
+             * @param string String to be checked
+             * @return Completed String
+             */
     fun checkStringSerialize(string: String?): String {
         if (string == null || string.isEmpty()) {
             return ""
@@ -185,12 +186,12 @@ object Utilities {
     }
 
     @JvmStatic
-    /**
-     * Converts String Stati back into Stati
-     *
-     * @param s String title
-     * @return Stati
-     */
+            /**
+             * Converts String Stati back into Stati
+             *
+             * @param s String title
+             * @return Stati
+             */
     fun convertStringToStati(s: String): NovelStatus {
         return when (s) {
             "Publishing" -> NovelStatus.PUBLISHING
@@ -202,12 +203,12 @@ object Utilities {
     }
 
     @JvmStatic
-    /**
-     * Converts Array of Strings into a String
-     *
-     * @param a array of strings
-     * @return String Array
-     */
+            /**
+             * Converts Array of Strings into a String
+             *
+             * @param a array of strings
+             * @return String Array
+             */
     fun convertArrayToString(a: Array<String?>?): String {
         if (a != null && a.isNotEmpty()) {
             for (x in a.indices) {
@@ -219,12 +220,12 @@ object Utilities {
     }
 
     @JvmStatic
-    /**
-     * Converts a String Array back into an Array of Strings
-     *
-     * @param s String array
-     * @return Array of Strings
-     */
+            /**
+             * Converts a String Array back into an Array of Strings
+             *
+             * @param s String array
+             * @return Array of Strings
+             */
     fun convertStringToArray(s: String): Array<String> {
         val a = s.substring(1, s.length - 1).split(", ".toRegex()).toTypedArray()
         for (x in a.indices) {
@@ -331,12 +332,17 @@ object Utilities {
         get() =//TODO: Check this also, this doesn't seem to be a nice way to do things.
             Settings.ReaderTextColor == Color.WHITE
 
+
     fun setNightNode() {
         setReaderColor(Color.WHITE, Color.BLACK)
     }
 
-    fun unsetNightMode() {
+    fun setLightMode() {
         setReaderColor(Color.BLACK, Color.WHITE)
+    }
+
+    fun setSepiaMode(context: Context) {
+        setReaderColor(Color.BLACK, ContextCompat.getColor(context, R.color.wheat))
     }
 
     /**
@@ -352,6 +358,23 @@ object Utilities {
                 .putInt("ReaderTextColor", text)
                 .putInt("ReaderBackgroundColor", background)
                 .apply()
+    }
+
+    fun getReaderColor(context: Context): Int {
+        return when (Settings.ReaderTextBackgroundColor) {
+            Color.WHITE -> {
+                1
+            }
+            Color.BLACK -> {
+                0
+            }
+            ContextCompat.getColor(context, R.color.wheat) -> {
+                2
+            }
+            else -> {
+                1
+            }
+        }
     }
 
     /**

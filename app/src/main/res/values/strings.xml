@@ -14,7 +14,7 @@
     <string name="filter">filter</string>
 
     <!-- Reader Settings -->
-    <string name="reader_night_mode">Reader Night mode</string>
+    <string name="reader_theme">Reader Theme</string>
     <string name="text_size">Text size</string>
     <string name="spacing">Paragraph spacing</string>
     <string name="indent_size">Paragraph indent</string>
@@ -133,6 +133,17 @@
     <string name="update_app_now_question">Update app now?</string>
     <string name="update_dismiss">Maybe later</string>
     <string name="update_not_interested">Huh, not interested</string>
+
+    <!-- Theme -->
+    <string name="night">Night</string>
+    <string name="light">Light</string>
+    <string name="sepia">Sepia</string>
+
+    <string-array name="reader_themes">
+        <item>@string/night</item>
+        <item>@string/light</item>
+        <item>@string/sepia</item>
+    </string-array>
 
     <!-- Shortcuts -->
     <string name="refresh_shortcut">Check for updates</string>
