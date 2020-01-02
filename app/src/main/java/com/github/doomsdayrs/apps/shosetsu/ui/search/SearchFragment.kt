@@ -58,6 +58,7 @@ class SearchFragment : Fragment() {
     }
 
     class StoredData(val id: Int) : Serializable {
+        //TODO This is dirty, Maybe replace with CatalogueNovelCard later
         var novelArray: List<Array<String>> = arrayListOf()
         var intArray: List<Int> = arrayListOf()
     }
