@@ -23,19 +23,4 @@ import java.io.Serializable
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueNovelCard
-/**
- * Constructor
- * @param imageURL image chapterURL
- * @param title    title
- * @param novelID id of novel
- * @param novelURL novelURL
- */(
-        /**
-         * Image novelURL
-         */
-        val imageURL: String, title: String, val novelID: Int,
-        /**
-         * link to the novel
-         */
-        val novelURL: String) : RecycleCard(title), Serializable
+class CatalogueNovelCard(val imageURL: String, title: String, val novelID: Int, val novelURL: String) : RecycleCard(title), Serializable

@@ -397,7 +397,7 @@ public class Database {
                 String nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = DatabaseIdentification.getFormatterIDFromChapterID(id);
-                downloadItems.add(new DownloadItem(Objects.requireNonNull(DefaultScrapers.getByID(formatter)), nName, cName, id));
+                downloadItems.add(new DownloadItem(Objects.requireNonNull(DefaultScrapers.Companion.getByID(formatter)), nName, cName, id));
             }
             cursor.close();
 
@@ -422,7 +422,7 @@ public class Database {
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = getFormatterIDFromChapterID(id);
                 cursor.close();
-                return new DownloadItem(Objects.requireNonNull(DefaultScrapers.getByID(formatter)), nName, cName, id);
+                return new DownloadItem(Objects.requireNonNull(DefaultScrapers.Companion.getByID(formatter)), nName, cName, id);
             }
         }
 
@@ -432,7 +432,7 @@ public class Database {
          * @param downloadItem download item to remove
          */
         public static void removeDownload(@NonNull DownloadItem downloadItem) {
-            sqLiteDatabase.delete(Tables.DOWNLOADS.toString(), Columns.PARENT_ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null);
+            sqLiteDatabase.delete(Tables.DOWNLOADS.toString(), Columns.PARENT_ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.getChapterURL()) + "", null);
         }
 
         /**
@@ -447,9 +447,9 @@ public class Database {
                     Columns.CHAPTER_NAME + "," +
                     Columns.PAUSED + ") " +
                     "values (" +
-                    DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + ",'" +
-                    DownloadItem.cleanse(downloadItem.novelName) + "','" +
-                    DownloadItem.cleanse(downloadItem.chapterName) + "'," + 0 + ")");
+                    DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.getChapterURL()) + ",'" +
+                    DownloadItem.Companion.cleanse(downloadItem.getNovelName()) + "','" +
+                    DownloadItem.Companion.cleanse(downloadItem.getChapterName()) + "'," + 0 + ")");
         }
 
         /**
@@ -459,7 +459,7 @@ public class Database {
          * @return if is in list
          */
         public static boolean inDownloads(@NonNull DownloadItem downloadItem) {
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.DOWNLOADS + " where " + Columns.PARENT_ID + " = " + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.DOWNLOADS + " where " + Columns.PARENT_ID + " = " + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.getChapterURL()) + "", null);
             int a = cursor.getCount();
             cursor.close();
             return !(a <= 0);

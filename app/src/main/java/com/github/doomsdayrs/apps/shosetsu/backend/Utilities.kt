@@ -12,6 +12,8 @@ import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -29,6 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import java.io.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -64,6 +67,14 @@ object Utilities {
     lateinit var trackingPreferences: SharedPreferences
     lateinit var backupPreferences: SharedPreferences
 
+    fun convertNovelArrayToString2DArray(array: List<Novel>): ArrayList<Array<String>> {
+        val a: ArrayList<Array<String>> = ArrayList()
+        for (novel in array) {
+            a.add(arrayOf(novel.title, novel.link, novel.imageURL))
+        }
+        return a
+    }
+
     fun regret(context: Context) {
         Toast.makeText(context, context.getString(R.string.regret), Toast.LENGTH_LONG).show()
     }
@@ -91,7 +102,6 @@ object Utilities {
      * @param input String to clean
      * @return string without specials
      */
-    @JvmStatic
     fun cleanString(input: String): String {
         return input.replace("[^A-Za-z0-9]".toRegex(), "_")
     }
@@ -140,14 +150,14 @@ object Utilities {
         return null
     }
 
-    /**
-     * Checks string before deserialization
-     * If null or empty, returns "". Else deserializes the string and returns
-     *
-     * @param string String to be checked
-     * @return Completed String
-     */
     @JvmStatic
+            /**
+             * Checks string before deserialization
+             * If null or empty, returns "". Else deserializes the string and returns
+             *
+             * @param string String to be checked
+             * @return Completed String
+             */
     fun checkStringDeserialize(string: String): String {
         if (string.isEmpty()) {
             return ""
@@ -164,14 +174,14 @@ object Utilities {
         return ""
     }
 
-    /**
-     * Checks string before serialization
-     * If null or empty, returns "". Else serializes the string and returns
-     *
-     * @param string String to be checked
-     * @return Completed String
-     */
     @JvmStatic
+            /**
+             * Checks string before serialization
+             * If null or empty, returns "". Else serializes the string and returns
+             *
+             * @param string String to be checked
+             * @return Completed String
+             */
     fun checkStringSerialize(string: String?): String {
         if (string == null || string.isEmpty()) {
             return ""
@@ -185,13 +195,13 @@ object Utilities {
         return ""
     }
 
-    /**
-     * Converts String Stati back into Stati
-     *
-     * @param s String title
-     * @return Stati
-     */
     @JvmStatic
+            /**
+             * Converts String Stati back into Stati
+             *
+             * @param s String title
+             * @return Stati
+             */
     fun convertStringToStati(s: String): NovelStatus {
         return when (s) {
             "Publishing" -> NovelStatus.PUBLISHING
@@ -202,13 +212,13 @@ object Utilities {
         }
     }
 
-    /**
-     * Converts Array of Strings into a String
-     *
-     * @param a array of strings
-     * @return String Array
-     */
     @JvmStatic
+            /**
+             * Converts Array of Strings into a String
+             *
+             * @param a array of strings
+             * @return String Array
+             */
     fun convertArrayToString(a: Array<String?>?): String {
         if (a != null && a.isNotEmpty()) {
             for (x in a.indices) {
@@ -219,13 +229,13 @@ object Utilities {
         return "[]"
     }
 
-    /**
-     * Converts a String Array back into an Array of Strings
-     *
-     * @param s String array
-     * @return Array of Strings
-     */
     @JvmStatic
+            /**
+             * Converts a String Array back into an Array of Strings
+             *
+             * @param s String array
+             * @return Array of Strings
+             */
     fun convertStringToArray(s: String): Array<String> {
         val a = s.substring(1, s.length - 1).split(", ".toRegex()).toTypedArray()
         for (x in a.indices) {
@@ -323,21 +333,17 @@ object Utilities {
             return if (activeNetwork != null) activeNetwork.type == ConnectivityManager.TYPE_WIFI || activeNetwork.type == ConnectivityManager.TYPE_MOBILE else false
         }//TODO: Check this also, this doesn't seem to be a nice way to do things.
 
-    /**
-     * Is reader in night mode
-     *
-     * @return true if so, otherwise false
-     */
-    val isReaderNightMode: Boolean
-        get() =//TODO: Check this also, this doesn't seem to be a nice way to do things.
-            Settings.ReaderTextColor == Color.WHITE
 
     fun setNightNode() {
         setReaderColor(Color.WHITE, Color.BLACK)
     }
 
-    fun unsetNightMode() {
+    fun setLightMode() {
         setReaderColor(Color.BLACK, Color.WHITE)
+    }
+
+    fun setSepiaMode(context: Context) {
+        setReaderColor(Color.BLACK, ContextCompat.getColor(context, R.color.wheat))
     }
 
     /**
@@ -355,14 +361,20 @@ object Utilities {
                 .apply()
     }
 
-    /**
-     * Swaps the reader colors
-     */
-    fun swapReaderColor() {
-        if (isReaderNightMode) {
-            setReaderColor(Color.BLACK, Color.WHITE)
-        } else {
-            setReaderColor(Color.WHITE, Color.BLACK)
+    fun getReaderColor(context: Context): Int {
+        return when (Settings.ReaderTextBackgroundColor) {
+            Color.WHITE -> {
+                1
+            }
+            Color.BLACK -> {
+                0
+            }
+            ContextCompat.getColor(context, R.color.wheat) -> {
+                2
+            }
+            else -> {
+                1
+            }
         }
     }
 

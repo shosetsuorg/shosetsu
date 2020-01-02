@@ -27,7 +27,6 @@ enum class Actions(val action: Int) {
     VIEW(0), CLOUD_FLARE(1);
 
     companion object {
-        @kotlin.jvm.JvmField
         val actions = ArrayList<Actions>()
 
         init {

@@ -130,7 +130,6 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
     }
 
     companion object {
-        @JvmField
         var DefaultTextColor = 0
         private var set = false
     }

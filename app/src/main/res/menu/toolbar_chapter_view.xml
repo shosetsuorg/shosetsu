@@ -11,10 +11,23 @@
             app:showAsAction="never" />
 
         <item
-            android:id="@+id/chapter_view_nightMode"
-            android:checkable="true"
-            android:title="@string/reader_night_mode"
-            app:showAsAction="never" />
+            android:title="@string/reader_theme"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/chapter_view_reader_night"
+                    android:checkable="true"
+                    android:title="@string/night" />
+                <item
+                    android:id="@+id/chapter_view_reader_light"
+                    android:checkable="true"
+                    android:title="@string/light" />
+                <item
+                    android:id="@+id/chapter_view_reader_sepia"
+                    android:checkable="true"
+                    android:title="@string/sepia" />
+            </menu>
+        </item>
         <item
             android:title="@string/text_size"
             app:showAsAction="never">
