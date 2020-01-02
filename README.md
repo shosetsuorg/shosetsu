@@ -21,8 +21,8 @@ Join us on our:
 - [ ] Actually efficient coding
 
 ## ScreenShots
-<img src="./screenshots/0.png" width="30%"></img>
-<img src="./screenshots/1.png" width="30%"></img>
-<img src="./screenshots/2.png" width="30%"></img>
-<img src="./screenshots/3.png" width="30%"></img>
-<img src="./screenshots/4.png" width="30%"></img>
+<img src="./screenshots/0.jpg" width="30%"></img>
+<img src="./screenshots/1.jpg" width="30%"></img>
+<img src="./screenshots/2.jpg" width="30%"></img>
+<img src="./screenshots/3.jpg" width="30%"></img>
+<img src="./screenshots/4.jpg" width="30%"></img>
