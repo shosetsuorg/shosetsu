@@ -149,6 +149,23 @@
     <string name="refresh_shortcut">Check for updates</string>
     <string name="action_global_search_hint">Global search…</string>
 
+    <!-- Download options -->
+    <string name="download_next_chapter">Download next chapter</string>
+    <string name="download_next_5_chapters">Download next 5 chapters</string>
+    <string name="download_next_10_chapters">Download next 10 chapters</string>
+    <string name="download_custom_chapters">Download custom</string>
+    <string name="download_all_chapters">Download all</string>
+    <string name="download_unread_chapters">Download unread</string>
+
+    <string-array name="chapters_download_options">
+        <item>@string/download_all_chapters</item>
+        <item>@string/download_unread_chapters</item>
+        <item>@string/download_custom_chapters</item>
+        <item>@string/download_next_10_chapters</item>
+        <item>@string/download_next_5_chapters</item>
+        <item>@string/download_next_chapter</item>
+    </string-array>
+
 
     <string name="processing_data">Processing data</string>
     <string name="regret">This feature have not been reintroduced yet due to time constraints :(</string>

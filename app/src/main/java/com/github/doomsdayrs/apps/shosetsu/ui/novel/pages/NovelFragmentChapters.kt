@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -12,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader.ChapterLoaderAction
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.*
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.addToUpdates
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
@@ -132,7 +134,6 @@ class NovelFragmentChapters : Fragment() {
     }
 
 
-
     override fun onDestroy() {
         super.onDestroy()
         reversed = false
@@ -217,60 +218,104 @@ class NovelFragmentChapters : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
+            R.id.download -> {
+                val builder = AlertDialog.Builder(activity!!)
+                builder.setTitle(R.string.download)
+                        .setItems(R.array.chapters_download_options) { dialog, which ->
+                            when (which) {
+                                0 -> {
+                                    // All
+                                    for (chapter in novelFragment?.novelChapters!!)
+                                        DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter.title, getChapterIDFromChapterURL(chapter.link)))
+                                }
+                                1 -> {
+                                    // Unread
+                                    for (chapter in novelFragment?.novelChapters!!) {
+                                        val id = getChapterIDFromChapterURL(chapter.link)
+                                        if (getStatus(id) == (Status.UNREAD))
+                                            DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter.title, id))
+                                    }
+                                }
+                                2 -> {
+                                    // TODO Custom
+                                    Utilities.regret(context!!)
+                                }
+                                3 -> {
+                                    // TODO Next 10
+                                    Utilities.regret(context!!)
+                                }
+                                4 -> {
+                                    // TODO Next 5
+                                    Utilities.regret(context!!)
+                                }
+                                5 -> {
+                                    // Download next
+                                    val last = novelFragment!!.getLastRead()
+                                    if (last != null) {
+                                        val next = novelFragment!!.getNextChapter(last.link, novelFragment!!.novelChapters)
+                                        if (next != null)
+                                            DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, next.title, getChapterIDFromChapterURL(next.link)))
+                                    }
+                                }
+                            }
+                        }
+                builder.create().show()
+                true
+            }
             R.id.chapter_select_all -> {
                 for (novelChapter in novelFragment!!.novelChapters) if (!contains(novelChapter)) selectedChapters.add(novelChapter)
                 updateAdapter()
-                return true
+                true
             }
             R.id.chapter_download_selected -> {
                 for (novelChapter in selectedChapters) {
-                    val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (!Database.DatabaseChapter.isSaved(chapterID)) {
+                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                    if (!isSaved(chapterID)) {
                         val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID)
                         DownloadManager.addToDownload(activity, downloadItem)
                     }
                 }
                 updateAdapter()
-                return true
+                true
             }
             R.id.chapter_delete_selected -> {
                 for (novelChapter in selectedChapters) {
-                    val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (Database.DatabaseChapter.isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID))
+                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                    if (isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID))
                 }
                 updateAdapter()
-                return true
+                true
             }
             R.id.chapter_deselect_all -> {
                 selectedChapters = ArrayList()
                 updateAdapter()
                 if (inflater != null) activity?.invalidateOptionsMenu()
-                return true
+                true
             }
             R.id.chapter_mark_read -> {
                 for (novelChapter in selectedChapters) {
-                    val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (Database.DatabaseChapter.getStatus(chapterID).a != 2) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
+                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                    if (getStatus(chapterID).a != 2) setChapterStatus(chapterID, Status.READ)
                 }
                 updateAdapter()
-                return true
+                true
             }
             R.id.chapter_mark_unread -> {
                 for (novelChapter in selectedChapters) {
-                    val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (Database.DatabaseChapter.getStatus(chapterID).a != 0) Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD)
+                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                    if (getStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.UNREAD)
                 }
                 updateAdapter()
-                return true
+                true
             }
             R.id.chapter_mark_reading -> {
                 for (novelChapter in selectedChapters) {
-                    val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-                    if (Database.DatabaseChapter.getStatus(chapterID).a != 0) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
+                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                    if (getStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.READING)
                 }
                 updateAdapter()
-                return true
+                true
             }
             R.id.chapter_select_between -> {
                 val min = findMinPosition()
@@ -281,15 +326,15 @@ class NovelFragmentChapters : Fragment() {
                     x++
                 }
                 updateAdapter()
-                return true
+                true
             }
             R.id.chapter_filter -> {
                 novelFragment!!.novelChapters = novelFragment!!.novelChapters.reversed()
                 reversed = !reversed
                 return updateAdapter()
             }
+            else -> false
         }
-        return false
     }
 
     override fun onResume() {
