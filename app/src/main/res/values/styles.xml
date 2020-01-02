@@ -4,6 +4,8 @@
 
     <style name="AppTheme.AppBar" parent="ThemeOverlay.MaterialComponents.ActionBar">
         <item name="android:background">@color/colorLightAccent</item>
+        <item name="popupMenuStyle">@android:color/white</item>
+        <item name="popupMenuBackground">@android:color/white</item>
     </style>
 
 </resources>
