@@ -12,6 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchAdapter
 import kotlinx.android.synthetic.main.search_activity.*
+import java.io.Serializable
 
 /*
  * This file is part of Shosetsu.
@@ -56,8 +57,8 @@ class SearchFragment : Fragment() {
         return StoredData(id)
     }
 
-    class StoredData(val id: Int) {
-        var novelArray: List<Novel> = arrayListOf()
+    class StoredData(val id: Int) : Serializable {
+        var novelArray: List<Array<String>> = arrayListOf()
         var intArray: List<Int> = arrayListOf()
     }
 

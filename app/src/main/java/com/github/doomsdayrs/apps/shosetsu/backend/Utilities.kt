@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -30,6 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import java.io.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -64,6 +66,14 @@ object Utilities {
     lateinit var advancedPreferences: SharedPreferences
     lateinit var trackingPreferences: SharedPreferences
     lateinit var backupPreferences: SharedPreferences
+
+    fun convertNovelArrayToString2DArray(array: List<Novel>): ArrayList<Array<String>> {
+        val a: ArrayList<Array<String>> = ArrayList()
+        for (novel in array) {
+            a.add(arrayOf(novel.title, novel.link, novel.imageURL))
+        }
+        return a
+    }
 
     fun regret(context: Context) {
         Toast.makeText(context, context.getString(R.string.regret), Toast.LENGTH_LONG).show()
