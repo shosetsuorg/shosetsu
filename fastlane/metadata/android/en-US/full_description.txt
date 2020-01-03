@@ -1,0 +1,13 @@
+Shosetsu is a light novel reader for android.
+
+Features include
+- Adding novels to your own library from different catalogues
+- Scrapers for many (4) sites
+- Light/ Night/ Sepia modes for readers
+- App darkmode
+- Compatibilty all the way to android 5.1
+- Backup and Restore (disabled)
+- Migration from one catalogue to another (disabled)
+- Updater to get notifications of new chapters of your favorite novels
+- Download manager to download all your favorite chapters
+- Bookmarking and comprehensive chapter control
