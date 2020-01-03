@@ -205,8 +205,8 @@ class LibraryFragment : Fragment() {
                     e.printStackTrace()
                 }
                 intent.putExtra("target", 1)
-                //startActivity(intent);
-                Utilities.regret(context!!)
+                startActivity(intent);
+                //Utilities.regret(context!!)
                 return true
             }
         }

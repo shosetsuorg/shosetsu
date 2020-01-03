@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.migration
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -19,8 +20,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.a
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import kotlinx.android.synthetic.main.migrate_source_view.*
-import java.io.IOException
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -42,17 +41,24 @@ import java.util.*
  * 19 / 07 / 2019
  *
  * @author github.com/doomsdayrs
- */   class MigrationView : AppCompatActivity() {
+ */
+class MigrationView : AppCompatActivity() {
+
     val novelResults = ArrayList<ArrayList<Novel>>()
-    private var catalogues: ArrayList<CatalogueCard>? = null
-    var novels: ArrayList<NovelCard>? = ArrayList()
+    private var catalogues: ArrayList<CatalogueCard> = ArrayList()
+
+    var novels: ArrayList<NovelCard> = ArrayList()
     private val confirmedMappings = ArrayList<Array<String>>()
+
     private var t: Transfer? = null
+
     var target = -1
     var selection = 0
     var secondSelection = -1
     var mappingNovelsAdapter: MigratingMapAdapter? = null
+
     private var selectedNovelsAdapters: MigratingNovelAdapter? = null
+
     private var load: MigrationViewLoad? = null
 
 
@@ -64,55 +70,55 @@ import java.util.*
         super.onDestroy()
     }
 
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val intent = intent
-        try {
-            novels = Utilities.deserializeString(intent.getStringExtra("selected")) as ArrayList<NovelCard>?
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: ClassNotFoundException) {
-            e.printStackTrace()
-        }
+        novels = Utilities.deserializeString(intent.getStringExtra("selected")!!) as ArrayList<NovelCard>
+
         setContentView(R.layout.migrate_source_view)
+
         // Fills in dummy data
         run { for (x in novels!!.indices) novelResults.add(ArrayList()) }
+
         // Sets selected novels
-        run {
-            setUpSelectedNovels()
-        }
+        setUpSelectedNovels()
+
         // Sets the novels to map
-        run {
-            setUpMappingNovels()
-        }
+        setUpMappingNovels()
+
         // Sets cancel button
-        run {
-            val cancel = findViewById<Button>(R.id.cancel)
-            cancel.setOnClickListener {
-                secondSelection = -1
-                refresh()
-            }
-            cancel.setOnLongClickListener {
-                load!!.cancel(true)
-                finish()
-                true
-            }
+        val cancel = findViewById<Button>(R.id.cancel)
+        cancel.setOnClickListener {
+            secondSelection = -1
+            refresh()
         }
+        cancel.setOnLongClickListener {
+            load!!.cancel(true)
+            finish()
+            true
+        }
+
         // Sets confirm button
         run {
             val confirm = findViewById<Button>(R.id.confirm)
             confirm.setOnClickListener {
-                if (secondSelection != -1) { //Adds mapping targets
+                if (secondSelection != -1) {
+                    //Adds mapping targets
 
                     val map = arrayOfNulls<String>(2)
-                    map[0] = novels!![selection].novelURL
+                    map[0] = novels[selection].novelURL
                     map[1] = novelResults[selection][secondSelection].link
                     confirmedMappings.add(map as Array<String>)
 
                     novelResults.removeAt(selection)
-                    novels!!.removeAt(selection)
+                    novels.removeAt(selection)
                     when {
-                        selection != novels!!.size -> {
+                        selection != novels.size -> {
                             Log.d("Increment", "Increase")
                         }
                         selection - 1 != -1 -> {
@@ -133,16 +139,15 @@ import java.util.*
                 true
             }
         }
-        if (catalogues == null) {
-            catalogues = asCatalogue
-        }
+        if (catalogues.isEmpty()) catalogues = asCatalogue
+
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-        val adapter = MigrationViewCatalogueAdapter(catalogues!!, this)
+        val adapter = MigrationViewCatalogueAdapter(catalogues, this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-        //fillData();
+        fillData();
     }
 
     fun fillData() {
