@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 
 /*
@@ -40,6 +41,7 @@ class NewMigrationView : AppCompatActivity() {
     // Options for which to search with
     val catalogueOptions = DefaultScrapers.asCatalogue
 
+
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         super.onSaveInstanceState(outState, outPersistentState)
 
@@ -47,5 +49,8 @@ class NewMigrationView : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.new_migrartion_view)
+        novelsToTransfer = intent.getIntegerArrayListExtra("selection")!!
     }
+
 }
