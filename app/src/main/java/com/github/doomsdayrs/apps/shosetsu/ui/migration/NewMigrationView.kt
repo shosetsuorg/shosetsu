@@ -53,4 +53,7 @@ class NewMigrationView : AppCompatActivity() {
         novelsToTransfer = intent.getIntegerArrayListExtra("selection")!!
     }
 
+
+
+
 }
