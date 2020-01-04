@@ -5,9 +5,10 @@ Features include
 - Scrapers for many (4) sites
 - Light/ Night/ Sepia modes for readers
 - App darkmode
-- Compatibilty all the way to android 5.1
+- Compatibility all the way to android 5.1
 - Backup and Restore (disabled)
 - Migration from one catalogue to another (disabled)
 - Updater to get notifications of new chapters of your favorite novels
 - Download manager to download all your favorite chapters
 - Bookmarking and comprehensive chapter control
+- Different text sizes, colors, indents, spacings, and more!
