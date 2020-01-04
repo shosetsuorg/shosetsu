@@ -110,13 +110,13 @@ class NovelFragmentInfo : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fragment_novel_add!!.hide()
-        if (novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) fragment_novel_add!!.setImageResource(R.drawable.ic_add_circle_black_24dp)
+        if (novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) fragment_novel_add!!.setImageResource(R.drawable.ic_baseline_check_circle_24)
         setData()
         fragment_novel_add!!.setOnClickListener {
             if (novelFragment != null)
                 if (!Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) {
                     Database.DatabaseNovels.bookMark(novelFragment!!.novelID)
-                    fragment_novel_add?.setImageResource(R.drawable.ic_add_circle_black_24dp)
+                    fragment_novel_add?.setImageResource(R.drawable.ic_baseline_check_circle_24)
                 } else {
                     Database.DatabaseNovels.unBookmark(novelFragment!!.novelID)
                     fragment_novel_add?.setImageResource(R.drawable.ic_add_circle_outline_black_24dp)
