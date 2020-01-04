@@ -46,7 +46,7 @@ class MigratingMapAdapter(private val migrationView: MigrationView) : RecyclerVi
 
         if (position == migrationView.secondSelection) {
             materialCardView.strokeColor = Color.BLUE
-            materialCardView.strokeWidth = Utilities.SELECTED_STROKE_WIDTH
+            materialCardView.strokeWidth = Utilities.selectedStrokeWidth
         } else materialCardView.strokeWidth = 0
 
         holder.itemView.setOnClickListener {

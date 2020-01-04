@@ -65,7 +65,7 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
             chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_bookmark).title = "Bookmark"
         }
         if (novelFragmentChapters.contains(novelChapter)) {
-            chaptersViewHolder.cardView.strokeWidth = Utilities.SELECTED_STROKE_WIDTH
+            chaptersViewHolder.cardView.strokeWidth = Utilities.selectedStrokeWidth
             chaptersViewHolder.checkBox.isChecked = true
         } else {
             chaptersViewHolder.cardView.strokeWidth = 0

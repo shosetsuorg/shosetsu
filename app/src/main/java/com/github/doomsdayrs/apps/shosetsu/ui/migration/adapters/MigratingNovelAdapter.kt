@@ -46,7 +46,7 @@ class MigratingNovelAdapter(private val migrationView: MigrationView) : Recycler
         val materialCardView: MaterialCardView = catalogueHolder.itemView.findViewById(R.id.materialCardView)
         if (i == migrationView.selection) {
             materialCardView.strokeColor = Color.BLUE
-            materialCardView.strokeWidth = Utilities.SELECTED_STROKE_WIDTH
+            materialCardView.strokeWidth = Utilities.selectedStrokeWidth
         } else materialCardView.strokeWidth = 0
         Picasso.get().load(novel.imageURL).into(catalogueHolder.image)
         catalogueHolder.title.text = novel.title

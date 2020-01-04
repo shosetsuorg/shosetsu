@@ -57,7 +57,23 @@ import kotlin.collections.ArrayList
  * @author github.com/doomsdayrs
  */
 object Utilities {
-    const val SELECTED_STROKE_WIDTH = 8
+    internal class SHOWCASE {
+        val catalogue = 1
+        val downloads = 2
+        val library = 3
+        val main =4
+        val migration =5
+        val novel = 6
+        val novelINFO = 7
+        val novelCHAPTERS = 8
+        val novelTRACKING =9
+        val reader = 10
+        val search = 11
+        val updates = 12
+        val webView = 13
+    }
+
+    const val selectedStrokeWidth = 8
     var shoDir: String = "/Shosetsu/"
 
     // Preference objects
