@@ -12,3 +12,9 @@ Features include
 - Download manager to download all your favorite chapters
 - Bookmarking and comprehensive chapter control
 - Different text sizes, colors, indents, spacings, and more!
+
+
+Technical details
+- Chapters are retrieved by downloading the entire page, and scraping off the plain text into a string, Currently only plain text
+- As stated before, the app is essentially a web scrapper, Which can have it's catalogue expanded with a versatile shosetsu-extensions (repo)[https://github.com/Doomsdayrs/shosetsu-extensions], At minimum, all one needs to do is create a child class of ScrapeFormat, and fills in the abstract info, Other variables are available to be tweaked as well
+- App does not own/have any copyright over any novels present in catalogues, Those issues go to respective sites, This app simply scrapes and displays data found
