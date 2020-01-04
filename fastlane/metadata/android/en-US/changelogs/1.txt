@@ -1,0 +1,9 @@
+- New DB structure, Planned to be a forever one.
+- New UI for reading chapters
+- Kotlin Conversion
+- Global search
+- Fixed threading for downloading/updating. TLDR App runs smoother
+- Some features such as backup/restore and migration has been removed
+- Generally improved lots of backend things
+- hopefully rotation works perfectly smoothly
+- Still maintain an ~5mb file size
