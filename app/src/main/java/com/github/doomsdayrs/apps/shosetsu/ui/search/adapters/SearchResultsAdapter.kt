@@ -78,7 +78,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             title = novel.title
             url = novel.novelURL
             imageURL = novel.imageURL
-            formatter = DefaultScrapers.getByID(novel.formatterID)!!
+            formatter = DefaultScrapers.getByID(novel.formatterID)
             id = novel.novelID
         }
 

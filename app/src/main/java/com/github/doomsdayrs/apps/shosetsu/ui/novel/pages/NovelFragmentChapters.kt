@@ -110,7 +110,7 @@ class NovelFragmentChapters : Fragment() {
     }
 
     private var currentMaxPage = 1
-    var selectedChapters = ArrayList<NovelChapter>()
+    var selectedChapters = ArrayList<Int>()
     var adapter: ChaptersAdapter? = ChaptersAdapter(this)
     var novelFragment: NovelFragment? = null
 
@@ -118,7 +118,7 @@ class NovelFragmentChapters : Fragment() {
     var menu: Menu? = null
 
     operator fun contains(novelChapter: NovelChapter): Boolean {
-        for (n in selectedChapters) if (n.link.equals(novelChapter.link, ignoreCase = true)) return true
+        for (n in selectedChapters) if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true)) return true
         return false
     }
 
@@ -149,7 +149,7 @@ class NovelFragmentChapters : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt("maxPage", currentMaxPage)
-        outState.putSerializable("selChapter", selectedChapters)
+        outState.putIntegerArrayList("selChapter", selectedChapters)
     }
 
     /**
@@ -163,7 +163,7 @@ class NovelFragmentChapters : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (savedInstanceState != null) {
             //TODO Remove novelChapter as a valid data stream
-            selectedChapters = (savedInstanceState.getSerializable("selChapter") as ArrayList<NovelChapter>?)!!
+            selectedChapters = savedInstanceState.getIntegerArrayList("selChapter")!!
             currentMaxPage = savedInstanceState.getInt("maxPage")
         }
         novelFragment = parentFragment as NovelFragment?
@@ -235,7 +235,7 @@ class NovelFragmentChapters : Fragment() {
             R.id.download -> {
                 val builder = AlertDialog.Builder(activity!!)
                 builder.setTitle(R.string.download)
-                        .setItems(R.array.chapters_download_options) { dialog, which ->
+                        .setItems(R.array.chapters_download_options) { _, which ->
                             when (which) {
                                 0 -> {
                                     // All
@@ -255,11 +255,11 @@ class NovelFragmentChapters : Fragment() {
                                     Utilities.regret(context!!)
                                 }
                                 3 -> {
-                                    Log.d("NovelFragmentChapters","Downloading next 10")
+                                    Log.d("NovelFragmentChapters", "Downloading next 10")
                                     customAdd(10)
                                 }
                                 4 -> {
-                                    Log.d("NovelFragmentChapters","Downloading next 5")
+                                    Log.d("NovelFragmentChapters", "Downloading next 5")
                                     customAdd(5)
                                 }
                                 5 -> {
@@ -275,15 +275,15 @@ class NovelFragmentChapters : Fragment() {
                 true
             }
             R.id.chapter_select_all -> {
-                for (novelChapter in novelFragment!!.novelChapters) if (!contains(novelChapter)) selectedChapters.add(novelChapter)
+                for (novelChapter in novelFragment!!.novelChapters) if (!contains(novelChapter)) selectedChapters.add(getChapterIDFromChapterURL(novelChapter.link))
                 updateAdapter()
                 true
             }
             R.id.chapter_download_selected -> {
-                for (novelChapter in selectedChapters) {
-                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                for (chapterID in selectedChapters) {
+                    val chapter = getChapter(chapterID)
                     if (!isSaved(chapterID)) {
-                        val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID)
+                        val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter!!.title, chapterID)
                         DownloadManager.addToDownload(activity, downloadItem)
                     }
                 }
@@ -291,9 +291,9 @@ class NovelFragmentChapters : Fragment() {
                 true
             }
             R.id.chapter_delete_selected -> {
-                for (novelChapter in selectedChapters) {
-                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
-                    if (isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, novelChapter.title, chapterID))
+                for (chapterID in selectedChapters) {
+                    val chapter = getChapter(chapterID)
+                    if (isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter!!.title, chapterID))
                 }
                 updateAdapter()
                 true
@@ -305,24 +305,21 @@ class NovelFragmentChapters : Fragment() {
                 true
             }
             R.id.chapter_mark_read -> {
-                for (novelChapter in selectedChapters) {
-                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                for (chapterID in selectedChapters) {
                     if (getStatus(chapterID).a != 2) setChapterStatus(chapterID, Status.READ)
                 }
                 updateAdapter()
                 true
             }
             R.id.chapter_mark_unread -> {
-                for (novelChapter in selectedChapters) {
-                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                for (chapterID in selectedChapters) {
                     if (getStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.UNREAD)
                 }
                 updateAdapter()
                 true
             }
             R.id.chapter_mark_reading -> {
-                for (novelChapter in selectedChapters) {
-                    val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+                for (chapterID in selectedChapters) {
                     if (getStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.READING)
                 }
                 updateAdapter()
@@ -333,7 +330,10 @@ class NovelFragmentChapters : Fragment() {
                 val max = findMaxPosition()
                 var x = min
                 while (x < max) {
-                    if (!contains(novelFragment!!.novelChapters[x])) selectedChapters.add(novelFragment!!.novelChapters[x])
+                    if (!contains(novelFragment!!.novelChapters[x])) {
+                        val id = getChapterIDFromChapterURL(novelFragment!!.novelChapters[x].link)
+                        selectedChapters.add(id)
+                    }
                     x++
                 }
                 updateAdapter()

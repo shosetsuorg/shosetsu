@@ -168,9 +168,7 @@ class NovelFragmentInfo : Fragment() {
                     Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragment_novel_image_background)
                 }
                 fragment_novel_add!!.show()
-                if (novelFragment!!.formatter != null) {
-                    fragment_novel_formatter!!.text = novelFragment!!.formatter.name
-                }
+                fragment_novel_formatter!!.text = novelFragment!!.formatter.name
             }
         } else Log.e("NovelFragmentInfo", "NovelFragmentInfo view is null")
     }

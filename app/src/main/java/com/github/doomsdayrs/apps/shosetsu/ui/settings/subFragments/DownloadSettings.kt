@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import kotlinx.android.synthetic.main.settings_download.*
 import java.util.*
 
@@ -46,7 +48,14 @@ class DownloadSettings : Fragment() {
                     .setTextViewText(Utilities.shoDir)
                     .setTextOnClickListener { performFileSearch() },
             SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
-                    .setTitle(R.string.download_speed)
+                    .setTitle(R.string.download_speed),
+            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
+                    .setTitle(R.string.download_chapter_updates)
+                    .setSwitchIsChecked(Settings.isDownloadOnUpdateEnabled)
+                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+                        Log.d("Download on update", p1.toString())
+                        Settings.isDownloadOnUpdateEnabled = !Settings.isDownloadOnUpdateEnabled
+                    })
     )
     val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
 

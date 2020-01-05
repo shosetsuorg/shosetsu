@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.addToDownload
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.delete
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
@@ -63,13 +64,13 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
     var novelFragmentChapters: NovelFragmentChapters? = null
 
     fun addToSelect() {
-        if (!novelFragmentChapters!!.contains(novelChapter!!)) novelFragmentChapters!!.selectedChapters.add(novelChapter!!) else removeFromSelect()
+        if (!novelFragmentChapters!!.contains(novelChapter!!)) novelFragmentChapters!!.selectedChapters.add(getChapterIDFromChapterURL(novelChapter!!.link)) else removeFromSelect()
         if ((novelFragmentChapters!!.selectedChapters.size == 1 || novelFragmentChapters!!.selectedChapters.size <= 0) && novelFragmentChapters!!.inflater != null) novelFragmentChapters!!.activity?.invalidateOptionsMenu()
         novelFragmentChapters!!.updateAdapter()
     }
 
     private fun removeFromSelect() {
-        if (novelFragmentChapters!!.contains(novelChapter!!)) for (x in novelFragmentChapters!!.selectedChapters.indices) if (novelFragmentChapters!!.selectedChapters[x].link.equals(novelChapter!!.link, ignoreCase = true)) {
+        if (novelFragmentChapters!!.contains(novelChapter!!)) for (x in novelFragmentChapters!!.selectedChapters.indices) if (novelFragmentChapters!!.selectedChapters[x] == getChapterIDFromChapterURL(novelChapter!!.link)) {
             novelFragmentChapters!!.selectedChapters.removeAt(x)
             return
         }
@@ -77,7 +78,7 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 
     override fun onClick(v: View) {
         if (novelFragmentChapters != null)
-            if (novelFragmentChapters!!.activity != null && novelFragmentChapters!!.novelFragment != null && novelFragmentChapters!!.novelFragment!!.formatter != null)
+            if (novelFragmentChapters!!.activity != null && novelFragmentChapters!!.novelFragment != null)
                 Utilities.openChapter(novelFragmentChapters!!.activity!!, novelChapter!!, novelFragmentChapters!!.novelFragment!!.novelID, novelFragmentChapters!!.novelFragment!!.formatter.formatterID)
     }
 

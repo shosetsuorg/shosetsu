@@ -63,7 +63,7 @@ class InfoSettings : Fragment() {
                     .setOnClickListener { v: View -> onClickDisclaimer(v) },
             SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
                     .setTitle(R.string.license)
-                    .setOnClickListener { v: View -> onClickLicense() }
+                    .setOnClickListener { onClickLicense() }
     )
 
 

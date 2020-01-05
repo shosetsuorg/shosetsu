@@ -49,8 +49,6 @@ class WebViewApp : AppCompatActivity() {
                     }
                 }
             }
-            else -> {
-            }
         }
         webview.loadUrl(intent.getStringExtra("url"))
     }

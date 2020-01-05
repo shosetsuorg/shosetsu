@@ -28,7 +28,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener
@@ -132,7 +131,7 @@ class MainActivity : AppCompatActivity(), Supporter {
         Log.d("Updater", "Completed construction")
 
         // Settings setup
-        Settings.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         //Set the content view
         setContentView(R.layout.activity_main)

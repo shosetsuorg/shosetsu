@@ -61,7 +61,7 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
             Log.i("Progress", "Completed restore")
             textView.post { textView.setText(R.string.completed) }
             progressBar2.post { progressBar2.visibility = View.GONE }
-            close.post { close.setOnClickListener { view: View? -> dialog.cancel() } }
+            close.post { close.setOnClickListener { dialog.cancel() } }
         } else {
             dialog.cancel()
             Toast.makeText(context, "Failed to process", Toast.LENGTH_SHORT).show()
