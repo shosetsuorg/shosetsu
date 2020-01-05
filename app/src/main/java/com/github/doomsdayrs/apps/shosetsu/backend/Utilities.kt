@@ -6,10 +6,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -61,17 +64,22 @@ object Utilities {
         val catalogue = 1
         val downloads = 2
         val library = 3
-        val main =4
-        val migration =5
+        val main = 4
+        val migration = 5
         val novel = 6
         val novelINFO = 7
         val novelCHAPTERS = 8
-        val novelTRACKING =9
+        val novelTRACKING = 9
         val reader = 10
         val search = 11
         val updates = 12
         val webView = 13
     }
+
+    /**
+     * global connectivity manager variable
+     */
+    var connectivityManager: ConnectivityManager? = null
 
     const val selectedStrokeWidth = 8
     var shoDir: String = "/Shosetsu/"
@@ -267,22 +275,13 @@ object Utilities {
      * @param mainActivity activity
      */
     fun initPreferences(mainActivity: AppCompatActivity) {
-        Settings.ReaderTextColor = viewPreferences.getInt("ReaderTextColor", Color.BLACK)
-        Settings.ReaderTextBackgroundColor = viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
         var dir = mainActivity.getExternalFilesDir(null)!!.absolutePath
         dir = dir.substring(0, dir.indexOf("/Android"))
         shoDir = downloadPreferences.getString("dir", "$dir/Shosetsu/")!!
-        Settings.downloadPaused = downloadPreferences.getBoolean("paused", false)
-        Settings.ReaderTextSize = viewPreferences.getInt("ReaderTextSize", 14).toFloat()
-        Settings.themeMode = advancedPreferences.getInt("themeMode", 0)
-        Settings.paragraphSpacing = viewPreferences.getInt("paragraphSpacing", 1)
-        Settings.indentSize = viewPreferences.getInt("indentSize", 1)
-        Settings.ReaderMarkingType = viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
     }
 
     fun setReaderMarkingType(markingType: MarkingTypes) {
         Settings.ReaderMarkingType = markingType.i
-        viewPreferences.edit().putInt("markingType", markingType.i).apply()
     }
 
     fun toggleTapToScroll(): Boolean {
@@ -299,20 +298,12 @@ object Utilities {
 
     fun changeIndentSize(newIndent: Int) {
         Settings.indentSize = newIndent
-        viewPreferences.edit().putInt("indentSize", newIndent).apply()
     }
 
-    fun changeParagraphSpacing(newSpacing: Int) {
-        Settings.paragraphSpacing = newSpacing
-        viewPreferences.edit().putInt("paragraphSpacing", newSpacing).apply()
-    }
 
     fun changeMode(activity: Activity, newMode: Int) {
         if (newMode !in 0..2) throw IndexOutOfBoundsException("Non valid int passed")
         Settings.themeMode = newMode
-        advancedPreferences.edit()
-                .putInt("themeMode", newMode)
-                .apply()
         activity.recreate()
         // setupTheme(activity);
     }
@@ -325,6 +316,13 @@ object Utilities {
         }
     }
 
+    fun setBackgroundByTheme(view: View) {
+        when (Settings.themeMode) {
+            0 -> view.setBackgroundResource(R.color.white_trans)
+            1, 2 -> view.setBackgroundResource(R.color.black_trans)
+        }
+    }
+
     /**
      * Toggles paused downloads
      *
@@ -332,9 +330,6 @@ object Utilities {
      */
     fun togglePause(): Boolean {
         Settings.downloadPaused = !Settings.downloadPaused
-        downloadPreferences.edit()
-                .putBoolean("paused", Settings.downloadPaused)
-                .apply()
         return Settings.downloadPaused
     }
 
@@ -345,9 +340,29 @@ object Utilities {
      */
     val isOnline: Boolean
         get() {
-            val activeNetwork = Settings.connectivityManager!!.activeNetworkInfo
-            return if (activeNetwork != null) activeNetwork.type == ConnectivityManager.TYPE_WIFI || activeNetwork.type == ConnectivityManager.TYPE_MOBILE else false
-        }//TODO: Check this also, this doesn't seem to be a nice way to do things.
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val networkCapabilities = connectivityManager?.activeNetwork ?: return false
+                val actNw = connectivityManager?.getNetworkCapabilities(networkCapabilities)
+                        ?: return false
+                when {
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                    else -> false
+                }
+            } else {
+                // Suppressing warnings since this is old API usage
+                @Suppress("DEPRECATION")
+                val type = connectivityManager?.activeNetworkInfo ?: return false
+                @Suppress("DEPRECATION")
+                when (type.type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+            }
+        }
 
 
     fun setNightNode() {
@@ -371,10 +386,6 @@ object Utilities {
     private fun setReaderColor(text: Int, background: Int) {
         Settings.ReaderTextColor = text
         Settings.ReaderTextBackgroundColor = background
-        viewPreferences.edit()
-                .putInt("ReaderTextColor", text)
-                .putInt("ReaderBackgroundColor", background)
-                .apply()
     }
 
     fun getReaderColor(context: Context): Int {
@@ -408,13 +419,6 @@ object Utilities {
             Database.DatabaseChapter.setBookMark(chapterID, 1)
             true
         }
-    }
-
-    fun setTextSize(size: Int) {
-        Settings.ReaderTextSize = size.toFloat()
-        viewPreferences.edit()
-                .putInt("ReaderTextSize", size)
-                .apply()
     }
 
     /**

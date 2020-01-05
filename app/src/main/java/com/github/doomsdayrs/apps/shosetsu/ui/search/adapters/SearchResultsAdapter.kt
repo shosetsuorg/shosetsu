@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.squareup.picasso.Picasso
 
@@ -95,10 +95,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             (searchViewHolder.searchFragment.activity as MainActivity).transitionView(novelFragment)
         }
 
-        when (Settings.themeMode) {
-            0 -> holder.textView.setBackgroundResource(R.color.white_trans)
-            1, 2 -> holder.textView.setBackgroundResource(R.color.black_trans)
-        }
+       Utilities.setBackgroundByTheme(holder.textView)
     }
 
 

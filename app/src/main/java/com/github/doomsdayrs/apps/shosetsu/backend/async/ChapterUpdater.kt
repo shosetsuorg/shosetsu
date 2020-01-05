@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.async
 
+import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,11 +9,16 @@ import android.os.Build
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.addToDownload
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
+import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import needle.CancelableTask
 
@@ -45,7 +51,6 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
     private val notificationID = 1917
     private val channelID = "shosetsu_updater"
 
-    private val continueProcess = true
     private var notificationManager: NotificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private var builder: Notification.Builder
     private val updatedNovels = ArrayList<NovelCard>()
@@ -56,16 +61,28 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
             val notificationChannel = NotificationChannel(channelID, "Shosetsu Update", NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(notificationChannel)
             Notification.Builder(context, channelID)
-        } else Notification.Builder(context)
+        } else {
+            // Suppressed due to lower API
+            @Suppress("DEPRECATION")
+            Notification.Builder(context)
+        }
     }
 
 
     private fun add(mangaCount: Int, novelID: Int, novelChapter: NovelChapter, novelCard: NovelCard) {
-        if (continueProcess && Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
-            Log.i("ChaperUpdater", "add #$mangaCount\t: ${novelChapter.link} ")
-            Database.DatabaseChapter.addToChapters(novelID, novelChapter)
-            Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis())
-            if (!updatedNovels.contains(novelCard)) updatedNovels.add(novelCard)
+        if (!isCanceled) {
+            if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
+                Log.i("ChaperUpdater", "add #$mangaCount\t: ${novelChapter.link} ")
+                Database.DatabaseChapter.addToChapters(novelID, novelChapter)
+                Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis())
+                if (!updatedNovels.contains(novelCard)) updatedNovels.add(novelCard)
+            } else {
+                Database.DatabaseChapter.updateChapter(novelChapter)
+            }
+            if (Settings.isDownloadOnUpdateEnabled)
+                context?.let {
+                    addToDownload(it as Activity, DownloadItem(getByID(novelCard.formatterID), novelCard.title, novelChapter.title, getChapterIDFromChapterURL(novelChapter.link)))
+                }
         }
     }
 
@@ -87,12 +104,13 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
             val novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
             val formatter = getByID(novelCard.formatterID)
 
-            // Updates notification
-            builder.setContentText(novelCard.title)
-            builder.setProgress(novelCards.size, x + 1, false)
-            notificationManager.notify(notificationID, builder.build())
-            // Runs process
-            if (formatter != null)
+            if (formatter == DefaultScrapers.UNKNOWN) {
+                // Updates notification
+                builder.setContentText(novelCard.title)
+                builder.setProgress(novelCards.size, x + 1, false)
+                notificationManager.notify(notificationID, builder.build())
+
+                // Runs process
                 ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
                     override fun onPreExecute() {
                     }
@@ -101,7 +119,9 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
                     }
 
                     override fun onJustBeforePost(finalChapters: ArrayList<NovelChapter>) {
-                        for ((mangaCount, chapter) in finalChapters.withIndex()) add(mangaCount, novelID, chapter, novelCard)
+                        for ((mangaCount, chapter) in finalChapters.withIndex()) {
+                            add(mangaCount, novelID, chapter, novelCard)
+                        }
                     }
 
                     override fun onIncrementingProgress(page: Int, max: Int) {
@@ -111,8 +131,11 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
                         Log.e("ChapterUpdater", errorString)
                     }
                 }, formatter, novelCard.novelURL).doInBackground()
-
-            Utilities.wait(1000)
+                Utilities.wait(1000)
+            } else {
+                builder.setProgress(novelCards.size, x + 1, false)
+                notificationManager.notify(notificationID, builder.build())
+            }
         }
 
         // Completion

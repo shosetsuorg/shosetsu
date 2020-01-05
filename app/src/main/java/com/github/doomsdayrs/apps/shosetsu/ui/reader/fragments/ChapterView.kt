@@ -130,7 +130,7 @@ class ChapterView : Fragment() {
                 17 -> textSizes[1].setChecked(true)
                 20 -> textSizes[2].setChecked(true)
                 else -> {
-                    Utilities.setTextSize(14)
+                    Settings.ReaderTextSize = 14F
                     textSizes[0].setChecked(true)
                 }
             }

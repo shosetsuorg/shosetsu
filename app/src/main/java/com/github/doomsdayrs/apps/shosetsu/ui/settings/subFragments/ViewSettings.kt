@@ -53,7 +53,7 @@ class ViewSettings : Fragment() {
                         override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                             Log.d("SpaceSelection", i.toString())
                             if (i in 0..3) {
-                                Utilities.changeParagraphSpacing(i)
+                                Settings.paragraphSpacing = (i)
                                 adapterView.setSelection(i)
                             }
                         }
@@ -74,7 +74,7 @@ class ViewSettings : Fragment() {
                                     1 -> size = 17
                                     2 -> size = 20
                                 }
-                                Utilities.setTextSize(size)
+                                Settings.ReaderTextSize = (size.toFloat())
                                 adapterView.setSelection(i)
                             }
                         }

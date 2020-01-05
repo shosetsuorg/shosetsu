@@ -9,10 +9,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
 import com.squareup.picasso.Picasso
 
@@ -61,10 +61,7 @@ class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, pri
                 } else novelCardsViewHolder.constraintLayout.foreground = ColorDrawable()
             } else { //TODO Tint for cards before 22
             }
-            when (Settings.themeMode) {
-                0 -> novelCardsViewHolder.title.setBackgroundResource(R.color.white_trans)
-                1, 2 -> novelCardsViewHolder.title.setBackgroundResource(R.color.black_trans)
-            }
+            Utilities.setBackgroundByTheme(novelCardsViewHolder.title)
         }
     }
 
