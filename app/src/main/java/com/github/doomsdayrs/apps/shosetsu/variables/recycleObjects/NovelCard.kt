@@ -21,25 +21,4 @@ package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects
  *
  * @author github.com/doomsdayrs
  */
-class NovelCard
-/**
- * Constructor
- *
- * @param title       title
- * @param novelID   novel ID
- * @param novelURL    novelURL
- * @param imageURL    imageURL
- * @param formatterID id of formatter
- */(title: String, val novelID: Int,
-    /**
-     * NovelURL
-     */
-    val novelURL: String,
-    /**
-     * ImageURL
-     */
-    val imageURL: String,
-    /**
-     * ID of formatter
-     */
-    val formatterID: Int) : RecycleCard(title)
+class NovelCard(title: String, val novelID: Int, val novelURL: String, val imageURL: String, val formatterID: Int) : RecycleCard(title)

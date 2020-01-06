@@ -1,4 +1,3 @@
-
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup
 
 import android.app.Activity
@@ -84,6 +83,7 @@ class BackupSettings : Fragment() {
     }
 
     @Suppress("unused")
+
     private fun performFileSelection() {
         Toast.makeText(context, "Please make sure this is on the main storage, SD card storage is not functional yet", Toast.LENGTH_LONG).show()
         val intent = Intent(context, NormalFilePickActivity::class.java)

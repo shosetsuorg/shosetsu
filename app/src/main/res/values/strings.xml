@@ -14,7 +14,7 @@
     <string name="filter">filter</string>
 
     <!-- Reader Settings -->
-    <string name="reader_night_mode">Reader Night mode</string>
+    <string name="reader_theme">Reader Theme</string>
     <string name="text_size">Text size</string>
     <string name="spacing">Paragraph spacing</string>
     <string name="indent_size">Paragraph indent</string>
@@ -122,9 +122,47 @@
     <string name="chapters_unread_label">Chapters unread: </string>
     <string name="remove_novel_cache">Remove Novel Cache</string>
 
+
+    <!-- App Update -->
+    <string name="app_update_available">App Update available</string>
+    <string name="check_out_latest_app">Check out the latest version available of the app!</string>
+    <string name="app_update_unavaliable">App Update not available</string>
+    <string name="check_updates_later">No update available. Check for updates again later!</string>
+    <string name="update_app_now_question">Update app now?</string>
+    <string name="update_dismiss">Maybe later</string>
+    <string name="update_not_interested">Huh, not interested</string>
+
+    <!-- Theme -->
+    <string name="night">Night</string>
+    <string name="light">Light</string>
+    <string name="sepia">Sepia</string>
+
+    <string-array name="reader_themes">
+        <item>@string/night</item>
+        <item>@string/light</item>
+        <item>@string/sepia</item>
+    </string-array>
+
     <!-- Shortcuts -->
     <string name="refresh_shortcut">Check for updates</string>
     <string name="action_global_search_hint">Global search…</string>
+
+    <!-- Download options -->
+    <string name="download_next_chapter">Download next chapter</string>
+    <string name="download_next_5_chapters">Download next 5 chapters</string>
+    <string name="download_next_10_chapters">Download next 10 chapters</string>
+    <string name="download_custom_chapters">Download custom</string>
+    <string name="download_all_chapters">Download all</string>
+    <string name="download_unread_chapters">Download unread</string>
+
+    <string-array name="chapters_download_options">
+        <item>@string/download_all_chapters</item>
+        <item>@string/download_unread_chapters</item>
+        <item>@string/download_custom_chapters</item>
+        <item>@string/download_next_10_chapters</item>
+        <item>@string/download_next_5_chapters</item>
+        <item>@string/download_next_chapter</item>
+    </string-array>
 
 
     <string name="processing_data">Processing data</string>
@@ -133,6 +171,7 @@
     <string name="update_not_found">No updates found</string>
     <string name="download_fail_delete">Failed to delete, next download will correct</string>
     <string name="you_not_online">You are not online</string>
+    <string name="download_chapter_updates">Download chapter updates</string>
 
 
 </resources>

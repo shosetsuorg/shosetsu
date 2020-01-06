@@ -1,31 +1,34 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.async
 
 import android.os.AsyncTask
+import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
 import kotlinx.android.synthetic.main.chapter_view.*
 import kotlinx.android.synthetic.main.network_error.*
+import java.util.concurrent.TimeUnit
 
-class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, Void?, Void?>() {
+class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, Void?, Boolean>() {
 
     override fun onPreExecute() {
+        Log.i("ChapterViewLoader", "onPreExecute${chapterView.appendID()}")
         chapterView.progress.visibility = VISIBLE
         chapterView.network_error.visibility = GONE
     }
 
-    override fun doInBackground(vararg objects: Any?): Void? {
+    override fun doInBackground(vararg objects: Any?): Boolean {
+        Log.i("ChapterViewLoader", "doInBackground${chapterView.appendID()}")
+        if (chapterView.chapterReader?.formatter == null) return false
         try {
-            chapterView.chapterReader?.formatter?.let { formatter: Formatter ->
-                {
-                    WebViewScrapper.docFromURL(chapterView.url, formatter.hasCloudFlare)?.let {
-                        chapterView.unformattedText = formatter.getNovelPassage(it)
-                    }
-                }
+            TimeUnit.SECONDS.sleep(5)
+            WebViewScrapper.docFromURL(chapterView.url, chapterView.chapterReader?.formatter!!.hasCloudFlare)?.let {
+                if (chapterView.chapterReader?.formatter == null) return false
+                chapterView.unformattedText = chapterView.chapterReader?.formatter!!.getNovelPassage(it)
             }
+            return true
         } catch (e: Exception) {
             chapterView.activity?.runOnUiThread {
                 chapterView.network_error.visibility = VISIBLE
@@ -33,14 +36,17 @@ class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, 
                 chapterView.error_button.setOnClickListener { ChapterViewLoader(chapterView).execute() }
             }
         }
-        return null
+        return false
     }
 
-    override fun onPostExecute(result: Void?) {
-        chapterView.progress.visibility = GONE
-        chapterView.setUpReader()
-        chapterView.scrollView?.let { it.post { chapterView.scrollView!!.scrollTo(0, DatabaseChapter.getY(chapterView.chapterID)) } }
-        chapterView.ready = true
+    override fun onPostExecute(result: Boolean) {
+        Log.i("ChapterViewLoader", "onPostExecute${chapterView.appendID()}")
+        chapterView.view?.post {
+            chapterView.progress.visibility = GONE
+            chapterView.setUpReader()
+            chapterView.scrollView.post { chapterView.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterView.chapterID)) }
+            chapterView.ready = true
+        }
     }
-
 }
+

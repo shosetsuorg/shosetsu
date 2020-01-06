@@ -93,6 +93,8 @@
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:scaleType="center"
+                app:maxImageSize="32dp"
                 app:layout_constraintBottom_toTopOf="@+id/fragment_novel_genres"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_add_circle_outline_black_24dp" />

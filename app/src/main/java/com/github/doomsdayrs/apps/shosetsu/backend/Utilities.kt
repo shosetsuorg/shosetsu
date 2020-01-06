@@ -6,12 +6,17 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -29,6 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import java.io.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -54,7 +60,28 @@ import java.util.concurrent.TimeUnit
  * @author github.com/doomsdayrs
  */
 object Utilities {
-    const val SELECTED_STROKE_WIDTH = 8
+    internal class SHOWCASE {
+        val catalogue = 1
+        val downloads = 2
+        val library = 3
+        val main = 4
+        val migration = 5
+        val novel = 6
+        val novelINFO = 7
+        val novelCHAPTERS = 8
+        val novelTRACKING = 9
+        val reader = 10
+        val search = 11
+        val updates = 12
+        val webView = 13
+    }
+
+    /**
+     * global connectivity manager variable
+     */
+    var connectivityManager: ConnectivityManager? = null
+
+    const val selectedStrokeWidth = 8
     var shoDir: String = "/Shosetsu/"
 
     // Preference objects
@@ -63,6 +90,14 @@ object Utilities {
     lateinit var advancedPreferences: SharedPreferences
     lateinit var trackingPreferences: SharedPreferences
     lateinit var backupPreferences: SharedPreferences
+
+    fun convertNovelArrayToString2DArray(array: List<Novel>): ArrayList<Array<String>> {
+        val a: ArrayList<Array<String>> = ArrayList()
+        for (novel in array) {
+            a.add(arrayOf(novel.title, novel.link, novel.imageURL))
+        }
+        return a
+    }
 
     fun regret(context: Context) {
         Toast.makeText(context, context.getString(R.string.regret), Toast.LENGTH_LONG).show()
@@ -80,9 +115,9 @@ object Utilities {
      * @param positionSpared Item to set checked
      * @param demarkAction   Any action to proceed with
      */
-    fun unmarkMenuItems(menuItems: Array<MenuItem>, positionSpared: Int, demarkAction: DeMarkAction) {
+    fun unmarkMenuItems(menuItems: Array<MenuItem>, positionSpared: Int, demarkAction: DeMarkAction?) {
         for (x in menuItems.indices) menuItems[x].isChecked = (x == positionSpared)
-        demarkAction.action(positionSpared)
+        demarkAction?.action(positionSpared)
     }
 
     /**
@@ -91,7 +126,6 @@ object Utilities {
      * @param input String to clean
      * @return string without specials
      */
-    @JvmStatic
     fun cleanString(input: String): String {
         return input.replace("[^A-Za-z0-9]".toRegex(), "_")
     }
@@ -140,14 +174,14 @@ object Utilities {
         return null
     }
 
-    /**
-     * Checks string before deserialization
-     * If null or empty, returns "". Else deserializes the string and returns
-     *
-     * @param string String to be checked
-     * @return Completed String
-     */
     @JvmStatic
+            /**
+             * Checks string before deserialization
+             * If null or empty, returns "". Else deserializes the string and returns
+             *
+             * @param string String to be checked
+             * @return Completed String
+             */
     fun checkStringDeserialize(string: String): String {
         if (string.isEmpty()) {
             return ""
@@ -164,14 +198,14 @@ object Utilities {
         return ""
     }
 
-    /**
-     * Checks string before serialization
-     * If null or empty, returns "". Else serializes the string and returns
-     *
-     * @param string String to be checked
-     * @return Completed String
-     */
     @JvmStatic
+            /**
+             * Checks string before serialization
+             * If null or empty, returns "". Else serializes the string and returns
+             *
+             * @param string String to be checked
+             * @return Completed String
+             */
     fun checkStringSerialize(string: String?): String {
         if (string == null || string.isEmpty()) {
             return ""
@@ -185,13 +219,13 @@ object Utilities {
         return ""
     }
 
-    /**
-     * Converts String Stati back into Stati
-     *
-     * @param s String title
-     * @return Stati
-     */
     @JvmStatic
+            /**
+             * Converts String Stati back into Stati
+             *
+             * @param s String title
+             * @return Stati
+             */
     fun convertStringToStati(s: String): NovelStatus {
         return when (s) {
             "Publishing" -> NovelStatus.PUBLISHING
@@ -202,13 +236,13 @@ object Utilities {
         }
     }
 
-    /**
-     * Converts Array of Strings into a String
-     *
-     * @param a array of strings
-     * @return String Array
-     */
     @JvmStatic
+            /**
+             * Converts Array of Strings into a String
+             *
+             * @param a array of strings
+             * @return String Array
+             */
     fun convertArrayToString(a: Array<String?>?): String {
         if (a != null && a.isNotEmpty()) {
             for (x in a.indices) {
@@ -219,13 +253,13 @@ object Utilities {
         return "[]"
     }
 
-    /**
-     * Converts a String Array back into an Array of Strings
-     *
-     * @param s String array
-     * @return Array of Strings
-     */
     @JvmStatic
+            /**
+             * Converts a String Array back into an Array of Strings
+             *
+             * @param s String array
+             * @return Array of Strings
+             */
     fun convertStringToArray(s: String): Array<String> {
         val a = s.substring(1, s.length - 1).split(", ".toRegex()).toTypedArray()
         for (x in a.indices) {
@@ -241,22 +275,13 @@ object Utilities {
      * @param mainActivity activity
      */
     fun initPreferences(mainActivity: AppCompatActivity) {
-        Settings.ReaderTextColor = viewPreferences.getInt("ReaderTextColor", Color.BLACK)
-        Settings.ReaderTextBackgroundColor = viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
         var dir = mainActivity.getExternalFilesDir(null)!!.absolutePath
         dir = dir.substring(0, dir.indexOf("/Android"))
         shoDir = downloadPreferences.getString("dir", "$dir/Shosetsu/")!!
-        Settings.downloadPaused = downloadPreferences.getBoolean("paused", false)
-        Settings.ReaderTextSize = viewPreferences.getInt("ReaderTextSize", 14).toFloat()
-        Settings.themeMode = advancedPreferences.getInt("themeMode", 0)
-        Settings.paragraphSpacing = viewPreferences.getInt("paragraphSpacing", 1)
-        Settings.indentSize = viewPreferences.getInt("indentSize", 1)
-        Settings.ReaderMarkingType = viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
     }
 
     fun setReaderMarkingType(markingType: MarkingTypes) {
         Settings.ReaderMarkingType = markingType.i
-        viewPreferences.edit().putInt("markingType", markingType.i).apply()
     }
 
     fun toggleTapToScroll(): Boolean {
@@ -273,20 +298,12 @@ object Utilities {
 
     fun changeIndentSize(newIndent: Int) {
         Settings.indentSize = newIndent
-        viewPreferences.edit().putInt("indentSize", newIndent).apply()
     }
 
-    fun changeParagraphSpacing(newSpacing: Int) {
-        Settings.paragraphSpacing = newSpacing
-        viewPreferences.edit().putInt("paragraphSpacing", newSpacing).apply()
-    }
 
     fun changeMode(activity: Activity, newMode: Int) {
         if (newMode !in 0..2) throw IndexOutOfBoundsException("Non valid int passed")
         Settings.themeMode = newMode
-        advancedPreferences.edit()
-                .putInt("themeMode", newMode)
-                .apply()
         activity.recreate()
         // setupTheme(activity);
     }
@@ -299,6 +316,13 @@ object Utilities {
         }
     }
 
+    fun setBackgroundByTheme(view: View) {
+        when (Settings.themeMode) {
+            0 -> view.setBackgroundResource(R.color.white_trans)
+            1, 2 -> view.setBackgroundResource(R.color.black_trans)
+        }
+    }
+
     /**
      * Toggles paused downloads
      *
@@ -306,9 +330,6 @@ object Utilities {
      */
     fun togglePause(): Boolean {
         Settings.downloadPaused = !Settings.downloadPaused
-        downloadPreferences.edit()
-                .putBoolean("paused", Settings.downloadPaused)
-                .apply()
         return Settings.downloadPaused
     }
 
@@ -319,25 +340,41 @@ object Utilities {
      */
     val isOnline: Boolean
         get() {
-            val activeNetwork = Settings.connectivityManager!!.activeNetworkInfo
-            return if (activeNetwork != null) activeNetwork.type == ConnectivityManager.TYPE_WIFI || activeNetwork.type == ConnectivityManager.TYPE_MOBILE else false
-        }//TODO: Check this also, this doesn't seem to be a nice way to do things.
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val networkCapabilities = connectivityManager?.activeNetwork ?: return false
+                val actNw = connectivityManager?.getNetworkCapabilities(networkCapabilities)
+                        ?: return false
+                when {
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                    else -> false
+                }
+            } else {
+                // Suppressing warnings since this is old API usage
+                @Suppress("DEPRECATION")
+                val type = connectivityManager?.activeNetworkInfo ?: return false
+                @Suppress("DEPRECATION")
+                when (type.type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+            }
+        }
 
-    /**
-     * Is reader in night mode
-     *
-     * @return true if so, otherwise false
-     */
-    val isReaderNightMode: Boolean
-        get() =//TODO: Check this also, this doesn't seem to be a nice way to do things.
-            Settings.ReaderTextColor == Color.WHITE
 
     fun setNightNode() {
         setReaderColor(Color.WHITE, Color.BLACK)
     }
 
-    fun unsetNightMode() {
+    fun setLightMode() {
         setReaderColor(Color.BLACK, Color.WHITE)
+    }
+
+    fun setSepiaMode(context: Context) {
+        setReaderColor(Color.BLACK, ContextCompat.getColor(context, R.color.wheat))
     }
 
     /**
@@ -349,20 +386,22 @@ object Utilities {
     private fun setReaderColor(text: Int, background: Int) {
         Settings.ReaderTextColor = text
         Settings.ReaderTextBackgroundColor = background
-        viewPreferences.edit()
-                .putInt("ReaderTextColor", text)
-                .putInt("ReaderBackgroundColor", background)
-                .apply()
     }
 
-    /**
-     * Swaps the reader colors
-     */
-    fun swapReaderColor() {
-        if (isReaderNightMode) {
-            setReaderColor(Color.BLACK, Color.WHITE)
-        } else {
-            setReaderColor(Color.WHITE, Color.BLACK)
+    fun getReaderColor(context: Context): Int {
+        return when (Settings.ReaderTextBackgroundColor) {
+            Color.WHITE -> {
+                1
+            }
+            Color.BLACK -> {
+                0
+            }
+            ContextCompat.getColor(context, R.color.wheat) -> {
+                2
+            }
+            else -> {
+                1
+            }
         }
     }
 
@@ -373,20 +412,13 @@ object Utilities {
      * @return true means added, false means removed
      */
     fun toggleBookmarkChapter(chapterID: Int): Boolean { //TODO Simplify
-        return if (Database.DatabaseChapter.isNotBookMarked(chapterID)) {
+        return if (Database.DatabaseChapter.isBookMarked(chapterID)) {
             Database.DatabaseChapter.setBookMark(chapterID, 0)
             false
         } else {
             Database.DatabaseChapter.setBookMark(chapterID, 1)
             true
         }
-    }
-
-    fun setTextSize(size: Int) {
-        Settings.ReaderTextSize = size.toFloat()
-        viewPreferences.edit()
-                .putInt("ReaderTextSize", size)
-                .apply()
     }
 
     /**

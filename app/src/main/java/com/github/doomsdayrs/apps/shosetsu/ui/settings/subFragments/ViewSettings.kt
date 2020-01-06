@@ -53,7 +53,7 @@ class ViewSettings : Fragment() {
                         override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                             Log.d("SpaceSelection", i.toString())
                             if (i in 0..3) {
-                                Utilities.changeParagraphSpacing(i)
+                                Settings.paragraphSpacing = (i)
                                 adapterView.setSelection(i)
                             }
                         }
@@ -74,7 +74,7 @@ class ViewSettings : Fragment() {
                                     1 -> size = 17
                                     2 -> size = 20
                                 }
-                                Utilities.setTextSize(size)
+                                Settings.ReaderTextSize = (size.toFloat())
                                 adapterView.setSelection(i)
                             }
                         }
@@ -116,12 +116,27 @@ class ViewSettings : Fragment() {
                         }
                     }),
 
-            SettingsItemData(SettingsType.SWITCH)
-                    .setTitle(R.string.reader_night_mode)
-                    .setSwitchIsChecked(Utilities.isReaderNightMode)
-                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
-                        Log.d("NightMode", p1.toString())
-                        if (!Utilities.isReaderNightMode) Utilities.setNightNode() else Utilities.unsetNightMode()
+            SettingsItemData(SettingsType.SPINNER)
+                    .setTitle(R.string.reader_theme)
+                    .setOnItemSelectedListener(object : OnItemSelectedListener {
+                        override fun onNothingSelected(p0: AdapterView<*>?) {}
+                        override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                            Log.d("NightMode", p1.toString())
+                            when (p2) {
+                                0 -> {
+                                    Utilities.setNightNode()
+                                }
+                                1 -> {
+                                    Utilities.setLightMode()
+                                }
+                                2 -> {
+                                    p1?.context?.let { Utilities.setSepiaMode(it) }
+                                }
+                                else -> {
+                                    Log.e("NightMode", "UnknownType")
+                                }
+                            }
+                        }
                     }),
 
             SettingsItemData(SettingsType.SWITCH)
@@ -131,7 +146,7 @@ class ViewSettings : Fragment() {
                         Log.d("Tap to scroll", p1.toString())
                         Utilities.toggleTapToScroll()
                     })
-            )
+    )
     val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
 
     private fun findDataByID(@StringRes id: Int): Int {
@@ -161,14 +176,20 @@ class ViewSettings : Fragment() {
         }
 
         run {
+            val x = findDataByID(R.string.reader_theme)
+            settings[x].adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.reader_themes))
+            settings[x].spinnerSelection = Utilities.getReaderColor(context!!)
+        }
+
+        run {
             val x = findDataByID(R.string.spacing)
-            settings[x].adapter =  ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.sizes_with_none))
+            settings[x].adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.sizes_with_none))
             settings[x].spinnerSelection = Settings.paragraphSpacing
         }
 
         run {
             val x = findDataByID(R.string.indent_size)
-            settings[x].adapter =  ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.sizes_with_none))
+            settings[x].adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.sizes_with_none))
             settings[x].spinnerSelection = (Settings.indentSize)
         }
 

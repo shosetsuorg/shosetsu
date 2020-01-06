@@ -78,7 +78,7 @@ class SearchViewHolder(itemView: View, val searchFragment: SearchFragment) : Rec
                 progressBar.visibility = View.GONE
             }
             else -> {
-                formatter = DefaultScrapers.getByID(id)!!
+                formatter = DefaultScrapers.getByID(id)
                 textView.text = formatter.name
                 if (!searchFragment.containsData(id))
                     SearchLoader(this).execute(query)

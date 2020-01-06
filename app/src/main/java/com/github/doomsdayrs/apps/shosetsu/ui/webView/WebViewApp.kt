@@ -40,7 +40,7 @@ class WebViewApp : AppCompatActivity() {
         when (action) {
             Actions.VIEW -> webview.webViewClient = WebViewClient()
             Actions.CLOUD_FLARE -> {
-             //   webview.addJavascriptInterface(JSInterface(), "HtmlViewer")
+                // webview.addJavascriptInterface(JSInterface(), "HtmlViewer")
                 webview.webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView, url: String) {
                         webview.loadUrl("javascript:window.HtmlViewer.showHTML" +
@@ -48,8 +48,6 @@ class WebViewApp : AppCompatActivity() {
                         finish()
                     }
                 }
-            }
-            else -> {
             }
         }
         webview.loadUrl(intent.getStringExtra("url"))

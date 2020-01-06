@@ -9,6 +9,7 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/download"
         android:title="@string/download"
         app:showAsAction="never" />
 </menu>

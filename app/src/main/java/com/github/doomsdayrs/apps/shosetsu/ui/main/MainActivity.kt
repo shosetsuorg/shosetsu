@@ -28,7 +28,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener
@@ -64,16 +63,12 @@ import kotlinx.android.synthetic.main.activity_main.*
  */
 //TODO Inform users to refresh their libraries
 class MainActivity : AppCompatActivity(), Supporter {
-    @JvmField
     val cataloguesFragment = CataloguesFragment()
-    @JvmField
     val libraryFragment = LibraryFragment()
-    @JvmField
     val updatesFragment = UpdatesFragment()
-    @JvmField
     val settingsFragment = SettingsFragment()
-    @JvmField
     val downloadsFragment = DownloadsFragment()
+
 
     fun getNavigationView(): NavigationView? {
         return nav_view
@@ -100,23 +95,25 @@ class MainActivity : AppCompatActivity(), Supporter {
         Utilities.setupTheme(this)
         //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         Log.d("Updater", "Start")
+
+
         val appUpdater = AppUpdater(this)
                 .setUpdateFrom(UpdateFrom.XML)
                 .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
                 .setDisplay(Display.DIALOG)
-                .setDisplay(Display.NOTIFICATION)
-                .setDisplay(Display.SNACKBAR)
-                .setTitleOnUpdateAvailable("ChapterUpdate available")
-                .setContentOnUpdateAvailable("Check out the latest version available of my app!")
-                .setTitleOnUpdateNotAvailable("ChapterUpdate not available")
-                .setContentOnUpdateNotAvailable("No update available. Check for chapterUpdates again later!")
-                .setButtonUpdate("ChapterUpdate now?") //    .setButtonUpdateClickListener(...)
-                .setButtonDismiss("Maybe later") //       .setButtonDismissClickListener(...)
-                .setButtonDoNotShowAgain("Huh, not interested") //     .setButtonDoNotShowAgainClickListener(...)
+                .setTitleOnUpdateAvailable(getString(R.string.app_update_available))
+                .setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
+                .setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
+                .setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
+                .setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
+                .setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
+                .setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
                 .setIcon(R.drawable.ic_system_update_alt_black_24dp)
                 .setCancelable(true)
                 .showEvery(5)
         appUpdater.start()
+
+
         val appUpdaterUtils = AppUpdaterUtils(this)
                 .setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
                 .withListener(object : UpdateListener {
@@ -134,7 +131,7 @@ class MainActivity : AppCompatActivity(), Supporter {
         Log.d("Updater", "Completed construction")
 
         // Settings setup
-        Settings.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         //Set the content view
         setContentView(R.layout.activity_main)

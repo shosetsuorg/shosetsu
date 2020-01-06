@@ -1,11 +1,11 @@
 <AppUpdater>
 
     <update>
-        <latestVersion>0.1.0.1</latestVersion>
-        <latestVersionCode>21</latestVersionCode>
+        <latestVersion>1.1.0</latestVersion>
+        <latestVersionCode>23</latestVersionCode>
         <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
         <releaseNotes>
-            - Fixed chapter formatting
+            - Spoooood update :D
         </releaseNotes>
     </update>
 

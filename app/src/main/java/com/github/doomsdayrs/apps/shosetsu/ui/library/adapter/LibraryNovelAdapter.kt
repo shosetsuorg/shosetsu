@@ -11,7 +11,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNov
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -49,12 +48,9 @@ class LibraryNovelAdapter(private val novelCards: ArrayList<Int>, private val li
             if (novelCard.imageURL.isNotEmpty()) Picasso.get().load(novelCard.imageURL).into(libNovelViewHolder.imageView)
             libNovelViewHolder.libraryFragment = libraryFragment
             libNovelViewHolder.novelCard = novelCard
-            libNovelViewHolder.formatter = getByID(novelCard.formatterID)!!
+            libNovelViewHolder.formatter = getByID(novelCard.formatterID)
             libNovelViewHolder.title.text = novelCard.title
-            when (Settings.themeMode) {
-                0 -> libNovelViewHolder.title.setBackgroundResource(R.color.white_trans)
-                1, 2 -> libNovelViewHolder.title.setBackgroundResource(R.color.black_trans)
-            }
+            Utilities.setBackgroundByTheme(libNovelViewHolder.title)
         }
         val count = Database.DatabaseChapter.getCountOfChaptersUnread(novelCard.novelID)
         if (count != 0) {
@@ -62,12 +58,12 @@ class LibraryNovelAdapter(private val novelCards: ArrayList<Int>, private val li
             libNovelViewHolder.chip.text = count.toString()
         } else libNovelViewHolder.chip.visibility = View.INVISIBLE
         if (libraryFragment.contains(novelCard.novelID)) {
-            libNovelViewHolder.materialCardView.strokeWidth = Utilities.SELECTED_STROKE_WIDTH
+            libNovelViewHolder.materialCardView.strokeWidth = Utilities.selectedStrokeWidth
         } else {
             libNovelViewHolder.materialCardView.strokeWidth = 0
         }
         if (libraryFragment.selectedNovels.size > 0) {
-            libNovelViewHolder.itemView.setOnClickListener { view: View? -> libNovelViewHolder.addToSelect() }
+            libNovelViewHolder.itemView.setOnClickListener { libNovelViewHolder.addToSelect() }
         } else {
             libNovelViewHolder.itemView.setOnClickListener(libNovelViewHolder)
         }

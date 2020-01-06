@@ -1,0 +1,20 @@
+Shosetsu is a light novel reader for android.
+
+Features include
+- Adding novels to your personal library from different catalogs;
+- Catalogs that feature scrapers for many websites (currently 4);
+- Daytime, nighttime and sepia reading modes;
+- Application-wide dark mode;
+- Compatible with all versions upwards of Android 5.1;
+- Backup and Restore (currently disabled);
+- Catalog migration (currently disabled);
+- Chapter update notifications for the novels in your personal library;
+- Built-in chapter download manager;
+- Chapter bookmarking;
+- The ability to change text size, coloring, indents and spacing.
+
+
+Technical details
+- All chapters are retrieved by downloading an entire webpage, and scraping off the plain text, which is then turned into a string. Currently only plain text is supported.
+- Shosetsu is essentially a web scraper, which can expand its built-in catalog through the use of (shosetsu-extensions)[https://github.com/Doomsdayrs/shosetsu-extensions]. The bare minimum requirements for a new extension are for one to create a child class of ScrapeFormat, and fill in the abstract information, as well as tweak some of the other variables.
+- Shosetsu does not, in any way, own copyright over any of the novels present in its catalogs or extensions. All DMCA requests should be forwarded to the original source, as Shosetsu does not host anything. All data is scraped, saved to the users' devices and then displayed.

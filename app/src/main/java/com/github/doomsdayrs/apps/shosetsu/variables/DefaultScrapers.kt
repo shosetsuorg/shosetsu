@@ -5,6 +5,7 @@ import com.github.doomsdayrs.api.shosetsu.extensions.lang.en.box_novel.BoxNovel
 import com.github.doomsdayrs.api.shosetsu.extensions.lang.en.novel_full.NovelFull
 import com.github.doomsdayrs.api.shosetsu.extensions.lang.en.syosetu.Syosetu
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.ScrapeFormat
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelGenre
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
@@ -43,20 +44,57 @@ import java.util.*
 // TODO Make this full dynamic, not needing to be predefined
 // > Make IDs built into the formatter
 enum class DefaultScrapers(private val formatter: Formatter) : Formatter {
+    UNKNOWN(UnknownFormatter()),
     NOVELFULL(NovelFull()), BOXNOVEL(BoxNovel()), SYOSETU(Syosetu()),  //NOVELPLANENT(new NovelPlanet(4)),
     BESTLIGHTNOVEL(BestLightNovel());
 
+    internal class UnknownFormatter() : ScrapeFormat(){
+        override val genres: Array<NovelGenre> = arrayOf()
+        override val imageURL: String = ""
+        override val name: String = "UNKNOWN"
+
+        override fun getLatestURL(page: Int): String {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getNovelPassage(document: Document): String {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun getSearchString(query: String): String {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun novelPageCombiner(url: String, increment: Int): String {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun parseLatest(document: Document): List<Novel> {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun parseNovel(document: Document): NovelPage {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun parseNovel(document: Document, increment: Int): NovelPage {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun parseSearch(document: Document): List<Novel> {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+    }
+
     companion object {
         val formatters = ArrayList<Formatter>()
-        @JvmStatic
-        fun getByID(ID: Int): Formatter? {
+        fun getByID(ID: Int): Formatter {
             for (formatter in formatters) {
                 if (formatter.formatterID == ID) return formatter
             }
-            return null
+            return UNKNOWN
         }
 
-        @JvmStatic
         val asCatalogue: ArrayList<CatalogueCard>
             get() {
                 val catalogueCards = ArrayList<CatalogueCard>()

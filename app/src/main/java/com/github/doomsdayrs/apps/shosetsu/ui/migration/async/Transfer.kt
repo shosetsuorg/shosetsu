@@ -8,7 +8,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL
-import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
 import kotlinx.android.synthetic.main.migrate_source_view.*
@@ -38,11 +37,11 @@ import java.util.concurrent.TimeUnit
  */
 class Transfer(private val strings: ArrayList<Array<String>>, target: Int, private val migrationView: MigrationView?) : AsyncTask<Void?, Void?, Void?>() {
     private val formatter: Formatter? = getByID(target)
-    var canceled = true
+    var isNotCanceled = true
 
 
     override fun onCancelled() {
-        canceled = false
+        isNotCanceled = false
         super.onCancelled()
     }
 
@@ -54,7 +53,7 @@ class Transfer(private val strings: ArrayList<Array<String>>, target: Int, priva
     }
 
     override fun doInBackground(vararg voids: Void?): Void? {
-        for (strings in strings) if (canceled) {
+        for (strings in strings) if (isNotCanceled) {
             val s = strings[0] + "--->" + strings[1]
             println(s)
             migrationView!!.console_output.post { migrationView.console_output.text = s }
@@ -62,12 +61,12 @@ class Transfer(private val strings: ArrayList<Array<String>>, target: Int, priva
             if (formatter.isIncrementingChapterList) {
                 var mangaCount = 0
                 var page = 1
-                while (page <= novelPage.maxChapterPage && canceled) {
+                while (page <= novelPage.maxChapterPage && isNotCanceled) {
                     val p = "Page: " + page + "/" + novelPage.maxChapterPage
                     migrationView.page_count.post { migrationView.page_count.text = p }
                     novelPage = formatter.parseNovel(docFromURL(strings[1], formatter.hasCloudFlare)!!, page)
                     val novelID = DatabaseIdentification.getNovelIDFromNovelURL(strings[1])
-                    for (novelChapter in novelPage.novelChapters) if (canceled && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
+                    for (novelChapter in novelPage.novelChapters) if (isNotCanceled && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
                         mangaCount++
                         println("Adding #" + mangaCount + ": " + novelChapter.link)
                         Database.DatabaseChapter.addToChapters(novelID, novelChapter)
@@ -82,13 +81,13 @@ class Transfer(private val strings: ArrayList<Array<String>>, target: Int, priva
             } else {
                 var mangaCount = 0
                 val novelID = DatabaseIdentification.getNovelIDFromNovelURL(strings[1])
-                for (novelChapter in novelPage.novelChapters) if (canceled && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
+                for (novelChapter in novelPage.novelChapters) if (isNotCanceled && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
                     mangaCount++
                     println("Adding #" + mangaCount + ": " + novelChapter.link)
                     Database.DatabaseChapter.addToChapters(novelID, novelChapter)
                 }
             }
-            if (canceled) {
+            if (isNotCanceled) {
                 migrationView.page_count.post { migrationView.page_count.text = "" }
                 val oldID = DatabaseIdentification.getNovelIDFromNovelURL(strings[0])
                 Database.DatabaseNovels.migrateNovel(oldID, strings[1], formatter.formatterID, novelPage, Database.DatabaseNovels.getStatus(oldID).a)
@@ -98,7 +97,6 @@ class Transfer(private val strings: ArrayList<Array<String>>, target: Int, priva
     }
 
     override fun onPostExecute(aVoid: Void?) {
-        LibraryFragment.changedData = true
         migrationView?.finish()
     }
 

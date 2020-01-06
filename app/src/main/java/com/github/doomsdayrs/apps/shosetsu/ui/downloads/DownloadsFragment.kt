@@ -101,6 +101,7 @@ class DownloadsFragment : Fragment() {
         return false
     }
 
+    companion object;
 
     /**
      * Constructor

@@ -65,7 +65,7 @@ class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, v
     private val nullPage: String = "Page returned null, Skipping"
 
     public override fun doInBackground(vararg p0: Void?): Boolean {
-        var novelPage: NovelPage = NovelPage()
+        var novelPage = NovelPage()
         return if (formatter.isIncrementingChapterList) {
             // sets the max page to one higher then normal
             novelPage.maxChapterPage = 2

@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables
 
 import android.graphics.Color
-import android.net.ConnectivityManager
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 
 /*
  * This file is part of Shosetsu.
@@ -28,24 +28,12 @@ import android.net.ConnectivityManager
  * Setting variables to work with
  */
 object Settings {
-    /**
-     * How to mark a chapter as reading
-     */
-    @JvmField
-    var ReaderMarkingType: Int = MarkingTypes.ONVIEW.i
-
     enum class MarkingTypes(val i: Int) {
         ONVIEW(0),
         ONSCROLL(1)
     }
 
-
-    /**
-     * Reader text size
-     */
-    @JvmField
-    var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
-
+    @Suppress("unused")
     //TODO Use this
     @Suppress("unused")
     enum class TextSizes(val i: Int) {
@@ -54,36 +42,6 @@ object Settings {
         LARGE(20)
     }
 
-    /**
-     * Reader text color
-     */
-    @JvmField
-    var ReaderTextColor = Color.BLACK
-
-    /**
-     * Reader background color
-     */
-    @JvmField
-    var ReaderTextBackgroundColor = Color.WHITE
-
-    /**
-     * global connectivity manager variable
-     */
-    @JvmField
-    var connectivityManager: ConnectivityManager? = null
-
-    /**
-     * If download manager is paused
-     */
-    @JvmField
-    var downloadPaused = false
-
-    /**
-     * Current theme to use
-     */
-    @JvmField
-    var themeMode = Themes.LIGHT.id
-
     //TODO Use this
     enum class Themes(val id: Int) {
         LIGHT(0),
@@ -91,9 +49,86 @@ object Settings {
         DARK(2)
     }
 
-    @JvmField
-    var paragraphSpacing = 0
+    /**
+     * How to mark a chapter as reading
+     */
+    var ReaderMarkingType: Int = MarkingTypes.ONVIEW.i
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("markingType", value).apply()
+        }
+        get() = Utilities.viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
 
-    @JvmField
+
+    /**
+     * Reader text size
+     */
+    var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
+        get() =Utilities.viewPreferences.getInt("ReaderTextSize", 14).toFloat()
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("ReaderTextSize", value.toInt()).apply()
+        }
+
+    /**
+     * Reader text color
+     */
+    var ReaderTextColor = Color.BLACK
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("ReaderTextColor", value).apply()
+        }
+        get() = Utilities.viewPreferences.getInt("ReaderTextColor", Color.BLACK)
+
+    /**
+     * Reader background color
+     */
+    var ReaderTextBackgroundColor = Color.WHITE
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("ReaderBackgroundColor", value).apply()
+        }
+        get() = Utilities.viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
+
+    /**
+     * If download manager is paused
+     */
+    var downloadPaused: Boolean = false
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putBoolean("paused", value).apply()
+        }
+        get() = Utilities.downloadPreferences.getBoolean("paused", false)
+
+    var isDownloadOnUpdateEnabled: Boolean = false
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putBoolean("downloadOnUpdate", value).apply()
+        }
+        get() = Utilities.viewPreferences.getBoolean("downloadOnUpdate", false)
+
+    /**
+     * Current theme to use
+     */
+    var themeMode = Themes.LIGHT.id
+        set(value) {
+            field = value
+            Utilities.advancedPreferences.edit().putInt("themeMode", value).apply()
+        }
+        get() = Utilities.advancedPreferences.getInt("themeMode", 0)
+
+    var paragraphSpacing: Int = 0
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("paragraphSpacing", value).apply()
+        }
+        get() = Utilities.viewPreferences.getInt("paragraphSpacing", 1)
+
+
     var indentSize = 0
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("indentSize", value).apply()
+        }
+        get() = Utilities.viewPreferences.getInt("indentSize", 1)
 }

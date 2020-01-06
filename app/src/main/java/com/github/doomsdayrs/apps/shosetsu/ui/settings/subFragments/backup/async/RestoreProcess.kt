@@ -11,9 +11,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -43,10 +41,14 @@ import java.io.IOException
  *
  * @author github.com/doomsdayrs
  */
-class RestoreProcess(private val file_path: String, private val context: Context) : AsyncTask<Void?, Void?, Boolean>() {
+class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticFieldLeak") private val context: Context) : AsyncTask<Void?, Void?, Boolean>() {
+    @SuppressLint("StaticFieldLeak")
     private val close: Button
+    @SuppressLint("StaticFieldLeak")
     private val progressBar: ProgressBar
+    @SuppressLint("StaticFieldLeak")
     private val progressBar2: ProgressBar
+    @SuppressLint("StaticFieldLeak")
     private val textView: TextView
     private val dialog: Dialog = Dialog(context)
     override fun onPreExecute() {
@@ -59,7 +61,7 @@ class RestoreProcess(private val file_path: String, private val context: Context
             Log.i("Progress", "Completed restore")
             textView.post { textView.setText(R.string.completed) }
             progressBar2.post { progressBar2.visibility = View.GONE }
-            close.post { close.setOnClickListener { view: View? -> dialog.cancel() } }
+            close.post { close.setOnClickListener { dialog.cancel() } }
         } else {
             dialog.cancel()
             Toast.makeText(context, "Failed to process", Toast.LENGTH_SHORT).show()

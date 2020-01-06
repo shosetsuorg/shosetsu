@@ -4,15 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.squareup.picasso.Picasso
 
@@ -41,13 +40,13 @@ import com.squareup.picasso.Picasso
  */
 class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : RecyclerView.Adapter<ResultViewHolder>() {
     private var intArray: ArrayList<Int> = arrayListOf(-1)
-    private var novelArray: List<Novel> = arrayListOf()
+    private var novelArray: List<Array<String>> = arrayListOf()
 
     constructor(array: ArrayList<Int>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
         this.intArray = array
     }
 
-    constructor(array: List<Novel>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
+    constructor(array: List<Array<String>>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
         novelArray = array
     }
 
@@ -68,10 +67,10 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
         val id: Int
 
         if (isWebsiteSearch()) {
-            val novel: Novel = novelArray[position]
-            title = novel.title
-            url = novel.link
-            imageURL = novel.imageURL
+            val novel: Array<String> = novelArray[position]
+            title = novel[0]
+            url = novel[1]
+            imageURL = novel[2]
             formatter = searchViewHolder.formatter
             id = Database.DatabaseIdentification.getNovelIDFromNovelURL(imageURL)
         } else {
@@ -79,7 +78,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             title = novel.title
             url = novel.novelURL
             imageURL = novel.imageURL
-            formatter = DefaultScrapers.getByID(novel.formatterID)!!
+            formatter = DefaultScrapers.getByID(novel.formatterID)
             id = novel.novelID
         }
 
@@ -96,10 +95,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             (searchViewHolder.searchFragment.activity as MainActivity).transitionView(novelFragment)
         }
 
-        when (Settings.themeMode) {
-            0 -> holder.textView.setBackgroundResource(R.color.white_trans)
-            1, 2 -> holder.textView.setBackgroundResource(R.color.black_trans)
-        }
+       Utilities.setBackgroundByTheme(holder.textView)
     }
 
 

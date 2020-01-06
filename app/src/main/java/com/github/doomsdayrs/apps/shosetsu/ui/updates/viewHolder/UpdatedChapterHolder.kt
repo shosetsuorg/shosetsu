@@ -60,7 +60,7 @@ class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView), 
     override fun onClick(view: View) {
         val novelURL = DatabaseIdentification.getNovelURLFromChapterURL(novelChapter!!.link)
         val formatter = getByID(DatabaseIdentification.getFormatterIDFromNovelURL(novelURL))
-        if (formatter != null) Utilities.openChapter((itemView.context as Activity), novelChapter!!, DatabaseIdentification.getNovelIDFromNovelURL(novelURL), formatter.formatterID)
+        Utilities.openChapter((itemView.context as Activity), novelChapter!!, DatabaseIdentification.getNovelIDFromNovelURL(novelURL), formatter.formatterID)
     }
 
     init {

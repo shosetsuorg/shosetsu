@@ -41,10 +41,10 @@ import org.jsoup.nodes.Document
  *
  * @author github.com/doomsdayrs
  */
-class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatter, private val novelFragment: NovelFragment?, private val loadChapters: Boolean) : AsyncTask<Void, Void, Boolean>() {
+class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatter, private val novelFragment: NovelFragment?, private val loadChapters: Boolean) : AsyncTask<Void, Void, Boolean>() {
     private var novelPage: NovelPage = NovelPage()
 
-    constructor(newNovelLoader: NewNovelLoader) : this(newNovelLoader.novelURL, newNovelLoader.novelID, newNovelLoader.formatter, newNovelLoader.novelFragment, newNovelLoader.loadChapters)
+    constructor(novelLoader: NovelLoader) : this(novelLoader.novelURL, novelLoader.novelID, novelLoader.formatter, novelLoader.novelFragment, novelLoader.loadChapters)
 
     override fun onPreExecute() {
         super.onPreExecute()
@@ -101,7 +101,7 @@ class NewNovelLoader(val novelURL: String, var novelID: Int, val formatter: Form
                 // Errors out the program and returns a false
                 novelFragment?.activity?.runOnUiThread {
                     novelFragment.novelFragmentInfo?.fragment_novel_main_refresh?.isRefreshing = false;novelFragment.network_error!!.visibility = View.VISIBLE;novelFragment.error_message!!.text = e.message
-                    novelFragment.error_button!!.setOnClickListener { NewNovelLoader(this).execute() }
+                    novelFragment.error_button!!.setOnClickListener { NovelLoader(this).execute() }
                 }
                 false
             }

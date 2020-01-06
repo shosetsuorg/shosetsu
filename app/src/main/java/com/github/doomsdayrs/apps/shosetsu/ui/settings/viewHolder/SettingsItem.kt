@@ -30,6 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  * hXtreme
  */
+@Suppress("unused")
 class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
     private var type: SettingsItemData.SettingsType = SettingsItemData.SettingsType.INFORMATION
 

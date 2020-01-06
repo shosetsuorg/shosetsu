@@ -20,15 +20,9 @@ Join us on our:
 - [ ] Tracking
 - [ ] Actually efficient coding
 
-## ScreenShots *OUTDATED*
-<img src="https://i.imgur.com/qekNxth.png" width="30%"></img>
-<img src="https://i.imgur.com/jSTh0Wy.png" width="30%"></img>
-<img src="https://i.imgur.com/3JjnREL.png" width="30%"></img>
-<img src="https://i.imgur.com/zMvba9K.png" width="30%"></img>
-<img src="https://i.imgur.com/ewixqUy.png" width="30%"></img>
-<img src="https://i.imgur.com/xHu1Uaa.png" width="30%"></img>
-<img src="https://i.imgur.com/p7HM9jh.png" width="30%"></img>
-<img src="https://i.imgur.com/dYK75Up.png" width="30%"></img>
-<img src="https://i.imgur.com/BRbLbar.png" width="30%"></img>
-<img src="https://i.imgur.com/Bprwi5S.png" width="30%"></img>
-<img src="https://i.imgur.com/m2NV026.png" width="30%"></img>  
+## ScreenShots
+<img src="./screenshots/0.jpg" width="30%"></img>
+<img src="./screenshots/1.jpg" width="30%"></img>
+<img src="./screenshots/2.jpg" width="30%"></img>
+<img src="./screenshots/3.jpg" width="30%"></img>
+<img src="./screenshots/4.jpg" width="30%"></img>

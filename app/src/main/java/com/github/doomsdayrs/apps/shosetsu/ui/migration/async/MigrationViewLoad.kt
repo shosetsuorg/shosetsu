@@ -7,9 +7,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
-import kotlinx.android.synthetic.main.fragment_catalogue.*
 import kotlinx.android.synthetic.main.migrate_source_view.*
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -33,23 +31,23 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class MigrationViewLoad(private val migrationView: MigrationView) : AsyncTask<Void?, Void?, Void?>() {
-    private var targetFormat: Formatter = getByID(migrationView.target)!!
+    private var targetFormat: Formatter = getByID(migrationView.target)
 
     override fun doInBackground(vararg voids: Void?): Void? {
         Log.d("Searching with", targetFormat.name)
-        for (x in migrationView.novels!!.indices) { // Retrieves search results
-            // Sets the results
-            migrationView.novelResults[x] = targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels!![x].title), targetFormat.hasCloudFlare)!!) as ArrayList<Novel>
+        for (x in migrationView.novels.indices) { // Retrieves search results
+            val list = targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels.get(x).title), targetFormat.hasCloudFlare)!!)
+            migrationView.novelResults[x] = list as ArrayList<Novel>
         }
         return null
     }
 
     override fun onPreExecute() {
-        migrationView.swipeRefreshLayout.isRefreshing = true
+        //migrationView.swipeRefreshLayout.isRefreshing = true
     }
 
     override fun onPostExecute(aVoid: Void?) {
-        migrationView.swipeRefreshLayout.isRefreshing = false
+        //  migrationView.swipeRefreshLayout.isRefreshing = false
         migrationView.mapping_view.post { migrationView.mappingNovelsAdapter?.notifyDataSetChanged() }
     }
 

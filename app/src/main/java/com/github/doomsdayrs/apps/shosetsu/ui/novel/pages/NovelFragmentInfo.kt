@@ -49,12 +49,11 @@ import java.util.*
  */
 class NovelFragmentInfo : Fragment() {
 
-    @JvmField
     var novelFragment: NovelFragment? = null
 
-    fun setNovelFragment(novelFragment: NovelFragment?) {
-        this.novelFragment = novelFragment
-    }
+
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -86,7 +85,7 @@ class NovelFragmentInfo : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_novel, menu)
-        menu.findItem(R.id.source_migrate).isVisible = novelFragment != null && Database.DatabaseNovels.isNotBookmarked(novelFragment!!.novelID)
+        menu.findItem(R.id.source_migrate).isVisible = novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)
     }
 
 
@@ -110,14 +109,14 @@ class NovelFragmentInfo : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        fragment_novel_add!!.hide()
-        if (novelFragment != null && Database.DatabaseNovels.isNotBookmarked(novelFragment!!.novelID)) fragment_novel_add!!.setImageResource(R.drawable.ic_add_circle_black_24dp)
+        fragment_novel_add?.hide()
+        if (novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) fragment_novel_add!!.setImageResource(R.drawable.ic_baseline_check_circle_24)
         setData()
-        fragment_novel_add!!.setOnClickListener {
+        fragment_novel_add?.setOnClickListener {
             if (novelFragment != null)
-                if (!Database.DatabaseNovels.isNotBookmarked(novelFragment!!.novelID)) {
+                if (!Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) {
                     Database.DatabaseNovels.bookMark(novelFragment!!.novelID)
-                    fragment_novel_add?.setImageResource(R.drawable.ic_add_circle_black_24dp)
+                    fragment_novel_add?.setImageResource(R.drawable.ic_baseline_check_circle_24)
                 } else {
                     Database.DatabaseNovels.unBookmark(novelFragment!!.novelID)
                     fragment_novel_add?.setImageResource(R.drawable.ic_add_circle_outline_black_24dp)
@@ -169,9 +168,7 @@ class NovelFragmentInfo : Fragment() {
                     Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragment_novel_image_background)
                 }
                 fragment_novel_add!!.show()
-                if (novelFragment!!.formatter != null) {
-                    fragment_novel_formatter!!.text = novelFragment!!.formatter.name
-                }
+                fragment_novel_formatter!!.text = novelFragment!!.formatter.name
             }
         } else Log.e("NovelFragmentInfo", "NovelFragmentInfo view is null")
     }

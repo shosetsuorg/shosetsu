@@ -48,6 +48,7 @@ class NavigationSwapListener(private val mainActivity: MainActivity) : Navigatio
                 mainActivity.transitionView(mainActivity.settingsFragment)
             }
             R.id.nav_downloads -> {
+                mainActivity.supportFragmentManager.popBackStack()
                 Log.d("Nav", "Downloads Selected")
                 mainActivity.transitionView(mainActivity.downloadsFragment)
             }

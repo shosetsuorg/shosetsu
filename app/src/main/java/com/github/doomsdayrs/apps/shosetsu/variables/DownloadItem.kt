@@ -30,13 +30,12 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
  * These items symbolize download items and their data
  */
 class DownloadItem(val formatter: Formatter, novelName: String, chapterName: String, chapterID: Int) {
-    @JvmField
     val novelName: String
-    @JvmField
     val chapterName: String
-    @JvmField
     val chapterURL: String?
     val chapterID: Int
+
+    //Variables only for download manager
     var status = "Pending"
 
     companion object {
@@ -46,7 +45,6 @@ class DownloadItem(val formatter: Formatter, novelName: String, chapterName: Str
          * @param s string to clean
          * @return cleaned string
          */
-        @JvmStatic
         fun cleanse(s: String): String { //Log.d("Cleaning", s);
             var s = s
             s = s.replace("'".toRegex(), "_").replace("\"".toRegex(), "_")
@@ -59,8 +57,8 @@ class DownloadItem(val formatter: Formatter, novelName: String, chapterName: Str
     init {
         this.novelName = cleanse(novelName)
         this.chapterName = cleanse(chapterName)
-        val novelID = DatabaseIdentification.getNovelIDFromChapterID(chapterID)
-        val novelURL = DatabaseIdentification.getNovelURLfromNovelID(novelID)
+       // val novelID = DatabaseIdentification.getNovelIDFromChapterID(chapterID)
+        //val novelURL = DatabaseIdentification.getNovelURLfromNovelID(novelID)
         chapterURL = DatabaseIdentification.getChapterURLFromChapterID(chapterID)
         this.chapterID = chapterID
     }

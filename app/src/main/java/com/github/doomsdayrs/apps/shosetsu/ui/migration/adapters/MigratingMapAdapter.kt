@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -44,11 +43,13 @@ class MigratingMapAdapter(private val migrationView: MigrationView) : RecyclerVi
         Picasso.get().load(novel.imageURL).into(holder.image)
         holder.title.text = novel.title
         val materialCardView: MaterialCardView = holder.itemView.findViewById(R.id.materialCardView)
+
         if (position == migrationView.secondSelection) {
             materialCardView.strokeColor = Color.BLUE
-            materialCardView.strokeWidth = Utilities.SELECTED_STROKE_WIDTH
+            materialCardView.strokeWidth = Utilities.selectedStrokeWidth
         } else materialCardView.strokeWidth = 0
-        holder.itemView.setOnClickListener { view: View? ->
+
+        holder.itemView.setOnClickListener {
             migrationView.secondSelection = position
             migrationView.refresh()
         }
