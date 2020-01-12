@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
-import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
+import com.github.doomsdayrs.apps.shosetsu.ui.migration.NewMigrationView
 import kotlinx.android.synthetic.main.fragment_library.*
 import java.io.IOException
 import java.util.*
@@ -198,14 +198,14 @@ class LibraryFragment : Fragment() {
                 return true
             }
             R.id.source_migrate -> {
-                val intent = Intent(activity, MigrationView::class.java)
+                val intent = Intent(activity, NewMigrationView::class.java)
                 try {
-                    intent.putExtra("selected", Utilities.serializeToString(selectedNovels))
+                    intent.putIntegerArrayListExtra("selection", selectedNovels)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
                 intent.putExtra("target", 1)
-                startActivity(intent);
+                startActivity(intent)
                 //Utilities.regret(context!!)
                 return true
             }

@@ -35,7 +35,6 @@ object Settings {
 
     @Suppress("unused")
     //TODO Use this
-    @Suppress("unused")
     enum class TextSizes(val i: Int) {
         SMALL(14),
         MEDIUM(17),

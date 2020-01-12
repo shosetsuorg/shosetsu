@@ -58,7 +58,7 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
         chaptersViewHolder.chapterID = chapterID
         //TODO The getNovelID in this method likely will cause slowdowns due to IO
         if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(DatabaseIdentification.getNovelIDFromNovelURL(novelFragmentChapters.novelFragment!!.novelURL), novelChapter)
-        if (Database.DatabaseChapter.isNotBookMarked(chapterID)) {
+        if (Database.DatabaseChapter.isBookMarked(chapterID)) {
             chaptersViewHolder.title.setTextColor(chaptersViewHolder.itemView.resources.getColor(R.color.bookmarked))
             chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_bookmark).title = "UnBookmark"
         } else {
@@ -74,7 +74,7 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
         if (novelFragmentChapters.selectedChapters.size > 0) {
             chaptersViewHolder.checkBox.visibility = View.VISIBLE
         } else chaptersViewHolder.checkBox.visibility = View.GONE
-        if (Database.DatabaseChapter.isNotSaved(chapterID)) {
+        if (Database.DatabaseChapter.isSaved(chapterID)) {
             chaptersViewHolder.downloadTag.visibility = View.VISIBLE
             chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download).title = "Delete"
         } else {

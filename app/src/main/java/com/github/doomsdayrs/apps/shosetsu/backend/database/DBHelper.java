@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
+
 
 /*
  * This file is part of Shosetsu.
@@ -32,7 +34,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
 
-    private static final String NOVEL_IDENTIFICATION_CREATE = "create table if not exists " + Tables.NOVEL_IDENTIFICATION + "(" +
+    private static final String NOVEL_IDENTIFICATION_CREATE = "create table if not exists " +
+            Tables.NOVEL_IDENTIFICATION + "(" +
             Columns.ID + " integer primary key autoincrement," +
             Columns.URL + " text unique not null," +
             Columns.FORMATTER_ID + " integer not null" +

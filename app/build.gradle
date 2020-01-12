@@ -109,4 +109,7 @@ dependencies {
 
     // Showcase
     implementation 'com.github.deano2390:MaterialShowcaseView:1.3.4'
+
+    // A cuter view
+    implementation 'com.yarolegovich:discrete-scrollview:1.4.9'
 }

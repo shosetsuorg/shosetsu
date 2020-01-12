@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isNotSaved
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isSaved
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.*
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
@@ -69,7 +69,7 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
                 var novelPage = NovelPage()
                 val nURL = getNovelURLFromChapterURL(updatedChapterHolder.novelChapter?.link)
                 if (nURL != null) novelPage = Database.DatabaseNovels.getNovelPage(getNovelIDFromNovelURL(nURL))
-                val formatter: Formatter = getByID(getFormatterIDFromNovelURL(nURL))!!
+                val formatter: Formatter = getByID(getFormatterIDFromNovelURL(nURL))
                 val chapterID = getChapterIDFromChapterURL(novelChapter.link)
                 when (menuItem.itemId) {
                     R.id.popup_chapter_menu_bookmark -> {
@@ -82,7 +82,7 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
                     }
                     R.id.popup_chapter_menu_download -> {
                         run {
-                            if (!isNotSaved(chapterID)) {
+                            if (!isSaved(chapterID)) {
                                 val downloadItem = DownloadItem(formatter, novelPage.title, updatedChapterHolder.novelChapter?.title!!, chapterID)
                                 DownloadManager.addToDownload(updatedNovelHolder.activity, downloadItem)
                             } else {

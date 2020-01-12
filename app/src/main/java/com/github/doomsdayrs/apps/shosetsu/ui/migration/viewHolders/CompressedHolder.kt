@@ -26,8 +26,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 19 / 07 / 2019
  *
  * @author github.com/doomsdayrs
- */   class CompressedHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+ */
+class CompressedHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val image: ImageView = itemView.findViewById(R.id.imageView)
     val title: TextView = itemView.findViewById(R.id.textView)
-
 }
