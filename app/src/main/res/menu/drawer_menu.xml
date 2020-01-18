@@ -18,6 +18,11 @@
             android:icon="@drawable/ic_view_module"
             android:title="@string/catalogue" />
         <item
+            android:id="@+id/nav_extensions"
+            android:icon="@drawable/ic_baseline_add_shopping_cart_24"
+            android:title="@string/extensions"/>
+
+        <item
             android:id="@+id/nav_downloads"
             android:icon="@drawable/ic_file_download"
             android:title="@string/download"

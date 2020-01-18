@@ -24,50 +24,16 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database
  *
  * @author github.com/doomsdayrs
  */
-enum class Columns(private val key: String) {
-    URL("url"),
-    PARENT_ID("parent_id"),
-    ID("id"),
-    READER_TYPE("reader_type"),
-
-    TITLE("title"),
-    IMAGE_URL("image_url"),
-    DESCRIPTION("description"),
-    GENRES("genres"),
-    AUTHORS("authors"),
-    STATUS("status"),
-    TAGS("tags"),
-    ARTISTS("artists"),
-    LANGUAGE("language"),
-    MAX_CHAPTER_PAGE("max_chapter_page"),
-
-    RELEASE_DATE("release_date"),
-    ORDER("order_of"),
-
-    FORMATTER_ID("formatterID"),
-    READ_CHAPTER("read"),
-    Y("y"),
-    BOOKMARKED("bookmarked"),
-    IS_SAVED("isSaved"),
-    SAVE_PATH("savePath"),
-    NOVEL_NAME("novelName"),
-    CHAPTER_NAME("chapterName"),
-    PAUSED("paused"),
-    READING_STATUS("reading_status"),
-    TIME("time"),
-
-    // Formatters
-    FORMATTER_NAME("formatterName"),
-    // ID from before
-    MD5("md5Sum"),
-    //Boolean
-    HAS_CUSTOM_REPO("hasCustomRepo"),
-    // URL to repo
-    CUSTOM_REPO("customRepo")
-    ;
+enum class Tables(private val key: String) {
+    NOVEL_IDENTIFICATION("novel_identification"),
+    CHAPTER_IDENTIFICATION("chapter_identification"),
+    NOVELS("novels"),
+    UPDATES("updates"),
+    DOWNLOADS("downloads"),
+    CHAPTERS("chapters"),
+    FORMATTERS("formatters");
 
     override fun toString(): String {
         return key
     }
-
 }

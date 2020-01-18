@@ -172,6 +172,7 @@
     <string name="download_fail_delete">Failed to delete, next download will correct</string>
     <string name="you_not_online">You are not online</string>
     <string name="download_chapter_updates">Download chapter updates</string>
+    <string name="extensions">Extensions</string>
 
 
 </resources>

@@ -43,6 +43,10 @@ class NavigationSwapListener(private val mainActivity: MainActivity) : Navigatio
                 Log.d("Nav", "Catalogue selected")
                 mainActivity.transitionView(mainActivity.cataloguesFragment)
             }
+            R.id.nav_extensions -> {
+                Log.d("Nav", "Extensions selected")
+                mainActivity.transitionView(mainActivity.scripManagementFragment)
+            }
             R.id.nav_settings -> {
                 Log.d("Nav", "Settings selected")
                 mainActivity.transitionView(mainActivity.settingsFragment)

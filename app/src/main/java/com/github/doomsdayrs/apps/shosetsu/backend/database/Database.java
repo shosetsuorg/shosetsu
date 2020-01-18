@@ -2,17 +2,20 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter;
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
@@ -70,78 +73,6 @@ public class Database {
      */
     public static SQLiteDatabase sqLiteDatabase;
 
-
-    /**
-     * Tables to work with
-     */
-    public enum Tables {
-        NOVEL_IDENTIFICATION("novel_identification"),
-        CHAPTER_IDENTIFICATION("chapter_identification"),
-        NOVELS("novels"),
-        UPDATES("updates"),
-        DOWNLOADS("downloads"),
-        CHAPTERS("chapters");
-
-        final String TABLE;
-
-        Tables(String table) {
-            this.TABLE = table;
-            System.currentTimeMillis();
-        }
-
-        @NotNull
-        @Override
-        public String toString() {
-            return TABLE;
-        }
-    }
-
-    /**
-     * Columns to work with
-     */
-    public enum Columns {
-        URL("url"),
-        PARENT_ID("parent_id"),
-        ID("id"),
-        READER_TYPE("reader_type"),
-
-        TITLE("title"),
-        IMAGE_URL("image_url"),
-        DESCRIPTION("description"),
-        GENRES("genres"),
-        AUTHORS("authors"),
-        STATUS("status"),
-        TAGS("tags"),
-        ARTISTS("artists"),
-        LANGUAGE("language"),
-        MAX_CHAPTER_PAGE("max_chapter_page"),
-
-        RELEASE_DATE("release_date"),
-        ORDER("order_of"),
-
-        FORMATTER_ID("formatterID"),
-        READ_CHAPTER("read"),
-        Y("y"),
-        BOOKMARKED("bookmarked"),
-        IS_SAVED("isSaved"),
-        SAVE_PATH("savePath"),
-        NOVEL_NAME("novelName"),
-        CHAPTER_NAME("chapterName"),
-        PAUSED("paused"),
-        READING_STATUS("reading_status"),
-        TIME("time");
-        final String COLUMN;
-
-        Columns(String column) {
-            this.COLUMN = column;
-        }
-
-        @NotNull
-        @Override
-        public String toString() {
-            return COLUMN;
-        }
-    }
 
     public static class DatabaseIdentification {
 
@@ -1349,5 +1280,75 @@ public class Database {
 //            return sqLiteDatabase.delete(Tables.UPDATES.toString(), Columns.ID + "=" + getChapterIDFromChapterURL(chapterURL), null) > 0;
 //        }
 // --Commented out by Inspection STOP (12/22/19 11:10 AM)
+    }
+
+    public static class DatabaseFormatters {
+
+        public static String getMD5Sum(int formatterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.MD5 + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return "";
+            } else {
+                cursor.moveToNext();
+                String string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+                cursor.close();
+                return string;
+            }
+        }
+
+        public static String getFormatterName(int formatterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_NAME + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return "";
+            } else {
+                cursor.moveToNext();
+                String string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_NAME.toString()));
+                cursor.close();
+                return string;
+            }
+        }
+
+        public static boolean hasCustomRepo(int formatterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.HAS_CUSTOM_REPO + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return false;
+            } else {
+                cursor.moveToNext();
+                int i = cursor.getInt(cursor.getColumnIndex(Columns.HAS_CUSTOM_REPO.toString()));
+                cursor.close();
+                return i == 1;
+            }
+        }
+
+        public static String getCustomRepo(int formatterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.CUSTOM_REPO + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return "";
+            } else {
+                cursor.moveToNext();
+                String string = cursor.getString(cursor.getColumnIndex(Columns.CUSTOM_REPO.toString()));
+                cursor.close();
+                return string;
+            }
+        }
+
+        @Nullable
+        public static LuaFormatter getFormatterFromSystem(int formatterID) {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.FORMATTER_NAME + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null);
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return null;
+            } else {
+                cursor.moveToNext();
+                String string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_NAME.toString()));
+                cursor.close();
+                return FormatterController.getScriptFromSystem(Environment.getExternalStorageState() + FormatterController.directory + FormatterController.scriptFolder + string + ".lua");
+            }
+        }
+
     }
 }

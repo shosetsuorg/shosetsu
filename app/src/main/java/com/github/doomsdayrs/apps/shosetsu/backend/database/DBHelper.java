@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.Tables;
-
 
 /*
  * This file is part of Shosetsu.
@@ -119,13 +117,21 @@ public class DBHelper extends SQLiteOpenHelper {
             Columns.PARENT_ID + " integer not null," +
             Columns.TIME + " integer not null" + ")";
 
+    private static final String FORMATTERS_CREATE = "create table if not exists " + Tables.FORMATTERS + "(" +
+            Columns.FORMATTER_NAME + " text not null unique," +
+            Columns.FORMATTER_ID + " integer not null unique," +
+            Columns.MD5 + " text not null," +
+            Columns.HAS_CUSTOM_REPO + " integer not null," +
+            Columns.CUSTOM_REPO + " text)";
+
+
     /**
      * Constructor
      *
      * @param context main context
      */
     public DBHelper(Context context) {
-        super(context, DB_NAME, null, 9);
+        super(context, DB_NAME, null, 10);
     }
 
     /**
@@ -141,6 +147,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(DOWNLOADS_CREATE);
         db.execSQL(CHAPTERS_CREATE);
         db.execSQL(UPDATES_CREATE);
+        db.execSQL(FORMATTERS_CREATE);
     }
 
 
@@ -167,6 +174,9 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL(DOWNLOADS_CREATE);
             db.execSQL(CHAPTERS_CREATE);
             db.execSQL(UPDATES_CREATE);
+        }
+        if (oldVersion < 10) {
+            db.execSQL(FORMATTERS_CREATE);
         }
     }
 

@@ -104,7 +104,7 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
             val novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
             val formatter = getByID(novelCard.formatterID)
 
-            if (formatter == DefaultScrapers.UNKNOWN) {
+            if (formatter == DefaultScrapers.UnknownFormatter()) {
                 // Updates notification
                 builder.setContentText(novelCard.title)
                 builder.setProgress(novelCards.size, x + 1, false)

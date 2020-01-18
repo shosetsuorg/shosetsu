@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
@@ -26,6 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener
+import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.ScriptManagementFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
 import com.github.javiersantos.appupdater.AppUpdater
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity(), Supporter {
     val updatesFragment = UpdatesFragment()
     val settingsFragment = SettingsFragment()
     val downloadsFragment = DownloadsFragment()
-
+    val scripManagementFragment = ScriptManagementFragment()
 
     fun getNavigationView(): NavigationView? {
         return nav_view
@@ -150,6 +152,9 @@ class MainActivity : AppCompatActivity(), Supporter {
 
         // Sets up DB
         if (Database.sqLiteDatabase == null) Database.sqLiteDatabase = DBHelper(this).writableDatabase
+
+        // Initalzies formatters
+        FormatterController.initialize(this)
 
         initDownloadManager(this)
 
