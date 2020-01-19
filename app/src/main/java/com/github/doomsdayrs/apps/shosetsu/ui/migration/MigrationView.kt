@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingNovelA
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigrationViewCatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.async.MigrationViewLoad
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.async.Transfer
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.asCatalogue
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.asCatalogue
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import kotlinx.android.synthetic.main.migrate_source_view.*

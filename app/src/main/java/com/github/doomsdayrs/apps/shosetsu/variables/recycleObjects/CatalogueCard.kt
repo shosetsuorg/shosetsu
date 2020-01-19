@@ -23,13 +23,4 @@ import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueCard
-/**
- * Constructor
- *
- * @param formatter the formatter
- */(
-        /**
-         * Formatter
-         */
-        val formatter: Formatter) : RecycleCard(formatter.name)
+class CatalogueCard(val formatter: Formatter) : RecycleCard(formatter.name)

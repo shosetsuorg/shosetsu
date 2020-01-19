@@ -173,6 +173,8 @@
     <string name="you_not_online">You are not online</string>
     <string name="download_chapter_updates">Download chapter updates</string>
     <string name="extensions">Extensions</string>
+    <string name="update_list">Update list</string>
+    <string name="updated_extensions_list">List updated!</string>
 
 
 </resources>

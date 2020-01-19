@@ -9,7 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.getByID
 import kotlinx.android.synthetic.main.migrate_source_view.*
 import java.util.*
 import java.util.concurrent.TimeUnit

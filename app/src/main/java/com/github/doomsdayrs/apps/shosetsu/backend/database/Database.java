@@ -328,7 +328,7 @@ public class Database {
                 String nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()));
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = DatabaseIdentification.getFormatterIDFromChapterID(id);
-                downloadItems.add(new DownloadItem(Objects.requireNonNull(DefaultScrapers.Companion.getByID(formatter)), nName, cName, id));
+                downloadItems.add(new DownloadItem(Objects.requireNonNull(DefaultScrapers.getByID(formatter)), nName, cName, id));
             }
             cursor.close();
 
@@ -353,7 +353,7 @@ public class Database {
                 String cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()));
                 int formatter = getFormatterIDFromChapterID(id);
                 cursor.close();
-                return new DownloadItem(Objects.requireNonNull(DefaultScrapers.Companion.getByID(formatter)), nName, cName, id);
+                return new DownloadItem(Objects.requireNonNull(DefaultScrapers.getByID(formatter)), nName, cName, id);
             }
         }
 

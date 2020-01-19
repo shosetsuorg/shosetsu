@@ -6,7 +6,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.getByID
 import kotlinx.android.synthetic.main.migrate_source_view.*
 
 /*

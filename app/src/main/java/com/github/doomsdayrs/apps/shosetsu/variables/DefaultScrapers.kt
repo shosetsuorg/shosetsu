@@ -35,8 +35,8 @@ import org.jsoup.nodes.Document
  */
 // TODO Make this full dynamic, not needing to be predefined
 // > Make IDs built into the formatter
-class DefaultScrapers(private val formatter: Formatter) {
-    internal class UnknownFormatter : ScrapeFormat() {
+object DefaultScrapers {
+    class UnknownFormatter : ScrapeFormat() {
         override val genres: Array<NovelGenre> = arrayOf()
         override val imageURL: String = ""
         override val name: String = "UNKNOWN"
@@ -74,23 +74,21 @@ class DefaultScrapers(private val formatter: Formatter) {
         }
     }
 
-    companion object {
-        val formatters = ArrayList<Formatter>()
-        fun getByID(ID: Int): Formatter {
-            for (formatter in formatters) {
-                if (formatter.formatterID == ID) return formatter
-            }
-            return UnknownFormatter()
-        }
+    val unknown = UnknownFormatter()
 
-        val asCatalogue: ArrayList<CatalogueCard>
-            get() {
-                val catalogueCards = ArrayList<CatalogueCard>()
-                for (formatter in formatters) catalogueCards.add(CatalogueCard(formatter))
-                return catalogueCards
-            }
+    val formatters = ArrayList<Formatter>()
+    @JvmStatic
+    fun getByID(ID: Int): Formatter {
+        for (formatter in formatters) {
+            if (formatter.formatterID == ID) return formatter
+        }
+        return unknown
     }
 
-
-
+    val asCatalogue: ArrayList<CatalogueCard>
+        get() {
+            val catalogueCards = ArrayList<CatalogueCard>()
+            for (formatter in formatters) catalogueCards.add(CatalogueCard(formatter))
+            return catalogueCards
+        }
 }

@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.asCatalogue
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.asCatalogue
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import java.util.*

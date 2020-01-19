@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
@@ -104,7 +104,7 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
             val novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
             val formatter = getByID(novelCard.formatterID)
 
-            if (formatter == DefaultScrapers.UnknownFormatter()) {
+            if (formatter == DefaultScrapers.unknown) {
                 // Updates notification
                 builder.setContentText(novelCard.title)
                 builder.setProgress(novelCards.size, x + 1, false)

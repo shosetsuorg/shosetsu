@@ -10,7 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.Companion.getByID
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.getByID
 import com.squareup.picasso.Picasso
 import java.util.*
 
