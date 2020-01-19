@@ -8,8 +8,8 @@ android {
         applicationId 'com.github.doomsdayrs.apps.shosetsu'
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 24
-        versionName "v1.1.1"
+        versionCode 25
+        versionName "v1.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -43,13 +43,6 @@ android.applicationVariants.all { variant ->
 android {
     lintOptions {
         abortOnError false
-    }
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        url "https://maven.mozilla.org/maven2"
     }
 }
 
