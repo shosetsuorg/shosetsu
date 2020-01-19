@@ -22,6 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.ScriptManagementFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.squareup.picasso.Picasso
 import org.json.JSONObject
 import java.io.File
 import java.nio.file.Files
@@ -59,6 +60,7 @@ class ExtensionsAdapter(private val scriptManagementFragment: ScriptManagementFr
         val title: TextView = itemView.findViewById(R.id.title)
         val hash: TextView = itemView.findViewById(R.id.hash)
         val identification: TextView = itemView.findViewById(R.id.id)
+        val version: TextView = itemView.findViewById(R.id.version)
         val floatingActionButton: FloatingActionButton = itemView.findViewById(R.id.floatingActionButton)
     }
 
@@ -80,7 +82,6 @@ class ExtensionsAdapter(private val scriptManagementFragment: ScriptManagementFr
             holder.floatingActionButton.setImageResource(R.drawable.ic_delete_black_24dp)
             holder.installed = true
         }
-
         holder.floatingActionButton.setOnClickListener {
             if (!holder.installed) {
                 val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/master/src/main/resources/${jsonObject.getString("name")}.lua"))
@@ -129,6 +130,12 @@ class ExtensionsAdapter(private val scriptManagementFragment: ScriptManagementFr
                     i++
                 }
             }
+        }
+
+        holder.version.text = jsonObject.getString("version")
+
+        if (!jsonObject.getString("imageURL").isNullOrEmpty()) {
+            Picasso.get().load(jsonObject.getString("imageURL")).into(holder.imageView)
         }
     }
 }

@@ -168,6 +168,7 @@ object FormatterController {
             } else {
                 directory.mkdirs()
             }
+            DefaultScrapers.formatters.sortedWith(compareBy { it.name })
             return null
         }
 

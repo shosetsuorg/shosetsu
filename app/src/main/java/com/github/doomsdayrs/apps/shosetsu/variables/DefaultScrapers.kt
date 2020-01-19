@@ -77,6 +77,7 @@ object DefaultScrapers {
     val unknown = UnknownFormatter()
 
     val formatters = ArrayList<Formatter>()
+
     @JvmStatic
     fun getByID(ID: Int): Formatter {
         for (formatter in formatters) {
@@ -89,6 +90,7 @@ object DefaultScrapers {
         get() {
             val catalogueCards = ArrayList<CatalogueCard>()
             for (formatter in formatters) catalogueCards.add(CatalogueCard(formatter))
+            catalogueCards.sortedWith(compareBy { it.title })
             return catalogueCards
         }
 }
