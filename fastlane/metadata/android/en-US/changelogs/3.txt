@@ -1,0 +1,3 @@
+- v1.1.2
+- Gradle updated
+- Removed insecure repository that was just laying around for no reason
