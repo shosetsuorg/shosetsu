@@ -1285,6 +1285,28 @@ public class Database {
 
     public static class DatabaseFormatters {
 
+        public static void addToFormatterList(String name, int id, String md5, boolean hasRepo, String repo) {
+            int i = 0;
+            if (hasRepo)
+                i = 1;
+            sqLiteDatabase.execSQL("insert into " + Tables.FORMATTERS + "(" + Columns.FORMATTER_NAME + "," + Columns.FORMATTER_ID + "," + Columns.MD5 + "," + Columns.HAS_CUSTOM_REPO + "," + Columns.CUSTOM_REPO + ") values('" +
+                    checkStringSerialize(name) + "'," +
+                    id + ",'" +
+                    md5 + "'," +
+                    i + ",'" +
+                    repo + "')");
+        }
+
+
+        public static void removeFormatterFromList(String name) {
+            sqLiteDatabase.execSQL("delete from " + Tables.FORMATTERS + " where " + Columns.FORMATTER_NAME + "=" + checkStringSerialize(name));
+        }
+
+        public static void removeFormatterFromList(int id) {
+            sqLiteDatabase.execSQL("delete from " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + id);
+        }
+
+
         public static String getMD5Sum(int formatterID) {
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + Columns.MD5 + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null);
             if (cursor.getCount() <= 0) {
@@ -1292,7 +1314,7 @@ public class Database {
                 return "";
             } else {
                 cursor.moveToNext();
-                String string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()));
+                String string = cursor.getString(cursor.getColumnIndex(Columns.MD5.toString()));
                 cursor.close();
                 return string;
             }
@@ -1307,7 +1329,7 @@ public class Database {
                 cursor.moveToNext();
                 String string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_NAME.toString()));
                 cursor.close();
-                return string;
+                return checkStringDeserialize(string);
             }
         }
 

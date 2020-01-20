@@ -4,7 +4,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -35,7 +38,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
  *
  * @author github.com/doomsdayrs
  */
-class SusScriptAdapter(val susScriptDialog: SusScriptDialog) : RecyclerView.Adapter<SusScriptAdapter.SusScriptCard>() {
+class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerView.Adapter<SusScriptAdapter.SusScriptCard>() {
 
     class SusScriptCard(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title1: TextView = itemView.findViewById(R.id.title)
@@ -46,7 +49,7 @@ class SusScriptAdapter(val susScriptDialog: SusScriptDialog) : RecyclerView.Adap
         val version2: TextView = itemView.findViewById(R.id.version2)
         val hash2: TextView = itemView.findViewById(R.id.hash2)
 
-        val radioGroup: RadioGroup = itemView.findViewById(R.id.radioGroup)
+        val spinner: Spinner = itemView.findViewById(R.id.spinner)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SusScriptCard {
@@ -58,7 +61,8 @@ class SusScriptAdapter(val susScriptDialog: SusScriptDialog) : RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: SusScriptCard, position: Int) {
-        val file = susScriptDialog.files[position]
+        val fileObj = susScriptDialog.files[position]
+        val file = fileObj.file
 
         val json = FormatterController.getMetaData(file) ?: kotlin.run {
             Log.e("SusScriptAdapter", "Deleting file, Malformed URL")
@@ -66,8 +70,33 @@ class SusScriptAdapter(val susScriptDialog: SusScriptDialog) : RecyclerView.Adap
             this.notifyDataSetChanged()
             return
         }
-        print(json.toString(2))
-        holder.title1.text = file.name.substring(0, file.name.length - 4)
-        //holder.version1.text = json.getString("version")
+
+        holder.spinner.adapter = ArrayAdapter(holder.itemView.context!!, android.R.layout.simple_spinner_item, holder.itemView.resources.getStringArray(R.array.sus_array_actions))
+        holder.spinner.setSelection(3)
+
+        holder.spinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                fileObj.action = position
+            }
+        }
+
+        val string = file.name.substring(0, file.name.length - 4)
+        holder.title1.text = string
+        holder.version1.text = json.getString("version")
+        holder.hash1.text = FormatterController.md5(FormatterController.getContent(file)) ?: ""
+
+        if (FormatterController.sourceJSON.has(file.name.substring(0, file.name.length - 4))) {
+            holder.title2.visibility = View.VISIBLE
+            holder.version2.visibility = View.VISIBLE
+            holder.hash2.visibility = View.VISIBLE
+
+            val realJSON = FormatterController.sourceJSON.getJSONObject(file.name.substring(0, file.name.length - 4))
+            holder.title2.text = file.name.substring(0, file.name.length - 4)
+            holder.version2.text = realJSON.getString("version")
+            holder.hash2.text = realJSON.getString("md5")
+        }
     }
 }

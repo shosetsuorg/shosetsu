@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.scriptManager
+package com.github.doomsdayrs.apps.shosetsu.ui.extensions
 
 import android.app.Activity
 import android.os.Bundle
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.adapter.ExtensionsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import org.json.JSONObject
 
@@ -39,7 +39,7 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ScriptManagementFragment : Fragment(R.layout.fragment_catalogues) {
+class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
 
     val array: ArrayList<JSONObject> = ArrayList()
 

@@ -178,12 +178,19 @@
     <string name="uninstall">Uninstall</string>
     <string name="install">Install</string>
     <string name="update">Update</string>
-    <string name="sus_scripts">These scripts seem suspicious, Confirm actions</string>
+    <string name="sus_scripts">These scripts seem suspicious, Confirm actions. Canceling will uninstall all</string>
     <string name="accept">Accept</string>
     <string name="disable">Disable</string>
     <string name="accept_temp">Temporary</string>
     <string name="sus_script_title">Suspicious Scripts</string>
+    <string name="action">Action</string>
 
+    <array name="sus_array_actions">
+        <item>@string/accept</item>
+        <item>@string/accept_temp</item>
+        <item>@string/disable</item>
+        <item>@string/uninstall</item>
+    </array>
 
 </resources>
 

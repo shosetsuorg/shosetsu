@@ -17,8 +17,8 @@ import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
-import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.ScriptManagementFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.adapter.ExtensionsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import kotlinx.android.synthetic.main.fragment_catalogues.*
@@ -66,7 +66,7 @@ object FormatterController {
         FormatterInit(activity).execute()
     }
 
-    private fun md5(s: String): String? {
+    fun md5(s: String): String? {
         try {
             // Create MD5 Hash
             val digest = MessageDigest.getInstance("MD5")
@@ -74,7 +74,8 @@ object FormatterController {
             val messageDigest = digest.digest()
             // Create Hex String
             val hexString = StringBuffer()
-            for (i in messageDigest.indices) hexString.append(Integer.toHexString(0xFF and messageDigest[i].toInt()))
+            for (i in messageDigest.indices)
+                hexString.append(Integer.toHexString(0xFF and messageDigest[i].toInt()))
             return hexString.toString()
         } catch (e: NoSuchAlgorithmException) {
             e.printStackTrace()
@@ -82,17 +83,15 @@ object FormatterController {
         return ""
     }
 
-    private fun getContent(file: File): String {
+    fun getContent(file: File): String {
+        val builder = StringBuilder()
         val br = BufferedReader(FileReader(file))
-        val text = StringBuilder()
-        var line: String? = br.readLine()
+        var line = br.readLine()
         while (line != null) {
-            text.append(line)
-            text.append("\n")
+            builder.append(line).append("\n")
             line = br.readLine()
         }
-        br.close()
-        return text.toString()
+        return builder.toString()
     }
 
 
@@ -133,6 +132,7 @@ object FormatterController {
 
     fun downloadScript(name: String, holder: ExtensionsAdapter.ExtensionHolder, activity: Activity) {
         val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/master/src/main/resources/src/$name.lua"))
+
         request.setDescription("Installing $name")
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOCUMENTS, "$name.lua")
@@ -193,13 +193,24 @@ object FormatterController {
             }
             i++
         }
+        Database.DatabaseFormatters.removeFormatterFromList(id)
     }
 
+    fun trustScript(file: File) {
+        val name = file.name.substring(0, file.name.length - 4)
+        val meta = LuaFormatter(file).getMetaData()!!
+        val md5 = md5(getContent(file))
+        val id = meta.getInt("id")
+        val repo = meta.getString("repo")
+        Database.DatabaseFormatters.addToFormatterList(name, id, md5, repo.isNotEmpty(), repo)
+    }
 
     class FormatterInit(val activity: Activity) : AsyncTask<Void, Void, Void>() {
         val incompatible = ArrayList<File>()
 
         override fun doInBackground(vararg params: Void?): Void? {
+
+            // Source files
             val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
             if (sourceFile.isFile && sourceFile.exists()) {
                 sourceJSON = JSONObject(getContent(sourceFile))
@@ -224,6 +235,7 @@ object FormatterController {
                 sourceJSON = JSONObject(json)
             }
 
+
             val path = Utilities.shoDir + directory + scriptFolder
             // Check if script MD5 matches DB
             val directory = File(path)
@@ -237,24 +249,24 @@ object FormatterController {
                         if (sum.isEmpty()) {
                             sum = sourceJSON.getJSONObject(source.name.substring(0, source.name.length - 4)).getString("md5")
                         }
-                        val fileSum = md5(getContent(source))
+                        val content = getContent(source)
+                        val fileSum = md5(content)
 
-                        Log.i("FormatterInit", "Sum required:\t$sum")
-                        Log.i("FormatterInit", "Sum found:\t$fileSum")
+                        Log.i("FormatterInit", "${source.name}:\tSum required:{$sum}\tSum found:\t{$fileSum}")
+
                         if (sum == fileSum)
                             DefaultScrapers.formatters.add(LuaFormatter(source))
-                        else
+                        else {
+                            Log.i("FormatterInit", "${source.name}:\tSum does not match, Adding")
                             incompatible.add(source)
-
+                        }
                     } else {
+                        Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
                         incompatible.add(source)
                     }
                 }
                 for (incom in incompatible) {
-                    //TODO replace this with proper error message
-                    Log.e("FormatterInit", "Deleting Unverified file: " + incom.absolutePath)
-                    DefaultScrapers.formatters.add(LuaFormatter(incom))
-                    //incom.delete()
+                    Log.e("FormatterInit", "Unknown Script:\t${incom.name}")
                 }
             } else {
                 directory.mkdirs()
@@ -271,7 +283,7 @@ object FormatterController {
 
     }
 
-    class RefreshJSON(val activity: Activity, val scriptManagementFragment: ScriptManagementFragment) : AsyncTask<Void, Void, Void>() {
+    class RefreshJSON(val activity: Activity, val extensionsFragment: ExtensionsFragment) : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void?): Void? {
             val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
             if (Utilities.isOnline) {
@@ -294,7 +306,7 @@ object FormatterController {
 
         override fun onPostExecute(result: Void?) {
             Toast.makeText(activity, activity.getString(R.string.updated_extensions_list), Toast.LENGTH_SHORT).show()
-            scriptManagementFragment.recyclerView.adapter?.notifyDataSetChanged()
+            extensionsFragment.recyclerView.adapter?.notifyDataSetChanged()
         }
     }
 

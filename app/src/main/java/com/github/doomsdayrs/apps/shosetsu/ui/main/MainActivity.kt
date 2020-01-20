@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener
-import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.ScriptManagementFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
 import com.github.javiersantos.appupdater.AppUpdater
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), Supporter {
     val updatesFragment = UpdatesFragment()
     val settingsFragment = SettingsFragment()
     val downloadsFragment = DownloadsFragment()
-    val scripManagementFragment = ScriptManagementFragment()
+    val scripManagementFragment = ExtensionsFragment()
 
     fun getNavigationView(): NavigationView? {
         return nav_view

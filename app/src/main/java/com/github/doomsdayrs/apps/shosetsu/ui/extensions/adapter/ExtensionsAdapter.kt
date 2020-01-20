@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.adapter
+package com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
-import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.ScriptManagementFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -41,7 +41,7 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsAdapter(private val scriptManagementFragment: ScriptManagementFragment) : RecyclerView.Adapter<ExtensionsAdapter.ExtensionHolder>() {
+class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : RecyclerView.Adapter<ExtensionsAdapter.ExtensionHolder>() {
     class ExtensionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var installed: Boolean = false
         var update: Boolean = false
@@ -59,12 +59,12 @@ class ExtensionsAdapter(private val scriptManagementFragment: ScriptManagementFr
     }
 
     override fun getItemCount(): Int {
-        return scriptManagementFragment.array.size
+        return extensionsFragment.array.size
     }
 
 
     override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
-        val jsonObject: JSONObject = scriptManagementFragment.array[position]
+        val jsonObject: JSONObject = extensionsFragment.array[position]
         val id = jsonObject.getInt("id")
 
         if (DefaultScrapers.getByID(id) != DefaultScrapers.unknown) {
@@ -96,9 +96,9 @@ class ExtensionsAdapter(private val scriptManagementFragment: ScriptManagementFr
 
         holder.button.setOnClickListener {
             if (!holder.installed || holder.update) {
-                FormatterController.downloadScript(jsonObject.getString("name"), holder, scriptManagementFragment.activity!!)
+                FormatterController.downloadScript(jsonObject.getString("name"), holder, extensionsFragment.activity!!)
             } else
-                FormatterController.deleteScript(jsonObject.getString("name"), id, holder, scriptManagementFragment.activity!!)
+                FormatterController.deleteScript(jsonObject.getString("name"), id, holder, extensionsFragment.activity!!)
 
         }
 
