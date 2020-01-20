@@ -1,32 +1,20 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.adapter
 
-import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.net.Uri
-import android.os.Build
-import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.ScriptManagementFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 
 
 /*
@@ -56,12 +44,14 @@ import java.nio.file.StandardCopyOption
 class ExtensionsAdapter(private val scriptManagementFragment: ScriptManagementFragment) : RecyclerView.Adapter<ExtensionsAdapter.ExtensionHolder>() {
     class ExtensionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var installed: Boolean = false
+        var update: Boolean = false
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
         val title: TextView = itemView.findViewById(R.id.title)
         val hash: TextView = itemView.findViewById(R.id.hash)
         val identification: TextView = itemView.findViewById(R.id.id)
         val version: TextView = itemView.findViewById(R.id.version)
-        val floatingActionButton: FloatingActionButton = itemView.findViewById(R.id.floatingActionButton)
+        val updatedVersion: TextView = itemView.findViewById(R.id.update_version)
+        val button: Button = itemView.findViewById(R.id.floatingActionButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExtensionHolder {
@@ -72,67 +62,45 @@ class ExtensionsAdapter(private val scriptManagementFragment: ScriptManagementFr
         return scriptManagementFragment.array.size
     }
 
+
     override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
         val jsonObject: JSONObject = scriptManagementFragment.array[position]
-        holder.title.text = jsonObject.getString("name")
         val id = jsonObject.getInt("id")
-        holder.identification.text = id.toString()
-        holder.hash.text = jsonObject.getString("md5")
+
         if (DefaultScrapers.getByID(id) != DefaultScrapers.unknown) {
-            holder.floatingActionButton.setImageResource(R.drawable.ic_delete_black_24dp)
+            holder.button.text = holder.itemView.context.getString(R.string.uninstall)
+            //  holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
             holder.installed = true
-        }
-        holder.floatingActionButton.setOnClickListener {
-            if (!holder.installed) {
-                val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/master/src/main/resources/${jsonObject.getString("name")}.lua"))
-                request.setDescription("Installing ${jsonObject.getString("name")}")
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOCUMENTS, jsonObject.getString("name") + ".lua")
 
-                val manager = scriptManagementFragment.activity!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                val downloadID = manager.enqueue(request)
-                val onDownloadComplete: BroadcastReceiver = object : BroadcastReceiver() {
-                    override fun onReceive(context: Context?, intent: Intent) {
-                        val intentID = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                        if (downloadID == intentID) {
-                            Toast.makeText(scriptManagementFragment.context, "Installed: " + jsonObject.getString("name"), Toast.LENGTH_SHORT).show()
-                            var file = scriptManagementFragment.activity!!.getExternalFilesDir(null)!!.absolutePath
-                            file = file.substring(0, file.indexOf("/Android"))
-                            val downloadedFile = File("$file/${Environment.DIRECTORY_DOCUMENTS}/${jsonObject.getString("name")}.lua")
-                            val targetFile = File(Utilities.shoDir + FormatterController.directory + FormatterController.scriptFolder + "/${jsonObject.getString("name")}.lua")
-                            Log.i("Extension download", downloadedFile.absolutePath)
-                            Log.i("Extension download", targetFile.absolutePath)
+            val luaFormatter: LuaFormatter = (DefaultScrapers.getByID(id) as LuaFormatter)
+            val meta = luaFormatter.getMetaData()!!
+            holder.version.text = meta.getString("version")
+            val v = FormatterController.compareVersions(jsonObject.getString("version"), meta.getString("version"))
+            Log.i("ExtensionsAdapter", "Update $id : $v")
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                Files.move(downloadedFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
-                            } else {
-                                downloadedFile.renameTo(targetFile)
-                            }
-
-                            holder.floatingActionButton.setImageResource(R.drawable.ic_delete_black_24dp)
-                            holder.installed = true
-                            DefaultScrapers.formatters.add(FormatterController.getScriptFromSystem(targetFile.absolutePath))
-                        }
-                    }
-                }
-                scriptManagementFragment.activity!!.registerReceiver(onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+            if (v == 1) {
+                Log.i("ExtensionsAdapter", "UPDATE")
+                holder.update = true
+                // holder.button.setImageResource(R.drawable.ic_update_black_24dp)
+                holder.button.text = holder.itemView.context.getText(R.string.update)
+                holder.updatedVersion.visibility = View.VISIBLE
+                holder.updatedVersion.text = jsonObject.getString("version")
             } else {
-                holder.floatingActionButton.setImageResource(R.drawable.ic_file_download)
-                var i = 0
-                while (i < DefaultScrapers.formatters.size && holder.installed) {
-                    if (DefaultScrapers.formatters[i].formatterID == id) {
-                        DefaultScrapers.formatters.removeAt(i)
-                        holder.installed = false
-                        val targetFile = File(Utilities.shoDir + FormatterController.directory + FormatterController.scriptFolder + "/${jsonObject.getString("name")}.lua")
-                        targetFile.delete()
-                        Toast.makeText(scriptManagementFragment.context, "Script deleted", Toast.LENGTH_SHORT).show()
-                    }
-                    i++
-                }
+                holder.updatedVersion.visibility = View.GONE
             }
         }
 
-        holder.version.text = jsonObject.getString("version")
+        holder.title.text = jsonObject.getString("name")
+        holder.identification.text = id.toString()
+        holder.hash.text = jsonObject.getString("md5")
+
+        holder.button.setOnClickListener {
+            if (!holder.installed || holder.update) {
+                FormatterController.downloadScript(jsonObject.getString("name"), holder, scriptManagementFragment.activity!!)
+            } else
+                FormatterController.deleteScript(jsonObject.getString("name"), id, holder, scriptManagementFragment.activity!!)
+
+        }
 
         if (!jsonObject.getString("imageURL").isNullOrEmpty()) {
             Picasso.get().load(jsonObject.getString("imageURL")).into(holder.imageView)

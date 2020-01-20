@@ -175,6 +175,9 @@
     <string name="extensions">Extensions</string>
     <string name="update_list">Update list</string>
     <string name="updated_extensions_list">List updated!</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="install">Install</string>
+    <string name="update">Update</string>
 
 
 </resources>

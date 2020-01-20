@@ -93,7 +93,7 @@ class CatalogueFragment : Fragment() {
         Log.d("OnCreateView", "CatalogueFragment")
         if (savedInstanceState != null) {
             catalogueNovelCards = (savedInstanceState.getSerializable("list") as ArrayList<CatalogueNovelCard>)
-            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))!!
+            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
         }
         return inflater.inflate(R.layout.fragment_catalogue, container, false)
     }
@@ -121,11 +121,11 @@ class CatalogueFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 42) { //TODO, Pass cookies from webview to okhttp
+        if (requestCode == 42) {
+            //TODO, Pass cookies from webview to okhttp
             val client = OkHttpClient.Builder()
                     .cookieJar(WebviewCookieHandler())
                     .build()
-            formatter.client = client
             CataloguePageLoader(this).execute()
         }
     }

@@ -12,10 +12,10 @@ import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter;
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter;
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage;
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager;
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController;
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -1346,9 +1347,10 @@ public class Database {
                 cursor.moveToNext();
                 String string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_NAME.toString()));
                 cursor.close();
-                return FormatterController.getScriptFromSystem(Environment.getExternalStorageState() + FormatterController.directory + FormatterController.scriptFolder + string + ".lua");
+                return new LuaFormatter(new File(Environment.getExternalStorageState() + FormatterController.directory + FormatterController.scriptFolder + string + ".lua"));
             }
         }
+
 
     }
 }

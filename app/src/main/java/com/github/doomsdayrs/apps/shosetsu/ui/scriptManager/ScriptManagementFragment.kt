@@ -1,26 +1,19 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.scriptManager
 
 import android.app.Activity
-import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.adapter.ExtensionsAdapter
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import org.json.JSONObject
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStreamWriter
 
 /*
  * This file is part of shosetsu.
@@ -47,32 +40,6 @@ import java.io.OutputStreamWriter
  * @author github.com/doomsdayrs
  */
 class ScriptManagementFragment : Fragment(R.layout.fragment_catalogues) {
-    class RefreshJSON(val activity: Activity, val scriptManagementFragment: ScriptManagementFragment) : AsyncTask<Void, Void, Void>() {
-        override fun doInBackground(vararg params: Void?): Void? {
-            val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
-            if (Utilities.isOnline) {
-                val doc = WebViewScrapper.docFromURL("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/master/src/main/resources/formatters.json", false)
-                if (doc != null) {
-                    val json = doc.body().text()
-                    val out = FileOutputStream(sourceFile)
-                    val writer = OutputStreamWriter(out)
-                    writer.write(json)
-                    writer.close()
-                    out.flush()
-                    out.close()
-                    FormatterController.sourceJSON = JSONObject(json)
-                }
-            } else {
-                Log.e("FormatterInit", "IsOffline, Cannot load data, Using stud")
-            }
-            return null
-        }
-
-        override fun onPostExecute(result: Void?) {
-            Toast.makeText(activity, activity.getString(R.string.updated_extensions_list), Toast.LENGTH_SHORT).show()
-            scriptManagementFragment.recyclerView.adapter?.notifyDataSetChanged()
-        }
-    }
 
     val array: ArrayList<JSONObject> = ArrayList()
 
@@ -87,7 +54,7 @@ class ScriptManagementFragment : Fragment(R.layout.fragment_catalogues) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.refresh -> {
-                RefreshJSON(context as Activity, this).execute()
+                FormatterController.RefreshJSON(context as Activity, this).execute()
                 true
             }
             else -> false
