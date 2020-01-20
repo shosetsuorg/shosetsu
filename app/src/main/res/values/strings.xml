@@ -178,6 +178,11 @@
     <string name="uninstall">Uninstall</string>
     <string name="install">Install</string>
     <string name="update">Update</string>
+    <string name="sus_scripts">These scripts seem suspicious, Confirm actions</string>
+    <string name="accept">Accept</string>
+    <string name="disable">Disable</string>
+    <string name="accept_temp">Temporary</string>
+    <string name="sus_script_title">Suspicious Scripts</string>
 
 
 </resources>

@@ -19,6 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.ScriptManagementFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.scriptManager.adapter.ExtensionsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import org.json.JSONObject
@@ -27,6 +28,7 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+
 
 /*
  * This file is part of shosetsu.
@@ -116,7 +118,7 @@ object FormatterController {
         return 0
     }
 
-    private fun getMetaData(file: File): JSONObject? {
+    fun getMetaData(file: File): JSONObject? {
         try {
             BufferedReader(FileReader(file)).use { br ->
                 val line: String? = br.readLine()
@@ -261,6 +263,12 @@ object FormatterController {
             return null
         }
 
+        override fun onPostExecute(result: Void?) {
+            if (incompatible.size > 0) {
+                SusScriptDialog(activity, incompatible).execute()
+            }
+        }
+
     }
 
     class RefreshJSON(val activity: Activity, val scriptManagementFragment: ScriptManagementFragment) : AsyncTask<Void, Void, Void>() {
@@ -276,7 +284,7 @@ object FormatterController {
                     writer.close()
                     out.flush()
                     out.close()
-                    FormatterController.sourceJSON = JSONObject(json)
+                    sourceJSON = JSONObject(json)
                 }
             } else {
                 Log.e("FormatterInit", "IsOffline, Cannot load data, Using stud")
