@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables
 
 import android.graphics.Color
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import org.json.JSONArray
 
 /*
  * This file is part of Shosetsu.
@@ -63,7 +64,7 @@ object Settings {
      * Reader text size
      */
     var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
-        get() =Utilities.viewPreferences.getInt("ReaderTextSize", 14).toFloat()
+        get() = Utilities.viewPreferences.getInt("ReaderTextSize", 14).toFloat()
         set(value) {
             field = value
             Utilities.viewPreferences.edit().putInt("ReaderTextSize", value.toInt()).apply()
@@ -123,6 +124,12 @@ object Settings {
         }
         get() = Utilities.viewPreferences.getInt("paragraphSpacing", 1)
 
+    var disabledFormatters: JSONArray = JSONArray()
+        set(value) {
+            field = value
+            Utilities.advancedPreferences.edit().putString("disabledFormatters", value.toString()).apply()
+        }
+        get() = JSONArray(Utilities.advancedPreferences.getString("disabledFormatters","[]"))
 
     var indentSize = 0
         set(value) {

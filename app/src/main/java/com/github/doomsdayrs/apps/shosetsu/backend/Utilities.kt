@@ -31,6 +31,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings.MarkingTypes
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -58,6 +60,10 @@ import kotlin.collections.ArrayList
  * 26 / 07 / 2019
  *
  * @author github.com/doomsdayrs
+ *
+ * <p>
+ *     This file contains random methods/pieces of code that don't seem to be important or make their respective files messy
+ * </p>
  */
 object Utilities {
     internal class SHOWCASE {
@@ -90,6 +96,13 @@ object Utilities {
     lateinit var advancedPreferences: SharedPreferences
     lateinit var trackingPreferences: SharedPreferences
     lateinit var backupPreferences: SharedPreferences
+
+    fun isFormatterDisabled(jsonArray: JSONArray, name: String): Boolean {
+        for (i in 0..jsonArray.length())
+            if (JSONObject(jsonArray[i].toString()).getString("name") == name)
+                return true
+        return false
+    }
 
     fun convertNovelArrayToString2DArray(array: List<Novel>): ArrayList<Array<String>> {
         val a: ArrayList<Array<String>> = ArrayList()

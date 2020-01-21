@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
+import com.github.doomsdayrs.apps.shosetsu.ui.susScript.viewHolders.SusScriptCard
 
 /*
  * This file is part of shosetsu.
@@ -38,19 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
  *
  * @author github.com/doomsdayrs
  */
-class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerView.Adapter<SusScriptAdapter.SusScriptCard>() {
-
-    class SusScriptCard(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title1: TextView = itemView.findViewById(R.id.title)
-        val version1: TextView = itemView.findViewById(R.id.version)
-        val hash1: TextView = itemView.findViewById(R.id.hash)
-
-        val title2: TextView = itemView.findViewById(R.id.title2)
-        val version2: TextView = itemView.findViewById(R.id.version2)
-        val hash2: TextView = itemView.findViewById(R.id.hash2)
-
-        val spinner: Spinner = itemView.findViewById(R.id.spinner)
-    }
+class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerView.Adapter<SusScriptCard>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SusScriptCard {
         return SusScriptCard(LayoutInflater.from(parent.context).inflate(R.layout.alert_extensions_handle_card, parent, false))

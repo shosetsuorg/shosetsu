@@ -51,7 +51,11 @@ class CataloguesFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.catalogues_search, R.id.configure_parsers -> true
+            R.id.catalogues_search -> true
+            R.id.configure_parsers -> {
+
+                true
+            }
             else -> false
         }
     }

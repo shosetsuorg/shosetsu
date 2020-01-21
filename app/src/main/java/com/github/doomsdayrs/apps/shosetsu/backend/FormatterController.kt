@@ -21,6 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import org.json.JSONObject
 import java.io.*
@@ -206,7 +207,7 @@ object FormatterController {
     }
 
     class FormatterInit(val activity: Activity) : AsyncTask<Void, Void, Void>() {
-        val incompatible = ArrayList<File>()
+        private val incompatible = ArrayList<File>()
 
         override fun doInBackground(vararg params: Void?): Void? {
 
@@ -241,28 +242,31 @@ object FormatterController {
             val directory = File(path)
             if (directory.isDirectory && directory.exists()) {
                 val sources = directory.listFiles()!!
+                val jsonArray = Settings.disabledFormatters
                 for (source in sources) {
-                    val meta = getMetaData(source)
-                    if (meta != null) {
-                        // Checks MD5 sum
-                        var sum = Database.DatabaseFormatters.getMD5Sum(meta.getInt("id"))
-                        if (sum.isEmpty()) {
-                            sum = sourceJSON.getJSONObject(source.name.substring(0, source.name.length - 4)).getString("md5")
-                        }
-                        val content = getContent(source)
-                        val fileSum = md5(content)
+                    if (Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
+                        val meta = getMetaData(source)
+                        if (meta != null) {
+                            // Checks MD5 sum
+                            var sum = Database.DatabaseFormatters.getMD5Sum(meta.getInt("id"))
+                            if (sum.isEmpty()) {
+                                sum = sourceJSON.getJSONObject(source.name.substring(0, source.name.length - 4)).getString("md5")
+                            }
+                            val content = getContent(source)
+                            val fileSum = md5(content)
 
-                        Log.i("FormatterInit", "${source.name}:\tSum required:{$sum}\tSum found:\t{$fileSum}")
+                            Log.i("FormatterInit", "${source.name}:\tSum required:{$sum}\tSum found:\t{$fileSum}")
 
-                        if (sum == fileSum)
-                            DefaultScrapers.formatters.add(LuaFormatter(source))
-                        else {
-                            Log.i("FormatterInit", "${source.name}:\tSum does not match, Adding")
+                            if (sum == fileSum)
+                                DefaultScrapers.formatters.add(LuaFormatter(source))
+                            else {
+                                Log.i("FormatterInit", "${source.name}:\tSum does not match, Adding")
+                                incompatible.add(source)
+                            }
+                        } else {
+                            Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
                             incompatible.add(source)
                         }
-                    } else {
-                        Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
-                        incompatible.add(source)
                     }
                 }
                 for (incom in incompatible) {
