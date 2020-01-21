@@ -184,6 +184,10 @@
     <string name="accept_temp">Temporary</string>
     <string name="sus_script_title">Suspicious Scripts</string>
     <string name="action">Action</string>
+    <string name="accept_all">Accept All</string>
+    <string name="temp_all">Temp All</string>
+    <string name="disable_all">Disable All</string>
+    <string name="uninstall_all">Uninstall All</string>
 
     <array name="sus_array_actions">
         <item>@string/accept</item>
