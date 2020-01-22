@@ -1,7 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.viewHolders
 
 import android.view.View
+import android.widget.ImageView
+import android.widget.Switch
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of shosetsu.
@@ -28,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
  * @author github.com/doomsdayrs
  */
 class ConfigExtView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    init {
-
-    }
+    val imageView: ImageView = itemView.findViewById(R.id.imageView)
+    val title: TextView = itemView.findViewById(R.id.title)
+    val switch: Switch = itemView.findViewById(R.id.switchView)
 }

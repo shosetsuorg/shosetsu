@@ -98,7 +98,7 @@ object Utilities {
     lateinit var backupPreferences: SharedPreferences
 
     fun isFormatterDisabled(jsonArray: JSONArray, name: String): Boolean {
-        for (i in 0..jsonArray.length())
+        for (i in 0 until jsonArray.length())
             if (JSONObject(jsonArray[i].toString()).getString("name") == name)
                 return true
         return false

@@ -88,12 +88,13 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : Re
             } else {
                 holder.updatedVersion.visibility = View.GONE
             }
+        } else {
+            holder.version.text = jsonObject.getString("version")
         }
 
         holder.title.text = jsonObject.getString("name")
         holder.identification.text = id.toString()
         holder.hash.text = jsonObject.getString("md5")
-
         holder.button.setOnClickListener {
             if (!holder.installed || holder.update) {
                 FormatterController.downloadScript(jsonObject.getString("name"), holder, extensionsFragment.activity!!)

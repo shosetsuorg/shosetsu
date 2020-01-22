@@ -11,7 +11,10 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
+import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
+import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.asCatalogue
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import java.util.*
@@ -53,7 +56,9 @@ class CataloguesFragment : Fragment() {
         return when (item.itemId) {
             R.id.catalogues_search -> true
             R.id.configure_parsers -> {
-
+                val ce = ConfigureExtensions()
+                ce.jsonArray = Settings.disabledFormatters
+                (activity as MainActivity).transitionView(ce)
                 true
             }
             else -> false

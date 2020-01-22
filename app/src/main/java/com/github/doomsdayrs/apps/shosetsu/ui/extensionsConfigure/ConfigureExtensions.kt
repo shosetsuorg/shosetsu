@@ -1,9 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure
 
-import android.app.Activity
-import android.app.AlertDialog
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.objects.ConfigDialog
+import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
+import kotlinx.android.synthetic.main.settings_info.*
 import org.json.JSONArray
 
 /*
@@ -29,18 +34,22 @@ import org.json.JSONArray
  * 21 / 01 / 2020
  *
  * @author github.com/doomsdayrs
+ * @param jsonArray Array of disabled formatters, Includes . . . imageURL, Name, ID
  */
-class ConfigureExtensions(val activity: Activity, val jsonArray: JSONArray) {
+class ConfigureExtensions : Fragment() {
+    lateinit var jsonArray: JSONArray
 
-    fun execute() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
-        builder.setTitle(activity.getString(R.string.sus_script_title))
-        builder.setMessage(R.string.sus_scripts)
-        val dialog = ConfigDialog(activity.layoutInflater, builder, this)
-        builder.setPositiveButton(android.R.string.yes) { _, _ ->
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (savedInstanceState != null) {
+            jsonArray = JSONArray(savedInstanceState.getString("array", "[]"))
         }
+        return inflater.inflate(R.layout.alert_extensions_configure, container, false)
+    }
 
-        dialog.dialog = builder.show()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = ConfigExtAdapter(this)
     }
 
 }

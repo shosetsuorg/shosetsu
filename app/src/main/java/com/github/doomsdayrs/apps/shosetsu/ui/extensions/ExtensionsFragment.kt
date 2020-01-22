@@ -12,6 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
+import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import org.json.JSONObject
 
@@ -57,6 +58,11 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
                 FormatterController.RefreshJSON(context as Activity, this).execute()
                 true
             }
+            R.id.reload -> {
+                DefaultScrapers.formatters.clear()
+                FormatterController.FormatterInit(context as Activity).execute()
+                true
+            }
             else -> false
         }
     }
@@ -70,6 +76,7 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
     }
 
     private fun setData() {
+        array.clear()
         val keys = ArrayList<String>()
         FormatterController.sourceJSON.keys().forEach { keys.add(it) }
         keys.remove("comments")

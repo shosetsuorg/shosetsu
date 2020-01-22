@@ -188,6 +188,9 @@
     <string name="temp_all">Temp All</string>
     <string name="disable_all">Disable All</string>
     <string name="uninstall_all">Uninstall All</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="reload_list">Reload List</string>
 
     <array name="sus_array_actions">
         <item>@string/accept</item>

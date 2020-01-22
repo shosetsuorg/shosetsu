@@ -6,4 +6,9 @@
         android:id="@+id/refresh"
         android:title="@string/update_list"
         android:icon="@drawable/ic_refresh"/>
+
+    <item
+        android:id="@+id/reload"
+        android:title="@string/reload_list"
+        app:showAsAction="never"/>
 </menu>

@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.susScript
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.os.Build
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -9,6 +10,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.FileObject
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import org.json.JSONObject
 import java.io.File
 
 /*
@@ -36,7 +39,6 @@ import java.io.File
  * @author github.com/doomsdayrs
  */
 class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
-
 
 
     val files = ArrayList<FileObject>()
@@ -80,7 +82,25 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
                     DefaultScrapers.formatters.add(LuaFormatter(file.file))
                 }
                 2 -> {
-                    //TODO ignore list
+                    val meta = FormatterController.getMetaData(file.file)
+                    val js = JSONObject()
+                    js.put("name", meta!!.getString("name"))
+                    js.put("id", meta.getInt("id"))
+                    js.put("imageUrl", "")
+
+                    val a = Settings.disabledFormatters
+                    a.put(js)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        DefaultScrapers.formatters.removeIf { it.formatterID ==  meta.getInt("id") }
+                    } else {
+                        var point = -1
+                        for (i in 0 until DefaultScrapers.formatters.size)
+                            if (DefaultScrapers.formatters[i].formatterID ==  meta.getInt("id"))
+                                point = i
+                        if (point != -1)
+                            DefaultScrapers.formatters.removeAt(point)
+                    }
+                    Settings.disabledFormatters = a
                 }
                 3 -> {
                     file.delete()

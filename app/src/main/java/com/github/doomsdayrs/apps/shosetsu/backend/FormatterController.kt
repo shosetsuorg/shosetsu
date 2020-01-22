@@ -241,34 +241,28 @@ object FormatterController {
             // Check if script MD5 matches DB
             val directory = File(path)
             if (directory.isDirectory && directory.exists()) {
-                val sources = directory.listFiles()!!
+                val sources = directory.listFiles()
                 val jsonArray = Settings.disabledFormatters
-                for (source in sources) {
-                    if (Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
-                        val meta = getMetaData(source)
-                        if (meta != null) {
-                            // Checks MD5 sum
-                            var sum = Database.DatabaseFormatters.getMD5Sum(meta.getInt("id"))
-                            if (sum.isEmpty()) {
-                                sum = sourceJSON.getJSONObject(source.name.substring(0, source.name.length - 4)).getString("md5")
-                            }
-                            val content = getContent(source)
-                            val fileSum = md5(content)
-
-                            Log.i("FormatterInit", "${source.name}:\tSum required:{$sum}\tSum found:\t{$fileSum}")
-
-                            if (sum == fileSum)
-                                DefaultScrapers.formatters.add(LuaFormatter(source))
-                            else {
+                if (sources != null)
+                    for (source in sources) {
+                        confirm(source, object : CheckSumAction {
+                            override fun fail() {
                                 Log.i("FormatterInit", "${source.name}:\tSum does not match, Adding")
                                 incompatible.add(source)
                             }
-                        } else {
-                            Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
-                            incompatible.add(source)
-                        }
+
+                            override fun pass() {
+                                if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4)))
+                                    DefaultScrapers.formatters.add(LuaFormatter(source))
+                            }
+
+                            override fun noMeta() {
+                                Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
+                                incompatible.add(source)
+                            }
+
+                        })
                     }
-                }
                 for (incom in incompatible) {
                     Log.e("FormatterInit", "Unknown Script:\t${incom.name}")
                 }
@@ -285,6 +279,38 @@ object FormatterController {
             }
         }
 
+    }
+
+    interface CheckSumAction {
+        fun fail()
+        fun pass()
+        fun noMeta()
+    }
+
+    fun confirm(file: File, checkSumAction: CheckSumAction): Boolean {
+        val meta = getMetaData(file)
+        return if (meta != null) {
+            // Checks MD5 sum
+            var sum = Database.DatabaseFormatters.getMD5Sum(meta.getInt("id"))
+            if (sum.isEmpty()) {
+                sum = sourceJSON.getJSONObject(file.name.substring(0, file.name.length - 4)).getString("md5")
+            }
+            val content = getContent(file)
+            val fileSum = md5(content)
+
+            Log.i("FormatterInit", "${file.name}:\tSum required:{$sum}\tSum found:\t{$fileSum}")
+
+            if (sum == fileSum) {
+                checkSumAction.pass()
+                true
+            } else {
+                checkSumAction.fail()
+                false
+            }
+        } else {
+            checkSumAction.noMeta()
+            false
+        }
     }
 
     class RefreshJSON(val activity: Activity, val extensionsFragment: ExtensionsFragment) : AsyncTask<Void, Void, Void>() {
