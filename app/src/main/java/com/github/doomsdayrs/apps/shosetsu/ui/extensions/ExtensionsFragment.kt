@@ -43,6 +43,7 @@ import org.json.JSONObject
 class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
 
     val array: ArrayList<JSONObject> = ArrayList()
+    lateinit var adapter:ExtensionsAdapter
 
     init {
         setHasOptionsMenu(true)
@@ -71,11 +72,12 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
         super.onViewCreated(view, savedInstanceState)
         Utilities.setActivityTitle(activity, "Extensions")
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = ExtensionsAdapter(this)
+        adapter =ExtensionsAdapter(this)
+        recyclerView.adapter = adapter
         setData()
     }
 
-    private fun setData() {
+    fun setData() {
         array.clear()
         val keys = ArrayList<String>()
         FormatterController.sourceJSON.keys().forEach { keys.add(it) }
@@ -86,6 +88,6 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
             if (!array.contains(obj))
                 array.add(obj)
         }
-        recyclerView.adapter!!.notifyDataSetChanged()
+        adapter!!.notifyDataSetChanged()
     }
 }

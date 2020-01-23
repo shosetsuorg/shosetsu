@@ -22,7 +22,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapt
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import kotlinx.android.synthetic.main.fragment_catalogues.*
 import org.json.JSONObject
 import java.io.*
 import java.nio.file.Files
@@ -252,8 +251,11 @@ object FormatterController {
                             }
 
                             override fun pass() {
-                                if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4)))
-                                    DefaultScrapers.formatters.add(LuaFormatter(source))
+                                if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
+                                    val l = LuaFormatter(source)
+                                    if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
+                                        DefaultScrapers.formatters.add(l)
+                                }
                             }
 
                             override fun noMeta() {
@@ -336,7 +338,8 @@ object FormatterController {
 
         override fun onPostExecute(result: Void?) {
             Toast.makeText(activity, activity.getString(R.string.updated_extensions_list), Toast.LENGTH_SHORT).show()
-            extensionsFragment.recyclerView.adapter?.notifyDataSetChanged()
+            extensionsFragment.setData()
+            extensionsFragment.adapter.notifyDataSetChanged()
         }
     }
 

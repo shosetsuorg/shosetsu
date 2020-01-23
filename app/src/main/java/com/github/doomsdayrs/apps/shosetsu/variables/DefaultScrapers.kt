@@ -78,6 +78,8 @@ object DefaultScrapers {
 
     val formatters = ArrayList<Formatter>()
 
+
+
     @JvmStatic
     fun getByID(ID: Int): Formatter {
         for (formatter in formatters) {

@@ -25,9 +25,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
 import com.github.javiersantos.appupdater.AppUpdater
@@ -153,8 +153,7 @@ class MainActivity : AppCompatActivity(), Supporter {
         // Sets up DB
         if (Database.sqLiteDatabase == null) Database.sqLiteDatabase = DBHelper(this).writableDatabase
 
-        // Initalzies formatters
-        FormatterController.initialize(this)
+
 
         initDownloadManager(this)
 
@@ -177,6 +176,10 @@ class MainActivity : AppCompatActivity(), Supporter {
                             .beginTransaction()
                             .replace(R.id.fragment_container, libraryFragment).commit()
                     nav_view.setCheckedItem(R.id.nav_library)
+
+                    // Initalzies formatters
+                    //TODO Popup progress for this
+                    FormatterController.initialize(this)
                 }
             }
         }
