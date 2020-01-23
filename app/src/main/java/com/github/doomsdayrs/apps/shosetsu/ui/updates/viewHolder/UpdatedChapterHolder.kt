@@ -49,7 +49,8 @@ class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView), 
                 title.text = novelChapter!!.title
                 //TODO fix this disgust
                 val novelCard = Database.DatabaseNovels.getNovel(DatabaseIdentification.getNovelIDFromChapterID(DatabaseIdentification.getChapterIDFromChapterURL(novelChapter!!.link)))
-                Picasso.get().load(novelCard.imageURL).into(image)
+                if (novelCard.imageURL.isNotEmpty())
+                    Picasso.get().load(novelCard.imageURL).into(image)
                 itemView.setOnClickListener(this)
             }
         }
