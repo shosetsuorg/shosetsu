@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.downloads
 
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,39 +39,23 @@ import kotlinx.android.synthetic.main.fragment_downloads.*
  * @author github.com/doomsdayrs
  */
 //TODO selection mechanic with options to delete,  pause,  and more
-class DownloadsFragment : Fragment() {
+class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
     var downloadItems: ArrayList<DownloadItem> = ArrayList()
     var adapter: DownloadAdapter = DownloadAdapter(this)
+
+    init {
+        setHasOptionsMenu(true)
+    }
 
     override fun onResume() {
         super.onResume()
         adapter.notifyDataSetChanged()
     }
 
-    /**
-     * Creates view
-     *
-     * @param inflater           inflater to retrieve objects
-     * @param container          container of this fragment
-     * @param savedInstanceState save
-     * @return View
-     */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "NovelFragmentChapters")
-        Utilities.setActivityTitle(activity, "Downloads")
-        return inflater.inflate(R.layout.fragment_downloads, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Utilities.setActivityTitle(activity, "Downloads")
         downloadItems = Database.DatabaseDownloads.getDownloadList()
-        setDownloads()
-    }
-
-    /**
-     * Sets the novel chapters down
-     */
-    private fun setDownloads() {
         fragment_downloads_recycler.setHasFixedSize(false)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         adapter = DownloadAdapter(this)
@@ -99,14 +85,5 @@ class DownloadsFragment : Fragment() {
             return true
         }
         return false
-    }
-
-    companion object;
-
-    /**
-     * Constructor
-     */
-    init {
-        setHasOptionsMenu(true)
     }
 }

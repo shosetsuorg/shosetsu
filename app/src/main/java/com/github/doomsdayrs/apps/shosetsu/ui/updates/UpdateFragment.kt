@@ -2,14 +2,12 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
 import java.util.*
@@ -36,7 +34,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdateFragment : Fragment() {
+class UpdateFragment : Fragment(R.layout.updates_list) {
     var date: Long = -1
     private val novels = ArrayList<Int>()
     private var updates = ArrayList<Update>()
@@ -46,11 +44,11 @@ class UpdateFragment : Fragment() {
         outState.putLong("date", date)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.updates_list, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (date == -1L) if (savedInstanceState != null) date = savedInstanceState.getLong("date")
         try {
-            updates = DatabaseUpdates.getTimeBetween(date, date + 86399999)
+            updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -58,7 +56,6 @@ class UpdateFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recycler_update)
         chapterSetUp()
         Log.d("Updates on this day: ", "" + updates.size)
-        return view
     }
 
     private fun chapterSetUp() {

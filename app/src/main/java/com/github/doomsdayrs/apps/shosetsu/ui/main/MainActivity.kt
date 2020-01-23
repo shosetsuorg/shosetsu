@@ -64,21 +64,13 @@ import kotlinx.android.synthetic.main.activity_main.*
  * @author github.com/doomsdayrs
  */
 //TODO Inform users to refresh their libraries
-class MainActivity : AppCompatActivity(), Supporter {
+class MainActivity : AppCompatActivity(R.layout.activity_main), Supporter {
     val cataloguesFragment = CataloguesFragment()
     val libraryFragment = LibraryFragment()
     val updatesFragment = UpdatesFragment()
     val settingsFragment = SettingsFragment()
     val downloadsFragment = DownloadsFragment()
     val scripManagementFragment = ExtensionsFragment()
-
-    fun getNavigationView(): NavigationView? {
-        return nav_view
-    }
-
-    fun getDrawerLayout(): DrawerLayout? {
-        return drawer_layout
-    }
 
     /**
      * Main activity
@@ -135,8 +127,6 @@ class MainActivity : AppCompatActivity(), Supporter {
         // Settings setup
         Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        //Set the content view
-        setContentView(R.layout.activity_main)
         //Sets the toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -203,5 +193,13 @@ class MainActivity : AppCompatActivity(), Supporter {
 
     override fun setTitle(name: String?) {
         if (supportActionBar != null) supportActionBar!!.title = name
+    }
+
+    fun getNavigationView(): NavigationView? {
+        return nav_view
+    }
+
+    fun getDrawerLayout(): DrawerLayout? {
+        return drawer_layout
     }
 }

@@ -2,7 +2,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,29 +42,7 @@ import java.io.Serializable
  * @author github.com/doomsdayrs
  * TODO When opening a novel from here, Prevent reloading of already established DATA
  */
-class SearchFragment : Fragment() {
-    var array: ArrayList<StoredData> = arrayListOf()
-
-    fun containsData(id: Int): Boolean {
-        for (data in array)
-            if (data.id == id)
-                return true
-        return false
-    }
-
-    fun getData(id: Int): StoredData {
-        for (data in array)
-            if (data.id == id)
-                return data
-        return StoredData(id)
-    }
-
-    class StoredData(val id: Int) : Serializable {
-        //TODO This is dirty, Maybe replace with CatalogueNovelCard later
-        var novelArray: List<Array<String>> = arrayListOf()
-        var intArray: List<Int> = arrayListOf()
-    }
-
+class SearchFragment : Fragment(search_activity) {
     private class InternalQuery(val searchFragment: SearchFragment) : SearchView.OnQueryTextListener {
 
         override fun onQueryTextSubmit(query: String?): Boolean {
@@ -78,9 +59,15 @@ class SearchFragment : Fragment() {
         }
 
     }
+    class StoredData(val id: Int) : Serializable {
+        //TODO This is dirty, Maybe replace with CatalogueNovelCard later
+        var novelArray: List<Array<String>> = arrayListOf()
+        var intArray: List<Int> = arrayListOf()
+    }
 
     var adapter: SearchAdapter = SearchAdapter(this)
     var query: String = ""
+    var array: ArrayList<StoredData> = arrayListOf()
 
     init {
         setHasOptionsMenu(true)
@@ -103,22 +90,30 @@ class SearchFragment : Fragment() {
         outState.putSerializable("data", array)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(search_activity, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setActivityTitle(activity, "Results")
         if (savedInstanceState != null) {
             query = savedInstanceState.getString("query")!!
             array = savedInstanceState.getSerializable("data") as ArrayList<StoredData>
         }
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         Log.i("SearchQueryReceived", query)
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = SearchAdapter(this)
         recyclerView.adapter = adapter
     }
 
+    fun containsData(id: Int): Boolean {
+        for (data in array)
+            if (data.id == id)
+                return true
+        return false
+    }
+
+    fun getData(id: Int): StoredData {
+        for (data in array)
+            if (data.id == id)
+                return data
+        return StoredData(id)
+    }
 }

@@ -1,10 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,25 +34,20 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(R.layout.settings) {
     private val cards: ArrayList<SettingsCard> = ArrayList()
 
-    /**
-     * Creates view
-     *
-     * @param inflater           inflates layouts and shiz
-     * @param container          container of this fragment
-     * @param savedInstanceState save file
-     * @return View
-     */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "SettingsFragment")
-        Utilities.setActivityTitle(activity, "Settings")
-        return inflater.inflate(R.layout.settings, container, false)
+    init {
+        cards.add(SettingsCard(Types.DOWNLOAD))
+        cards.add(SettingsCard(Types.VIEW))
+        cards.add(SettingsCard(Types.ADVANCED))
+        cards.add(SettingsCard(Types.INFO))
+        cards.add(SettingsCard(Types.BACKUP))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Utilities.setActivityTitle(activity, "Settings")
         settings_recycler.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(view.context)
         if (fragmentManager != null) {
@@ -65,15 +57,4 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    /**
-     * Constructor
-     * TODO, Create custom option menu for settings to search specific ones
-     */
-    init {
-        cards.add(SettingsCard(Types.DOWNLOAD))
-        cards.add(SettingsCard(Types.VIEW))
-        cards.add(SettingsCard(Types.ADVANCED))
-        cards.add(SettingsCard(Types.INFO))
-        cards.add(SettingsCard(Types.BACKUP))
-    }
 }

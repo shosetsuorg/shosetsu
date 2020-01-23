@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.new_migrartion_view.*
  *
  * @author github.com/doomsdayrs
  */
-class NewMigrationView : AppCompatActivity() {
+class NewMigrationView : AppCompatActivity(R.layout.new_migrartion_view) {
     // Options for which to search with
     val catalogueOptions = DefaultScrapers.asCatalogue
 
@@ -64,7 +64,6 @@ class NewMigrationView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utilities.setupTheme(this)
-        setContentView(R.layout.new_migrartion_view)
         novelsToTransfer = intent.getIntegerArrayListExtra("selection")!!
         setupTransferals()
         setupTargets()

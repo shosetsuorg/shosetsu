@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -36,18 +34,14 @@ import org.json.JSONArray
  * @author github.com/doomsdayrs
  * @param jsonArray Array of disabled formatters, Includes . . . imageURL, Name, ID
  */
-class ConfigureExtensions : Fragment() {
+class ConfigureExtensions : Fragment(R.layout.alert_extensions_configure) {
     lateinit var jsonArray: JSONArray
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (savedInstanceState != null) {
-            jsonArray = JSONArray(savedInstanceState.getString("array", "[]"))
-        }
-        return inflater.inflate(R.layout.alert_extensions_configure, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            jsonArray = JSONArray(savedInstanceState.getString("array", "[]"))
+        }
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = ConfigExtAdapter(this)
     }

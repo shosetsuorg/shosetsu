@@ -3,7 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -47,7 +49,7 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 //TODO fix issue with not loading
-class CatalogueFragment : Fragment() {
+class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
     var catalogueNovelCards = ArrayList<CatalogueNovelCard>()
     lateinit var formatter: Formatter
     lateinit var catalogueAdapter: CatalogueAdapter
@@ -58,16 +60,14 @@ class CatalogueFragment : Fragment() {
     var isQuery = false
     var empty: TextView? = null
 
+    init {
+        setHasOptionsMenu(true)
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putSerializable("list", catalogueNovelCards)
         outState.putInt("formatter", formatter.formatterID)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("Resume", "HERE")
     }
 
     override fun onPause() {
@@ -81,25 +81,12 @@ class CatalogueFragment : Fragment() {
         dontRefresh = false
     }
 
-    /**
-     * Creates view
-     *
-     * @param inflater           inflates layouts and shiz
-     * @param container          container of this fragment
-     * @param savedInstanceState save file
-     * @return View
-     */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "CatalogueFragment")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
             catalogueNovelCards = (savedInstanceState.getSerializable("list") as ArrayList<CatalogueNovelCard>)
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
         }
-        return inflater.inflate(R.layout.fragment_catalogue, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         Utilities.setActivityTitle(activity, formatter.name)
         swipeRefreshLayout!!.setOnRefreshListener(CatalogueRefresh(this))
         if (savedInstanceState == null && !dontRefresh) {
@@ -109,16 +96,15 @@ class CatalogueFragment : Fragment() {
                 catalogueNovelCards = ArrayList()
                 catalogueAdapter.notifyDataSetChanged()
             }
-            if (!formatter.hasCloudFlare) CataloguePageLoader(this).execute() else webView()
+            if (!formatter.hasCloudFlare) CataloguePageLoader(this).execute() else {
+                val intent = Intent(activity, WebViewApp::class.java)
+                intent.putExtra("url", formatter.getLatestURL(0))
+                intent.putExtra("action", 1)
+                startActivityForResult(intent, 42)
+            }
         } else setLibraryCards(catalogueNovelCards)
     }
 
-    private fun webView() {
-        val intent = Intent(activity, WebViewApp::class.java)
-        intent.putExtra("url", formatter.getLatestURL(0))
-        intent.putExtra("action", 1)
-        startActivityForResult(intent, 42)
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 42) {
@@ -153,10 +139,4 @@ class CatalogueFragment : Fragment() {
         recyclerView!!.adapter = catalogueAdapter
     }
 
-    /**
-     * Constructor
-     */
-    init {
-        setHasOptionsMenu(true)
-    }
 }

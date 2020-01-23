@@ -56,18 +56,21 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
         var image = ""
 
         var enabled = false
+        var isInteral = false
 
         if (position < configureExtensions.jsonArray.length()) {
             val jsonObject: JSONObject = configureExtensions.jsonArray[position] as JSONObject
             name = jsonObject.getString("name")
             id = jsonObject.getInt("id")
             image = jsonObject.getString("imageUrl")
+            isInteral = jsonObject.getBoolean("internal")
         } else {
             val fom = DefaultScrapers.formatters[position - configureExtensions.jsonArray.length()]
             name = fom.name
             id = fom.formatterID
             image = fom.imageURL
             enabled = true
+            isInteral = FormatterController.sourceJSON.has(name)
         }
 
         if (image.isNotEmpty())
@@ -79,7 +82,12 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
         holder.switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 holder.switch.setText(R.string.enabled)
-                val file = File(Utilities.shoDir + FormatterController.scriptDirectory + FormatterController.sourceFolder + name + ".lua")
+
+
+                val file = if (!isInteral)
+                    File(Utilities.shoDir + FormatterController.scriptDirectory + FormatterController.sourceFolder + name + ".lua")
+                else File(configureExtensions.activity!!.filesDir.absolutePath + FormatterController.sourceFolder + FormatterController.scriptDirectory + name + ".lua")
+
                 FormatterController.confirm(file, object : FormatterController.CheckSumAction {
                     override fun fail() {
                         holder.switch.isChecked = !isChecked
@@ -104,6 +112,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
                     js.put("name", name)
                     js.put("id", id)
                     js.put("imageUrl", image)
+                    js.put("internal", isInteral)
                     configureExtensions.jsonArray.put(js)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         DefaultScrapers.formatters.removeIf { it.formatterID == id }

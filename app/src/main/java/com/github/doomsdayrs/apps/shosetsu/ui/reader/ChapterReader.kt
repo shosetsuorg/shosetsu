@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.chapter_reader.*
  *
  * @author github.com/doomsdayrs
  */
-class ChapterReader : AppCompatActivity() {
+class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
     // NovelData
     var chapterIDs: ArrayList<Int> = arrayListOf()
     var formatter: Formatter? = null
@@ -44,15 +44,6 @@ class ChapterReader : AppCompatActivity() {
     private lateinit var chapterReaderAdapter: ChapterReaderAdapter
 
     private var currentChapterID = -1
-
-    fun getViewPager(): ViewPager? {
-        return viewpager
-    }
-
-    fun getToolbar(): Toolbar? {
-        return toolbar as Toolbar
-    }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -64,7 +55,6 @@ class ChapterReader : AppCompatActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.chapter_reader)
         getToolbar()?.let { setSupportActionBar(it) }
 
         if (savedInstanceState != null) {
@@ -106,9 +96,16 @@ class ChapterReader : AppCompatActivity() {
         if (currentChapterID != -1) viewpager.currentItem = findCurrentPosition(currentChapterID)
     }
 
-
     fun findCurrentPosition(id: Int): Int {
         for (x in chapterIDs.indices) if (chapterIDs[x] == id) return x
         return -1
+    }
+
+    fun getViewPager(): ViewPager? {
+        return viewpager
+    }
+
+    fun getToolbar(): Toolbar? {
+        return toolbar as Toolbar
     }
 }

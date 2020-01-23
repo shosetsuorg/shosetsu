@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue
 
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,8 +45,12 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 //TODO Searching mechanics here
-class CataloguesFragment : Fragment() {
+class CataloguesFragment : Fragment(R.layout.fragment_catalogues) {
     private lateinit var cards: ArrayList<CatalogueCard>
+
+    init {
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_catalogues, menu)
@@ -65,22 +71,9 @@ class CataloguesFragment : Fragment() {
         }
     }
 
-    /**
-     * Creates view
-     *
-     * @param inflater           inflates layouts and shiz
-     * @param container          container of this fragment
-     * @param savedInstanceState save file
-     * @return View
-     */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "CataloguesFragment")
-        Utilities.setActivityTitle(activity, "Catalogues")
-        return inflater.inflate(R.layout.fragment_catalogues, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Utilities.setActivityTitle(activity, "Catalogues")
         //TODO Conditional for turning formatter on and off
         // > Conditional for languages
         // > Conditional for categories, maybe
@@ -90,12 +83,5 @@ class CataloguesFragment : Fragment() {
         val adapter = CataloguesAdapter(cards, fragmentManager!!)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-    }
-
-    /**
-     * Constructor
-     */
-    init {
-        setHasOptionsMenu(true)
     }
 }

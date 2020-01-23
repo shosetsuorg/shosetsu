@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,58 +44,16 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class LibraryFragment : Fragment() {
+class LibraryFragment : Fragment(R.layout.fragment_library) {
     var libraryNovelCards = ArrayList<Int>()
     var selectedNovels: ArrayList<Int> = ArrayList()
-
-    operator fun contains(i: Int): Boolean {
-        for (I in selectedNovels) if (I == i) return true
-        return false
-    }
-
     var libraryNovelCardsAdapter: LibraryNovelAdapter? = null
-
-    private fun readFromDB() {
-        libraryNovelCards = DatabaseNovels.getIntLibrary()
-        sort()
-    }
-
-    private fun sort() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            libraryNovelCards.sortWith(Comparator { novel: Int?, t1: Int? -> DatabaseNovels.getNovelTitle(novel!!).compareTo(DatabaseNovels.getNovelTitle(t1!!)) })
-        } else {
-            bubbleSortAToZ()
-        }
-    }
-
-    private fun bubbleSortAToZ() {
-        for (i in libraryNovelCards.size - 1 downTo 2) {
-            for (j in 0 until i) {
-                if (DatabaseNovels.getNovelTitle(libraryNovelCards[j]) > DatabaseNovels.getNovelTitle(libraryNovelCards[j + 1])) swapValues(j, j + 1)
-            }
-        }
-    }
-
-    private fun swapValues(indexOne: Int, indexTwo: Int) {
-        val i = libraryNovelCards[indexOne]
-        libraryNovelCards[indexOne] = libraryNovelCards[indexTwo]
-        libraryNovelCards[indexTwo] = i
-    }
-
-    /**
-     * Sets the cards to display
-     */
-    fun setLibraryCards(novelCards: ArrayList<Int>?) {
-        recyclerView!!.setHasFixedSize(false)
-        val layoutManager: RecyclerView.LayoutManager
-        layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
-        libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this)
-        recyclerView!!.layoutManager = layoutManager
-        recyclerView!!.adapter = libraryNovelCardsAdapter
-    }
-
     val inflater: MenuInflater?
         get() = MenuInflater(context)
+
+    init {
+        setHasOptionsMenu(true)
+    }
 
     override fun onPause() {
         super.onPause()
@@ -121,36 +82,16 @@ class LibraryFragment : Fragment() {
         outState.putIntegerArrayList("lib", libraryNovelCards)
     }
 
-    /**
-     * Creates view
-     *
-     * @param inflater           inflates layouts and shiz
-     * @param container          container of this fragment
-     * @param savedInstanceState save file
-     * @return View
-     */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.i("LibraryFragment", "onCreateView")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         Utilities.setActivityTitle(activity, "Library")
         if (savedInstanceState == null) readFromDB() else {
             libraryNovelCards = savedInstanceState.getIntegerArrayList("lib")!!
             selectedNovels = savedInstanceState.getIntegerArrayList("selected")!!
         }
-        return inflater.inflate(R.layout.fragment_library, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         setLibraryCards(libraryNovelCards)
     }
 
-
-    /**
-     * Creates the option menu
-     *
-     * @param menu     menu to fill
-     * @param inflater inflater of layouts and shiz
-     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (selectedNovels.size <= 0) {
             Log.d("LibraryFragment", "Creating default menu")
@@ -174,7 +115,7 @@ class LibraryFragment : Fragment() {
                 return true
             }
             R.id.chapter_select_all -> {
-                for (i in libraryNovelCards) if (!contains(i)) selectedNovels.add(i)
+                for (i in libraryNovelCards) if (!selectedNovels.contains(i)) selectedNovels.add(i)
                 recyclerView!!.post { libraryNovelCardsAdapter!!.notifyDataSetChanged() }
                 return true
             }
@@ -213,11 +154,33 @@ class LibraryFragment : Fragment() {
         return false
     }
 
+    private fun readFromDB() {
+        libraryNovelCards = DatabaseNovels.getIntLibrary()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            libraryNovelCards.sortWith(Comparator { novel: Int?, t1: Int? -> DatabaseNovels.getNovelTitle(novel!!).compareTo(DatabaseNovels.getNovelTitle(t1!!)) })
+        } else {
+            for (i in libraryNovelCards.size - 1 downTo 2) {
+                for (j in 0 until i) {
+                    if (DatabaseNovels.getNovelTitle(libraryNovelCards[j]) > DatabaseNovels.getNovelTitle(libraryNovelCards[j + 1])) {
+                        val indexOne = libraryNovelCards[j]
+                        libraryNovelCards[j] = libraryNovelCards[j+1]
+                        libraryNovelCards[j+1] = indexOne
+                    }
+                }
+            }
+        }
+
+    }
 
     /**
-     * Constructor
+     * Sets the cards to display
      */
-    init {
-        setHasOptionsMenu(true)
+    fun setLibraryCards(novelCards: ArrayList<Int>?) {
+        recyclerView!!.setHasFixedSize(false)
+        val layoutManager: RecyclerView.LayoutManager
+        layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
+        libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this)
+        recyclerView!!.layoutManager = layoutManager
+        recyclerView!!.adapter = libraryNovelCardsAdapter
     }
 }

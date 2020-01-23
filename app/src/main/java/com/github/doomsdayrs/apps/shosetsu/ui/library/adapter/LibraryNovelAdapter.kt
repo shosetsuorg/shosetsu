@@ -57,7 +57,7 @@ class LibraryNovelAdapter(private val novelCards: ArrayList<Int>, private val li
             libNovelViewHolder.chip.visibility = View.VISIBLE
             libNovelViewHolder.chip.text = count.toString()
         } else libNovelViewHolder.chip.visibility = View.INVISIBLE
-        if (libraryFragment.contains(novelCard.novelID)) {
+        if (libraryFragment.selectedNovels.contains(novelCard.novelID)) {
             libNovelViewHolder.materialCardView.strokeWidth = Utilities.selectedStrokeWidth
         } else {
             libNovelViewHolder.materialCardView.strokeWidth = 0

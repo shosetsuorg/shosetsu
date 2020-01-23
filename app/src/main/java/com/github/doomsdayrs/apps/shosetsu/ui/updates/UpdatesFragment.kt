@@ -2,7 +2,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -41,7 +44,12 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdatesFragment : Fragment() {
+class UpdatesFragment : Fragment(R.layout.fragment_update) {
+
+    init {
+        setHasOptionsMenu(true)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.updater_now) {
             if (context != null) {
@@ -55,14 +63,9 @@ class UpdatesFragment : Fragment() {
         inflater.inflate(R.menu.toolbar_updater, menu)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_update, container, false)
-        Utilities.setActivityTitle(activity, "Updates")
-        return view
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Utilities.setActivityTitle(activity, "Updates")
         setViewPager()
     }
 
@@ -109,7 +112,5 @@ class UpdatesFragment : Fragment() {
         tabLayout!!.post { tabLayout!!.setupWithViewPager(viewpager) }
     }
 
-    init {
-        setHasOptionsMenu(true)
-    }
+
 }

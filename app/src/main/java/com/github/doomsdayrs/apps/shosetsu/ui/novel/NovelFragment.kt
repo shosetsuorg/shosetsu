@@ -2,9 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
@@ -51,7 +49,11 @@ import kotlinx.android.synthetic.main.fragment_novel.*
  *
  * @author github.com/doomsdayrs
  */
-class NovelFragment : Fragment() {
+class NovelFragment : Fragment(R.layout.fragment_novel) {
+    interface Custom {
+        fun customCheck(status: Status): Boolean
+    }
+
     // This is a never before loaded novel
     var new: Boolean = true
 
@@ -63,37 +65,12 @@ class NovelFragment : Fragment() {
     var status = Status.UNREAD
     var novelChapters: List<NovelChapter> = ArrayList()
 
-    /**
-     * @return position of last read chapter, reads array from reverse. If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
-     */
-    fun lastRead(): Int {
-        return if (novelChapters.isNotEmpty()) {
-            if (!novelFragmentChapters?.reversed!!) {
-                for (x in novelChapters.indices.reversed()) {
-                    when (getStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
-                        Status.READ -> return x + 1
-                        Status.READING -> return x
-                        else -> {
-                        }
-                    }
-                }
-            } else {
-                for (x in novelChapters.indices) {
-                    when (getStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
-                        Status.READ -> return x - 1
-                        Status.READING -> return x
-                        else -> {
-                        }
-                    }
-                }
-            }
-            0
-        } else -2
-    }
-
     var novelFragmentInfo: NovelFragmentInfo? = null
     var novelFragmentChapters: NovelFragmentChapters? = null
 
+    init {
+        setHasOptionsMenu(true)
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt("novelID", novelID)
@@ -101,11 +78,6 @@ class NovelFragment : Fragment() {
         outState.putInt("formatter", formatter.formatterID)
         outState.putInt("status", status.a)
         outState.putBoolean("new", new)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "NovelFragment")
-        return inflater.inflate(R.layout.fragment_novel, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -142,7 +114,6 @@ class NovelFragment : Fragment() {
             setViewPager()
         }
     }
-
 
     private fun setViewPager() {
         val fragments: MutableList<Fragment> = ArrayList()
@@ -197,10 +168,6 @@ class NovelFragment : Fragment() {
                 }
             }
         return null
-    }
-
-    interface Custom {
-        fun customCheck(status: Status): Boolean
     }
 
     fun getCustom(count: Int, check: Custom): List<NovelChapter> {
@@ -261,8 +228,32 @@ class NovelFragment : Fragment() {
             }
         return if (novelFragmentChapters!!.reversed) novelChapters[0] else novelChapters[novelChapters.size - 1]
     }
-
-    init {
-        setHasOptionsMenu(true)
+    /**
+     * @return position of last read chapter, reads array from reverse. If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
+     */
+    fun lastRead(): Int {
+        return if (novelChapters.isNotEmpty()) {
+            if (!novelFragmentChapters?.reversed!!) {
+                for (x in novelChapters.indices.reversed()) {
+                    when (getStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
+                        Status.READ -> return x + 1
+                        Status.READING -> return x
+                        else -> {
+                        }
+                    }
+                }
+            } else {
+                for (x in novelChapters.indices) {
+                    when (getStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
+                        Status.READ -> return x - 1
+                        Status.READING -> return x
+                        else -> {
+                        }
+                    }
+                }
+            }
+            0
+        } else -2
     }
+
 }
