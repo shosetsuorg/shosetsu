@@ -79,7 +79,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
         holder.switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 holder.switch.setText(R.string.enabled)
-                val file = File(Utilities.shoDir + FormatterController.directory + FormatterController.scriptFolder + name + ".lua")
+                val file = File(Utilities.shoDir + FormatterController.scriptDirectory + FormatterController.sourceFolder + name + ".lua")
                 FormatterController.confirm(file, object : FormatterController.CheckSumAction {
                     override fun fail() {
                         holder.switch.isChecked = !isChecked

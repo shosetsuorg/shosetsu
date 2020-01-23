@@ -23,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import org.json.JSONObject
+import org.luaj.vm2.LuaValue
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -55,8 +56,9 @@ import java.security.NoSuchAlgorithmException
  * @author github.com/doomsdayrs
  */
 object FormatterController {
-    const val directory = "/scripts/"
-    const val scriptFolder = "src/"
+    const val scriptDirectory = "/scripts/"
+    const val libraryDirectory = "/libraries/"
+    const val sourceFolder = "/src/"
     lateinit var sourceJSON: JSONObject
 
     /**
@@ -147,7 +149,7 @@ object FormatterController {
                     var file = context.getExternalFilesDir(null)!!.absolutePath
                     file = file.substring(0, file.indexOf("/Android"))
                     val downloadedFile = File("$file/${Environment.DIRECTORY_DOCUMENTS}/$name.lua")
-                    val targetFile = File(Utilities.shoDir + directory + scriptFolder + "/$name.lua")
+                    val targetFile = File(activity.filesDir.absolutePath + sourceFolder + scriptDirectory + "/$name.lua")
                     Log.i("Extension download", downloadedFile.absolutePath)
                     Log.i("Extension download", targetFile.absolutePath)
 
@@ -171,6 +173,7 @@ object FormatterController {
                     }
 
                     DefaultScrapers.formatters.add(form)
+                    DefaultScrapers.formatters.sortedWith(compareBy { it.name })
                     activity.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
                 }
             }
@@ -186,7 +189,7 @@ object FormatterController {
             if (DefaultScrapers.formatters[i].formatterID == id) {
                 DefaultScrapers.formatters.removeAt(i)
                 holder.installed = false
-                val targetFile = File(Utilities.shoDir + directory + scriptFolder + "/$name.lua")
+                val targetFile = File(Utilities.shoDir + scriptDirectory + sourceFolder + "/$name.lua")
                 targetFile.delete()
                 Toast.makeText(activity.applicationContext, "Script deleted", Toast.LENGTH_SHORT).show()
                 activity.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
@@ -206,7 +209,7 @@ object FormatterController {
     }
 
     class FormatterInit(val activity: Activity) : AsyncTask<Void, Void, Void>() {
-        private val incompatible = ArrayList<File>()
+        private val unknownFormatters = ArrayList<File>()
 
         override fun doInBackground(vararg params: Void?): Void? {
 
@@ -234,50 +237,96 @@ object FormatterController {
                 }
                 sourceJSON = JSONObject(json)
             }
-
-
-            val path = Utilities.shoDir + directory + scriptFolder
-            // Check if script MD5 matches DB
-            val directory = File(path)
-            if (directory.isDirectory && directory.exists()) {
-                val sources = directory.listFiles()
-                val jsonArray = Settings.disabledFormatters
-                if (sources != null)
-                    for (source in sources) {
-                        confirm(source, object : CheckSumAction {
-                            override fun fail() {
-                                Log.i("FormatterInit", "${source.name}:\tSum does not match, Adding")
-                                incompatible.add(source)
-                            }
-
-                            override fun pass() {
-                                if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
-                                    val l = LuaFormatter(source)
-                                    if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
-                                        DefaultScrapers.formatters.add(l)
-                                }
-                            }
-
-                            override fun noMeta() {
-                                Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
-                                incompatible.add(source)
-                            }
-
-                        })
+            // Load the private libraries
+            run {
+                val path = activity.filesDir.absolutePath + sourceFolder + libraryDirectory
+                val directory = File(path)
+                if (directory.isDirectory && directory.exists()) {
+                    val libraries = directory.listFiles()
+                    if (libraries != null) {
+                        for (library in libraries) {
+                            val lua = LuaValue.valueOf(library.absolutePath)
+                            // TODO Add library to companion object
+                        }
+                    } else {
+                        Log.e("FormatterInit", "Libraries file returned null")
                     }
-                for (incom in incompatible) {
-                    Log.e("FormatterInit", "Unknown Script:\t${incom.name}")
+                } else {
+                    directory.mkdirs()
                 }
-            } else {
-                directory.mkdirs()
+            }
+
+            // Load the private scripts
+            run {
+                val path = activity.filesDir.absolutePath + sourceFolder + scriptDirectory
+                val directory = File(path)
+                if (directory.isDirectory && directory.exists()) {
+                    val sources = directory.listFiles()
+                    val jsonArray = Settings.disabledFormatters
+                    if (sources != null) {
+                        for (source in sources) {
+                            if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
+                                val l = LuaFormatter(source)
+                                if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
+                                    DefaultScrapers.formatters.add(l)
+                            }
+                        }
+                    } else {
+                        Log.e("FormatterInit", "Sources file returned null")
+                    }
+                } else {
+                    directory.mkdirs()
+                }
+            }
+
+
+            run {
+                val path = Utilities.shoDir + scriptDirectory
+                // Check if script MD5 matches DB
+                val directory = File(path)
+                if (directory.isDirectory && directory.exists()) {
+                    val sources = directory.listFiles()
+                    val jsonArray = Settings.disabledFormatters
+                    if (sources != null) {
+                        for (source in sources) {
+                            confirm(source, object : CheckSumAction {
+                                override fun fail() {
+                                    Log.i("FormatterInit", "${source.name}:\tSum does not match, Adding")
+                                    unknownFormatters.add(source)
+                                }
+
+                                override fun pass() {
+                                    if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
+                                        val l = LuaFormatter(source)
+                                        if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
+                                            DefaultScrapers.formatters.add(l)
+                                    }
+                                }
+
+                                override fun noMeta() {
+                                    Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
+                                    unknownFormatters.add(source)
+                                }
+
+                            })
+                        }
+                    } else {
+                        Log.e("FormatterInit", "External Sources file returned null")
+                    }
+                } else {
+                    directory.mkdirs()
+                }
+            }
+            for (unknownFormatter in unknownFormatters) {
+                Log.e("FormatterInit", "Unknown Script:\t${unknownFormatter.name}")
             }
             DefaultScrapers.formatters.sortedWith(compareBy { it.name })
             return null
         }
 
         override fun onPostExecute(result: Void?) {
-            if (incompatible.size > 0) {
-                SusScriptDialog(activity, incompatible).execute()
+            if (unknownFormatters.size > 0) {
+                SusScriptDialog(activity, unknownFormatters).execute()
             }
         }
 
@@ -289,6 +338,9 @@ object FormatterController {
         fun noMeta()
     }
 
+    /**
+     * Dynamic MD5 checking
+     */
     fun confirm(file: File, checkSumAction: CheckSumAction): Boolean {
         val meta = getMetaData(file)
         return if (meta != null) {
@@ -315,6 +367,10 @@ object FormatterController {
         }
     }
 
+
+    /**
+     * Loads a new JSON file to be used
+     */
     class RefreshJSON(val activity: Activity, val extensionsFragment: ExtensionsFragment) : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void?): Void? {
             val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")

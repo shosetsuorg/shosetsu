@@ -1369,7 +1369,7 @@ public class Database {
                 cursor.moveToNext();
                 String string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_NAME.toString()));
                 cursor.close();
-                return new LuaFormatter(new File(Environment.getExternalStorageState() + FormatterController.directory + FormatterController.scriptFolder + string + ".lua"));
+                return new LuaFormatter(new File(Environment.getExternalStorageState() + FormatterController.scriptDirectory + FormatterController.sourceFolder + string + ".lua"));
             }
         }
 
