@@ -120,4 +120,8 @@
     <string name="update_not_interested">找不到更新</string>
     <string name="update_not_found">找不到更新</string>
     <string name="update_now">没兴趣</string>
+    <string name="download_all_chapters">全部下载</string>
+    <string name="enabled">已启用</string>
+    <string name="download_next_chapter">下载下一章</string>
+    <string name="disable_all">禁用所有</string>
 </resources>
