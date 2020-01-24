@@ -4,13 +4,24 @@
 # ![logo](https://github.com/Doomsdayrs/shosetsu/raw/master/app/src/main/res/mipmap-hdpi/ic_launcher.png) Shosetsu
 
 A free and open source android application for reading novels.  
-Use at your own discretion as this app is currently in alpha and full of bugs. 
-We appreciate any help in improving the app so let us know by either [opening an issue](../../issues/new) or via Discord.
+Use at your own discretion as this app is currently in beta and may have bugs. 
+We appreciate any help in improving the app, so let us know by either [opening an issue](../../issues/new) or via Discord.
 
-Join us on our:  
-  <a href="https://discord.gg/ttSX7gB"><img alt="Discord Channel" src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg" width=240px></a>
+Download Shosetsu from F-Droid:  
+<a href="https://f-droid.org/packages/com.github.doomsdayrs.apps.shosetsu/">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid!"
+    height="80">
+</a>
 
-## Capabilities
+Join us on our Discord server:  
+<a href="https://discord.gg/ttSX7gB">
+    <img src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg"
+    alt="Discord Channel"
+    width=240px>
+</a>
+
+## Capabilities:
 - [x] Many sources to read from!
 - [x] Add the ones you like to your library!
 - [x] Single button press to get all the latest chapters!
@@ -20,7 +31,7 @@ Join us on our:
 - [ ] Tracking
 - [ ] Actually efficient coding
 
-## ScreenShots
+## Screenshots:
 <img src="./screenshots/0.jpg" width="30%"></img>
 <img src="./screenshots/1.jpg" width="30%"></img>
 <img src="./screenshots/2.jpg" width="30%"></img>
