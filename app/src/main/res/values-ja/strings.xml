@@ -124,4 +124,17 @@
     <string name="updated_extensions_list">リストを更新しました！</string>
     <string name="version">バージョン</string>
     <string name="you_not_online">オンラインではありません</string>
+    <string name="catalogues">カタログ</string>
+    <string name="chapters">章</string>
+    <string name="configure_extensions">構成拡張</string>
+    <string name="downloads">ダウンロード</string>
+    <string name="info">通知</string>
+    <string name="migration_view">ビューを変更</string>
+    <string name="results">結果</string>
+    <string name="today">今</string>
+    <string name="updates">更新</string>
+    <string name="yesterday">昨日</string>
+    <string name="backup">バックアップ</string>
+    <string name="view">見ます</string>
+    <string name="advanced">詳細</string>
 </resources>

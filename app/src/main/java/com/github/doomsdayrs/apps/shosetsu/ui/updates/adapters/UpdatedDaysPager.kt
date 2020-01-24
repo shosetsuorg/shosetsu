@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateFragment
 import org.joda.time.DateTime
@@ -30,7 +32,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdatedDaysPager(fm: FragmentManager, behavior: Int, private val fragments: ArrayList<UpdateFragment>) : FragmentPagerAdapter(fm, behavior) {
+class UpdatedDaysPager(val context: Context?, fm: FragmentManager, behavior: Int, private val fragments: ArrayList<UpdateFragment>) : FragmentPagerAdapter(fm, behavior) {
     override fun getItem(position: Int): Fragment {
         return fragments[position]
     }
@@ -38,15 +40,14 @@ class UpdatedDaysPager(fm: FragmentManager, behavior: Int, private val fragments
     override fun getPageTitle(position: Int): CharSequence? {
         val dateTime = DateTime(fragments[position].date)
         if (dateTime == DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis()))) {
-            return "Today"
+            return context?.getString(R.string.today) ?: "Today"
         } else if (dateTime == DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis())).minusDays(1)) {
-            return "Yesterday"
+            return context?.getString(R.string.yesterday) ?: "Yesterday"
         }
         return dateTime.dayOfMonth.toString() + "/" + dateTime.monthOfYear + "/" + dateTime.year
     }
 
     override fun getCount(): Int {
         return fragments.size
-    } // --Commented out by Inspection START (12/22/19 11:10 AM):
-
+    }
 }

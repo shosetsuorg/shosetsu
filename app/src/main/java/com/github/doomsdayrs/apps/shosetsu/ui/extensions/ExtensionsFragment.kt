@@ -70,7 +70,7 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utilities.setActivityTitle(activity, "Extensions")
+        Utilities.setActivityTitle(activity, getString(R.string.extensions))
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter =ExtensionsAdapter(this)
         recyclerView.adapter = adapter

@@ -64,6 +64,7 @@ class NewMigrationView : AppCompatActivity(R.layout.new_migrartion_view) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Utilities.setupTheme(this)
+        Utilities.setActivityTitle(this,getString(R.string.migration_view))
         novelsToTransfer = intent.getIntegerArrayListExtra("selection")!!
         setupTransferals()
         setupTargets()

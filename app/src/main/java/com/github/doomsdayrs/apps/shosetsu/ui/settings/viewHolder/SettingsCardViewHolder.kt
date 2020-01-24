@@ -38,7 +38,14 @@ class SettingsCardViewHolder(itemView: View, private val fragmentManager: Fragme
 
     fun setType(type: Types) {
         cardView.setOnClickListener(OnSettingsCardClick(type, fragmentManager))
-        libraryCardTitle.text = type.toString()
+        libraryCardTitle.text = when (type.position) {
+            0 -> itemView.context.getString(R.string.download)
+            1 -> itemView.context.getString(R.string.view)
+            2 -> itemView.context.getString(R.string.advanced)
+            3 -> itemView.context.getString(R.string.info)
+            4 -> itemView.context.getString(R.string.backup)
+            else->itemView.context.getString(R.string.unknown)
+        }
     }
 
 }

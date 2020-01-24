@@ -84,7 +84,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utilities.setActivityTitle(activity, "Library")
+        Utilities.setActivityTitle(activity, getString(R.string.my_library))
         if (savedInstanceState == null) readFromDB() else {
             libraryNovelCards = savedInstanceState.getIntegerArrayList("lib")!!
             selectedNovels = savedInstanceState.getIntegerArrayList("selected")!!

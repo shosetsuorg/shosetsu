@@ -65,7 +65,7 @@ class UpdatesFragment : Fragment(R.layout.fragment_update) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utilities.setActivityTitle(activity, "Updates")
+        Utilities.setActivityTitle(activity, getString(R.string.updates))
         setViewPager()
     }
 
@@ -98,7 +98,7 @@ class UpdatesFragment : Fragment(R.layout.fragment_update) {
         updateFragment.date = (DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis())).millis)
         updatesFragments.add(updateFragment)
         updatesFragments.reverse()
-        val pagerAdapter = UpdatedDaysPager(childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, updatesFragments)
+        val pagerAdapter = UpdatedDaysPager(context, childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, updatesFragments)
         viewpager.adapter = pagerAdapter
         viewpager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {

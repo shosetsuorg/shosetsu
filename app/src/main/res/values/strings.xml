@@ -172,7 +172,6 @@
     <string name="download_fail_delete">Failed to delete, next download will correct</string>
     <string name="you_not_online">You are not online</string>
     <string name="download_chapter_updates">Download chapter updates</string>
-    <string name="extensions">Extensions</string>
     <string name="update_list">Update list</string>
     <string name="updated_extensions_list">List updated!</string>
     <string name="uninstall">Uninstall</string>
@@ -191,12 +190,33 @@
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
     <string name="reload_list">Reload List</string>
+    <string name="catalogues">Catalogues</string>
+    <string name="downloads">Downloads</string>
+    <string name="extensions">Extensions</string>
+    <string name="configure_extensions">Configure Extensions</string>
+    <string name="migration_view">Migration View</string>
+
+    <string name="chapters">Chapters</string>
+    <string name="results">Results</string>
+    <string name="updates">Updates</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="view">View</string>
+    <string name="advanced">Advanced</string>
+    <string name="info">Info</string>
+    <string name="backup">Backup</string>
+
 
     <array name="sus_array_actions">
         <item>@string/accept</item>
         <item>@string/accept_temp</item>
         <item>@string/disable</item>
         <item>@string/uninstall</item>
+    </array>
+
+    <array name="novel_fragment_names">
+        <item>@string/info</item>
+        <item>@string/chapters</item>
     </array>
 
 </resources>

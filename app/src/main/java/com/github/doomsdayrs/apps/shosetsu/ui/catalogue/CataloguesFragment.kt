@@ -73,7 +73,7 @@ class CataloguesFragment : Fragment(R.layout.fragment_catalogues) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utilities.setActivityTitle(activity, "Catalogues")
+        Utilities.setActivityTitle(activity, getString(R.string.catalogues))
         //TODO Conditional for turning formatter on and off
         // > Conditional for languages
         // > Conditional for categories, maybe

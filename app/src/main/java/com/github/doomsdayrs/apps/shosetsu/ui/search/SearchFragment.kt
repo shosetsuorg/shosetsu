@@ -92,7 +92,7 @@ class SearchFragment : Fragment(search_activity) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setActivityTitle(activity, "Results")
+        setActivityTitle(activity, getString(R.string.results))
         if (savedInstanceState != null) {
             query = savedInstanceState.getString("query")!!
             array = savedInstanceState.getSerializable("data") as ArrayList<StoredData>

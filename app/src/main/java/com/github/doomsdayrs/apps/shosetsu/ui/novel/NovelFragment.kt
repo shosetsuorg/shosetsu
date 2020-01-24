@@ -123,7 +123,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
             Log.d("FragmentLoading", "Chapters")
             fragments.add(novelFragmentChapters!!)
         }
-        val pagerAdapter = NovelPagerAdapter(childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, fragments)
+        val pagerAdapter = NovelPagerAdapter(context, childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, fragments)
         fragment_novel_viewpager?.adapter = pagerAdapter
         fragment_novel_viewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(fragment_novel_tabLayout))
         fragment_novel_tabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -228,6 +228,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
             }
         return if (novelFragmentChapters!!.reversed) novelChapters[0] else novelChapters[novelChapters.size - 1]
     }
+
     /**
      * @return position of last read chapter, reads array from reverse. If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
      */

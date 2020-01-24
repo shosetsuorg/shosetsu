@@ -25,16 +25,21 @@ package com.github.doomsdayrs.apps.shosetsu.variables.enums
 /**
  * Used for setting fragments
  */
-enum class Types(private val internalNAme: String) {
-    DOWNLOAD("Download"), VIEW("Reader View"), ADVANCED("Advanced"), INFO("Info"), BACKUP("Backup");
+enum class Types(val position: Int) {
+    DOWNLOAD(0),
+    VIEW(1),
+    ADVANCED(2),
+    INFO(3),
+    BACKUP(4);
 
     /**
      * toString overriding method
      *
      * @return name of type
      */
+    @Deprecated("No Longer Used")
     override fun toString(): String {
-        return internalNAme
+        return ""
     }
 
 }

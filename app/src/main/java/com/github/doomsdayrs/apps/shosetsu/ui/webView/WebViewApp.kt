@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.webview.*
  */
 class WebViewApp : AppCompatActivity(R.layout.webview) {
     @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val intent = intent

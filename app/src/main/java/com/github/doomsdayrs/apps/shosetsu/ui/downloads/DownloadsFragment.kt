@@ -54,7 +54,7 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utilities.setActivityTitle(activity, "Downloads")
+        Utilities.setActivityTitle(activity, getString(R.string.downloads))
         downloadItems = Database.DatabaseDownloads.getDownloadList()
         fragment_downloads_recycler.setHasFixedSize(false)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)

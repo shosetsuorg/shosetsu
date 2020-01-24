@@ -47,7 +47,7 @@ class SettingsFragment : Fragment(R.layout.settings) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utilities.setActivityTitle(activity, "Settings")
+        Utilities.setActivityTitle(activity, getString(R.string.settings))
         settings_recycler.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(view.context)
         if (fragmentManager != null) {

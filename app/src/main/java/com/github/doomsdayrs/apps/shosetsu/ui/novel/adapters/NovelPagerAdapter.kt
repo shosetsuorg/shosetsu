@@ -1,9 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters
 
+import android.content.Context
 import android.util.Log
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of Shosetsu.
@@ -26,8 +29,9 @@ import androidx.fragment.app.FragmentPagerAdapter
  *
  * @author github.com/doomsdayrs
  */
-class NovelPagerAdapter(fm: FragmentManager, behavior: Int, private val fragments: List<Fragment>) : FragmentPagerAdapter(fm, behavior) {
-    private val titles = arrayOf("Info", "Chapters")
+class NovelPagerAdapter(context: Context?, fm: FragmentManager, behavior: Int, private val fragments: List<Fragment>) : FragmentPagerAdapter(fm, behavior) {
+    private val titles = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, context.resources.getStringArray(R.array.novel_fragment_names))
+
     //TODO with tracker use this instead the of the above
 /*public NovelPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments, boolean ignored) {
         super(fm);
@@ -44,7 +48,7 @@ class NovelPagerAdapter(fm: FragmentManager, behavior: Int, private val fragment
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return titles[position]
+        return titles.getItem(position)
     }
 
 }
