@@ -46,6 +46,8 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : Re
         var installed: Boolean = false
         var update: Boolean = false
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
+        val lang: TextView = itemView.findViewById(R.id.langauge)
+
         val title: TextView = itemView.findViewById(R.id.title)
         val hash: TextView = itemView.findViewById(R.id.hash)
         val identification: TextView = itemView.findViewById(R.id.id)
@@ -95,9 +97,10 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : Re
         holder.title.text = jsonObject.getString("name")
         holder.identification.text = id.toString()
         holder.hash.text = jsonObject.getString("md5")
+        holder.lang.text = jsonObject.getString("lang")
         holder.button.setOnClickListener {
             if (!holder.installed || holder.update) {
-                FormatterController.downloadScript(jsonObject.getString("name"), holder, extensionsFragment.activity!!)
+                FormatterController.downloadScript(jsonObject.getString("name"),jsonObject.getString("lang"), holder, extensionsFragment.activity!!)
             } else
                 FormatterController.deleteScript(jsonObject.getString("name"), id, holder, extensionsFragment.activity!!)
 
