@@ -14,6 +14,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
+import com.github.doomsdayrs.api.shosetsu.services.core.luaSupport.ShosetsuLib
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.LibraryLoaderSync
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
@@ -22,6 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapt
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import org.json.JSONArray
 import org.json.JSONObject
 import org.luaj.vm2.LuaValue
 import java.io.*
@@ -208,51 +211,73 @@ object FormatterController {
         Database.DatabaseFormatters.addToFormatterList(name, id, md5, repo.isNotEmpty(), repo)
     }
 
+    fun writeFile(string: String, file: File) {
+        val out = FileOutputStream(file)
+        val writer = OutputStreamWriter(out)
+        writer.write(string)
+        writer.close()
+        out.flush()
+        out.close()
+    }
+
+    private fun downloadLibrary(name: String, file: File) {
+        val doc = WebViewScrapper.docFromURL("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/master/src/main/resources/lib/$name.lua", false)
+        if (doc != null) {
+            writeFile(doc.body().text(), file)
+        }
+    }
+
     class FormatterInit(val activity: Activity) : AsyncTask<Void, Void, Void>() {
         private val unknownFormatters = ArrayList<File>()
 
         override fun doInBackground(vararg params: Void?): Void? {
 
             // Source files
-            val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
-            if (sourceFile.isFile && sourceFile.exists()) {
-                sourceJSON = JSONObject(getContent(sourceFile))
-            } else {
-                Log.i("FormatterInit", "Downloading formatterJSON")
-                sourceFile.createNewFile()
-                var json = "{}"
-                if (Utilities.isOnline) {
-                    val doc = WebViewScrapper.docFromURL("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/master/src/main/resources/formatters.json", false)
-                    if (doc != null) {
-                        json = doc.body().text()
-                        val out = FileOutputStream(sourceFile)
-                        val writer = OutputStreamWriter(out)
-                        writer.write(json)
-                        writer.close()
-                        out.flush()
-                        out.close()
-                    }
-                } else {
-                    Log.e("FormatterInit", "IsOffline, Cannot load data, Using stud")
-                }
-                sourceJSON = JSONObject(json)
-            }
-            // Load the private libraries
             run {
-                val path = activity.filesDir.absolutePath + sourceFolder + libraryDirectory
-                val directory = File(path)
-                if (directory.isDirectory && directory.exists()) {
-                    val libraries = directory.listFiles()
-                    if (libraries != null) {
-                        for (library in libraries) {
-                            val lua = LuaValue.valueOf(library.absolutePath)
-                            // TODO Add library to companion object
+                val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
+                if (sourceFile.isFile && sourceFile.exists()) {
+                    sourceJSON = JSONObject(getContent(sourceFile))
+                } else {
+                    Log.i("FormatterInit", "Downloading formatterJSON")
+                    sourceFile.createNewFile()
+                    var json = "{}"
+                    if (Utilities.isOnline) {
+                        val doc = WebViewScrapper.docFromURL("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/master/src/main/resources/formatters.json", false)
+                        if (doc != null) {
+                            json = doc.body().text()
+                            writeFile(json, sourceFile)
                         }
                     } else {
-                        Log.e("FormatterInit", "Libraries file returned null")
+                        Log.e("FormatterInit", "IsOffline, Cannot load data, Using stud")
                     }
-                } else {
-                    directory.mkdirs()
+                    sourceJSON = JSONObject(json)
+                }
+            }
+
+
+            // Auto Download all source material
+            run {
+                val libraries: JSONArray = sourceJSON.getJSONArray("libraries")
+                for (index in 0 until libraries.length()) {
+                    val libraryJSON: JSONObject = libraries.getJSONObject(index)
+                    val libraryFile = File(activity.filesDir.absolutePath + sourceFolder + libraryDirectory + "${libraryJSON.getString("name")}.lua")
+                    if (libraryFile.exists()) {
+                        val meta = getMetaData(libraryFile)!!
+                        if (compareVersions(meta.getString("version"), libraryJSON.getString("version")) == -1) {
+                            Log.i("FormatterInit", "Installing library:\t" + libraryJSON.getString("name"))
+                            downloadLibrary(libraryJSON.getString("name"), libraryFile)
+                        }
+                    } else {
+                        downloadLibrary(libraryJSON.getString("name"), libraryFile)
+                    }
+                }
+            }
+
+            ShosetsuLib.libraryLoaderSync = object : LibraryLoaderSync {
+                override fun getScript(name: String): LuaValue? {
+                    Log.i("LibraryLoaderSync","Loading:\t$name")
+                    val libraryFile = File(activity.filesDir.absolutePath + sourceFolder + libraryDirectory + "$name.lua")
+                    return LuaValue.valueOf(libraryFile.absolutePath)
                 }
             }
 

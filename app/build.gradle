@@ -48,13 +48,13 @@ android {
 
 
 dependencies {
-    implementation 'com.google.android.material:material:1.2.0-alpha03'
+    implementation 'com.google.android.material:material:1.2.0-alpha04'
  //   implementation 'com.graphql-java:graphql-java:2020-01-17T02-41-10-578985f'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     //noinspection GradleCompatible
-    implementation 'com.google.android.material:material:1.2.0-alpha03'
-    implementation 'androidx.work:work-runtime:2.2.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha04'
+    implementation 'androidx.work:work-runtime:2.3.0'
     testImplementation 'junit:junit:4.13'
     testImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'
@@ -66,7 +66,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
     // Core libraries
-    implementation 'com.github.doomsdayrs:shosetsu-services:v0.4.0'
+    implementation 'com.github.doomsdayrs:shosetsu-services:0.5.1'
 
     // Image loading
     implementation 'com.squareup.picasso:picasso:2.71828'

@@ -1,10 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.variables
 
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.ScrapeFormat
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelGenre
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
+import com.github.doomsdayrs.api.shosetsu.services.core.objects.Ordering
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
 import org.jsoup.nodes.Document
 
@@ -36,9 +36,25 @@ import org.jsoup.nodes.Document
 // TODO Make this full dynamic, not needing to be predefined
 // > Make IDs built into the formatter
 object DefaultScrapers {
-    class UnknownFormatter : ScrapeFormat() {
+    class UnknownFormatter : Formatter {
+        override val chapterOrder: Ordering
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val formatterID: Int
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         override val genres: Array<NovelGenre> = arrayOf()
+        override val hasCloudFlare: Boolean
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val hasGenres: Boolean
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val hasSearch: Boolean
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         override val imageURL: String = ""
+        override val isIncrementingChapterList: Boolean
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val isIncrementingPassagePage: Boolean
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val latestOrder: Ordering
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         override val name: String = "UNKNOWN"
 
         override fun getLatestURL(page: Int): String {

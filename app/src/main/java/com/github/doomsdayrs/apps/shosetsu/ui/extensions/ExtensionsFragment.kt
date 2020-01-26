@@ -82,6 +82,7 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
         val keys = ArrayList<String>()
         FormatterController.sourceJSON.keys().forEach { keys.add(it) }
         keys.remove("comments")
+        keys.remove("libraries")
         for (key in keys) {
             val obj = FormatterController.sourceJSON.getJSONObject(key)
             obj.put("name", key)
