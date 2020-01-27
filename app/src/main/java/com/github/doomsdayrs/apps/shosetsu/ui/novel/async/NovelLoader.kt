@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.async
 
 import android.os.AsyncTask
+import android.util.Log
 import android.view.View
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
@@ -99,6 +100,7 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
                 true
             } catch (e: Exception) {
                 // Errors out the program and returns a false
+                Log.e("NovelLoader","Error",e)
                 novelFragment?.activity?.runOnUiThread {
                     novelFragment.novelFragmentInfo?.fragment_novel_main_refresh?.isRefreshing = false;novelFragment.network_error!!.visibility = View.VISIBLE;novelFragment.error_message!!.text = e.message
                     novelFragment.error_button!!.setOnClickListener { NovelLoader(this).execute() }
