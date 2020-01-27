@@ -138,7 +138,6 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
         settings.put("shoDir", Utilities.serializeToString(Utilities.shoDir))
         settings.put("paused", Settings.downloadPaused)
         settings.put("textSize", Settings.ReaderTextSize.toDouble())
-        settings.put("themeMode", Settings.themeMode)
         settings.put("paraSpace", Settings.paragraphSpacing)
         settings.put("indent", Settings.indentSize)
         settings.put("tap_to_scroll", Utilities.isTapToScroll)

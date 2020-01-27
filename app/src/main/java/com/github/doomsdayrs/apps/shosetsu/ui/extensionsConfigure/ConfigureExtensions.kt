@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
-import kotlinx.android.synthetic.main.settings_info.*
+import kotlinx.android.synthetic.main.settings.*
 import org.json.JSONArray
 
 /*

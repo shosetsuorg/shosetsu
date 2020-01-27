@@ -56,7 +56,6 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getToolbar()?.let { setSupportActionBar(it) }
-
         if (savedInstanceState != null) {
             // Sets default values
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))

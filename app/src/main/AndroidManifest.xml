@@ -41,21 +41,21 @@
 
         <activity
             android:name="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.webView.WebViewApp"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".ui.reader.ChapterReader"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".ui.migration.MigrationView"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.migration.NewMigrationView"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:theme="@style/AppTheme" />
 
 
         <activity android:name=".ui.search.SearchFragment">

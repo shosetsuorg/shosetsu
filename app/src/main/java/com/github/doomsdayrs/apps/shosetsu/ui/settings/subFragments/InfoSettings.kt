@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import kotlinx.android.synthetic.main.settings_advanced.*
+import kotlinx.android.synthetic.main.settings.*
 
 /*
  * This file is part of Shosetsu.
@@ -95,7 +95,7 @@ class InfoSettings : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")
-        return inflater.inflate(R.layout.settings_info, container, false)
+        return inflater.inflate(R.layout.settings, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

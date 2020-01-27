@@ -42,13 +42,6 @@ object Settings {
         LARGE(20)
     }
 
-    //TODO Use this
-    enum class Themes(val id: Int) {
-        LIGHT(0),
-        NIGHT(1),
-        DARK(2)
-    }
-
     /**
      * How to mark a chapter as reading
      */
@@ -106,16 +99,6 @@ object Settings {
             Utilities.viewPreferences.edit().putBoolean("downloadOnUpdate", value).apply()
         }
         get() = Utilities.viewPreferences.getBoolean("downloadOnUpdate", false)
-
-    /**
-     * Current theme to use
-     */
-    var themeMode = Themes.LIGHT.id
-        set(value) {
-            field = value
-            Utilities.advancedPreferences.edit().putInt("themeMode", value).apply()
-        }
-        get() = Utilities.advancedPreferences.getInt("themeMode", 0)
 
     var paragraphSpacing: Int = 0
         set(value) {

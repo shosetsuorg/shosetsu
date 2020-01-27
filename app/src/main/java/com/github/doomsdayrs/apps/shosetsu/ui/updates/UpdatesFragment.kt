@@ -109,7 +109,7 @@ class UpdatesFragment : Fragment(R.layout.fragment_update) {
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-        tabLayout!!.post { tabLayout!!.setupWithViewPager(viewpager) }
+        tabLayout?.post { tabLayout?.setupWithViewPager(viewpager) }
     }
 
 

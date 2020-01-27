@@ -18,7 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapt
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import kotlinx.android.synthetic.main.settings_view.*
+import kotlinx.android.synthetic.main.settings.*
 import java.util.*
 
 /*
@@ -159,7 +159,7 @@ class ViewSettings : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")
-        return inflater.inflate(R.layout.settings_view, container, false)
+        return inflater.inflate(R.layout.settings, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

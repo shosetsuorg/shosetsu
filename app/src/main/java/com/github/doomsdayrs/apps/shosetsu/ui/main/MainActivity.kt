@@ -73,11 +73,7 @@ class MainActivity : AppCompatActivity(), Supporter {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
-        Utilities.setupTheme(this)
         setContentView(R.layout.activity_main)
-
         //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
 

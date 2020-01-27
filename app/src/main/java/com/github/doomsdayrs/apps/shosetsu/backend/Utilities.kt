@@ -14,6 +14,8 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
@@ -111,9 +113,8 @@ object Utilities {
         return a
     }
 
-    fun regret(context: Context) {
-        Toast.makeText(context, context.getString(R.string.regret), Toast.LENGTH_LONG).show()
-    }
+    fun regret(context: Context) = Toast.makeText(context, context.getString(R.string.regret), Toast.LENGTH_LONG).show()
+
 
     fun setActivityTitle(activity: Activity?, title: String?) {
         val supporter = activity as Supporter?
@@ -138,9 +139,8 @@ object Utilities {
      * @param input String to clean
      * @return string without specials
      */
-    fun cleanString(input: String): String {
-        return input.replace("[^A-Za-z0-9]".toRegex(), "_")
-    }
+    fun cleanString(input: String): String = input.replace("[^A-Za-z0-9]".toRegex(), "_")
+
 
     fun calculateNoOfColumns(context: Context, columnWidthDp: Float): Int { // For example columnWidthdp=180
         val displayMetrics = context.resources.displayMetrics
@@ -304,36 +304,21 @@ object Utilities {
     val isTapToScroll: Boolean
         get() = viewPreferences.getBoolean("tapToScroll", false)
 
-    fun intToBoolean(a: Int): Boolean {
-        return a == 1
-    }
+    fun intToBoolean(a: Int): Boolean = a == 1
 
     fun changeIndentSize(newIndent: Int) {
         Settings.indentSize = newIndent
     }
 
 
-    fun changeMode(activity: Activity, newMode: Int) {
-        if (newMode !in 0..2) throw IndexOutOfBoundsException("Non valid int passed")
-        Settings.themeMode = newMode
-        activity.recreate()
-        // setupTheme(activity);
-    }
+    //  fun changeMode(activity: Activity, newMode: Int) { if (newMode !in 0..2) throw IndexOutOfBoundsException("Non valid int passed");  Settings.themeMode = newMode; activity.recreate() // setupTheme(activity); }
 
-    fun setupTheme(activity: Activity) {
-        when (Settings.themeMode) {
-            0 -> activity.setTheme(R.style.LightTheme)
-            1 -> activity.setTheme(R.style.Theme_MaterialComponents_NoActionBar)
-            2 -> activity.setTheme(R.style.DarkTheme)
-        }
-    }
+    fun setBackgroundByTheme(view: View) =
+            when ((view.context as AppCompatActivity).delegate.localNightMode) {
+                AppCompatDelegate.MODE_NIGHT_NO -> view.setBackgroundResource(R.color.white_trans)
+                else -> view.setBackgroundResource(R.color.black_trans)
+            }
 
-    fun setBackgroundByTheme(view: View) {
-        when (Settings.themeMode) {
-            0 -> view.setBackgroundResource(R.color.white_trans)
-            1, 2 -> view.setBackgroundResource(R.color.black_trans)
-        }
-    }
 
     /**
      * Toggles paused downloads
@@ -377,17 +362,12 @@ object Utilities {
         }
 
 
-    fun setNightNode() {
-        setReaderColor(Color.WHITE, Color.BLACK)
-    }
+    fun setNightNode() = setReaderColor(Color.WHITE, Color.BLACK)
 
-    fun setLightMode() {
-        setReaderColor(Color.BLACK, Color.WHITE)
-    }
+    fun setLightMode() = setReaderColor(Color.BLACK, Color.WHITE)
 
-    fun setSepiaMode(context: Context) {
-        setReaderColor(Color.BLACK, ContextCompat.getColor(context, R.color.wheat))
-    }
+    fun setSepiaMode(context: Context) = setReaderColor(Color.BLACK, ContextCompat.getColor(context, R.color.wheat))
+
 
     /**
      * Sets the reader color
@@ -400,22 +380,14 @@ object Utilities {
         Settings.ReaderTextBackgroundColor = background
     }
 
-    fun getReaderColor(context: Context): Int {
-        return when (Settings.ReaderTextBackgroundColor) {
-            Color.WHITE -> {
-                1
+    fun getReaderColor(context: Context): Int =
+            when (Settings.ReaderTextBackgroundColor) {
+                Color.WHITE -> 1
+                Color.BLACK -> 0
+                ContextCompat.getColor(context, R.color.wheat) -> 2
+                else -> 1
             }
-            Color.BLACK -> {
-                0
-            }
-            ContextCompat.getColor(context, R.color.wheat) -> {
-                2
-            }
-            else -> {
-                1
-            }
-        }
-    }
+
 
     /**
      * Toggles bookmark
@@ -441,9 +413,8 @@ object Utilities {
      * @param novelID      id of novel
      * @param formatterID  formatter
      */
-    fun openChapter(activity: Activity, novelChapter: NovelChapter, novelID: Int, formatterID: Int) {
-        openChapter(activity, novelChapter, novelID, formatterID, null)
-    }
+    fun openChapter(activity: Activity, novelChapter: NovelChapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
+
 
     private fun openChapter(activity: Activity, novelChapter: NovelChapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
         val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
@@ -470,10 +441,8 @@ object Utilities {
         activity.startActivity(intent)
     }
 
-    fun openInBrowser(activity: Activity, url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        activity.startActivity(intent)
-    }
+    fun openInBrowser(activity: Activity, url: String) = activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+
 
     /**
      * Freezes the thread for x time

@@ -18,7 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.NormalFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
-import kotlinx.android.synthetic.main.settings_backup.*
+import kotlinx.android.synthetic.main.settings.*
 import java.util.*
 
 /*
@@ -73,7 +73,7 @@ class BackupSettings : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "BackupSettings")
-        return inflater.inflate(R.layout.settings_backup, container, false)
+        return inflater.inflate(R.layout.settings, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

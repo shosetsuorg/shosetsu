@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
     app:strokeColor="@color/selected_blue"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    android:layout_margin="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint"
@@ -103,7 +103,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+                app:srcCompat="@drawable/ic_more_vert_24dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

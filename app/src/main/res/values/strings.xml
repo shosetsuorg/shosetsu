@@ -206,7 +206,12 @@
     <string name="info">Info</string>
     <string name="backup">Backup</string>
     <string name="loading">Loading...</string>
+    <string name="amoled">Amoled</string>
 
+    <array name="application_themes">
+        <item>@string/light</item>
+        <item>@string/amoled</item>
+    </array>
 
     <array name="sus_array_actions">
         <item>@string/accept</item>

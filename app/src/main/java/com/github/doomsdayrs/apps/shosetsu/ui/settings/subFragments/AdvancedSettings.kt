@@ -11,12 +11,10 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import kotlinx.android.synthetic.main.settings_advanced.*
+import kotlinx.android.synthetic.main.settings.*
 
 
 /*
@@ -55,17 +53,14 @@ class AdvancedSettings : Fragment() {
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             if (position in 0..2 && advancedSettings.ready) {
-                Utilities.changeMode(advancedSettings.activity!!, position)
+         //       Utilities.changeMode(advancedSettings.activity!!, position)
                 parent?.setSelection(position)
             } else advancedSettings.ready = true
         }
     }
 
     val settings: ArrayList<SettingsItemData> = arrayListOf(
-            SettingsItemData(SettingsItemData.SettingsType.SPINNER)
-                    .setTitle(R.string.theme)
-                    .setOnItemSelectedListener(ThemeChange(this))
-                    .setSpinnerSelection(Settings.themeMode),
+          //  SettingsItemData(SettingsItemData.SettingsType.SPINNER).setTitle(R.string.theme).setOnItemSelectedListener(ThemeChange(this)).setSpinnerSelection(Settings.themeMode),
             SettingsItemData(SettingsItemData.SettingsType.BUTTON)
                     .setTitle(R.string.remove_novel_cache)
                     .setOnClickListenerButton { Database.DatabaseIdentification.purgeUnSavedNovels() }
@@ -73,12 +68,12 @@ class AdvancedSettings : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")
-        return inflater.inflate(R.layout.settings_advanced, container, false)
+        return inflater.inflate(R.layout.settings, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, arrayListOf("Light", "Dark")))
+        settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.application_themes)))
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = SettingItemsAdapter(settings)
     }

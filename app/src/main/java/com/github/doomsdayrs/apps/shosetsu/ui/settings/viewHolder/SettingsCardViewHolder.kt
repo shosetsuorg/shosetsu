@@ -2,12 +2,12 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder
 
 import android.view.View
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.listener.OnSettingsCardClick
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types
+import com.google.android.material.card.MaterialCardView
 
 /*
  * This file is part of Shosetsu.
@@ -34,7 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types
  */
 class SettingsCardViewHolder(itemView: View, private val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(itemView) {
     private val libraryCardTitle: TextView = itemView.findViewById(R.id.recycler_settings_title)
-    private val cardView: CardView = itemView.findViewById(R.id.settings_card)
+    private val cardView: MaterialCardView = itemView.findViewById(R.id.settings_card)
 
     fun setType(type: Types) {
         cardView.setOnClickListener(OnSettingsCardClick(type, fragmentManager))
@@ -44,7 +44,7 @@ class SettingsCardViewHolder(itemView: View, private val fragmentManager: Fragme
             2 -> itemView.context.getString(R.string.advanced)
             3 -> itemView.context.getString(R.string.info)
             4 -> itemView.context.getString(R.string.backup)
-            else->itemView.context.getString(R.string.unknown)
+            else -> itemView.context.getString(R.string.unknown)
         }
     }
 

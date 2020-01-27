@@ -1,15 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="AppTheme.AppBar" parent="Theme.MaterialComponents.DayNight">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="tabStyle">@style/Widget.MaterialComponents.TabLayout.Colored</item>
+        <item name="android:background">@android:color/black</item>
     </style>
-
 
     <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/launcher_theme</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
     </style>
-
 </resources>

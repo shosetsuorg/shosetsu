@@ -48,12 +48,12 @@ class SettingsFragment : Fragment(R.layout.settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Utilities.setActivityTitle(activity, getString(R.string.settings))
-        settings_recycler.setHasFixedSize(true)
+        recyclerView.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(view.context)
         if (fragmentManager != null) {
             val adapter: RecyclerView.Adapter<*> = SettingsAdapter(cards, fragmentManager!!)
-            settings_recycler.layoutManager = layoutManager
-            settings_recycler.adapter = adapter
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = adapter
         }
     }
 

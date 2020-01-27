@@ -17,7 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import kotlinx.android.synthetic.main.settings_download.*
+import kotlinx.android.synthetic.main.settings.*
 import java.util.*
 
 /*
@@ -61,7 +61,7 @@ class DownloadSettings : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "DownloadSettings")
-        return inflater.inflate(R.layout.settings_download, container, false)
+        return inflater.inflate(R.layout.settings, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

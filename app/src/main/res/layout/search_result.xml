@@ -4,7 +4,7 @@
     android:id="@+id/novel_item_card"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_margin="8dp"
     app:cardElevation="1dp"
     app:strokeColor="@color/selected_blue">
 

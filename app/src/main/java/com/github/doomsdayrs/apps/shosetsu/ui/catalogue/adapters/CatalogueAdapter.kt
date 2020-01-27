@@ -3,8 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
@@ -54,7 +54,8 @@ class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, pri
             novelCardsViewHolder.title.text = recycleCard.title
             if (recycleCard.imageURL.isNotEmpty()) {
                 Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.imageView)
-            } else novelCardsViewHolder.imageView.visibility = View.GONE
+            } else novelCardsViewHolder.imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Database.DatabaseNovels.isBookmarked(recycleCard.novelID)) {
                     if (catalogueFragment.context != null) novelCardsViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(catalogueFragment.context!!, R.color.shade))
