@@ -49,7 +49,7 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
         }
     }
 
-    fun execute() {
+    fun execute(finalAction: () -> Unit) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
         builder.setTitle(activity.getString(R.string.sus_script_title))
         builder.setMessage(R.string.sus_scripts)
@@ -59,6 +59,7 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
 
         builder.setPositiveButton(android.R.string.yes) { _, _ ->
             processActions()
+            finalAction()
         }
 
         builder.setNegativeButton(android.R.string.cancel) { _, _ ->
@@ -91,11 +92,11 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
                     val a = Settings.disabledFormatters
                     a.put(js)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        DefaultScrapers.formatters.removeIf { it.formatterID ==  meta.getInt("id") }
+                        DefaultScrapers.formatters.removeIf { it.formatterID == meta.getInt("id") }
                     } else {
                         var point = -1
                         for (i in 0 until DefaultScrapers.formatters.size)
-                            if (DefaultScrapers.formatters[i].formatterID ==  meta.getInt("id"))
+                            if (DefaultScrapers.formatters[i].formatterID == meta.getInt("id"))
                                 point = i
                         if (point != -1)
                             DefaultScrapers.formatters.removeAt(point)

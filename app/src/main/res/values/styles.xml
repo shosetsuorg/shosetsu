@@ -2,10 +2,20 @@
 
     <!-- Base application theme. -->
 
-    <style name="AppTheme.AppBar" parent="ThemeOverlay.MaterialComponents.ActionBar">
-        <item name="android:background">@color/colorLightAccent</item>
+    <style name="AppTheme.AppBar.Light" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="android:background">@color/colorPrimary</item>
         <item name="popupMenuStyle">@android:color/white</item>
         <item name="popupMenuBackground">@android:color/white</item>
+    </style>
+
+
+    <style name="AppTheme.AppBar.Dark" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
+
+    <style name="SplashScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/launcher_theme</item>
     </style>
 
 </resources>

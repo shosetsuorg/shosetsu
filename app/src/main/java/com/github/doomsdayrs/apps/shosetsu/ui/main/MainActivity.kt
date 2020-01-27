@@ -1,26 +1,19 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main
 
-import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
@@ -64,7 +57,7 @@ import kotlinx.android.synthetic.main.activity_main.*
  * @author github.com/doomsdayrs
  */
 //TODO Inform users to refresh their libraries
-class MainActivity : AppCompatActivity(R.layout.activity_main), Supporter {
+class MainActivity : AppCompatActivity(), Supporter {
     val cataloguesFragment = CataloguesFragment()
     val libraryFragment = LibraryFragment()
     val updatesFragment = UpdatesFragment()
@@ -79,16 +72,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), Supporter {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-        Utilities.viewPreferences = getSharedPreferences("view", 0)
-        Utilities.downloadPreferences = getSharedPreferences("download", 0)
-        Utilities.advancedPreferences = getSharedPreferences("advanced", 0)
-        Utilities.trackingPreferences = getSharedPreferences("tracking", 0)
-        Utilities.backupPreferences = getSharedPreferences("backup", 0)
-        Utilities.initPreferences(this)
+
+
+
         Utilities.setupTheme(this)
+        setContentView(R.layout.activity_main)
+
         //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        Log.d("Updater", "Start")
 
 
         val appUpdater = AppUpdater(this)
@@ -106,26 +96,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), Supporter {
                 .setCancelable(true)
                 .showEvery(5)
         appUpdater.start()
-
-
-        val appUpdaterUtils = AppUpdaterUtils(this)
-                .setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
-                .withListener(object : UpdateListener {
-                    override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
-                        Log.d("Latest Version", isUpdateAvailable.toString())
-                        Log.d("Latest Version", update.latestVersion)
-                        Log.d("Latest Version", update.latestVersionCode.toString())
-                    }
-
-                    override fun onFailed(error: AppUpdaterError) {
-                        Log.d("AppUpdater Error", "Something went wrong")
-                    }
-                })
-        appUpdaterUtils.start()
-        Log.d("Updater", "Completed construction")
-
-        // Settings setup
-        Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        // updateUtils()
 
         //Sets the toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -137,16 +108,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), Supporter {
         toggle.syncState()
 
         // Webview agent retrieval
-        val webView = findViewById<WebView>(R.id.absolute_webView)
-        WebViewScrapper.setUa(webView.settings.userAgentString)
-
-        // Sets up DB
-        if (Database.sqLiteDatabase == null) Database.sqLiteDatabase = DBHelper(this).writableDatabase
-
-
-
+        WebViewScrapper.setUa(findViewById<WebView>(R.id.absolute_webView).settings.userAgentString)
         initDownloadManager(this)
-
 
         when (intent.action) {
             Intent.ACTION_USER_BACKGROUND -> {
@@ -169,7 +132,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), Supporter {
 
                     // Initalzies formatters
                     //TODO Popup progress for this
-                    FormatterController.initialize(this)
                 }
             }
         }
@@ -180,6 +142,24 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), Supporter {
                 .addToBackStack("tag")
                 .replace(R.id.fragment_container, target)
                 .commit()
+    }
+
+    @Suppress("unused")
+    private fun updateUtils() {
+        val appUpdaterUtils = AppUpdaterUtils(this)
+                .setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+                .withListener(object : UpdateListener {
+                    override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
+                        Log.d("Latest Version", isUpdateAvailable.toString())
+                        Log.d("Latest Version", update.latestVersion)
+                        Log.d("Latest Version", update.latestVersionCode.toString())
+                    }
+
+                    override fun onFailed(error: AppUpdaterError) {
+                        Log.d("AppUpdater Error", "Something went wrong")
+                    }
+                })
+        appUpdaterUtils.start()
     }
 
     /**

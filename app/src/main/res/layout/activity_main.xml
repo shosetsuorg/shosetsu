@@ -23,7 +23,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBar"
+            android:theme="@style/AppTheme.AppBar.Light"
             app:elevation="4dp">
 
             <androidx.appcompat.widget.Toolbar

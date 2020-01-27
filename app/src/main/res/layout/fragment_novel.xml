@@ -7,7 +7,6 @@
 
     <com.google.android.material.tabs.TabLayout
         android:elevation="1dp"
-        android:background="@color/colorLightAccent"
         android:id="@+id/fragment_novel_tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

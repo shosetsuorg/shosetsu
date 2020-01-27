@@ -21,14 +21,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:targetApi="q"
-        android:usesCleartextTraffic="true">
+        tools:targetApi="q">
 
 
         <activity
-            android:name="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+            android:name="com.github.doomsdayrs.apps.shosetsu.ui.splash.SplashScreen"
+            android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -38,6 +38,10 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
+
+        <activity
+            android:name="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".ui.webView.WebViewApp"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
@@ -49,8 +53,9 @@
         <activity
             android:name=".ui.migration.MigrationView"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-        <activity android:name=".ui.migration.NewMigrationView"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+        <activity
+            android:name=".ui.migration.NewMigrationView"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
 
         <activity android:name=".ui.search.SearchFragment">

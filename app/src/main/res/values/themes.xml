@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme">
+
+    </style>
+
+    <style name="Theme.Base" parent="Theme">
+
+    </style>
+
+    <style name="Theme.Base.Light">
+        <item name="android:windowBackground">@android:color/background_light</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="toolbarStyle">@style/AppTheme.AppBar.Light</item>
+    </style>
+
+    <style name="Theme.Base.Dark">
+        <item name="android:windowBackground">@android:color/background_dark</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="toolbarStyle">@style/AppTheme.AppBar.Dark</item>
+    </style>
+
+    <style name="Theme.Base.Amoled">
+        <item name="android:windowBackground">@android:color/background_dark</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="toolbarStyle">@style/AppTheme.AppBar.Dark</item>
+    </style>
+</resources>

@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
@@ -287,7 +286,7 @@ object Utilities {
      *
      * @param mainActivity activity
      */
-    fun initPreferences(mainActivity: AppCompatActivity) {
+    fun initPreferences(mainActivity: Activity) {
         var dir = mainActivity.getExternalFilesDir(null)!!.absolutePath
         dir = dir.substring(0, dir.indexOf("/Android"))
         shoDir = downloadPreferences.getString("dir", "$dir/Shosetsu/")!!
@@ -323,9 +322,9 @@ object Utilities {
 
     fun setupTheme(activity: Activity) {
         when (Settings.themeMode) {
-            0 -> activity.setTheme(R.style.Theme_MaterialComponents_Light_NoActionBar)
+            0 -> activity.setTheme(R.style.LightTheme)
             1 -> activity.setTheme(R.style.Theme_MaterialComponents_NoActionBar)
-            2 -> activity.setTheme(R.style.ThemeOverlay_MaterialComponents_Dark)
+            2 -> activity.setTheme(R.style.DarkTheme)
         }
     }
 
