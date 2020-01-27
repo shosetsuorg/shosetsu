@@ -1,0 +1,1380 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f203069cdee, pid=21730, tid=0x00007f1ff86f2700
+#
+# JRE version: OpenJDK Runtime Environment (8.0_212) (build 1.8.0_212-release-1586-b4-5784211)
+# Java VM: OpenJDK 64-Bit Server VM (25.212-b4-5784211 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# V  [libjvm.so+0x563dee]  frame::sender(RegisterMap*) const+0x6e
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f1fb4008800):  JavaThread "Daemon worker" [_thread_in_vm, id=21760, stack(0x00007f1ff85f2000,0x00007f1ff86f3000)]
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0xfffffffffffffff8
+
+Registers:
+RAX=0x0000000000000000, RBX=0x00007f1ff86eb9b0, RCX=0x00007f2019045360, RDX=0x0000000000040000
+RSP=0x00007f1ff86eb8a0, RBP=0x00007f1ff86eb8d0, RSI=0x0000000000000010, RDI=0x00007f1ff86eb9b0
+R8 =0x00007f2019000000, R9 =0x0000000000000068, R10=0x00007f2030e57fc0, R11=0x00007f2019934ec0
+R12=0x00007f1ff86eba30, R13=0x00007f1ff86eb9e0, R14=0x00007f1ff86eba30, R15=0x00007f1ff86ec050
+RIP=0x00007f203069cdee, EFLAGS=0x0000000000010246, CSGSFS=0x002b000000000033, ERR=0x0000000000000005
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x00007f1ff86eb8a0)
+0x00007f1ff86eb8a0:   0000000000000000 00007f1fb4008800
+0x00007f1ff86eb8b0:   00007f1fa801d100 00007f1ff86eb9e0
+0x00007f1ff86eb8c0:   00007f1ff86eba30 00007f1ff86ec050
+0x00007f1ff86eb8d0:   00007f1ff86ec020 00007f2030a4eae0
+0x00007f1ff86eb8e0:   00007f1ff86eb900 00007f1fb4008800
+0x00007f1ff86eb8f0:   00007f1fd0012100 00007f1ff86ec0c0
+0x00007f1ff86eb900:   00007f1f00000001 00007f1f00000001
+0x00007f1ff86eb910:   00000000000003d8 00007f1fd00124d8
+0x00007f1ff86eb920:   00007f1fd0012100 00007f2030415465
+0x00007f1ff86eb930:   00007f1fb4008800 00007f1fd00120f0
+0x00007f1ff86eb940:   00007f202e402b50 0000000000000003
+0x00007f1ff86eb950:   00007f2030e0bff0 0000000000000000
+0x00007f1ff86eb960:   00007f1ff86eb9c0 00007f203041718f
+0x00007f1ff86eb970:   00000000000003d8 00007f1fd0012100
+0x00007f1ff86eb980:   0000060000000000 00007f2028060650
+0x00007f1ff86eb990:   00007f1f000000b9 00007f1ff86eba70
+0x00007f1ff86eb9a0:   00007f2028060650 0000000000000003
+0x00007f1ff86eb9b0:   00007f1fb4008800 00007f1ff86eb9e0
+0x00007f1ff86eb9c0:   00007f1ff86eba20 00007f2030417bcd
+0x00007f1ff86eb9d0:   0000000000000000 00007f1fc824ce78
+0x00007f1ff86eb9e0:   00007f1ff86ec120 00007f201901428f
+0x00007f1ff86eb9f0:   00007f2019005310 00007f1f00000000
+0x00007f1ff86eba00:   0000000000000000 00007f1ff86ec120
+0x00007f1ff86eba10:   00007f20304178f0 00007f2028060650
+0x00007f1ff86eba20:   00007f1ff86ebac0 00007f2030a6b1ad
+0x00007f1ff86eba30:   0000000000000000 00007f1ff86ec110
+0x00007f1ff86eba40:   0000000100023ff8 0000000100047980
+0x00007f1ff86eba50:   00007f202e1d59c0 00007f1fb4008800
+0x00007f1ff86eba60:   00007f1ff86eba80 00007f1ff86eba70
+0x00007f1ff86eba70:   00007f202e402b50 00007f1fb4008800
+0x00007f1ff86eba80:   00007f202e402b50 00007f1fb4008800
+0x00007f1ff86eba90:   00007f202e1d59c0 00007f1fb4008800 
+
+Instructions: (pc=0x00007f203069cdee)
+0x00007f203069cdce:   c8 72 7f 48 63 52 14 48 01 d1 48 39 c8 73 73 41
+0x00007f203069cdde:   80 bc 24 b0 05 00 00 00 48 8b 46 20 48 8d 70 10
+0x00007f203069cdee:   4c 8b 40 f8 0f 85 b8 01 00 00 48 8b 78 08 48 8b
+0x00007f203069cdfe:   00 48 89 33 4c 89 43 28 48 89 43 20 48 89 7b 08 
+
+Register to memory mapping:
+
+RAX=0x0000000000000000 is an unknown value
+RBX=0x00007f1ff86eb9b0 is pointing into the stack for thread: 0x00007f1fb4008800
+RCX=0x00007f2019045360 is an unknown value
+RDX=0x0000000000040000 is an unknown value
+RSP=0x00007f1ff86eb8a0 is pointing into the stack for thread: 0x00007f1fb4008800
+RBP=0x00007f1ff86eb8d0 is pointing into the stack for thread: 0x00007f1fb4008800
+RSI=0x0000000000000010 is an unknown value
+RDI=0x00007f1ff86eb9b0 is pointing into the stack for thread: 0x00007f1fb4008800
+R8 =0x00007f2019000000 is an unknown value
+R9 =0x0000000000000068 is an unknown value
+R10=0x00007f2030e57fc0: <offset 0xd1efc0> in /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/server/libjvm.so at 0x00007f2030139000
+R11=0x00007f2019934ec0 is at entry_point+32 in (nmethod*)0x00007f2019934690
+R12=0x00007f1ff86eba30 is pointing into the stack for thread: 0x00007f1fb4008800
+R13=0x00007f1ff86eb9e0 is pointing into the stack for thread: 0x00007f1fb4008800
+R14=0x00007f1ff86eba30 is pointing into the stack for thread: 0x00007f1fb4008800
+R15=0x00007f1ff86ec050 is pointing into the stack for thread: 0x00007f1fb4008800
+
+
+Stack: [0x00007f1ff85f2000,0x00007f1ff86f3000],  sp=0x00007f1ff86eb8a0,  free space=998k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x563dee]  frame::sender(RegisterMap*) const+0x6e
+V  [libjvm.so+0x915ae0]  SharedRuntime::resolve_sub_helper(JavaThread*, bool, bool, Thread*)+0x100
+V  [libjvm.so+0x916065]  SharedRuntime::resolve_helper(JavaThread*, bool, bool, Thread*)+0x45
+V  [libjvm.so+0x9167c2]  SharedRuntime::resolve_opt_virtual_call_C(JavaThread*)+0x52
+v  ~RuntimeStub::resolve_opt_virtual_call
+J 2503 C1 jdk.internal.org.objectweb.asm.ClassWriter.toByteArray()[B (1289 bytes) @ 0x00007f201993500c [0x00007f2019934ea0+0x16c]
+j  java.lang.invoke.InnerClassLambdaMetafactory.spinInnerClass()Ljava/lang/Class;+443
+j  java.lang.invoke.InnerClassLambdaMetafactory.buildCallSite()Ljava/lang/invoke/CallSite;+1
+j  java.lang.invoke.LambdaMetafactory.metafactory(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;+31
+j  java.lang.invoke.LambdaForm$DMH.invokeStatic_L6_L(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+20
+j  java.lang.invoke.LambdaForm$BMH.reinvoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+79
+j  java.lang.invoke.LambdaForm$MH.invoke_MT(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;+30
+j  java.lang.invoke.CallSite.makeSite(Ljava/lang/invoke/MethodHandle;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/invoke/CallSite;+184
+j  java.lang.invoke.MethodHandleNatives.linkCallSiteImpl(Ljava/lang/Class;Ljava/lang/invoke/MethodHandle;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/invoke/MemberName;+6
+j  java.lang.invoke.MethodHandleNatives.linkCallSite(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/invoke/MemberName;+45
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x6489ca]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0xeea
+V  [libjvm.so+0x6472cc]  JavaCalls::call_static(JavaValue*, KlassHandle, Symbol*, Symbol*, JavaCallArguments*, Thread*)+0x25c
+V  [libjvm.so+0x98813b]  SystemDictionary::find_dynamic_call_site_invoker(KlassHandle, Handle, Symbol*, Symbol*, Handle*, Handle*, Thread*)+0x86b
+V  [libjvm.so+0x75ad51]  LinkResolver::resolve_dynamic_call(CallInfo&, Handle, Symbol*, Symbol*, KlassHandle, Thread*)+0x51
+V  [libjvm.so+0x75f8c6]  LinkResolver::resolve_invokedynamic(CallInfo&, constantPoolHandle, int, Thread*)+0x3c6
+V  [libjvm.so+0x75fad0]  LinkResolver::resolve_invoke(CallInfo&, Handle, constantPoolHandle, int, Bytecodes::Code, Thread*)+0x1a0
+V  [libjvm.so+0x640636]  InterpreterRuntime::resolve_invokedynamic(JavaThread*)+0x226
+j  org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.builder.ResolveState.getModule(Lorg/gradle/api/artifacts/ModuleIdentifier;)Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/builder/ModuleResolveState;+7
+j  org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.builder.ResolveState.getRevision(Lorg/gradle/api/artifacts/component/ComponentIdentifier;Lorg/gradle/api/artifacts/ModuleVersionIdentifier;Lorg/gradle/internal/component/model/ComponentResolveMetadata;)Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/builder/ComponentState;+7
+j  org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.builder.ResolveState.<init>(Lorg/gradle/internal/id/IdGenerator;Lorg/gradle/internal/resolve/result/ComponentResolveResult;Ljava/lang/String;Lorg/gradle/internal/resolve/resolver/DependencyToComponentIdResolver;Lorg/gradle/internal/resolve/resolver/ComponentMetaDataResolver;Lorg/gradle/api/specs/Spec;Lorg/gradle/api/internal/attributes/AttributesSchemaInternal;Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/excludes/ModuleExclusions;Lorg/gradle/api/internal/artifacts/ComponentSelectorConverter;Lorg/gradle/api/internal/attributes/ImmutableAttributesFactory;Lorg/gradle/api/internal/artifacts/ivyservice/dependencysubstitution/DependencySubstitutionApplicator;Lorg/gradle/api/internal/artifacts/ivyservice/ivyresolve/strategy/VersionSelectorScheme;Ljava/util/Comparator;Lorg/gradle/api/internal/artifacts/ivyservice/ivyresolve/strategy/VersionParser;Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/ModuleConflictResolver;ZI)V+197
+j  org.gradle.api.internal.artifacts.ivyservice.resolveengine.graph.builder.DependencyGraphBuilder.resolve(Lorg/gradle/api/internal/artifacts/ResolveContext;Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/DependencyGraphVisitor;)V+118
+j  org.gradle.api.internal.artifacts.ivyservice.resolveengine.DefaultArtifactDependencyResolver.resolve(Lorg/gradle/api/internal/artifacts/ResolveContext;Ljava/util/List;Lorg/gradle/api/internal/artifacts/GlobalDependencyResolutionRules;Lorg/gradle/api/specs/Spec;Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/DependencyGraphVisitor;Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/artifact/DependencyArtifactsVisitor;Lorg/gradle/api/internal/attributes/AttributesSchemaInternal;Lorg/gradle/api/internal/artifacts/type/ArtifactTypeRegistry;)V+100
+j  org.gradle.api.internal.artifacts.ivyservice.DefaultConfigurationResolver.resolveGraph(Lorg/gradle/api/internal/artifacts/configurations/ConfigurationInternal;Lorg/gradle/api/internal/artifacts/ResolverResults;)V+375
+j  org.gradle.api.internal.artifacts.ivyservice.ShortCircuitEmptyConfigurationResolver.resolveGraph(Lorg/gradle/api/internal/artifacts/configurations/ConfigurationInternal;Lorg/gradle/api/internal/artifacts/ResolverResults;)V+30
+j  org.gradle.api.internal.artifacts.ivyservice.ErrorHandlingConfigurationResolver.resolveGraph(Lorg/gradle/api/internal/artifacts/configurations/ConfigurationInternal;Lorg/gradle/api/internal/artifacts/ResolverResults;)V+6
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration$6.run(Lorg/gradle/internal/operations/BuildOperationContext;)V+66
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(Lorg/gradle/internal/operations/RunnableBuildOperation;Lorg/gradle/internal/operations/BuildOperationContext;)V+2
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(Lorg/gradle/internal/operations/BuildOperation;Lorg/gradle/internal/operations/BuildOperationContext;)V+6
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$1.execute(Lorg/gradle/internal/operations/BuildOperationDescriptor;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$DefaultBuildOperationContext;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationExecutionListener;)Lorg/gradle/internal/operations/BuildOperation;+18
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(Lorg/gradle/internal/operations/BuildOperationDescriptor$Builder;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationState;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationExecution;)Lorg/gradle/internal/operations/BuildOperation;+105
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(Lorg/gradle/internal/operations/BuildOperation;Lorg/gradle/internal/operations/BuildOperationWorker;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationState;)V+22
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.run(Lorg/gradle/internal/operations/RunnableBuildOperation;)V+10
+j  org.gradle.internal.operations.DelegatingBuildOperationExecutor.run(Lorg/gradle/internal/operations/RunnableBuildOperation;)V+5
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration.resolveGraphIfRequired(Lorg/gradle/api/internal/artifacts/configurations/ConfigurationInternal$InternalState;)V+65
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration.access$500(Lorg/gradle/api/internal/artifacts/configurations/DefaultConfiguration;Lorg/gradle/api/internal/artifacts/configurations/ConfigurationInternal$InternalState;)V+2
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration$5.run()V+28
+j  org.gradle.api.internal.project.DefaultProjectStateRegistry$SafeExclusiveLockImpl.withLock(Ljava/lang/Runnable;)V+11
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration.resolveExclusively(Lorg/gradle/api/internal/artifacts/configurations/ConfigurationInternal$InternalState;)V+13
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration.resolveToStateOrLater(Lorg/gradle/api/internal/artifacts/configurations/ConfigurationInternal$InternalState;)V+147
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration.access$2400(Lorg/gradle/api/internal/artifacts/configurations/DefaultConfiguration;Lorg/gradle/api/internal/artifacts/configurations/ConfigurationInternal$InternalState;)V+2
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration$ConfigurationFileCollection.getSelectedArtifacts()Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/artifact/SelectedArtifactSet;+14
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration$ConfigurationFileCollection.access$3700(Lorg/gradle/api/internal/artifacts/configurations/DefaultConfiguration$ConfigurationFileCollection;)Lorg/gradle/api/internal/artifacts/ivyservice/resolveengine/artifact/SelectedArtifactSet;+1
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration$ConfigurationArtifactCollection.ensureResolved()V+20
+j  org.gradle.api.internal.artifacts.configurations.DefaultConfiguration$ConfigurationArtifactCollection.getArtifacts()Ljava/util/Set;+1
+j  org.gradle.composite.internal.CompositeBuildClassPathInitializer.execute(Lorg/gradle/api/artifacts/Configuration;)V+15
+j  org.gradle.composite.internal.CompositeBuildClassPathInitializer.execute(Ljava/lang/Object;)V+5
+j  org.gradle.api.internal.initialization.DefaultScriptClassPathResolver.resolveClassPath(Lorg/gradle/api/artifacts/Configuration;)Lorg/gradle/internal/classpath/ClassPath;+39
+j  org.gradle.api.internal.initialization.DefaultScriptHandler.getScriptClassPath()Lorg/gradle/internal/classpath/ClassPath;+8
+j  org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.defineScriptHandlerClassScope(Lorg/gradle/api/internal/initialization/ScriptHandlerInternal;Lorg/gradle/api/internal/initialization/ClassLoaderScope;Ljava/lang/Iterable;)V+1
+j  org.gradle.plugin.use.internal.DefaultPluginRequestApplicator.applyPlugins(Lorg/gradle/plugin/management/internal/PluginRequests;Lorg/gradle/api/internal/initialization/ScriptHandlerInternal;Lorg/gradle/api/internal/plugins/PluginManagerInternal;Lorg/gradle/api/internal/initialization/ClassLoaderScope;)V+20
+j  org.gradle.configuration.DefaultScriptPluginFactory$ScriptPluginImpl.apply(Ljava/lang/Object;)V+479
+j  org.gradle.configuration.BuildOperationScriptPlugin$1$1.run(Lorg/gradle/internal/operations/BuildOperationContext;)V+17
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(Lorg/gradle/internal/operations/RunnableBuildOperation;Lorg/gradle/internal/operations/BuildOperationContext;)V+2
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(Lorg/gradle/internal/operations/BuildOperation;Lorg/gradle/internal/operations/BuildOperationContext;)V+6
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$1.execute(Lorg/gradle/internal/operations/BuildOperationDescriptor;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$DefaultBuildOperationContext;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationExecutionListener;)Lorg/gradle/internal/operations/BuildOperation;+18
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(Lorg/gradle/internal/operations/BuildOperationDescriptor$Builder;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationState;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationExecution;)Lorg/gradle/internal/operations/BuildOperation;+105
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(Lorg/gradle/internal/operations/BuildOperation;Lorg/gradle/internal/operations/BuildOperationWorker;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationState;)V+22
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.run(Lorg/gradle/internal/operations/RunnableBuildOperation;)V+10
+j  org.gradle.internal.operations.DelegatingBuildOperationExecutor.run(Lorg/gradle/internal/operations/RunnableBuildOperation;)V+5
+j  org.gradle.configuration.BuildOperationScriptPlugin$1.execute(Lorg/gradle/configuration/internal/UserCodeApplicationId;)V+16
+j  org.gradle.configuration.BuildOperationScriptPlugin$1.execute(Ljava/lang/Object;)V+5
+j  org.gradle.configuration.internal.DefaultUserCodeApplicationContext.apply(Lorg/gradle/api/Action;)V+19
+j  org.gradle.configuration.BuildOperationScriptPlugin.apply(Ljava/lang/Object;)V+54
+j  org.gradle.configuration.project.BuildScriptProcessor$1.run()V+8
+j  org.gradle.internal.Factories$1.create()Ljava/lang/Object;+4
+j  org.gradle.api.internal.project.DefaultProjectStateRegistry$ProjectStateImpl.withMutableState(Lorg/gradle/internal/Factory;)Ljava/lang/Object;+59
+j  org.gradle.api.internal.project.DefaultProjectStateRegistry$ProjectStateImpl.withMutableState(Ljava/lang/Runnable;)V+5
+j  org.gradle.configuration.project.BuildScriptProcessor.execute(Lorg/gradle/api/internal/project/ProjectInternal;)V+88
+j  org.gradle.configuration.project.BuildScriptProcessor.execute(Ljava/lang/Object;)V+5
+j  org.gradle.configuration.project.ConfigureActionsProjectEvaluator.evaluate(Lorg/gradle/api/internal/project/ProjectInternal;Lorg/gradle/api/internal/project/ProjectStateInternal;)V+33
+j  org.gradle.configuration.project.LifecycleProjectEvaluator$EvaluateProject$1.run()V+94
+j  org.gradle.internal.Factories$1.create()Ljava/lang/Object;+4
+j  org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(Ljava/lang/Iterable;Lorg/gradle/internal/Factory;)Ljava/lang/Object;+26
+j  org.gradle.internal.work.StopShieldingWorkerLeaseService.withLocks(Ljava/lang/Iterable;Lorg/gradle/internal/Factory;)Ljava/lang/Object;+6
+j  org.gradle.api.internal.project.DefaultProjectStateRegistry$ProjectStateImpl.withProjectLock(Lorg/gradle/internal/resources/ResourceLock;Lorg/gradle/internal/Factory;)Ljava/lang/Object;+12
+j  org.gradle.api.internal.project.DefaultProjectStateRegistry$ProjectStateImpl.withMutableState(Lorg/gradle/internal/Factory;)Ljava/lang/Object;+134
+j  org.gradle.api.internal.project.DefaultProjectStateRegistry$ProjectStateImpl.withMutableState(Ljava/lang/Runnable;)V+5
+j  org.gradle.configuration.project.LifecycleProjectEvaluator$EvaluateProject.run(Lorg/gradle/internal/operations/BuildOperationContext;)V+18
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(Lorg/gradle/internal/operations/RunnableBuildOperation;Lorg/gradle/internal/operations/BuildOperationContext;)V+2
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(Lorg/gradle/internal/operations/BuildOperation;Lorg/gradle/internal/operations/BuildOperationContext;)V+6
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$1.execute(Lorg/gradle/internal/operations/BuildOperationDescriptor;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$DefaultBuildOperationContext;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationExecutionListener;)Lorg/gradle/internal/operations/BuildOperation;+18
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(Lorg/gradle/internal/operations/BuildOperationDescriptor$Builder;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationState;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationExecution;)Lorg/gradle/internal/operations/BuildOperation;+105
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(Lorg/gradle/internal/operations/BuildOperation;Lorg/gradle/internal/operations/BuildOperationWorker;Lorg/gradle/internal/operations/DefaultBuildOperationExecutor$BuildOperationState;)V+22
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor.run(Lorg/gradle/internal/operations/RunnableBuildOperation;)V+10
+j  org.gradle.internal.operations.DelegatingBuildOperationExecutor.run(Lorg/gradle/internal/operations/RunnableBuildOperation;)V+5
+j  org.gradle.configuration.project.LifecycleProjectEvaluator.evaluate(Lorg/gradle/api/internal/project/ProjectInternal;Lorg/gradle/api/internal/project/ProjectStateInternal;)V+22
+j  org.gradle.api.internal.project.DefaultProject.evaluate()Lorg/gradle/api/internal/project/DefaultProject;+9
+j  org.gradle.api.internal.project.DefaultProject.evaluate()Lorg/gradle/api/Project;+1
+j  org.gradle.execution.TaskPathProjectEvaluator.configure(Lorg/gradle/api/internal/project/ProjectInternal;)V+21
+j  org.gradle.execution.TaskPathProjectEvaluator.configureHierarchy(Lorg/gradle/api/internal/project/ProjectInternal;)V+2
+j  org.gradle.configuration.DefaultProjectsPreparer.prepareProjects(Lorg/gradle/api/internal/GradleInternal;)V+79
+j  org.gradle.configuration.BuildOperatingFiringProjectsPreparer$ConfigureBuild.run(Lorg/gradle/internal/operations/BuildOperationContext;)V+11
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(Lorg/gradle/internal/operations/RunnableBuildOperation;Lorg/gradle/internal/operations/BuildOperationContext;)V+2
+j  org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(Lorg/gradle/internal/operations/BuildOperation;Lorg/gradle/internal/operations/BuildOperationContext;)V+6
+...<more frames>...
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+
+[error occurred during error reporting (printing Java stack), id 0xb]
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007f1fa0d59000 JavaThread "Cache worker for execution history cache (/home/doomsdayrs/.gradle/caches/6.1-milestone-3/executionHistory)" [_thread_blocked, id=21772, stack(0x00007f1f9699f000,0x00007f1f96aa0000)]
+  0x00007f1fa0d26800 JavaThread "Cache worker for cache directory md-rule (/home/doomsdayrs/.gradle/caches/6.1-milestone-3/md-rule)" [_thread_blocked, id=21771, stack(0x00007f1f96ca0000,0x00007f1f96da1000)]
+  0x00007f1fa0cd1800 JavaThread "Cache worker for cache directory md-supplier (/home/doomsdayrs/.gradle/caches/6.1-milestone-3/md-supplier)" [_thread_blocked, id=21770, stack(0x00007f1f96da1000,0x00007f1f96ea2000)]
+  0x00007f1fa0954800 JavaThread "Cache worker for file hash cache (/home/doomsdayrs/AndroidStudioProjects/shosetsu/.gradle/6.1-milestone-3/fileHashes)" [_thread_blocked, id=21769, stack(0x00007f1f977fc000,0x00007f1f978fd000)]
+  0x00007f1fa015c800 JavaThread "Cache worker for journal cache (/home/doomsdayrs/.gradle/caches/journal-1)" [_thread_blocked, id=21768, stack(0x00007f1f97cfd000,0x00007f1f97dfe000)]
+  0x00007f1fa015b000 JavaThread "File lock request listener" [_thread_in_native, id=21767, stack(0x00007f1f97dfe000,0x00007f1f97eff000)]
+  0x00007f1fa0151800 JavaThread "Cache worker for file hash cache (/home/doomsdayrs/.gradle/caches/6.1-milestone-3/fileHashes)" [_thread_blocked, id=21766, stack(0x00007f1f97eff000,0x00007f1f98000000)]
+  0x00007f1fa0014800 JavaThread "Thread-9" [_thread_blocked, id=21765, stack(0x00007f1ff80ef000,0x00007f1ff81f0000)]
+  0x00007f1fa000a800 JavaThread "Stdin handler" [_thread_blocked, id=21764, stack(0x00007f1ff83f0000,0x00007f1ff84f1000)]
+  0x00007f1fa0009000 JavaThread "Asynchronous log dispatcher for DefaultDaemonConnection: socket connection from /127.0.0.1:37669 to /127.0.0.1:38086" [_thread_blocked, id=21763, stack(0x00007f1ff84f1000,0x00007f1ff85f2000)]
+=>0x00007f1fb4008800 JavaThread "Daemon worker" [_thread_in_vm, id=21760, stack(0x00007f1ff85f2000,0x00007f1ff86f3000)]
+  0x00007f1fb4006800 JavaThread "Cancel handler" [_thread_blocked, id=21759, stack(0x00007f1ff86f3000,0x00007f1ff87f4000)]
+  0x00007f1fb4004000 JavaThread "Handler for socket connection from /127.0.0.1:37669 to /127.0.0.1:38086" [_thread_in_native, id=21758, stack(0x00007f1ff87f4000,0x00007f1ff88f5000)]
+  0x00007f1fbc02c800 JavaThread "Daemon" [_thread_blocked, id=21757, stack(0x00007f1ff88f5000,0x00007f1ff89f6000)]
+  0x00007f202941e000 JavaThread "Daemon periodic checks" [_thread_blocked, id=21756, stack(0x00007f1ff89f6000,0x00007f1ff8af7000)]
+  0x00007f20293fc000 JavaThread "Incoming local TCP Connector on port 37669" [_thread_in_native, id=21755, stack(0x00007f1ff8afe000,0x00007f1ff8bff000)]
+  0x00007f202939d800 JavaThread "Daemon health stats" [_thread_blocked, id=21754, stack(0x00007f1ff8e03000,0x00007f1ff8f04000)]
+  0x00007f20280e9000 JavaThread "Service Thread" daemon [_thread_blocked, id=21752, stack(0x00007f2008bfc000,0x00007f2008cfd000)]
+  0x00007f20280cc000 JavaThread "C1 CompilerThread3" daemon [_thread_in_native, id=21751, stack(0x00007f2008cfe000,0x00007f2008dfe000)]
+  0x00007f20280c9800 JavaThread "C2 CompilerThread2" daemon [_thread_blocked, id=21750, stack(0x00007f2008dff000,0x00007f2008eff000)]
+  0x00007f20280c8000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=21749, stack(0x00007f2008f00000,0x00007f2009000000)]
+  0x00007f20280c5000 JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=21748, stack(0x00007f2018087000,0x00007f2018187000)]
+  0x00007f20280c1000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=21747, stack(0x00007f2018187000,0x00007f2018288000)]
+  0x00007f2028090800 JavaThread "Finalizer" daemon [_thread_blocked, id=21746, stack(0x00007f20187f8000,0x00007f20188f9000)]
+  0x00007f202808e000 JavaThread "Reference Handler" daemon [_thread_blocked, id=21745, stack(0x00007f20188f9000,0x00007f20189fa000)]
+  0x00007f202800b000 JavaThread "main" [_thread_blocked, id=21733, stack(0x00007f202feea000,0x00007f202ffea000)]
+
+Other Threads:
+  0x00007f2028084800 VMThread [stack: 0x00007f20189fb000,0x00007f2018afb000] [id=21744]
+  0x00007f20280eb800 WatcherThread [stack: 0x00007f2008afc000,0x00007f2008bfc000] [id=21753]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+heap address: 0x00000000a0000000, size: 1536 MB, Compressed Oops mode: 32-bit
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x0000000100000000
+
+Heap:
+ PSYoungGen      total 197120K, used 37702K [0x00000000e0000000, 0x00000000f1100000, 0x0000000100000000)
+  eden space 186368K, 14% used [0x00000000e0000000,0x00000000e1a52bd0,0x00000000eb600000)
+  from space 10752K, 99% used [0x00000000f0680000,0x00000000f10fee08,0x00000000f1100000)
+  to   space 10752K, 0% used [0x00000000efc00000,0x00000000efc00000,0x00000000f0680000)
+ ParOldGen       total 114688K, used 15017K [0x00000000a0000000, 0x00000000a7000000, 0x00000000e0000000)
+  object space 114688K, 13% used [0x00000000a0000000,0x00000000a0eaa600,0x00000000a7000000)
+ Metaspace       used 33553K, capacity 34380K, committed 34560K, reserved 1079296K
+  class space    used 4603K, capacity 4833K, committed 4864K, reserved 1048576K
+
+Card table byte_map: [0x00007f202f7ca000,0x00007f202facb000] byte_map_base: 0x00007f202f2ca000
+
+Marking Bits: (ParMarkBitMap*) 0x00007f2030e466e0
+ Begin Bits: [0x00007f2009000000, 0x00007f200a800000)
+ End Bits:   [0x00007f200a800000, 0x00007f200c000000)
+
+Polling page: 0x00007f2031101000
+
+CodeCache: size=245760Kb used=9647Kb max_used=9647Kb free=236112Kb
+ bounds [0x00007f2019000000, 0x00007f2019980000, 0x00007f2028000000]
+ total_blobs=3203 nmethods=2524 adapters=592
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 2.257 Thread 0x00007f20280c8000 2522       4       org.gradle.internal.instantiation.generator.AbstractClassGenerator$DisabledAnnotationValidator::validateMethod (64 bytes)
+Event: 2.257 Thread 0x00007f20280cc000 nmethod 2519 0x00007f201993de90 code [0x00007f201993e0a0, 0x00007f201993ea28]
+Event: 2.257 Thread 0x00007f20280cc000 2525       3       sun.reflect.annotation.AnnotationInvocationHandler::invoke (277 bytes)
+Event: 2.258 Thread 0x00007f20280cc000 nmethod 2525 0x00007f201993bc10 code [0x00007f201993bf00, 0x00007f201993d4f8]
+Event: 2.258 Thread 0x00007f20280cc000 2524       1       com.google.common.collect.ImmutableEntry::getValue (5 bytes)
+Event: 2.258 Thread 0x00007f20280cc000 nmethod 2524 0x00007f2019910190 code [0x00007f20199102e0, 0x00007f20199103f0]
+Event: 2.262 Thread 0x00007f20280c8000 nmethod 2522 0x00007f201993b010 code [0x00007f201993b1a0, 0x00007f201993b678]
+Event: 2.262 Thread 0x00007f20280c8000 2523       4       org.objectweb.asm.Frame::push (109 bytes)
+Event: 2.263 Thread 0x00007f20280c9800 nmethod 2521 0x00007f2019966450 code [0x00007f20199665e0, 0x00007f20199669b8]
+Event: 2.265 Thread 0x00007f20280c8000 nmethod 2523 0x00007f2019966e50 code [0x00007f2019966fc0, 0x00007f20199672d8]
+
+GC Heap History (10 events):
+Event: 0.440 GC heap before
+{Heap before GC invocations=1 (full 0):
+ PSYoungGen      total 75264K, used 64512K [0x00000000e0000000, 0x00000000e5400000, 0x0000000100000000)
+  eden space 64512K, 100% used [0x00000000e0000000,0x00000000e3f00000,0x00000000e3f00000)
+  from space 10752K, 0% used [0x00000000e4980000,0x00000000e4980000,0x00000000e5400000)
+  to   space 10752K, 0% used [0x00000000e3f00000,0x00000000e3f00000,0x00000000e4980000)
+ ParOldGen       total 172032K, used 0K [0x00000000a0000000, 0x00000000aa800000, 0x00000000e0000000)
+  object space 172032K, 0% used [0x00000000a0000000,0x00000000a0000000,0x00000000aa800000)
+ Metaspace       used 7124K, capacity 7338K, committed 7424K, reserved 1056768K
+  class space    used 913K, capacity 981K, committed 1024K, reserved 1048576K
+Event: 0.446 GC heap after
+Heap after GC invocations=1 (full 0):
+ PSYoungGen      total 75264K, used 6242K [0x00000000e0000000, 0x00000000e9300000, 0x0000000100000000)
+  eden space 64512K, 0% used [0x00000000e0000000,0x00000000e0000000,0x00000000e3f00000)
+  from space 10752K, 58% used [0x00000000e3f00000,0x00000000e45188c0,0x00000000e4980000)
+  to   space 10752K, 0% used [0x00000000e8880000,0x00000000e8880000,0x00000000e9300000)
+ ParOldGen       total 172032K, used 16K [0x00000000a0000000, 0x00000000aa800000, 0x00000000e0000000)
+  object space 172032K, 0% used [0x00000000a0000000,0x00000000a0004000,0x00000000aa800000)
+ Metaspace       used 7124K, capacity 7338K, committed 7424K, reserved 1056768K
+  class space    used 913K, capacity 981K, committed 1024K, reserved 1048576K
+}
+Event: 0.876 GC heap before
+{Heap before GC invocations=2 (full 0):
+ PSYoungGen      total 75264K, used 70754K [0x00000000e0000000, 0x00000000e9300000, 0x0000000100000000)
+  eden space 64512K, 100% used [0x00000000e0000000,0x00000000e3f00000,0x00000000e3f00000)
+  from space 10752K, 58% used [0x00000000e3f00000,0x00000000e45188c0,0x00000000e4980000)
+  to   space 10752K, 0% used [0x00000000e8880000,0x00000000e8880000,0x00000000e9300000)
+ ParOldGen       total 172032K, used 16K [0x00000000a0000000, 0x00000000aa800000, 0x00000000e0000000)
+  object space 172032K, 0% used [0x00000000a0000000,0x00000000a0004000,0x00000000aa800000)
+ Metaspace       used 14625K, capacity 14916K, committed 14976K, reserved 1062912K
+  class space    used 2052K, capacity 2172K, committed 2176K, reserved 1048576K
+Event: 0.884 GC heap after
+Heap after GC invocations=2 (full 0):
+ PSYoungGen      total 139776K, used 9928K [0x00000000e0000000, 0x00000000e9300000, 0x0000000100000000)
+  eden space 129024K, 0% used [0x00000000e0000000,0x00000000e0000000,0x00000000e7e00000)
+  from space 10752K, 92% used [0x00000000e8880000,0x00000000e9232180,0x00000000e9300000)
+  to   space 10752K, 0% used [0x00000000e7e00000,0x00000000e7e00000,0x00000000e8880000)
+ ParOldGen       total 172032K, used 24K [0x00000000a0000000, 0x00000000aa800000, 0x00000000e0000000)
+  object space 172032K, 0% used [0x00000000a0000000,0x00000000a0006000,0x00000000aa800000)
+ Metaspace       used 14625K, capacity 14916K, committed 14976K, reserved 1062912K
+  class space    used 2052K, capacity 2172K, committed 2176K, reserved 1048576K
+}
+Event: 1.342 GC heap before
+{Heap before GC invocations=3 (full 0):
+ PSYoungGen      total 139776K, used 88074K [0x00000000e0000000, 0x00000000e9300000, 0x0000000100000000)
+  eden space 129024K, 60% used [0x00000000e0000000,0x00000000e4c50680,0x00000000e7e00000)
+  from space 10752K, 92% used [0x00000000e8880000,0x00000000e9232180,0x00000000e9300000)
+  to   space 10752K, 0% used [0x00000000e7e00000,0x00000000e7e00000,0x00000000e8880000)
+ ParOldGen       total 172032K, used 24K [0x00000000a0000000, 0x00000000aa800000, 0x00000000e0000000)
+  object space 172032K, 0% used [0x00000000a0000000,0x00000000a0006000,0x00000000aa800000)
+ Metaspace       used 20629K, capacity 21186K, committed 21296K, reserved 1067008K
+  class space    used 2997K, capacity 3173K, committed 3200K, reserved 1048576K
+Event: 1.350 GC heap after
+Heap after GC invocations=3 (full 0):
+ PSYoungGen      total 139776K, used 10727K [0x00000000e0000000, 0x00000000f1100000, 0x0000000100000000)
+  eden space 129024K, 0% used [0x00000000e0000000,0x00000000e0000000,0x00000000e7e00000)
+  from space 10752K, 99% used [0x00000000e7e00000,0x00000000e8879cc8,0x00000000e8880000)
+  to   space 10752K, 0% used [0x00000000f0680000,0x00000000f0680000,0x00000000f1100000)
+ ParOldGen       total 172032K, used 2016K [0x00000000a0000000, 0x00000000aa800000, 0x00000000e0000000)
+  object space 172032K, 1% used [0x00000000a0000000,0x00000000a01f8220,0x00000000aa800000)
+ Metaspace       used 20629K, capacity 21186K, committed 21296K, reserved 1067008K
+  class space    used 2997K, capacity 3173K, committed 3200K, reserved 1048576K
+}
+Event: 1.350 GC heap before
+{Heap before GC invocations=4 (full 1):
+ PSYoungGen      total 139776K, used 10727K [0x00000000e0000000, 0x00000000f1100000, 0x0000000100000000)
+  eden space 129024K, 0% used [0x00000000e0000000,0x00000000e0000000,0x00000000e7e00000)
+  from space 10752K, 99% used [0x00000000e7e00000,0x00000000e8879cc8,0x00000000e8880000)
+  to   space 10752K, 0% used [0x00000000f0680000,0x00000000f0680000,0x00000000f1100000)
+ ParOldGen       total 172032K, used 2016K [0x00000000a0000000, 0x00000000aa800000, 0x00000000e0000000)
+  object space 172032K, 1% used [0x00000000a0000000,0x00000000a01f8220,0x00000000aa800000)
+ Metaspace       used 20629K, capacity 21186K, committed 21296K, reserved 1067008K
+  class space    used 2997K, capacity 3173K, committed 3200K, reserved 1048576K
+Event: 1.376 GC heap after
+Heap after GC invocations=4 (full 1):
+ PSYoungGen      total 139776K, used 0K [0x00000000e0000000, 0x00000000f1100000, 0x0000000100000000)
+  eden space 129024K, 0% used [0x00000000e0000000,0x00000000e0000000,0x00000000e7e00000)
+  from space 10752K, 0% used [0x00000000e7e00000,0x00000000e7e00000,0x00000000e8880000)
+  to   space 10752K, 0% used [0x00000000f0680000,0x00000000f0680000,0x00000000f1100000)
+ ParOldGen       total 114688K, used 12285K [0x00000000a0000000, 0x00000000a7000000, 0x00000000e0000000)
+  object space 114688K, 10% used [0x00000000a0000000,0x00000000a0bff6c8,0x00000000a7000000)
+ Metaspace       used 20629K, capacity 21186K, committed 21296K, reserved 1067008K
+  class space    used 2997K, capacity 3173K, committed 3200K, reserved 1048576K
+}
+Event: 2.159 GC heap before
+{Heap before GC invocations=5 (full 1):
+ PSYoungGen      total 139776K, used 129024K [0x00000000e0000000, 0x00000000f1100000, 0x0000000100000000)
+  eden space 129024K, 100% used [0x00000000e0000000,0x00000000e7e00000,0x00000000e7e00000)
+  from space 10752K, 0% used [0x00000000e7e00000,0x00000000e7e00000,0x00000000e8880000)
+  to   space 10752K, 0% used [0x00000000f0680000,0x00000000f0680000,0x00000000f1100000)
+ ParOldGen       total 114688K, used 12285K [0x00000000a0000000, 0x00000000a7000000, 0x00000000e0000000)
+  object space 114688K, 10% used [0x00000000a0000000,0x00000000a0bff6c8,0x00000000a7000000)
+ Metaspace       used 32374K, capacity 33230K, committed 33408K, reserved 1077248K
+  class space    used 4429K, capacity 4664K, committed 4736K, reserved 1048576K
+Event: 2.170 GC heap after
+Heap after GC invocations=5 (full 1):
+ PSYoungGen      total 197120K, used 10747K [0x00000000e0000000, 0x00000000f1100000, 0x0000000100000000)
+  eden space 186368K, 0% used [0x00000000e0000000,0x00000000e0000000,0x00000000eb600000)
+  from space 10752K, 99% used [0x00000000f0680000,0x00000000f10fee08,0x00000000f1100000)
+  to   space 10752K, 0% used [0x00000000efc00000,0x00000000efc00000,0x00000000f0680000)
+ ParOldGen       total 114688K, used 15017K [0x00000000a0000000, 0x00000000a7000000, 0x00000000e0000000)
+  object space 114688K, 13% used [0x00000000a0000000,0x00000000a0eaa600,0x00000000a7000000)
+ Metaspace       used 32374K, capacity 33230K, committed 33408K, reserved 1077248K
+  class space    used 4429K, capacity 4664K, committed 4736K, reserved 1048576K
+}
+
+Deoptimization events (10 events):
+Event: 1.860 Thread 0x00007f1fb4008800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f2019417674 method=java.util.HashMap.hash(Ljava/lang/Object;)I @ 1
+Event: 1.906 Thread 0x00007f1fb4008800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f201980fde0 method=org.gradle.internal.reflect.PropertyAccessorType.isGetGetterName(Ljava/lang/String;)Z @ 14
+Event: 1.921 Thread 0x00007f1fb4008800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f201967d390 method=org.objectweb.asm.ByteVector.putShort(I)Lorg/objectweb/asm/ByteVector; @ 13
+Event: 1.973 Thread 0x00007f1fb4008800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f201968e954 method=sun.misc.URLClassPath.getLoader(I)Lsun/misc/URLClassPath$Loader; @ 94
+Event: 1.975 Thread 0x00007f1fb4008800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007f20196974dc method=sun.misc.URLClassPath.getLoader(I)Lsun/misc/URLClassPath$Loader; @ 239
+Event: 2.047 Thread 0x00007f1fb4008800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f20196a814c method=java.util.WeakHashMap.put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; @ 59
+Event: 2.171 Thread 0x00007f202808e000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f20195a8c58 method=java.lang.ref.Reference.tryHandlePending(Z)Z @ 104
+Event: 2.172 Thread 0x00007f1fb4008800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f201923d338 method=java.net.URI.match(CJJ)Z @ 45
+Event: 2.172 Thread 0x00007f1fb4008800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f201917626c method=java.net.URI.match(CJJ)Z @ 19
+Event: 2.172 Thread 0x00007f1fb4008800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007f2019178bac method=java.net.URI.match(CJJ)Z @ 19
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 2.137 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler_DecoratedBeanInfo> (0x00000000e790a548) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/sys
+Event: 2.137 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandlerBeanInfo> (0x00000000e7965a88) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/systemDiction
+Event: 2.138 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandlerCustomizer> (0x00000000e79c1c00) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/systemDicti
+Event: 2.139 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler_DecoratedCustomizer> (0x00000000e7a4f3a0) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/s
+Event: 2.151 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': groovy/lang/GString$1BeanInfo> (0x00000000e7c33ac8) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/systemDictionary.cpp, line 210]
+Event: 2.151 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': groovy/lang/GStringBeanInfo> (0x00000000e7c55d80) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/systemDictionary.cpp, line 210]
+Event: 2.152 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': groovy/lang/GStringCustomizer> (0x00000000e7c78918) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/systemDictionary.cpp, line 210]
+Event: 2.153 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': groovy/lang/GString$1Customizer> (0x00000000e7ca78c8) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/systemDictionary.cpp, line 210]
+Event: 2.155 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': org/codehaus/groovy/runtime/GStringImplBeanInfo> (0x00000000e7d57c58) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/systemDictionary.cpp, line 210]
+Event: 2.156 Thread 0x00007f1fb4008800 Exception <a 'java/lang/ClassNotFoundException': org/codehaus/groovy/runtime/GStringImplCustomizer> (0x00000000e7d84d40) thrown at [/buildbot/src/googleplex-android/openjdk/out/hotspot/src/share/vm/classfile/systemDictionary.cpp, line 210]
+
+Events (10 events):
+Event: 2.264 loading class org/gradle/api/artifacts/ModuleIdentifier
+Event: 2.264 loading class org/gradle/api/artifacts/ModuleIdentifier done
+Event: 2.264 loading class org/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/builder/ModuleResolveState
+Event: 2.264 loading class org/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/builder/ModuleResolveState done
+Event: 2.265 loading class org/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/conflicts/CandidateModule
+Event: 2.265 loading class org/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/conflicts/CandidateModule done
+Event: 2.265 loading class org/gradle/api/artifacts/ModuleIdentifier
+Event: 2.265 loading class org/gradle/api/artifacts/ModuleIdentifier done
+Event: 2.265 loading class org/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/builder/ResolveState
+Event: 2.265 loading class org/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/builder/ResolveState done
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 103:04 6697883                           /home/doomsdayrs/android-studio/canary/android-studio/jre/bin/java
+00401000-00402000 r--p 00000000 103:04 6697883                           /home/doomsdayrs/android-studio/canary/android-studio/jre/bin/java
+00402000-00403000 rw-p 00001000 103:04 6697883                           /home/doomsdayrs/android-studio/canary/android-studio/jre/bin/java
+00c52000-00c73000 rw-p 00000000 00:00 0                                  [heap]
+a0000000-a7000000 rw-p 00000000 00:00 0 
+a7000000-e0000000 ---p 00000000 00:00 0 
+e0000000-f1100000 rw-p 00000000 00:00 0 
+f1100000-100000000 ---p 00000000 00:00 0 
+100000000-1004c0000 rw-p 00000000 00:00 0 
+1004c0000-140000000 ---p 00000000 00:00 0 
+7f1f78000000-7f1f78021000 rw-p 00000000 00:00 0 
+7f1f78021000-7f1f7c000000 ---p 00000000 00:00 0 
+7f1f7c000000-7f1f7c021000 rw-p 00000000 00:00 0 
+7f1f7c021000-7f1f80000000 ---p 00000000 00:00 0 
+7f1f80000000-7f1f80021000 rw-p 00000000 00:00 0 
+7f1f80021000-7f1f84000000 ---p 00000000 00:00 0 
+7f1f84000000-7f1f84021000 rw-p 00000000 00:00 0 
+7f1f84021000-7f1f88000000 ---p 00000000 00:00 0 
+7f1f88000000-7f1f88021000 rw-p 00000000 00:00 0 
+7f1f88021000-7f1f8c000000 ---p 00000000 00:00 0 
+7f1f8c000000-7f1f8c021000 rw-p 00000000 00:00 0 
+7f1f8c021000-7f1f90000000 ---p 00000000 00:00 0 
+7f1f90000000-7f1f90021000 rw-p 00000000 00:00 0 
+7f1f90021000-7f1f94000000 ---p 00000000 00:00 0 
+7f1f95f9f000-7f1f9609f000 rw-p 00000000 00:00 0 
+7f1f9609f000-7f1f9619f000 ---p 00000000 00:00 0 
+7f1f9619f000-7f1f9639f000 rw-p 00000000 00:00 0 
+7f1f9639f000-7f1f9659f000 rw-p 00000000 00:00 0 
+7f1f9659f000-7f1f9679f000 rw-p 00000000 00:00 0 
+7f1f9679f000-7f1f9699f000 rw-p 00000000 00:00 0 
+7f1f9699f000-7f1f969a2000 ---p 00000000 00:00 0 
+7f1f969a2000-7f1f96ca0000 rw-p 00000000 00:00 0 
+7f1f96ca0000-7f1f96ca3000 ---p 00000000 00:00 0 
+7f1f96ca3000-7f1f96da1000 rw-p 00000000 00:00 0 
+7f1f96da1000-7f1f96da4000 ---p 00000000 00:00 0 
+7f1f96da4000-7f1f96ea2000 rw-p 00000000 00:00 0 
+7f1f96ea2000-7f1f971dc000 r--s 04507000 103:04 5651599                   /home/doomsdayrs/.gradle/caches/jars-3/b7d4d81f0a8bb1e354ee782d6986dc07/android.jar
+7f1f971dc000-7f1f97493000 r--s 01c2b000 103:04 4337985                   /home/doomsdayrs/.gradle/caches/jars-3/e22071f0f647bfca187dcad0e9b116ad/gradle-api-impldep-5.2.1-sp1.jar
+7f1f97493000-7f1f975fc000 r--s 00c5e000 103:04 4337982                   /home/doomsdayrs/.gradle/caches/jars-3/e7cf29ee4e9099e5a486424dcaa09cdf/gradle-api-5.2.1-sp1.jar
+7f1f975fc000-7f1f977fc000 rw-p 00000000 00:00 0 
+7f1f977fc000-7f1f977ff000 ---p 00000000 00:00 0 
+7f1f977ff000-7f1f97afd000 rw-p 00000000 00:00 0 
+7f1f97afd000-7f1f97cfd000 rw-p 00000000 00:00 0 
+7f1f97cfd000-7f1f97d00000 ---p 00000000 00:00 0 
+7f1f97d00000-7f1f97dfe000 rw-p 00000000 00:00 0 
+7f1f97dfe000-7f1f97e01000 ---p 00000000 00:00 0 
+7f1f97e01000-7f1f97eff000 rw-p 00000000 00:00 0 
+7f1f97eff000-7f1f97f02000 ---p 00000000 00:00 0 
+7f1f97f02000-7f1f98000000 rw-p 00000000 00:00 0 
+7f1f98000000-7f1f98021000 rw-p 00000000 00:00 0 
+7f1f98021000-7f1f9c000000 ---p 00000000 00:00 0 
+7f1f9c000000-7f1f9c021000 rw-p 00000000 00:00 0 
+7f1f9c021000-7f1fa0000000 ---p 00000000 00:00 0 
+7f1fa0000000-7f1fa14ff000 rw-p 00000000 00:00 0 
+7f1fa14ff000-7f1fa4000000 ---p 00000000 00:00 0 
+7f1fa4000000-7f1fa4021000 rw-p 00000000 00:00 0 
+7f1fa4021000-7f1fa8000000 ---p 00000000 00:00 0 
+7f1fa8000000-7f1fa8021000 rw-p 00000000 00:00 0 
+7f1fa8021000-7f1fac000000 ---p 00000000 00:00 0 
+7f1fac000000-7f1fac021000 rw-p 00000000 00:00 0 
+7f1fac021000-7f1fb0000000 ---p 00000000 00:00 0 
+7f1fb0000000-7f1fb0021000 rw-p 00000000 00:00 0 
+7f1fb0021000-7f1fb4000000 ---p 00000000 00:00 0 
+7f1fb4000000-7f1fb4021000 rw-p 00000000 00:00 0 
+7f1fb4021000-7f1fb8000000 ---p 00000000 00:00 0 
+7f1fb8000000-7f1fb8021000 rw-p 00000000 00:00 0 
+7f1fb8021000-7f1fbc000000 ---p 00000000 00:00 0 
+7f1fbc000000-7f1fbc06a000 rw-p 00000000 00:00 0 
+7f1fbc06a000-7f1fc0000000 ---p 00000000 00:00 0 
+7f1fc0000000-7f1fc0021000 rw-p 00000000 00:00 0 
+7f1fc0021000-7f1fc4000000 ---p 00000000 00:00 0 
+7f1fc4000000-7f1fc4021000 rw-p 00000000 00:00 0 
+7f1fc4021000-7f1fc8000000 ---p 00000000 00:00 0 
+7f1fc8000000-7f1fc8fc5000 rw-p 00000000 00:00 0 
+7f1fc8fc5000-7f1fcc000000 ---p 00000000 00:00 0 
+7f1fcc000000-7f1fcc6ae000 rw-p 00000000 00:00 0 
+7f1fcc6ae000-7f1fd0000000 ---p 00000000 00:00 0 
+7f1fd0000000-7f1fd0e5f000 rw-p 00000000 00:00 0 
+7f1fd0e5f000-7f1fd4000000 ---p 00000000 00:00 0 
+7f1fd4000000-7f1fd4dd0000 rw-p 00000000 00:00 0 
+7f1fd4dd0000-7f1fd8000000 ---p 00000000 00:00 0 
+7f1fd8000000-7f1fd8021000 rw-p 00000000 00:00 0 
+7f1fd8021000-7f1fdc000000 ---p 00000000 00:00 0 
+7f1fdc000000-7f1fdc021000 rw-p 00000000 00:00 0 
+7f1fdc021000-7f1fe0000000 ---p 00000000 00:00 0 
+7f1fe0000000-7f1fe0021000 rw-p 00000000 00:00 0 
+7f1fe0021000-7f1fe4000000 ---p 00000000 00:00 0 
+7f1fe4000000-7f1fe4021000 rw-p 00000000 00:00 0 
+7f1fe4021000-7f1fe8000000 ---p 00000000 00:00 0 
+7f1fe8000000-7f1fe8021000 rw-p 00000000 00:00 0 
+7f1fe8021000-7f1fec000000 ---p 00000000 00:00 0 
+7f1fec000000-7f1fec021000 rw-p 00000000 00:00 0 
+7f1fec021000-7f1ff0000000 ---p 00000000 00:00 0 
+7f1ff0000000-7f1ff0021000 rw-p 00000000 00:00 0 
+7f1ff0021000-7f1ff4000000 ---p 00000000 00:00 0 
+7f1ff4000000-7f1ff4021000 rw-p 00000000 00:00 0 
+7f1ff4021000-7f1ff8000000 ---p 00000000 00:00 0 
+7f1ff8019000-7f1ff804b000 r--s 0026d000 103:04 5651614                   /home/doomsdayrs/.gradle/caches/jars-3/009a8bde4a19409138958d32735850a8/guava-27.1-jre.jar
+7f1ff804b000-7f1ff8074000 r--s 02932000 103:04 5651606                   /home/doomsdayrs/.gradle/caches/jars-3/af88c260d9f1443857ddc5fbc09c736b/sdk-tools.jar
+7f1ff8074000-7f1ff8075000 r--s 00002000 103:04 4598532                   /home/doomsdayrs/.gradle/caches/jars-3/27440cd33d17fe3d8cf057fe01ef93dc/gradle-toolingLoaderRt.jar
+7f1ff8075000-7f1ff80ef000 r--s 01104000 103:04 6697877                   /home/doomsdayrs/android-studio/canary/android-studio/jre/lib/tools.jar
+7f1ff80ef000-7f1ff80f2000 ---p 00000000 00:00 0 
+7f1ff80f2000-7f1ff83f0000 rw-p 00000000 00:00 0 
+7f1ff83f0000-7f1ff83f3000 ---p 00000000 00:00 0 
+7f1ff83f3000-7f1ff84f1000 rw-p 00000000 00:00 0 
+7f1ff84f1000-7f1ff84f4000 ---p 00000000 00:00 0 
+7f1ff84f4000-7f1ff85f2000 rw-p 00000000 00:00 0 
+7f1ff85f2000-7f1ff85f5000 ---p 00000000 00:00 0 
+7f1ff85f5000-7f1ff86f3000 rw-p 00000000 00:00 0 
+7f1ff86f3000-7f1ff86f6000 ---p 00000000 00:00 0 
+7f1ff86f6000-7f1ff87f4000 rw-p 00000000 00:00 0 
+7f1ff87f4000-7f1ff87f7000 ---p 00000000 00:00 0 
+7f1ff87f7000-7f1ff88f5000 rw-p 00000000 00:00 0 
+7f1ff88f5000-7f1ff88f8000 ---p 00000000 00:00 0 
+7f1ff88f8000-7f1ff89f6000 rw-p 00000000 00:00 0 
+7f1ff89f6000-7f1ff89f9000 ---p 00000000 00:00 0 
+7f1ff89f9000-7f1ff8af7000 rw-p 00000000 00:00 0 
+7f1ff8af7000-7f1ff8afe000 r--s 00000000 103:03 1714251                   /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+7f1ff8afe000-7f1ff8b01000 ---p 00000000 00:00 0 
+7f1ff8b01000-7f1ff8bff000 rw-p 00000000 00:00 0 
+7f1ff8bff000-7f1ff8c03000 r--s 000a1000 103:04 6698028                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/jsse.jar
+7f1ff8c03000-7f1ff8e03000 rw-p 00000000 00:00 0 
+7f1ff8e03000-7f1ff8e06000 ---p 00000000 00:00 0 
+7f1ff8e06000-7f1ff8f04000 rw-p 00000000 00:00 0 
+7f1ff8f04000-7f1ff8f0c000 r-xp 00000000 103:04 6697973                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libmanagement.so
+7f1ff8f0c000-7f1ff8f0d000 r--p 00007000 103:04 6697973                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libmanagement.so
+7f1ff8f0d000-7f1ff8f0e000 rw-p 00008000 103:04 6697973                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libmanagement.so
+7f1ff8f0e000-7f1ff8f10000 r--s 00010000 103:04 8953791                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-tooling-api-builders-6.1.jar
+7f1ff8f10000-7f1ff8f1e000 r--s 000f4000 103:04 8953794                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-instant-execution-6.1.jar
+7f1ff8f1e000-7f1ff8f1f000 r--s 00005000 103:04 8953812                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-build-profile-6.1.jar
+7f1ff8f1f000-7f1ff8f21000 r--s 00003000 103:04 8953769                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-tooling-native-6.1.jar
+7f1ff8f21000-7f1ff8f25000 r--s 00017000 103:04 8953771                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-testing-native-6.1.jar
+7f1ff8f25000-7f1ff8f28000 r--s 00011000 103:04 8953885                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/junit-platform-commons-1.3.1.jar
+7f1ff8f28000-7f1ff8f29000 r--s 00001000 103:04 8953887                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/opentest4j-1.1.1.jar
+7f1ff8f29000-7f1ff8f2d000 r--s 0001d000 103:04 8953884                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/junit-platform-engine-1.3.1.jar
+7f1ff8f2d000-7f1ff8f2e000 r--s 00000000 103:04 8953886                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/apiguardian-api-1.0.0.jar
+7f1ff8f2e000-7f1ff8f31000 r--s 00015000 103:04 8953842                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/junit-platform-launcher-1.3.1.jar
+7f1ff8f31000-7f1ff8f32000 r--s 00003000 103:04 8953790                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-testing-junit-platform-6.1.jar
+7f1ff8f32000-7f1ff8f35000 r--s 0000f000 103:04 8953768                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-signing-6.1.jar
+7f1ff8f35000-7f1ff8f37000 r--s 0000a000 103:04 8953778                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-scala-6.1.jar
+7f1ff8f37000-7f1ff8f38000 r--s 00004000 103:04 8953811                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-resources-sftp-6.1.jar
+7f1ff8f38000-7f1ff8f43000 r--s 00074000 103:04 8953844                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/aws-java-sdk-kms-1.11.633.jar
+7f1ff8f43000-7f1ff8f45000 r--s 00005000 103:04 8953852                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jmespath-java-1.11.633.jar
+7f1ff8f45000-7f1ff8f5c000 r--s 000e1000 103:04 8953843                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/aws-java-sdk-s3-1.11.633.jar
+7f1ff8f5c000-7f1ff8f66000 r--s 00081000 103:04 8953883                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/ion-java-1.0.2.jar
+7f1ff8f66000-7f1ff8f7d000 r--s 000d5000 103:04 8953845                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/aws-java-sdk-core-1.11.633.jar
+7f1ff8f7d000-7f1ff8f7f000 r--s 00004000 103:04 8953807                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-resources-s3-6.1.jar
+7f1ff8f7f000-7f1ff8f8f000 r--s 0008d000 103:04 8953856                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/joda-time-2.10.4.jar
+7f1ff8f8f000-7f1ff8fa2000 r--s 00137000 103:04 8953853                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jackson-databind-2.9.10.jar
+7f1ff8fa2000-7f1ff8fa5000 r--s 0000e000 103:04 8953855                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jackson-annotations-2.9.10.jar
+7f1ff8fa5000-7f1ff8fa9000 r--s 0004c000 103:04 8953854                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jackson-core-2.9.10.jar
+7f1ff8fa9000-7f1ff8fb3000 r--s 00056000 103:04 8953836                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/google-http-client-1.25.0.jar
+7f1ff8fb3000-7f1ff8fb6000 r--s 0000d000 103:04 8953834                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/google-oauth-client-1.25.0.jar
+7f1ff8fb6000-7f1ff8fbb000 r--s 0002d000 103:04 8953818                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/google-api-client-1.25.0.jar
+7f1ff8fbb000-7f1ff8fbf000 r--s 0001d000 103:04 8953817                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/google-api-services-storage-v1-rev136-1.25.0.jar
+7f1ff8fbf000-7f1ff8fc1000 r--s 00003000 103:04 8953808                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-resources-gcs-6.1.jar
+7f1ff8fc1000-7f1ff8fc7000 r--s 00031000 103:04 8953780                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-platform-play-6.1.jar
+7f1ff8fc7000-7f1ff8fd9000 r--s 00078000 103:04 8953797                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-platform-native-6.1.jar
+7f1ff8fd9000-7f1ff8fdc000 r--s 0000d000 103:04 8953789                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-language-scala-6.1.jar
+7f1ff8fdc000-7f1ff8fe7000 r--s 00054000 103:04 8953772                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-language-native-6.1.jar
+7f1ff8fe7000-7f1ff8fee000 r--s 00035000 103:04 8953831                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/simple-4.1.21.jar
+7f1ff8fee000-7f1ff8ffb000 r--s 00125000 103:04 8953829                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/rhino-1.7.10.jar
+7f1ff8ffb000-7f1ff8fff000 r--s 00012000 103:04 8953781                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-javascript-6.1.jar
+7f1ff8fff000-7f1ffc000000 rw-p 00000000 00:00 0 
+7f1ffc000000-7f1ffc021000 rw-p 00000000 00:00 0 
+7f1ffc021000-7f2000000000 ---p 00000000 00:00 0 
+7f2000000000-7f2000021000 rw-p 00000000 00:00 0 
+7f2000021000-7f2004000000 ---p 00000000 00:00 0 
+7f2004000000-7f2004021000 rw-p 00000000 00:00 0 
+7f2004021000-7f2008000000 ---p 00000000 00:00 0 
+7f2008000000-7f2008001000 r--s 00001000 103:04 8953835                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/google-http-client-jackson2-1.25.0.jar
+7f2008001000-7f2008004000 r--s 00011000 103:04 8953783                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-jacoco-6.1.jar
+7f2008004000-7f2008006000 r--s 00002000 103:04 8953776                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-ide-play-6.1.jar
+7f2008006000-7f2008008000 r--s 00011000 103:04 8953839                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/dd-plist-1.21.jar
+7f2008008000-7f200800f000 r--s 00035000 103:04 8953770                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-ide-native-6.1.jar
+7f200800f000-7f2008019000 r--s 00063000 103:04 8953777                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-ide-6.1.jar
+7f2008019000-7f200801b000 r--s 00007000 103:04 8953779                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-ear-6.1.jar
+7f200801b000-7f200801f000 r--s 0001b000 103:04 8953767                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-code-quality-6.1.jar
+7f200801f000-7f2008021000 r--s 0000b000 103:04 8953833                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-plugin-api-3.0.4.jar
+7f2008021000-7f2008027000 r--s 0003f000 103:04 8953821                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-compat-3.0.4.jar
+7f2008027000-7f200802f000 r--s 0003b000 103:04 8953784                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-build-init-6.1.jar
+7f200802f000-7f2008030000 r--s 00003000 103:04 8953809                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-build-cache-http-6.1.jar
+7f2008030000-7f2008032000 r--s 00009000 103:04 8953766                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-antlr-6.1.jar
+7f2008032000-7f2008035000 r--s 0001f000 103:04 8953785                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-kotlin-dsl-tooling-builders-6.1.jar
+7f2008035000-7f2008039000 r--s 00014000 103:04 8953782                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-ivy-6.1.jar
+7f2008039000-7f200803b000 r--s 0000b000 103:04 8953801                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-publish-6.1.jar
+7f200803b000-7f200803e000 r--s 0000c000 103:04 8953824                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/pmaven-groovy-0.8-20100325.jar
+7f200803e000-7f200803f000 r--s 00004000 103:04 8953823                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/pmaven-common-0.8-20100325.jar
+7f200803f000-7f2008043000 r--s 00021000 103:04 8953882                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/xbean-reflect-3.7.jar
+7f2008043000-7f200804a000 r--s 00032000 103:04 8953826                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/plexus-container-default-1.7.1.jar
+7f200804a000-7f200804b000 r--s 00008000 103:04 8953816                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/wagon-http-shared-3.0.0.jar
+7f200804b000-7f200804c000 r--s 00002000 103:04 8953815                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/wagon-http-3.0.0.jar
+7f200804c000-7f200804d000 r--s 00002000 103:04 8953825                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/wagon-file-3.0.0.jar
+7f200804d000-7f2008050000 r--s 0000a000 103:04 8953877                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/plexus-classworlds-2.5.1.jar
+7f2008050000-7f2008052000 r--s 0000c000 103:04 8953880                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/wagon-provider-api-3.0.0.jar
+7f2008052000-7f2008054000 r--s 00006000 103:04 8953827                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/aether-connector-wagon-1.13.1.jar
+7f2008054000-7f200805a000 r--s 00032000 103:04 8953775                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-maven-6.1.jar
+7f200805a000-7f200805c000 r--s 0000d000 103:04 8953774                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-plugin-development-6.1.jar
+7f200805c000-7f2008062000 r--s 0003d000 103:04 8953838                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/snakeyaml-1.17.jar
+7f2008062000-7f2008064000 r--s 0000f000 103:04 8953867                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jcommander-1.72.jar
+7f2008064000-7f200806d000 r--s 00089000 103:04 8953837                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/testng-6.3.1.jar
+7f200806d000-7f200806f000 r--s 00009000 103:04 8953865                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/hamcrest-core-1.3.jar
+7f200806f000-7f2008077000 r--s 00045000 103:04 8953840                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/junit-4.12.jar
+7f2008077000-7f200807c000 r--s 0005a000 103:04 8953841                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/bsh-2.0b6.jar
+7f200807c000-7f2008080000 r--s 0001c000 103:04 8953792                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-testing-jvm-6.1.jar
+7f2008080000-7f2008088000 r--s 00034000 103:04 8953799                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-testing-base-6.1.jar
+7f2008088000-7f200808b000 r--s 0000e000 103:04 8953788                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-language-groovy-6.1.jar
+7f200808b000-7f2008094000 r--s 00044000 103:04 8953793                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-language-java-6.1.jar
+7f2008094000-7f2008096000 r--s 00005000 103:04 8953795                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-language-jvm-6.1.jar
+7f2008096000-7f200809d000 r--s 00040000 103:04 8953798                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-diagnostics-6.1.jar
+7f200809d000-7f20080a1000 r--s 0001b000 103:04 8953796                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-platform-jvm-6.1.jar
+7f20080a1000-7f20080a8000 r--s 00029000 103:04 8953802                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-platform-base-6.1.jar
+7f20080a8000-7f20080aa000 r--s 00006000 103:04 8953832                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jatl-0.2.3.jar
+7f20080aa000-7f20080ac000 r--s 00010000 103:04 8953800                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-reporting-6.1.jar
+7f20080ac000-7f20080b2000 r--s 00043000 103:04 8953786                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-plugins-6.1.jar
+7f20080b2000-7f20080b7000 r--s 0002c000 103:04 8953773                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-kotlin-dsl-provider-plugins-6.1.jar
+7f20080b7000-7f20080b8000 r--s 00000000 103:04 8953677                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-installation-beacon-6.1.jar
+7f20080b8000-7f20080bb000 r--s 0000d000 103:04 8953805                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-composite-builds-6.1.jar
+7f20080bb000-7f20080d4000 r--s 0013a000 103:04 8953849                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/xercesImpl-2.12.0.jar
+7f20080d4000-7f20080d6000 r--s 0001d000 103:04 8953848                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/nekohtml-1.9.22.jar
+7f20080d6000-7f20080dc000 r--s 0005b000 103:04 8953847                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jcifs-1.3.17.jar
+7f20080dc000-7f20080df000 r--s 0000e000 103:04 8953810                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-resources-http-6.1.jar
+7f20080df000-7f20080e3000 r--s 00041000 103:04 8953850                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jsch-0.1.55.jar
+7f20080e3000-7f20080f7000 r--s 000c0000 103:04 8953857                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/bcpkix-jdk15on-1.61.jar
+7f20080f7000-7f20080ff000 r--s 00048000 103:04 8953828                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/bcpg-jdk15on-1.63.jar
+7f20080ff000-7f2008101000 r--s 00010000 103:04 8953868                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/jzlib-1.1.3.jar
+7f2008101000-7f2008126000 r--s 00281000 103:04 8953814                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/org.eclipse.jgit-5.5.0.201909110433-r.jar
+7f2008126000-7f2008129000 r--s 0000c000 103:04 8953803                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-version-control-6.1.jar
+7f2008129000-7f200812c000 r--s 0000c000 103:04 8953806                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-plugin-use-6.1.jar
+7f200812c000-7f200812d000 r--s 00000000 103:04 8953672                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-runtime-api-info-6.1.jar
+7f200812d000-7f200812f000 r--s 00006000 103:04 8953872                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-repository-metadata-3.0.4.jar
+7f200812f000-7f2008131000 r--s 0000c000 103:04 8953860                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-aether-provider-3.0.4.jar
+7f2008131000-7f2008132000 r--s 00003000 103:04 8953863                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/aether-spi-1.13.1.jar
+7f2008132000-7f2008135000 r--s 0001d000 103:04 8953861                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/aether-impl-1.13.1.jar
+7f2008135000-7f2008139000 r--s 0001c000 103:04 8953862                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/aether-util-1.13.1.jar
+7f2008139000-7f200813c000 r--s 00013000 103:04 8953864                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/aether-api-1.13.1.jar
+7f200813c000-7f200813e000 r--s 0000b000 103:04 8953869                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-artifact-3.0.4.jar
+7f200813e000-7f2008142000 r--s 00021000 103:04 8953870                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-model-builder-3.0.4.jar
+7f2008142000-7f2008144000 r--s 00026000 103:04 8953871                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-model-3.0.4.jar
+7f2008144000-7f2008146000 r--s 0000a000 103:04 8953874                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-settings-3.0.4.jar
+7f2008146000-7f2008148000 r--s 00002000 103:04 8953876                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/plexus-cipher-1.7.jar
+7f2008148000-7f2008149000 r--s 00006000 103:04 8953875                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/plexus-sec-dispatcher-1.3.jar
+7f2008149000-7f200814b000 r--s 00000000 103:04 8953878                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/plexus-component-annotations-1.5.5.jar
+7f200814b000-7f200814f000 r--s 0003c000 103:04 8953881                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/plexus-utils-3.1.0.jar
+7f200814f000-7f200815b000 r--s 0007d000 103:04 8953822                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-core-3.0.4.jar
+7f200815b000-7f2008170000 r--s 00116000 103:04 8953820                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/ivy-2.3.0.jar
+7f2008170000-7f20081d1000 r--s 0042a000 103:04 8953858                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/bcprov-jdk15on-1.63.jar
+7f20081d1000-7f2008208000 r--s 001f1000 103:04 8953804                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-dependency-management-6.1.jar
+7f2008208000-7f200820b000 r--p 00000000 103:03 1181026                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f200820b000-7f200821c000 r-xp 00003000 103:03 1181026                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f200821c000-7f2008220000 r--p 00014000 103:03 1181026                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f2008220000-7f2008221000 r--p 00017000 103:03 1181026                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f2008221000-7f2008222000 rw-p 00018000 103:03 1181026                   /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+7f2008222000-7f20082b8000 r--p 00000000 103:03 1180971                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28
+7f20082b8000-7f20083b5000 r-xp 00096000 103:03 1180971                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28
+7f20083b5000-7f20083ff000 r--p 00193000 103:03 1180971                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28
+7f20083ff000-7f200840a000 r--p 001dc000 103:03 1180971                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28
+7f200840a000-7f200840d000 rw-p 001e7000 103:03 1180971                   /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28
+7f200840d000-7f2008410000 rw-p 00000000 00:00 0 
+7f2008410000-7f2008412000 r--s 0000d000 103:04 8953879                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/plexus-interpolation-1.14.jar
+7f2008412000-7f2008415000 r--s 00008000 103:04 8953873                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/maven-settings-builder-3.0.4.jar
+7f2008415000-7f200841a000 r--s 00036000 103:04 8953830                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gson-2.8.5.jar
+7f200841a000-7f2008421000 r--s 0004e000 103:04 8953859                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/commons-codec-1.13.jar
+7f2008421000-7f2008429000 r--s 00049000 103:04 8953866                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/httpcore-4.4.12.jar
+7f2008429000-7f2008436000 r--s 000b1000 103:04 8953846                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/httpclient-4.5.10.jar
+7f2008436000-7f2008437000 r--s 00013000 103:04 8953819                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/asm-util-7.1.jar
+7f2008437000-7f200843b000 r--s 0001e000 103:04 8953813                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/plugins/gradle-workers-6.1.jar
+7f200843b000-7f2008441000 r-xp 00000000 103:04 4340914                   /home/doomsdayrs/.gradle/native/31/linux-amd64/libnative-platform.so
+7f2008441000-7f2008640000 ---p 00006000 103:04 4340914                   /home/doomsdayrs/.gradle/native/31/linux-amd64/libnative-platform.so
+7f2008640000-7f2008641000 rw-p 00005000 103:04 4340914                   /home/doomsdayrs/.gradle/native/31/linux-amd64/libnative-platform.so
+7f2008641000-7f2008651000 r-xp 00000000 103:04 6697997                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libnio.so
+7f2008651000-7f2008652000 ---p 00010000 103:04 6697997                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libnio.so
+7f2008652000-7f2008653000 r--p 00010000 103:04 6697997                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libnio.so
+7f2008653000-7f2008654000 rw-p 00011000 103:04 6697997                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libnio.so
+7f2008654000-7f200866b000 r-xp 00000000 103:04 6697976                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libnet.so
+7f200866b000-7f200866c000 r--p 00016000 103:04 6697976                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libnet.so
+7f200866c000-7f200866d000 rw-p 00017000 103:04 6697976                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libnet.so
+7f200866d000-7f2008670000 r--s 00008000 103:04 8953674                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-build-events-6.1.jar
+7f2008670000-7f200867b000 r--s 00081000 103:04 8953735                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/trove4j-1.0.20181211.jar
+7f200867b000-7f2008692000 r--s 00109000 103:04 8953744                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-daemon-embeddable-1.3.61.jar
+7f2008692000-7f2008694000 r--s 00009000 103:04 8953743                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-script-runtime-1.3.61.jar
+7f2008694000-7f20086ce000 r--s 00283000 103:04 8953737                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-reflect-1.3.61.jar
+7f20086ce000-7f2008916000 r--s 022ac000 103:04 8953702                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-compiler-embeddable-1.3.61-patched-for-gradle-6.1.jar
+7f2008916000-7f2008917000 r--s 00000000 103:04 8953701                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-kotlin-dsl-tooling-models-6.1.jar
+7f2008917000-7f2008918000 r--s 00007000 103:04 8953676                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-wrapper-6.1.jar
+7f2008918000-7f2008928000 r--s 0004e000 103:04 8953675                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-tooling-api-6.1.jar
+7f2008928000-7f2008938000 r--s 0026b000 103:04 8953727                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlinx-metadata-jvm-0.1.0.jar
+7f2008938000-7f2008939000 r--s 00002000 103:04 8953726                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-sam-with-receiver-compiler-plugin-1.3.61.jar
+7f2008939000-7f2008940000 r--s 00042000 103:04 8953725                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-scripting-compiler-impl-embeddable-1.3.61.jar
+7f2008940000-7f2008947000 r--s 00040000 103:04 8953724                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-scripting-compiler-embeddable-1.3.61.jar
+7f2008947000-7f200894a000 r--s 00019000 103:04 8953723                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-scripting-jvm-host-embeddable-1.3.61.jar
+7f200894a000-7f200894d000 r--s 00027000 103:04 8953722                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-scripting-jvm-1.3.61.jar
+7f200894d000-7f2008952000 r--s 00026000 103:04 8953721                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-scripting-common-1.3.61.jar
+7f2008952000-7f2008953000 r--s 00000000 103:04 8953738                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-stdlib-jdk7-1.3.61.jar
+7f2008953000-7f2008954000 r--s 00003000 103:04 8953719                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-stdlib-jdk8-1.3.61.jar
+7f2008954000-7f2008971000 r--s 00175000 103:04 8953673                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-kotlin-dsl-6.1.jar
+7f2008971000-7f2008973000 r--s 00005000 103:04 8953688                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-worker-processes-6.1.jar
+7f2008973000-7f2008979000 r--s 0002d000 103:04 8953682                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-execution-6.1.jar
+7f2008979000-7f200897b000 r--s 00007000 103:04 8953681                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-model-groovy-6.1.jar
+7f200897b000-7f200897d000 r--s 00000000 103:04 8953690                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-jvm-services-6.1.jar
+7f200897d000-7f200897f000 r--s 00006000 103:04 8953684                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-build-cache-packaging-6.1.jar
+7f200897f000-7f2008983000 r--s 0000e000 103:04 8953685                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-build-cache-6.1.jar
+7f2008983000-7f2008985000 r--s 00005000 103:04 8953705                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-docs-6.1.jar
+7f2008985000-7f200898e000 r--s 0002d000 103:04 8953736                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/xml-apis-1.4.01.jar
+7f200898e000-7f200899a000 r--s 0008b000 103:04 8953728                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/commons-compress-1.19.jar
+7f200899a000-7f200899c000 r--s 00007000 103:04 8953715                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/asm-analysis-7.1.jar
+7f200899c000-7f200899e000 r--s 0000b000 103:04 8953716                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/asm-tree-7.1.jar
+7f200899e000-7f20089a0000 r--s 00010000 103:04 8953714                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/asm-commons-7.1.jar
+7f20089a0000-7f20089a5000 r--s 0001a000 103:04 8953699                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-snapshots-6.1.jar
+7f20089a5000-7f20089a7000 r--s 00003000 103:04 8953740                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/annotations-13.0.jar
+7f20089a7000-7f20089af000 r--s 00022000 103:04 8953746                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-stdlib-common-1.3.61.jar
+7f20089af000-7f20089c3000 r--s 00131000 103:04 8953739                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kotlin-stdlib-1.3.61.jar
+7f20089c3000-7f20089db000 r--s 000dd000 103:04 8953683                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-model-core-6.1.jar
+7f20089db000-7f20089e0000 r--s 00016000 103:04 8953692                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-resources-6.1.jar
+7f20089e0000-7f20089e7000 r--s 00036000 103:04 8953687                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-persistent-cache-6.1.jar
+7f20089e7000-7f20089e9000 r--s 00006000 103:04 8953695                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-base-services-groovy-6.1.jar
+7f20089e9000-7f20089ea000 r--s 00000000 103:04 8953720                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/javax.inject-1.jar
+7f20089ea000-7f20089ef000 r--s 00021000 103:04 8953680                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-file-collections-6.1.jar
+7f20089ef000-7f20089f1000 r--s 00006000 103:04 8953691                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-process-services-6.1.jar
+7f20089f1000-7f20089f3000 r--s 00004000 103:04 8953708                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/log4j-over-slf4j-1.7.28.jar
+7f20089f3000-7f20089f5000 r--s 00000000 103:04 8953707                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/jul-to-slf4j-1.7.28.jar
+7f20089f5000-7f20089f7000 r--s 00003000 103:04 8953709                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/jcl-over-slf4j-1.7.28.jar
+7f20089f7000-7f20089ff000 r--s 00038000 103:04 8953689                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-logging-6.1.jar
+7f20089ff000-7f2008a01000 r--s 00006000 103:04 8953700                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-files-6.1.jar
+7f2008a01000-7f2008a02000 r--s 00004000 103:04 8953747                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-freebsd-amd64-libcpp-0.19.jar
+7f2008a02000-7f2008a03000 r--s 00004000 103:04 8953748                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-freebsd-amd64-libstdcpp-0.19.jar
+7f2008a03000-7f2008a05000 r--s 00004000 103:04 8953749                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-freebsd-i386-libcpp-0.19.jar
+7f2008a05000-7f2008a06000 r--s 00004000 103:04 8953750                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-freebsd-i386-libstdcpp-0.19.jar
+7f2008a06000-7f2008a07000 r--s 00002000 103:04 8953751                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-aarch64-0.19.jar
+7f2008a07000-7f2008a08000 r--s 00002000 103:04 8953752                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-amd64-0.19.jar
+7f2008a08000-7f2008a09000 r--s 00002000 103:04 8953753                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-i386-0.19.jar
+7f2008a09000-7f2008a0a000 r--s 00003000 103:04 8953754                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-osx-amd64-0.19.jar
+7f2008a0a000-7f2008a0b000 r--s 00011000 103:04 8953755                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-windows-amd64-0.19.jar
+7f2008a0b000-7f2008a0d000 r--s 00010000 103:04 8953756                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-windows-amd64-min-0.19.jar
+7f2008a0d000-7f2008a0e000 r--s 0000f000 103:04 8953757                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-windows-i386-0.19.jar
+7f2008a0e000-7f2008a0f000 r--s 0000f000 103:04 8953758                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-windows-i386-min-0.19.jar
+7f2008a0f000-7f2008a10000 r--s 00001000 103:04 8953759                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-aarch64-ncurses5-0.19.jar
+7f2008a10000-7f2008a11000 r--s 00002000 103:04 8953760                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-aarch64-ncurses6-0.19.jar
+7f2008a11000-7f2008a13000 r--s 00001000 103:04 8953761                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-amd64-ncurses5-0.19.jar
+7f2008a13000-7f2008a14000 r--s 00001000 103:04 8953762                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-amd64-ncurses6-0.19.jar
+7f2008a14000-7f2008a15000 r--s 00001000 103:04 8953763                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-i386-ncurses5-0.19.jar
+7f2008a15000-7f2008a1a000 r--s 0001a000 103:04 8953733                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-0.19.jar
+7f2008a1a000-7f2008a1e000 r--s 00043000 103:04 8953730                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/jansi-1.18.jar
+7f2008a1e000-7f2008a21000 r--s 0000d000 103:04 8953694                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-native-6.1.jar
+7f2008a21000-7f2008a23000 r--s 0000c000 103:04 8953734                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/objenesis-2.6.jar
+7f2008a23000-7f2008a25000 r--s 00000000 103:04 8953742                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/minlog-1.2.jar
+7f2008a25000-7f2008a2b000 r--s 0004d000 103:04 8953732                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/kryo-2.24.0.jar
+7f2008a2b000-7f2008a31000 r--s 0006d000 103:04 8953729                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/fastutil-8.3.0-min.jar
+7f2008a31000-7f2008a38000 r--s 0002f000 103:04 8953693                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-messaging-6.1.jar
+7f2008a38000-7f2008a3a000 r--s 00005000 103:04 8953698                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-cli-6.1.jar
+7f2008a3a000-7f2008a3c000 r--s 00003000 103:04 8953703                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-hashing-6.1.jar
+7f2008a3c000-7f2008a3e000 r--s 00003000 103:04 8953731                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/jsr305-3.0.2.jar
+7f2008a3e000-7f2008a40000 r--s 00009000 103:04 8953710                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/slf4j-api-1.7.28.jar
+7f2008a40000-7f2008a42000 r--s 00000000 103:04 8953745                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/failureaccess-1.0.1.jar
+7f2008a42000-7f2008a72000 r--s 0024c000 103:04 8953711                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/guava-27.1-android.jar
+7f2008a72000-7f2008af2000 r--s 00778000 103:04 8953706                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/groovy-all-1.3-2.5.8.jar
+7f2008af2000-7f2008af7000 r--s 00041000 103:04 8953713                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/commons-lang-2.6.jar
+7f2008af7000-7f2008afb000 r--s 00031000 103:04 8953712                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/commons-io-2.6.jar
+7f2008afb000-7f2008afc000 ---p 00000000 00:00 0 
+7f2008afc000-7f2008bfc000 rw-p 00000000 00:00 0 
+7f2008bfc000-7f2008bff000 ---p 00000000 00:00 0 
+7f2008bff000-7f2008cfd000 rw-p 00000000 00:00 0 
+7f2008cfd000-7f2008cfe000 ---p 00000000 00:00 0 
+7f2008cfe000-7f2008d01000 ---p 00000000 00:00 0 
+7f2008d01000-7f2008dfe000 rw-p 00000000 00:00 0 
+7f2008dfe000-7f2008dff000 ---p 00000000 00:00 0 
+7f2008dff000-7f2008e02000 ---p 00000000 00:00 0 
+7f2008e02000-7f2008eff000 rw-p 00000000 00:00 0 
+7f2008eff000-7f2008f00000 ---p 00000000 00:00 0 
+7f2008f00000-7f2008f03000 ---p 00000000 00:00 0 
+7f2008f03000-7f200c000000 rw-p 00000000 00:00 0 
+7f200c000000-7f200c021000 rw-p 00000000 00:00 0 
+7f200c021000-7f2010000000 ---p 00000000 00:00 0 
+7f2010000000-7f2010021000 rw-p 00000000 00:00 0 
+7f2010021000-7f2014000000 ---p 00000000 00:00 0 
+7f2014000000-7f2014021000 rw-p 00000000 00:00 0 
+7f2014021000-7f2018000000 ---p 00000000 00:00 0 
+7f2018000000-7f2018001000 r--s 00001000 103:04 8953764                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/native-platform-linux-i386-ncurses6-0.19.jar
+7f2018001000-7f2018021000 r--s 00204000 103:04 8953718                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/ant-1.10.7.jar
+7f2018021000-7f201805d000 r--s 0020b000 103:04 8953679                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-core-6.1.jar
+7f201805d000-7f201806c000 r--s 00044000 103:04 8953686                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-core-api-6.1.jar
+7f201806c000-7f2018079000 r--s 00065000 103:04 8953696                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-base-services-6.1.jar
+7f2018079000-7f2018086000 r--s 00066000 103:04 8953671                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-launcher-6.1.jar
+7f2018086000-7f2018087000 ---p 00000000 00:00 0 
+7f2018087000-7f201808a000 ---p 00000000 00:00 0 
+7f201808a000-7f2018187000 rw-p 00000000 00:00 0 
+7f2018187000-7f201818a000 ---p 00000000 00:00 0 
+7f201818a000-7f2018288000 rw-p 00000000 00:00 0 
+7f2018288000-7f20187f8000 r--p 00000000 103:03 1179810                   /usr/lib/locale/locale-archive
+7f20187f8000-7f20187fb000 ---p 00000000 00:00 0 
+7f20187fb000-7f20188f9000 rw-p 00000000 00:00 0 
+7f20188f9000-7f20188fc000 ---p 00000000 00:00 0 
+7f20188fc000-7f20189fa000 rw-p 00000000 00:00 0 
+7f20189fa000-7f20189fb000 ---p 00000000 00:00 0 
+7f20189fb000-7f2019000000 rw-p 00000000 00:00 0 
+7f2019000000-7f2019990000 rwxp 00000000 00:00 0 
+7f2019990000-7f2028000000 ---p 00000000 00:00 0 
+7f2028000000-7f202941f000 rw-p 00000000 00:00 0 
+7f202941f000-7f202c000000 ---p 00000000 00:00 0 
+7f202c000000-7f202c001000 r--s 00003000 103:04 8953697                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-build-option-6.1.jar
+7f202c001000-7f202ddd6000 rw-p 00000000 00:00 0 
+7f202ddd6000-7f202dfa9000 r--s 03cb1000 103:04 6698013                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/rt.jar
+7f202dfa9000-7f202ebc0000 rw-p 00000000 00:00 0 
+7f202ebc0000-7f202ebc1000 ---p 00000000 00:00 0 
+7f202ebc1000-7f202ecc1000 rw-p 00000000 00:00 0 
+7f202ecc1000-7f202ecc2000 ---p 00000000 00:00 0 
+7f202ecc2000-7f202edc2000 rw-p 00000000 00:00 0 
+7f202edc2000-7f202edc3000 ---p 00000000 00:00 0 
+7f202edc3000-7f202eec3000 rw-p 00000000 00:00 0 
+7f202eec3000-7f202eec4000 ---p 00000000 00:00 0 
+7f202eec4000-7f202efc4000 rw-p 00000000 00:00 0 
+7f202efc4000-7f202efc5000 ---p 00000000 00:00 0 
+7f202efc5000-7f202f0c5000 rw-p 00000000 00:00 0 
+7f202f0c5000-7f202f0c6000 ---p 00000000 00:00 0 
+7f202f0c6000-7f202f1c6000 rw-p 00000000 00:00 0 
+7f202f1c6000-7f202f1c7000 ---p 00000000 00:00 0 
+7f202f1c7000-7f202f2c7000 rw-p 00000000 00:00 0 
+7f202f2c7000-7f202f2c8000 ---p 00000000 00:00 0 
+7f202f2c8000-7f202f3c8000 rw-p 00000000 00:00 0 
+7f202f3c8000-7f202f3c9000 ---p 00000000 00:00 0 
+7f202f3c9000-7f202f4c9000 rw-p 00000000 00:00 0 
+7f202f4c9000-7f202f4ca000 ---p 00000000 00:00 0 
+7f202f4ca000-7f202f602000 rw-p 00000000 00:00 0 
+7f202f602000-7f202f7ca000 ---p 00000000 00:00 0 
+7f202f7ca000-7f202f802000 rw-p 00000000 00:00 0 
+7f202f802000-7f202f9ca000 ---p 00000000 00:00 0 
+7f202f9ca000-7f202fa53000 rw-p 00000000 00:00 0 
+7f202fa53000-7f202faca000 ---p 00000000 00:00 0 
+7f202faca000-7f202faf2000 rw-p 00000000 00:00 0 
+7f202faf2000-7f202fe8b000 ---p 00000000 00:00 0 
+7f202fe8b000-7f202fea6000 r-xp 00000000 103:04 6697972                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libzip.so
+7f202fea6000-7f202fea7000 r--p 0001a000 103:04 6697972                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libzip.so
+7f202fea7000-7f202fea8000 rw-p 0001b000 103:04 6697972                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libzip.so
+7f202fea8000-7f202feb0000 rw-s 00000000 103:03 540063                    /tmp/hsperfdata_doomsdayrs/21730
+7f202feb0000-7f202fedb000 r-xp 00000000 103:04 6697980                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libjava.so
+7f202fedb000-7f202fedc000 r--p 0002a000 103:04 6697980                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libjava.so
+7f202fedc000-7f202fede000 rw-p 0002b000 103:04 6697980                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libjava.so
+7f202fede000-7f202fee1000 r--p 00000000 103:03 1183495                   /usr/lib/x86_64-linux-gnu/librt-2.30.so
+7f202fee1000-7f202fee5000 r-xp 00003000 103:03 1183495                   /usr/lib/x86_64-linux-gnu/librt-2.30.so
+7f202fee5000-7f202fee7000 r--p 00007000 103:03 1183495                   /usr/lib/x86_64-linux-gnu/librt-2.30.so
+7f202fee7000-7f202fee8000 r--p 00008000 103:03 1183495                   /usr/lib/x86_64-linux-gnu/librt-2.30.so
+7f202fee8000-7f202fee9000 rw-p 00009000 103:03 1183495                   /usr/lib/x86_64-linux-gnu/librt-2.30.so
+7f202fee9000-7f202feea000 ---p 00000000 00:00 0 
+7f202feea000-7f202feed000 ---p 00000000 00:00 0 
+7f202feed000-7f202ffea000 rw-p 00000000 00:00 0 
+7f202ffea000-7f202fff9000 r--p 00000000 103:03 1183482                   /usr/lib/x86_64-linux-gnu/libm-2.30.so
+7f202fff9000-7f20300a0000 r-xp 0000f000 103:03 1183482                   /usr/lib/x86_64-linux-gnu/libm-2.30.so
+7f20300a0000-7f2030137000 r--p 000b6000 103:03 1183482                   /usr/lib/x86_64-linux-gnu/libm-2.30.so
+7f2030137000-7f2030138000 r--p 0014c000 103:03 1183482                   /usr/lib/x86_64-linux-gnu/libm-2.30.so
+7f2030138000-7f2030139000 rw-p 0014d000 103:03 1183482                   /usr/lib/x86_64-linux-gnu/libm-2.30.so
+7f2030139000-7f2030d60000 r-xp 00000000 103:04 6697990                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/server/libjvm.so
+7f2030d60000-7f2030e08000 r--p 00c26000 103:04 6697990                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/server/libjvm.so
+7f2030e08000-7f2030e31000 rw-p 00cce000 103:04 6697990                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/server/libjvm.so
+7f2030e31000-7f2030e77000 rw-p 00000000 00:00 0 
+7f2030e77000-7f2030e9c000 r--p 00000000 103:03 1183479                   /usr/lib/x86_64-linux-gnu/libc-2.30.so
+7f2030e9c000-7f2031014000 r-xp 00025000 103:03 1183479                   /usr/lib/x86_64-linux-gnu/libc-2.30.so
+7f2031014000-7f203105e000 r--p 0019d000 103:03 1183479                   /usr/lib/x86_64-linux-gnu/libc-2.30.so
+7f203105e000-7f2031061000 r--p 001e6000 103:03 1183479                   /usr/lib/x86_64-linux-gnu/libc-2.30.so
+7f2031061000-7f2031064000 rw-p 001e9000 103:03 1183479                   /usr/lib/x86_64-linux-gnu/libc-2.30.so
+7f2031064000-7f2031068000 rw-p 00000000 00:00 0 
+7f2031068000-7f2031069000 r--p 00000000 103:03 1183481                   /usr/lib/x86_64-linux-gnu/libdl-2.30.so
+7f2031069000-7f203106b000 r-xp 00001000 103:03 1183481                   /usr/lib/x86_64-linux-gnu/libdl-2.30.so
+7f203106b000-7f203106c000 r--p 00003000 103:03 1183481                   /usr/lib/x86_64-linux-gnu/libdl-2.30.so
+7f203106c000-7f203106d000 r--p 00003000 103:03 1183481                   /usr/lib/x86_64-linux-gnu/libdl-2.30.so
+7f203106d000-7f203106e000 rw-p 00004000 103:03 1183481                   /usr/lib/x86_64-linux-gnu/libdl-2.30.so
+7f203106e000-7f2031084000 r-xp 00000000 103:04 6697871                   /home/doomsdayrs/android-studio/canary/android-studio/jre/lib/amd64/jli/libjli.so
+7f2031084000-7f2031085000 r--p 00015000 103:04 6697871                   /home/doomsdayrs/android-studio/canary/android-studio/jre/lib/amd64/jli/libjli.so
+7f2031085000-7f2031086000 rw-p 00016000 103:04 6697871                   /home/doomsdayrs/android-studio/canary/android-studio/jre/lib/amd64/jli/libjli.so
+7f2031086000-7f203108d000 r--p 00000000 103:03 1183493                   /usr/lib/x86_64-linux-gnu/libpthread-2.30.so
+7f203108d000-7f203109e000 r-xp 00007000 103:03 1183493                   /usr/lib/x86_64-linux-gnu/libpthread-2.30.so
+7f203109e000-7f20310a3000 r--p 00018000 103:03 1183493                   /usr/lib/x86_64-linux-gnu/libpthread-2.30.so
+7f20310a3000-7f20310a4000 r--p 0001c000 103:03 1183493                   /usr/lib/x86_64-linux-gnu/libpthread-2.30.so
+7f20310a4000-7f20310a5000 rw-p 0001d000 103:03 1183493                   /usr/lib/x86_64-linux-gnu/libpthread-2.30.so
+7f20310a5000-7f20310a9000 rw-p 00000000 00:00 0 
+7f20310a9000-7f20310aa000 r--s 00000000 103:04 8953704                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-pineapple-6.1.jar
+7f20310aa000-7f20310ac000 r--s 0001b000 103:04 8953717                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/asm-7.1.jar
+7f20310ac000-7f20310ad000 r--s 00004000 103:04 8953741                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/ant-launcher-1.10.7.jar
+7f20310ad000-7f20310af000 r--s 00001000 103:04 8953678                   /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-bootstrap-6.1.jar
+7f20310af000-7f20310b2000 r--p 00000000 103:03 1183488                   /usr/lib/x86_64-linux-gnu/libnss_files-2.30.so
+7f20310b2000-7f20310b9000 r-xp 00003000 103:03 1183488                   /usr/lib/x86_64-linux-gnu/libnss_files-2.30.so
+7f20310b9000-7f20310bb000 r--p 0000a000 103:03 1183488                   /usr/lib/x86_64-linux-gnu/libnss_files-2.30.so
+7f20310bb000-7f20310bc000 r--p 0000b000 103:03 1183488                   /usr/lib/x86_64-linux-gnu/libnss_files-2.30.so
+7f20310bc000-7f20310bd000 rw-p 0000c000 103:03 1183488                   /usr/lib/x86_64-linux-gnu/libnss_files-2.30.so
+7f20310bd000-7f20310c4000 rw-p 00000000 00:00 0 
+7f20310c4000-7f20310d1000 r-xp 00000000 103:04 6697968                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libverify.so
+7f20310d1000-7f20310d3000 r--p 0000c000 103:04 6697968                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libverify.so
+7f20310d3000-7f20310d4000 rw-p 0000e000 103:04 6697968                   /home/doomsdayrs/android-studio/canary/android-studio/jre/jre/lib/amd64/libverify.so
+7f20310d4000-7f20310d6000 rw-p 00000000 00:00 0 
+7f20310d6000-7f20310d7000 r--p 00000000 103:03 1183475                   /usr/lib/x86_64-linux-gnu/ld-2.30.so
+7f20310d7000-7f20310f9000 r-xp 00001000 103:03 1183475                   /usr/lib/x86_64-linux-gnu/ld-2.30.so
+7f20310f9000-7f2031101000 r--p 00023000 103:03 1183475                   /usr/lib/x86_64-linux-gnu/ld-2.30.so
+7f2031101000-7f2031102000 r--p 00000000 00:00 0 
+7f2031102000-7f2031103000 r--p 0002b000 103:03 1183475                   /usr/lib/x86_64-linux-gnu/ld-2.30.so
+7f2031103000-7f2031104000 rw-p 0002c000 103:03 1183475                   /usr/lib/x86_64-linux-gnu/ld-2.30.so
+7f2031104000-7f2031105000 rw-p 00000000 00:00 0 
+7ffc85e1f000-7ffc85e40000 rw-p 00000000 00:00 0                          [stack]
+7ffc85f5d000-7ffc85f60000 r--p 00000000 00:00 0                          [vvar]
+7ffc85f60000-7ffc85f61000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+
+VM Arguments:
+jvm_args: -Xmx1536m -Dfile.encoding=UTF-8 -Duser.country=US -Duser.language=en -Duser.variant 
+java_command: org.gradle.launcher.daemon.bootstrap.GradleDaemon 6.1-milestone-3
+java_class_path (initial): /home/doomsdayrs/.gradle/wrapper/dists/gradle-6.1-milestone-3-all/d4l03athyp79dy7zvghtcunaw/gradle-6.1-milestone-3/lib/gradle-launcher-6.1.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/doomsdayrs/.dotnet/tools
+USERNAME=doomsdayrs
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xa0bf30], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xa0bf30], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x86d4c0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x86d4c0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x86d4c0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x86d4c0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x86d390], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0x86d580], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: [libjvm.so+0x86d580], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGTERM: [libjvm.so+0x86d580], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0x86d580], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=19.10
+DISTRIB_CODENAME=eoan
+DISTRIB_DESCRIPTION="Ubuntu 19.10"
+
+uname:Linux 5.3.0-24-generic #26-Ubuntu SMP Thu Nov 14 01:33:18 UTC 2019 x86_64
+libc:glibc 2.30 NPTL 2.30 
+rlimit: STACK 8192k, CORE 0k, NPROC 63634, NOFILE 1048576, AS infinity
+load average:3.42 2.30 1.60
+
+/proc/meminfo:
+MemTotal:       16411104 kB
+MemFree:         5153856 kB
+MemAvailable:   10866704 kB
+Buffers:          182024 kB
+Cached:          5734236 kB
+SwapCached:            0 kB
+Active:          6058476 kB
+Inactive:        4124468 kB
+Active(anon):    4277736 kB
+Inactive(anon):   163692 kB
+Active(file):    1780740 kB
+Inactive(file):  3960776 kB
+Unevictable:         128 kB
+Mlocked:             128 kB
+SwapTotal:       1000444 kB
+SwapFree:        1000444 kB
+Dirty:             45524 kB
+Writeback:          6680 kB
+AnonPages:       4266836 kB
+Mapped:          2582684 kB
+Shmem:            175324 kB
+KReclaimable:     307284 kB
+Slab:             536772 kB
+SReclaimable:     307284 kB
+SUnreclaim:       229488 kB
+KernelStack:       24064 kB
+PageTables:        40912 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     9205996 kB
+Committed_AS:   12707556 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:       58456 kB
+VmallocChunk:          0 kB
+Percpu:            34304 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:      733248 kB
+DirectMap2M:     7608320 kB
+DirectMap1G:     9437184 kB
+
+container (cgroup) information:
+container_type: cgroupv1
+cpu_cpuset_cpus: 0-11
+cpu_memory_nodes: 0
+active_processor_count: 12
+cpu_quota: -1
+cpu_period: 100000
+cpu_shares: -1
+memory_limit_in_bytes: -1
+memory_and_swap_limit_in_bytes: -2
+memory_soft_limit_in_bytes: -1
+memory_usage_in_bytes: 9691086848
+memory_max_usage_in_bytes: 9691238400
+
+
+CPU:total 12 (initial active 12) (12 cores per cpu, 1 threads per core) family 23 model 1 stepping 1, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, mmxext, 3dnowpref, lzcnt, sse4a, tsc, tscinvbit, tscinv, bmi1
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2143.216
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 0
+cpu cores	: 6
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 1
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2132.482
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 1
+cpu cores	: 6
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 2
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 3153.114
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 2
+cpu cores	: 6
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 3
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2628.280
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 4
+cpu cores	: 6
+apicid		: 8
+initial apicid	: 8
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 4
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2437.924
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 5
+cpu cores	: 6
+apicid		: 10
+initial apicid	: 10
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 5
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 3235.178
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 6
+cpu cores	: 6
+apicid		: 12
+initial apicid	: 12
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 6
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2280.223
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 0
+cpu cores	: 6
+apicid		: 1
+initial apicid	: 1
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 7
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2101.282
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 1
+cpu cores	: 6
+apicid		: 3
+initial apicid	: 3
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 8
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 3527.404
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 2
+cpu cores	: 6
+apicid		: 5
+initial apicid	: 5
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 9
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2661.321
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 4
+cpu cores	: 6
+apicid		: 9
+initial apicid	: 9
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 10
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2837.020
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 5
+cpu cores	: 6
+apicid		: 11
+initial apicid	: 11
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+processor	: 11
+vendor_id	: AuthenticAMD
+cpu family	: 23
+model		: 1
+model name	: AMD Ryzen 5 1600X Six-Core Processor
+stepping	: 1
+microcode	: 0x8001138
+cpu MHz		: 2890.173
+cache size	: 512 KB
+physical id	: 0
+siblings	: 12
+core id		: 6
+cpu cores	: 6
+apicid		: 13
+initial apicid	: 13
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 13
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate sme ssbd sev ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 xsaves clzero irperf xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca
+bugs		: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass
+bogomips	: 7199.11
+TLB size	: 2560 4K pages
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 43 bits physical, 48 bits virtual
+power management: ts ttp tm hwpstate eff_freq_ro [13] [14]
+
+
+
+Memory: 4k page, physical 16411104k(5153548k free), swap 1000444k(1000444k free)
+
+vm_info: OpenJDK 64-Bit Server VM (25.212-b4-5784211) for linux-amd64 JRE (1.8.0_212-release-1586-b4-5784211), built by "android-build" with gcc 4.8
+
+time: Fri Jan 10 15:48:42 2020
+timezone: EST
+elapsed time: 2 seconds (0d 0h 0m 2s)
+
