@@ -16,5 +16,5 @@
 
     <color name="wheat">#F5DEB3</color>
 
-    <color name="transparent">#00000000</color>
+    <color name="background">@android:color/white</color>
 </resources>

@@ -10,7 +10,7 @@
         android:id="@+id/recycler_settings_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
+        android:background="@android:color/transparent"
         android:layout_margin="8dp"
         android:text=""
         android:textSize="20sp"
