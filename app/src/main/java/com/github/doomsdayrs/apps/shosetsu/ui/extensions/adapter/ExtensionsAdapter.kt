@@ -4,14 +4,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -41,20 +39,7 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : RecyclerView.Adapter<ExtensionsAdapter.ExtensionHolder>() {
-    class ExtensionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var installed: Boolean = false
-        var update: Boolean = false
-        val imageView: ImageView = itemView.findViewById(R.id.imageView)
-        val lang: TextView = itemView.findViewById(R.id.langauge)
-
-        val title: TextView = itemView.findViewById(R.id.title)
-        val hash: TextView = itemView.findViewById(R.id.hash)
-        val identification: TextView = itemView.findViewById(R.id.id)
-        val version: TextView = itemView.findViewById(R.id.version)
-        val updatedVersion: TextView = itemView.findViewById(R.id.update_version)
-        val button: Button = itemView.findViewById(R.id.floatingActionButton)
-    }
+class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : RecyclerView.Adapter<ExtensionHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExtensionHolder {
         return ExtensionHolder(LayoutInflater.from(parent.context).inflate(R.layout.extension_card, parent, false))
@@ -63,7 +48,6 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : Re
     override fun getItemCount(): Int {
         return extensionsFragment.array.size
     }
-
 
     override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
         val jsonObject: JSONObject = extensionsFragment.array[position]
@@ -95,9 +79,9 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : Re
         }
 
         holder.title.text = jsonObject.getString("name")
-        holder.identification.text = id.toString()
+        holder.id.text = id.toString()
         holder.hash.text = jsonObject.getString("md5")
-        holder.lang.text = jsonObject.getString("lang")
+        holder.language.text = jsonObject.getString("lang")
         holder.button.setOnClickListener {
             if (!holder.installed || holder.update) {
                 FormatterController.downloadScript(jsonObject.getString("name"),jsonObject.getString("lang"), holder, extensionsFragment.activity!!)
