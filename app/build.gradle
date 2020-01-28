@@ -15,21 +15,19 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             versionNameSuffix = '-release'
+            multiDexEnabled = true
         }
         debug {
             versionNameSuffix = '-debug'
-        }
-        dev {
-            versionNameSuffix = '-dev'
-            applicationIdSuffix '.dev'
+            applicationIdSuffix '.debug'
             debuggable true
         }
     }
     compileOptions {
-        targetCompatibility = '1.8'
+        targetCompatibility = "1.8"
         sourceCompatibility = '1.8'
     }
     buildToolsVersion = '28.0.3'

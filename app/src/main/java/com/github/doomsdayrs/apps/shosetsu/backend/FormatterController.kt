@@ -21,7 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
@@ -140,7 +140,7 @@ object FormatterController {
         return null
     }
 
-    fun downloadScript(name: String, lang: String, holder: ExtensionsAdapter.ExtensionHolder, activity: Activity) {
+    fun downloadScript(name: String, lang: String, holder: ExtensionHolder, activity: Activity) {
         val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/src/$lang/$name.lua"))
 
         request.setDescription("Installing $name")
@@ -190,7 +190,7 @@ object FormatterController {
         activity.registerReceiver(onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
-    fun deleteScript(name: String, id: Int, holder: ExtensionsAdapter.ExtensionHolder, activity: Activity) {
+    fun deleteScript(name: String, id: Int, holder: ExtensionHolder, activity: Activity) {
         //  holder.button.setImageResource(R.drawable.ic_file_download)
         holder.button.text = holder.itemView.context.getString(R.string.download)
         var i = 0
