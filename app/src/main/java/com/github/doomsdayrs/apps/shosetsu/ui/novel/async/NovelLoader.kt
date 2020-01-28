@@ -53,10 +53,10 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
         novelFragment?.activity?.runOnUiThread { novelFragment.fragment_novel_main_refresh.isRefreshing = true }
     }
 
-    override fun onPostExecute(result: Boolean) {
+    override fun onPostExecute(result: Boolean?) {
         super.onPostExecute(result)
         // If successful, it will complete the task
-        if (result)
+        if (result == true)
             novelFragment?.fragment_novel_viewpager?.post {
                 // Set's the novel page to the fragment
                 novelFragment.novelPage = novelPage

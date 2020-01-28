@@ -82,6 +82,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
     lateinit var textView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
         super.onCreate(savedInstanceState)
         // Sets prefrences
         Utilities.viewPreferences = getSharedPreferences("view", 0)
@@ -91,7 +92,6 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
         Utilities.backupPreferences = getSharedPreferences("backup", 0)
         Utilities.initPreferences(this)
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
         // Sets up DB
         if (Database.sqLiteDatabase == null) Database.sqLiteDatabase = DBHelper(this).writableDatabase
 

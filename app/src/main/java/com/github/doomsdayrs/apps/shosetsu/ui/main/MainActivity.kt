@@ -1,12 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity(), Supporter {
      * @param savedInstanceState savedData from destruction
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
