@@ -7,7 +7,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CatalogueQuerySearch
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
 import java.util.*
-import java.util.concurrent.ExecutionException
 
 /*
  * This file is part of Shosetsu.
@@ -35,13 +34,12 @@ class CatalogueSearchQuery(private val catalogueFragment: CatalogueFragment) : S
         catalogueFragment.isQuery = false
         catalogueFragment.isInSearch = true
         try {
+            Log.d("CatalogueSearchQuery", "Query:\t$query")
             val searchResults = CatalogueQuerySearch(catalogueFragment).execute(query).get()
             catalogueFragment.setLibraryCards(searchResults)
             return true
-        } catch (e: ExecutionException) {
-            e.printStackTrace()
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            Log.e("CatalogueSearchQuery", "Error on query", e)
         }
         return false
     }
