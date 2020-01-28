@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.network_error.*
  */
 class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
     // References to objects
-    private val catalogueFragment: CatalogueFragment
+    private val catalogueFragment: CatalogueFragment?
     private val catalogueHitBottom: CatalogueHitBottom?
 
     /**
@@ -72,26 +72,31 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
      */
     override fun doInBackground(vararg integers: Int?): Boolean {
         Log.d("Loading", "Catalogue")
-        catalogueFragment.recyclerView?.post { catalogueFragment.network_error?.visibility = View.GONE }
-        if (catalogueFragment.formatter.hasCloudFlare) {
-            if (catalogueFragment.activity != null) catalogueFragment.activity!!.runOnUiThread { Toast.makeText(catalogueFragment.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
-        }
-        val novels: List<Novel> = if (integers.isNotEmpty()) check(CatalogueLoader(catalogueFragment.formatter).execute(integers[0])) else check(CatalogueLoader(catalogueFragment.formatter).execute())
-        for (novel in novels) catalogueFragment.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
-        catalogueFragment.recyclerView?.post { catalogueFragment.catalogueAdapter.notifyDataSetChanged() }
-        if (catalogueHitBottom != null) {
-            catalogueFragment.recyclerView?.post {
-                catalogueFragment.catalogueAdapter.notifyDataSetChanged()
-                catalogueFragment.recyclerView!!.addOnScrollListener(catalogueHitBottom)
+        catalogueFragment?.let {
+            it.recyclerView?.post { it.network_error?.visibility = View.GONE }
+            if (it.formatter.hasCloudFlare) {
+                if (it.activity != null) it.activity!!.runOnUiThread { Toast.makeText(it.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
             }
-            catalogueHitBottom.running = false
-            Log.d("CatalogueFragmentLoad", "Completed")
+            val novels: List<Novel> = if (integers.isNotEmpty())
+                check(CatalogueLoader(it.formatter).execute(integers[0]))
+            else check(CatalogueLoader(it.formatter).execute())
+            for (novel in novels) it.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
+            it.recyclerView?.post { it.catalogueAdapter.notifyDataSetChanged() }
+            if (catalogueHitBottom != null) {
+                it.recyclerView?.post {
+                    it.catalogueAdapter.notifyDataSetChanged()
+                    it.recyclerView!!.addOnScrollListener(catalogueHitBottom)
+                }
+                catalogueHitBottom.running = false
+                Log.d("CatalogueFragmentLoad", "Completed")
+            }
+            Log.d("FragmentRefresh", "Complete")
+            if (it.activity != null) it.activity!!.runOnUiThread {
+                it.catalogueAdapter.notifyDataSetChanged()
+                it.swipeRefreshLayout?.isRefreshing = false
+            }
         }
-        Log.d("FragmentRefresh", "Complete")
-        if (catalogueFragment.activity != null) catalogueFragment.activity!!.runOnUiThread {
-            catalogueFragment.catalogueAdapter.notifyDataSetChanged()
-            catalogueFragment.swipeRefreshLayout?.isRefreshing = false
-        }
+
         return true
     }
 
@@ -99,14 +104,14 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
      * Ends progress bar
      */
     override fun onCancelled() {
-        if (catalogueHitBottom != null) catalogueFragment.fragment_catalogue_progress_bottom?.visibility = View.INVISIBLE else catalogueFragment.swipeRefreshLayout?.isRefreshing = false
+        if (catalogueHitBottom != null) catalogueFragment?.fragment_catalogue_progress_bottom?.visibility = View.INVISIBLE else catalogueFragment?.swipeRefreshLayout?.isRefreshing = false
     }
 
     /**
      * Starts the loading action
      */
     override fun onPreExecute() {
-        if (catalogueHitBottom != null) catalogueFragment.fragment_catalogue_progress_bottom?.visibility = View.VISIBLE else catalogueFragment.swipeRefreshLayout?.isRefreshing = true
+        if (catalogueHitBottom != null) catalogueFragment?.fragment_catalogue_progress_bottom?.visibility = View.VISIBLE else catalogueFragment?.swipeRefreshLayout?.isRefreshing = true
     }
 
     /**
@@ -116,9 +121,9 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
      */
     override fun onPostExecute(aBoolean: Boolean) {
         if (catalogueHitBottom != null) {
-            catalogueFragment.fragment_catalogue_progress_bottom?.visibility = View.GONE
-            if (catalogueFragment.catalogueNovelCards.size > 0) catalogueFragment.empty?.visibility = View.GONE
-        } else catalogueFragment.swipeRefreshLayout?.isRefreshing = false
+            catalogueFragment?.fragment_catalogue_progress_bottom?.visibility = View.GONE
+            if (catalogueFragment?.catalogueNovelCards?.size ?: 0 > 0) catalogueFragment?.empty?.visibility = View.GONE
+        } else catalogueFragment?.swipeRefreshLayout?.isRefreshing = false
     }
 
 

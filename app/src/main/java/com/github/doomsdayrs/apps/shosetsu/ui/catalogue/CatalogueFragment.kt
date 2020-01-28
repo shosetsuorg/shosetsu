@@ -50,6 +50,7 @@ import java.util.*
  */
 //TODO fix issue with not loading
 class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
+    var cataloguePageLoader: CataloguePageLoader? = null
     var catalogueNovelCards = ArrayList<CatalogueNovelCard>()
     lateinit var formatter: Formatter
     lateinit var catalogueAdapter: CatalogueAdapter
@@ -74,11 +75,13 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
         super.onPause()
         Log.d("Pause", "HERE")
         dontRefresh = true
+        cataloguePageLoader?.cancel(true)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         dontRefresh = false
+        cataloguePageLoader?.cancel(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,7 +99,9 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
                 catalogueNovelCards = ArrayList()
                 catalogueAdapter.notifyDataSetChanged()
             }
-            if (!formatter.hasCloudFlare) CataloguePageLoader(this).execute() else {
+            if (!formatter.hasCloudFlare) {
+                executePageLoader()
+            } else {
                 val intent = Intent(activity, WebViewApp::class.java)
                 intent.putExtra("url", formatter.getLatestURL(0))
                 intent.putExtra("action", 1)
@@ -105,14 +110,13 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
         } else setLibraryCards(catalogueNovelCards)
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 42) {
             //TODO, Pass cookies from webview to okhttp
             val client = OkHttpClient.Builder()
                     .cookieJar(WebviewCookieHandler())
                     .build()
-            CataloguePageLoader(this).execute()
+            executePageLoader()
         }
     }
 
@@ -137,6 +141,16 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
         recyclerView!!.layoutManager = layoutManager
         recyclerView!!.addOnScrollListener(CatalogueHitBottom(this))
         recyclerView!!.adapter = catalogueAdapter
+    }
+
+    fun executePageLoader() {
+        if (cataloguePageLoader?.isCancelled == false)
+            cataloguePageLoader = CataloguePageLoader(this)
+
+        if (cataloguePageLoader == null)
+            cataloguePageLoader = CataloguePageLoader(this)
+
+        cataloguePageLoader!!.execute(currentMaxPage)
     }
 
 }

@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
 import kotlinx.android.synthetic.main.fragment_catalogue.*
 
 /*
@@ -34,7 +33,7 @@ class CatalogueHitBottom(private val catalogueFragment: CatalogueFragment) : Rec
             Log.d("CatalogueFragmentLoad", "Getting next page")
             running = true
             catalogueFragment.currentMaxPage++
-            CataloguePageLoader(catalogueFragment, this).execute(catalogueFragment.currentMaxPage)
+            catalogueFragment.executePageLoader()
         }
     }
 

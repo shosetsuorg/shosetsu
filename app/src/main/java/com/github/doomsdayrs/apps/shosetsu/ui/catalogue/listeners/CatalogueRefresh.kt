@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 import android.util.Log
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
 import kotlinx.android.synthetic.main.fragment_catalogue.*
 import java.util.*
 
@@ -34,7 +33,8 @@ class CatalogueRefresh(private val catalogueFragment: CatalogueFragment) : OnRef
         catalogueFragment.catalogueNovelCards = ArrayList()
         catalogueFragment.currentMaxPage = 1
         Log.d("FragmentRefresh", "Refreshing catalogue data")
-        CataloguePageLoader(catalogueFragment).execute()
+
+        catalogueFragment.executePageLoader()
     }
 
 }
