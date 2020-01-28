@@ -64,7 +64,7 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : Re
             val v = FormatterController.compareVersions(jsonObject.getString("version"), meta.getString("version"))
             Log.i("ExtensionsAdapter", "Update $id : $v")
 
-            if (v == -1) {
+            if (v == 1) {
                 Log.i("ExtensionsAdapter", "UPDATE")
                 holder.update = true
                 // holder.button.setImageResource(R.drawable.ic_update_black_24dp)

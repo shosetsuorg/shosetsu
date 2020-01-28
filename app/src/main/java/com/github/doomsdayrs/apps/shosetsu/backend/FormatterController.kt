@@ -113,6 +113,7 @@ object FormatterController {
 
         for (i in 0..2) {
             val a = version1[i].compareTo(version2[i])
+            Log.d("VersionCheck", "$i -> ${version1[i]}|${version2[i]} -> $a")
             if (a != 0) {
                 return a
             }
@@ -291,7 +292,7 @@ object FormatterController {
                 if (libraryFile.exists()) {
                     PROGRESS("Library $name found, Checking for update")
                     val meta = getMetaData(libraryFile)!!
-                    if (compareVersions(meta.getString("version"), libraryJSON.getString("version")) == -1) {
+                    if (compareVersions(meta.getString("version"), libraryJSON.getString("version")) == 1) {
                         PROGRESS("Library $name update found, updating...")
                         Log.i("FormatterInit", "Installing library:\t$name")
                         downloadLibrary(name, libraryFile)
