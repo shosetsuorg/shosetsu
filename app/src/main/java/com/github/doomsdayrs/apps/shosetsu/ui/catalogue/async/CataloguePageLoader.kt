@@ -104,7 +104,9 @@ class CataloguePageLoader : AsyncTask<Int, Void, Boolean> {
      * Ends progress bar
      */
     override fun onCancelled() {
-        if (catalogueHitBottom != null) catalogueFragment?.fragment_catalogue_progress_bottom?.visibility = View.INVISIBLE else catalogueFragment?.swipeRefreshLayout?.isRefreshing = false
+        if (catalogueHitBottom != null)
+            catalogueFragment?.fragment_catalogue_progress_bottom?.visibility = View.INVISIBLE
+        else catalogueFragment?.swipeRefreshLayout?.isRefreshing = false
     }
 
     /**
