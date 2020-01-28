@@ -163,6 +163,7 @@ class NovelFragmentInfo : Fragment() {
                         fragment_novel_genres!!.addView(chip)
                     }
                 } else fragment_novel_genres!!.visibility = View.GONE
+
                 if (novelFragment!!.novelPage.imageURL.isNotEmpty()) {
                     Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragment_novel_image)
                     Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragment_novel_image_background)

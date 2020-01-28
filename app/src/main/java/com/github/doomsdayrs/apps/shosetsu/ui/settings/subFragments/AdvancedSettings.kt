@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -52,15 +54,22 @@ class AdvancedSettings : Fragment() {
         }
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            if (position in 0..2 && advancedSettings.ready) {
-         //       Utilities.changeMode(advancedSettings.activity!!, position)
-                parent?.setSelection(position)
+            if (position in 0..1 && advancedSettings.ready) {
+                val delegate = (advancedSettings.activity!! as AppCompatActivity).delegate
+                when (position) {
+                    0 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+                    1 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+                }
+                val theme = delegate.localNightMode
+                parent?.setSelection(if (theme == AppCompatDelegate.MODE_NIGHT_YES || theme == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM || theme == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY) 1 else 0)
             } else advancedSettings.ready = true
         }
     }
 
     val settings: ArrayList<SettingsItemData> = arrayListOf(
-          //  SettingsItemData(SettingsItemData.SettingsType.SPINNER).setTitle(R.string.theme).setOnItemSelectedListener(ThemeChange(this)).setSpinnerSelection(Settings.themeMode),
+            SettingsItemData(SettingsItemData.SettingsType.SPINNER)
+                    .setTitle(R.string.theme)
+                    .setOnItemSelectedListener(ThemeChange(this)),
             SettingsItemData(SettingsItemData.SettingsType.BUTTON)
                     .setTitle(R.string.remove_novel_cache)
                     .setOnClickListenerButton { Database.DatabaseIdentification.purgeUnSavedNovels() }
@@ -74,6 +83,8 @@ class AdvancedSettings : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.application_themes)))
+        val theme = (activity as AppCompatActivity).delegate.localNightMode
+        settings[0].setSpinnerSelection(if (theme == AppCompatDelegate.MODE_NIGHT_YES || theme == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM || theme == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY) 1 else 0)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = SettingItemsAdapter(settings)
     }
