@@ -31,15 +31,4 @@ enum class Types(val position: Int) {
     ADVANCED(2),
     INFO(3),
     BACKUP(4);
-
-    /**
-     * toString overriding method
-     *
-     * @return name of type
-     */
-    @Deprecated("No Longer Used")
-    override fun toString(): String {
-        return ""
-    }
-
 }

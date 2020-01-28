@@ -36,7 +36,7 @@ class MigrationViewLoad(private val migrationView: MigrationView) : AsyncTask<Vo
     override fun doInBackground(vararg voids: Void?): Void? {
         Log.d("Searching with", targetFormat.name)
         for (x in migrationView.novels.indices) { // Retrieves search results
-            val list = targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels.get(x).title), targetFormat.hasCloudFlare)!!)
+            val list = targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels[x].title), targetFormat.hasCloudFlare)!!)
             migrationView.novelResults[x] = list as ArrayList<Novel>
         }
         return null

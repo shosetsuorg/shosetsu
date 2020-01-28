@@ -41,7 +41,7 @@ class MigratingNovelAdapter(private val migrationView: MigrationView) : Recycler
     }
 
     override fun onBindViewHolder(catalogueHolder: CompressedHolder, i: Int) {
-        val novel = migrationView.novels!![i]
+        val novel = migrationView.novels[i]
         Log.d("BindingItem: ", novel.title)
         val materialCardView: MaterialCardView = catalogueHolder.itemView.findViewById(R.id.materialCardView)
         if (i == migrationView.selection) {
@@ -59,8 +59,8 @@ class MigratingNovelAdapter(private val migrationView: MigrationView) : Recycler
     }
 
     override fun getItemCount(): Int {
-        println(migrationView.novels!!.size)
-        return migrationView.novels!!.size
+        println(migrationView.novels.size)
+        return migrationView.novels.size
     }
 
 }

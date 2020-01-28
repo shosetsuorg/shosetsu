@@ -36,7 +36,7 @@ import com.squareup.picasso.Picasso
  *
  * @author github.com/doomsdayrs
  */
-class NewTransferalsAdapter(val newMigrationView: NewMigrationView) : RecyclerView.Adapter<NewTransferalsAdapter.Holder>() {
+class NewTransferalsAdapter(private val newMigrationView: NewMigrationView) : RecyclerView.Adapter<NewTransferalsAdapter.Holder>() {
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.image)

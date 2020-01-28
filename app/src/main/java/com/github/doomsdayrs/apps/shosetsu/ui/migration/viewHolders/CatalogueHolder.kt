@@ -51,9 +51,9 @@ class CatalogueHolder(itemView: View, private val migrationView: MigrationView) 
             migrationView.target_selection.visibility = View.GONE
             migrationView.migrating.visibility = View.VISIBLE
             //TODO, popup window saying novels rejected because the formatter ID is the same.
-            for (x in migrationView.novels!!.indices.reversed()) {
-                if (migrationView.novels!![x].formatterID == formatter.formatterID) {
-                    migrationView.novels!!.removeAt(x)
+            for (x in migrationView.novels.indices.reversed()) {
+                if (migrationView.novels[x].formatterID == formatter.formatterID) {
+                    migrationView.novels.removeAt(x)
                 }
             }
             migrationView.fillData()

@@ -14,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
+import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
 
 /*
@@ -61,6 +62,7 @@ class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, pri
                     if (catalogueFragment.context != null) novelCardsViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(catalogueFragment.context!!, R.color.shade))
                 } else novelCardsViewHolder.constraintLayout.foreground = ColorDrawable()
             } else { //TODO Tint for cards before 22
+                (novelCardsViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(novelCardsViewHolder.itemView.context, R.color.colorAccent)).color
             }
             Utilities.setBackgroundByTheme(novelCardsViewHolder.title)
         }

@@ -34,7 +34,7 @@ import com.squareup.picasso.Picasso
  *
  * @author github.com/doomsdayrs
  */
-class NewTargetAdapter(val newMigrationView: NewMigrationView) : RecyclerView.Adapter<CompressedHolder>() {
+class NewTargetAdapter(private val newMigrationView: NewMigrationView) : RecyclerView.Adapter<CompressedHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompressedHolder {
         return CompressedHolder(LayoutInflater.from(newMigrationView).inflate(R.layout.catalogue_item_card, parent, false))

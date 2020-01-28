@@ -69,7 +69,7 @@ class NewMigrationView : AppCompatActivity(R.layout.new_migrartion_view) {
         setupTargets()
     }
 
-    fun setupTransferals() {
+    private fun setupTransferals() {
         novels_to_transfer?.adapter = transferalsAdapter
         novels_to_transfer?.setSlideOnFling(true)
         novels_to_transfer?.addOnItemChangedListener { _, i ->
@@ -78,7 +78,7 @@ class NewMigrationView : AppCompatActivity(R.layout.new_migrartion_view) {
         }
     }
 
-    fun setupTargets() {
+    private fun setupTargets() {
         targetView.layoutManager = GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
         targetView.adapter = targetAdapter
     }

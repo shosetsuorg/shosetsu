@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database;
 
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
@@ -136,7 +137,7 @@ public class Database {
                         novelID + "','" +
                         chapterURL +
                         "')");
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -153,6 +154,8 @@ public class Database {
                         "'," +
                         formatter +
                         ")");
+            } catch (SQLException e) {
+                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -658,6 +661,8 @@ public class Database {
                         Columns.RELEASE_DATE + "='" + release + "'," +
                         Columns.ORDER + "=" + novelChapter.getOrder() +
                         " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.getLink()));
+            } catch (SQLException e) {
+                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -698,6 +703,8 @@ public class Database {
                         novelChapter.getOrder() + "," +
                         0 + "," + 0 + "," + 0 + "," + 0 +
                         ")");
+            } catch (SQLException e) {
+                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -727,7 +734,7 @@ public class Database {
                         novelChapter.setRelease(checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString()))));
                         novelChapter.setOrder(cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString())));
                         novelChapters.add(novelChapter);
-                    } catch (Exception e) {
+                    } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
                 }
@@ -757,7 +764,7 @@ public class Database {
                         novelChapter.id = id;
                         novelChapter.order = cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString()));
                         novelChapters.add(novelChapter);
-                    } catch (Exception e) {
+                    } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
                 }
@@ -900,6 +907,8 @@ public class Database {
                         novelPage.getMaxChapterPage() +
                         ")"
                 );
+            } catch (SQLException e) {
+                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1013,7 +1022,7 @@ public class Database {
                     );
                     cursor.close();
                     return novelCard;
-                } catch (Exception e) {
+                } catch (RuntimeException e) {
                     e.printStackTrace();
                 }
             }
@@ -1037,7 +1046,7 @@ public class Database {
                     String title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())));
                     cursor.close();
                     return title;
-                } catch (Exception e) {
+                } catch (RuntimeException e) {
                     e.printStackTrace();
                 }
             }
@@ -1082,7 +1091,7 @@ public class Database {
                     novelPage.setMaxChapterPage(cursor.getInt(cursor.getColumnIndex(Columns.MAX_CHAPTER_PAGE.toString())));
                     cursor.close();
                     return novelPage;
-                } catch (Exception e) {
+                } catch (RuntimeException e) {
                     e.printStackTrace();
                 }
             }
@@ -1213,15 +1222,22 @@ public class Database {
         }
         */
 
+
+        static class IncorrectDateException extends Exception {
+            IncorrectDateException(String message) {
+                super(message);
+            }
+        }
+
         /**
          * Gets count on day
          *
          * @param date1 first
          * @param date2 second
          */
-        public static int getCountBetween(long date1, long date2) throws Exception {
+        public static int getCountBetween(long date1, long date2) throws IncorrectDateException {
             if (date2 <= date1)
-                throw new Exception("Dates implemented wrongly");
+                throw new IncorrectDateException("Dates implemented wrongly");
             Cursor cursor = sqLiteDatabase.rawQuery(
                     "SELECT " + Columns.TIME + " from " + Tables.UPDATES +
                             " where " + Columns.TIME + "<" + date2 + " and " + Columns.TIME + ">=" + date1, null);
@@ -1237,9 +1253,9 @@ public class Database {
          * @param date2 second
          */
         @NonNull
-        public static ArrayList<Update> getTimeBetween(long date1, long date2) throws Exception {
+        public static ArrayList<Update> getTimeBetween(long date1, long date2) throws IncorrectDateException {
             if (date2 <= date1)
-                throw new Exception("Dates implemented wrongly");
+                throw new IncorrectDateException("Dates implemented wrongly");
             Log.i("UL", "Getting dates between [" + new DateTime(date1) + "] and [" + new DateTime(date2) + "]");
             Cursor cursor = sqLiteDatabase.rawQuery(
                     "SELECT " + Columns.ID + "," + Columns.PARENT_ID + "," + Columns.TIME + " from " + Tables.UPDATES +
@@ -1267,7 +1283,7 @@ public class Database {
             sqLiteDatabase.execSQL("insert into " + Tables.UPDATES + "(" + Columns.ID + "," + Columns.PARENT_ID + "," + Columns.TIME + ") values(" +
                     getChapterIDFromChapterURL(chapterURL) + "," +
                     novelID + "," +
-                    +time + ")");
+                    time + ")");
         }
 
 // --Commented out by Inspection START (12/22/19 11:10 AM):
@@ -1284,6 +1300,7 @@ public class Database {
     }
 
     public static class DatabaseFormatters {
+
 
         public static void addToFormatterList(String name, int id, String md5, boolean hasRepo, String repo) {
             int i = 0;

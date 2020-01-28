@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_catalogue.*
  * @author github.com/doomsdayrs
  */
 class CatalogueHitBottom(private val catalogueFragment: CatalogueFragment) : RecyclerView.OnScrollListener() {
-    var running = false
+    private var running = false
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         if (!catalogueFragment.isQuery && !catalogueFragment.isInSearch) if (!running) if (!catalogueFragment.recyclerView!!.canScrollVertically(1)) {
             Log.d("CatalogueFragmentLoad", "Getting next page")

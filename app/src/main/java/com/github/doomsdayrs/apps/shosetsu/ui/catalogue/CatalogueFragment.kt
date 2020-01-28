@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.widget.SearchView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,7 +49,7 @@ import java.util.*
  */
 //TODO fix issue with not loading
 class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
-    var cataloguePageLoader: CataloguePageLoader? = null
+    private var cataloguePageLoader: CataloguePageLoader? = null
     var catalogueNovelCards = ArrayList<CatalogueNovelCard>()
     lateinit var formatter: Formatter
     lateinit var catalogueAdapter: CatalogueAdapter
@@ -59,7 +58,6 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
     var isInSearch = false
     private var dontRefresh = false
     var isQuery = false
-    var empty: TextView? = null
 
     init {
         setHasOptionsMenu(true)

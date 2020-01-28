@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.migration
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -70,11 +69,6 @@ class MigrationView : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val intent = intent
@@ -83,7 +77,7 @@ class MigrationView : AppCompatActivity() {
         setContentView(R.layout.migrate_source_view)
 
         // Fills in dummy data
-        run { for (x in novels!!.indices) novelResults.add(ArrayList()) }
+        run { for (x in novels.indices) novelResults.add(ArrayList()) }
 
         // Sets selected novels
         setUpSelectedNovels()
@@ -147,7 +141,7 @@ class MigrationView : AppCompatActivity() {
         val adapter = MigrationViewCatalogueAdapter(catalogues, this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-        fillData();
+        fillData()
     }
 
     fun fillData() {

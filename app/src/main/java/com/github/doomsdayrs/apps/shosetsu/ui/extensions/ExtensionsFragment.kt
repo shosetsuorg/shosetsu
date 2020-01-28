@@ -89,6 +89,6 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
             if (!array.contains(obj))
                 array.add(obj)
         }
-        adapter!!.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
     }
 }

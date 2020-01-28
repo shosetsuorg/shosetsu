@@ -205,7 +205,7 @@
     <string name="advanced">Advanced</string>
     <string name="info">Info</string>
     <string name="backup">Backup</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="amoled">Amoled</string>
 
     <array name="application_themes">

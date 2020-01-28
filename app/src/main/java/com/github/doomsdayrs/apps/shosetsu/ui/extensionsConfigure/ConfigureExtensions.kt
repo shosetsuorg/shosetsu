@@ -33,7 +33,6 @@ import org.json.JSONArray
  * 21 / 01 / 2020
  *
  * @author github.com/doomsdayrs
- * @param jsonArray Array of disabled formatters, Includes . . . imageURL, Name, ID
  */
 class ConfigureExtensions : Fragment(R.layout.alert_extensions_configure) {
     lateinit var jsonArray: JSONArray

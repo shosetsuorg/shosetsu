@@ -107,7 +107,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
         } else {
             novelID = savedInstanceState.getInt("novelID")
             novelURL = savedInstanceState.getString("novelURL", "")
-            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))!!
+            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
             status = Status.getStatus(savedInstanceState.getInt("status"))
             novelPage = Database.DatabaseNovels.getNovelPage(novelID)
             new = savedInstanceState.getBoolean("new")

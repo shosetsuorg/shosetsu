@@ -69,13 +69,6 @@ object FormatterController {
     lateinit var sourceJSON: JSONObject
     val branch = if (BuildConfig.DEBUG) "development" else "master"
 
-    /**
-     * Initializes formatterController
-     */
-    fun initialize(activity: Activity): AsyncTask<Void, Void, Void>? {
-        return FormatterInit(activity).execute()
-    }
-
     fun md5(s: String): String? {
         try {
             // Create MD5 Hash
@@ -105,7 +98,7 @@ object FormatterController {
     }
 
 
-    fun splitVersion(version: String): Array<String> {
+    private fun splitVersion(version: String): Array<String> {
         return version.split(".").toTypedArray()
     }
 
@@ -455,7 +448,7 @@ object FormatterController {
     /**
      * Loads a new JSON file to be used
      */
-    class RefreshJSON(val activity: Activity, val extensionsFragment: ExtensionsFragment) : AsyncTask<Void, Void, Void>() {
+    class RefreshJSON(val activity: Activity, private val extensionsFragment: ExtensionsFragment) : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void?): Void? {
             val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
             if (Utilities.isOnline) {

@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.google.android.material.card.MaterialCardView
 
 /*
  * This file is part of Shosetsu.
@@ -85,7 +86,8 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
             Status.READING -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
-                } else { //TODO Tint for cards before 22
+                } else {
+                    (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
                 }
                 chaptersViewHolder.status.text = Status.READING.status
                 chaptersViewHolder.readTag.visibility = View.VISIBLE
@@ -95,14 +97,16 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
             Status.UNREAD -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
-                } else { //TODO Tint for cards before 22
+                } else {
+                    (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
                 }
                 chaptersViewHolder.status.text = Status.UNREAD.status
             }
             Status.READ -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (novelFragmentChapters.context != null) chaptersViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(novelFragmentChapters.context!!, R.color.shade))
-                } else { //TODO Tint for cards before 22
+                } else {
+                    (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
                 }
                 chaptersViewHolder.status.text = Status.READ.status
                 chaptersViewHolder.readTag.visibility = View.GONE

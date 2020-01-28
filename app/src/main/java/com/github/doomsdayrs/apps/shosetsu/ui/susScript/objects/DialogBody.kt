@@ -34,7 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.susScript.adapters.SusScriptAdapte
  * @author github.com/doomsdayrs
  */
 
-class DialogBody(inflater: LayoutInflater, private val builder: AlertDialog.Builder, private val susScriptDialog: SusScriptDialog) {
+class DialogBody(inflater: LayoutInflater, builder: AlertDialog.Builder, private val susScriptDialog: SusScriptDialog) {
     val view = inflater.inflate(R.layout.alert_extensions_handle, null)!!
     lateinit var dialog: AlertDialog
 
