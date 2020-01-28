@@ -2,6 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+ext{
+    // Copied from tachiyomi
+    // Git is needed in your system PATH for these commands to work.
+    // If it's not installed, you can return a random value as a workaround
+    getCommitCount = {
+        return 'git rev-list --count HEAD'.execute().text.trim()
+        // return "1"
+    }
+}
+
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -21,7 +31,7 @@ android {
             multiDexEnabled = true
         }
         debug {
-            versionNameSuffix = '-debug'
+            versionNameSuffix "-r${getCommitCount()}"
             applicationIdSuffix '.debug'
             debuggable true
         }
