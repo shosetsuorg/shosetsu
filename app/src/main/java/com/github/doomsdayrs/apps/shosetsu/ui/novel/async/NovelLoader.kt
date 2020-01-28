@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.async
 
+import android.content.DialogInterface
 import android.os.AsyncTask
 import android.util.Log
-import android.view.View
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
@@ -11,11 +11,11 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.*
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
+import com.github.doomsdayrs.apps.shosetsu.ui.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD
 import kotlinx.android.synthetic.main.fragment_novel.*
 import kotlinx.android.synthetic.main.fragment_novel_main.*
-import kotlinx.android.synthetic.main.network_error.*
 import org.jsoup.nodes.Document
 
 
@@ -100,10 +100,11 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
                 true
             } catch (e: Exception) {
                 // Errors out the program and returns a false
-                Log.e("NovelLoader","Error",e)
+                Log.e("NovelLoader", "Error", e)
                 novelFragment?.activity?.runOnUiThread {
-                    novelFragment.novelFragmentInfo?.fragment_novel_main_refresh?.isRefreshing = false;novelFragment.network_error!!.visibility = View.VISIBLE;novelFragment.error_message!!.text = e.message
-                    novelFragment.error_button!!.setOnClickListener { NovelLoader(this).execute() }
+                    ErrorAlert(novelFragment.context!!) { dialog: DialogInterface?, which: Int -> NovelLoader(this).execute();dialog?.dismiss() }
+                            .setMessage(e.message)
+                            .show()
                 }
                 false
             }

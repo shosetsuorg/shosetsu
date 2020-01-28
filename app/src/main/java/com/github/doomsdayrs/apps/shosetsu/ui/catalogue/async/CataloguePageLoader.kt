@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
@@ -10,7 +9,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
 import kotlinx.android.synthetic.main.fragment_catalogue.*
-import kotlinx.android.synthetic.main.network_error.*
 
 /*
  * This file is part of Shosetsu.
@@ -57,7 +55,6 @@ class CataloguePageLoader
     override fun doInBackground(vararg integers: Int?): Boolean {
         Log.d("Loading", "Catalogue")
         catalogueFragment?.let {
-            it.recyclerView?.post { it.network_error?.visibility = View.GONE }
             if (it.formatter.hasCloudFlare) {
                 if (it.activity != null) it.activity!!.runOnUiThread { Toast.makeText(it.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
             }

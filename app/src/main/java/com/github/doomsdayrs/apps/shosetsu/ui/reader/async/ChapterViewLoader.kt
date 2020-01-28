@@ -1,14 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.async
 
+import android.content.DialogInterface
 import android.os.AsyncTask
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
+import com.github.doomsdayrs.apps.shosetsu.ui.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
 import kotlinx.android.synthetic.main.chapter_view.*
-import kotlinx.android.synthetic.main.network_error.*
 import java.util.concurrent.TimeUnit
 
 class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, Void?, Boolean>() {
@@ -16,7 +17,6 @@ class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, 
     override fun onPreExecute() {
         Log.i("ChapterViewLoader", "onPreExecute${chapterView.appendID()}")
         chapterView.progress.visibility = VISIBLE
-        chapterView.network_error.visibility = GONE
     }
 
     override fun doInBackground(vararg objects: Any?): Boolean {
@@ -31,9 +31,9 @@ class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, 
             return true
         } catch (e: Exception) {
             chapterView.activity?.runOnUiThread {
-                chapterView.network_error.visibility = VISIBLE
-                chapterView.error_message.text = e.message
-                chapterView.error_button.setOnClickListener { ChapterViewLoader(chapterView).execute() }
+                ErrorAlert(chapterView.context!!) { dialog: DialogInterface?, which: Int -> ChapterViewLoader(chapterView).execute();dialog?.dismiss() }
+                        .setMessage(e.message)
+                        .show()
             }
         }
         return false
