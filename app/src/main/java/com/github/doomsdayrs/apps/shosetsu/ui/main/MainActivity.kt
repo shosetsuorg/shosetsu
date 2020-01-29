@@ -134,7 +134,6 @@ class MainActivity : AppCompatActivity(), Supporter {
                 }
             }
         }
-        throw NullPointerException("FAIL LOL")
     }
 
     fun transitionView(target: Fragment) {
