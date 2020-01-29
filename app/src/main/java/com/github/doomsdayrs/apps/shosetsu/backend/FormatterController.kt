@@ -179,6 +179,7 @@ object FormatterController {
                     DefaultScrapers.formatters.sortedWith(compareBy { it.name })
                     activity.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
                 }
+                activity.unregisterReceiver(this)
             }
         }
         activity.registerReceiver(onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
