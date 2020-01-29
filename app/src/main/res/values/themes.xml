@@ -9,4 +9,6 @@
         <item name="appBarLayoutStyle">@style/AppTheme.AppBar</item>
     </style>
 
+    <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog">
+    </style>
 </resources>

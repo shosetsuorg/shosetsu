@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui
+package com.github.doomsdayrs.apps.shosetsu.ui.errorView
 
 import android.app.Activity
 import android.app.AlertDialog

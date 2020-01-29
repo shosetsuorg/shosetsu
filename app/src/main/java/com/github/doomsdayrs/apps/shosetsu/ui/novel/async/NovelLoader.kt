@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.*
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
-import com.github.doomsdayrs.apps.shosetsu.ui.ErrorAlert
+import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD
 import kotlinx.android.synthetic.main.fragment_novel.*

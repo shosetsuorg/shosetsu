@@ -7,7 +7,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
-import com.github.doomsdayrs.apps.shosetsu.ui.ErrorAlert
+import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
 import kotlinx.android.synthetic.main.chapter_view.*
 import java.util.concurrent.TimeUnit

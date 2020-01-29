@@ -207,6 +207,8 @@
     <string name="backup">Backup</string>
     <string name="loading">Loading…</string>
     <string name="amoled">Amoled</string>
+    <string name="crashCommentPromt">The app crashed! Maybe leave a comment and send an email to dev?</string>
+    <string name="crashDialogText">The application has crashed due to manga trolls!</string>
 
     <array name="application_themes">
         <item>@string/light</item>
