@@ -50,7 +50,6 @@ class LibraryNovelAdapter(private val novelCards: ArrayList<Int>, private val li
             libNovelViewHolder.novelCard = novelCard
             libNovelViewHolder.formatter = getByID(novelCard.formatterID)
             libNovelViewHolder.title.text = novelCard.title
-            Utilities.setBackgroundByTheme(libNovelViewHolder.title)
         }
         val count = Database.DatabaseChapter.getCountOfChaptersUnread(novelCard.novelID)
         if (count != 0) {

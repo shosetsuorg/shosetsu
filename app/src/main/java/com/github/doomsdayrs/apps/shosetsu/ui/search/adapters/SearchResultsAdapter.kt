@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
@@ -95,7 +94,6 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             (searchViewHolder.searchFragment.activity as MainActivity).transitionView(novelFragment)
         }
 
-       Utilities.setBackgroundByTheme(holder.textView)
     }
 
 

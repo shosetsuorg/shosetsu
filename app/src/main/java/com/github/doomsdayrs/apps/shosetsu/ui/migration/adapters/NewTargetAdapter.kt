@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.NewMigrationView
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.viewHolders.CompressedHolder
 import com.squareup.picasso.Picasso
@@ -48,7 +47,6 @@ class NewTargetAdapter(private val newMigrationView: NewMigrationView) : Recycle
         val card = newMigrationView.novelResults[newMigrationView.index][position]
         Picasso.get().load(card.imageURL).into(holder.image)
         holder.title.text = card.title
-        Utilities.setBackgroundByTheme(holder.title)
     }
 
 }
