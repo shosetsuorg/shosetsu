@@ -141,8 +141,7 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
         if (Settings.novelCardType == 0) {
             catalogueAdapter = CatalogueAdapter(recycleCards, this, formatter, R.layout.recycler_novel_card)
             recyclerView!!.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
-        }
-        if (Settings.novelCardType == 0) {
+        } else {
             catalogueAdapter = CatalogueAdapter(recycleCards, this, formatter, R.layout.recycler_novel_card_compressed)
             recyclerView!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
