@@ -8,11 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import kotlinx.android.synthetic.main.settings.*
@@ -40,8 +40,8 @@ import kotlinx.android.synthetic.main.settings.*
  *
  * @author github.com/doomsdayrs
  */
-class InfoSettings : Fragment() {
-    val settings: ArrayList<SettingsItemData> = arrayListOf(
+class InfoSettings : SettingsSubFragment() {
+    override val settings: ArrayList<SettingsItemData> = arrayListOf(
             SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
                     .setTitle(R.string.version)
                     .setDescription(BuildConfig.VERSION_NAME)

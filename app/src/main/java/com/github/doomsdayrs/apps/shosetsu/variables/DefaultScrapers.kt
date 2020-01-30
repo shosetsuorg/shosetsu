@@ -39,8 +39,7 @@ object DefaultScrapers {
     class UnknownFormatter : Formatter {
         override val chapterOrder: Ordering
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        override val formatterID: Int
-            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val formatterID: Int = -1
         override val genres: Array<NovelGenre> = arrayOf()
         override val hasCloudFlare: Boolean
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
@@ -93,7 +92,6 @@ object DefaultScrapers {
     val unknown = UnknownFormatter()
 
     val formatters = ArrayList<Formatter>()
-
 
 
     @JvmStatic

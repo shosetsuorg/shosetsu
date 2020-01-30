@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder
 
-import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -40,7 +40,7 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
     private val spinner: Spinner = itemView.findViewById(R.id.spinner)
     val textView: TextView = itemView.findViewById(R.id.text)
     private val switchView: Switch = itemView.findViewById(R.id.switchView)
-
+    private val numberPicker: NumberPicker = itemView.findViewById(R.id.numberPicker)
 
     fun setData(data: SettingsItemData): SettingsItem {
         type = data.type
@@ -53,8 +53,6 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
             itemDescription.setText(data.descID)
         else
             itemDescription.text = data.descriptionText
-
-
 
         when (type) {
             SettingsItemData.SettingsType.BUTTON -> {
@@ -88,6 +86,13 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
                 switchView.isChecked = data.switchIsChecked
                 switchView.setOnCheckedChangeListener(data.switchOnCheckedListener)
             }
+            SettingsItemData.SettingsType.NUMBER_PICKER -> {
+                numberPicker.visibility = View.VISIBLE
+                numberPicker.minValue = data.lowerBound
+                numberPicker.maxValue = data.upperBound
+                numberPicker.value = data.numberPickerValue
+                numberPicker.setOnValueChangedListener(data.numberPickerOnValueChangedListener)
+            }
         }
         return this
     }
@@ -98,7 +103,8 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
             BUTTON,
             SPINNER,
             TEXT,
-            SWITCH
+            SWITCH,
+            NUMBER_PICKER
         }
 
         var titleID: Int = -1
@@ -115,6 +121,8 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
 
         var itemViewOnClick: (View) -> Unit
 
+        // Spinner
+
         private var spinnerOnClick: (View) -> Unit
         var spinnerOnItemSelectedListener: AdapterView.OnItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -126,8 +134,16 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
         lateinit var adapter: ArrayAdapter<*>
         var spinnerSelection: Int = -1
 
+        // Switch
+
         var switchIsChecked: Boolean = false
         var switchOnCheckedListener: CompoundButton.OnCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, _ -> }
+
+        // Number Picker
+        var lowerBound = 0
+        var upperBound = 0
+        var numberPickerValue: Int = 0
+        lateinit var numberPickerOnValueChangedListener: (picker: NumberPicker?, oldVal: Int, newVal: Int) -> Unit
 
         init {
             textViewOnClickListener = {}
@@ -203,7 +219,6 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         fun setSwitchIsChecked(b: Boolean): SettingsItemData {
-            Log.d("Data-SwitchChecked", b.toString())
             switchIsChecked = b
             return this
         }
@@ -212,6 +227,27 @@ class SettingsItem(view: View) : RecyclerView.ViewHolder(view) {
             switchOnCheckedListener = onCheckedChangeListener
             return this
         }
+
+        fun setNumberLowerBound(int: Int): SettingsItemData {
+            lowerBound = int
+            return this
+        }
+
+        fun setNumberUpperBound(int: Int): SettingsItemData {
+            upperBound = int
+            return this
+        }
+
+        fun setNumberValue(int: Int): SettingsItemData {
+            numberPickerValue = int
+            return this
+        }
+        @RequiresApi
+        fun setNumberPickerOnValueChangedListener(function: (picker: NumberPicker?, oldVal: Int, newVal: Int) -> Unit): SettingsItemData {
+            this.numberPickerOnValueChangedListener = function
+            return this
+        }
+
     }
 
 }

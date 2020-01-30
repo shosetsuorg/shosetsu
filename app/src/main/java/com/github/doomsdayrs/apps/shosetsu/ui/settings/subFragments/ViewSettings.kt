@@ -9,11 +9,10 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
-import androidx.annotation.StringRes
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
@@ -44,8 +43,8 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */ // TODO: Migrate to using PreferenceScreen and PreferenceGroup. Maybe
-class ViewSettings : Fragment() {
-    val settings: ArrayList<SettingsItemData> = arrayListOf(
+class ViewSettings : SettingsSubFragment() {
+    override val settings: ArrayList<SettingsItemData> = arrayListOf(
 
             SettingsItemData(SettingsType.SPINNER)
                     .setTitle(R.string.spacing)
@@ -145,17 +144,35 @@ class ViewSettings : Fragment() {
                     .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
                         Log.d("Tap to scroll", p1.toString())
                         Utilities.toggleTapToScroll()
-                    })
+                    }),
+            SettingsItemData(SettingsType.NUMBER_PICKER)
+                    .setTitle(R.string.columns_of_novel_listing_p)
+                    .setDescription((R.string.columns_zero_automatic))
+                    .setNumberValue(Settings.columnsInNovelsViewP.let { if (it == -1) 0 else it })
+                    .setNumberLowerBound(0)
+                    .setNumberUpperBound(10)
+                    .setNumberPickerOnValueChangedListener { _, _, newVal ->
+                        when (newVal) {
+                            0 -> Settings.columnsInNovelsViewP = -1
+                            else -> Settings.columnsInNovelsViewP = newVal
+                        }
+                    },
+            SettingsItemData(SettingsType.NUMBER_PICKER)
+                    .setTitle(R.string.columns_of_novel_listing_h)
+                    .setDescription(R.string.columns_zero_automatic)
+                    .setNumberValue(Settings.columnsInNovelsViewH.let { if (it == -1) 0 else it })
+                    .setNumberLowerBound(0)
+                    .setNumberUpperBound(10)
+                    .setNumberPickerOnValueChangedListener { _, _, newVal ->
+                        when (newVal) {
+                            0 -> Settings.columnsInNovelsViewH = -1
+                            else -> Settings.columnsInNovelsViewH = newVal
+                        }
+                    }
+
     )
     val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
 
-    private fun findDataByID(@StringRes id: Int): Int {
-        for ((index, data) in settings.withIndex()) {
-            if (data.titleID == id)
-                return index
-        }
-        return -1
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("OnCreateView", "ViewSettings")

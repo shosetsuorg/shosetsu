@@ -143,9 +143,12 @@ object Utilities {
 
 
     fun calculateNoOfColumns(context: Context, columnWidthDp: Float): Int { // For example columnWidthdp=180
+        val c = if (context.resources.configuration.orientation == 1) Settings.columnsInNovelsViewP else Settings.columnsInNovelsViewH
+
         val displayMetrics = context.resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-        return (screenWidthDp / columnWidthDp + 0.5).toInt()
+
+        return if (c == -1) (screenWidthDp / columnWidthDp + 0.5).toInt() else (screenWidthDp / (screenWidthDp / c) + 0.5).toInt()
     }
 
     /**

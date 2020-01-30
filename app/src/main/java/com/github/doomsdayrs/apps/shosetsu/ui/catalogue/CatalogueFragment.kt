@@ -66,7 +66,9 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putSerializable("list", catalogueNovelCards)
-        outState.putInt("formatter", formatter.formatterID)
+        if (this::formatter.isInitialized)
+            outState.putInt("formatter", formatter.formatterID)
+        else outState.putInt("formatter", -1)
     }
 
     override fun onPause() {

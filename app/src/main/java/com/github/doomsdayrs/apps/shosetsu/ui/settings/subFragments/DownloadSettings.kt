@@ -10,10 +10,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
@@ -41,8 +41,8 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class DownloadSettings : Fragment() {
-    val settings: ArrayList<SettingsItem.SettingsItemData> = arrayListOf(
+class DownloadSettings : SettingsSubFragment() {
+    override val settings: ArrayList<SettingsItem.SettingsItemData> = arrayListOf(
             SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.TEXT)
                     .setTitle(R.string.download_directory)
                     .setTextViewText(Utilities.shoDir)

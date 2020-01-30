@@ -112,7 +112,7 @@ object Settings {
             field = value
             Utilities.advancedPreferences.edit().putString("disabledFormatters", value.toString()).apply()
         }
-        get() = JSONArray(Utilities.advancedPreferences.getString("disabledFormatters","[]"))
+        get() = JSONArray(Utilities.advancedPreferences.getString("disabledFormatters", "[]"))
 
     var indentSize = 0
         set(value) {
@@ -120,4 +120,19 @@ object Settings {
             Utilities.viewPreferences.edit().putInt("indentSize", value).apply()
         }
         get() = Utilities.viewPreferences.getInt("indentSize", 1)
+
+    var columnsInNovelsViewP = -1
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("columnsInNovelsViewP", value).apply()
+        }
+        get() = Utilities.viewPreferences.getInt("columnsInNovelsViewP", -1)
+
+    var columnsInNovelsViewH = -1
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("columnsInNovelsViewH", value).apply()
+        }
+        get() = Utilities.viewPreferences.getInt("columnsInNovelsViewH", -1)
+
 }

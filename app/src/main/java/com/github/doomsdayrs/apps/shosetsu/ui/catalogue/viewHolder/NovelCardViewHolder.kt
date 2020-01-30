@@ -4,7 +4,6 @@ import android.view.View
 import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -36,7 +35,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
  * @author github.com/doomsdayrs
  */
 class NovelCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
-    val constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraint)
     val imageView: ImageView = itemView.findViewById(R.id.image)
     val title: TextView = itemView.findViewById(R.id.title)
     var catalogueFragment: CatalogueFragment? = null
