@@ -135,4 +135,11 @@ object Settings {
         }
         get() = Utilities.viewPreferences.getInt("columnsInNovelsViewH", -1)
 
+    var novelCardType = 0
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putInt("novelCardType", value).apply()
+        }
+        get() = Utilities.viewPreferences.getInt("novelCardType", 0)
+
 }

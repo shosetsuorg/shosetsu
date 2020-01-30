@@ -213,6 +213,11 @@
     <string name="columns_of_novel_listing_h">Columns of novel listing (horizontal)</string>
     <string name="columns_zero_automatic">0 means automatic</string>
 
+    <string name="normal">Normal</string>
+    <string name="compressed">Compressed</string>
+    <string name="novel_card_type_selector_title">NovelCard Type</string>
+    <string name="novel_card_type_selector_desc">Set\'s how novel card\'s are viewed</string>
+
     <array name="application_themes">
         <item>@string/light</item>
         <item>@string/amoled</item>
@@ -230,6 +235,10 @@
         <item>@string/chapters</item>
     </array>
 
+    <array name="novel_card_types">
+        <item>@string/normal</item>
+        <item>@string/compressed</item>
+    </array>
 </resources>
 
 

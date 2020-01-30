@@ -3,8 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.library.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
@@ -35,9 +35,9 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class LibraryNovelAdapter(private val novelCards: ArrayList<Int>, private val libraryFragment: LibraryFragment) : RecyclerView.Adapter<LibNovelViewHolder>() {
+class LibraryNovelAdapter(private val novelCards: ArrayList<Int>, private val libraryFragment: LibraryFragment, @LayoutRes val layout: Int) : RecyclerView.Adapter<LibNovelViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): LibNovelViewHolder {
-        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_novel_card, viewGroup, false)
+        val view = LayoutInflater.from(viewGroup.context).inflate(layout, viewGroup, false)
         return LibNovelViewHolder(view)
     }
 

@@ -3,9 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
@@ -32,9 +32,9 @@ import com.squareup.picasso.Picasso
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, private val catalogueFragment: CatalogueFragment, private val formatter: Formatter) : RecyclerView.Adapter<NovelCardViewHolder>() {
+class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, private val catalogueFragment: CatalogueFragment, private val formatter: Formatter, @LayoutRes val layout: Int) : RecyclerView.Adapter<NovelCardViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): NovelCardViewHolder {
-        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_novel_card, viewGroup, false)
+        val view = LayoutInflater.from(viewGroup.context).inflate(layout, viewGroup, false)
         val novelCardsViewHolder = NovelCardViewHolder(view)
         novelCardsViewHolder.catalogueFragment = catalogueFragment
         novelCardsViewHolder.formatter = formatter

@@ -168,8 +168,20 @@ class ViewSettings : SettingsSubFragment() {
                             0 -> Settings.columnsInNovelsViewH = -1
                             else -> Settings.columnsInNovelsViewH = newVal
                         }
-                    }
+                    },
+            SettingsItemData(SettingsType.SPINNER)
+                    .setTitle((R.string.novel_card_type_selector_title))
+                    .setDescription((R.string.novel_card_type_selector_desc))
+                    .setSpinnerSelection(Settings.novelCardType)
+                    .setOnItemSelectedListener(object : OnItemSelectedListener {
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                        }
 
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                            Settings.novelCardType = position
+                        }
+
+                    })
     )
     val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
 
@@ -216,6 +228,10 @@ class ViewSettings : SettingsSubFragment() {
             settings[x].spinnerSelection = Settings.ReaderMarkingType
         }
 
+        run {
+            val x = findDataByID(R.string.novel_card_type_selector_title)
+            settings[x].adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.novel_card_types))
+        }
         Log.i("onViewCreated", "Finished creation")
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter

@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -21,6 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefre
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
 import kotlinx.android.synthetic.main.fragment_catalogue.*
 import okhttp3.OkHttpClient
@@ -135,12 +137,18 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
 
     fun setLibraryCards(recycleCards: ArrayList<CatalogueNovelCard>) {
         recyclerView!!.setHasFixedSize(false)
-        val layoutManager: RecyclerView.LayoutManager
-        layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
-        catalogueAdapter = CatalogueAdapter(recycleCards, this, formatter)
-        recyclerView!!.layoutManager = layoutManager
-        recyclerView!!.addOnScrollListener(CatalogueHitBottom(this))
+
+        if (Settings.novelCardType == 0) {
+            catalogueAdapter = CatalogueAdapter(recycleCards, this, formatter, R.layout.recycler_novel_card)
+            recyclerView!!.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
+        }
+        if (Settings.novelCardType == 0) {
+            catalogueAdapter = CatalogueAdapter(recycleCards, this, formatter, R.layout.recycler_novel_card_compressed)
+            recyclerView!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
         recyclerView!!.adapter = catalogueAdapter
+        recyclerView!!.addOnScrollListener(CatalogueHitBottom(this))
+
     }
 
     fun executePageLoader() {

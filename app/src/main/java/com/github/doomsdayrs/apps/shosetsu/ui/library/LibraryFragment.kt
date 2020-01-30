@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
@@ -19,6 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNov
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.NewMigrationView
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import kotlinx.android.synthetic.main.fragment_library.*
 import java.io.IOException
 import java.util.*
@@ -163,8 +165,8 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
                 for (j in 0 until i) {
                     if (DatabaseNovels.getNovelTitle(libraryNovelCards[j]) > DatabaseNovels.getNovelTitle(libraryNovelCards[j + 1])) {
                         val indexOne = libraryNovelCards[j]
-                        libraryNovelCards[j] = libraryNovelCards[j+1]
-                        libraryNovelCards[j+1] = indexOne
+                        libraryNovelCards[j] = libraryNovelCards[j + 1]
+                        libraryNovelCards[j + 1] = indexOne
                     }
                 }
             }
@@ -177,10 +179,15 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
      */
     fun setLibraryCards(novelCards: ArrayList<Int>?) {
         recyclerView!!.setHasFixedSize(false)
-        val layoutManager: RecyclerView.LayoutManager
-        layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
-        libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this)
-        recyclerView!!.layoutManager = layoutManager
+
+        if (Settings.novelCardType == 0) {
+            libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
+            recyclerView!!.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
+        } else {
+            libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
+            recyclerView!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
         recyclerView!!.adapter = libraryNovelCardsAdapter
+
     }
 }
