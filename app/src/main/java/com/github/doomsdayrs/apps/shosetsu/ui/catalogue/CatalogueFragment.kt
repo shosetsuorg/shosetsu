@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom
@@ -25,7 +24,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
 import kotlinx.android.synthetic.main.fragment_catalogue.*
-import okhttp3.OkHttpClient
 
 /*
  * This file is part of Shosetsu.
@@ -114,10 +112,6 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 42) {
-            //TODO, Pass cookies from webview to okhttp
-            val client = OkHttpClient.Builder()
-                    .cookieJar(WebviewCookieHandler())
-                    .build()
             executePageLoader()
         }
     }

@@ -13,10 +13,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
@@ -35,6 +37,7 @@ import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.javiersantos.appupdater.objects.Update
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.OkHttpClient
 
 /*
  * This file is part of Shosetsu.
@@ -109,7 +112,9 @@ class MainActivity : AppCompatActivity(), Supporter {
 
         // Webview agent retrieval
         WebViewScrapper.setUa(findViewById<WebView>(R.id.absolute_webView).settings.userAgentString)
-
+        ShosetsuLib.httpClient = OkHttpClient.Builder()
+                .cookieJar(WebviewCookieHandler())
+                .build()
 
         initDownloadManager(this)
         when (intent.action) {
