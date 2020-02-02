@@ -17,9 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
@@ -105,7 +103,7 @@ object Utilities {
         return false
     }
 
-    fun convertNovelArrayToString2DArray(array: List<Novel>): ArrayList<Array<String>> {
+    fun convertNovelArrayToString2DArray(array: Array<Novel.Listing>): ArrayList<Array<String>> {
         val a: ArrayList<Array<String>> = ArrayList()
         for (novel in array) {
             a.add(arrayOf(novel.title, novel.link, novel.imageURL))
@@ -241,13 +239,13 @@ object Utilities {
              * @param s String title
              * @return Stati
              */
-    fun convertStringToStati(s: String): NovelStatus {
+    fun convertStringToStati(s: String): Novel.Status {
         return when (s) {
-            "Publishing" -> NovelStatus.PUBLISHING
-            "Completed" -> NovelStatus.COMPLETED
-            "Paused" -> NovelStatus.PAUSED
-            "Unknown" -> NovelStatus.UNKNOWN
-            else -> NovelStatus.UNKNOWN
+            "Publishing" -> Novel.Status.PUBLISHING
+            "Completed" -> Novel.Status.COMPLETED
+            "Paused" -> Novel.Status.PAUSED
+            "Unknown" -> Novel.Status.UNKNOWN
+            else -> Novel.Status.UNKNOWN
         }
     }
 
@@ -416,10 +414,10 @@ object Utilities {
      * @param novelID      id of novel
      * @param formatterID  formatter
      */
-    fun openChapter(activity: Activity, novelChapter: NovelChapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
+    fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
 
 
-    private fun openChapter(activity: Activity, novelChapter: NovelChapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
+    private fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
         val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
         if (Settings.ReaderMarkingType == MarkingTypes.ONVIEW.i) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
         val intent = Intent(activity, ChapterReader::class.java)

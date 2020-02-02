@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView

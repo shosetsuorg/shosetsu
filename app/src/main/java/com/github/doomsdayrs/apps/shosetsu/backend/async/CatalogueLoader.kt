@@ -1,10 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.async
 
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
+import org.luaj.vm2.LuaTable
 
 
 /*
@@ -44,7 +44,7 @@ open class CatalogueLoader(val formatter: Formatter) {
      * @param integers if length = 0, loads first page otherwise loads the page # correlated to the integer
      * @return if this was completed or not
      */
-    fun execute(vararg integers: Int?): List<Novel>? {
+    fun execute(vararg integers: Int?): Array<Novel.Listing> {
         Log.d("CatalogueLoader", "Loading")
         if (formatter.hasCloudFlare) {
             Log.i("CatalogueLoader", "CLOUDFLARE DETECED")
@@ -53,11 +53,13 @@ open class CatalogueLoader(val formatter: Formatter) {
         // Loads novel list
         return if (integers.isEmpty())
             if (query.isEmpty())
-                WebViewScrapper.docFromURL(formatter.getLatestURL(1), formatter.hasCloudFlare)?.let { formatter.parseLatest(it) }
-            else
-                WebViewScrapper.docFromURL(formatter.getSearchString(query), formatter.hasCloudFlare)?.let { formatter.parseSearch(it) }
+                formatter.listings[0].getListing(1)
+            else {
+                val table = LuaTable()
+                table["query"] = query
+                formatter.search(table) {}
+            }
         else
-            WebViewScrapper.docFromURL(formatter.getLatestURL(integers[0]!!), formatter.hasCloudFlare)?.let { formatter.parseLatest(it) }
-
+            formatter.listings[0].getListing(integers[0]!!)
     }
 }

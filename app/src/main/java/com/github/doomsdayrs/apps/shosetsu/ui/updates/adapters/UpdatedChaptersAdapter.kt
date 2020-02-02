@@ -24,8 +24,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -66,7 +66,7 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
         if (novelChapter != null) {
             updatedChapterHolder.novelChapter = (novelChapter)
             updatedChapterHolder.popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
-                var novelPage = NovelPage()
+                var novelPage = Novel.Info()
                 val nURL = getNovelURLFromChapterURL(updatedChapterHolder.novelChapter?.link)
                 if (nURL != null) novelPage = Database.DatabaseNovels.getNovelPage(getNovelIDFromNovelURL(nURL))
                 val formatter: Formatter = getByID(getFormatterIDFromNovelURL(nURL))

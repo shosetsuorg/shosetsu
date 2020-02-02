@@ -2,9 +2,9 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
+import org.luaj.vm2.LuaTable
 import java.util.*
 
 /*
@@ -37,7 +37,9 @@ class CatalogueQuerySearch(private val catalogueFragment: CatalogueFragment) : A
      */
     override fun doInBackground(vararg strings: String?): ArrayList<CatalogueNovelCard> {
         val result = ArrayList<CatalogueNovelCard>()
-        val novels = catalogueFragment.formatter.parseSearch(docFromURL(catalogueFragment.formatter.getSearchString(strings[0]!!), catalogueFragment.formatter.hasCloudFlare)!!)
+        val luaTable = LuaTable()
+        luaTable["query"] = strings[0]
+        val novels = catalogueFragment.formatter.search(luaTable) {}
         for (novel in novels) result.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
         return result
     }

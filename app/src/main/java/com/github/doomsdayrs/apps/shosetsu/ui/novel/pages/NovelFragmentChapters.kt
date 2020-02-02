@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -63,14 +63,10 @@ class NovelFragmentChapters : Fragment() {
         chaptersLoadedAction = object : ChapterLoaderAction {
             override fun onPreExecute() {
                 fragment_novel_chapters_refresh.isRefreshing = true
-                if (novelFragment?.formatter?.isIncrementingChapterList!!)
-                    page_count.visibility = VISIBLE
             }
 
-            override fun onPostExecute(result: Boolean, finalChapters: ArrayList<NovelChapter>) {
+            override fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>) {
                 fragment_novel_chapters_refresh.isRefreshing = false
-                if (novelFragment?.formatter?.isIncrementingChapterList!!)
-                    page_count.visibility = GONE
 
                 if (result) {
                     novelFragment?.novelChapters = finalChapters
@@ -78,10 +74,10 @@ class NovelFragmentChapters : Fragment() {
                 }
             }
 
-            override fun onJustBeforePost(finalChapters: ArrayList<NovelChapter>) {
+            override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
                 val s = getString(R.string.processing_data)
                 page_count?.post { page_count.text = s }
-                for ((count: Int, novelChapter: NovelChapter) in finalChapters.withIndex()) {
+                for ((count: Int, novelChapter: Novel.Chapter) in finalChapters.withIndex()) {
                     val sc = s + ": $count/${finalChapters.size}"
                     page_count?.post { page_count.text = sc }
                     if (novelFragment != null && novelFragment!!.novelID != -1) {
@@ -117,7 +113,7 @@ class NovelFragmentChapters : Fragment() {
 
     var menu: Menu? = null
 
-    operator fun contains(novelChapter: NovelChapter): Boolean {
+    operator fun contains(novelChapter: Novel.Chapter): Boolean {
         for (n in selectedChapters) if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true)) return true
         return false
     }

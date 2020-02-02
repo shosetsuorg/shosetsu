@@ -4,7 +4,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
+import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities

@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelStatus
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
@@ -138,23 +138,18 @@ class NovelFragmentInfo : Fragment() {
                 fragment_novel_description.text = novelFragment!!.novelPage.description
                 if (novelFragment!!.novelPage.artists.isNotEmpty()) fragment_novel_artists.text = novelFragment!!.novelPage.artists.contentToString()
                 fragment_novel_status.text = novelFragment!!.status.status
-                var s = "unknown"
                 when (novelFragment!!.novelPage.status) {
-                    NovelStatus.PAUSED -> {
+                    Novel.Status.PAUSED -> {
                         fragment_novel_publish!!.setText(R.string.paused)
-                        s = "Paused"
                     }
-                    NovelStatus.COMPLETED -> {
+                    Novel.Status.COMPLETED -> {
                         fragment_novel_publish!!.setText(R.string.completed)
-                        s = "Completed"
                     }
-                    NovelStatus.PUBLISHING -> {
+                    Novel.Status.PUBLISHING -> {
                         fragment_novel_publish!!.setText(R.string.publishing)
-                        s = "Publishing"
                     }
                     else -> fragment_novel_publish!!.setText(R.string.unknown)
                 }
-                println("PS: $s")
                 if (context != null) {
                     val layoutInflater = LayoutInflater.from(context)
                     for (string in novelFragment!!.novelPage.genres) {

@@ -2,12 +2,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.migration.async
 
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.getByID
 import kotlinx.android.synthetic.main.migrate_source_view.*
+import org.luaj.vm2.LuaTable
 
 /*
  * This file is part of Shosetsu.
@@ -36,8 +35,11 @@ class MigrationViewLoad(private val migrationView: MigrationView) : AsyncTask<Vo
     override fun doInBackground(vararg voids: Void?): Void? {
         Log.d("Searching with", targetFormat.name)
         for (x in migrationView.novels.indices) { // Retrieves search results
-            val list = targetFormat.parseSearch(docFromURL(targetFormat.getSearchString(migrationView.novels[x].title), targetFormat.hasCloudFlare)!!)
-            migrationView.novelResults[x] = list as ArrayList<Novel>
+
+            val table = LuaTable()
+            table["query"] = migrationView.novels[x].title
+            val list = targetFormat.search(table) {}
+            migrationView.novelResults[x].addAll(list)
         }
         return null
     }

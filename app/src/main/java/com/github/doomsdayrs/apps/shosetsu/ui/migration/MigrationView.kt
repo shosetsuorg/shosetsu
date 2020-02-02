@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingMapAdapter
@@ -43,7 +43,7 @@ import kotlinx.android.synthetic.main.migrate_source_view.*
  */
 class MigrationView : AppCompatActivity() {
 
-    val novelResults = ArrayList<ArrayList<Novel>>()
+    val novelResults = ArrayList<ArrayList<Novel.Listing>>()
     private var catalogues: ArrayList<CatalogueCard> = ArrayList()
 
     var novels: ArrayList<NovelCard> = ArrayList()

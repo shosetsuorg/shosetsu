@@ -109,6 +109,8 @@ class MainActivity : AppCompatActivity(), Supporter {
 
         // Webview agent retrieval
         WebViewScrapper.setUa(findViewById<WebView>(R.id.absolute_webView).settings.userAgentString)
+
+
         initDownloadManager(this)
         when (intent.action) {
             Intent.ACTION_USER_BACKGROUND -> {

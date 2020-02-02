@@ -9,7 +9,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.addToDownload
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.delete
@@ -46,7 +46,7 @@ import com.google.android.material.card.MaterialCardView
  * @author github.com/doomsdayrs
  */
 class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-    var novelChapter: NovelChapter? = null
+    var novelChapter: Novel.Chapter? = null
 
     var chapterID = -1
 

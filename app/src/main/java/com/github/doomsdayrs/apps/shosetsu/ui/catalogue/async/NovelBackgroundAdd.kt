@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder
 import kotlinx.android.synthetic.main.fragment_catalogue.*
 
@@ -36,7 +35,10 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelCardViewHolder?)
     override fun doInBackground(vararg views: View?): Void? {
         try {
             if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url)) {
-                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.formatterID, novelCardsViewHolder.formatter.parseNovel(WebViewScrapper.docFromURL(novelCardsViewHolder.url, novelCardsViewHolder.formatter.hasCloudFlare)!!), novelCardsViewHolder.url, com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
+                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.formatterID,
+                        novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url!!, false) {},
+                        novelCardsViewHolder.url,
+                        com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
                 views[0]?.post { Toast.makeText(views[0]!!.context, "Added " + novelCardsViewHolder.title.text.toString(), Toast.LENGTH_SHORT).show() }
             }
             if (novelCardsViewHolder != null && Database.DatabaseNovels.isBookmarked(novelCardsViewHolder.novelID)) {

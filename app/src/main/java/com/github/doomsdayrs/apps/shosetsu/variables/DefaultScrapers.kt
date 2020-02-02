@@ -1,12 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.variables
 
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelGenre
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Ordering
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
-import org.jsoup.nodes.Document
+import org.luaj.vm2.LuaTable
 
 /*
  * This file is part of Shosetsu.
@@ -37,56 +34,38 @@ import org.jsoup.nodes.Document
 // > Make IDs built into the formatter
 object DefaultScrapers {
     class UnknownFormatter : Formatter {
-        override val chapterOrder: Ordering
+        override val filters: LuaTable
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         override val formatterID: Int = -1
-        override val genres: Array<NovelGenre> = arrayOf()
         override val hasCloudFlare: Boolean
-            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        override val hasGenres: Boolean
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         override val hasSearch: Boolean
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        override val imageURL: String = ""
-        override val isIncrementingChapterList: Boolean
+        override val imageURL: String
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        override val isIncrementingPassagePage: Boolean
+        override val listings: Array<Formatter.Listing>
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        override val latestOrder: Ordering
+        override val name: String
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        override val name: String = "UNKNOWN"
+        override val settings: LuaTable
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
-        override fun getLatestURL(page: Int): String {
+        override fun getPassage(chapterURL: String): String {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        override fun getNovelPassage(document: Document): String {
+        override fun parseNovel(novelURL: String, loadChapters: Boolean, reporter: (status: String) -> Unit): Novel.Info {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        override fun getSearchString(query: String): String {
+        override fun search(data: LuaTable, reporter: (status: String) -> Unit): Array<Novel.Listing> {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        override fun novelPageCombiner(url: String, increment: Int): String {
+        override fun setSettings(settings: LuaTable) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        override fun parseLatest(document: Document): List<Novel> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun parseNovel(document: Document): NovelPage {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun parseNovel(document: Document, increment: Int): NovelPage {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun parseSearch(document: Document): List<Novel> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
     }
 
     val unknown = UnknownFormatter()

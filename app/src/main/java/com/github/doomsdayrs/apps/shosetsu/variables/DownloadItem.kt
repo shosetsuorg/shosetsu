@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables
 
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 
 /*

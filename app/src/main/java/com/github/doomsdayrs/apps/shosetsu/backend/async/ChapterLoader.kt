@@ -2,12 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend.async
 
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
-import org.jsoup.nodes.Document
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 
 /*
  * This file is part of Shosetsu.
@@ -40,9 +36,9 @@ class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, v
         fun onPreExecute()
 
         // After task with results
-        fun onPostExecute(result: Boolean, finalChapters: ArrayList<NovelChapter>)
+        fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>)
 
-        fun onJustBeforePost(finalChapters: ArrayList<NovelChapter>)
+        fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>)
 
         // If formatter is an incrementing chapterList, This is called when an update occurs
         fun onIncrementingProgress(page: Int, max: Int)
@@ -50,7 +46,7 @@ class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, v
         fun errorReceived(errorString: String)
     }
 
-    private val finalChapters: ArrayList<NovelChapter> = ArrayList()
+    private val finalChapters: ArrayList<Novel.Chapter> = ArrayList()
 
     override fun onPostExecute(result: Boolean?) {
         super.onPostExecute(result)
@@ -65,62 +61,19 @@ class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, v
     private val nullPage: String = "Page returned null, Skipping"
 
     public override fun doInBackground(vararg p0: Void?): Boolean {
-        var novelPage = NovelPage()
-        return if (formatter.isIncrementingChapterList) {
-            // sets the max page to one higher then normal
-            novelPage.maxChapterPage = 2
+        // loads page
+        val novelPage: Novel.Info = formatter.parseNovel(novelURL, true) {}
 
-            // Keeps track of what manga the loader is at
-            var mangaCount = 0
-
-            var page = 1
-            // Iterates through the pages
-            while (page <= novelPage.maxChapterPage) {
-
-                // run's an incrementing progress update
-                action.onIncrementingProgress(page, novelPage.maxChapterPage)
-
-                //if (novelFragmentChapters!!.getPageCount() != null) {
-                //    val s = "Page: " + page + "/" + novelPage.maxChapterPage
-                //    novelFragmentChapters!!.getPageCount()!!.post { novelFragmentChapters!!.getPageCount()!!.text = s }
-                //} else toastError("PageCount returned null")
-
-                // loads page
-                val doc: Document? = WebViewScrapper.docFromURL(formatter.novelPageCombiner(novelURL, page), formatter.hasCloudFlare)
-                if (doc != null) {
-                    novelPage = formatter.parseNovel(doc, page)
-
-                    // Iterates through chapters
-                    for (novelChapter in novelPage.novelChapters) {
-                        log(novelChapter, mangaCount)
-                        finalChapters.add(novelChapter)
-                        mangaCount++
-                    }
-                } else action.errorReceived(nullPage)
-                Utilities.wait(300)
-                page++
-            }
-            action.onJustBeforePost(finalChapters)
-            true
-        } else {
-            // loads page
-            val doc: Document? = WebViewScrapper.docFromURL(novelURL, formatter.hasCloudFlare)
-
-            if (doc != null) {
-                novelPage = formatter.parseNovel(doc, 1)
-
-                // Iterates through chapters
-                for ((mangaCount, novelChapter) in novelPage.novelChapters.withIndex()) {
-                    log(novelChapter, mangaCount)
-                    finalChapters.add(novelChapter)
-                }
-            } else action.errorReceived(nullPage)
-            action.onJustBeforePost(finalChapters)
-            true
+        // Iterates through chapters
+        for ((mangaCount, novelChapter) in novelPage.chapters.withIndex()) {
+            log(novelChapter, mangaCount)
+            finalChapters.add(novelChapter)
         }
+        action.onJustBeforePost(finalChapters)
+        return true
     }
 
-    fun log(novelChapter: NovelChapter, mangaCount: Int) {
+    fun log(novelChapter: Novel.Chapter, mangaCount: Int) {
         Log.i("ChapterLoader", "Loading #$mangaCount: ${novelChapter.link}")
     }
 }

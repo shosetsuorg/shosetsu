@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
@@ -160,7 +159,7 @@ object DownloadManager {
                             throw IOException("Failed to mkdirs")
                         }
                         val formattedName = Utilities.cleanString(downloadItem.chapterName)
-                        val passage = downloadItem.formatter.getNovelPassage(WebViewScrapper.docFromURL(downloadItem.chapterURL, downloadItem.formatter.hasCloudFlare)!!)
+                        val passage = downloadItem.formatter.getPassage(downloadItem.chapterURL!!)
                         val fileOutputStream = FileOutputStream(
                                 folder.path + "/" + formattedName + ".txt"
                         )

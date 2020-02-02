@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
 import kotlinx.android.synthetic.main.chapter_view.*
@@ -24,10 +23,7 @@ class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, 
         if (chapterView.chapterReader?.formatter == null) return false
         try {
             TimeUnit.SECONDS.sleep(5)
-            WebViewScrapper.docFromURL(chapterView.url, chapterView.chapterReader?.formatter!!.hasCloudFlare)?.let {
-                if (chapterView.chapterReader?.formatter == null) return false
-                chapterView.unformattedText = chapterView.chapterReader?.formatter!!.getNovelPassage(it)
-            }
+            chapterView.unformattedText = chapterView.chapterReader?.formatter!!.getPassage(chapterView.url)
             return true
         } catch (e: Exception) {
             chapterView.activity?.runOnUiThread {

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
@@ -26,7 +26,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
 import kotlinx.android.synthetic.main.fragment_catalogue.*
 import okhttp3.OkHttpClient
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -105,7 +104,8 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
                 executePageLoader()
             } else {
                 val intent = Intent(activity, WebViewApp::class.java)
-                intent.putExtra("url", formatter.getLatestURL(0))
+                // TODO Formatter require of base URL
+                intent.putExtra("url", formatter.imageURL)
                 intent.putExtra("action", 1)
                 startActivityForResult(intent, 42)
             }

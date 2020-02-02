@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 import android.os.AsyncTask
 import android.util.Log
 import android.widget.Toast
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel.Listing
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
@@ -42,9 +42,6 @@ class CataloguePageLoader
     // References to objects
     private val catalogueFragment: CatalogueFragment? = catalogueFragment
 
-    private fun check(novels: List<Novel>?): List<Novel> {
-        return novels ?: arrayListOf()
-    }
 
     /**
      * Loads up the category
@@ -58,9 +55,7 @@ class CataloguePageLoader
             if (it.formatter.hasCloudFlare) {
                 if (it.activity != null) it.activity!!.runOnUiThread { Toast.makeText(it.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
             }
-            val novels: List<Novel> = if (integers.isNotEmpty())
-                check(CatalogueLoader(it.formatter).execute(integers[0]))
-            else check(CatalogueLoader(it.formatter).execute())
+            val novels: Array<Listing> = if (integers.isNotEmpty()) CatalogueLoader(it.formatter).execute(integers[0]) else CatalogueLoader(it.formatter).execute()
             for (novel in novels) it.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
             it.recyclerView?.post { it.catalogueAdapter.notifyDataSetChanged() }
 

@@ -13,13 +13,11 @@ import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
-import com.github.doomsdayrs.api.shosetsu.services.core.luaSupport.ShosetsuLib
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.LibraryLoaderSync
+import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
+import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
@@ -29,7 +27,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
-import org.luaj.vm2.LuaValue
+import org.jsoup.Jsoup
 import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.*
 import java.nio.file.Files
@@ -262,7 +260,7 @@ object FormatterController {
                 sourceFile.createNewFile()
                 var json = "{}"
                 if (Utilities.isOnline) {
-                    val doc = WebViewScrapper.docFromURL("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json", false)
+                    val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json").get()
                     if (doc != null) {
                         PROGRESS("Sources downloaded, Writing..")
                         json = doc.body().text()
@@ -307,22 +305,20 @@ object FormatterController {
             }
         }
 
-        ShosetsuLib.libraryLoaderSync = object : LibraryLoaderSync {
-            override fun getScript(name: String): LuaValue? {
-                Log.i("LibraryLoaderSync", "Loading:\t$name")
-                val libraryFile = File(activity.filesDir.absolutePath + sourceFolder + libraryDirectory + "$name.lua")
-                if (!libraryFile.exists()) Log.e("LibraryLoaderSync", "FAIL")
-                Log.d("LibraryLoaderSync", libraryFile.absolutePath)
+        ShosetsuLib.libLoader = { name ->
+            Log.i("LibraryLoaderSync", "Loading:\t$name")
+            val libraryFile = File(activity.filesDir.absolutePath + sourceFolder + libraryDirectory + "$name.lua")
+            if (!libraryFile.exists()) Log.e("LibraryLoaderSync", "FAIL")
+            Log.d("LibraryLoaderSync", libraryFile.absolutePath)
 
-                val script = JsePlatform.standardGlobals()
-                script.load(ShosetsuLib())
-                val l = try {
-                    script.load(libraryFile.readText())!!
-                } catch (e: Error) {
-                    throw e
-                }
-                return l.call()
+            val script = JsePlatform.standardGlobals()
+            script.load(ShosetsuLib())
+            val l = try {
+                script.load(libraryFile.readText())!!
+            } catch (e: Error) {
+                throw e
             }
+            l.call()
         }
 
         PROGRESS("Loading extensions")
@@ -454,7 +450,7 @@ object FormatterController {
         override fun doInBackground(vararg params: Void?): Void? {
             val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
             if (Utilities.isOnline) {
-                val doc = WebViewScrapper.docFromURL("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json", false)
+                val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json").get()
                 if (doc != null) {
                     val json = doc.body().text()
                     writeFile(json, sourceFile)

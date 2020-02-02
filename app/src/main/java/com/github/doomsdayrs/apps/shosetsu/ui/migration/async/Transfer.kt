@@ -1,18 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.migration.async
 
 import android.os.AsyncTask
-import android.util.Log
 import android.view.View
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
-import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper.docFromURL
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.getByID
 import kotlinx.android.synthetic.main.migrate_source_view.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /*
  * This file is part of Shosetsu.
@@ -49,7 +46,6 @@ class Transfer(private val strings: ArrayList<Array<String>>, target: Int, priva
         migrationView!!.migrating.visibility = View.GONE
         migrationView.progress.visibility = View.VISIBLE
         migrationView.console_output.post { migrationView.console_output.text = migrationView.resources.getText(R.string.starting) }
-        if (formatter!!.isIncrementingChapterList) migrationView.page_count.visibility = View.VISIBLE
     }
 
     override fun doInBackground(vararg voids: Void?): Void? {
@@ -57,35 +53,13 @@ class Transfer(private val strings: ArrayList<Array<String>>, target: Int, priva
             val s = strings[0] + "--->" + strings[1]
             println(s)
             migrationView!!.console_output.post { migrationView.console_output.text = s }
-            var novelPage = formatter!!.parseNovel(docFromURL(strings[1], formatter.hasCloudFlare)!!)
-            if (formatter.isIncrementingChapterList) {
-                var mangaCount = 0
-                var page = 1
-                while (page <= novelPage.maxChapterPage && isNotCanceled) {
-                    val p = "Page: " + page + "/" + novelPage.maxChapterPage
-                    migrationView.page_count.post { migrationView.page_count.text = p }
-                    novelPage = formatter.parseNovel(docFromURL(strings[1], formatter.hasCloudFlare)!!, page)
-                    val novelID = DatabaseIdentification.getNovelIDFromNovelURL(strings[1])
-                    for (novelChapter in novelPage.novelChapters) if (isNotCanceled && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
-                        mangaCount++
-                        println("Adding #" + mangaCount + ": " + novelChapter.link)
-                        Database.DatabaseChapter.addToChapters(novelID, novelChapter)
-                    }
-                    page++
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(300)
-                    } catch (e: InterruptedException) {
-                        if (e.message != null) Log.e("Interrupt", e.message)
-                    }
-                }
-            } else {
-                var mangaCount = 0
-                val novelID = DatabaseIdentification.getNovelIDFromNovelURL(strings[1])
-                for (novelChapter in novelPage.novelChapters) if (isNotCanceled && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
-                    mangaCount++
-                    println("Adding #" + mangaCount + ": " + novelChapter.link)
-                    Database.DatabaseChapter.addToChapters(novelID, novelChapter)
-                }
+            val novelPage = formatter!!.parseNovel(strings[1], true){}
+            var mangaCount = 0
+            val novelID = DatabaseIdentification.getNovelIDFromNovelURL(strings[1])
+            for (novelChapter in novelPage.chapters) if (isNotCanceled && !Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
+                mangaCount++
+                println("Adding #" + mangaCount + ": " + novelChapter.link)
+                Database.DatabaseChapter.addToChapters(novelID, novelChapter)
             }
             if (isNotCanceled) {
                 migrationView.page_count.post { migrationView.page_count.text = "" }

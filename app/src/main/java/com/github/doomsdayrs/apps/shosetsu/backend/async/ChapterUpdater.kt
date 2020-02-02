@@ -7,7 +7,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.addToDownload
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -69,7 +69,7 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
     }
 
 
-    private fun add(mangaCount: Int, novelID: Int, novelChapter: NovelChapter, novelCard: NovelCard) {
+    private fun add(mangaCount: Int, novelID: Int, novelChapter: Novel.Chapter, novelCard: NovelCard) {
         if (!isCanceled) {
             if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
                 Log.i("ChaperUpdater", "add #$mangaCount\t: ${novelChapter.link} ")
@@ -115,10 +115,10 @@ class ChapterUpdater(private val novelCards: ArrayList<Int>, val context: Contex
                     override fun onPreExecute() {
                     }
 
-                    override fun onPostExecute(result: Boolean, finalChapters: ArrayList<NovelChapter>) {
+                    override fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>) {
                     }
 
-                    override fun onJustBeforePost(finalChapters: ArrayList<NovelChapter>) {
+                    override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
                         for ((mangaCount, chapter) in finalChapters.withIndex()) {
                             add(mangaCount, novelID, chapter, novelCard)
                         }

@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects
 
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
+
 
 /*
  * This file is part of Shosetsu.

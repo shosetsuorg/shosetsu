@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.migration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.Novel
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.NewTargetAdapter
@@ -50,7 +50,7 @@ class NewMigrationView : AppCompatActivity(R.layout.new_migrartion_view) {
     var novelsToTransfer: ArrayList<Int> = ArrayList()
 
     // Novel to transfer too
-    var novelResults = ArrayList<ArrayList<Novel>>()
+    var novelResults = ArrayList<ArrayList<Novel.Listing>>()
 
     // Is Single target or multiple
     var isMultiTargeted = false

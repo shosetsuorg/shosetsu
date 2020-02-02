@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.LuaFormatter
+import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody

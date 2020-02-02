@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -42,7 +42,7 @@ class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView), 
     val title: TextView = itemView.findViewById(R.id.title)
     private val image: ImageView = itemView.findViewById(R.id.image)
 
-    var novelChapter: NovelChapter? = null
+    var novelChapter: Novel.Chapter? = null
         set(value) {
             field = value
             if (value != null) {

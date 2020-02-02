@@ -5,9 +5,8 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
-import com.github.doomsdayrs.api.shosetsu.services.core.dep.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelChapter
-import com.github.doomsdayrs.api.shosetsu.services.core.objects.NovelPage
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -59,11 +58,11 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
 
     var novelID = -2
     var novelURL: String = ""
-    var novelPage: NovelPage = NovelPage()
+    var novelPage = Novel.Info()
     lateinit var formatter: Formatter
 
     var status = Status.UNREAD
-    var novelChapters: List<NovelChapter> = ArrayList()
+    var novelChapters: List<Novel.Chapter> = ArrayList()
 
     var novelFragmentInfo: NovelFragmentInfo? = null
     var novelFragmentChapters: NovelFragmentChapters? = null
@@ -142,7 +141,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
              * @param chapterURL Current chapter URL
              * @return chapter after the input, returns the current chapter if no more
              */
-    fun getNextChapter(chapterURL: Int, novelChapters: IntArray?): NovelChapter? {
+    fun getNextChapter(chapterURL: Int, novelChapters: IntArray?): Novel.Chapter? {
         if (novelChapters != null && novelChapters.isNotEmpty())
             for (x in novelChapters.indices) {
                 if (novelChapters[x] == chapterURL) {
@@ -156,7 +155,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
         return null
     }
 
-    fun getNextChapter(chapterURL: String, novelChapters: List<NovelChapter>): NovelChapter? {
+    fun getNextChapter(chapterURL: String, novelChapters: List<Novel.Chapter>): Novel.Chapter? {
         if (novelChapters.isNotEmpty())
             for (x in novelChapters.indices) {
                 if (novelChapters[x].link == chapterURL) {
@@ -170,9 +169,9 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
         return null
     }
 
-    fun getCustom(count: Int, check: Custom): List<NovelChapter> {
+    fun getCustom(count: Int, check: Custom): List<Novel.Chapter> {
         Log.d("NovelFragment", "CustomGet of chapters: Count:$count")
-        val customChapters: ArrayList<NovelChapter> = ArrayList()
+        val customChapters: ArrayList<Novel.Chapter> = ArrayList()
         val lastReadChapter = getLastRead()
         var found = false
         if (!novelChapters.isNullOrEmpty()) if (!novelFragmentChapters!!.reversed) {
@@ -213,7 +212,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
         return customChapters
     }
 
-    fun getLastRead(): NovelChapter {
+    fun getLastRead(): Novel.Chapter {
         if (!novelChapters.isNullOrEmpty())
             if (!novelFragmentChapters!!.reversed)
                 for (x in novelChapters.size - 1 downTo 0) {

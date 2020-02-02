@@ -67,6 +67,7 @@ object WebViewScrapper {
      * @param url URL to retrieve;
      * @return Document of the URL
      */
+    @Deprecated("Useless with entire class", ReplaceWith("[LuaFormatter].method()"), DeprecationLevel.ERROR)
     fun docFromURL(url: String?, cloudflare: Boolean): Document? {
         if (url != null) {
             Log.i("URL load", url)
