@@ -887,7 +887,7 @@ public class Database {
                         Columns.STATUS + "," +
                         Columns.TAGS + "," +
                         Columns.ARTISTS + "," +
-                        Columns.LANGUAGE + "," +
+                        Columns.LANGUAGE +
                         ")" + "values" + "(" +
                         getNovelIDFromNovelURL(novelURL) + "," +
                         0 + "," +

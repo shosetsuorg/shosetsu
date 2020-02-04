@@ -28,6 +28,7 @@ import okhttp3.Request
 import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
+import org.luaj.vm2.LuaError
 import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.*
 import java.nio.file.Files
@@ -65,7 +66,7 @@ object FormatterController {
     const val libraryDirectory = "/libraries/"
     const val sourceFolder = "/src/"
     lateinit var sourceJSON: JSONObject
-    val branch = if (BuildConfig.DEBUG) "development" else "master"
+    val branch = if (BuildConfig.DEBUG) "v1.0.0-rewrite" else "master"
 
     fun md5(s: String): String? {
         try {
@@ -133,6 +134,7 @@ object FormatterController {
     }
 
     fun downloadScript(name: String, lang: String, holder: ExtensionHolder, activity: Activity) {
+        Log.d("DownloadScript", "Downloading:\thttps://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/src/$lang/$name.lua")
         val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/src/$lang/$name.lua"))
 
         request.setDescription("Installing $name")
@@ -334,9 +336,15 @@ object FormatterController {
                         PROGRESS("${source.name} found")
                         if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
                             PROGRESS("${source.name} added")
-                            val l = LuaFormatter(source)
-                            if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
-                                DefaultScrapers.formatters.add(l)
+                            try {
+                                val l = LuaFormatter(source)
+                                if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
+                                    DefaultScrapers.formatters.add(l)
+                            } catch (e: LuaError) {
+                                Log.e("FormatterInit", "LuaFormatter had an issue!${e.message!!.substring(e.message!!.lastIndexOf("}"))}")
+                                Log.e("FormatterInit", "We won't accept broken ones :D, Bai bai!")
+                                source.delete()
+                            }
                         } else {
                             PROGRESS("${source.name} ignored")
                         }

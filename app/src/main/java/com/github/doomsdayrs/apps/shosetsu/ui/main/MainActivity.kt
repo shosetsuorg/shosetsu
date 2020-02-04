@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity(), Supporter {
 
         // Webview agent retrieval
         WebViewScrapper.setUa(findViewById<WebView>(R.id.absolute_webView).settings.userAgentString)
+
         ShosetsuLib.httpClient = OkHttpClient.Builder()
                 .cookieJar(WebviewCookieHandler())
                 .build()
