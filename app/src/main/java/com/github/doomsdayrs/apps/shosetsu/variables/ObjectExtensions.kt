@@ -1,10 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.variables
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
-
 /*
  * This file is part of shosetsu.
  *
@@ -25,24 +20,17 @@ import android.os.Build
 
 /**
  * shosetsu
- * 07 / 02 / 2020
+ * 08 / 02 / 2020
  *
  * @author github.com/doomsdayrs
  */
-object Notifications {
-    const val CHANNEL_UPDATE = "shosetsu_updater"
-    const val ID_CHAPTER_UPDATE = 1917
 
-    const val CHANNEL_DOWNLOAD = "shosetsu_download"
-    const val ID_CHAPTER_DOWNLOAD = 1949
-
-    fun createChannels(context: Context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val channels = listOf(
-                NotificationChannel(CHANNEL_UPDATE, "Shosetsu Update", NotificationManager.IMPORTANCE_LOW),
-                NotificationChannel(CHANNEL_DOWNLOAD, "Shosetsu Download", NotificationManager.IMPORTANCE_LOW)
-        )
-        context.notificationManager.createNotificationChannels(channels)
-    }
-
+/**
+ * Cleans a string
+ *
+ * @param input String to clean
+ * @return string without specials
+ */
+fun String.clean(): String {
+    return replace("[^A-Za-z0-9]".toRegex(), "_")
 }

@@ -131,14 +131,6 @@ object Utilities {
         demarkAction?.action(positionSpared)
     }
 
-    /**
-     * Cleans a string
-     *
-     * @param input String to clean
-     * @return string without specials
-     */
-    fun cleanString(input: String): String = input.replace("[^A-Za-z0-9]".toRegex(), "_")
-
 
     fun calculateNoOfColumns(context: Context, columnWidthDp: Float): Int { // For example columnWidthdp=180
         val c = if (context.resources.configuration.orientation == 1) Settings.columnsInNovelsViewP else Settings.columnsInNovelsViewH

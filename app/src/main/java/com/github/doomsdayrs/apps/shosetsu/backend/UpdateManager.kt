@@ -1,10 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.services.LibraryUpdateService
-import com.github.doomsdayrs.apps.shosetsu.variables.toast
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
 
 /*
  * This file is part of Shosetsu.
@@ -32,9 +30,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.toast
 object UpdateManager {
 
     fun init(context: Context, cards: ArrayList<Int> = Database.DatabaseNovels.getIntLibrary()) {
-        if (!LibraryUpdateService.isRunning(context)) {
-            LibraryUpdateService.start(context, LibraryUpdateService.KEY_NOVELS,cards)
-            context.toast(R.string.library_update)
-        }
+            UpdateService.start(context, UpdateService.KEY_NOVELS,cards)
     }
 }

@@ -89,7 +89,7 @@ object Settings {
     var downloadPaused: Boolean = false
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putBoolean("paused", value).apply()
+            Utilities.downloadPreferences.edit().putBoolean("paused", field).apply()
         }
         get() = Utilities.downloadPreferences.getBoolean("paused", false)
 

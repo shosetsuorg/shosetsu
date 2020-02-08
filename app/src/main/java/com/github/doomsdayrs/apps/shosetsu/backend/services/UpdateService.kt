@@ -1,6 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.services
 
-import android.app.*
+import android.app.Activity
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -12,11 +15,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
+import com.github.doomsdayrs.apps.shosetsu.variables.*
 import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.ID_CHAPTER_UPDATE
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
@@ -50,7 +51,7 @@ import kotlin.coroutines.CoroutineContext
  *     Handles update requests for the entire application
  * </p>
  */
-class LibraryUpdateService : Service() {
+class UpdateService : Service() {
     companion object {
         const val KEY_TARGET = "Target"
         const val KEY_CHAPTERS = "Novels"
@@ -59,14 +60,6 @@ class LibraryUpdateService : Service() {
         const val KEY_CATEGORY = 0x01
 
 
-        fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {
-            val className = serviceClass.name
-            val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            @Suppress("DEPRECATION")
-            return manager.getRunningServices(Integer.MAX_VALUE)
-                    .any { className == it.service.className }
-        }
-
         /**
          * Returns the status of the service.
          *
@@ -74,7 +67,7 @@ class LibraryUpdateService : Service() {
          * @return true if the service is running, false otherwise.
          */
         fun isRunning(context: Context): Boolean {
-            return context.isServiceRunning(LibraryUpdateService::class.java)
+            return context.isServiceRunning(UpdateService::class.java)
         }
 
         /**
@@ -87,7 +80,8 @@ class LibraryUpdateService : Service() {
          */
         fun start(context: Context, category: Int, novelIDs: ArrayList<Int>) {
             if (!isRunning(context)) {
-                val intent = Intent(context, LibraryUpdateService::class.java)
+                context.toast(R.string.library_update)
+                val intent = Intent(context, UpdateService::class.java)
                 intent.putExtra(KEY_TARGET, category)
                 intent.putIntegerArrayListExtra(KEY_CHAPTERS, novelIDs)
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -104,7 +98,7 @@ class LibraryUpdateService : Service() {
          * @param context the application context.
          */
         fun stop(context: Context) {
-            context.stopService(Intent(context, LibraryUpdateService::class.java))
+            context.stopService(Intent(context, UpdateService::class.java))
         }
     }
 
@@ -119,8 +113,6 @@ class LibraryUpdateService : Service() {
 
     private val progressNotification by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(CHANNEL_UPDATE, "Shosetsu Update", NotificationManager.IMPORTANCE_HIGH)
-            notificationManager.createNotificationChannel(notificationChannel)
             Notification.Builder(this, CHANNEL_UPDATE)
         } else {
             // Suppressed due to lower API
@@ -155,63 +147,63 @@ class LibraryUpdateService : Service() {
 
     fun updateManga(intent: Intent) {
         val updatedNovels = ArrayList<NovelCard>()
-        val novelCards = intent.getIntegerArrayListExtra(KEY_CHAPTERS)!!
+        intent.getIntegerArrayListExtra(KEY_CHAPTERS)?.let { novelCards ->
+            // Main process
+            for (x in novelCards.indices) {
 
-        // Main process
-        for (x in novelCards.indices) {
+                val novelCard = Database.DatabaseNovels.getNovel(novelCards[x])
+                val novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
+                val formatter = DefaultScrapers.getByID(novelCard.formatterID)
 
-            val novelCard = Database.DatabaseNovels.getNovel(novelCards[x])
-            val novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
-            val formatter = DefaultScrapers.getByID(novelCard.formatterID)
+                if (formatter != DefaultScrapers.unknown) {
+                    // Updates notification
+                    progressNotification.setContentText(novelCard.title)
+                    progressNotification.setProgress(novelCards.size, x + 1, false)
+                    notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
 
-            if (formatter != DefaultScrapers.unknown) {
-                // Updates notification
-                progressNotification.setContentText(novelCard.title)
-                progressNotification.setProgress(novelCards.size, x + 1, false)
-                notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
-
-                // Runs process
-                ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
-                    override fun onPreExecute() {
-                    }
-
-                    override fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>) {
-                    }
-
-                    override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
-                        for ((mangaCount, chapter) in finalChapters.withIndex()) {
-                            add(updatedNovels, mangaCount, novelID, chapter, novelCard)
+                    // Runs process
+                    ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
+                        override fun onPreExecute() {
                         }
-                    }
 
-                    override fun onIncrementingProgress(page: Int, max: Int) {
-                    }
+                        override fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>) {
+                        }
 
-                    override fun errorReceived(errorString: String) {
-                        Log.e("ChapterUpdater", errorString)
-                    }
-                }, formatter, novelCard.novelURL).doInBackground()
-                Utilities.wait(1000)
-            } else {
-                progressNotification.setProgress(novelCards.size, x + 1, false)
-                notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
+                        override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
+                            for ((mangaCount, chapter) in finalChapters.withIndex()) {
+                                add(updatedNovels, mangaCount, novelID, chapter, novelCard)
+                            }
+                        }
+
+                        override fun onIncrementingProgress(page: Int, max: Int) {
+                        }
+
+                        override fun errorReceived(errorString: String) {
+                            Log.e("ChapterUpdater", errorString)
+                        }
+                    }, formatter, novelCard.novelURL).doInBackground()
+                    Utilities.wait(1000)
+                } else {
+                    progressNotification.setProgress(novelCards.size, x + 1, false)
+                    notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
+                }
             }
-        }
 
-        // Completion
-        val stringBuilder = StringBuilder()
-        when {
-            updatedNovels.size > 0 -> {
-                progressNotification.setContentTitle(getString(R.string.update_complete))
-                for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
-                progressNotification.style = Notification.BigTextStyle()
+            // Completion
+            val stringBuilder = StringBuilder()
+            when {
+                updatedNovels.size > 0 -> {
+                    progressNotification.setContentTitle(getString(R.string.update_complete))
+                    for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
+                    progressNotification.style = Notification.BigTextStyle()
+                }
+                else -> stringBuilder.append(getString(R.string.update_not_found))
             }
-            else -> stringBuilder.append(getString(R.string.update_not_found))
+            progressNotification.setContentText(stringBuilder.toString())
+            progressNotification.setProgress(0, 0, false)
+            progressNotification.setOngoing(false)
+            notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
         }
-        progressNotification.setContentText(stringBuilder.toString())
-        progressNotification.setProgress(0, 0, false)
-        progressNotification.setOngoing(false)
-        notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
     }
 
     fun updateCategory() {

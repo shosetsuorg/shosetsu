@@ -70,8 +70,14 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <service android:name=".backend.services.LibraryUpdateService"
-            android:exported="false"/>
+
+        <service
+            android:name=".backend.services.UpdateService"
+            android:exported="false" />
+
+        <service
+            android:name=".backend.services.DownloadService"
+            android:exported="false" />
     </application>
 
 </manifest>
