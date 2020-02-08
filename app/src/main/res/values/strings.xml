@@ -217,6 +217,7 @@
     <string name="compressed">Compressed</string>
     <string name="novel_card_type_selector_title">NovelCard Type</string>
     <string name="novel_card_type_selector_desc">Set\'s how novel card\'s are viewed</string>
+    <string name="library_update">Updating Library</string>
 
     <array name="application_themes">
         <item>@string/light</item>

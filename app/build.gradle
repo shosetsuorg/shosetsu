@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-ext{
+ext {
     // Copied from tachiyomi
     // Git is needed in your system PATH for these commands to work.
     // If it's not installed, you can return a random value as a workaround
@@ -57,12 +57,12 @@ android {
 
 dependencies {
     implementation 'com.google.android.material:material:1.2.0-alpha04'
- //   implementation 'com.graphql-java:graphql-java:2020-01-17T02-41-10-578985f'
+    //   implementation 'com.graphql-java:graphql-java:2020-01-17T02-41-10-578985f'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     //noinspection GradleCompatible
     implementation 'com.google.android.material:material:1.2.0-alpha04'
-    implementation 'androidx.work:work-runtime:2.3.0'
+    implementation 'androidx.work:work-runtime:2.3.1'
     testImplementation 'junit:junit:4.13'
     testImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'
@@ -102,8 +102,10 @@ dependencies {
     // Cloud flare calculator
     implementation 'com.zhkrb.cloudflare-scrape-android:scrape-rhino:0.1.1'
 
-    implementation 'androidx.core:core-ktx:1.2.0-rc01'
+
+    implementation 'androidx.core:core-ktx:1.3.0-alpha01'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
 
     // Async controller
     implementation 'com.zsoltsafrany:needle:1.0.0'
@@ -117,4 +119,7 @@ dependencies {
     // Error logging to email
     implementation "ch.acra:acra-mail:5.1.3"
     implementation "ch.acra:acra-dialog:5.1.3"
+
+    // Kodein injection; oneday
+    //implementation 'org.kodein.di:kodein-di-generic-jvm:6.5.0'
 }

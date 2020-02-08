@@ -1,10 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterUpdater
-import needle.CancelableTask
-import needle.Needle
-import java.util.*
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.services.LibraryUpdateService
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 
 /*
  * This file is part of Shosetsu.
@@ -30,16 +30,11 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 object UpdateManager {
-    private var chapterUpdater: ChapterUpdater? = null
-    fun init(novelCards: ArrayList<Int>, context: Context) {
-        if (chapterUpdater == null) {
-            chapterUpdater = ChapterUpdater(novelCards, context)
-            Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-        } else {
-            if (chapterUpdater!!.isCanceled) {
-                chapterUpdater = ChapterUpdater(novelCards, context)
-                Needle.onBackgroundThread().execute(chapterUpdater as CancelableTask)
-            }
+
+    fun init(context: Context, cards: ArrayList<Int> = Database.DatabaseNovels.getIntLibrary()) {
+        if (!LibraryUpdateService.isRunning(context)) {
+            LibraryUpdateService.start(context, LibraryUpdateService.KEY_NOVELS,cards)
+            context.toast(R.string.library_update)
         }
     }
 }

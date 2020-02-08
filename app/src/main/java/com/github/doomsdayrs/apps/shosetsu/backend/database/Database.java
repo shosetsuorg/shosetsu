@@ -901,8 +901,7 @@ public class Database {
                         "'" + novelPage.getStatus().getTitle() + "'," +
                         "'" + checkStringSerialize(convertArrayToString(novelPage.getTags())) + "'," +
                         "'" + checkStringSerialize(convertArrayToString(novelPage.getArtists())) + "'," +
-                        "'" + checkStringSerialize(novelPage.getLanguage()) + "'," +
-                        ")"
+                        "'" + checkStringSerialize(novelPage.getLanguage()) + "')"
                 );
             } catch (SQLException e) {
                 e.printStackTrace();

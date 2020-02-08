@@ -113,7 +113,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.updater_now -> {
-                init(libraryNovelCards, context!!)
+                init(context!!, libraryNovelCards)
                 return true
             }
             R.id.chapter_select_all -> {

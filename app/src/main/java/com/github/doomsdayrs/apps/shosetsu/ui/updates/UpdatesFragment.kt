@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
 import com.google.android.material.tabs.TabLayout
@@ -53,7 +52,7 @@ class UpdatesFragment : Fragment(R.layout.fragment_update) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.updater_now) {
             if (context != null) {
-                UpdateManager.init(Database.DatabaseNovels.getIntLibrary(), context!!)
+                UpdateManager.init( context!!)
                 true
             } else false
         } else false

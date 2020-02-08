@@ -1,21 +1,19 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.splash
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.variables.requestPerms
 import java.io.File
 
 
@@ -82,7 +80,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
     lateinit var textView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        this.requestPerms()
         super.onCreate(savedInstanceState)
         // Sets prefrences
         Utilities.viewPreferences = getSharedPreferences("view", 0)

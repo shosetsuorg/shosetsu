@@ -1,15 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -19,7 +16,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadM
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
@@ -28,6 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
+import com.github.doomsdayrs.apps.shosetsu.variables.requestPerms
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener
@@ -77,7 +74,7 @@ class MainActivity : AppCompatActivity(), Supporter {
      * @param savedInstanceState savedData from destruction
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        this.requestPerms()
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
@@ -121,13 +118,13 @@ class MainActivity : AppCompatActivity(), Supporter {
         when (intent.action) {
             Intent.ACTION_USER_BACKGROUND -> {
                 Log.i("MainActivity", "Updating novels")
-                init(Database.DatabaseNovels.getIntLibrary(), this)
+                init(this)
                 transitionView(updatesFragment)
             }
             Intent.ACTION_BOOT_COMPLETED -> {
                 Log.i("MainActivity", "Bootup")
                 if (Utilities.isOnline)
-                    init(Database.DatabaseNovels.getIntLibrary(), this)
+                    init(this)
             }
             else -> {
                 //Prevent the frag from changing on rotation
