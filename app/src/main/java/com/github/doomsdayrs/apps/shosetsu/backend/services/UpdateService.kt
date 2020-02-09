@@ -212,22 +212,21 @@ class UpdateService : Service() {
                         updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
                     }
                 }
-
-                // Completion
-                val stringBuilder = StringBuilder()
-                when {
-                    updatedNovels.size > 0 -> {
-                        updateService.progressNotification.setContentTitle(updateService.getString(R.string.update_complete))
-                        for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
-                        updateService.progressNotification.style = Notification.BigTextStyle()
-                    }
-                    else -> stringBuilder.append(updateService.getString(R.string.update_not_found))
-                }
-                updateService.progressNotification.setContentText(stringBuilder.toString())
-                updateService.progressNotification.setProgress(0, 0, false)
-                updateService.progressNotification.setOngoing(false)
-                updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
             }
+            // Completion
+            val stringBuilder = StringBuilder()
+            when {
+                updatedNovels.size > 0 -> {
+                    updateService.progressNotification.setContentTitle(updateService.getString(R.string.update_complete))
+                    for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
+                    updateService.progressNotification.style = Notification.BigTextStyle()
+                }
+                else -> stringBuilder.append(updateService.getString(R.string.update_not_found))
+            }
+            updateService.progressNotification.setContentText(stringBuilder.toString())
+            updateService.progressNotification.setProgress(0, 0, false)
+            updateService.progressNotification.setOngoing(false)
+            updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
         }
 
         private fun add(updatedNovels: ArrayList<NovelCard>, mangaCount: Int, novelID: Int, novelChapter: Novel.Chapter, novelCard: NovelCard) {

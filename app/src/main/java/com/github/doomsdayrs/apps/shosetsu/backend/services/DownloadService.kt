@@ -11,9 +11,12 @@ import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.variables.*
+import com.github.doomsdayrs.apps.shosetsu.variables.Broadcasts
 import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.CHANNEL_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.ID_CHAPTER_DOWNLOAD
+import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import com.github.doomsdayrs.apps.shosetsu.variables.clean
+import com.github.doomsdayrs.apps.shosetsu.variables.isServiceRunning
 import needle.CancelableTask
 import needle.Needle
 import java.io.File
@@ -70,7 +73,6 @@ class DownloadService : Service() {
          */
         fun start(context: Context) {
             if (!isRunning(context)) {
-                context.toast(R.string.update)
                 val intent = Intent(context, DownloadService::class.java)
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                     context.startService(intent)
@@ -221,12 +223,13 @@ class DownloadService : Service() {
 
                     }
                 }
-                service.progressNotification.setOngoing(false)
-                service.progressNotification.setContentText(service.getString(R.string.completed))
-                service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, service.progressNotification.build())
             }
+
+            service.notificationManager.notify(ID_CHAPTER_DOWNLOAD,
+                    service.progressNotification.setOngoing(false)
+                            .setContentText(service.getString(R.string.completed))
+                            .build())
             Log.i(LOG_NAME, "Completed download loop")
-            service
         }
     }
 }
