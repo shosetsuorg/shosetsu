@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit
  */
 class DownloadService : Service() {
     companion object {
-        private const val LOG_NAME = "DownloadService";
+        private const val LOG_NAME = "DownloadService"
 
 
         /**
@@ -140,13 +140,13 @@ class DownloadService : Service() {
     }
 
 
-    internal class Job(val service: DownloadService) : CancelableTask() {
+    internal class Job(private val service: DownloadService) : CancelableTask() {
 
-        fun sendMessage(action: String, map: Map<String, String?> = mapOf()) {
+        fun sendMessage(action: String, data: Map<String, String?> = mapOf()) {
             val i = Intent()
             i.action = action
 
-            for (m in map)
+            for (m in data)
                 i.putExtra(m.key, m.value)
 
             service.sendBroadcast(i)
@@ -223,6 +223,7 @@ class DownloadService : Service() {
 
                     }
                 }
+                stop(service)
             }
 
             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD,

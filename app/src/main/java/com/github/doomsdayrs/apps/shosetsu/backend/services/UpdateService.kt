@@ -168,7 +168,7 @@ class UpdateService : Service() {
 
     }
 
-    internal class UpdateManga(val updateService: UpdateService, val intent: Intent) : CancelableTask() {
+    internal class UpdateManga(private val updateService: UpdateService, val intent: Intent) : CancelableTask() {
         override fun doWork() {
             val updatedNovels = ArrayList<NovelCard>()
             intent.getIntegerArrayListExtra(KEY_CHAPTERS)?.let { novelCards ->
