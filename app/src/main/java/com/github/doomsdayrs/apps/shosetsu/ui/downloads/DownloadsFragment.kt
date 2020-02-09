@@ -1,6 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.downloads
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -13,6 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadM
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
+import com.github.doomsdayrs.apps.shosetsu.variables.Broadcasts
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import kotlinx.android.synthetic.main.fragment_downloads.*
@@ -42,15 +48,22 @@ import kotlinx.android.synthetic.main.fragment_downloads.*
 class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
     var downloadItems: ArrayList<DownloadItem> = ArrayList()
     var adapter: DownloadAdapter = DownloadAdapter(this)
+    lateinit var receiver: BroadcastReceiver
 
     init {
         setHasOptionsMenu(true)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activity?.unregisterReceiver(receiver)
     }
 
     override fun onResume() {
         super.onResume()
         adapter.notifyDataSetChanged()
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -62,6 +75,58 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
         adapter.setHasStableIds(true)
         fragment_downloads_recycler.layoutManager = layoutManager
         fragment_downloads_recycler.adapter = adapter
+        val filter = IntentFilter()
+
+        filter.addAction(Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE)
+        filter.addAction(Broadcasts.DOWNLOADS_MARK_ERROR)
+        filter.addAction(Broadcasts.DOWNLOADS_TOGGLE)
+        filter.addAction(Broadcasts.DOWNLOADS_REMOVE)
+
+        receiver = object : BroadcastReceiver() {
+
+
+            private fun removeDownloads(chapterURL: String) {
+                for (x in adapter.downloadsFragment.downloadItems.indices) if (adapter.downloadsFragment.downloadItems[x].chapterURL == chapterURL) {
+                    adapter.downloadsFragment.downloadItems.removeAt(x)
+                    return
+                }
+                adapter.notifyDataSetChanged()
+            }
+
+            private fun markError(chapterURL: String) {
+                for (downloadItem in adapter.downloadsFragment.downloadItems)
+                    if (downloadItem.chapterURL == chapterURL)
+                        downloadItem.status = "Error"
+
+                fragment_downloads_recycler?.adapter?.notifyDataSetChanged()
+
+            }
+
+            private fun toggleProcess(chapterURL: String) {
+                for (downloadItem in adapter.downloadsFragment.downloadItems)
+                    if (downloadItem.chapterURL == chapterURL)
+                        if (downloadItem.status == "Pending" || downloadItem.status == "Error")
+                            downloadItem.status = "Downloading"
+                        else downloadItem.status = "Pending"
+                fragment_downloads_recycler?.adapter?.notifyDataSetChanged()
+            }
+
+
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.let { i ->
+                    when (i.action) {
+                        Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE -> (fragment_downloads_recycler?.adapter as DownloadAdapter).notifyDataSetChanged()
+                        Broadcasts.DOWNLOADS_REMOVE -> i.getStringExtra(Broadcasts.DOWNLOADS_RECIEVED_URL)?.let { removeDownloads(it) }
+                        Broadcasts.DOWNLOADS_TOGGLE -> i.getStringExtra(Broadcasts.DOWNLOADS_RECIEVED_URL)?.let { toggleProcess(it) }
+                        Broadcasts.DOWNLOADS_MARK_ERROR -> i.getStringExtra(Broadcasts.DOWNLOADS_RECIEVED_URL)?.let { markError(it) }
+                        else -> Log.e("DownloadsFragment", "No action provided!")
+                    }
+                }
+            }
+
+        }
+        activity?.registerReceiver(receiver, filter)
+
     }
 
     /**

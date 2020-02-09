@@ -1,6 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -24,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpd
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.Custom
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
+import com.github.doomsdayrs.apps.shosetsu.variables.Broadcasts
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import kotlinx.android.synthetic.main.fragment_novel_chapters.*
@@ -130,11 +135,14 @@ class NovelFragmentChapters : Fragment() {
         return max
     }
 
+    lateinit var receiver: BroadcastReceiver
+
 
     override fun onDestroy() {
         super.onDestroy()
         reversed = false
         Log.d("NFChapters", "Destroy")
+        activity?.unregisterReceiver(receiver)
     }
 
     /**
@@ -187,7 +195,16 @@ class NovelFragmentChapters : Fragment() {
                 if (activity != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter.formatterID)
             } else Toast.makeText(context, "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show()
         }
+        val filter = IntentFilter()
+        filter.addAction(Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE)
+        receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                fragment_novel_chapters_recycler?.adapter?.notifyDataSetChanged()
+            }
+        }
+        activity?.registerReceiver(receiver, filter)
     }
+
 
     /**
      * Sets the novel chapters down

@@ -35,18 +35,12 @@ import org.acra.annotation.AcraMailSender
  * @author github.com/doomsdayrs
  */
 @AcraCore(buildConfigClass = BuildConfig::class)
-@AcraDialog(
-        resCommentPrompt = R.string.crashCommentPromt,
-        resText = R.string.crashDialogText,
-        resTheme = R.style.AppTheme_CrashReport
-)
-@AcraMailSender(
-        mailTo = "Doomsdayrs@yandex.com",
-        reportAsFile = true
-)
+@AcraDialog(resCommentPrompt = R.string.crashCommentPromt, resText = R.string.crashDialogText, resTheme = R.style.AppTheme_CrashReport)
+@AcraMailSender(mailTo = "Doomsdayrs@yandex.com", reportAsFile = true)
 class Shosetsu : Application() {
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+
         ACRA.init(this)
         Notifications.createChannels(this)
     }

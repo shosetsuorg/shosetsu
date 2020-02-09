@@ -19,10 +19,9 @@ import com.github.doomsdayrs.apps.shosetsu.variables.*
 import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.ID_CHAPTER_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
+import needle.CancelableTask
+import needle.Needle
+import java.security.InvalidKeyException
 
 /*
  * This file is part of shosetsu.
@@ -126,7 +125,7 @@ class UpdateService : Service() {
                 .setOnlyAlertOnce(true)
     }
 
-    private var job: CoroutineContext? = null
+    private var job: CancelableTask? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -145,99 +144,107 @@ class UpdateService : Service() {
         return null
     }
 
-    fun updateManga(intent: Intent) {
-        val updatedNovels = ArrayList<NovelCard>()
-        intent.getIntegerArrayListExtra(KEY_CHAPTERS)?.let { novelCards ->
-            // Main process
-            for (x in novelCards.indices) {
-
-                val novelCard = Database.DatabaseNovels.getNovel(novelCards[x])
-                val novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
-                val formatter = DefaultScrapers.getByID(novelCard.formatterID)
-
-                if (formatter != DefaultScrapers.unknown) {
-                    // Updates notification
-                    progressNotification.setContentText(novelCard.title)
-                    progressNotification.setProgress(novelCards.size, x + 1, false)
-                    notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
-
-                    // Runs process
-                    ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
-                        override fun onPreExecute() {
-                        }
-
-                        override fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>) {
-                        }
-
-                        override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
-                            for ((mangaCount, chapter) in finalChapters.withIndex()) {
-                                add(updatedNovels, mangaCount, novelID, chapter, novelCard)
-                            }
-                        }
-
-                        override fun onIncrementingProgress(page: Int, max: Int) {
-                        }
-
-                        override fun errorReceived(errorString: String) {
-                            Log.e("ChapterUpdater", errorString)
-                        }
-                    }, formatter, novelCard.novelURL).doInBackground()
-                    Utilities.wait(1000)
-                } else {
-                    progressNotification.setProgress(novelCards.size, x + 1, false)
-                    notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
-                }
-            }
-
-            // Completion
-            val stringBuilder = StringBuilder()
-            when {
-                updatedNovels.size > 0 -> {
-                    progressNotification.setContentTitle(getString(R.string.update_complete))
-                    for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
-                    progressNotification.style = Notification.BigTextStyle()
-                }
-                else -> stringBuilder.append(getString(R.string.update_not_found))
-            }
-            progressNotification.setContentText(stringBuilder.toString())
-            progressNotification.setProgress(0, 0, false)
-            progressNotification.setOngoing(false)
-            notificationManager.notify(ID_CHAPTER_UPDATE, progressNotification.build())
-        }
-    }
-
-    fun updateCategory() {
-
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         job?.cancel()
-        job = GlobalScope.launch {
-            when (intent?.getIntExtra(KEY_TARGET, KEY_NOVELS) ?: KEY_NOVELS) {
-                KEY_NOVELS -> {
-                    updateManga(intent
-                            ?: Intent().putIntegerArrayListExtra(KEY_CHAPTERS, Database.DatabaseNovels.getIntLibrary()))
-                }
-                KEY_CATEGORY -> {
-                    updateCategory()
-                }
-            }
-        }
+        job = when (intent?.getIntExtra(KEY_TARGET, KEY_NOVELS) ?: KEY_NOVELS) {
+            KEY_NOVELS ->
+                UpdateManga(this, intent
+                        ?: Intent().putIntegerArrayListExtra(KEY_CHAPTERS, Database.DatabaseNovels.getIntLibrary()))
 
+            KEY_CATEGORY ->
+                UpdateCategory()
+
+            else -> throw InvalidKeyException("How did you reach this point")
+        }
+        Needle.onBackgroundThread().execute(job)
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun add(updatedNovels: ArrayList<NovelCard>, mangaCount: Int, novelID: Int, novelChapter: Novel.Chapter, novelCard: NovelCard) {
-        if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
-            Log.i("ChaperUpdater", "add #$mangaCount\t: ${novelChapter.link} ")
-            Database.DatabaseChapter.addToChapters(novelID, novelChapter)
-            Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis())
-            if (!updatedNovels.contains(novelCard)) updatedNovels.add(novelCard)
-        } else {
-            Database.DatabaseChapter.updateChapter(novelChapter)
+    internal class UpdateCategory : CancelableTask() {
+        override fun doWork() {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
-        if (Settings.isDownloadOnUpdateEnabled)
-            DownloadManager.addToDownload(this.applicationContext as Activity, DownloadItem(DefaultScrapers.getByID(novelCard.formatterID), novelCard.title, novelChapter.title, Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)))
+
     }
+
+    internal class UpdateManga(val updateService: UpdateService, val intent: Intent) : CancelableTask() {
+        override fun doWork() {
+            val updatedNovels = ArrayList<NovelCard>()
+            intent.getIntegerArrayListExtra(KEY_CHAPTERS)?.let { novelCards ->
+                // Main process
+                for (x in novelCards.indices) {
+
+                    val novelCard = Database.DatabaseNovels.getNovel(novelCards[x])
+                    val novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
+                    val formatter = DefaultScrapers.getByID(novelCard.formatterID)
+
+                    if (formatter != DefaultScrapers.unknown) {
+                        // Updates notification
+                        updateService.progressNotification.setContentText(novelCard.title)
+                        updateService.progressNotification.setProgress(novelCards.size, x + 1, false)
+                        updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
+
+                        // Runs process
+                        ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
+                            override fun onPreExecute() {
+                            }
+
+                            override fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>) {
+                            }
+
+                            override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
+                                for ((mangaCount, chapter) in finalChapters.withIndex()) {
+                                    add(updatedNovels, mangaCount, novelID, chapter, novelCard)
+                                }
+                            }
+
+                            override fun onIncrementingProgress(page: Int, max: Int) {
+                            }
+
+                            override fun errorReceived(errorString: String) {
+                                Log.e("ChapterUpdater", errorString)
+                            }
+                        }, formatter, novelCard.novelURL).doInBackground()
+                        Utilities.wait(1000)
+                    } else {
+                        updateService.progressNotification.setProgress(novelCards.size, x + 1, false)
+                        updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
+                    }
+                }
+
+                // Completion
+                val stringBuilder = StringBuilder()
+                when {
+                    updatedNovels.size > 0 -> {
+                        updateService.progressNotification.setContentTitle(updateService.getString(R.string.update_complete))
+                        for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
+                        updateService.progressNotification.style = Notification.BigTextStyle()
+                    }
+                    else -> stringBuilder.append(updateService.getString(R.string.update_not_found))
+                }
+                updateService.progressNotification.setContentText(stringBuilder.toString())
+                updateService.progressNotification.setProgress(0, 0, false)
+                updateService.progressNotification.setOngoing(false)
+                updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
+            }
+        }
+
+        private fun add(updatedNovels: ArrayList<NovelCard>, mangaCount: Int, novelID: Int, novelChapter: Novel.Chapter, novelCard: NovelCard) {
+            if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
+                Log.i("ChaperUpdater", "add #$mangaCount\t: ${novelChapter.link} ")
+                Database.DatabaseChapter.addToChapters(novelID, novelChapter)
+                Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis())
+                if (!updatedNovels.contains(novelCard)) updatedNovels.add(novelCard)
+            } else {
+                Database.DatabaseChapter.updateChapter(novelChapter)
+            }
+            if (Settings.isDownloadOnUpdateEnabled)
+                DownloadManager.addToDownload(updateService.applicationContext as Activity, DownloadItem(DefaultScrapers.getByID(novelCard.formatterID), novelCard.title, novelChapter.title, Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)))
+        }
+
+
+    }
+
 
 }
