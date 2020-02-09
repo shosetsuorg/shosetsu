@@ -48,7 +48,7 @@ import kotlinx.android.synthetic.main.fragment_downloads.*
 class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
     var downloadItems: ArrayList<DownloadItem> = ArrayList()
     var adapter: DownloadAdapter = DownloadAdapter(this)
-    lateinit var receiver: BroadcastReceiver
+    private lateinit var receiver: BroadcastReceiver
 
     init {
         setHasOptionsMenu(true)

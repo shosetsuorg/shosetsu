@@ -65,7 +65,7 @@ class UpdateService : Service() {
          * @param context the application context.
          * @return true if the service is running, false otherwise.
          */
-        fun isRunning(context: Context): Boolean {
+        private fun isRunning(context: Context): Boolean {
             return context.isServiceRunning(UpdateService::class.java)
         }
 
@@ -75,7 +75,6 @@ class UpdateService : Service() {
          *
          * @param context the application context.
          * @param category a specific category to update, or null for global update.
-         * @param target defines what should be updated.
          */
         fun start(context: Context, category: Int, novelIDs: ArrayList<Int>) {
             if (!isRunning(context)) {

@@ -59,7 +59,7 @@ class DownloadService : Service() {
          * @param context the application context.
          * @return true if the service is running, false otherwise.
          */
-        fun isRunning(context: Context): Boolean {
+        private fun isRunning(context: Context): Boolean {
             return context.isServiceRunning(DownloadService::class.java)
         }
 
@@ -68,8 +68,6 @@ class DownloadService : Service() {
          * running.
          *
          * @param context the application context.
-         * @param category a specific category to update, or null for global update.
-         * @param target defines what should be updated.
          */
         fun start(context: Context) {
             if (!isRunning(context)) {
@@ -142,7 +140,7 @@ class DownloadService : Service() {
 
     internal class Job(private val service: DownloadService) : CancelableTask() {
 
-        fun sendMessage(action: String, data: Map<String, String?> = mapOf()) {
+        private fun sendMessage(action: String, data: Map<String, String?> = mapOf()) {
             val i = Intent()
             i.action = action
 

@@ -153,8 +153,6 @@ public class Database {
                         "'," +
                         formatter +
                         ")");
-            } catch (SQLException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -660,8 +658,6 @@ public class Database {
                         Columns.RELEASE_DATE + "='" + release + "'," +
                         Columns.ORDER + "=" + novelChapter.getOrder() +
                         " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.getLink()));
-            } catch (SQLException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -702,8 +698,6 @@ public class Database {
                         novelChapter.getOrder() + "," +
                         0 + "," + 0 + "," + 0 + "," + 0 +
                         ")");
-            } catch (SQLException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -903,8 +897,6 @@ public class Database {
                         "'" + checkStringSerialize(convertArrayToString(novelPage.getArtists())) + "'," +
                         "'" + checkStringSerialize(novelPage.getLanguage()) + "')"
                 );
-            } catch (SQLException e) {
-                e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             }

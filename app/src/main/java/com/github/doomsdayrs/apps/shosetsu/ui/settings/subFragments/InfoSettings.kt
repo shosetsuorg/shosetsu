@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -15,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import kotlinx.android.synthetic.main.settings.*
 
 /*
@@ -68,25 +68,25 @@ class InfoSettings : SettingsSubFragment() {
 
 
     private fun onClickAppVer(v: View) { // TODO: Add the app version number after consultation
-        Toast.makeText(v.context, "AppVer", Toast.LENGTH_SHORT).show()
+        v.context.toast("AppVer")
     }
 
     private fun onClickReportBug(v: View) {
-        Toast.makeText(v.context, "ReportBug", Toast.LENGTH_SHORT).show()
+        v.context.toast("ReportBug")
         val bugReportLink = getString(R.string.report_bug_link)
         val bugReportingIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bugReportLink))
         startActivity(bugReportingIntent)
     }
 
     private fun onClickAuthor(v: View) {
-        Toast.makeText(v.context, "Author", Toast.LENGTH_SHORT).show()
+        v.context.toast("Author")
         val authorGitHubLink = getString(R.string.author_github)
         val authorGitHubIntent = Intent(Intent.ACTION_VIEW, Uri.parse(authorGitHubLink))
         startActivity(authorGitHubIntent)
     }
 
     private fun onClickDisclaimer(v: View) { // TODO: Show full disclaimer on click
-        Toast.makeText(v.context, "Disclaimer", Toast.LENGTH_SHORT).show()
+        v.context.toast("Disclaimer")
     }
 
     private fun onClickLicense() { // TODO: Show full license on click

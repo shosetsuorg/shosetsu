@@ -29,8 +29,6 @@ import org.luaj.vm2.LuaError
 
 /**
  * Cleans a string
- *
- * @param input String to clean
  * @return string without specials
  */
 fun String.clean(): String {

@@ -13,7 +13,7 @@ import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -30,6 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings.MarkingTypes
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -111,7 +112,7 @@ object Utilities {
         return a
     }
 
-    fun regret(context: Context) = Toast.makeText(context, context.getString(R.string.regret), Toast.LENGTH_LONG).show()
+    fun regret(context: Context) = context.toast(R.string.regret, duration = LENGTH_LONG)
 
 
     fun setActivityTitle(activity: Activity?, title: String?) {

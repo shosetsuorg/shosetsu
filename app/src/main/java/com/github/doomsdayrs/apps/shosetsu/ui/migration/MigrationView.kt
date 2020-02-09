@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.migration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.migration.async.Transfer
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.asCatalogue
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import kotlinx.android.synthetic.main.migrate_source_view.*
 
 /*
@@ -126,7 +126,7 @@ class MigrationView : AppCompatActivity() {
                     }
                     secondSelection = -1
                     refresh()
-                } else Toast.makeText(applicationContext, "You need to select something!", Toast.LENGTH_SHORT).show()
+                } else applicationContext.toast("You need to select something!")
             }
             confirm.setOnLongClickListener {
                 load!!.cancel(true)

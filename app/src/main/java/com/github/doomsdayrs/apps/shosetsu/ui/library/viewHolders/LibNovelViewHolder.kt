@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -11,6 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_library.*
@@ -71,10 +71,12 @@ class LibNovelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
     }
 
     init {
-        chip.setOnClickListener { view: View -> Toast.makeText(view.context, libraryFragment.resources.getString(R.string.chapters_unread_label) + chip.text, Toast.LENGTH_SHORT).show() }
-        itemView.setOnLongClickListener {
-            addToSelect()
-            true
+        chip.setOnClickListener {
+            it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text)
+            itemView.setOnLongClickListener {
+                addToSelect()
+                true
+            }
         }
     }
 }

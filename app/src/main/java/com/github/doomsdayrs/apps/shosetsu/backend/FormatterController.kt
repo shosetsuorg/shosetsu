@@ -11,7 +11,6 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Environment
 import android.util.Log
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib
@@ -24,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.smallMessage
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
@@ -61,10 +61,11 @@ import java.security.NoSuchAlgorithmException
  * 18 / 01 / 2020
  *
  * @author github.com/doomsdayrs
+ * TODO Turn this into a service
  */
 object FormatterController {
     const val scriptDirectory = "/scripts/"
-    const val libraryDirectory = "/libraries/"
+    private const val libraryDirectory = "/libraries/"
     const val sourceFolder = "/src/"
     lateinit var sourceJSON: JSONObject
     val branch = if (BuildConfig.DEBUG) "v1.0.0-rewrite" else "master"
@@ -148,7 +149,7 @@ object FormatterController {
             override fun onReceive(context: Context?, intent: Intent) {
                 val intentID = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 if (downloadID == intentID && context != null) {
-                    Toast.makeText(context, "Installed: $name", Toast.LENGTH_SHORT).show()
+                    context.toast("Installed: $name")
                     var file = context.getExternalFilesDir(null)!!.absolutePath
                     file = file.substring(0, file.indexOf("/Android"))
                     val downloadedFile = File("$file/${Environment.DIRECTORY_DOCUMENTS}/$name.lua")
@@ -196,7 +197,7 @@ object FormatterController {
                 holder.installed = false
                 val targetFile = File(Utilities.shoDir + scriptDirectory + sourceFolder + "/$name.lua")
                 targetFile.delete()
-                Toast.makeText(activity.applicationContext, "Script deleted", Toast.LENGTH_SHORT).show()
+                activity.applicationContext.toast("Script deleted")
                 activity.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
             }
             i++
@@ -471,7 +472,7 @@ object FormatterController {
         }
 
         override fun onPostExecute(result: Void?) {
-            Toast.makeText(activity, activity.getString(R.string.updated_extensions_list), Toast.LENGTH_SHORT).show()
+            activity.toast(R.string.updated_extensions_list)
             extensionsFragment.setData()
             extensionsFragment.adapter.notifyDataSetChanged()
         }

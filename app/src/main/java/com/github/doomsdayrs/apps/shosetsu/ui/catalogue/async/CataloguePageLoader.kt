@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
 import android.util.Log
-import android.widget.Toast
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel.Listing
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -55,8 +54,8 @@ class CataloguePageLoader
     override fun doInBackground(vararg integers: Int?): Boolean? {
         Log.d("Loading", "Catalogue")
         return catalogueFragment?.let {
-            if (it.formatter.hasCloudFlare) {
-                if (it.activity != null) it.activity!!.runOnUiThread { Toast.makeText(it.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
+            if (it.formatter.hasCloudFlare && it.activity != null) it.activity!!.runOnUiThread {
+                it.context?.toast("CLOUDFLARE")
             }
             return try {
                 val novels: Array<Listing> = if (integers.isNotEmpty()) CatalogueLoader(it.formatter).execute(integers[0]) else CatalogueLoader(it.formatter).execute()

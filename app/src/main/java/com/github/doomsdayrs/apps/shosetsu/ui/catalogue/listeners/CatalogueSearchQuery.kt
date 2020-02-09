@@ -52,7 +52,7 @@ class CatalogueSearchQuery(private val catalogueFragment: CatalogueFragment) : S
             recycleCards.removeIf { recycleCard: CatalogueNovelCard? -> !recycleCard!!.title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT)) }
         } else {
             for (x in recycleCards.indices.reversed()) {
-                if (!recycleCards[x]!!.title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT))) {
+                if (!recycleCards[x].title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT))) {
                     recycleCards.removeAt(x)
                 }
             }

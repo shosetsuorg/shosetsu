@@ -7,7 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.NormalFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
@@ -68,7 +69,6 @@ class BackupSettings : Fragment() {
     )
 
 
-
     val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -85,7 +85,7 @@ class BackupSettings : Fragment() {
     @Suppress("unused")
 
     private fun performFileSelection() {
-        Toast.makeText(context, "Please make sure this is on the main storage, SD card storage is not functional yet", Toast.LENGTH_LONG).show()
+        context?.toast("Please make sure this is on the main storage, SD card storage is not functional yet", duration = LENGTH_LONG)
         val intent = Intent(context, NormalFilePickActivity::class.java)
         intent.putExtra(Constant.MAX_NUMBER, 9)
         intent.putExtra(NormalFilePickActivity.SUFFIX, arrayOf("shoback", "json"))

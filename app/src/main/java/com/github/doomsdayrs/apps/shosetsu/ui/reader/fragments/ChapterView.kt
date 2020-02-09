@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -16,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import kotlinx.android.synthetic.main.chapter_view.*
 
 /*
@@ -49,11 +49,15 @@ class ChapterView : Fragment() {
 
     // Order of values. Small,Medium,Large
     private lateinit var textSizes: Array<MenuItem>
+
     // Order of values. Non,Small,Medium,Large
     private lateinit var paragraphSpaces: Array<MenuItem>
+
     // Order of values. Non,Small,Medium,Large
     private lateinit var indentSpaces: Array<MenuItem>
+
     // Order of values. Default, Markdown
+    @Suppress("unused")
     private lateinit var readers: Array<MenuItem>
 
 
@@ -66,6 +70,7 @@ class ChapterView : Fragment() {
         }
 
     var bookmarked = false
+
     //public View coverView;
 // public ViewPager2 viewPager2;
 //public NewReader currentReader;
@@ -339,7 +344,7 @@ class ChapterView : Fragment() {
                 if (position + 1 < chapterReader!!.chapterIDs.size) {
                     next_chapter.visibility = View.GONE
                     chapterReader!!.getViewPager()?.currentItem = position + 1
-                } else Toast.makeText(chapterReader!!.applicationContext, "No more chapters!", Toast.LENGTH_SHORT).show()
+                } else chapterReader?.toast("No more chapters!")
             }
         }
         //holder.viewPager2.setUserInputEnabled(false);
@@ -393,6 +398,7 @@ class ChapterView : Fragment() {
     }
 
     private var marked: Boolean = false
+
     /**
      * What to do when scroll hits bottom
      */

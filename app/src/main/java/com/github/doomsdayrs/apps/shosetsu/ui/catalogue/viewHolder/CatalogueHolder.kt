@@ -4,13 +4,13 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 
 /*
  * This file is part of shosetsu.
@@ -54,7 +54,7 @@ class CatalogueHolder(itemView: View, private val fragmentManager: FragmentManag
                     .addToBackStack("tag")
                     .replace(R.id.fragment_container, catalogueFragment)
                     .commit()
-        } else Toast.makeText(v.context, "You are not online", Toast.LENGTH_SHORT).show()
+        } else v.context.toast(R.string.you_not_online)
     }
 
 }

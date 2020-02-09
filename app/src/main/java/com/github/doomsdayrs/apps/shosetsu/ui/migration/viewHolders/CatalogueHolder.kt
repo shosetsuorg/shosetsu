@@ -4,12 +4,12 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import kotlinx.android.synthetic.main.migrate_source_view.*
 
 /*
@@ -57,7 +57,7 @@ class CatalogueHolder(itemView: View, private val migrationView: MigrationView) 
                 }
             }
             migrationView.fillData()
-        } else Toast.makeText(v.context, v.context.getString(R.string.you_not_online), Toast.LENGTH_SHORT).show()
+        } else v.context?.toast(R.string.you_not_online)
     }
 
     init {

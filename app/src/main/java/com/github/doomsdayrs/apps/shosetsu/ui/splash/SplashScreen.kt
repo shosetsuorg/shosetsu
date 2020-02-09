@@ -43,7 +43,7 @@ import java.io.File
  * @author github.com/doomsdayrs
  */
 class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
-    private class BootSequence(val splashScreen: SplashScreen) : AsyncTask<Void, String, Void>() {
+    internal class BootSequence(private val splashScreen: SplashScreen) : AsyncTask<Void, String, Void>() {
         val unknown = ArrayList<File>()
 
         override fun onProgressUpdate(vararg values: String?) {

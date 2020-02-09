@@ -6,7 +6,8 @@ import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
+import android.widget.Toast.makeText
 import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 
@@ -45,13 +46,13 @@ import androidx.core.app.ActivityCompat
  * @param resource the text resource.
  * @param duration the duration of the toast. Defaults to short.
  */
-fun Context.toast(@StringRes resource: Int, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, resource, duration).show()
+fun Context.toast(@StringRes resource: Int, duration: Int = LENGTH_SHORT) {
+    makeText(this, resource, duration).show()
 }
 
 
-fun Context.toast(string: String, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, string, duration).show()
+fun Context.toast(string: String, duration: Int = LENGTH_SHORT) {
+    makeText(this, string, duration).show()
 }
 
 /**

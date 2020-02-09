@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
-import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -17,6 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import kotlinx.android.synthetic.main.settings.*
 import java.util.*
 
@@ -78,7 +79,7 @@ class DownloadSettings : SettingsSubFragment() {
     }
 
     private fun performFileSearch() {
-        Toast.makeText(context, "Please make sure this is on the main storage, SD card storage is not functional yet", Toast.LENGTH_LONG).show()
+        context?.toast("Please make sure this is on the main storage, SD card storage is not functional yet", duration = LENGTH_LONG)
         val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         i.addCategory(Intent.CATEGORY_DEFAULT)
         startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)
@@ -90,7 +91,7 @@ class DownloadSettings : SettingsSubFragment() {
             if (data != null) {
                 val path = data.data?.path
                 Log.i("Selected Folder", "Uri: $path")
-                if (path != null) setDir(path.substring(Objects.requireNonNull(path).indexOf(":") + 1)) else Toast.makeText(context, "Path is null", Toast.LENGTH_SHORT).show()
+                if (path != null) setDir(path.substring(Objects.requireNonNull(path).indexOf(":") + 1)) else context?.toast("Path is null")
             }
         }
     }

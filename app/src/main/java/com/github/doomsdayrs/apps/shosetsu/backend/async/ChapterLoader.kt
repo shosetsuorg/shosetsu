@@ -58,7 +58,6 @@ class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, v
         action.onPreExecute()
     }
 
-    private val nullPage: String = "Page returned null, Skipping"
 
     public override fun doInBackground(vararg p0: Void?): Boolean {
         // loads page

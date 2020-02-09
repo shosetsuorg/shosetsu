@@ -3,11 +3,12 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
@@ -67,7 +68,7 @@ object DownloadManager {
         val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt")
         Database.DatabaseChapter.removePath(downloadItem.chapterID)
         if (file.exists()) if (!file.delete()) if (context != null) {
-            Toast.makeText(context, context.getString(R.string.download_fail_delete), Toast.LENGTH_LONG).show()
+            context.toast(R.string.download_fail_delete,duration = LENGTH_LONG)
             return false
         }
         return true

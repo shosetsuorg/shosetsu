@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.Broadcasts
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import kotlinx.android.synthetic.main.fragment_novel_chapters.*
 
 /*
@@ -62,7 +62,7 @@ import kotlinx.android.synthetic.main.fragment_novel_chapters.*
  *
  */
 class NovelFragmentChapters : Fragment() {
-    val chaptersLoadedAction: ChapterLoaderAction
+    private val chaptersLoadedAction: ChapterLoaderAction
 
     init {
         chaptersLoadedAction = object : ChapterLoaderAction {
@@ -105,7 +105,9 @@ class NovelFragmentChapters : Fragment() {
 
             override fun errorReceived(errorString: String) {
                 Log.e("ChapterLoader", errorString)
-                activity?.runOnUiThread { Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show() }
+                activity?.runOnUiThread {
+                    context?.toast(errorString)
+                }
             }
         }
     }
@@ -135,7 +137,7 @@ class NovelFragmentChapters : Fragment() {
         return max
     }
 
-    lateinit var receiver: BroadcastReceiver
+    private lateinit var receiver: BroadcastReceiver
 
 
     override fun onDestroy() {
@@ -193,7 +195,7 @@ class NovelFragmentChapters : Fragment() {
             val i = novelFragment!!.lastRead()
             if (i != -1 && i != -2) {
                 if (activity != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter.formatterID)
-            } else Toast.makeText(context, "No chapters! How did you even press this!", Toast.LENGTH_SHORT).show()
+            } else context?.toast("No chapters! How did you even press this!")
         }
         val filter = IntentFilter()
         filter.addAction(Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE)
