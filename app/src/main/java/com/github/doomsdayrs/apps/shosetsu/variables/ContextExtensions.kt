@@ -49,6 +49,11 @@ fun Context.toast(@StringRes resource: Int, duration: Int = Toast.LENGTH_SHORT) 
     Toast.makeText(this, resource, duration).show()
 }
 
+
+fun Context.toast(string: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, string, duration).show()
+}
+
 /**
  * Property to get the notification manager from the context.
  */
@@ -56,7 +61,7 @@ val Context.notificationManager: NotificationManager
     get() = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 fun Context.requestPerms() {
-    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED||
+    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED)
         ActivityCompat.requestPermissions(
                 this as Activity,

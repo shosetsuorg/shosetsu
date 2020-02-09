@@ -8,7 +8,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
+import com.github.doomsdayrs.apps.shosetsu.variables.smallMessage
+import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import kotlinx.android.synthetic.main.fragment_catalogue.*
+import org.luaj.vm2.LuaError
 
 /*
  * This file is part of Shosetsu.
@@ -49,24 +52,30 @@ class CataloguePageLoader
      * @param integers if length = 0, loads first page otherwise loads the page # correlated to the integer
      * @return if this was completed or not
      */
-    override fun doInBackground(vararg integers: Int?): Boolean {
+    override fun doInBackground(vararg integers: Int?): Boolean? {
         Log.d("Loading", "Catalogue")
-        catalogueFragment?.let {
+        return catalogueFragment?.let {
             if (it.formatter.hasCloudFlare) {
                 if (it.activity != null) it.activity!!.runOnUiThread { Toast.makeText(it.context, "CLOUDFLARE", Toast.LENGTH_SHORT).show() }
             }
-            val novels: Array<Listing> = if (integers.isNotEmpty()) CatalogueLoader(it.formatter).execute(integers[0]) else CatalogueLoader(it.formatter).execute()
-            for (novel in novels) it.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
-            it.recyclerView?.post { it.catalogueAdapter.notifyDataSetChanged() }
-
-            Log.d("FragmentRefresh", "Complete")
-            if (it.activity != null) it.activity!!.runOnUiThread {
-                it.catalogueAdapter.notifyDataSetChanged()
-                it.swipeRefreshLayout?.isRefreshing = false
+            return try {
+                val novels: Array<Listing> = if (integers.isNotEmpty()) CatalogueLoader(it.formatter).execute(integers[0]) else CatalogueLoader(it.formatter).execute()
+                for (novel in novels) it.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
+                Log.d("FragmentRefresh", "Complete")
+                true
+            } catch (e: LuaError) {
+                catalogueFragment.activity?.runOnUiThread {
+                    catalogueFragment.context?.toast(e.smallMessage())
+                }
+                false
+            } catch (e: Exception) {
+                catalogueFragment.activity?.runOnUiThread {
+                    catalogueFragment.context?.toast(e.message ?: "UNKNOWN ERROR")
+                }
+                false
             }
         }
 
-        return true
     }
 
     /**
@@ -88,7 +97,12 @@ class CataloguePageLoader
      *
      * @param aBoolean result of doInBackground
      */
-    override fun onPostExecute(aBoolean: Boolean) {
+    override fun onPostExecute(aBoolean: Boolean?) {
+        aBoolean?.let {
+            if (it) {
+                catalogueFragment?.catalogueAdapter?.notifyDataSetChanged()
+            }
+        }
         catalogueFragment?.swipeRefreshLayout?.isRefreshing = false
     }
 

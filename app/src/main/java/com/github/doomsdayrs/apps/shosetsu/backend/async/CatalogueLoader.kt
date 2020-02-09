@@ -4,6 +4,7 @@ import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
+import org.luaj.vm2.LuaError
 import org.luaj.vm2.LuaTable
 
 
@@ -44,6 +45,7 @@ open class CatalogueLoader(val formatter: Formatter) {
      * @param integers if length = 0, loads first page otherwise loads the page # correlated to the integer
      * @return if this was completed or not
      */
+    @Throws(LuaError::class)
     fun execute(vararg integers: Int?): Array<Novel.Listing> {
         Log.d("CatalogueLoader", "Loading")
         if (formatter.hasCloudFlare) {

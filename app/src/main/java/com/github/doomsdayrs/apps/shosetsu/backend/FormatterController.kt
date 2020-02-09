@@ -23,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHol
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import com.github.doomsdayrs.apps.shosetsu.variables.smallMessage
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
@@ -341,7 +342,7 @@ object FormatterController {
                                 if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
                                     DefaultScrapers.formatters.add(l)
                             } catch (e: LuaError) {
-                                Log.e("FormatterInit", "LuaFormatter had an issue!${e.message!!.substring(e.message!!.lastIndexOf("}"))}")
+                                Log.e("FormatterInit", "LuaFormatter had an issue!${e.smallMessage()}")
                                 Log.e("FormatterInit", "We won't accept broken ones :D, Bai bai!")
                                 source.delete()
                             }

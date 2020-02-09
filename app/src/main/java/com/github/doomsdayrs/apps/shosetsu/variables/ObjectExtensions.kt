@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables
 
+import org.luaj.vm2.LuaError
+
 /*
  * This file is part of shosetsu.
  *
@@ -33,4 +35,8 @@ package com.github.doomsdayrs.apps.shosetsu.variables
  */
 fun String.clean(): String {
     return replace("[^A-Za-z0-9]".toRegex(), "_")
+}
+
+fun LuaError.smallMessage(): String {
+    return this.message?.let { return it.substring(it.lastIndexOf("}:")) } ?: "UNKNOWN ERROR"
 }
