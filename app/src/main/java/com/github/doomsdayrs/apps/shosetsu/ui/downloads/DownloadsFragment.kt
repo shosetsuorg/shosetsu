@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import kotlinx.android.synthetic.main.fragment_downloads.*
 
 /*
@@ -68,7 +68,7 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Utilities.setActivityTitle(activity, getString(R.string.downloads))
-        downloadItems = Database.DatabaseDownloads.getDownloadList()
+        downloadItems = Database.DatabaseDownloads.downloadList
         fragment_downloads_recycler.setHasFixedSize(false)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         adapter = DownloadAdapter(this)

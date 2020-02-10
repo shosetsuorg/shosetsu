@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
  */
 object UpdateManager {
 
-    fun init(context: Context, cards: ArrayList<Int> = Database.DatabaseNovels.getIntLibrary()) {
+    fun init(context: Context, cards: ArrayList<Int> = Database.DatabaseNovels.intLibrary) {
             UpdateService.start(context, UpdateService.KEY_NOVELS,cards)
     }
 }

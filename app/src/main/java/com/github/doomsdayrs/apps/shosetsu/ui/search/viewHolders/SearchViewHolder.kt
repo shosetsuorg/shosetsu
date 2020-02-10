@@ -60,7 +60,7 @@ class SearchViewHolder(itemView: View, val searchFragment: SearchFragment) : Rec
             -1 -> {
                 textView.setText(R.string.my_library)
                 if (!searchFragment.containsData(id)) {
-                    val intArray: ArrayList<Int> = getIntLibrary()
+                    val intArray: ArrayList<Int> = intLibrary
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         intArray.removeIf { novelID: Int? -> !DatabaseNovels.getNovelTitle(novelID!!).toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) }
                     } else {

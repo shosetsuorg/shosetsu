@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
@@ -16,7 +17,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_DOWNLOAD
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import needle.CancelableTask
 import needle.Needle
 import java.io.File
@@ -156,8 +156,8 @@ class DownloadService : Service() {
          */
         override fun doWork() {
             Log.i(LOG_NAME, "Starting loop")
-            while (Database.DatabaseDownloads.getDownloadCount() >= 1 && !Settings.downloadPaused) {
-                Database.DatabaseDownloads.getFirstDownload()?.let { downloadItem ->
+            while (Database.DatabaseDownloads.downloadCount >= 1 && !Settings.downloadPaused) {
+                Database.DatabaseDownloads.firstDownload?.let { downloadItem ->
 
                     val pr = service.progressNotification
                     pr.setContentText(downloadItem.chapterName)

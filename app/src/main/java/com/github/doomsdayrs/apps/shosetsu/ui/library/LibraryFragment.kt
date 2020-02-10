@@ -14,13 +14,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.NewMigrationView
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import kotlinx.android.synthetic.main.fragment_library.*
 import java.io.IOException
 import java.util.*
@@ -157,7 +157,7 @@ class LibraryFragment : Fragment(R.layout.fragment_library) {
     }
 
     private fun readFromDB() {
-        libraryNovelCards = DatabaseNovels.getIntLibrary()
+        libraryNovelCards = DatabaseNovels.intLibrary
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             libraryNovelCards.sortWith(Comparator { novel: Int?, t1: Int? -> DatabaseNovels.getNovelTitle(novel!!).compareTo(DatabaseNovels.getNovelTitle(t1!!)) })
         } else {

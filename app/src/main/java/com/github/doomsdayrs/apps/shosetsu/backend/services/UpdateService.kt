@@ -12,6 +12,7 @@ import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -21,7 +22,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_UPDATE
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import needle.CancelableTask
 import needle.Needle
@@ -153,7 +153,7 @@ class UpdateService : Service() {
         job = when (intent?.getIntExtra(KEY_TARGET, KEY_NOVELS) ?: KEY_NOVELS) {
             KEY_NOVELS ->
                 UpdateManga(this, intent
-                        ?: Intent().putIntegerArrayListExtra(KEY_CHAPTERS, Database.DatabaseNovels.getIntLibrary()))
+                        ?: Intent().putIntegerArrayListExtra(KEY_CHAPTERS, Database.DatabaseNovels.intLibrary))
 
             KEY_CATEGORY ->
                 UpdateCategory()
