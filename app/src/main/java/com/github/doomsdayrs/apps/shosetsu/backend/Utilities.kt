@@ -29,8 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings.MarkingTypes
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*

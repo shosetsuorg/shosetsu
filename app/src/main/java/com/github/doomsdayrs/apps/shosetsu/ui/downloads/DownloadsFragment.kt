@@ -20,7 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import kotlinx.android.synthetic.main.fragment_downloads.*
 
 /*

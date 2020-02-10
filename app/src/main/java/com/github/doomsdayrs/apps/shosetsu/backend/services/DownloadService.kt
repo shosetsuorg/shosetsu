@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_DOWNLOAD
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import needle.CancelableTask
 import needle.Needle
 import java.io.File

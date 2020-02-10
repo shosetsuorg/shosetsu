@@ -8,8 +8,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.DownloadSett
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.InfoSettings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.ViewSettings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.BackupSettings
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types.*
 
 /*
  * This file is part of Shosetsu.

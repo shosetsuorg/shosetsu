@@ -23,7 +23,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray

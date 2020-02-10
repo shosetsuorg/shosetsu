@@ -17,7 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import kotlinx.android.synthetic.main.settings.*
 import java.util.*
 

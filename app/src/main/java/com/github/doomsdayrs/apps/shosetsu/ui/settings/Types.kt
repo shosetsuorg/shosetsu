@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.enums
+package com.github.doomsdayrs.apps.shosetsu.ui.settings
 
 /*
  * This file is part of Shosetsu.

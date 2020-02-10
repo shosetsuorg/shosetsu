@@ -9,7 +9,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.SettingsCard
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types
 import kotlinx.android.synthetic.main.settings.*
 import java.util.*
 

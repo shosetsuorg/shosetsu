@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.listener.OnSettingsCardClick
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types
 import com.google.android.material.card.MaterialCardView
 
 /*

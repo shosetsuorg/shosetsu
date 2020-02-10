@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables
 
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types
 
 /*
  * This file is part of Shosetsu.

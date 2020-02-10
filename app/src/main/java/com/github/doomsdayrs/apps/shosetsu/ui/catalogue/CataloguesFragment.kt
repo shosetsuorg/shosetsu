@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSear
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.asFormatter
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import java.util.*

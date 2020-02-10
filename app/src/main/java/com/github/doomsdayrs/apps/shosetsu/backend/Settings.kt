@@ -1,7 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.obj
+package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.graphics.Color
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import org.json.JSONArray
 
 /*
