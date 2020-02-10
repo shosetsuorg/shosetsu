@@ -11,12 +11,12 @@ import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.variables.Broadcasts
-import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.CHANNEL_DOWNLOAD
-import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.ID_CHAPTER_DOWNLOAD
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import com.github.doomsdayrs.apps.shosetsu.variables.clean
-import com.github.doomsdayrs.apps.shosetsu.variables.isServiceRunning
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_DOWNLOAD
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_DOWNLOAD
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
 import needle.CancelableTask
 import needle.Needle
 import java.io.File
@@ -180,7 +180,7 @@ class DownloadService : Service() {
                             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
                             val formattedName = (downloadItem.chapterName).clean()
-                            val passage = downloadItem.formatter.getPassage(downloadItem.chapterURL!!)
+                            val passage = downloadItem.formatter.getPassage(downloadItem.chapterURL)
 
                             pr.setProgress(6, 3, false)
                             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())

@@ -1,6 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
-
-import org.luaj.vm2.LuaError
+package com.github.doomsdayrs.apps.shosetsu.variables.obj
 
 /*
  * This file is part of shosetsu.
@@ -26,15 +24,16 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
+object Broadcasts {
+    /**
+     * Tells receiver to update it's recycler view's adapter
+     */
+    const val BROADCAST_NOTIFY_DATA_CHANGE = "notifyDataChange"
 
-/**
- * Cleans a string
- * @return string without specials
- */
-fun String.clean(): String {
-    return replace("[^A-Za-z0-9]".toRegex(), "_")
-}
+    const val DOWNLOADS_MARK_ERROR = "markError"
+    const val DOWNLOADS_REMOVE = "removeItem"
+    const val DOWNLOADS_TOGGLE = "toggleStatus"
 
-fun LuaError.smallMessage(): String {
-    return this.message?.let { return it.substring(it.lastIndexOf("}:")) } ?: "UNKNOWN ERROR"
+    const val DOWNLOADS_RECIEVED_URL = "chapterURL"
+
 }

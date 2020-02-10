@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsCardViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.SettingsCard
+import com.github.doomsdayrs.apps.shosetsu.variables.SettingsCard
 import java.util.*
 
 /*
@@ -40,7 +40,7 @@ class SettingsAdapter(private val settingsCards: ArrayList<SettingsCard>, privat
 
     override fun onBindViewHolder(settingsCardViewHolder: SettingsCardViewHolder, i: Int) {
         val settingsCard = settingsCards[i]
-        settingsCardViewHolder.setType(settingsCard.ID)
+        settingsCardViewHolder.setType(settingsCard.id)
     }
 
     override fun getItemCount(): Int {

@@ -9,8 +9,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
-import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_library.*

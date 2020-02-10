@@ -9,8 +9,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.FileObject
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
 import org.json.JSONObject
 import java.io.File
 

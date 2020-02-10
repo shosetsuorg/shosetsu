@@ -6,7 +6,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject

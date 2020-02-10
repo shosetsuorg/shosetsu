@@ -1,8 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.variables.obj
 
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import org.luaj.vm2.LuaTable
 
 /*
@@ -81,10 +81,10 @@ object DefaultScrapers {
         return unknown
     }
 
-    val asCatalogue: ArrayList<CatalogueCard>
+    val asFormatter: ArrayList<FormatterCard>
         get() {
-            val catalogueCards = ArrayList<CatalogueCard>()
-            for (formatter in formatters) catalogueCards.add(CatalogueCard(formatter))
+            val catalogueCards = ArrayList<FormatterCard>()
+            for (formatter in formatters) catalogueCards.add(FormatterCard(formatter))
             catalogueCards.sortedWith(compareBy { it.title })
             return catalogueCards
         }

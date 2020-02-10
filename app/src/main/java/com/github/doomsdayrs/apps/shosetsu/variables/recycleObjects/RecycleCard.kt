@@ -21,27 +21,16 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 /**
  * Shosetsu
- *
- *
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
- *
- * This is a recycle card, it is used for the recyclers in the program.
+ * <p>
+ *     This is a recycle card, it is used for the recyclers in the program.
+ * </p>
  */
-open class RecycleCard
-/**
- * Constructor
- *
- * @param title text of card
- */ internal constructor(
-        /**
-         * Text of the card
-         */
-        val title: String) {
+open class RecycleCard(val title: String) {
     /**
      * If there isn't an image loaded in, this will be the image
      */
     val libraryImageResource = R.drawable.ic_close_black_24dp
-
 }

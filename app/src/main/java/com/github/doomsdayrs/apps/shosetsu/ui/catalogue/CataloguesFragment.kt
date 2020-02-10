@@ -15,9 +15,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapt
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.asCatalogue
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.asFormatter
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import kotlinx.android.synthetic.main.fragment_catalogues.*
 import java.util.*
 
@@ -46,7 +46,7 @@ import java.util.*
  */
 //TODO Searching mechanics here
 class CataloguesFragment : Fragment(R.layout.fragment_catalogues) {
-    private lateinit var cards: ArrayList<CatalogueCard>
+    private lateinit var cards: ArrayList<FormatterCard>
 
     init {
         setHasOptionsMenu(true)
@@ -77,7 +77,7 @@ class CataloguesFragment : Fragment(R.layout.fragment_catalogues) {
         //TODO Conditional for turning formatter on and off
         // > Conditional for languages
         // > Conditional for categories, maybe
-        cards = asCatalogue
+        cards = asFormatter
         recyclerView.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         val adapter = CataloguesAdapter(cards, fragmentManager!!)

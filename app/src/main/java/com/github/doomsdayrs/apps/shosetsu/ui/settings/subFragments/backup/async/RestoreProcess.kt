@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
-import com.github.doomsdayrs.apps.shosetsu.variables.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader

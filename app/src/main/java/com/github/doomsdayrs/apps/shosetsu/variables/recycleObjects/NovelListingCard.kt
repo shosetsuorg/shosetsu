@@ -1,4 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.database.objects
+package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects
+
+import java.io.Serializable
 
 /*
  * This file is part of Shosetsu.
@@ -16,10 +18,12 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database.objects
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- * shosetsu
- * 27 / 07 / 2019
+ */
+
+/**
+ * Shosetsu
+ * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-@Suppress("unused")
-class Update(val chapterID: Int, val novelID: Int, val date: Long)
+class NovelListingCard(val imageURL: String, title: String, val novelID: Int, val novelURL: String) : RecycleCard(title), Serializable

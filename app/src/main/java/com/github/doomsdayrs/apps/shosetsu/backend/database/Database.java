@@ -13,10 +13,10 @@ import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter;
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel;
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager;
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController;
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update;
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem;
+import com.github.doomsdayrs.apps.shosetsu.variables.Update;
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status;
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers;
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard;
 
 import org.jetbrains.annotations.NotNull;

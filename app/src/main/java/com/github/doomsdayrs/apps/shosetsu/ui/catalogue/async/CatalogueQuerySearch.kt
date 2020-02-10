@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 import android.os.AsyncTask
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import org.luaj.vm2.LuaTable
 import java.util.*
 
@@ -28,19 +28,19 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueQuerySearch(private val catalogueFragment: CatalogueFragment) : AsyncTask<String?, Void?, ArrayList<CatalogueNovelCard>>() {
+class CatalogueQuerySearch(private val catalogueFragment: CatalogueFragment) : AsyncTask<String?, Void?, ArrayList<NovelListingCard>>() {
     /**
      * Search catalogue
      *
      * @param strings ignored
      * @return List of results
      */
-    override fun doInBackground(vararg strings: String?): ArrayList<CatalogueNovelCard> {
-        val result = ArrayList<CatalogueNovelCard>()
+    override fun doInBackground(vararg strings: String?): ArrayList<NovelListingCard> {
+        val result = ArrayList<NovelListingCard>()
         val luaTable = LuaTable()
         luaTable["query"] = strings[0]
         val novels = catalogueFragment.formatter.search(luaTable) {}
-        for (novel in novels) result.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
+        for (novel in novels) result.add(NovelListingCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
         return result
     }
 

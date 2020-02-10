@@ -5,7 +5,7 @@ import android.util.Log
 import android.widget.SearchView
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CatalogueQuerySearch
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import java.util.*
 
 /*
@@ -49,7 +49,7 @@ class CatalogueSearchQuery(private val catalogueFragment: CatalogueFragment) : S
         catalogueFragment.isQuery = true
         val recycleCards = ArrayList(catalogueFragment.catalogueNovelCards)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            recycleCards.removeIf { recycleCard: CatalogueNovelCard? -> !recycleCard!!.title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT)) }
+            recycleCards.removeIf { recycleListingCard: NovelListingCard? -> !recycleListingCard!!.title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT)) }
         } else {
             for (x in recycleCards.indices.reversed()) {
                 if (!recycleCards[x].title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT))) {

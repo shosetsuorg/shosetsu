@@ -6,9 +6,9 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Novel.Listing
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
-import com.github.doomsdayrs.apps.shosetsu.variables.smallMessage
-import com.github.doomsdayrs.apps.shosetsu.variables.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import kotlinx.android.synthetic.main.fragment_catalogue.*
 import org.luaj.vm2.LuaError
 
@@ -59,7 +59,7 @@ class CataloguePageLoader
             }
             return try {
                 val novels: Array<Listing> = if (integers.isNotEmpty()) CatalogueLoader(it.formatter).execute(integers[0]) else CatalogueLoader(it.formatter).execute()
-                for (novel in novels) it.catalogueNovelCards.add(CatalogueNovelCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
+                for (novel in novels) it.catalogueNovelCards.add(NovelListingCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
                 Log.d("FragmentRefresh", "Complete")
                 true
             } catch (e: LuaError) {

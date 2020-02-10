@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.variables.Notifications
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications
 import org.acra.ACRA
 import org.acra.annotation.AcraCore
 import org.acra.annotation.AcraDialog

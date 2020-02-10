@@ -8,7 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.NewTargetAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.NewTransferalsAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import kotlinx.android.synthetic.main.new_migrartion_view.*
 
 /*
@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.new_migrartion_view.*
  */
 class NewMigrationView : AppCompatActivity(R.layout.new_migrartion_view) {
     // Options for which to search with
-    val catalogueOptions = DefaultScrapers.asCatalogue
+    val catalogueOptions = DefaultScrapers.asFormatter
 
     private val transferalsAdapter = NewTransferalsAdapter(this)
     private val targetAdapter = NewTargetAdapter(this)

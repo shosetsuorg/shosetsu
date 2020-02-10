@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.squareup.picasso.Picasso
 
 /*
@@ -32,7 +32,7 @@ import com.squareup.picasso.Picasso
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, private val catalogueFragment: CatalogueFragment, private val formatter: Formatter, @LayoutRes val layout: Int) : RecyclerView.Adapter<NovelCardViewHolder>() {
+class CatalogueAdapter(private val recycleListingCards: List<NovelListingCard>, private val catalogueFragment: CatalogueFragment, private val formatter: Formatter, @LayoutRes val layout: Int) : RecyclerView.Adapter<NovelCardViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): NovelCardViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(layout, viewGroup, false)
         val novelCardsViewHolder = NovelCardViewHolder(view)
@@ -42,19 +42,17 @@ class CatalogueAdapter(private val recycleCards: List<CatalogueNovelCard?>?, pri
     }
 
     override fun onBindViewHolder(novelCardsViewHolder: NovelCardViewHolder, i: Int) {
-        val recycleCard = recycleCards!![i]
-        if (recycleCard != null) {
-            novelCardsViewHolder.novelID = recycleCard.novelID
-            novelCardsViewHolder.url = recycleCard.novelURL
-            novelCardsViewHolder.title.text = recycleCard.title
-            if (recycleCard.imageURL.isNotEmpty()) {
-                Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.imageView)
-            } else novelCardsViewHolder.imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        }
+        val recycleCard = recycleListingCards[i]
+        novelCardsViewHolder.novelID = recycleCard.novelID
+        novelCardsViewHolder.url = recycleCard.novelURL
+        novelCardsViewHolder.title.text = recycleCard.title
+        if (recycleCard.imageURL.isNotEmpty()) {
+            Picasso.get().load(recycleCard.imageURL).into(novelCardsViewHolder.imageView)
+        } else novelCardsViewHolder.imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
     }
 
     override fun getItemCount(): Int {
-        return recycleCards!!.size
+        return recycleListingCards.size
     }
 
 }

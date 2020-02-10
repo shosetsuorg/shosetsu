@@ -7,7 +7,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.getByID
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.getByID
 import kotlinx.android.synthetic.main.migrate_source_view.*
 import java.util.*
 

@@ -14,10 +14,10 @@ import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigratingNovelA
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.adapters.MigrationViewCatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.async.MigrationViewLoad
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.async.Transfer
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.asCatalogue
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.asFormatter
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
-import com.github.doomsdayrs.apps.shosetsu.variables.toast
 import kotlinx.android.synthetic.main.migrate_source_view.*
 
 /*
@@ -44,7 +44,7 @@ import kotlinx.android.synthetic.main.migrate_source_view.*
 class MigrationView : AppCompatActivity() {
 
     val novelResults = ArrayList<ArrayList<Novel.Listing>>()
-    private var catalogues: ArrayList<CatalogueCard> = ArrayList()
+    private var formatters: ArrayList<FormatterCard> = ArrayList()
 
     var novels: ArrayList<NovelCard> = ArrayList()
     private val confirmedMappings = ArrayList<Array<String>>()
@@ -133,12 +133,12 @@ class MigrationView : AppCompatActivity() {
                 true
             }
         }
-        if (catalogues.isEmpty()) catalogues = asCatalogue
+        if (formatters.isEmpty()) formatters = asFormatter
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-        val adapter = MigrationViewCatalogueAdapter(catalogues, this)
+        val adapter = MigrationViewCatalogueAdapter(formatters, this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         fillData()

@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.Manifest
 import android.app.Activity

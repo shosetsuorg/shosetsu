@@ -27,10 +27,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpd
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment.Custom
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.Broadcasts
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import com.github.doomsdayrs.apps.shosetsu.variables.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
 import kotlinx.android.synthetic.main.fragment_novel_chapters.*
 
 /*

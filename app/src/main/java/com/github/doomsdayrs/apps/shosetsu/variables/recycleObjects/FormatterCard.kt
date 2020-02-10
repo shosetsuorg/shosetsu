@@ -19,9 +19,11 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+/**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueCard(val formatter: Formatter) : RecycleCard(formatter.name)
+class FormatterCard(val formatter: Formatter) : RecycleCard(formatter.name)

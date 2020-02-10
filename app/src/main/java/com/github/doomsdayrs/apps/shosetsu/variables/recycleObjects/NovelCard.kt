@@ -16,9 +16,14 @@ package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+/**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
+ * <p>
+ *     Database representation of a novel and it's information
+ * </p>
  */
 class NovelCard(title: String, val novelID: Int, val novelURL: String, val imageURL: String, val formatterID: Int) : RecycleCard(title)

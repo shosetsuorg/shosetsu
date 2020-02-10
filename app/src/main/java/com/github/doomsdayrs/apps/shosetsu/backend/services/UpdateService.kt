@@ -15,9 +15,13 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.variables.*
-import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.CHANNEL_UPDATE
-import com.github.doomsdayrs.apps.shosetsu.variables.Notifications.ID_CHAPTER_UPDATE
+import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_UPDATE
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_UPDATE
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import needle.CancelableTask
 import needle.Needle

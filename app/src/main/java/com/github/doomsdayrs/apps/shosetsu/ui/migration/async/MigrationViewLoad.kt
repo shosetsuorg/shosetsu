@@ -4,7 +4,7 @@ import android.os.AsyncTask
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers.getByID
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.getByID
 import kotlinx.android.synthetic.main.migrate_source_view.*
 import org.luaj.vm2.LuaTable
 

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.viewHolders.CatalogueHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueCard
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -31,14 +31,14 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class MigrationViewCatalogueAdapter(private val catalogues: ArrayList<CatalogueCard>, private val migrationView: MigrationView) : RecyclerView.Adapter<CatalogueHolder>() {
+class MigrationViewCatalogueAdapter(private val formatters: ArrayList<FormatterCard>, private val migrationView: MigrationView) : RecyclerView.Adapter<CatalogueHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): CatalogueHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.catalogue_item_card, viewGroup, false)
         return CatalogueHolder(view, migrationView)
     }
 
     override fun onBindViewHolder(catalogueHolder: CatalogueHolder, i: Int) {
-        val catalogueCard = catalogues[i]
+        val catalogueCard = formatters[i]
         catalogueCard.formatter.imageURL
         if (catalogueCard.formatter.imageURL.isNotEmpty()) Picasso.get()
                 .load(catalogueCard.formatter.imageURL)
@@ -48,7 +48,7 @@ class MigrationViewCatalogueAdapter(private val catalogues: ArrayList<CatalogueC
     }
 
     override fun getItemCount(): Int {
-        return catalogues.size
+        return formatters.size
     }
 
 

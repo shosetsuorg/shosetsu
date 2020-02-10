@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.variables.obj
 
 import android.graphics.Color
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities

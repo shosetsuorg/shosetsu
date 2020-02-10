@@ -1,9 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.variables.obj
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.notificationManager
 
 /*
  * This file is part of shosetsu.

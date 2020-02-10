@@ -20,9 +20,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBo
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.variables.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.variables.Settings
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.CatalogueNovelCard
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Settings
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import kotlinx.android.synthetic.main.fragment_catalogue.*
 
 /*
@@ -49,7 +49,7 @@ import kotlinx.android.synthetic.main.fragment_catalogue.*
 //TODO fix issue with not loading
 class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
     private var cataloguePageLoader: CataloguePageLoader? = null
-    var catalogueNovelCards = ArrayList<CatalogueNovelCard>()
+    var catalogueNovelCards = ArrayList<NovelListingCard>()
     lateinit var formatter: Formatter
     lateinit var catalogueAdapter: CatalogueAdapter
 
@@ -86,7 +86,7 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
-            catalogueNovelCards = (savedInstanceState.getSerializable("list") as ArrayList<CatalogueNovelCard>)
+            catalogueNovelCards = (savedInstanceState.getSerializable("list") as ArrayList<NovelListingCard>)
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
         }
         Utilities.setActivityTitle(activity, formatter.name)
@@ -129,14 +129,14 @@ class CatalogueFragment : Fragment(R.layout.fragment_catalogue) {
         }
     }
 
-    fun setLibraryCards(recycleCards: ArrayList<CatalogueNovelCard>) {
+    fun setLibraryCards(recycleListingCards: ArrayList<NovelListingCard>) {
         recyclerView!!.setHasFixedSize(false)
 
         if (Settings.novelCardType == 0) {
-            catalogueAdapter = CatalogueAdapter(recycleCards, this, formatter, R.layout.recycler_novel_card)
+            catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card)
             recyclerView!!.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
         } else {
-            catalogueAdapter = CatalogueAdapter(recycleCards, this, formatter, R.layout.recycler_novel_card_compressed)
+            catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card_compressed)
             recyclerView!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         recyclerView!!.adapter = catalogueAdapter

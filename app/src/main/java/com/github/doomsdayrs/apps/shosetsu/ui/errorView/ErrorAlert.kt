@@ -32,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * @author github.com/doomsdayrs
  */
-class ErrorAlert(context: Context, private retryAction: (dialog: DialogInterface?, which: Int) -> Unit = { dialog: DialogInterface?, which: Int -> dialog?.dismiss() }) : AlertDialog.Builder(context) {
+class ErrorAlert(context: Context, retryAction: (dialog: DialogInterface?, which: Int) -> Unit = { dialog: DialogInterface?, _: Int -> dialog?.dismiss() }) : AlertDialog.Builder(context) {
 
     private val view = (context as Activity).layoutInflater.inflate(R.layout.error_view, null)!!
     private val messageView: TextView = view.findViewById(R.id.error_message)

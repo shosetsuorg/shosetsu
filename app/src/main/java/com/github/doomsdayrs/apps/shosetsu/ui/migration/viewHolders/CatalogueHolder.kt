@@ -9,7 +9,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
-import com.github.doomsdayrs.apps.shosetsu.variables.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import kotlinx.android.synthetic.main.migrate_source_view.*
 
 /*

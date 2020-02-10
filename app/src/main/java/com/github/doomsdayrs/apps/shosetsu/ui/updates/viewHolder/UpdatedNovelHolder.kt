@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.objects.Update
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedChaptersAdapter
+import com.github.doomsdayrs.apps.shosetsu.variables.Update
 import com.google.android.material.chip.Chip
 import com.squareup.picasso.Picasso
 

@@ -1,6 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects
+package com.github.doomsdayrs.apps.shosetsu.variables
 
-import java.io.Serializable
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Types
 
 /*
  * This file is part of Shosetsu.
@@ -18,9 +18,14 @@ import java.io.Serializable
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+
+/**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueNovelCard(val imageURL: String, title: String, val novelID: Int, val novelURL: String) : RecycleCard(title), Serializable
+data class Update(val chapterID: Int, val novelID: Int, val date: Long)
+data class SettingsCard(val id: Types)

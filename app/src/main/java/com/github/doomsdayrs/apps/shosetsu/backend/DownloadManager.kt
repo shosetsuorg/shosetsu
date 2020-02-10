@@ -8,7 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
-import com.github.doomsdayrs.apps.shosetsu.variables.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader

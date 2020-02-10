@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables
 
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
 
 /*
  * This file is part of Shosetsu.
@@ -29,37 +30,13 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
  *
  * These items symbolize download items and their data
  */
-class DownloadItem(val formatter: Formatter, novelName: String, chapterName: String, chapterID: Int) {
-    val novelName: String
-    val chapterName: String
-    val chapterURL: String?
-    val chapterID: Int
+class DownloadItem(val formatter: Formatter, novelName: String, chapterName: String, val chapterID: Int) {
+
+    val novelName: String = novelName.clean()
+    val chapterName: String = chapterName.clean()
+    val chapterURL: String = DatabaseIdentification.getChapterURLFromChapterID(chapterID)
 
     //Variables only for download manager
     var status = "Pending"
 
-    companion object {
-        /**
-         * Cleans up the names to be functional in file system and DB
-         *
-         * @param s string to clean
-         * @return cleaned string
-         */
-        fun cleanse(s: String): String { //Log.d("Cleaning", s);
-            var s = s
-            s = s.replace("'".toRegex(), "_").replace("\"".toRegex(), "_")
-            // Log.d("Cleaned", s);
-            return s
-        }
-    }
-
-
-    init {
-        this.novelName = cleanse(novelName)
-        this.chapterName = cleanse(chapterName)
-       // val novelID = DatabaseIdentification.getNovelIDFromChapterID(chapterID)
-        //val novelURL = DatabaseIdentification.getNovelURLfromNovelID(novelID)
-        chapterURL = DatabaseIdentification.getChapterURLFromChapterID(chapterID)
-        this.chapterID = chapterID
-    }
 }
