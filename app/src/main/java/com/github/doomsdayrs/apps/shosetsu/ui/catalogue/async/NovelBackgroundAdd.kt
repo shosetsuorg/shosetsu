@@ -34,10 +34,10 @@ import kotlinx.android.synthetic.main.fragment_catalogue.*
 class NovelBackgroundAdd(private val novelCardsViewHolder: NovelCardViewHolder?) : AsyncTask<View?, Void, Void>() {
     override fun doInBackground(vararg views: View?): Void? {
         try {
-            if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url)) {
+            if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url!!)) {
                 Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.formatterID,
                         novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url!!, false) {},
-                        novelCardsViewHolder.url,
+                        novelCardsViewHolder.url!!,
                         com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
                 views[0]?.post {
                     views[0]?.context?.toast("Added ${novelCardsViewHolder.title.text}")
@@ -49,7 +49,7 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelCardViewHolder?)
                 }
             } else {
                 if (novelCardsViewHolder != null) {
-                    Database.DatabaseNovels.bookMark(Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCardsViewHolder.url))
+                    Database.DatabaseNovels.bookMark(Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCardsViewHolder.url!!))
                     views[0]?.post {
                         views[0]?.context?.toast("Added ${novelCardsViewHolder.title.text}")
                     }

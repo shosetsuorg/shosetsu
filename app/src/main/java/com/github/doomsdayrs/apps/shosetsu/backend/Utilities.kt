@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
@@ -29,13 +30,10 @@ import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
-import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -248,12 +246,12 @@ object Utilities {
              * @param a array of strings
              * @return String Array
              */
-    fun convertArrayToString(a: Array<String?>?): String {
-        if (a != null && a.isNotEmpty()) {
+    fun convertArrayToString(a: Array<String>): String {
+        if (a.isNotEmpty()) {
             for (x in a.indices) {
-                if (a[x] != null) a[x] = a[x]!!.replace(",", ">,<")
+                a[x] = a[x].replace(",", ">,<")
             }
-            return Arrays.toString(a)
+            return a.contentToString()
         }
         return "[]"
     }

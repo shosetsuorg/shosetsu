@@ -218,6 +218,8 @@
     <string name="novel_card_type_selector_title">NovelCard Type</string>
     <string name="novel_card_type_selector_desc">Set\'s how novel card\'s are viewed</string>
     <string name="library_update">Updating Library</string>
+    <string name="catalogue_default_load">Default home page</string>
+    <string name="catalogue_default_load_desc">When a catalogue is selected, This is the thing it loads</string>
 
     <array name="application_themes">
         <item>@string/light</item>

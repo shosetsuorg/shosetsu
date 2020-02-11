@@ -82,7 +82,7 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
             chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download).title = "Download"
             chaptersViewHolder.downloadTag.visibility = View.INVISIBLE
         }
-        when (Database.DatabaseChapter.getStatus(chapterID)) {
+        when (Database.DatabaseChapter.getChapterStatus(chapterID)) {
             Status.READING -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     chaptersViewHolder.constraintLayout.foreground = ColorDrawable()

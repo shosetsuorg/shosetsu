@@ -207,7 +207,7 @@ object FormatterController {
     fun trustScript(file: File) {
         val name = file.name.substring(0, file.name.length - 4)
         val meta = LuaFormatter(file).getMetaData()!!
-        val md5 = md5(getContent(file))
+        val md5 = md5(getContent(file))!!
         val id = meta.getInt("id")
         val repo = meta.getString("repo")
         Database.DatabaseFormatters.addToFormatterList(name, id, md5, repo.isNotEmpty(), repo)

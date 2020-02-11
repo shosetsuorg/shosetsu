@@ -33,7 +33,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isSaved
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getFormatterIDFromNovelURL
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelURLFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
@@ -67,9 +70,9 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
             updatedChapterHolder.novelChapter = (novelChapter)
             updatedChapterHolder.popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
                 var novelPage = Novel.Info()
-                val nURL = getNovelURLFromChapterURL(updatedChapterHolder.novelChapter?.link)
+                val nURL = getNovelURLFromChapterURL(updatedChapterHolder.novelChapter?.link!!)
                 if (nURL != null) novelPage = Database.DatabaseNovels.getNovelPage(getNovelIDFromNovelURL(nURL))
-                val formatter: Formatter = getByID(getFormatterIDFromNovelURL(nURL))
+                val formatter: Formatter = getByID(getFormatterIDFromNovelURL(nURL!!))
                 val chapterID = getChapterIDFromChapterURL(novelChapter.link)
                 when (menuItem.itemId) {
                     R.id.popup_chapter_menu_bookmark -> {

@@ -45,7 +45,7 @@ class NovelCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), V
         val novelFragment = NovelFragment()
         novelFragment.novelURL = url!!
         novelFragment.formatter = formatter
-        novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url)
+        novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url!!)
         if (catalogueFragment!!.activity != null) (catalogueFragment!!.activity as MainActivity?)!!.transitionView(novelFragment)
     }
 

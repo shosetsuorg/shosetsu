@@ -5,9 +5,13 @@ import android.os.AsyncTask
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.addToChapters
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isNotInChapters
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.updateChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.addToLibrary
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInNovels
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.updateNovel
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD
@@ -89,7 +93,7 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
                 // Errors out the program and returns a false
                 Log.e("NovelLoader", "Error", e)
                 novelFragment?.activity?.runOnUiThread {
-                    ErrorAlert(novelFragment.context!!) { dialog: DialogInterface?, which: Int -> NovelLoader(this).execute();dialog?.dismiss() }
+                    ErrorAlert(novelFragment.context!!) { dialog: DialogInterface?, _: Int -> NovelLoader(this).execute();dialog?.dismiss() }
                             .setMessage(e.message)
                             .show()
                 }
