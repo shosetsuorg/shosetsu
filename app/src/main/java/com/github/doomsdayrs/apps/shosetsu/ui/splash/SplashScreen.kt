@@ -82,12 +82,6 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
     override fun onCreate(savedInstanceState: Bundle?) {
         this.requestPerms()
         super.onCreate(savedInstanceState)
-        // Sets prefrences
-        Utilities.viewPreferences = getSharedPreferences("view", 0)
-        Utilities.downloadPreferences = getSharedPreferences("download", 0)
-        Utilities.advancedPreferences = getSharedPreferences("advanced", 0)
-        Utilities.trackingPreferences = getSharedPreferences("tracking", 0)
-        Utilities.backupPreferences = getSharedPreferences("backup", 0)
         Utilities.initPreferences(this)
 
         // Sets up DB
