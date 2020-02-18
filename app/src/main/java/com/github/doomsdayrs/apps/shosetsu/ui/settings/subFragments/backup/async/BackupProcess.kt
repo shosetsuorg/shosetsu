@@ -2,11 +2,13 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.asyn
 
 import android.os.AsyncTask
 import android.util.Log
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -53,12 +55,12 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
             Log.i("Progress", "Backing up novels")
             run {
                 val backupNovels = JSONArray()
-                val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)
+                val cursor = sqLiteDatabase?.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)!!
                 if (cursor.count > 0) while (cursor.moveToNext()) { // Gets if it is in library, if not then it skips
                     val bookmarked = Utilities.intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
                     Log.i("NovelBack", "Valid?: $bookmarked")
                     if (bookmarked) {
-                        val novelURL = DatabaseIdentification.getNovelURLfromNovelID(cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())))
+                        val novelURL = DatabaseIdentification.getNovelURLfromNovelID(cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())))!!
                         val novel = JSONObject()
                         novel.put(Columns.URL.toString(), novelURL)
                         novel.put(Columns.FORMATTER_ID.toString(), DatabaseIdentification.getFormatterIDFromNovelURL(novelURL))
@@ -83,10 +85,10 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
             Log.i("Progress", "Backing up Chapters")
             run {
                 val backupChapters = JSONArray()
-                val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.CHAPTERS, null)
+                val cursor = sqLiteDatabase?.rawQuery("select * from " + Tables.CHAPTERS, null)!!
                 if (cursor.count > 0) while (cursor.moveToNext()) {
                     val novelID = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
-                    val b = DatabaseNovels.isBookmarked(novelID)
+                    val b = Database.DatabaseNovels.isBookmarked(novelID)
                     if (b) {
                         val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
                         val chapter = JSONObject()

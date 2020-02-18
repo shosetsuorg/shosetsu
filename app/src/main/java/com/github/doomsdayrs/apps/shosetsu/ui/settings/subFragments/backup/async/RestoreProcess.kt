@@ -11,7 +11,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import org.json.JSONException
@@ -98,7 +102,7 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
                         DatabaseIdentification.addNovel(novelURL, novel.getInt(Columns.FORMATTER_ID.toString()))
                         val id = DatabaseIdentification.getNovelIDFromNovelURL(novelURL)
                         try {
-                            sqLiteDatabase.execSQL("insert into " + Tables.NOVELS + "(" +
+                            sqLiteDatabase?.execSQL("insert into " + Tables.NOVELS + "(" +
                                     Columns.PARENT_ID + "," +
                                     Columns.BOOKMARKED + "," +
                                     Columns.READING_STATUS + "," +
@@ -133,7 +137,7 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
                             e.printStackTrace()
                         }
                     } else {
-                        sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " +
+                        sqLiteDatabase?.execSQL("update " + Tables.NOVELS + " set " +
                                 Columns.BOOKMARKED + "=1," +
                                 Columns.READING_STATUS + "=" + novel[Columns.READING_STATUS.toString()] + "," +
                                 Columns.READER_TYPE + "=" + novel[Columns.READER_TYPE.toString()] +
@@ -153,7 +157,7 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
                         val novelID = DatabaseIdentification.getNovelIDFromNovelURL(novelURL)
                         DatabaseIdentification.addChapter(novelID, chapterURL)
                         val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(chapterURL)
-                        sqLiteDatabase.execSQL("insert into " + Tables.CHAPTERS +
+                        sqLiteDatabase?.execSQL("insert into " + Tables.CHAPTERS +
                                 "(" +
                                 Columns.ID + "," +
                                 Columns.PARENT_ID + "," +
@@ -177,7 +181,7 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
                                 chapter.getInt(Columns.BOOKMARKED.toString()) + "," +
                                 0 + ")")
                     } else {
-                        sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " +
+                        sqLiteDatabase?.execSQL("update " + Tables.CHAPTERS + " set " +
                                 Columns.Y + "=" + chapter.getString(Columns.Y.toString()) + "," +
                                 Columns.READ_CHAPTER + "=" + chapter.getString(Columns.READ_CHAPTER.toString()) + "," +
                                 Columns.BOOKMARKED + "=" + chapter.getString(Columns.BOOKMARKED.toString()) +

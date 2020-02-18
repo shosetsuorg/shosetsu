@@ -2,8 +2,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.viewHolders
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -35,4 +37,6 @@ class ConfigExtView(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val imageView: ImageView = itemView.findViewById(R.id.imageView)
     val title: TextView = itemView.findViewById(R.id.title)
     val switch: Switch = itemView.findViewById(R.id.switchView)
+    val constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraint)
+    val spinner: Spinner = itemView.findViewById(R.id.spinner)
 }

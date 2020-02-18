@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapter
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getStatus
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
@@ -99,7 +99,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
                 novelPage = Database.DatabaseNovels.getNovelPage(novelID)
                 new = false
                 //   novelChapters = DatabaseChapter.getChapters(novelID)
-                status = Database.DatabaseNovels.getStatus(novelID)
+                status = Database.DatabaseNovels.getNovelStatus(novelID)
                 if (activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage.title
                 setViewPager()
             }
@@ -182,7 +182,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
                     var y = x
                     while (y < novelChapters.size) {
                         if (customChapters.size <= count) {
-                            if (check.customCheck(getStatus(getChapterIDFromChapterURL(novelChapters[y].link))))
+                            if (check.customCheck(getChapterStatus(getChapterIDFromChapterURL(novelChapters[y].link))))
                                 customChapters.add(novelChapters[y])
                         }
                         Log.d("NovelFragment", "Size ${customChapters.size}")
@@ -199,7 +199,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
                     var y = x
                     while (y > 0) {
                         if (customChapters.size <= count) {
-                            if (check.customCheck(getStatus(getChapterIDFromChapterURL(novelChapters[y].link))))
+                            if (check.customCheck(getChapterStatus(getChapterIDFromChapterURL(novelChapters[y].link))))
                                 customChapters.add(novelChapters[y])
                         }
                         y--
@@ -216,12 +216,12 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
         if (!novelChapters.isNullOrEmpty())
             if (!novelFragmentChapters!!.reversed)
                 for (x in novelChapters.size - 1 downTo 0) {
-                    val stat = getStatus(getChapterIDFromChapterURL(novelChapters[x].link))
+                    val stat = getChapterStatus(getChapterIDFromChapterURL(novelChapters[x].link))
                     if (stat == Status.READ || stat == Status.READING)
                         return novelChapters[x]
                 }
             else for (x in novelChapters) {
-                val stat = getStatus(getChapterIDFromChapterURL(x.link))
+                val stat = getChapterStatus(getChapterIDFromChapterURL(x.link))
                 if (stat == Status.READ || stat == Status.READING)
                     return x
             }
@@ -235,7 +235,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
         return if (novelChapters.isNotEmpty()) {
             if (!novelFragmentChapters?.reversed!!) {
                 for (x in novelChapters.indices.reversed()) {
-                    when (getStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
+                    when (getChapterStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
                         Status.READ -> return x + 1
                         Status.READING -> return x
                         else -> {
@@ -244,7 +244,7 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
                 }
             } else {
                 for (x in novelChapters.indices) {
-                    when (getStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
+                    when (getChapterStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
                         Status.READ -> return x - 1
                         Status.READING -> return x
                         else -> {

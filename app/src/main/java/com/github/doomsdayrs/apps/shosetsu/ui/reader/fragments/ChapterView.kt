@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
@@ -15,7 +16,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import kotlinx.android.synthetic.main.chapter_view.*
 
 /*
@@ -365,7 +365,7 @@ class ChapterView : Fragment() {
     private fun dataSet() {
         if (Database.DatabaseChapter.isSaved(chapterID)) {
             Log.d("ChapterView", "Loading from storage${appendID()}")
-            unformattedText = (Database.DatabaseChapter.getSavedNovelPassage(chapterID))
+            unformattedText = Database.DatabaseChapter.getSavedNovelPassage(chapterID)!!
             setUpReader()
             scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
             ready = true
@@ -415,7 +415,7 @@ class ChapterView : Fragment() {
             val y = scrollView!!.scrollY
 
             if (y % 5 == 0)
-                if (Database.DatabaseChapter.getStatus(chapterID) != Status.READ) Database.DatabaseChapter.updateY(chapterID, y)
+                if (Database.DatabaseChapter.getChapterStatus(chapterID) != Status.READ) Database.DatabaseChapter.updateY(chapterID, y)
         } else {
             Log.i("Scroll", "Marking chapter as READ${appendID()}")
             Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)

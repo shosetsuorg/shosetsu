@@ -34,6 +34,9 @@ import org.luaj.vm2.LuaTable
 // > Make IDs built into the formatter
 object DefaultScrapers {
     class UnknownFormatter : Formatter {
+        override val baseURL: String
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+
         override val filters: LuaTable
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         override val formatterID: Int = -1
@@ -71,7 +74,6 @@ object DefaultScrapers {
     val unknown = UnknownFormatter()
 
     val formatters = ArrayList<Formatter>()
-
 
     @JvmStatic
     fun getByID(ID: Int): Formatter {

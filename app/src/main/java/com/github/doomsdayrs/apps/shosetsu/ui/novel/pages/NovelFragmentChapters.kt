@@ -21,7 +21,14 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader.ChapterLoaderAction
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.addToChapters
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapterStatus
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapters
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isNotInChapters
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isSaved
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.updateChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates.addToUpdates
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
@@ -261,7 +268,7 @@ class NovelFragmentChapters : Fragment() {
                                     // Unread
                                     for (chapter in novelFragment?.novelChapters!!) {
                                         val id = getChapterIDFromChapterURL(chapter.link)
-                                        if (getStatus(id) == (Status.UNREAD))
+                                        if (getChapterStatus(id) == (Status.UNREAD))
                                             DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter.title, id))
                                     }
                                 }
@@ -321,21 +328,21 @@ class NovelFragmentChapters : Fragment() {
             }
             R.id.chapter_mark_read -> {
                 for (chapterID in selectedChapters) {
-                    if (getStatus(chapterID).a != 2) setChapterStatus(chapterID, Status.READ)
+                    if (getChapterStatus(chapterID).a != 2) setChapterStatus(chapterID, Status.READ)
                 }
                 updateAdapter()
                 true
             }
             R.id.chapter_mark_unread -> {
                 for (chapterID in selectedChapters) {
-                    if (getStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.UNREAD)
+                    if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.UNREAD)
                 }
                 updateAdapter()
                 true
             }
             R.id.chapter_mark_reading -> {
                 for (chapterID in selectedChapters) {
-                    if (getStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.READING)
+                    if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.READING)
                 }
                 updateAdapter()
                 true

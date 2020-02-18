@@ -437,7 +437,7 @@ object Database {
          * @param chapterID chapter to check
          * @return returns chapter status
          */
-        fun getStatus(chapterID: Int): Status {
+        fun getChapterStatus(chapterID: Int): Status {
             val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
@@ -676,7 +676,7 @@ object Database {
                     }
                 }
                 cursor.close()
-                Collections.sort(novelChapters) { (_, _, _, order), (_, _, _, order) -> java.lang.Double.compare(order, order) }
+                novelChapters.sortWith(Comparator { (_, _, _, order1), (_, _, _, order) -> order1.compareTo(order) })
                 novelChapters
             }
         }
@@ -930,7 +930,7 @@ object Database {
                 try {
                     val novelCard = NovelCard(
                             checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
-                            novelID, Objects.requireNonNull(DatabaseIdentification.getNovelURLfromNovelID(novelID)),
+                            novelID, DatabaseIdentification.getNovelURLfromNovelID(novelID) ?: "",
                             cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
                             DatabaseIdentification.getFormatterIDFromNovelID(novelID)
                     )
@@ -1012,7 +1012,7 @@ object Database {
         //            sqLiteDatabase.execSQL("update " + Tables.NOVELS + " set " + Columns.READING_STATUS + "=" + status + " where " + Columns.PARENT_ID + "=" + novelID);
         //        }
         // --Commented out by Inspection STOP (12/22/19 11:09 AM)
-        fun getStatus(novelID: Int): Status {
+        fun getNovelStatus(novelID: Int): Status {
             val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.READING_STATUS + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + " =" + novelID, null)
             return if (cursor.count <= 0) {
                 cursor.close()

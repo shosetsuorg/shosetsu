@@ -2,16 +2,19 @@ package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters
 
 import android.os.Build
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.viewHolders.ConfigExtView
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
 import java.io.File
@@ -57,7 +60,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
 
         var enabled = false
         var isInteral = false
-
+        var fom: Formatter? = null
         if (position < configureExtensions.jsonArray.length()) {
             val jsonObject: JSONObject = configureExtensions.jsonArray[position] as JSONObject
             name = jsonObject.getString("name")
@@ -65,7 +68,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
             image = jsonObject.getString("imageUrl")
             isInteral = jsonObject.getBoolean("internal")
         } else {
-            val fom = DefaultScrapers.formatters[position - configureExtensions.jsonArray.length()]
+            fom = DefaultScrapers.formatters[position - configureExtensions.jsonArray.length()]
             name = fom.name
             id = fom.formatterID
             image = fom.imageURL
@@ -126,6 +129,15 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
                     }
                     Settings.disabledFormatters = configureExtensions.jsonArray
                 }
+            }
+        }
+
+        fom?.let { fom ->
+            if (fom.listings.size > 1) {
+                val a = ArrayList<String>()
+                holder.constraintLayout.visibility = View.VISIBLE
+                fom.listings.forEach { a.add(it.name) }
+                holder.spinner.adapter = ArrayAdapter<String>(holder.itemView.context, android.R.layout.simple_spinner_item, a)
             }
         }
     }

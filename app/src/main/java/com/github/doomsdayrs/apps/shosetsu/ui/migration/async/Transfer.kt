@@ -64,7 +64,7 @@ class Transfer(private val strings: ArrayList<Array<String>>, target: Int, priva
             if (isNotCanceled) {
                 migrationView.page_count.post { migrationView.page_count.text = "" }
                 val oldID = DatabaseIdentification.getNovelIDFromNovelURL(strings[0])
-                Database.DatabaseNovels.migrateNovel(oldID, strings[1], formatter.formatterID, novelPage, Database.DatabaseNovels.getStatus(oldID).a)
+                Database.DatabaseNovels.migrateNovel(oldID, strings[1], formatter.formatterID, novelPage, Database.DatabaseNovels.getNovelStatus(oldID).a)
             }
         }
         return null
