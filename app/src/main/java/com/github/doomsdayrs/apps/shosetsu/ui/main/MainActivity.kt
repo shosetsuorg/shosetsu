@@ -23,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity(), Supporter {
                 Log.d("Nav", "Selected $id")
                 when (id) {
                     R.id.nav_library -> {
+                        setRoot(LibraryController(), R.id.nav_library)
                     }
                     R.id.nav_catalogue -> {
                     }
@@ -152,16 +154,18 @@ class MainActivity : AppCompatActivity(), Supporter {
                     init(this)
             }
             else -> {
+
+                if (!router.hasRootController()) {
+                    setSelectedDrawerItem(R.id.nav_library)
+                }
                 //Prevent the frag from changing on rotation
-                if (savedInstanceState == null) {
+                /*if (savedInstanceState == null) {
                     supportFragmentManager
                             .beginTransaction()
                             .replace(R.id.fragment_container, libraryFragment).commit()
                     nav_view.setCheckedItem(R.id.nav_library)
-
-                    // Initalzies formatters
-                    //TODO Popup progress for this
                 }
+                */
             }
         }
     }
@@ -170,8 +174,13 @@ class MainActivity : AppCompatActivity(), Supporter {
      * When the back button while drawer is open, close it.
      */
     override fun onBackPressed() {
-        if (drawer_layout!!.isDrawerOpen(GravityCompat.START)) drawer_layout!!.closeDrawer(GravityCompat.START) else {
-            super.onBackPressed()
+        val backStackSize = router.backstackSize
+        when {
+            drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
+
+            backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null -> setSelectedDrawerItem(R.id.nav_library)
+
+            backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
         }
     }
 
