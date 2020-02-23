@@ -9,7 +9,6 @@ import android.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bluelinelabs.conductor.ChangeHandlerFrameLayout
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
@@ -38,6 +37,8 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+/**
  * Shosetsu
  * 9 / June / 2019
  *
@@ -71,7 +72,7 @@ class LibraryController : Controller() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        val view = inflater.inflate(R.layout.controller_library, container, false).findViewById(R.id.fragment_container) as ChangeHandlerFrameLayout
+        val view = inflater.inflate(R.layout.controller_library, container, false)
         recyclerView = view.findViewById(R.id.recyclerView)
         Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.my_library))
         return view

@@ -20,6 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
@@ -111,6 +112,7 @@ class MainActivity : AppCompatActivity(), Supporter {
                         setRoot(LibraryController(), R.id.nav_library)
                     }
                     R.id.nav_catalogue -> {
+                        setRoot(CataloguesController(), R.id.nav_catalogue)
                     }
                     R.id.nav_extensions -> {
                     }
