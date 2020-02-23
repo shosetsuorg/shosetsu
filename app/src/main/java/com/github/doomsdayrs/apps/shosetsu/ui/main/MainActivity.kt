@@ -10,6 +10,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.bluelinelabs.conductor.Conductor
+import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
@@ -21,10 +24,10 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.main.listener.NavigationSwapListener
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener
@@ -61,6 +64,9 @@ import okhttp3.OkHttpClient
  */
 //TODO Inform users to refresh their libraries
 class MainActivity : AppCompatActivity(), Supporter {
+    private lateinit var router: Router
+
+
     val cataloguesFragment = CataloguesFragment()
     val libraryFragment = LibraryFragment()
     val updatesFragment = UpdatesFragment()
@@ -77,31 +83,50 @@ class MainActivity : AppCompatActivity(), Supporter {
         this.requestPerms()
         super.onCreate(savedInstanceState)
 
+        // Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079
+        if (!isTaskRoot) {
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_main)
-        //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
-
-        val appUpdater = AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.XML)
-                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
-                .setDisplay(Display.DIALOG)
-                .setTitleOnUpdateAvailable(getString(R.string.app_update_available))
-                .setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
-                .setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
-                .setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
-                .setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
-                .setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
-                .setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
-                .setIcon(R.drawable.ic_system_update_alt_black_24dp)
-                .setCancelable(true)
-                .showEvery(5)
-        appUpdater.start()
-        // updateUtils()
+        appUpdate()
 
         //Sets the toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
+
+        // Navigation view
+        //nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
+        nav_view.setNavigationItemSelectedListener {
+            val id = it.itemId
+
+            val currentRoot = router.backstack.firstOrNull()
+            if (currentRoot?.tag()?.toIntOrNull() != id) {
+                Log.d("Nav", "Selected $id")
+                when (id) {
+                    R.id.nav_library -> {
+                    }
+                    R.id.nav_catalogue -> {
+                    }
+                    R.id.nav_extensions -> {
+                    }
+                    R.id.nav_settings -> {
+                    }
+                    R.id.nav_downloads -> {
+                    }
+                    R.id.nav_updater -> {
+                    }
+                }
+            }
+            drawer_layout.closeDrawer(GravityCompat.START)
+            return@setNavigationItemSelectedListener true
+        }
+
+        router = Conductor.attachRouter(this, fragment_container, savedInstanceState)
+
+
         val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
@@ -141,6 +166,58 @@ class MainActivity : AppCompatActivity(), Supporter {
         }
     }
 
+    /**
+     * When the back button while drawer is open, close it.
+     */
+    override fun onBackPressed() {
+        if (drawer_layout!!.isDrawerOpen(GravityCompat.START)) drawer_layout!!.closeDrawer(GravityCompat.START) else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun setTitle(name: String?) {
+        if (supportActionBar != null) supportActionBar!!.title = name
+    }
+
+    // From tachiyomi
+    private fun setSelectedDrawerItem(id: Int) {
+        if (!isFinishing) {
+            nav_view.setCheckedItem(id)
+            nav_view.menu.performIdentifierAction(id, 0)
+        }
+    }
+
+
+    private fun setRoot(controller: Controller, id: Int) {
+        router.setRoot(controller.withFadeTransaction().tag(id.toString()))
+    }
+
+    fun getNavigationView(): NavigationView? {
+        return nav_view
+    }
+
+    fun getDrawerLayout(): DrawerLayout? {
+        return drawer_layout
+    }
+
+    private fun appUpdate() {
+        val appUpdater = AppUpdater(this)
+                .setUpdateFrom(UpdateFrom.XML)
+                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+                .setDisplay(Display.DIALOG)
+                .setTitleOnUpdateAvailable(getString(R.string.app_update_available))
+                .setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
+                .setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
+                .setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
+                .setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
+                .setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
+                .setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
+                .setIcon(R.drawable.ic_system_update_alt_black_24dp)
+                .setCancelable(true)
+                .showEvery(5)
+        appUpdater.start()
+    }
+
     fun transitionView(target: Fragment) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("tag")
@@ -164,26 +241,5 @@ class MainActivity : AppCompatActivity(), Supporter {
                     }
                 })
         appUpdaterUtils.start()
-    }
-
-    /**
-     * When the back button while drawer is open, close it.
-     */
-    override fun onBackPressed() {
-        if (drawer_layout!!.isDrawerOpen(GravityCompat.START)) drawer_layout!!.closeDrawer(GravityCompat.START) else {
-            super.onBackPressed()
-        }
-    }
-
-    override fun setTitle(name: String?) {
-        if (supportActionBar != null) supportActionBar!!.title = name
-    }
-
-    fun getNavigationView(): NavigationView? {
-        return nav_view
-    }
-
-    fun getDrawerLayout(): DrawerLayout? {
-        return drawer_layout
     }
 }
