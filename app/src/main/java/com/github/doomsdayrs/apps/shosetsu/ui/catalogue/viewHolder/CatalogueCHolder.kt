@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder
 
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -9,8 +10,9 @@ import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 
 /*
  * This file is part of shosetsu.
@@ -37,7 +39,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 class CatalogueCHolder(itemView: View, private val router: Router) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     val imageView: ImageView = itemView.findViewById(R.id.imageView)
     val title: TextView = itemView.findViewById(R.id.textView)
-
     lateinit var formatter: Formatter
 
     init {
@@ -48,9 +49,10 @@ class CatalogueCHolder(itemView: View, private val router: Router) : RecyclerVie
     override fun onClick(v: View) {
         Log.d("FormatterSelection", formatter.name)
         if (Utilities.isOnline) {
-            val catalogueFragment = CatalogueFragment()
-            catalogueFragment.formatter = (formatter)
-            v.context.toast("TODO CHANGE VIEW")
+            val bundle = Bundle()
+            bundle.putInt("formatter", formatter.formatterID)
+            val catalogueFragment = CatalogueController(bundle)
+            router.pushController(catalogueFragment.withFadeTransaction())
             //TODO Router push to catalogue
         } else v.context.toast(R.string.you_not_online)
     }

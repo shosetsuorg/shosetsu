@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
@@ -32,3 +33,7 @@ fun Controller.requestPermissionsSafe(permissions: Array<String>, requestCode: I
 fun Controller.withFadeTransaction(): RouterTransaction = RouterTransaction.with(this)
         .pushChangeHandler(FadeChangeHandler())
         .popChangeHandler(FadeChangeHandler())
+
+
+val Controller.context: Context?
+    get() = applicationContext
