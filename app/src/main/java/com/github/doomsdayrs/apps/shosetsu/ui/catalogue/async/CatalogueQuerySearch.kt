@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import org.luaj.vm2.LuaTable
 import java.util.*
@@ -28,7 +28,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueQuerySearch(private val catalogueFragment: CatalogueFragment) : AsyncTask<String?, Void?, ArrayList<NovelListingCard>>() {
+class CatalogueQuerySearch(private val catalogueFragment: CatalogueController) : AsyncTask<String?, Void?, ArrayList<NovelListingCard>>() {
     /**
      * Search catalogue
      *

@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.google.android.material.card.MaterialCardView
 
 /*

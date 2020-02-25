@@ -5,11 +5,11 @@ import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel.Listing
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
-import kotlinx.android.synthetic.main.fragment_catalogue.*
 import org.luaj.vm2.LuaError
 
 /*
@@ -35,15 +35,7 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-class CataloguePageLoader
-/**
- * Constructor
- *
- * @param catalogueFragment the fragment this is assigned to (reference to parent)
- */(catalogueFragment: CatalogueFragment) : AsyncTask<Int, Void, Boolean>() {
-    // References to objects
-    private val catalogueFragment: CatalogueFragment? = catalogueFragment
-
+class CataloguePageLoader(val catalogueFragment: CatalogueController) : AsyncTask<Int, Void, Boolean>() {
 
     /**
      * Loads up the category

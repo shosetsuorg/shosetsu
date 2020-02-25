@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.NovelBackgroundAdd
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 
 /*
  * This file is part of Shosetsu.
@@ -34,15 +34,16 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
  *
  * @author github.com/doomsdayrs
  */
-class NovelCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
+class NovelListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
     val imageView: ImageView = itemView.findViewById(R.id.image)
     val title: TextView = itemView.findViewById(R.id.title)
-    var catalogueFragment: CatalogueFragment? = null
-  lateinit  var formatter: Formatter
+    lateinit var catalogueFragment: CatalogueController
+    lateinit var formatter: Formatter
+
     var url: String? = null
     var novelID = 0
     override fun onClick(v: View) {
-        val novelFragment = NovelFragment()
+        val novelFragment = NovelController()
         novelFragment.novelURL = url!!
         novelFragment.formatter = formatter
         novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url!!)

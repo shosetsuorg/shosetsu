@@ -1,19 +1,20 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensions
 
 import android.app.Activity
-import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
-import kotlinx.android.synthetic.main.fragment_catalogues.*
 import org.json.JSONObject
 
 /*
@@ -40,10 +41,11 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
+class ExtensionsController(override val idRes: Int = R.layout.fragment_catalogues) : ViewedController() {
 
     val array: ArrayList<JSONObject> = ArrayList()
-    lateinit var adapter:ExtensionsAdapter
+    lateinit var adapter: ExtensionsAdapter
+    lateinit var recyclerView: RecyclerView
 
     init {
         setHasOptionsMenu(true)
@@ -51,6 +53,16 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_extensions, menu)
+    }
+
+    override fun onViewCreated(view: View) {
+        Utilities.setActivityTitle(activity, getString(R.string.extensions))
+        recyclerView = view.findViewById(R.id.recyclerView)
+
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        adapter = ExtensionsAdapter(this)
+        recyclerView.adapter = adapter
+        setData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -68,14 +80,6 @@ class ExtensionsFragment : Fragment(R.layout.fragment_catalogues) {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Utilities.setActivityTitle(activity, getString(R.string.extensions))
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter =ExtensionsAdapter(this)
-        recyclerView.adapter = adapter
-        setData()
-    }
 
     fun setData() {
         array.clear()

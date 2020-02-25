@@ -2,8 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.CatalogueHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
@@ -31,10 +31,10 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class CataloguesAdapter(private val formatters: ArrayList<FormatterCard>, private val fragmentManager: FragmentManager) : RecyclerView.Adapter<CatalogueHolder>() {
+class CataloguesAdapter(private val formatters: ArrayList<FormatterCard>, private val router: Router) : RecyclerView.Adapter<CatalogueHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): CatalogueHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.catalogue_item_card, viewGroup, false)
-        return CatalogueHolder(view, fragmentManager)
+        return CatalogueHolder(view, router)
     }
 
     override fun onBindViewHolder(catalogueHolder: CatalogueHolder, i: Int) {

@@ -17,7 +17,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
@@ -455,7 +455,7 @@ object FormatterController {
     /**
      * Loads a new JSON file to be used
      */
-    class RefreshJSON(val activity: Activity, private val extensionsFragment: ExtensionsFragment) : AsyncTask<Void, Void, Void>() {
+    class RefreshJSON(val activity: Activity, private val extensionsFragment: ExtensionsController) : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void?): Void? {
             val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
             if (Utilities.isOnline) {

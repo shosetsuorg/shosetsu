@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 import android.os.Build
 import android.util.Log
 import android.widget.SearchView
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CatalogueQuerySearch
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import java.util.*
@@ -29,7 +29,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueSearchQuery(private val catalogueFragment: CatalogueFragment) : SearchView.OnQueryTextListener {
+class CatalogueSearchQuery(private val catalogueFragment: CatalogueController) : SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean {
         catalogueFragment.isQuery = false
         catalogueFragment.isInSearch = true

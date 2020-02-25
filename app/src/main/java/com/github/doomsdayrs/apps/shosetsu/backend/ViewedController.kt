@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,8 +30,7 @@ import com.bluelinelabs.conductor.Controller
  *
  * @author github.com/doomsdayrs
  */
-abstract class ViewedController() : Controller() {
-
+abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) {
     abstract val idRes: Int
 
     open val attachToRoot: Boolean = false

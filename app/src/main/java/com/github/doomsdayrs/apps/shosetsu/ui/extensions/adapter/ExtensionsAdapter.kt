@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.squareup.picasso.Picasso
@@ -39,7 +39,7 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsAdapter(private val extensionsFragment: ExtensionsFragment) : RecyclerView.Adapter<ExtensionHolder>() {
+class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : RecyclerView.Adapter<ExtensionHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExtensionHolder {
         return ExtensionHolder(LayoutInflater.from(parent.context).inflate(R.layout.extension_card, parent, false))

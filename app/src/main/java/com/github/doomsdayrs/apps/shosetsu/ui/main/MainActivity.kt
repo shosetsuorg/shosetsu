@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -21,13 +24,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
-import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.github.javiersantos.appupdater.AppUpdater
@@ -68,14 +66,6 @@ import okhttp3.OkHttpClient
 class MainActivity : AppCompatActivity(), Supporter {
     private lateinit var router: Router
 
-
-    val cataloguesFragment = CataloguesFragment()
-    val libraryFragment = LibraryFragment()
-    val updatesFragment = UpdatesFragment()
-    val settingsFragment = SettingsFragment()
-    val downloadsFragment = DownloadsFragment()
-    val scripManagementFragment = ExtensionsFragment()
-
     /**
      * Main activity
      *
@@ -115,6 +105,7 @@ class MainActivity : AppCompatActivity(), Supporter {
                         setRoot(CataloguesController(), R.id.nav_catalogue)
                     }
                     R.id.nav_extensions -> {
+                        setRoot(ExtensionsController(), R.id.nav_extensions)
                     }
                     R.id.nav_settings -> {
                     }
@@ -143,12 +134,35 @@ class MainActivity : AppCompatActivity(), Supporter {
                 .cookieJar(WebviewCookieHandler())
                 .build()
 
+        toolbar.setNavigationOnClickListener {
+            if (router.backstackSize == 1) {
+                drawer_layout.openDrawer(GravityCompat.START)
+            } else {
+                onBackPressed()
+            }
+        }
+
+        router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
+            override fun onChangeStarted(to: Controller?, from: Controller?, isPush: Boolean,
+                                         container: ViewGroup, handler: ControllerChangeHandler) {
+                syncActivityViewWithController(to, from)
+            }
+
+            override fun onChangeCompleted(to: Controller?, from: Controller?, isPush: Boolean,
+                                           container: ViewGroup, handler: ControllerChangeHandler) {
+
+            }
+
+        })
+
+        syncActivityViewWithController(router.backstack.lastOrNull()?.controller())
+
         initDownloadManager(this)
         when (intent.action) {
             Intent.ACTION_USER_BACKGROUND -> {
                 Log.i("MainActivity", "Updating novels")
                 init(this)
-                transitionView(updatesFragment)
+                //TODO push to updates
             }
             Intent.ACTION_BOOT_COMPLETED -> {
                 Log.i("MainActivity", "Bootup")
@@ -229,6 +243,10 @@ class MainActivity : AppCompatActivity(), Supporter {
         appUpdater.start()
     }
 
+    fun transitionView(target: Controller) {
+        router.pushController(target.withFadeTransaction())
+    }
+
     fun transitionView(target: Fragment) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("tag")
@@ -252,5 +270,15 @@ class MainActivity : AppCompatActivity(), Supporter {
                     }
                 })
         appUpdaterUtils.start()
+    }
+
+    @SuppressLint("ObjectAnimatorBinding")
+    private fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
+        val showHamburger = router.backstackSize == 1
+        if (showHamburger) {
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        } else {
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        }
     }
 }

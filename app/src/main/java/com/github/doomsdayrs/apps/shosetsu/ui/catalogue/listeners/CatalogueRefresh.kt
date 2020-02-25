@@ -2,8 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
 import android.util.Log
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
-import kotlinx.android.synthetic.main.fragment_catalogue.*
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import java.util.*
 
 /*
@@ -27,9 +26,9 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueRefresh(private val catalogueFragment: CatalogueFragment) : OnRefreshListener {
+class CatalogueRefresh(private val catalogueFragment: CatalogueController) : OnRefreshListener {
     override fun onRefresh() {
-        catalogueFragment.swipeRefreshLayout!!.isRefreshing = true
+        catalogueFragment.swipeRefreshLayout.isRefreshing = true
         catalogueFragment.catalogueNovelCards = ArrayList()
         catalogueFragment.currentMaxPage = 1
         Log.d("FragmentRefresh", "Refreshing catalogue data")

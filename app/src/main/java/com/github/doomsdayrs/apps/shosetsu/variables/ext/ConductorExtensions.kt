@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
@@ -37,3 +38,7 @@ fun Controller.withFadeTransaction(): RouterTransaction = RouterTransaction.with
 
 val Controller.context: Context?
     get() = applicationContext
+
+fun Controller.getString(@StringRes resId: Int): String {
+    return resources?.getString(resId) ?: "NULL"
+}

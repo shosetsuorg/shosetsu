@@ -17,8 +17,11 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueCAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
@@ -49,16 +52,16 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListing
  * @author github.com/doomsdayrs
  */
 //TODO fix issue with not loading
-class CatalogueController(bundle: Bundle, override val idRes: Int = R.layout.fragment_catalogue) : ViewedController() {
-
+class CatalogueController(bundle: Bundle) : ViewedController(bundle) {
+    override val idRes: Int = R.layout.fragment_catalogue
     lateinit var recyclerView: RecyclerView
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private var cataloguePageLoader: CataloguePageLoader? = null
     var catalogueNovelCards = ArrayList<NovelListingCard>()
 
     var formatter: Formatter
-    lateinit var catalogueAdapter: CatalogueCAdapter
+    lateinit var catalogueAdapter: CatalogueAdapter
 
     var currentMaxPage = 1
     var isInSearch = false
@@ -86,9 +89,8 @@ class CatalogueController(bundle: Bundle, override val idRes: Int = R.layout.fra
     override fun onViewCreated(view: View) {
         recyclerView = view.findViewById(R.id.recyclerView)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-
         Utilities.setActivityTitle(activity, formatter.name)
-        //    swipeRefreshLayout!!.setOnRefreshListener(CatalogueRefresh(this))
+        swipeRefreshLayout.setOnRefreshListener(CatalogueRefresh(this))
 
         if (!dontRefresh) {
             Log.d("Process", "Loading up latest")
@@ -132,7 +134,7 @@ class CatalogueController(bundle: Bundle, override val idRes: Int = R.layout.fra
         menu.clear()
         inflater.inflate(R.menu.toolbar_library, menu)
         val searchView = menu.findItem(R.id.library_search).actionView as SearchView
-        //   searchView.setOnQueryTextListener(CatalogueSearchQuery(this))
+        searchView.setOnQueryTextListener(CatalogueSearchQuery(this))
         searchView.setOnCloseListener {
             isQuery = false
             isInSearch = false
@@ -145,23 +147,22 @@ class CatalogueController(bundle: Bundle, override val idRes: Int = R.layout.fra
         recyclerView.setHasFixedSize(false)
 
         if (Settings.novelCardType == 0) {
-                 catalogueAdapter = CatalogueCAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card)
+            catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card)
             recyclerView.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
         } else {
-                  catalogueAdapter = CatalogueCAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card_compressed)
+            catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card_compressed)
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         recyclerView.adapter = catalogueAdapter
-        // recyclerView.addOnScrollListener(CatalogueHitBottom(this))
+        recyclerView.addOnScrollListener(CatalogueHitBottom(this))
 
     }
 
     fun executePageLoader() {
-        //       if (cataloguePageLoader?.isCancelled == false)
-        //          cataloguePageLoader = CataloguePageLoader(this)
-
-        //      if (cataloguePageLoader == null)
-        //        cataloguePageLoader = CataloguePageLoader(this)
+        when {
+            cataloguePageLoader?.isCancelled == false -> cataloguePageLoader = CataloguePageLoader(this)
+            cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this)
+        }
 
         cataloguePageLoader!!.execute(currentMaxPage)
     }

@@ -4,16 +4,16 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.fragment_library.*
 
 /*
  * This file is part of Shosetsu.
@@ -37,13 +37,13 @@ import kotlinx.android.synthetic.main.fragment_library.*
  *
  * @author github.com/doomsdayrs
  */
-class LibNovelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+class LibNovelViewHolder(itemView: View, val router: Router) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     val materialCardView: MaterialCardView = itemView.findViewById(R.id.novel_item_card)
     val imageView: ImageView = itemView.findViewById(R.id.image)
     val title: TextView = itemView.findViewById(R.id.title)
     val chip: Chip = itemView.findViewById(R.id.novel_item_left_to_read)
 
-    lateinit var libraryFragment: LibraryFragment
+    lateinit var libraryFragment: LibraryController
     lateinit var formatter: Formatter
     lateinit var novelCard: NovelCard
 
@@ -62,12 +62,11 @@ class LibNovelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
     }
 
     override fun onClick(v: View) {
-        val novelFragment = NovelFragment()
+        val novelFragment = NovelController()
         novelFragment.formatter = formatter
         novelFragment.novelURL = novelCard.novelURL
         novelFragment.novelID = novelCard.novelID
-        assert(libraryFragment.fragmentManager != null)
-        (libraryFragment.activity as MainActivity).transitionView(novelFragment)
+        router.pushController(novelFragment.withFadeTransaction())
     }
 
     init {

@@ -8,7 +8,7 @@ import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesCAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
@@ -74,7 +74,7 @@ class CataloguesController : Controller() {
         recyclerView.setHasFixedSize(true)
 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-        val adapter = CataloguesCAdapter(cards, router)
+        val adapter = CataloguesAdapter(cards, router)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 

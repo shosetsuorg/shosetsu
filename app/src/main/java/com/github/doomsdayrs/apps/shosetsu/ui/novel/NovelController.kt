@@ -3,12 +3,14 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager.widget.ViewPager
+import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapterStatus
@@ -22,7 +24,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
-import kotlinx.android.synthetic.main.fragment_novel.*
 
 
 /*
@@ -48,10 +49,13 @@ import kotlinx.android.synthetic.main.fragment_novel.*
  *
  * @author github.com/doomsdayrs
  */
-class NovelFragment : Fragment(R.layout.fragment_novel) {
+class NovelController : ViewedController() {
     interface Custom {
         fun customCheck(status: Status): Boolean
     }
+
+    override val idRes: Int = R.layout.fragment_novel
+
 
     // This is a never before loaded novel
     var new: Boolean = true
@@ -67,9 +71,15 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
     var novelFragmentInfo: NovelFragmentInfo? = null
     var novelFragmentChapters: NovelFragmentChapters? = null
 
+
+    lateinit var fragmentNovelTablayout: TabLayout
+    lateinit var fragmentNovelViewpager: ViewPager
+    lateinit var fragmentNovelMainRefresh: SwipeRefreshLayout
+
     init {
         setHasOptionsMenu(true)
     }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt("novelID", novelID)
@@ -79,61 +89,65 @@ class NovelFragment : Fragment(R.layout.fragment_novel) {
         outState.putBoolean("new", new)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        novelID = savedInstanceState.getInt("novelID")
+        novelURL = savedInstanceState.getString("novelURL", "")
+        formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
+        status = Status.getStatus(savedInstanceState.getInt("status"))
+        novelPage = Database.DatabaseNovels.getNovelPage(novelID)
+        new = savedInstanceState.getBoolean("new")
+        setViewPager()
+    }
+
+    override fun onViewCreated(view: View) {
+        fragmentNovelTablayout = view.findViewById(R.id.fragment_novel_tabLayout)
+        fragmentNovelViewpager = view.findViewById(R.id.fragment_novel_viewpager)
+
         // Attach UI to program
         // Create sub-fragments
         run {
             novelFragmentInfo = NovelFragmentInfo()
-            novelFragmentInfo!!.novelFragment = (this)
+            novelFragmentInfo!!.novelFragment = this
             novelFragmentChapters = NovelFragmentChapters()
             novelFragmentChapters!!.novelFragment = (this)
         }
         //TODO FINISH TRACKING
-//boolean track = SettingsController.isTrackingEnabled();
-        if (savedInstanceState == null) {
-            if (Utilities.isOnline && Database.DatabaseNovels.isNotInNovels(novelID)) {
-                setViewPager()
-                fragment_novel_tabLayout!!.post { NovelLoader(novelURL, novelID, formatter, this, true).execute() }
-            } else {
-                novelPage = Database.DatabaseNovels.getNovelPage(novelID)
-                new = false
-                //   novelChapters = DatabaseChapter.getChapters(novelID)
-                status = Database.DatabaseNovels.getNovelStatus(novelID)
-                if (activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage.title
-                setViewPager()
-            }
+        //boolean track = SettingsController.isTrackingEnabled();
+        if (Utilities.isOnline && Database.DatabaseNovels.isNotInNovels(novelID)) {
+            setViewPager()
+            fragmentNovelTablayout!!.post { NovelLoader(novelURL, novelID, formatter, this, true).execute() }
         } else {
-            novelID = savedInstanceState.getInt("novelID")
-            novelURL = savedInstanceState.getString("novelURL", "")
-            formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
-            status = Status.getStatus(savedInstanceState.getInt("status"))
             novelPage = Database.DatabaseNovels.getNovelPage(novelID)
-            new = savedInstanceState.getBoolean("new")
+            new = false
+            //   novelChapters = DatabaseChapter.getChapters(novelID)
+            status = Database.DatabaseNovels.getNovelStatus(novelID)
+            if (activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage.title
             setViewPager()
         }
+
     }
 
     private fun setViewPager() {
-        val fragments: MutableList<Fragment> = ArrayList()
+        val fragments: MutableList<Controller> = ArrayList()
         run {
             Log.d("FragmentLoading", "Main")
             fragments.add(novelFragmentInfo!!)
             Log.d("FragmentLoading", "Chapters")
             fragments.add(novelFragmentChapters!!)
         }
-        val pagerAdapter = NovelPagerAdapter(context, childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, fragments)
-        fragment_novel_viewpager?.adapter = pagerAdapter
-        fragment_novel_viewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(fragment_novel_tabLayout))
-        fragment_novel_tabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
+        val pagerAdapter = NovelPagerAdapter(this, fragments)
+        fragmentNovelViewpager.adapter = pagerAdapter
+        fragmentNovelViewpager.addOnPageChangeListener(TabLayoutOnPageChangeListener(fragmentNovelTablayout))
+        fragmentNovelTablayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                fragment_novel_viewpager!!.currentItem = tab.position
+                fragmentNovelViewpager.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-        fragment_novel_tabLayout?.post { fragment_novel_tabLayout?.setupWithViewPager(fragment_novel_viewpager) }
+        fragmentNovelTablayout.post { fragmentNovelTablayout.setupWithViewPager(fragmentNovelViewpager) }
     }
 
     @Suppress("unused")

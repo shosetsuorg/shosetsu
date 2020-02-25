@@ -13,10 +13,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNov
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInNovels
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.updateNovel
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD
-import kotlinx.android.synthetic.main.fragment_novel.*
-import kotlinx.android.synthetic.main.fragment_novel_main.*
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 
 
 /*
@@ -42,7 +41,7 @@ import kotlinx.android.synthetic.main.fragment_novel_main.*
  *
  * @author github.com/doomsdayrs
  */
-class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatter, private val novelFragment: NovelFragment?, private val loadChapters: Boolean) : AsyncTask<Void, Void, Boolean>() {
+class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatter, private val novelFragment: NovelController?, private val loadChapters: Boolean) : AsyncTask<Void, Void, Boolean>() {
     private var novelPage: Novel.Info = Novel.Info()
 
     constructor(novelLoader: NovelLoader) : this(novelLoader.novelURL, novelLoader.novelID, novelLoader.formatter, novelLoader.novelFragment, novelLoader.loadChapters)
@@ -50,14 +49,14 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
     override fun onPreExecute() {
         super.onPreExecute()
         // Sets the refresh layout to give the user a visible cue
-        novelFragment?.activity?.runOnUiThread { novelFragment.fragment_novel_main_refresh.isRefreshing = true }
+        novelFragment?.activity?.runOnUiThread { novelFragment.fragmentNovelMainRefresh.isRefreshing = true }
     }
 
     override fun onPostExecute(result: Boolean?) {
         super.onPostExecute(result)
         // If successful, it will complete the task
         if (result == true)
-            novelFragment?.fragment_novel_viewpager?.post {
+            novelFragment?.fragmentNovelViewpager?.post {
                 // Set's the novel page to the fragment
                 novelFragment.novelPage = novelPage
 
@@ -65,7 +64,7 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
                 novelFragment.novelFragmentInfo?.setData()
 
                 // Turns off refresh view
-                novelFragment.fragment_novel_main_refresh.isRefreshing = false
+                novelFragment.fragmentNovelMainRefresh.isRefreshing = false
                 novelFragment.novelChapters = novelFragment.novelPage.chapters
                 novelFragment.novelFragmentChapters?.setChapters()
             }

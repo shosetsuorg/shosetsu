@@ -1036,7 +1036,7 @@ object Database {
                     Columns.STATUS + "='" + novelPage.status.title + "'," +
                     Columns.TAGS + "='" + checkStringSerialize(convertArrayToString(novelPage.tags)) + "'," +
                     Columns.ARTISTS + "='" + checkStringSerialize(convertArrayToString(novelPage.artists)) + "'," +
-                    Columns.LANGUAGE + "='" + checkStringSerialize(novelPage.language) + "'," +
+                    Columns.LANGUAGE + "='" + checkStringSerialize(novelPage.language) + "'" +
                     " where " + Columns.PARENT_ID + "=" + DatabaseIdentification.getNovelIDFromNovelURL(novelURL))
         }
 

@@ -6,8 +6,8 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelListingViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.squareup.picasso.Picasso
 
@@ -32,16 +32,16 @@ import com.squareup.picasso.Picasso
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueAdapter(private val recycleListingCards: List<NovelListingCard>, private val catalogueFragment: CatalogueFragment, private val formatter: Formatter, @LayoutRes val layout: Int) : RecyclerView.Adapter<NovelCardViewHolder>() {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): NovelCardViewHolder {
+class CatalogueAdapter(private val recycleListingCards: List<NovelListingCard>, private val catalogueFragment: CatalogueController, private val formatter: Formatter, @LayoutRes val layout: Int) : RecyclerView.Adapter<NovelListingViewHolder>() {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): NovelListingViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(layout, viewGroup, false)
-        val novelCardsViewHolder = NovelCardViewHolder(view)
+        val novelCardsViewHolder = NovelListingViewHolder(view)
         novelCardsViewHolder.catalogueFragment = catalogueFragment
         novelCardsViewHolder.formatter = formatter
         return novelCardsViewHolder
     }
 
-    override fun onBindViewHolder(novelCardsViewHolder: NovelCardViewHolder, i: Int) {
+    override fun onBindViewHolder(novelCardsViewHolder: NovelListingViewHolder, i: Int) {
         val recycleCard = recycleListingCards[i]
         novelCardsViewHolder.novelID = recycleCard.novelID
         novelCardsViewHolder.url = recycleCard.novelURL

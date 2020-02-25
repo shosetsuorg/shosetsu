@@ -1,12 +1,16 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters
 
-import android.content.Context
 import android.util.Log
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import com.bluelinelabs.conductor.Controller
+import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 
 /*
  * This file is part of Shosetsu.
@@ -29,18 +33,30 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * @author github.com/doomsdayrs
  */
-class NovelPagerAdapter(context: Context?, fm: FragmentManager, behavior: Int, private val fragments: List<Fragment>) : FragmentPagerAdapter(fm, behavior) {
-    private val titles = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, context.resources.getStringArray(R.array.novel_fragment_names))
+class NovelPagerAdapter(router: NovelController, private val fragments: List<Controller>) : RouterPagerAdapter(router) {
+    companion object {
+        const val INFO_CONTROLLER = 0
+        const val CHAPTERS_CONTROLLER = 1
+        const val TRACK_CONTROLLER = 2
+    }
 
-    //TODO with tracker use this instead the of the above
-/*public NovelPagerAdapter(@NonNull FragmentManager fm, List<Fragment> fragments, boolean ignored) {
-        super(fm);
-        this.fragments = fragments;
-        titles = new String[]{titles[0], titles[1], "Tracker"};
-    }*/
-    override fun getItem(i: Int): Fragment {
-        Log.d("SwapScreen", fragments[i].toString())
-        return fragments[i]
+    private val titles = ArrayAdapter(router.context!!, android.R.layout.simple_spinner_item, router.resources!!.getStringArray(R.array.novel_fragment_names))
+
+    override fun configureRouter(router: Router, position: Int) {
+        if (!router.hasRootController()) {
+
+            Log.d("SwapScreen", fragments[position].toString())
+            val controller = when (position) {
+                INFO_CONTROLLER -> {
+                    NovelFragmentInfo()
+                }
+                CHAPTERS_CONTROLLER -> {
+                    NovelFragmentChapters()
+                }
+                else -> error("Wrong position $position")
+            }
+            router.setRoot(RouterTransaction.with(controller))
+        }
     }
 
     override fun getCount(): Int {

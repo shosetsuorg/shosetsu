@@ -4,19 +4,22 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
-import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryCNovelAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibraryCSearchQuery
+import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.NewMigrationView
 import java.io.IOException
 import java.util.*
@@ -44,12 +47,14 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class LibraryController : Controller() {
+class LibraryController : ViewedController() {
+
+
     var libraryNovelCards = ArrayList<Int>()
     var selectedNovels: ArrayList<Int> = ArrayList()
 
     lateinit var recyclerView: RecyclerView
-    lateinit var libraryNovelCardsAdapter: LibraryCNovelAdapter
+    lateinit var libraryNovelCardsAdapter: LibraryNovelAdapter
 
     val inflater: MenuInflater?
         get() = MenuInflater(applicationContext)
@@ -71,11 +76,14 @@ class LibraryController : Controller() {
         selectedNovels = savedInstanceState.getIntegerArrayList("selected")!!
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        val view = inflater.inflate(R.layout.controller_library, container, false)
+    override val idRes: Int = R.layout.controller_library
+
+
+    override fun onViewCreated(view: View) {
         recyclerView = view.findViewById(R.id.recyclerView)
         Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.my_library))
-        return view
+        readFromDB()
+        setLibraryCards(libraryNovelCards)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -83,7 +91,7 @@ class LibraryController : Controller() {
             Log.d("LibraryFragment", "Creating default menu")
             inflater.inflate(R.menu.toolbar_library, menu)
             val searchView = menu.findItem(R.id.library_search).actionView as SearchView?
-            searchView?.setOnQueryTextListener(LibraryCSearchQuery(this))
+            searchView?.setOnQueryTextListener(LibrarySearchQuery(this))
             searchView?.setOnCloseListener {
                 setLibraryCards(libraryNovelCards)
                 false
@@ -164,10 +172,10 @@ class LibraryController : Controller() {
     fun setLibraryCards(novelCards: ArrayList<Int>?) {
         recyclerView.setHasFixedSize(false)
         if (Settings.novelCardType == 0) {
-            libraryNovelCardsAdapter = LibraryCNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
+            libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
             recyclerView.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateNoOfColumns(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
         } else {
-            libraryNovelCardsAdapter = LibraryCNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
+            libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
             recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         }
         recyclerView.adapter = libraryNovelCardsAdapter

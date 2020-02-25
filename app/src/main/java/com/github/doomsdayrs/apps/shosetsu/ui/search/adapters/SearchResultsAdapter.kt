@@ -7,7 +7,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
@@ -87,7 +87,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             Picasso.get().load(imageURL).into(holder.imageView)
 
         holder.itemView.setOnClickListener {
-            val novelFragment = NovelFragment()
+            val novelFragment = NovelController()
             novelFragment.novelURL = url
             novelFragment.formatter = formatter
             novelFragment.novelID = id

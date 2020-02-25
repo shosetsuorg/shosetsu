@@ -2,8 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueFragment
-import kotlinx.android.synthetic.main.fragment_catalogue.*
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 
 /*
  * This file is part of Shosetsu.
@@ -26,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_catalogue.*
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueHitBottom(private val catalogueFragment: CatalogueFragment) : RecyclerView.OnScrollListener() {
+class CatalogueHitBottom(private val catalogueFragment: CatalogueController) : RecyclerView.OnScrollListener() {
     private var running = false
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         if (!catalogueFragment.isQuery && !catalogueFragment.isInSearch) if (!running) if (!catalogueFragment.recyclerView!!.canScrollVertically(1)) {

@@ -4,9 +4,8 @@ import android.os.AsyncTask
 import android.util.Log
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelCardViewHolder
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelListingViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import kotlinx.android.synthetic.main.fragment_catalogue.*
 
 /*
  * This file is part of Shosetsu.
@@ -31,7 +30,7 @@ import kotlinx.android.synthetic.main.fragment_catalogue.*
  *
  * @author github.com/doomsdayrs
  */
-class NovelBackgroundAdd(private val novelCardsViewHolder: NovelCardViewHolder?) : AsyncTask<View?, Void, Void>() {
+class NovelBackgroundAdd(private val novelCardsViewHolder: NovelListingViewHolder?) : AsyncTask<View?, Void, Void>() {
     override fun doInBackground(vararg views: View?): Void? {
         try {
             if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url!!)) {
