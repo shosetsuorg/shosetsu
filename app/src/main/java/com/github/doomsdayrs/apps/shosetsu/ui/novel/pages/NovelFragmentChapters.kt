@@ -105,10 +105,10 @@ class NovelFragmentChapters : ViewedController() {
 
             override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
                 val s = getString(R.string.processing_data)
-                pageCount?.post { pageCount.text = s }
+                pageCount.post { pageCount.text = s }
                 for ((count: Int, novelChapter: Novel.Chapter) in finalChapters.withIndex()) {
                     val sc = s + ": $count/${finalChapters.size}"
-                    pageCount?.post { pageCount.text = sc }
+                    pageCount.post { pageCount.text = sc }
                     if (novelFragment != null && novelFragment!!.novelID != -1) {
                         if (isNotInChapters(novelChapter.link)) {
                             Log.i("ChapterLoader", "Adding ${novelChapter.link}")
@@ -124,7 +124,7 @@ class NovelFragmentChapters : ViewedController() {
 
             override fun onIncrementingProgress(page: Int, max: Int) {
                 val s = "Page: $page/$max"
-                pageCount?.post { pageCount.text = s }
+                pageCount.post { pageCount.text = s }
             }
 
             override fun errorReceived(errorString: String) {
@@ -160,14 +160,15 @@ class NovelFragmentChapters : ViewedController() {
         resume.setOnClickListener {
             val i = novelFragment!!.lastRead()
             if (i != -1 && i != -2) {
-                if (activity != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter.formatterID)
+                if (activity != null)
+                    openChapter(parentController!!.router, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter.formatterID)
             } else context?.toast("No chapters! How did you even press this!")
         }
         val filter = IntentFilter()
         filter.addAction(Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE)
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                fragmentNovelChaptersRecycler?.adapter?.notifyDataSetChanged()
+                fragmentNovelChaptersRecycler.adapter?.notifyDataSetChanged()
             }
         }
         activity?.registerReceiver(receiver, filter)
@@ -221,17 +222,17 @@ class NovelFragmentChapters : ViewedController() {
      * Sets the novel chapters down
      */
     fun setChapters() {
-        fragmentNovelChaptersRecycler!!.post {
-            fragmentNovelChaptersRecycler!!.setHasFixedSize(false)
+        fragmentNovelChaptersRecycler.post {
+            fragmentNovelChaptersRecycler.setHasFixedSize(false)
             val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
             if (novelFragment != null && !Database.DatabaseNovels.isNotInNovels(novelFragment!!.novelID)) {
                 novelFragment!!.novelChapters = getChapters(novelFragment!!.novelID)
-                if (novelFragment!!.novelChapters.isNotEmpty()) resume!!.visibility = VISIBLE
+                if (novelFragment!!.novelChapters.isNotEmpty()) resume.visibility = VISIBLE
             }
             adapter = ChaptersAdapter(this)
             adapter!!.setHasStableIds(true)
-            fragmentNovelChaptersRecycler!!.layoutManager = layoutManager
-            fragmentNovelChaptersRecycler!!.adapter = adapter
+            fragmentNovelChaptersRecycler.layoutManager = layoutManager
+            fragmentNovelChaptersRecycler.adapter = adapter
         }
     }
 
@@ -239,7 +240,7 @@ class NovelFragmentChapters : ViewedController() {
         get() = MenuInflater(context)
 
     fun updateAdapter(): Boolean {
-        return fragmentNovelChaptersRecycler!!.post { if (adapter != null) adapter!!.notifyDataSetChanged() }
+        return fragmentNovelChaptersRecycler.post { if (adapter != null) adapter!!.notifyDataSetChanged() }
     }
 
     private fun customAdd(count: Int) {

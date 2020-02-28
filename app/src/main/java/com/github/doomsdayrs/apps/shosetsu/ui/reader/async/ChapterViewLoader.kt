@@ -8,14 +8,13 @@ import android.view.View.VISIBLE
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
-import kotlinx.android.synthetic.main.chapter_view.*
 import java.util.concurrent.TimeUnit
 
 class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, Void?, Boolean>() {
 
     override fun onPreExecute() {
         Log.i("ChapterViewLoader", "onPreExecute${chapterView.appendID()}")
-        chapterView.progress.visibility = VISIBLE
+        chapterView.progress?.visibility = VISIBLE
     }
 
     override fun doInBackground(vararg objects: Any?): Boolean {
@@ -38,9 +37,9 @@ class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, 
     override fun onPostExecute(result: Boolean) {
         Log.i("ChapterViewLoader", "onPostExecute${chapterView.appendID()}")
         chapterView.view?.post {
-            chapterView.progress.visibility = GONE
+            chapterView.progress?.visibility = GONE
             chapterView.setUpReader()
-            chapterView.scrollView.post { chapterView.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterView.chapterID)) }
+            chapterView.scrollView?.post { chapterView.scrollView?.scrollTo(0, Database.DatabaseChapter.getY(chapterView.chapterID)) }
             chapterView.ready = true
         }
     }

@@ -45,9 +45,7 @@ class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<S
 
     override fun doInBackground(vararg params: String?): Boolean {
         val a: Array<Novel.Listing> = CatalogueLoader(searchViewHolder.query, searchViewHolder.formatter).execute()
-        val correct: ArrayList<Array<String>> = if (a != null)
-            Utilities.convertNovelArrayToString2DArray(a)
-        else ArrayList()
+        val correct: ArrayList<Array<String>> = Utilities.convertNovelArrayToString2DArray(a)
         array = correct
         return true
     }

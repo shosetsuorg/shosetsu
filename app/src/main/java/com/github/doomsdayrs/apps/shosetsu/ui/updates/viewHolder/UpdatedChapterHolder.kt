@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder
 
-import android.app.Activity
 import android.view.View
 import android.widget.ImageView
 import android.widget.PopupMenu
@@ -8,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.getByID
@@ -61,7 +59,7 @@ class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView), 
     override fun onClick(view: View) {
         val novelURL = DatabaseIdentification.getNovelURLFromChapterURL(novelChapter!!.link)
         val formatter = getByID(DatabaseIdentification.getFormatterIDFromNovelURL(novelURL!!))
-        Utilities.openChapter((itemView.context as Activity), novelChapter!!, DatabaseIdentification.getNovelIDFromNovelURL(novelURL), formatter.formatterID)
+//        Utilities.openChapter(Router(), novelChapter!!, DatabaseIdentification.getNovelIDFromNovelURL(novelURL), formatter.formatterID)
     }
 
     init {

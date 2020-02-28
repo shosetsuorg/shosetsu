@@ -79,7 +79,7 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
     override fun onClick(v: View) {
         if (novelFragmentChapters != null)
             if (novelFragmentChapters!!.activity != null && novelFragmentChapters!!.novelFragment != null)
-                Utilities.openChapter(novelFragmentChapters!!.activity!!, novelChapter!!, novelFragmentChapters!!.novelFragment!!.novelID, novelFragmentChapters!!.novelFragment!!.formatter.formatterID)
+                Utilities.openChapter(novelFragmentChapters!!.parentController!!.router, novelChapter!!, novelFragmentChapters!!.novelFragment!!.novelID, novelFragmentChapters!!.novelFragment!!.formatter.formatterID)
     }
 
     init {

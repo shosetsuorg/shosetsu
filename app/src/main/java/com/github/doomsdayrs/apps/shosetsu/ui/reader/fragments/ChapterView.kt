@@ -3,20 +3,29 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.ScrollView
+import android.widget.TextView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import kotlinx.android.synthetic.main.chapter_view.*
+import com.google.android.material.chip.Chip
+import kotlinx.android.synthetic.main.activity_main.*
 
 /*
  * This file is part of shosetsu.
@@ -41,7 +50,7 @@ import kotlinx.android.synthetic.main.chapter_view.*
  *
  * @author github.com/doomsdayrs
  */
-class ChapterView : Fragment() {
+class ChapterView : ViewedController() {
     private val demarkActions = arrayOf(TextSizeChange(this), ParaSpacingChange(this), IndentChange(this), ReaderChange(this), ThemeChange(this))
 
     // Order of values. Night, Light, Sepia
@@ -81,12 +90,14 @@ class ChapterView : Fragment() {
 
     private var bookmark: MenuItem? = null
     private var tapToScroll: MenuItem? = null
-
+    var progress: ProgressBar? = null
+    private var textView: TextView? = null
+    private var nextChapter: Chip? = null
+    var scrollView: ScrollView? = null
 
     init {
         setHasOptionsMenu(true)
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_chapter_view, menu)
@@ -183,7 +194,6 @@ class ChapterView : Fragment() {
             }
         }*/
     }
-
 
     /**
      * What to do when an menu item is selected
@@ -287,22 +297,31 @@ class ChapterView : Fragment() {
         if (bookmark != null) if (bookmarked) bookmark!!.setIcon(R.drawable.ic_bookmark_black_24dp) else bookmark!!.setIcon(R.drawable.ic_bookmark_border_black_24dp)
     }
 
-    override fun onResume() {
-        super.onResume()
+
+    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+        super.onRestoreViewState(view, savedViewState)
         val title = Database.DatabaseChapter.getTitle(chapterID)
-        chapterReader?.getToolbar()?.let { it.title = title }
+        Utilities.setActivityTitle(activity, title)
         Log.i("ChapterView", "Resuming:${appendID()}")
         Log.i("ChapterView", "${appendID()} \n ${text.isNullOrEmpty()} | ${unformattedText.isEmpty()} | $bookmarked | $ready ")
         if (text.isNullOrEmpty() && unformattedText.isEmpty()) {
             Log.i("ChapterView", "Text and unformatted text is null, resetting${appendID()}")
             dataSet()
-        } else progress.visibility = View.GONE
+        } else progress?.visibility = View.GONE
     }
 
     fun appendID(): String {
         return "\tURL/ID( $url | $chapterID )"
     }
 
+    override val idRes: Int = R.layout.chapter_view
+
+    override fun onDestroyView(view: View) {
+        progress = null
+        textView = null
+        nextChapter = null
+        scrollView = null
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -315,51 +334,43 @@ class ChapterView : Fragment() {
         Log.i("ChapterView", "Saved:${appendID()}")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.chapter_view, container, false)
-        if (savedInstanceState != null) {
-            chapterID = savedInstanceState.getInt("id")
-            url = savedInstanceState.getString("url", "")
-            chapterReader = activity as ChapterReader?
-            unformattedText = savedInstanceState.getString("unform", "")
-            text = savedInstanceState.getString("text")
-            bookmarked = savedInstanceState.getBoolean("book")
-            ready = savedInstanceState.getBoolean("ready")
-            Log.i("ChapterView", "Restored:${appendID()}")
-        }
-        Log.i("ChapterView", "Created:${appendID()}")
-        return view
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        chapterID = savedInstanceState.getInt("id")
+        url = savedInstanceState.getString("url", "")
+        chapterReader = activity as ChapterReader?
+        unformattedText = savedInstanceState.getString("unform", "")
+        text = savedInstanceState.getString("text")
+        bookmarked = savedInstanceState.getBoolean("book")
+        ready = savedInstanceState.getBoolean("ready")
+        Log.i("ChapterView", "Restored:${appendID()}")
+
+        Log.d("ChapterView", "Load, Data present${appendID()}")
+        dataSet()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+
+    override fun onViewCreated(view: View) {
+        progress = view.findViewById(R.id.progress)
+        textView = view.findViewById(R.id.textView)
+        scrollView = view.findViewById(R.id.scrollView)
+        nextChapter = view.findViewById(R.id.next_chapter)
+
         addBottomListener()
-        chapterReader?.getToolbar()?.let { textView.setOnClickListener(ToolbarHideOnClickListener(it)) }
-        textView.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-        textView.setTextColor(Settings.ReaderTextColor)
-        textView.textSize = Settings.ReaderTextSize
-        next_chapter.setOnClickListener {
+        (activity as MainActivity).toolbar?.let { textView?.setOnClickListener(ToolbarHideOnClickListener(it)) }
+        textView?.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+        textView?.setTextColor(Settings.ReaderTextColor)
+        textView?.textSize = Settings.ReaderTextSize
+        nextChapter?.setOnClickListener {
             val position = chapterReader!!.findCurrentPosition(chapterID)
-            if (chapterReader!!.chapterIDs.isNotEmpty() && chapterReader!!.getViewPager() != null) {
+            if (chapterReader!!.chapterIDs.isNotEmpty() && chapterReader!!.viewpager != null) {
                 if (position + 1 < chapterReader!!.chapterIDs.size) {
-                    next_chapter.visibility = View.GONE
-                    chapterReader!!.getViewPager()?.currentItem = position + 1
-                } else chapterReader?.toast("No more chapters!")
+                    nextChapter?.visibility = View.GONE
+                    chapterReader!!.viewpager?.currentItem = position + 1
+                } else chapterReader?.context?.toast("No more chapters!")
             }
         }
-        //holder.viewPager2.setUserInputEnabled(false);
-        //NewChapterReaderTypeAdapter newChapterReaderTypeAdapter = new NewChapterReaderTypeAdapter(newChapterReader);
-        //holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
-        //holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
-
         ready = false
-
-        if (savedInstanceState == null) {
-            dataSet()
-        } else {
-            Log.d("ChapterView", "Load, Data present${appendID()}")
-            setUpReader()
-        }
+        dataSet()
     }
 
     private fun dataSet() {
@@ -367,7 +378,7 @@ class ChapterView : Fragment() {
             Log.d("ChapterView", "Loading from storage${appendID()}")
             unformattedText = Database.DatabaseChapter.getSavedNovelPassage(chapterID)!!
             setUpReader()
-            scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
+            scrollView?.post { scrollView?.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
             ready = true
         } else {
             Log.d("ChapterView", "Loading from online${appendID()}")
@@ -420,7 +431,7 @@ class ChapterView : Fragment() {
             Log.i("Scroll", "Marking chapter as READ${appendID()}")
             Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
             Database.DatabaseChapter.updateY(chapterID, 0)
-            next_chapter!!.visibility = View.VISIBLE
+            nextChapter!!.visibility = View.VISIBLE
             //TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)
         }
     }
