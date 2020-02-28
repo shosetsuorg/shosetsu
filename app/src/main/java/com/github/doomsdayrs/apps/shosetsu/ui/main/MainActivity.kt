@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -66,6 +65,7 @@ import okhttp3.OkHttpClient
 //TODO Inform users to refresh their libraries
 class MainActivity : AppCompatActivity(), Supporter {
     private lateinit var router: Router
+    private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
     /**
      * Main activity
@@ -87,8 +87,10 @@ class MainActivity : AppCompatActivity(), Supporter {
         appUpdate()
 
         //Sets the toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.todo, R.string.todo)
+
 
         // Navigation view
         //nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
@@ -136,23 +138,14 @@ class MainActivity : AppCompatActivity(), Supporter {
                 .cookieJar(WebviewCookieHandler())
                 .build()
 
-        toolbar.setNavigationOnClickListener {
-            if (router.backstackSize == 1) {
-                drawer_layout.openDrawer(GravityCompat.START)
-            } else {
-                onBackPressed()
-            }
-        }
+        toolbar.setNavigationOnClickListener { if (router.backstackSize == 1) drawer_layout.openDrawer(GravityCompat.START) else onBackPressed() }
 
         router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
-            override fun onChangeStarted(to: Controller?, from: Controller?, isPush: Boolean,
-                                         container: ViewGroup, handler: ControllerChangeHandler) {
+            override fun onChangeStarted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup, handler: ControllerChangeHandler) {
                 syncActivityViewWithController(to, from)
             }
 
-            override fun onChangeCompleted(to: Controller?, from: Controller?, isPush: Boolean,
-                                           container: ViewGroup, handler: ControllerChangeHandler) {
-
+            override fun onChangeCompleted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup, handler: ControllerChangeHandler) {
             }
 
         })
@@ -278,12 +271,12 @@ class MainActivity : AppCompatActivity(), Supporter {
     private fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
         val showHamburger = router.backstackSize == 1
         if (showHamburger) {
-            supportActionBar?.setDisplayShowHomeEnabled(true)
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            actionBarDrawerToggle.isDrawerIndicatorEnabled = true
             drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
         } else {
-            supportActionBar?.setDisplayShowHomeEnabled(true)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            actionBarDrawerToggle.isDrawerIndicatorEnabled = false
             drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         }
     }
