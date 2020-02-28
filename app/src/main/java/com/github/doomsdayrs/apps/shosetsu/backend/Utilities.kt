@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.main.Supporter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
@@ -420,7 +420,7 @@ object Utilities {
 
     fun search(activity: Activity, query: String) {
         val mainActivity = activity as MainActivity
-        val searchFragment = SearchFragment()
+        val searchFragment = SearchController()
         searchFragment.query = query
         mainActivity.transitionView(searchFragment)
     }

@@ -7,13 +7,15 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchAdapter
-import kotlinx.android.synthetic.main.search_activity.*
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import java.io.Serializable
 
 /*
@@ -42,14 +44,14 @@ import java.io.Serializable
  * @author github.com/doomsdayrs
  * TODO When opening a novel from here, Prevent reloading of already established DATA
  */
-class SearchFragment : Fragment(search_activity) {
-    private class InternalQuery(val searchFragment: SearchFragment) : SearchView.OnQueryTextListener {
+class SearchController : ViewedController() {
+    private class InternalQuery(val searchController: SearchController) : SearchView.OnQueryTextListener {
 
         override fun onQueryTextSubmit(query: String?): Boolean {
             return if (query != null) {
-                searchFragment.query = query
-                searchFragment.array = arrayListOf()
-                searchFragment.adapter.notifyDataSetChanged()
+                searchController.query = query
+                searchController.array = arrayListOf()
+                searchController.adapter.notifyDataSetChanged()
                 return true
             } else false
         }
@@ -59,12 +61,15 @@ class SearchFragment : Fragment(search_activity) {
         }
 
     }
+
     class StoredData(val id: Int) : Serializable {
         //TODO This is dirty, Maybe replace with CatalogueNovelCard later
         var novelArray: List<Array<String>> = arrayListOf()
         var intArray: List<Int> = arrayListOf()
     }
 
+    override val idRes: Int = search_activity
+    var recyclerView: RecyclerView? = null
     var adapter: SearchAdapter = SearchAdapter(this)
     var query: String = ""
     var array: ArrayList<StoredData> = arrayListOf()
@@ -85,22 +90,27 @@ class SearchFragment : Fragment(search_activity) {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         outState.putString("query", query)
         outState.putSerializable("data", array)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        query = savedInstanceState.getString("query")!!
+        array = savedInstanceState.getSerializable("data") as ArrayList<StoredData>
+    }
+
+
+    override fun onDestroyView(view: View) {
+        recyclerView = null
+    }
+
+    override fun onViewCreated(view: View) {
         setActivityTitle(activity, getString(R.string.results))
-        if (savedInstanceState != null) {
-            query = savedInstanceState.getString("query")!!
-            array = savedInstanceState.getSerializable("data") as ArrayList<StoredData>
-        }
+        recyclerView = view.findViewById(R.id.recyclerView)
         Log.i("SearchQueryReceived", query)
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView?.layoutManager = LinearLayoutManager(context)
         adapter = SearchAdapter(this)
-        recyclerView.adapter = adapter
+        recyclerView?.adapter = adapter
     }
 
     fun containsData(id: Int): Boolean {
