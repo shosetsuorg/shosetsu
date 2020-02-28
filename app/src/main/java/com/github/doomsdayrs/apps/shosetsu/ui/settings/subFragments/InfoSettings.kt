@@ -2,20 +2,14 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.TextAssetReader.Target.DISCLAIMER
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.TextAssetReader.Target.LICENSE
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import kotlinx.android.synthetic.main.settings.*
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 
 /*
  * This file is part of Shosetsu.
@@ -40,67 +34,31 @@ import kotlinx.android.synthetic.main.settings.*
  *
  * @author github.com/doomsdayrs
  */
-class InfoSettings : SettingsSubFragment() {
-    override val settings: ArrayList<SettingsItemData> = arrayListOf(
-            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
-                    .setTitle(R.string.version)
-                    .setDescription(BuildConfig.VERSION_NAME)
-                    .setOnClickListener { v: View -> onClickAppVer(v) },
-            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
-                    .setTitle(R.string.version)
-                    .setDescription(BuildConfig.VERSION_NAME)
-                    .setOnClickListener { v: View -> onClickAppVer(v) },
-            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
-                    .setTitle(R.string.report_bug)
-                    .setDescription(R.string.report_bug_link)
-                    .setOnClickListener { v: View -> onClickReportBug(v) },
-            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
-                    .setTitle(R.string.author)
-                    .setDescription(R.string.author_name)
-                    .setOnClickListener { v: View -> onClickAuthor(v) },
-            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
-                    .setTitle(R.string.disclaimer)
-                    .setOnClickListener { v: View -> onClickDisclaimer(v) },
-            SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
-                    .setTitle(R.string.license)
-                    .setOnClickListener { onClickLicense() }
-    )
-
-
-    private fun onClickAppVer(v: View) { // TODO: Add the app version number after consultation
-        v.context.toast("AppVer")
+class InfoSettings : SettingsSubController() {
+    override val settings by lazy {
+        arrayListOf(
+                SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                        .setTitle(R.string.version)
+                        .setDescription(BuildConfig.VERSION_NAME),
+                SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                        .setTitle(R.string.report_bug)
+                        .setDescription(R.string.report_bug_link)
+                        .setOnClickListener { onClickReportBug() },
+                SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                        .setTitle(R.string.author)
+                        .setDescription(R.string.author_name)
+                        .setOnClickListener { onClickAuthor() },
+                SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                        .setTitle(R.string.disclaimer)
+                        .setOnClickListener { onClickDisclaimer() },
+                SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+                        .setTitle(R.string.license)
+                        .setOnClickListener { onClickLicense() }
+        )
     }
 
-    private fun onClickReportBug(v: View) {
-        v.context.toast("ReportBug")
-        val bugReportLink = getString(R.string.report_bug_link)
-        val bugReportingIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bugReportLink))
-        startActivity(bugReportingIntent)
-    }
-
-    private fun onClickAuthor(v: View) {
-        v.context.toast("Author")
-        val authorGitHubLink = getString(R.string.author_github)
-        val authorGitHubIntent = Intent(Intent.ACTION_VIEW, Uri.parse(authorGitHubLink))
-        startActivity(authorGitHubIntent)
-    }
-
-    private fun onClickDisclaimer(v: View) { // TODO: Show full disclaimer on click
-        v.context.toast("Disclaimer")
-    }
-
-    private fun onClickLicense() { // TODO: Show full license on click
-        (activity as MainActivity).transitionView(LicenseReader())
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "ViewSettings")
-        return inflater.inflate(R.layout.settings, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = SettingItemsAdapter(settings)
-    }
+    private fun onClickReportBug() = startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.report_bug_link))))
+    private fun onClickAuthor() = startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.author_github))))
+    private fun onClickDisclaimer() = router.pushController(TextAssetReader(DISCLAIMER.bundle).withFadeTransaction())
+    private fun onClickLicense() = router.pushController(TextAssetReader(LICENSE.bundle).withFadeTransaction())
 }

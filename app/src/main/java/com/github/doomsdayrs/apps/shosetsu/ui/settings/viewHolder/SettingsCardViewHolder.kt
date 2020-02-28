@@ -1,12 +1,18 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder
 
+import android.util.Log
 import android.view.View
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.listener.OnSettingsCardClick
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.AdvancedSettings
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.DownloadSettings
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.InfoSettings
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.ViewSettings
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.BackupSettings
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.google.android.material.card.MaterialCardView
 
 /*
@@ -32,12 +38,23 @@ import com.google.android.material.card.MaterialCardView
  *
  * @author github.com/doomsdayrs
  */
-class SettingsCardViewHolder(itemView: View, private val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(itemView) {
+class SettingsCardViewHolder(itemView: View, private val router: Router) : RecyclerView.ViewHolder(itemView) {
     private val libraryCardTitle: TextView = itemView.findViewById(R.id.recycler_settings_title)
     private val cardView: MaterialCardView = itemView.findViewById(R.id.settings_card)
 
     fun setType(type: Types) {
-        cardView.setOnClickListener(OnSettingsCardClick(type, fragmentManager))
+        Log.d("SettingsCardVH", "Type: ${type.name}")
+        cardView.setOnClickListener {
+            router.pushController(
+                    when (type) {
+                        Types.VIEW -> ViewSettings()
+                        Types.INFO -> InfoSettings()
+                        Types.ADVANCED -> AdvancedSettings()
+                        Types.DOWNLOAD -> DownloadSettings()
+                        Types.BACKUP -> BackupSettings()
+                    }.withFadeTransaction()
+            )
+        }
         libraryCardTitle.text = when (type.position) {
             0 -> itemView.context.getString(R.string.download)
             1 -> itemView.context.getString(R.string.view)

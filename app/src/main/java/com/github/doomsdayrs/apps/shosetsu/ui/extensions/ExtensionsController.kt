@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensions
 
-import android.app.Activity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -68,12 +67,12 @@ class ExtensionsController(override val idRes: Int = R.layout.fragment_catalogue
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.refresh -> {
-                FormatterController.RefreshJSON(context as Activity, this).execute()
+                FormatterController.RefreshJSON(activity!!, this).execute()
                 true
             }
             R.id.reload -> {
                 DefaultScrapers.formatters.clear()
-                FormatterController.FormatterInit(context as Activity).execute()
+                FormatterController.FormatterInit(activity!!).execute()
                 true
             }
             else -> false

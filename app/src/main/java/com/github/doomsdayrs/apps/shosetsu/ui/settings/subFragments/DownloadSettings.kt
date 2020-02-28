@@ -2,23 +2,18 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast.LENGTH_LONG
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import kotlinx.android.synthetic.main.settings.*
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import java.util.*
 
 /*
@@ -42,40 +37,34 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class DownloadSettings : SettingsSubFragment() {
-    override val settings: ArrayList<SettingsItem.SettingsItemData> = arrayListOf(
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.TEXT)
-                    .setTitle(R.string.download_directory)
-                    .setTextViewText(Utilities.shoDir)
-                    .setTextOnClickListener { performFileSearch() },
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
-                    .setTitle(R.string.download_speed),
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
-                    .setTitle(R.string.download_chapter_updates)
-                    .setSwitchIsChecked(Settings.isDownloadOnUpdateEnabled)
-                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
-                        Log.d("Download on update", p1.toString())
-                        Settings.isDownloadOnUpdateEnabled = !Settings.isDownloadOnUpdateEnabled
-                    })
-    )
-    val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "DownloadSettings")
-        return inflater.inflate(R.layout.settings, container, false)
+class DownloadSettings : SettingsSubController() {
+    override val settings by lazy {
+        arrayListOf(
+                SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.TEXT)
+                        .setTitle(R.string.download_directory)
+                        .setTextViewText(Utilities.shoDir)
+                        .setTextOnClickListener { performFileSearch() },
+                SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+                        .setTitle(R.string.download_speed),
+                SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
+                        .setTitle(R.string.download_chapter_updates)
+                        .setSwitchIsChecked(Settings.isDownloadOnUpdateEnabled)
+                        .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+                            Log.d("Download on update", p1.toString())
+                            Settings.isDownloadOnUpdateEnabled = !Settings.isDownloadOnUpdateEnabled
+                        })
+        )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View) {
         settings[1].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, arrayListOf("String")))
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
+        super.onViewCreated(view)
     }
 
     private fun setDir(dir: String) {
         Utilities.downloadPreferences.edit().putString("dir", dir).apply()
         Utilities.shoDir = dir
-        recyclerView.post { adapter.notifyDataSetChanged() }
+        recyclerView?.post { adapter.notifyDataSetChanged() }
     }
 
     private fun performFileSearch() {

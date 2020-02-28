@@ -26,6 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.github.javiersantos.appupdater.AppUpdater
@@ -108,6 +109,7 @@ class MainActivity : AppCompatActivity(), Supporter {
                         setRoot(ExtensionsController(), R.id.nav_extensions)
                     }
                     R.id.nav_settings -> {
+                        router.pushController(SettingsController().withFadeTransaction())
                     }
                     R.id.nav_downloads -> {
                     }
@@ -276,8 +278,12 @@ class MainActivity : AppCompatActivity(), Supporter {
     private fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
         val showHamburger = router.backstackSize == 1
         if (showHamburger) {
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
             drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
         } else {
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
             drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         }
     }

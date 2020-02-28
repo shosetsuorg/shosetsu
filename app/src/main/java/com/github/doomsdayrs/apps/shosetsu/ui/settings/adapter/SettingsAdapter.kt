@@ -2,8 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsCardViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.SettingsCard
@@ -32,19 +32,12 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class SettingsAdapter(private val settingsCards: ArrayList<SettingsCard>, private val fragmentManager: FragmentManager) : RecyclerView.Adapter<SettingsCardViewHolder>() {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder {
-        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_settings_card, viewGroup, false)
-        return SettingsCardViewHolder(view, fragmentManager)
-    }
+class SettingsAdapter(private val settingsCards: ArrayList<SettingsCard>, private val fragmentManager: Router) : RecyclerView.Adapter<SettingsCardViewHolder>() {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder =
+            SettingsCardViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_settings_card, viewGroup, false), fragmentManager)
 
-    override fun onBindViewHolder(settingsCardViewHolder: SettingsCardViewHolder, i: Int) {
-        val settingsCard = settingsCards[i]
-        settingsCardViewHolder.setType(settingsCard.id)
-    }
+    override fun onBindViewHolder(settingsCardViewHolder: SettingsCardViewHolder, i: Int) = settingsCardViewHolder.setType(settingsCards[i].id)
 
-    override fun getItemCount(): Int {
-        return settingsCards.size
-    }
+    override fun getItemCount(): Int = settingsCards.size
 
 }

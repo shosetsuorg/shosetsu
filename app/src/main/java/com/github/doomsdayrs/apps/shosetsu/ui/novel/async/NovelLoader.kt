@@ -15,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNov
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 
 
 /*
@@ -92,7 +91,7 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
                 // Errors out the program and returns a false
                 Log.e("NovelLoader", "Error", e)
                 novelFragment?.activity?.runOnUiThread {
-                    ErrorAlert(novelFragment.context!!) { dialog: DialogInterface?, _: Int -> NovelLoader(this).execute();dialog?.dismiss() }
+                    ErrorAlert(novelFragment.activity!!) { dialog: DialogInterface?, _: Int -> NovelLoader(this).execute();dialog?.dismiss() }
                             .setMessage(e.message)
                             .show()
                 }

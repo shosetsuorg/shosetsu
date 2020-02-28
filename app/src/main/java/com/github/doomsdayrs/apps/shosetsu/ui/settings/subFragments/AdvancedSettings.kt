@@ -1,22 +1,16 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubFragment
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import kotlinx.android.synthetic.main.settings.*
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 
 
 /*
@@ -46,9 +40,8 @@ import kotlinx.android.synthetic.main.settings.*
  *     TODO add text size options
  * </p>
  */
-class AdvancedSettings : SettingsSubFragment() {
+class AdvancedSettings : SettingsSubController() {
     var ready = false
-
     private class ThemeChange(val advancedSettings: AdvancedSettings) : OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
         }
@@ -66,27 +59,22 @@ class AdvancedSettings : SettingsSubFragment() {
         }
     }
 
-    override val settings: ArrayList<SettingsItemData> = arrayListOf(
-            SettingsItemData(SettingsItemData.SettingsType.SPINNER)
-                    .setTitle(R.string.theme)
-                    .setOnItemSelectedListener(ThemeChange(this)),
-            SettingsItemData(SettingsItemData.SettingsType.BUTTON)
-                    .setTitle(R.string.remove_novel_cache)
-                    .setOnClickListenerButton { Database.DatabaseIdentification.purgeUnSavedNovels() }
-    )
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "ViewSettings")
-        return inflater.inflate(R.layout.settings, container, false)
+    override val settings by lazy {
+        arrayListOf(
+                SettingsItemData(SettingsItemData.SettingsType.SPINNER)
+                        .setTitle(R.string.theme)
+                        .setOnItemSelectedListener(ThemeChange(this)),
+                SettingsItemData(SettingsItemData.SettingsType.BUTTON)
+                        .setTitle(R.string.remove_novel_cache)
+                        .setOnClickListenerButton { Database.DatabaseIdentification.purgeUnSavedNovels() }
+        )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.application_themes)))
+    override fun onViewCreated(view: View) {
+        settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.application_themes)))
         val theme = (activity as AppCompatActivity).delegate.localNightMode
         settings[0].setSpinnerSelection(if (theme == AppCompatDelegate.MODE_NIGHT_YES || theme == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM || theme == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY) 1 else 0)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = SettingItemsAdapter(settings)
+        super.onViewCreated(view)
     }
 
 

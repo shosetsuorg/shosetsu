@@ -1,15 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings
 
-import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.SettingsCard
-import kotlinx.android.synthetic.main.settings.*
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import java.util.*
 
 /*
@@ -33,9 +32,9 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class SettingsFragment : Fragment(R.layout.settings) {
+class SettingsController : ViewedController() {
+    override val idRes: Int = R.layout.settings
     private val cards: ArrayList<SettingsCard> = ArrayList()
-
     init {
         cards.add(SettingsCard(Types.DOWNLOAD))
         cards.add(SettingsCard(Types.VIEW))
@@ -44,16 +43,12 @@ class SettingsFragment : Fragment(R.layout.settings) {
         cards.add(SettingsCard(Types.BACKUP))
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, getString(R.string.settings))
-        recyclerView.setHasFixedSize(true)
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(view.context)
-        if (fragmentManager != null) {
-            val adapter: RecyclerView.Adapter<*> = SettingsAdapter(cards, fragmentManager!!)
-            recyclerView.layoutManager = layoutManager
-            recyclerView.adapter = adapter
-        }
-    }
 
+        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(view.context)
+        recyclerView.adapter = SettingsAdapter(cards, router!!)
+    }
 }

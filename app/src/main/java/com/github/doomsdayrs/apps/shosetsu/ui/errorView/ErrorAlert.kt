@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.errorView
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.widget.TextView
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -32,9 +31,9 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * @author github.com/doomsdayrs
  */
-class ErrorAlert(context: Context, retryAction: (dialog: DialogInterface?, which: Int) -> Unit = { dialog: DialogInterface?, _: Int -> dialog?.dismiss() }) : AlertDialog.Builder(context) {
+class ErrorAlert(activity: Activity, retryAction: (dialog: DialogInterface?, which: Int) -> Unit = { dialog: DialogInterface?, _: Int -> dialog?.dismiss() }) : AlertDialog.Builder(activity) {
 
-    private val view = (context as Activity).layoutInflater.inflate(R.layout.error_view, null)!!
+    private val view = activity.layoutInflater.inflate(R.layout.error_view, null)!!
     private val messageView: TextView = view.findViewById(R.id.error_message)
 
     init {

@@ -63,6 +63,7 @@ import java.security.NoSuchAlgorithmException
  * TODO Turn this into a service
  */
 object FormatterController {
+    const val logID = "FormatterController"
     const val scriptDirectory = "/scripts/"
     private const val libraryDirectory = "/libraries/"
     const val sourceFolder = "/src/"
@@ -103,22 +104,19 @@ object FormatterController {
     }
 
     /**
-     * @return 1 if ver2 is newer, 0 if they are the same, -1 if ver1 is newer
+     * @return [Boolean] true if version difference
      */
-    fun compareVersions(ver1: String, ver2: String): Int {
+    fun compareVersions(ver1: String, ver2: String): Boolean {
         if (ver1 == ver2)
-            return 0
+            return false
         val version1 = splitVersion(ver1)
         val version2 = splitVersion(ver2)
 
         for (i in 0..2) {
-            val a = version1[i].compareTo(version2[i])
-            Log.d("VersionCheck", "$i -> ${version1[i]}|${version2[i]} -> $a")
-            if (a != 0) {
-                return a
-            }
+            if (version1[i] != version2[i])
+                return true
         }
-        return 0
+        return false
     }
 
     fun getMetaData(file: File): JSONObject? {
@@ -294,7 +292,7 @@ object FormatterController {
                 if (libraryFile.exists()) {
                     PROGRESS("Library $name found, Checking for update")
                     val meta = getMetaData(libraryFile)!!
-                    if (compareVersions(meta.getString("version"), libraryJSON.getString("version")) == 1) {
+                    if (compareVersions(meta.getString("version"), libraryJSON.getString("version"))) {
                         PROGRESS("Library $name update found, updating...")
                         Log.i("FormatterInit", "Installing library:\t$name")
                         downloadLibrary(name, libraryFile)
@@ -459,6 +457,7 @@ object FormatterController {
         override fun doInBackground(vararg params: Void?): Void? {
             val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
             if (Utilities.isOnline) {
+                Log.d(logID, branch)
                 val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json").get()
                 if (doc != null) {
                     val json = doc.body().text()

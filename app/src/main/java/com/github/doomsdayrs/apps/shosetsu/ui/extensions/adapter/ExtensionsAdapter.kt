@@ -61,11 +61,8 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
             val luaFormatter: LuaFormatter = (DefaultScrapers.getByID(id) as LuaFormatter)
             val meta = luaFormatter.getMetaData()!!
             holder.version.text = meta.getString("version")
-            val v = FormatterController.compareVersions(jsonObject.getString("version"), meta.getString("version"))
-            Log.i("ExtensionsAdapter", "Update $id : $v")
-
-            if (v == 1) {
-                Log.i("ExtensionsAdapter", "UPDATE")
+            if (FormatterController.compareVersions(jsonObject.getString("version"), meta.getString("version"))) {
+                Log.i("ExtensionsAdapter", "$id has an update")
                 holder.update = true
                 // holder.button.setImageResource(R.drawable.ic_update_black_24dp)
                 holder.button.text = holder.itemView.context.getText(R.string.update)
@@ -84,7 +81,7 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
         holder.language.text = jsonObject.getString("lang")
         holder.button.setOnClickListener {
             if (!holder.installed || holder.update) {
-                FormatterController.downloadScript(jsonObject.getString("name"),jsonObject.getString("lang"), holder, extensionsFragment.activity!!)
+                FormatterController.downloadScript(jsonObject.getString("name"), jsonObject.getString("lang"), holder, extensionsFragment.activity!!)
             } else
                 FormatterController.deleteScript(jsonObject.getString("name"), id, holder, extensionsFragment.activity!!)
 

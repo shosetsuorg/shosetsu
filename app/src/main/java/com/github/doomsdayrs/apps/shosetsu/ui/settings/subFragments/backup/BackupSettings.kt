@@ -2,24 +2,17 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast.LENGTH_LONG
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.NormalFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
-import kotlinx.android.synthetic.main.settings.*
 import java.util.*
 
 /*
@@ -46,44 +39,31 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class BackupSettings : Fragment() {
-    val settings: ArrayList<SettingsItem.SettingsItemData> = arrayListOf(
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.BUTTON)
-                    .setOnClickListenerButton {
-                        it.post {
-                            regret(it.context)
-                            //BackupProcess().execute()
+class BackupSettings : SettingsSubController() {
+    override val settings by lazy {
+        arrayListOf(
+                SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.BUTTON)
+                        .setOnClickListenerButton {
+                            it.post {
+                                regret(it.context)
+                                //BackupProcess().execute()
+                            }
                         }
-                    }
-                    .setTitle(R.string.backup_now)
-                    .setTextViewText(R.string.restore_now),
-            SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.BUTTON)
-                    .setOnClickListenerButton {
-                        it.post {
-                            regret(it.context)
-                            //performFileSelection()
+                        .setTitle(R.string.backup_now)
+                        .setTextViewText(R.string.restore_now),
+                SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.BUTTON)
+                        .setOnClickListenerButton {
+                            it.post {
+                                regret(it.context)
+                                //performFileSelection()
+                            }
                         }
-                    }
-                    .setTitle(R.string.restore_now)
-                    .setTextViewText(R.string.restore_now)
-    )
-
-
-    val adapter: SettingItemsAdapter = SettingItemsAdapter(settings)
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "BackupSettings")
-        return inflater.inflate(R.layout.settings, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = SettingItemsAdapter(settings)
+                        .setTitle(R.string.restore_now)
+                        .setTextViewText(R.string.restore_now)
+        )
     }
 
     @Suppress("unused")
-
     private fun performFileSelection() {
         context?.toast("Please make sure this is on the main storage, SD card storage is not functional yet", duration = LENGTH_LONG)
         val intent = Intent(context, NormalFilePickActivity::class.java)
