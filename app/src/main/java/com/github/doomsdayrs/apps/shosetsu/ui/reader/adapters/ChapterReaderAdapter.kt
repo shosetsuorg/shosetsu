@@ -1,8 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters
 
-import com.bluelinelabs.conductor.Router
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.support.RouterPagerAdapter
+import android.util.Log
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
 import java.util.*
@@ -29,7 +30,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class ChapterReaderAdapter(private val chapterReader: ChapterReader) : RouterPagerAdapter(chapterReader) {
+class ChapterReaderAdapter(fm: FragmentManager, behavior: Int, private val chapterReader: ChapterReader) : FragmentStatePagerAdapter(fm, behavior) {
     val chapterViews = ArrayList<ChapterView>()
 
     init {
@@ -41,10 +42,13 @@ class ChapterReaderAdapter(private val chapterReader: ChapterReader) : RouterPag
         }
     }
 
-    override fun configureRouter(router: Router, position: Int) {
-        if (!router.hasRootController()) router.setRoot(RouterTransaction.with(chapterViews[position]))
+    override fun getItem(position: Int): Fragment {
+        return chapterViews[position]
     }
 
-    override fun getCount(): Int = chapterReader.chapterIDs.size
+    override fun getCount(): Int {
+        Log.i("size", chapterReader.chapterIDs.size.toString())
+        return chapterReader.chapterIDs.size
+    }
 
 }

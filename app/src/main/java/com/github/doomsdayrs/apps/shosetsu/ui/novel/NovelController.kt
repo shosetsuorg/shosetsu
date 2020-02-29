@@ -72,19 +72,14 @@ class NovelController : ViewedController() {
     var novelFragmentChapters: NovelFragmentChapters? = null
 
 
-    var fragmentNovelTablayout: TabLayout? = null
-    var fragmentNovelViewpager: ViewPager? = null
-    var fragmentNovelMainRefresh: SwipeRefreshLayout? = null
+    lateinit var fragmentNovelTablayout: TabLayout
+    lateinit var fragmentNovelViewpager: ViewPager
+    lateinit var fragmentNovelMainRefresh: SwipeRefreshLayout
 
     init {
         setHasOptionsMenu(true)
     }
 
-    override fun onDestroyView(view: View) {
-        fragmentNovelTablayout = null
-        fragmentNovelViewpager = null
-        fragmentNovelMainRefresh = null
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt("novelID", novelID)
@@ -142,17 +137,17 @@ class NovelController : ViewedController() {
             fragments.add(novelFragmentChapters!!)
         }
         val pagerAdapter = NovelPagerAdapter(this, fragments)
-        fragmentNovelViewpager?.adapter = pagerAdapter
-        fragmentNovelViewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(fragmentNovelTablayout))
-        fragmentNovelTablayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
+        fragmentNovelViewpager.adapter = pagerAdapter
+        fragmentNovelViewpager.addOnPageChangeListener(TabLayoutOnPageChangeListener(fragmentNovelTablayout))
+        fragmentNovelTablayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                fragmentNovelViewpager?.currentItem = tab.position
+                fragmentNovelViewpager.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-        fragmentNovelTablayout?.post { fragmentNovelTablayout?.setupWithViewPager(fragmentNovelViewpager) }
+        fragmentNovelTablayout.post { fragmentNovelTablayout.setupWithViewPager(fragmentNovelViewpager) }
     }
 
     @Suppress("unused")

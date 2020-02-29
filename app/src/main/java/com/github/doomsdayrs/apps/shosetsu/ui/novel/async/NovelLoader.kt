@@ -48,7 +48,7 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
     override fun onPreExecute() {
         super.onPreExecute()
         // Sets the refresh layout to give the user a visible cue
-        novelFragment?.activity?.runOnUiThread { novelFragment.fragmentNovelMainRefresh?.isRefreshing = true }
+        novelFragment?.activity?.runOnUiThread { novelFragment.fragmentNovelMainRefresh.isRefreshing = true }
     }
 
     override fun onPostExecute(result: Boolean?) {
@@ -63,7 +63,7 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
                 novelFragment.novelFragmentInfo?.setData()
 
                 // Turns off refresh view
-                novelFragment.fragmentNovelMainRefresh?.isRefreshing = false
+                novelFragment.fragmentNovelMainRefresh.isRefreshing = false
                 novelFragment.novelChapters = novelFragment.novelPage.chapters
                 novelFragment.novelFragmentChapters?.setChapters()
             }

@@ -44,6 +44,7 @@ class NovelPagerAdapter(router: NovelController, private val fragments: List<Con
 
     override fun configureRouter(router: Router, position: Int) {
         if (!router.hasRootController()) {
+
             Log.d("SwapScreen", fragments[position].toString())
             val controller = when (position) {
                 INFO_CONTROLLER -> {

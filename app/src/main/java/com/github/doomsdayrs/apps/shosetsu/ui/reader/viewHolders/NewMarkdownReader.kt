@@ -2,10 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders
 
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
-import kotlinx.android.synthetic.main.toolbar_main.*
 import us.feras.mdv.MarkdownView
 
 /*
@@ -38,6 +36,6 @@ class NewMarkdownReader(itemView: View, chapterView: ChapterView) : NewReader(it
     }
 
     override fun bind() {
-        chapterView.chapterReader?.let { markdownView.setOnClickListener(ToolbarHideOnClickListener((it.activity as MainActivity).toolbar)) }
+        chapterView.chapterReader?.let { markdownView.setOnClickListener(ToolbarHideOnClickListener(it.getToolbar())) }
     }
 }

@@ -2,6 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R.layout.chapter_reader
@@ -27,25 +29,24 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */
-/**
+ */ /**
  * shosetsu
  * 13 / 12 / 2019
  *
  * @author github.com/doomsdayrs
  */
-class ChapterReader() : ViewedController() {
+class ChapterReader(bundle: Bundle) : ViewedController(bundle) {
     // NovelData
     var chapterIDs: ArrayList<Int> = arrayListOf()
     var formatter: Formatter? = null
     var novelID = 0
 
-    var viewpager: ViewPager? = null
     private lateinit var chapterReaderAdapter: ChapterReaderAdapter
     private var currentChapterID = -1
     override val idRes: Int = chapter_reader
 
-    constructor(bundle: Bundle) : this() {
+
+    init {
         bundle.getIntegerArrayList("chapters")?.let {
             chapterIDs = it
         }
@@ -57,16 +58,6 @@ class ChapterReader() : ViewedController() {
         formatter = DefaultScrapers.getByID(bundle.getInt("formatter", -1))
     }
 
-
-    override fun onViewCreated(view: View) {
-        if (chapterIDs.isEmpty()) {
-            val integers = Database.DatabaseChapter.getChaptersOnlyIDs(novelID)
-            for (x in integers.indices) chapterIDs.add(integers[x])
-        }
-        setupViewPager()
-    }
-
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putIntArray("chapters", chapterIDs.toIntArray())
@@ -75,33 +66,56 @@ class ChapterReader() : ViewedController() {
         outState.putParcelable("adapter", chapterReaderAdapter.saveState())
     }
 
-    override fun onDestroyView(view: View) {
-        viewpager = null
-    }
-
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        // Sets default values
+// Sets default values
         formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
         novelID = savedInstanceState.getInt("novelID")
+
         val temp = savedInstanceState.getIntArray("chapters")
         for (x in temp!!.indices) chapterIDs.add(temp[x])
     }
 
 
-    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
-        chapterReaderAdapter = ChapterReaderAdapter(this)
-        chapterReaderAdapter.restoreState(savedViewState.getParcelable("adapter"), ClassLoader.getSystemClassLoader())
+    override fun onViewCreated(view: View) {
+        TODO("Not yet implemented")
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+        } else {
 
-    private fun setupViewPager() {
-        viewpager?.adapter = chapterReaderAdapter
-        viewpager?.addOnPageChangeListener(ChapterViewChange(chapterReaderAdapter))
-        if (currentChapterID != -1) viewpager?.currentItem = findCurrentPosition(currentChapterID)
+        }
+
+        if (chapterIDs.isEmpty()) {
+            val integers = Database.DatabaseChapter.getChaptersOnlyIDs(novelID)
+            for (x in integers.indices) chapterIDs.add(integers[x])
+        }
+
+        setupViewPager(savedInstanceState)
+    }
+
+    private fun setupViewPager(savedInstanceState: Bundle?) {
+        chapterReaderAdapter = ChapterReaderAdapter(router, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, this)
+
+        if (savedInstanceState != null) {
+            chapterReaderAdapter.restoreState(savedInstanceState.getParcelable("adapter"), ClassLoader.getSystemClassLoader())
+        }
+
+        viewpager.adapter = chapterReaderAdapter
+        viewpager.addOnPageChangeListener(ChapterViewChange(chapterReaderAdapter))
+        if (currentChapterID != -1) viewpager.currentItem = findCurrentPosition(currentChapterID)
     }
 
     fun findCurrentPosition(id: Int): Int {
         for (x in chapterIDs.indices) if (chapterIDs[x] == id) return x
         return -1
+    }
+
+    fun getViewPager(): ViewPager? {
+        return viewpager
+    }
+
+    fun getToolbar(): Toolbar? {
+        return toolbar as Toolbar
     }
 }

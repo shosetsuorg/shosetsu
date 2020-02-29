@@ -17,8 +17,6 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
-import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
@@ -32,7 +30,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -407,22 +404,18 @@ object Utilities {
      * @param novelID      id of novel
      * @param formatterID  formatter
      */
-    fun openChapter(activity: Router, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
+    fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
 
 
-    private fun openChapter(router: Router, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
+    private fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
         val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
         if (Settings.ReaderMarkingType == MarkingTypes.ONVIEW.i) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
-        router.pushController(
-                ChapterReader(
-                        bundleOf(
-                                Pair("chapterID", chapterID),
-                                Pair("novelID", novelID),
-                                Pair("formatter", formatterID),
-                                Pair("chapters", chapters)
-                        )
-                ).withFadeTransaction()
-        )
+        val intent = Intent(activity, ChapterReader::class.java)
+        intent.putExtra("chapterID", chapterID)
+        intent.putExtra("novelID", novelID)
+        intent.putExtra("formatter", formatterID)
+        intent.putExtra("chapters", chapters)
+        activity.startActivity(intent)
     }
 
     fun search(activity: Activity, query: String) {
