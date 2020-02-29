@@ -5,7 +5,7 @@ import android.view.View
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 
@@ -59,9 +59,9 @@ class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<S
         }
         searchViewHolder.itemView.post {
             // Stores DATA
-            val data: SearchController.StoredData = SearchController.StoredData(searchViewHolder.formatter.formatterID)
+            val data: SearchFragment.StoredData = SearchFragment.StoredData(searchViewHolder.formatter.formatterID)
             data.novelArray = array
-            searchViewHolder.searchController.array.add(data)
+            searchViewHolder.searchFragment.array.add(data)
 
             // Displays DATA
             searchViewHolder.searchResultsAdapter = SearchResultsAdapter(array, searchViewHolder)

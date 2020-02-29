@@ -10,7 +10,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.intLibrary
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.search.async.SearchLoader
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
@@ -38,7 +38,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class SearchViewHolder(itemView: View, val searchController: SearchController) : RecyclerView.ViewHolder(itemView) {
+class SearchViewHolder(itemView: View, val searchFragment: SearchFragment) : RecyclerView.ViewHolder(itemView) {
     var query: String = ""
     private var id = -2
     lateinit var formatter: Formatter
@@ -59,19 +59,19 @@ class SearchViewHolder(itemView: View, val searchController: SearchController) :
             -2 -> throw RuntimeException("InvalidValue")
             -1 -> {
                 textView.setText(R.string.my_library)
-                if (!searchController.containsData(id)) {
+                if (!searchFragment.containsData(id)) {
                     val intArray: ArrayList<Int> = intLibrary
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         intArray.removeIf { novelID: Int? -> !DatabaseNovels.getNovelTitle(novelID!!).toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT)) }
                     } else {
                         for (x in intArray.indices.reversed()) if (!DatabaseNovels.getNovelTitle(intArray[x]).toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) intArray.removeAt(x)
                     }
-                    val data: SearchController.StoredData = SearchController.StoredData(id)
+                    val data: SearchFragment.StoredData = SearchFragment.StoredData(id)
                     data.intArray = intArray
-                    searchController.array.add(data)
+                    searchFragment.array.add(data)
                     searchResultsAdapter = SearchResultsAdapter(intArray, this)
                 } else {
-                    val data: SearchController.StoredData = searchController.getData(id)
+                    val data: SearchFragment.StoredData = searchFragment.getData(id)
                     searchResultsAdapter = SearchResultsAdapter(data.intArray as ArrayList<Int>, this)
                 }
                 setAdapter()
@@ -80,10 +80,10 @@ class SearchViewHolder(itemView: View, val searchController: SearchController) :
             else -> {
                 formatter = DefaultScrapers.getByID(id)
                 textView.text = formatter.name
-                if (!searchController.containsData(id))
+                if (!searchFragment.containsData(id))
                     SearchLoader(this).execute(query)
                 else {
-                    searchResultsAdapter = SearchResultsAdapter(searchController.getData(id).novelArray, this)
+                    searchResultsAdapter = SearchResultsAdapter(searchFragment.getData(id).novelArray, this)
                     setAdapter()
                     progressBar.visibility = View.GONE
                 }

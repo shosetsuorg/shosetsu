@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchFragment
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 
@@ -34,7 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
  *
  * @author github.com/doomsdayrs
  */
-class SearchAdapter(private val searchController: SearchController) : RecyclerView.Adapter<SearchViewHolder>() {
+class SearchAdapter(private val searchFragment: SearchFragment) : RecyclerView.Adapter<SearchViewHolder>() {
     private val views: ArrayList<Int> = arrayListOf(-1)
 
     init {
@@ -45,7 +45,7 @@ class SearchAdapter(private val searchController: SearchController) : RecyclerVi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_search_row, parent, false)
-        return SearchViewHolder(view, searchController)
+        return SearchViewHolder(view, searchFragment)
     }
 
     override fun getItemCount(): Int {
@@ -53,7 +53,7 @@ class SearchAdapter(private val searchController: SearchController) : RecyclerVi
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.query = searchController.query
+        holder.query = searchFragment.query
         holder.setId(views[position])
     }
 }
