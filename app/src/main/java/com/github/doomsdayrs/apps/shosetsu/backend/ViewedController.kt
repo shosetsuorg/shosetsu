@@ -10,7 +10,6 @@ import com.bluelinelabs.conductor.Controller
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.memberProperties
 
 /*
@@ -52,58 +51,24 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
 
     override fun onDestroyView(view: View) {
         for (a in attachedFields.asReversed()) {
+            Log.d(logID, "\tDestroying ${a.name}")
             a.setter.call(this, null)
         }
-    }
-
-    fun fieldHasAttach(field: KMutableProperty<*>): Boolean {
-        Log.d(logID, "\tExpecting ${Attach::class}")
-        Log.d(logID, "\tField has ${field.annotations.size} annotations")
-        field.annotations.forEach { an ->
-            Log.d(logID, "\tProcessing ${an.annotationClass}")
-            if (an.annotationClass == Attach::class)
-                return true
-        }
-        return false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         val view = inflater.inflate(idRes, container, attachToRoot)
         this::class.memberProperties
-                .let {
-                    Log.d(logID, "Start size ${it.size}")
-                    return@let it
-                }
-                .filterIsInstance<KMutableProperty<*>>()
-                .let {
-                    Log.d(logID, "Size after Var check ${it.size}")
-                    return@let it
-                }
                 .filter { it.annotations.isNotEmpty() }
-                .let {
-                    Log.d(logID, "Size after Empty check ${it.size}")
-                    return@let it
-                }
-                .filter { @UseExperimental(ExperimentalStdlibApi::class) it.hasAnnotation<Attach>() }
-                .let {
-                    Log.d(logID, "Size after Attach check ${it.size}")
-                    return@let it
-                }
+                .filter { it.findAnnotation<Attach>() != null }
                 .filter { it.visibility == KVisibility.PUBLIC }
-                .let {
-                    Log.d(logID, "Size after Public check ${it.size}")
-                    return@let it
-                }
+                .filterIsInstance<KMutableProperty<*>>()
                 .forEach { field ->
-                    Log.d(logID, "Processing\t${field.name}")
-                    if (fieldHasAttach(field)) {
-                        val a = field.findAnnotation<Attach>()
-                        a?.let {
-                            Log.d(logID, "Applying ${it.id} to ${field.name}")
-                            field.setter.call(this, view.findViewById(it.id))
-                            attachedFields.add(field)
-                        }
-                    }
+                    Log.d(logID, "Processing Attach Target\t${field.name}")
+                    val a = field.findAnnotation<Attach>()!!
+                    Log.d(logID, "\tApplying ${a.id} to ${field.name}")
+                    field.setter.call(this, view.findViewById(a.id))
+                    attachedFields.add(field)
                 }
         onViewCreated(view)
         return view

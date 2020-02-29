@@ -43,6 +43,7 @@ abstract class SettingsSubController : ViewedController() {
 
     override val idRes: Int = R.layout.settings
     abstract val settings: ArrayList<SettingsItem.SettingsItemData>
+    @Attach(R.id.recyclerView)
     var recyclerView: RecyclerView? = null
 
     val adapter: SettingItemsAdapter by lazy {
@@ -50,12 +51,7 @@ abstract class SettingsSubController : ViewedController() {
         SettingItemsAdapter(settings)
     }
 
-    override fun onDestroyView(view: View) {
-        recyclerView = null
-    }
-
     override fun onViewCreated(view: View) {
-        recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = adapter
     }

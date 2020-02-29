@@ -44,7 +44,8 @@ class ExtensionsController(override val idRes: Int = R.layout.fragment_catalogue
 
     val array: ArrayList<JSONObject> = ArrayList()
     lateinit var adapter: ExtensionsAdapter
-    lateinit var recyclerView: RecyclerView
+    @Attach(R.id.recyclerView)
+    var recyclerView: RecyclerView?= null
 
     init {
         setHasOptionsMenu(true)
@@ -56,11 +57,9 @@ class ExtensionsController(override val idRes: Int = R.layout.fragment_catalogue
 
     override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, getString(R.string.extensions))
-        recyclerView = view.findViewById(R.id.recyclerView)
-
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView?.layoutManager = LinearLayoutManager(context)
         adapter = ExtensionsAdapter(this)
-        recyclerView.adapter = adapter
+        recyclerView?.adapter = adapter
         setData()
     }
 

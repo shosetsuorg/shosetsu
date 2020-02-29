@@ -111,10 +111,6 @@ class SearchController : ViewedController() {
         recyclerView?.adapter = adapter
     }
 
-    override fun onDestroyView(view: View) {
-        recyclerView = null
-    }
-
     fun containsData(id: Int): Boolean {
         for (data in array)
             if (data.id == id)

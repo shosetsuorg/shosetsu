@@ -53,7 +53,7 @@ class LibraryController : ViewedController() {
     var libraryNovelCards = ArrayList<Int>()
     var selectedNovels: ArrayList<Int> = ArrayList()
 
-    lateinit var recyclerView: RecyclerView
+    var recyclerView: RecyclerView?=null
     lateinit var libraryNovelCardsAdapter: LibraryNovelAdapter
 
     val inflater: MenuInflater?
@@ -110,12 +110,12 @@ class LibraryController : ViewedController() {
             }
             R.id.chapter_select_all -> {
                 for (i in libraryNovelCards) if (!selectedNovels.contains(i)) selectedNovels.add(i)
-                recyclerView.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
+                recyclerView?.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
                 return true
             }
             R.id.chapter_deselect_all -> {
                 selectedNovels = ArrayList()
-                recyclerView.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
+                recyclerView?.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
                 if (inflater != null) activity?.invalidateOptionsMenu()
                 return true
             }
@@ -129,7 +129,7 @@ class LibraryController : ViewedController() {
                     }
                 }
                 selectedNovels = ArrayList()
-                recyclerView.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
+                recyclerView?.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
                 return true
             }
             R.id.source_migrate -> {
@@ -170,14 +170,14 @@ class LibraryController : ViewedController() {
      * Sets the cards to display
      */
     fun setLibraryCards(novelCards: ArrayList<Int>?) {
-        recyclerView.setHasFixedSize(false)
+        recyclerView?.setHasFixedSize(false)
         if (Settings.novelCardType == 0) {
             libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
-            recyclerView.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateNoOfColumns(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
+            recyclerView?.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateNoOfColumns(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
         } else {
             libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
-            recyclerView.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+            recyclerView?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         }
-        recyclerView.adapter = libraryNovelCardsAdapter
+        recyclerView?.adapter = libraryNovelCardsAdapter
     }
 }

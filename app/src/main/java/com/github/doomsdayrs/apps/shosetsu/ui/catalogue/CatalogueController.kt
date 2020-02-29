@@ -54,8 +54,12 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListing
 //TODO fix issue with not loading
 class CatalogueController(bundle: Bundle) : ViewedController(bundle) {
     override val idRes: Int = R.layout.fragment_catalogue
-    lateinit var recyclerView: RecyclerView
-    lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
+
+    @Attach(R.id.recyclerView)
+    var recyclerView: RecyclerView? = null
+    @Attach(R.id.swipeRefreshLayout)
+    var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     private var cataloguePageLoader: CataloguePageLoader? = null
     var catalogueNovelCards = ArrayList<NovelListingCard>()
@@ -87,11 +91,8 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle) {
     }
 
     override fun onViewCreated(view: View) {
-        recyclerView = view.findViewById(R.id.recyclerView)
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         Utilities.setActivityTitle(activity, formatter.name)
-        swipeRefreshLayout.setOnRefreshListener(CatalogueRefresh(this))
-
+        swipeRefreshLayout?.setOnRefreshListener(CatalogueRefresh(this))
         if (!dontRefresh) {
             Log.d("Process", "Loading up latest")
             setLibraryCards(catalogueNovelCards)
@@ -144,17 +145,17 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle) {
     }
 
     fun setLibraryCards(recycleListingCards: ArrayList<NovelListingCard>) {
-        recyclerView.setHasFixedSize(false)
+        recyclerView?.setHasFixedSize(false)
 
         if (Settings.novelCardType == 0) {
             catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card)
-            recyclerView.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
+            recyclerView?.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
         } else {
             catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card_compressed)
-            recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
-        recyclerView.adapter = catalogueAdapter
-        recyclerView.addOnScrollListener(CatalogueHitBottom(this))
+        recyclerView?.adapter = catalogueAdapter
+        recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
 
     }
 
