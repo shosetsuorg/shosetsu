@@ -37,10 +37,9 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsController : RecyclerController() {
+class ExtensionsController : RecyclerController<ExtensionsAdapter>() {
 
     val array: ArrayList<JSONObject> = ArrayList()
-    lateinit var adapter: ExtensionsAdapter
 
     init {
         setHasOptionsMenu(true)
@@ -53,7 +52,6 @@ class ExtensionsController : RecyclerController() {
     override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, getString(R.string.extensions))
         adapter = ExtensionsAdapter(this)
-        recyclerView?.adapter = adapter
         setData()
     }
 
@@ -85,6 +83,6 @@ class ExtensionsController : RecyclerController() {
             if (!array.contains(obj))
                 array.add(obj)
         }
-        adapter.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }
 }

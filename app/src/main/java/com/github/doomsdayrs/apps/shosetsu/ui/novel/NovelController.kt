@@ -53,9 +53,7 @@ class NovelController : ViewedController() {
     interface Custom {
         fun customCheck(status: Status): Boolean
     }
-
     override val layoutRes: Int = R.layout.novel
-
 
     // This is a never before loaded novel
     var new: Boolean = true
@@ -73,7 +71,7 @@ class NovelController : ViewedController() {
 
 
     @Attach(R.id.fragment_novel_tabLayout)
-    var fragmentNovelTablayout: TabLayout? = null
+    var fragmentNovelTabLayout: TabLayout? = null
 
     @Attach(R.id.fragment_novel_viewpager)
     var fragmentNovelViewpager: ViewPager? = null
@@ -117,7 +115,7 @@ class NovelController : ViewedController() {
         //boolean track = SettingsController.isTrackingEnabled();
         if (Utilities.isOnline && Database.DatabaseNovels.isNotInNovels(novelID)) {
             setViewPager()
-            fragmentNovelTablayout!!.post { NovelLoader(novelURL, novelID, formatter, this, true).execute() }
+            fragmentNovelTabLayout!!.post { NovelLoader(novelURL, novelID, formatter, this, true).execute() }
         } else {
             novelPage = Database.DatabaseNovels.getNovelPage(novelID)
             new = false
@@ -139,8 +137,8 @@ class NovelController : ViewedController() {
         }
         val pagerAdapter = NovelPagerAdapter(this, fragments)
         fragmentNovelViewpager?.adapter = pagerAdapter
-        fragmentNovelViewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(fragmentNovelTablayout))
-        fragmentNovelTablayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
+        fragmentNovelViewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(fragmentNovelTabLayout))
+        fragmentNovelTabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 fragmentNovelViewpager?.currentItem = tab.position
             }
@@ -148,7 +146,7 @@ class NovelController : ViewedController() {
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-        fragmentNovelTablayout?.post { fragmentNovelTablayout?.setupWithViewPager(fragmentNovelViewpager) }
+        fragmentNovelTabLayout?.post { fragmentNovelTabLayout?.setupWithViewPager(fragmentNovelViewpager) }
     }
 
     @Suppress("unused")

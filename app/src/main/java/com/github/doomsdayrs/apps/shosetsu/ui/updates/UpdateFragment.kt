@@ -31,7 +31,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdateFragment : RecyclerController() {
+class UpdateFragment : RecyclerController<UpdatedNovelsAdapter>() {
     var date: Long = -1
     private val novels = ArrayList<Int>()
     private var updates = ArrayList<Update>()
@@ -48,10 +48,9 @@ class UpdateFragment : RecyclerController() {
     override fun onViewCreated(view: View) {
         updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999)
         updates.forEach { if (!novels.contains(it.novelID)) novels.add(it.novelID) }
-        val updatedNovelsAdapter = UpdatedNovelsAdapter(novels, updates, activity!!)
+        adapter = UpdatedNovelsAdapter(novels, updates, activity!!)
         //UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(updates, getActivity());
-        recyclerView!!.adapter = updatedNovelsAdapter
-        recyclerView!!.post { updatedNovelsAdapter.notifyDataSetChanged() }
+        recyclerView!!.post { adapter?.notifyDataSetChanged() }
         Log.d("Updates on this day: ", updates.size.toString())
     }
 }

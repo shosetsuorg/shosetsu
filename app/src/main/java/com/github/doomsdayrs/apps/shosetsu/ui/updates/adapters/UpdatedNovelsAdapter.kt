@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.Update
  *
  * @author github.com/doomsdayrs
  */
-internal class UpdatedNovelsAdapter(private val novelIDs: ArrayList<Int>, val updates: ArrayList<Update>, val activity: Activity) : RecyclerView.Adapter<UpdatedNovelHolder>() {
+class UpdatedNovelsAdapter(private val novelIDs: ArrayList<Int>, val updates: ArrayList<Update>, val activity: Activity) : RecyclerView.Adapter<UpdatedNovelHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UpdatedNovelHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.updated_novel_card, parent, false)
         return UpdatedNovelHolder(view,activity)

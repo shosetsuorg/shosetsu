@@ -40,7 +40,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
  *     Default will fill with a LinearLayoutManager
  * </p>
  */
-abstract class RecyclerController(bundle: Bundle) : ViewedController(bundle) {
+abstract class RecyclerController<T : RecyclerView.Adapter<*>>(bundle: Bundle) : ViewedController(bundle) {
     constructor() : this(bundleOf())
 
     @LayoutRes
@@ -50,11 +50,14 @@ abstract class RecyclerController(bundle: Bundle) : ViewedController(bundle) {
     open val resourceID: Int = R.id.recyclerView
 
     var recyclerView: RecyclerView? = null
+    var adapter: T? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         val view = onCreateView1(inflater, container)
         recyclerView = view.findViewById(resourceID)!!
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         onViewCreated(view)
+        recyclerView?.adapter = adapter
         return view
     }
 

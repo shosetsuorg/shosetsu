@@ -39,7 +39,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.asForma
  * @author github.com/doomsdayrs
  */
 //TODO Searching mechanics here
-class CataloguesController : RecyclerController() {
+class CataloguesController : RecyclerController<CataloguesAdapter>() {
     private val cards by lazy { asFormatter }
 
     init {
@@ -68,6 +68,6 @@ class CataloguesController : RecyclerController() {
     override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.catalogues))
         recyclerView?.setHasFixedSize(true)
-        recyclerView?.adapter = CataloguesAdapter(cards, router)
+        adapter = CataloguesAdapter(cards,router)
     }
 }

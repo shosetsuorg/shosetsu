@@ -47,12 +47,10 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class LibraryController : RecyclerController() {
+class LibraryController : RecyclerController<LibraryNovelAdapter>() {
 
     var libraryNovelCards = ArrayList<Int>()
     var selectedNovels: ArrayList<Int> = ArrayList()
-
-    lateinit var libraryNovelCardsAdapter: LibraryNovelAdapter
 
     val inflater: MenuInflater?
         get() = MenuInflater(applicationContext)
@@ -60,7 +58,6 @@ class LibraryController : RecyclerController() {
     init {
         setHasOptionsMenu(true)
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -73,8 +70,6 @@ class LibraryController : RecyclerController() {
         libraryNovelCards = savedInstanceState.getIntegerArrayList("lib")!!
         selectedNovels = savedInstanceState.getIntegerArrayList("selected")!!
     }
-
-
 
     override fun onViewCreated(view: View) {
         recyclerView = view.findViewById(R.id.recyclerView)
@@ -107,12 +102,12 @@ class LibraryController : RecyclerController() {
             }
             R.id.chapter_select_all -> {
                 for (i in libraryNovelCards) if (!selectedNovels.contains(i)) selectedNovels.add(i)
-                recyclerView?.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
+                recyclerView?.post { adapter?.notifyDataSetChanged() }
                 return true
             }
             R.id.chapter_deselect_all -> {
                 selectedNovels = ArrayList()
-                recyclerView?.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
+                recyclerView?.post { adapter?.notifyDataSetChanged() }
                 if (inflater != null) activity?.invalidateOptionsMenu()
                 return true
             }
@@ -126,7 +121,7 @@ class LibraryController : RecyclerController() {
                     }
                 }
                 selectedNovels = ArrayList()
-                recyclerView?.post { libraryNovelCardsAdapter.notifyDataSetChanged() }
+                recyclerView?.post { adapter?.notifyDataSetChanged() }
                 return true
             }
             R.id.source_migrate -> {
@@ -169,12 +164,11 @@ class LibraryController : RecyclerController() {
     fun setLibraryCards(novelCards: ArrayList<Int>?) {
         recyclerView?.setHasFixedSize(false)
         if (Settings.novelCardType == 0) {
-            libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
+            adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
             recyclerView?.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateNoOfColumns(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
         } else {
-            libraryNovelCardsAdapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
+            adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
             recyclerView?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         }
-        recyclerView?.adapter = libraryNovelCardsAdapter
     }
 }

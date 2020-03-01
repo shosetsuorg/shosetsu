@@ -472,7 +472,7 @@ object FormatterController {
         override fun onPostExecute(result: Void?) {
             activity.toast(R.string.updated_extensions_list)
             extensionsFragment.setData()
-            extensionsFragment.adapter.notifyDataSetChanged()
+            extensionsFragment.adapter?.notifyDataSetChanged()
         }
     }
 
