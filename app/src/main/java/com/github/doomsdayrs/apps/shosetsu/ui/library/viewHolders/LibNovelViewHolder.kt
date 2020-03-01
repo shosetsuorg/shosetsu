@@ -51,7 +51,7 @@ class LibNovelViewHolder(itemView: View, val router: Router) : RecyclerView.View
         if (!libraryFragment.selectedNovels.contains(novelCard.novelID)) libraryFragment.selectedNovels.add(novelCard.novelID) else removeFromSelect()
         if (libraryFragment.selectedNovels.size <= 0 || libraryFragment.selectedNovels.size == 1)
             libraryFragment.inflater?.let { libraryFragment.activity?.invalidateOptionsMenu() }
-        libraryFragment.recyclerView.post { libraryFragment.libraryNovelCardsAdapter?.notifyDataSetChanged() }
+        libraryFragment.recyclerView?.post { libraryFragment.libraryNovelCardsAdapter?.notifyDataSetChanged() }
     }
 
     private fun removeFromSelect() {

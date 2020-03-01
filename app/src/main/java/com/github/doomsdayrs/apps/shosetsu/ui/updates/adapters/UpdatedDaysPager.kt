@@ -1,14 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters
 
-import android.content.Context
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import android.util.Log
+import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import org.joda.time.DateTime
-import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -32,19 +33,23 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdatedDaysPager(val context: Context?, fm: FragmentManager, behavior: Int, private val fragments: ArrayList<UpdateFragment>) : FragmentPagerAdapter(fm, behavior) {
-    override fun getItem(position: Int): Fragment {
-        return fragments[position]
-    }
-
+class UpdatedDaysPager(val updateFragment: UpdatesFragment, val fragments: Array<UpdateFragment>) : RouterPagerAdapter(updateFragment) {
     override fun getPageTitle(position: Int): CharSequence? {
         val dateTime = DateTime(fragments[position].date)
         if (dateTime == DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis()))) {
-            return context?.getString(R.string.today) ?: "Today"
+            return updateFragment.getString(R.string.today, "Today")
         } else if (dateTime == DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis())).minusDays(1)) {
-            return context?.getString(R.string.yesterday) ?: "Yesterday"
+            return updateFragment.getString(R.string.yesterday, "Yesterday")
         }
         return dateTime.dayOfMonth.toString() + "/" + dateTime.monthOfYear + "/" + dateTime.year
+    }
+
+    override fun configureRouter(router: Router, position: Int) {
+        if (!router.hasRootController()) {
+            Log.d("SwapScreen", fragments[position].toString())
+            val controller = fragments[position]
+            router.setRoot(RouterTransaction.with(controller))
+        }
     }
 
     override fun getCount(): Int {

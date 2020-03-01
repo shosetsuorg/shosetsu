@@ -1,22 +1,22 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates
 
-import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
-import kotlinx.android.synthetic.main.fragment_update.*
 import org.joda.time.DateTime
 import java.util.*
 
@@ -43,16 +43,23 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdatesFragment : Fragment(R.layout.fragment_update) {
+class UpdatesFragment : ViewedController() {
 
     init {
         setHasOptionsMenu(true)
     }
 
+    override val idRes: Int = R.layout.fragment_update
+
+    @Attach(R.id.viewpager)
+    var viewpager: ViewPager? = null
+    @Attach(R.id.tabLayout)
+    var tabLayout: TabLayout? = null
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.updater_now) {
             if (context != null) {
-                UpdateManager.init( context!!)
+                UpdateManager.init(context!!)
                 true
             } else false
         } else false
@@ -62,8 +69,7 @@ class UpdatesFragment : Fragment(R.layout.fragment_update) {
         inflater.inflate(R.menu.toolbar_updater, menu)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, getString(R.string.updates))
         setViewPager()
     }
@@ -83,24 +89,18 @@ class UpdatesFragment : Fragment(R.layout.fragment_update) {
         // Removing empty days
         for (x in updatesFragments.size - 1 downTo 1) {
             val updateFragment = updatesFragments[x]
-            try {
                 val c = DatabaseUpdates.getCountBetween(updateFragment.date, updateFragment.date + 86399999)
-                if (c <= 0) {
-                    updatesFragments.removeAt(x)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+                if (c <= 0) updatesFragments.removeAt(x)
         }
         // TODAY
         val updateFragment = UpdateFragment()
         updateFragment.date = (DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis())).millis)
         updatesFragments.add(updateFragment)
         updatesFragments.reverse()
-        val pagerAdapter = UpdatedDaysPager(context, childFragmentManager, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, updatesFragments)
-        viewpager.adapter = pagerAdapter
-        viewpager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
-        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+        val pagerAdapter = UpdatedDaysPager(this, updatesFragments.toTypedArray())
+        viewpager?.adapter = pagerAdapter
+        viewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+        tabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewpager!!.currentItem = tab.position
             }

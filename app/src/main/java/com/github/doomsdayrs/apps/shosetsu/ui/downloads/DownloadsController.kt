@@ -4,24 +4,24 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
-import kotlinx.android.synthetic.main.fragment_downloads.*
 
 /*
  * This file is part of Shosetsu.
@@ -45,36 +45,34 @@ import kotlinx.android.synthetic.main.fragment_downloads.*
  * @author github.com/doomsdayrs
  */
 //TODO selection mechanic with options to delete,  pause,  and more
-class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
+class DownloadsController : ViewedController() {
     var downloadItems: ArrayList<DownloadItem> = ArrayList()
     var adapter: DownloadAdapter = DownloadAdapter(this)
     private lateinit var receiver: BroadcastReceiver
 
+    @Attach(R.id.fragment_downloads_recycler)
+    var fragment_downloads_recycler: RecyclerView? = null
+
     init {
         setHasOptionsMenu(true)
     }
+
+    override val idRes: Int = R.layout.fragment_downloads
 
     override fun onDestroy() {
         super.onDestroy()
         activity?.unregisterReceiver(receiver)
     }
 
-    override fun onResume() {
-        super.onResume()
-        adapter.notifyDataSetChanged()
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, getString(R.string.downloads))
         downloadItems = Database.DatabaseDownloads.downloadList
-        fragment_downloads_recycler.setHasFixedSize(false)
+        fragment_downloads_recycler?.setHasFixedSize(false)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         adapter = DownloadAdapter(this)
         adapter.setHasStableIds(true)
-        fragment_downloads_recycler.layoutManager = layoutManager
-        fragment_downloads_recycler.adapter = adapter
+        fragment_downloads_recycler?.layoutManager = layoutManager
+        fragment_downloads_recycler?.adapter = adapter
         val filter = IntentFilter()
 
         filter.addAction(Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE)
@@ -86,15 +84,15 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
 
 
             private fun removeDownloads(chapterURL: String) {
-                for (x in adapter.downloadsFragment.downloadItems.indices) if (adapter.downloadsFragment.downloadItems[x].chapterURL == chapterURL) {
-                    adapter.downloadsFragment.downloadItems.removeAt(x)
+                for (x in adapter.downloadsController.downloadItems.indices) if (adapter.downloadsController.downloadItems[x].chapterURL == chapterURL) {
+                    adapter.downloadsController.downloadItems.removeAt(x)
                     return
                 }
                 adapter.notifyDataSetChanged()
             }
 
             private fun markError(chapterURL: String) {
-                for (downloadItem in adapter.downloadsFragment.downloadItems)
+                for (downloadItem in adapter.downloadsController.downloadItems)
                     if (downloadItem.chapterURL == chapterURL)
                         downloadItem.status = "Error"
 
@@ -103,7 +101,7 @@ class DownloadsFragment : Fragment(R.layout.fragment_downloads) {
             }
 
             private fun toggleProcess(chapterURL: String) {
-                for (downloadItem in adapter.downloadsFragment.downloadItems)
+                for (downloadItem in adapter.downloadsController.downloadItems)
                     if (downloadItem.chapterURL == chapterURL)
                         if (downloadItem.status == "Pending" || downloadItem.status == "Error")
                             downloadItem.status = "Downloading"

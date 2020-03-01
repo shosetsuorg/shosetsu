@@ -28,7 +28,7 @@ import java.util.*
  */
 class CatalogueRefresh(private val catalogueFragment: CatalogueController) : OnRefreshListener {
     override fun onRefresh() {
-        catalogueFragment.swipeRefreshLayout.isRefreshing = true
+        catalogueFragment.swipeRefreshLayout?.isRefreshing = true
         catalogueFragment.catalogueNovelCards = ArrayList()
         catalogueFragment.currentMaxPage = 1
         Log.d("FragmentRefresh", "Refreshing catalogue data")

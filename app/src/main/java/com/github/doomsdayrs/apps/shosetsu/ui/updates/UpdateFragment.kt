@@ -3,13 +3,14 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.Update
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import java.util.*
 
 /*
@@ -34,37 +35,31 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdateFragment : Fragment(R.layout.updates_list) {
+class UpdateFragment : ViewedController() {
     var date: Long = -1
     private val novels = ArrayList<Int>()
     private var updates = ArrayList<Update>()
+    @Attach(R.id.recycler_update)
     private var recyclerView: RecyclerView? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putLong("date", date)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (date == -1L) if (savedInstanceState != null) date = savedInstanceState.getLong("date")
-        try {
-            updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        for (update in updates) if (!novels.contains(update.novelID)) novels.add(update.novelID)
-        recyclerView = view.findViewById(R.id.recycler_update)
-        chapterSetUp()
-        Log.d("Updates on this day: ", "" + updates.size)
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        date = savedInstanceState.getLong("date")
     }
 
-    private fun chapterSetUp() {
-        if (recyclerView != null && activity != null) {
-            val updatedNovelsAdapter = UpdatedNovelsAdapter(novels, updates, activity!!)
-            //UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(updates, getActivity());
-            recyclerView!!.layoutManager = LinearLayoutManager(context)
-            recyclerView!!.adapter = updatedNovelsAdapter
-            recyclerView!!.post { updatedNovelsAdapter.notifyDataSetChanged() }
-        }
+    override val idRes: Int = R.layout.updates_list
+
+    override fun onViewCreated(view: View) {
+        updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999)
+        updates.forEach { if (!novels.contains(it.novelID)) novels.add(it.novelID) }
+        val updatedNovelsAdapter = UpdatedNovelsAdapter(novels, updates, activity!!)
+        //UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(updates, getActivity());
+        recyclerView!!.layoutManager = LinearLayoutManager(context)
+        recyclerView!!.adapter = updatedNovelsAdapter
+        recyclerView!!.post { updatedNovelsAdapter.notifyDataSetChanged() }
+        Log.d("Updates on this day: ", updates.size.toString())
     }
 }

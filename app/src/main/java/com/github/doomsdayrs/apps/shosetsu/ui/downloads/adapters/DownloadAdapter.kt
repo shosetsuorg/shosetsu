@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsFragment
+import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItemView
 
 /*
@@ -28,7 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItem
  *
  * @author github.com/doomsdayrs
  */
-class DownloadAdapter(val downloadsFragment: DownloadsFragment) : RecyclerView.Adapter<DownloadItemView>() {
+class DownloadAdapter(val downloadsController: DownloadsController) : RecyclerView.Adapter<DownloadItemView>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DownloadItemView {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_download_card, viewGroup, false)
@@ -36,13 +36,13 @@ class DownloadAdapter(val downloadsFragment: DownloadsFragment) : RecyclerView.A
     }
 
     override fun onBindViewHolder(downloadItemView: DownloadItemView, i: Int) {
-        val downloadItem = downloadsFragment.downloadItems[i]
+        val downloadItem = downloadsController.downloadItems[i]
         downloadItemView.title.text = downloadItem.chapterURL
         downloadItemView.status.text = downloadItem.status
     }
 
     override fun getItemCount(): Int {
-        return downloadsFragment.downloadItems.size
+        return downloadsController.downloadItems.size
     }
 
     override fun getItemId(position: Int): Long {

@@ -23,9 +23,11 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
+import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesFragment
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.github.javiersantos.appupdater.AppUpdater
@@ -101,22 +103,13 @@ class MainActivity : AppCompatActivity(), Supporter {
             if (currentRoot?.tag()?.toIntOrNull() != id) {
                 Log.d("Nav", "Selected $id")
                 when (id) {
-                    R.id.nav_library -> {
-                        setRoot(LibraryController(), R.id.nav_library)
-                    }
-                    R.id.nav_catalogue -> {
-                        setRoot(CataloguesController(), R.id.nav_catalogue)
-                    }
-                    R.id.nav_extensions -> {
-                        setRoot(ExtensionsController(), R.id.nav_extensions)
-                    }
-                    R.id.nav_settings -> {
-                        router.pushController(SettingsController().withFadeTransaction())
-                    }
-                    R.id.nav_downloads -> {
-                    }
-                    R.id.nav_updater -> {
-                    }
+                    R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
+                    R.id.nav_catalogue -> setRoot(CataloguesController(), R.id.nav_catalogue)
+                    R.id.nav_extensions -> setRoot(ExtensionsController(), R.id.nav_extensions)
+
+                    R.id.nav_settings -> router.pushController(SettingsController().withFadeTransaction())
+                    R.id.nav_downloads -> router.pushController(DownloadsController().withFadeTransaction())
+                    R.id.nav_updater -> router.pushController(UpdatesFragment().withFadeTransaction())
                 }
             }
             drawer_layout.closeDrawer(GravityCompat.START)

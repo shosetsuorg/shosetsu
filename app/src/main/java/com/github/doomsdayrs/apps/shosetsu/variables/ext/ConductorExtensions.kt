@@ -39,6 +39,6 @@ fun Controller.withFadeTransaction(): RouterTransaction = RouterTransaction.with
 val Controller.context: Context?
     get() = applicationContext
 
-fun Controller.getString(@StringRes resId: Int): String {
-    return resources?.getString(resId) ?: "NULL"
+fun Controller.getString(@StringRes resId: Int, default: String = "NULL"): String {
+    return resources?.getString(resId) ?: default
 }
