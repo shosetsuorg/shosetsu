@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.Update
@@ -35,12 +33,10 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdateFragment : ViewedController() {
+class UpdateFragment : RecyclerController() {
     var date: Long = -1
     private val novels = ArrayList<Int>()
     private var updates = ArrayList<Update>()
-    @Attach(R.id.recycler_update)
-    private var recyclerView: RecyclerView? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putLong("date", date)
@@ -50,7 +46,6 @@ class UpdateFragment : ViewedController() {
         date = savedInstanceState.getLong("date")
     }
 
-    override val idRes: Int = R.layout.updates_list
 
     override fun onViewCreated(view: View) {
         updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999)

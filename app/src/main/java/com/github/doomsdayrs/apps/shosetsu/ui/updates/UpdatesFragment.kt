@@ -49,7 +49,7 @@ class UpdatesFragment : ViewedController() {
         setHasOptionsMenu(true)
     }
 
-    override val idRes: Int = R.layout.fragment_update
+    override val layoutRes: Int = R.layout.fragment_update
 
     @Attach(R.id.viewpager)
     var viewpager: ViewPager? = null

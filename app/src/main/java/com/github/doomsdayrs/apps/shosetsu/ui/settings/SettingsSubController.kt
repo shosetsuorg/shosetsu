@@ -41,7 +41,7 @@ abstract class SettingsSubController : ViewedController() {
         const val logID = "SettingsSubController"
     }
 
-    override val idRes: Int = R.layout.settings
+    override val layoutRes: Int = R.layout.settings
     abstract val settings: ArrayList<SettingsItem.SettingsItemData>
     @Attach(R.id.recyclerView)
     var recyclerView: RecyclerView? = null

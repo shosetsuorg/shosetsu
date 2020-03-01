@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.annotation.Nullable
 import com.bluelinelabs.conductor.Controller
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KVisibility
@@ -43,9 +44,10 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
 
     @Retention(AnnotationRetention.RUNTIME)
     @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
+    @Nullable
     annotation class Attach(@IdRes val id: Int)
 
-    abstract val idRes: Int
+    abstract val layoutRes: Int
     open val attachToRoot: Boolean = false
     private var attachedFields = ArrayList<KMutableProperty<*>>()
 
@@ -56,8 +58,8 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        val view = inflater.inflate(idRes, container, attachToRoot)
+    open fun onCreateView1(inflater: LayoutInflater, container: ViewGroup): View {
+        val view = inflater.inflate(layoutRes, container, attachToRoot)
         this::class.memberProperties
                 .filter { it.annotations.isNotEmpty() }
                 .filter { it.findAnnotation<Attach>() != null }
@@ -70,6 +72,11 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
                     field.setter.call(this, view.findViewById(a.id))
                     attachedFields.add(field)
                 }
+        return view
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+        val view = onCreateView1(inflater, container)
         onViewCreated(view)
         return view
     }

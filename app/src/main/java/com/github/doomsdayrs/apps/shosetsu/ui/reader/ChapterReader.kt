@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentPagerAdapter
@@ -56,6 +57,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getToolbar()?.let { setSupportActionBar(it) }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (savedInstanceState != null) {
             // Sets default values
             formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
@@ -81,6 +83,13 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
         }
 
         setupViewPager(savedInstanceState)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+        }
+        return false
     }
 
     private fun setupViewPager(savedInstanceState: Bundle?) {

@@ -1,11 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue
 
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
@@ -38,10 +41,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.asForma
  * @author github.com/doomsdayrs
  */
 //TODO Searching mechanics here
-class CataloguesController : Controller() {
+class CataloguesController : RecyclerController() {
     private val cards by lazy { asFormatter }
-    private lateinit var recyclerView: RecyclerView
-
 
     init {
         setHasOptionsMenu(true)
@@ -66,18 +67,12 @@ class CataloguesController : Controller() {
         }
     }
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        val view = inflater.inflate(R.layout.fragment_catalogues, container, false)
+    override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.catalogues))
-        recyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.setHasFixedSize(true)
-
+        recyclerView?.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
         val adapter = CataloguesAdapter(cards, router)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
-
-        return view
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = adapter
     }
 }

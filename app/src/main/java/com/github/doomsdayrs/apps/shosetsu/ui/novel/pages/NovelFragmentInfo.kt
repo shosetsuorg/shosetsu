@@ -124,7 +124,7 @@ class NovelFragmentInfo : ViewedController() {
         menu.findItem(id.source_migrate).isVisible = novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)
     }
 
-    override val idRes: Int = R.layout.fragment_novel_main
+    override val layoutRes: Int = R.layout.fragment_novel_main
 
 
     override fun onViewCreated(view: View) {

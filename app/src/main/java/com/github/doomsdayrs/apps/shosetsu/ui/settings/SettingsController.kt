@@ -33,7 +33,7 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class SettingsController : ViewedController() {
-    override val idRes: Int = R.layout.settings
+    override val layoutRes: Int = R.layout.settings
     private val cards: ArrayList<SettingsCard> = ArrayList()
     init {
         cards.add(SettingsCard(Types.DOWNLOAD))

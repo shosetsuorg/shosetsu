@@ -53,7 +53,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListing
  */
 //TODO fix issue with not loading
 class CatalogueController(bundle: Bundle) : ViewedController(bundle) {
-    override val idRes: Int = R.layout.fragment_catalogue
+    override val layoutRes: Int = R.layout.fragment_catalogue
 
 
     @Attach(R.id.recyclerView)

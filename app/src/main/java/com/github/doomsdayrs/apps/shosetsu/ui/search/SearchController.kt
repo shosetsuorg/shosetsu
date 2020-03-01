@@ -68,7 +68,7 @@ class SearchController : ViewedController() {
         var intArray: List<Int> = arrayListOf()
     }
 
-    override val idRes: Int = search_activity
+    override val layoutRes: Int = search_activity
     var adapter: SearchAdapter = SearchAdapter(this)
     var query: String = ""
     var array: ArrayList<StoredData> = arrayListOf()

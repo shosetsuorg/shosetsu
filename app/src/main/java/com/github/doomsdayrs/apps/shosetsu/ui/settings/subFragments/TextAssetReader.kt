@@ -48,7 +48,7 @@ class TextAssetReader(val bundleI: Bundle) : ViewedController(bundleI) {
         DISCLAIMER(bundleOf(Pair(BUNDLE_KEY, "disclaimer")));
     }
 
-    override val idRes: Int = R.layout.large_reader
+    override val layoutRes: Int = R.layout.large_reader
     private var type: String = ""
     private var message: String = ""
 

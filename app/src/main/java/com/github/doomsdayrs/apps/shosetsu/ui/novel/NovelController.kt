@@ -54,7 +54,7 @@ class NovelController : ViewedController() {
         fun customCheck(status: Status): Boolean
     }
 
-    override val idRes: Int = R.layout.fragment_novel
+    override val layoutRes: Int = R.layout.fragment_novel
 
 
     // This is a never before loaded novel

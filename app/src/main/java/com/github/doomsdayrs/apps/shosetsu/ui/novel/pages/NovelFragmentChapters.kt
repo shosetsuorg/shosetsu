@@ -72,7 +72,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  *
  */
 class NovelFragmentChapters : ViewedController() {
-    override val idRes: Int = R.layout.fragment_novel_chapters
+    override val layoutRes: Int = R.layout.fragment_novel_chapters
 
 
     @Attach(R.id.resume)

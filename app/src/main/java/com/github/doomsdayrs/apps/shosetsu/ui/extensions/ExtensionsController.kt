@@ -5,11 +5,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
+import com.github.doomsdayrs.apps.shosetsu.backend.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
@@ -40,12 +39,10 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsController(override val idRes: Int = R.layout.fragment_catalogues) : ViewedController() {
+class ExtensionsController : RecyclerController() {
 
     val array: ArrayList<JSONObject> = ArrayList()
     lateinit var adapter: ExtensionsAdapter
-    @Attach(R.id.recyclerView)
-    var recyclerView: RecyclerView?= null
 
     init {
         setHasOptionsMenu(true)
