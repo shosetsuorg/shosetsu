@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseUpdates
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
@@ -49,7 +49,7 @@ class UpdatesFragment : ViewedController() {
         setHasOptionsMenu(true)
     }
 
-    override val layoutRes: Int = R.layout.fragment_update
+    override val layoutRes: Int = R.layout.update
 
     @Attach(R.id.viewpager)
     var viewpager: ViewPager? = null

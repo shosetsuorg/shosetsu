@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
+package com.github.doomsdayrs.apps.shosetsu.backend.controllers
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 
 /*
  * This file is part of shosetsu.
@@ -34,7 +36,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * @author github.com/doomsdayrs
  * <p>
- *     A simple controller that is just a recyclerView
+ *     A simple controller that is just a recyclerView.
+ *     Default will fill with a LinearLayoutManager
  * </p>
  */
 abstract class RecyclerController(bundle: Bundle) : ViewedController(bundle) {
@@ -49,8 +52,11 @@ abstract class RecyclerController(bundle: Bundle) : ViewedController(bundle) {
     var recyclerView: RecyclerView? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         val view = onCreateView1(inflater, container)
-        recyclerView = view.findViewById(resourceID)
+        recyclerView = view.findViewById(resourceID)!!
+        recyclerView!!.layoutManager = LinearLayoutManager(context)
         onViewCreated(view)
         return view
     }
+
+    abstract override fun onViewCreated(view: View)
 }

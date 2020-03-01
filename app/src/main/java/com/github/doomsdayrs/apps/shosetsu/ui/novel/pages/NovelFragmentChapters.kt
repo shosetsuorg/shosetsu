@@ -18,7 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter
-import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader.ChapterLoaderAction
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -72,7 +72,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  *
  */
 class NovelFragmentChapters : ViewedController() {
-    override val layoutRes: Int = R.layout.fragment_novel_chapters
+    override val layoutRes: Int = R.layout.novel_chapters
 
 
     @Attach(R.id.resume)

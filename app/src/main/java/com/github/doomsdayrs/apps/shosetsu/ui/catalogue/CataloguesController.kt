@@ -5,12 +5,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
@@ -70,9 +68,6 @@ class CataloguesController : RecyclerController() {
     override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.catalogues))
         recyclerView?.setHasFixedSize(true)
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-        val adapter = CataloguesAdapter(cards, router)
-        recyclerView?.layoutManager = layoutManager
-        recyclerView?.adapter = adapter
+        recyclerView?.adapter = CataloguesAdapter(cards, router)
     }
 }

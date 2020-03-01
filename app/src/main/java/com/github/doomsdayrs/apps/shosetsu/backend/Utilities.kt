@@ -12,10 +12,7 @@ import android.os.Build
 import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast.LENGTH_LONG
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -303,12 +300,6 @@ object Utilities {
 
 
     //  fun changeMode(activity: Activity, newMode: Int) { if (newMode !in 0..2) throw IndexOutOfBoundsException("Non valid int passed");  Settings.themeMode = newMode; activity.recreate() // setupTheme(activity); }
-
-    fun setBackgroundByTheme(view: View) =
-            when ((view.context as AppCompatActivity).delegate.localNightMode) {
-                AppCompatDelegate.MODE_NIGHT_NO -> view.setBackgroundResource(R.color.white_trans)
-                else -> view.setBackgroundResource(R.color.black_trans)
-            }
 
 
     /**

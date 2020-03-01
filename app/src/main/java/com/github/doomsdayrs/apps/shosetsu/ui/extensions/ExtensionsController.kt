@@ -4,13 +4,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
-import com.github.doomsdayrs.apps.shosetsu.backend.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import org.json.JSONObject
@@ -54,7 +52,6 @@ class ExtensionsController : RecyclerController() {
 
     override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, getString(R.string.extensions))
-        recyclerView?.layoutManager = LinearLayoutManager(context)
         adapter = ExtensionsAdapter(this)
         recyclerView?.adapter = adapter
         setData()

@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
@@ -12,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
-import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
@@ -124,21 +123,18 @@ class NovelFragmentInfo : ViewedController() {
         menu.findItem(id.source_migrate).isVisible = novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)
     }
 
-    override val layoutRes: Int = R.layout.fragment_novel_main
+    override val layoutRes: Int = R.layout.novel_main
 
 
     override fun onViewCreated(view: View) {
-        Log.d("OnCreateView", "NovelFragmentMain")
         novelFragment = parentController as NovelController
         if (novelFragment != null) {
             novelFragment!!.novelFragmentInfo = this
         }
         novelFragment!!.fragmentNovelMainRefresh = view.findViewById(id.fragment_novel_main_refresh)
-
-
         fragmentNovelAdd?.hide()
         if (novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) fragmentNovelAdd?.setImageResource(R.drawable.ic_baseline_check_circle_24)
-        setData()
+        setData(view)
         fragmentNovelAdd?.setOnClickListener {
             if (novelFragment != null)
                 if (!Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) {
@@ -154,56 +150,44 @@ class NovelFragmentInfo : ViewedController() {
 
 
     /**
-     * Save data of view before destroyed
-     *
-     * @param outState output save
-     */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.d("Saving Instance State", "NovelFragmentMain")
-    }
-
-    /**
      * Sets the data of this page
      */
-    fun setData() {
-        Utilities.setActivityTitle(activity, novelFragment!!.novelPage.title)
-        if (view != null) {
-            view!!.post {
-                fragmentNovelTitle?.text = novelFragment!!.novelPage.title
-                if (novelFragment!!.novelPage.authors.isNotEmpty()) fragmentNovelAuthor?.text = novelFragment!!.novelPage.authors.contentToString()
-                fragmentNovelDescription?.text = novelFragment!!.novelPage.description
-                if (novelFragment!!.novelPage.artists.isNotEmpty()) fragmentNovelArtists?.text = novelFragment!!.novelPage.artists.contentToString()
-                fragmentNovelStatus?.text = novelFragment!!.status.status
-                when (novelFragment!!.novelPage.status) {
-                    Novel.Status.PAUSED -> {
-                        fragmentNovelPublish?.setText(R.string.paused)
-                    }
-                    Novel.Status.COMPLETED -> {
-                        fragmentNovelPublish?.setText(R.string.completed)
-                    }
-                    Novel.Status.PUBLISHING -> {
-                        fragmentNovelPublish?.setText(R.string.publishing)
-                    }
-                    else -> fragmentNovelPublish?.setText(R.string.unknown)
+    fun setData(view: View? = this.view) {
+        view?.post {
+            Utilities.setActivityTitle(activity, novelFragment!!.novelPage.title )
+            fragmentNovelTitle?.text = novelFragment!!.novelPage.title
+            if (novelFragment!!.novelPage.authors.isNotEmpty()) fragmentNovelAuthor?.text = novelFragment!!.novelPage.authors.contentToString()
+            fragmentNovelDescription?.text = novelFragment!!.novelPage.description
+            if (novelFragment!!.novelPage.artists.isNotEmpty()) fragmentNovelArtists?.text = novelFragment!!.novelPage.artists.contentToString()
+            fragmentNovelStatus?.text = novelFragment!!.status.status
+            when (novelFragment!!.novelPage.status) {
+                Novel.Status.PAUSED -> {
+                    fragmentNovelPublish?.setText(R.string.paused)
                 }
-                if (context != null) {
-                    val layoutInflater = LayoutInflater.from(context)
-                    for (string in novelFragment!!.novelPage.genres) {
-                        //            val chip: Chip = layoutInflater.inflate(R.layout.genre_chip, null, false) as Chip
-                        //           chip.text = string
-                        //              fragment_novel_genres!!.addView(chip)
-                    }
-                } else fragmentNovelGenres!!.visibility = View.GONE
-
-                if (novelFragment!!.novelPage.imageURL.isNotEmpty()) {
-                    Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragmentNovelImage)
-                    Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragmentNovelImageBackground)
+                Novel.Status.COMPLETED -> {
+                    fragmentNovelPublish?.setText(R.string.completed)
                 }
-                fragmentNovelAdd!!.show()
-                fragmentNovelFormatter!!.text = novelFragment!!.formatter.name
+                Novel.Status.PUBLISHING -> {
+                    fragmentNovelPublish?.setText(R.string.publishing)
+                }
+                else -> fragmentNovelPublish?.setText(R.string.unknown)
             }
-        } else Log.e("NovelFragmentInfo", "NovelFragmentInfo view is null")
+            if (context != null) {
+                val layoutInflater = LayoutInflater.from(context)
+                for (string in novelFragment!!.novelPage.genres) {
+                    //            val chip: Chip = layoutInflater.inflate(R.layout.genre_chip, null, false) as Chip
+                    //           chip.text = string
+                    //              fragment_novel_genres!!.addView(chip)
+                }
+            } else fragmentNovelGenres!!.visibility = View.GONE
+
+            if (novelFragment!!.novelPage.imageURL.isNotEmpty()) {
+                Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragmentNovelImage)
+                Picasso.get().load(novelFragment!!.novelPage.imageURL).into(fragmentNovelImageBackground)
+            }
+            fragmentNovelAdd!!.show()
+            fragmentNovelFormatter!!.text = novelFragment!!.formatter.name
+        } ?: Log.e("NovelFragmentInfo", "NovelFragmentInfo view is null")
     }
 
     /**

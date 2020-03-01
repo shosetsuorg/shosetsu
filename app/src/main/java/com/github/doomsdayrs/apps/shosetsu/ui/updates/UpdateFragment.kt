@@ -3,12 +3,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.doomsdayrs.apps.shosetsu.backend.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.Update
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import java.util.*
 
 /*
@@ -52,7 +50,6 @@ class UpdateFragment : RecyclerController() {
         updates.forEach { if (!novels.contains(it.novelID)) novels.add(it.novelID) }
         val updatedNovelsAdapter = UpdatedNovelsAdapter(novels, updates, activity!!)
         //UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(updates, getActivity());
-        recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = updatedNovelsAdapter
         recyclerView!!.post { updatedNovelsAdapter.notifyDataSetChanged() }
         Log.d("Updates on this day: ", updates.size.toString())

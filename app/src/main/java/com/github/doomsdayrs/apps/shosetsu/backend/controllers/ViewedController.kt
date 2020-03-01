@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
+package com.github.doomsdayrs.apps.shosetsu.backend.controllers
 
 import android.os.Bundle
 import android.util.Log

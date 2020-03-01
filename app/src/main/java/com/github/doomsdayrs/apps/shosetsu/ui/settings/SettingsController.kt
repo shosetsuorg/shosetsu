@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.SettingsCard
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString

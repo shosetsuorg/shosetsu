@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import java.io.BufferedReader
 import java.io.InputStreamReader
 

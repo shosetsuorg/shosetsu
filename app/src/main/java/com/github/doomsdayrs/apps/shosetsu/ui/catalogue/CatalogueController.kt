@@ -16,7 +16,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom
@@ -53,7 +53,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListing
  */
 //TODO fix issue with not loading
 class CatalogueController(bundle: Bundle) : ViewedController(bundle) {
-    override val layoutRes: Int = R.layout.fragment_catalogue
+    override val layoutRes: Int = R.layout.catalogue
 
 
     @Attach(R.id.recyclerView)

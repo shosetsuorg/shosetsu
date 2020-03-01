@@ -9,17 +9,14 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
-import com.github.doomsdayrs.apps.shosetsu.backend.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
 
@@ -65,10 +62,8 @@ class DownloadsController : RecyclerController() {
         Utilities.setActivityTitle(activity, getString(R.string.downloads))
         downloadItems = Database.DatabaseDownloads.downloadList
         recyclerView?.setHasFixedSize(false)
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         adapter = DownloadAdapter(this)
         adapter.setHasStableIds(true)
-        recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapter
         val filter = IntentFilter()
 
