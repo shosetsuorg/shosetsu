@@ -61,7 +61,7 @@ object Database {
          *
          * @param novelID ID of novel to destroy
          */
-        fun purgeNovel(novelID: Int) {
+        private fun purgeNovel(novelID: Int) {
             sqLiteDatabase!!.execSQL("delete from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + "=" + novelID)
             sqLiteDatabase!!.execSQL("delete from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID)
             purgeChaptersOf(novelID)
@@ -72,7 +72,7 @@ object Database {
          *
          * @param novelID ID of novel
          */
-        fun purgeChaptersOf(novelID: Int) {
+        private fun purgeChaptersOf(novelID: Int) {
             // Deletes chapters from identification
             sqLiteDatabase!!.execSQL("delete from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.PARENT_ID + "=" + novelID)
 
@@ -208,7 +208,7 @@ object Database {
          * @param id Chapter ID
          * @return Chapter URL
          */
-        fun getNovelURLFromChapterID(id: Int): String? {
+        private fun getNovelURLFromChapterID(id: Int): String? {
             return getNovelURLfromNovelID(getNovelIDFromChapterID(id))
         }
 
@@ -249,9 +249,9 @@ object Database {
                 cursor.close()
             } else {
                 cursor.moveToNext()
-                val ID = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
+                val id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
                 cursor.close()
-                return ID
+                return id
             }
             return -1
         }
@@ -268,9 +268,9 @@ object Database {
                 cursor.close()
             } else {
                 cursor.moveToNext()
-                val ID = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
+                val id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
                 cursor.close()
-                return ID
+                return id
             }
             return -1
         }
@@ -532,7 +532,7 @@ object Database {
          * @param chapterID   chapter to update
          * @param chapterPath save path to set
          */
-        fun addSavedPath(chapterID: Int, chapterPath: String) {
+        private fun addSavedPath(chapterID: Int, chapterPath: String) {
             sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "='" + chapterPath + "'," + Columns.IS_SAVED + "=1 where " + Columns.ID + "=" + chapterID)
         }
 
@@ -706,7 +706,7 @@ object Database {
                     }
                 }
                 cursor.close()
-                Collections.sort(novelChapters) { novelChapter: MicroNovelChapter, t1: MicroNovelChapter -> java.lang.Double.compare(novelChapter.order, t1.order) }
+                novelChapters.sortWith(Comparator { novelChapter: MicroNovelChapter, t1: MicroNovelChapter -> java.lang.Double.compare(novelChapter.order, t1.order) })
                 val integers = ArrayList<Int>()
                 for (novelChapter in novelChapters) integers.add(novelChapter.id)
                 integers
@@ -1078,7 +1078,7 @@ object Database {
             }
         }
 
-        fun getLatestDay(): Long {
+        private fun getLatestDay(): Long {
             val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.TIME + " FROM " + Tables.UPDATES + " ORDER BY ROWID DESC LIMIT 1", null)
             return if (cursor.count <= 0) {
                 cursor.close()

@@ -67,7 +67,7 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelListingViewHolde
 
     override fun onPostExecute(aVoid: Void?) {
         novelCardsViewHolder?.catalogueFragment?.recyclerView?.post {
-            novelCardsViewHolder.catalogueFragment?.catalogueAdapter?.notifyDataSetChanged()
+            novelCardsViewHolder.catalogueFragment.catalogueAdapter.notifyDataSetChanged()
         }
     }
 

@@ -146,7 +146,7 @@ class LibraryController : RecyclerController() {
     }
 
 
-    fun readFromDB() {
+    private fun readFromDB() {
         libraryNovelCards = DatabaseNovels.intLibrary
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             libraryNovelCards.sortWith(Comparator { novel: Int?, t1: Int? -> DatabaseNovels.getNovelTitle(novel!!).compareTo(DatabaseNovels.getNovelTitle(t1!!)) })

@@ -11,7 +11,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels

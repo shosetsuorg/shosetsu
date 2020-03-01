@@ -35,7 +35,7 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-class CataloguePageLoader(val catalogueFragment: CatalogueController) : AsyncTask<Int, Void, Boolean>() {
+class CataloguePageLoader(private val catalogueFragment: CatalogueController) : AsyncTask<Int, Void, Boolean>() {
 
     /**
      * Loads up the category
@@ -45,7 +45,7 @@ class CataloguePageLoader(val catalogueFragment: CatalogueController) : AsyncTas
      */
     override fun doInBackground(vararg integers: Int?): Boolean? {
         Log.d("Loading", "Catalogue")
-        return catalogueFragment?.let {
+        return catalogueFragment.let {
             if (it.formatter.hasCloudFlare && it.activity != null) it.activity!!.runOnUiThread {
                 it.context?.toast("CLOUDFLARE")
             }
@@ -73,14 +73,14 @@ class CataloguePageLoader(val catalogueFragment: CatalogueController) : AsyncTas
      * Ends progress bar
      */
     override fun onCancelled() {
-        catalogueFragment?.swipeRefreshLayout?.isRefreshing = false
+        catalogueFragment.swipeRefreshLayout?.isRefreshing = false
     }
 
     /**
      * Starts the loading action
      */
     override fun onPreExecute() {
-        catalogueFragment?.swipeRefreshLayout?.isRefreshing = true
+        catalogueFragment.swipeRefreshLayout?.isRefreshing = true
     }
 
     /**
@@ -91,10 +91,10 @@ class CataloguePageLoader(val catalogueFragment: CatalogueController) : AsyncTas
     override fun onPostExecute(aBoolean: Boolean?) {
         aBoolean?.let {
             if (it) {
-                catalogueFragment?.catalogueAdapter?.notifyDataSetChanged()
+                catalogueFragment.catalogueAdapter.notifyDataSetChanged()
             }
         }
-        catalogueFragment?.swipeRefreshLayout?.isRefreshing = false
+        catalogueFragment.swipeRefreshLayout?.isRefreshing = false
     }
 
 

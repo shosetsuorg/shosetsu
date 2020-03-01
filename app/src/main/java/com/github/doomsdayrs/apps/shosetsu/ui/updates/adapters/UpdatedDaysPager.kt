@@ -33,7 +33,7 @@ import org.joda.time.DateTime
  *
  * @author github.com/doomsdayrs
  */
-class UpdatedDaysPager(val updateFragment: UpdatesFragment, val fragments: Array<UpdateFragment>) : RouterPagerAdapter(updateFragment) {
+class UpdatedDaysPager(private val updateFragment: UpdatesFragment, val fragments: Array<UpdateFragment>) : RouterPagerAdapter(updateFragment) {
     override fun getPageTitle(position: Int): CharSequence? {
         val dateTime = DateTime(fragments[position].date)
         if (dateTime == DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis()))) {

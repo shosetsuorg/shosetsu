@@ -65,7 +65,7 @@
                 android:id="@+id/novel_item_left_to_read"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_gravity="top"
+                android:layout_gravity="center_horizontal"
                 android:textAlignment="center"
                 android:visibility="gone" />
 

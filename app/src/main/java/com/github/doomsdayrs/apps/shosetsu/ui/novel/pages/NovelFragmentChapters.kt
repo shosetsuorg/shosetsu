@@ -18,9 +18,9 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.openChapter
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader.ChapterLoaderAction
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.addToChapters
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapter
@@ -196,7 +196,6 @@ class NovelFragmentChapters : ViewedController() {
      *
      * @param inflater           inflater to retrieve objects
      * @param container          container of this fragment
-     * @param savedInstanceState save
      * @return View
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {

@@ -47,7 +47,7 @@ class NovelListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         novelFragment.novelURL = url!!
         novelFragment.formatter = formatter
         novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url!!)
-        if (catalogueFragment!!.activity != null) (catalogueFragment!!.activity as MainActivity?)!!.transitionView(novelFragment)
+        if (catalogueFragment.activity != null) (catalogueFragment.activity as MainActivity?)!!.transitionView(novelFragment)
     }
 
     override fun onLongClick(view: View): Boolean {

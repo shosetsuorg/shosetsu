@@ -37,7 +37,7 @@ import java.io.InputStreamReader
  *
  * @author github.com/doomsdayrs
  */
-class TextAssetReader(val bundleI: Bundle) : ViewedController(bundleI) {
+class TextAssetReader(private val bundleI: Bundle) : ViewedController(bundleI) {
     companion object {
         const val logID = "TextAssetReader"
         const val BUNDLE_KEY: String = "target"
@@ -52,7 +52,7 @@ class TextAssetReader(val bundleI: Bundle) : ViewedController(bundleI) {
     private var type: String = ""
     private var message: String = ""
 
-    fun handleB() {
+    private fun handleB() {
         val string = StringBuilder()
         Log.d(logID, "Setting Message")
         type = bundleI.getString(BUNDLE_KEY, "license")
