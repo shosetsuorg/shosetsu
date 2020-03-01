@@ -84,11 +84,26 @@ object Utilities {
     const val selectedStrokeWidth = 8
     var shoDir: String = "/Shosetsu/"
 
+
+    interface PrefKeys {
+        override fun toString(): String
+    }
+
     // Preference objects
     lateinit var downloadPreferences: SharedPreferences
     lateinit var viewPreferences: SharedPreferences
     lateinit var advancedPreferences: SharedPreferences
-    lateinit var trackingPreferences: SharedPreferences
+    lateinit var formatterPreferences: SharedPreferences
+
+    enum class FormatterPrefKeys(val key: String) : PrefKeys {
+        Listing("listing");
+
+        override fun toString(): String {
+            return key
+        }
+    }
+
+    //  lateinit var trackingPreferences: SharedPreferences
     lateinit var backupPreferences: SharedPreferences
 
     fun isFormatterDisabled(jsonArray: JSONArray, name: String): Boolean {

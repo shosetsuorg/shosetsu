@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import android.content.SharedPreferences
+import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import org.luaj.vm2.LuaError
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.FormatterPrefKeys.Listing
 
 /*
  * This file is part of shosetsu.
@@ -24,32 +24,22 @@ import org.luaj.vm2.LuaError
 
 /**
  * shosetsu
- * 08 / 02 / 2020
+ * 01 / 03 / 2020
  *
  * @author github.com/doomsdayrs
  */
 
-/**
- * Cleans a string
- * @return string without specials
- */
-fun String.clean(): String {
-    return replace("[^A-Za-z0-9]".toRegex(), "_")
-}
+val Formatter.defaultListing: Int
+    get() = Utilities.formatterPreferences.getInt("$formatterID:$Listing", 0)
 
-fun LuaError.smallMessage(): String {
-    return this.message?.let { return it.substring(it.lastIndexOf("})")) } ?: "UNKNOWN ERROR"
-}
 
-fun SharedPreferences.Editor.putString(prefKeys: Utilities.PrefKeys, string: String?): SharedPreferences.Editor {
-    return putString(prefKeys.toString(), string)
-}
-
-fun SharedPreferences.Editor.putInt(prefKeys: Utilities.PrefKeys, int: Int): SharedPreferences.Editor {
-    return putInt(prefKeys.toString(), int)
+fun Formatter.setDefaultListing(int: Int): Boolean = when {
+    int >= listings.size || int < 0 -> false
+    else -> {
+        Utilities.formatterPreferences.edit().putInt("$formatterID:$Listing", int).apply()
+        true
+    }
 }
 
 
-fun SharedPreferences.getInt(prefKeys: Utilities.PrefKeys, default: Int = 0): Int {
-    return getInt(prefKeys.toString(), default)
-}
+fun Formatter.getListing(): Formatter.Listing = listings[defaultListing]

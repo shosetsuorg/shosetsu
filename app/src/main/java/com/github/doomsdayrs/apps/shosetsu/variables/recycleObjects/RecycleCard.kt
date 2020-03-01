@@ -32,5 +32,5 @@ open class RecycleCard(val title: String) {
     /**
      * If there isn't an image loaded in, this will be the image
      */
-    val libraryImageResource = R.drawable.ic_close_black_24dp
+    val libraryImageResource = R.drawable.ic_broken_image_24dp
 }

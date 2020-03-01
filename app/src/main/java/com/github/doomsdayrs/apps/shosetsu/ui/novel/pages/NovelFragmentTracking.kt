@@ -1,11 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 
 /*
  * This file is part of Shosetsu.
@@ -29,17 +25,10 @@ import androidx.fragment.app.Fragment
  * @author github.com/doomsdayrs
  */
 @Suppress("unused")
-class NovelFragmentTracking : Fragment() {
-    /**
-     * Not yet implemented
-     *
-     * @param inflater           notYet
-     * @param container          notYet
-     * @param savedInstanceState notYet
-     * @return notYet
-     */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("OnCreateView", "OnCreateView")
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
+class NovelFragmentTracking : ViewedController() {
+    override val layoutRes: Int
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+
+    override fun onViewCreated(view: View) =
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 }

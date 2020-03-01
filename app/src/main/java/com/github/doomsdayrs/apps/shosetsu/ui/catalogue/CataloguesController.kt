@@ -12,7 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerControlle
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
-import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.asFormatter
 
 /*
@@ -58,7 +58,7 @@ class CataloguesController : RecyclerController<CataloguesAdapter>() {
             R.id.configure_parsers -> {
                 val ce = ConfigureExtensions()
                 ce.jsonArray = Settings.disabledFormatters
-                (activity as MainActivity).transitionView(ce)
+                router.pushController(ce.withFadeTransaction())
                 true
             }
             else -> false

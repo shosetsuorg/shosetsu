@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
@@ -14,6 +15,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.viewHolders.ConfigExtView
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.setDefaultListing
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -131,13 +135,26 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
                 }
             }
         }
-
-        fom?.let { fom ->
+        fom?.let {
             if (fom.listings.size > 1) {
                 val a = ArrayList<String>()
                 holder.constraintLayout.visibility = View.VISIBLE
                 fom.listings.forEach { a.add(it.name) }
                 holder.spinner.adapter = ArrayAdapter<String>(holder.itemView.context, android.R.layout.simple_spinner_item, a)
+                holder.spinner.setSelection(fom.defaultListing)
+                var first = true
+                holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        if (!first)
+                            if (!fom.setDefaultListing(position))
+                                view?.context?.toast(R.string.invalid_selection)
+                            else view?.context?.toast("${view.context.getString(R.string.set_to)} ${parent?.getItemAtPosition(position)}")
+                        else first = !first
+                    }
+                }
+
             }
         }
     }

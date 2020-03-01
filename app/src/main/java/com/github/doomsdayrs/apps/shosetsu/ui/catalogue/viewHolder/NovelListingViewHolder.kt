@@ -10,8 +10,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.NovelBackgroundAdd
-import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 
 /*
  * This file is part of Shosetsu.
@@ -35,19 +35,25 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
  * @author github.com/doomsdayrs
  */
 class NovelListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
+    var url: String? = null
+    var novelID = 0
     val imageView: ImageView = itemView.findViewById(R.id.image)
     val title: TextView = itemView.findViewById(R.id.title)
+
+    init {
+        itemView.setOnClickListener(this)
+        itemView.setOnLongClickListener(this)
+    }
+
     lateinit var catalogueFragment: CatalogueController
     lateinit var formatter: Formatter
 
-    var url: String? = null
-    var novelID = 0
     override fun onClick(v: View) {
         val novelFragment = NovelController()
         novelFragment.novelURL = url!!
         novelFragment.formatter = formatter
         novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url!!)
-        if (catalogueFragment.activity != null) (catalogueFragment.activity as MainActivity?)!!.transitionView(novelFragment)
+        catalogueFragment.router.pushController(novelFragment.withFadeTransaction())
     }
 
     override fun onLongClick(view: View): Boolean {
@@ -55,8 +61,4 @@ class NovelListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         return true
     }
 
-    init {
-        itemView.setOnClickListener(this)
-        itemView.setOnLongClickListener(this)
-    }
 }

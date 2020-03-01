@@ -10,7 +10,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
@@ -233,13 +232,6 @@ class MainActivity : AppCompatActivity(), Supporter {
 
     fun transitionView(target: Controller) {
         router.pushController(target.withFadeTransaction())
-    }
-
-    fun transitionView(target: Fragment) {
-        supportFragmentManager.beginTransaction()
-                .addToBackStack("tag")
-                .replace(R.id.fragment_container, target)
-                .commit()
     }
 
     @Suppress("unused")

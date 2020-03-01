@@ -47,7 +47,8 @@ class Shosetsu : Application() {
         Utilities.viewPreferences = getSharedPreferences("view", 0)
         Utilities.downloadPreferences = getSharedPreferences("download", 0)
         Utilities.advancedPreferences = getSharedPreferences("advanced", 0)
-        Utilities.trackingPreferences = getSharedPreferences("tracking", 0)
+        Utilities.formatterPreferences = getSharedPreferences("formatter", 0)
+        //   Utilities.trackingPreferences = getSharedPreferences("tracking", 0)
         Utilities.backupPreferences = getSharedPreferences("backup", 0)
 
         val config = CoreConfigurationBuilder(this)
