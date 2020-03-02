@@ -1,28 +1,25 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
-import android.content.Intent
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationView
+import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
-import java.io.IOException
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -93,17 +90,7 @@ class NovelFragmentInfo : ViewedController() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             id.source_migrate -> {
-                val intent = Intent(activity, MigrationView::class.java)
-                try {
-                    val novelCards = ArrayList<NovelCard>()
-                    novelCards.add(NovelCard(novelFragment!!.novelPage.title, novelFragment!!.novelID, novelFragment!!.novelURL, novelFragment!!.novelPage.imageURL, novelFragment!!.formatter.formatterID))
-                    intent.putExtra("selected", Utilities.serializeToString(novelCards))
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                intent.putExtra("target", 1)
-                regret(context!!)
-                // startActivity(intent)
+                parentController?.router?.pushController(MigrationController(bundleOf(Pair(MigrationController.TARGETS_BUNDLE_KEY, arrayOf(novelFragment!!.novelID).toIntArray()))).withFadeTransaction())
                 return true
             }
             id.webview -> {
@@ -154,7 +141,7 @@ class NovelFragmentInfo : ViewedController() {
      */
     fun setData(view: View? = this.view) {
         view?.post {
-            Utilities.setActivityTitle(activity, novelFragment!!.novelPage.title )
+            Utilities.setActivityTitle(activity, novelFragment!!.novelPage.title)
             fragmentNovelTitle?.text = novelFragment!!.novelPage.title
             if (novelFragment!!.novelPage.authors.isNotEmpty()) fragmentNovelAuthor?.text = novelFragment!!.novelPage.authors.contentToString()
             fragmentNovelDescription?.text = novelFragment!!.novelPage.description

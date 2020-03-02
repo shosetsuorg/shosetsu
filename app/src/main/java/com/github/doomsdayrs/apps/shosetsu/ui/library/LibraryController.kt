@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.library
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +20,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerControlle
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
-import com.github.doomsdayrs.apps.shosetsu.ui.migration.NewMigrationView
-import java.io.IOException
+import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import java.util.*
 
 /*
@@ -125,15 +125,7 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>() {
                 return true
             }
             R.id.source_migrate -> {
-                val intent = Intent(activity, NewMigrationView::class.java)
-                try {
-                    intent.putIntegerArrayListExtra("selection", selectedNovels)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                intent.putExtra("target", 1)
-                startActivity(intent)
-                //Utilities.regret(context!!)
+                router.pushController(MigrationController(bundleOf(Pair(MigrationController.TARGETS_BUNDLE_KEY, selectedNovels.toIntArray()))).withFadeTransaction())
                 return true
             }
         }

@@ -7,17 +7,19 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.SearchView
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.squareup.picasso.Picasso
 import com.yarolegovich.discretescrollview.DiscreteScrollView
-import java.io.Serializable
 
 /*
  * This file is part of Shosetsu.
@@ -50,7 +52,9 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
         const val TARGETS_BUNDLE_KEY = "targets"
     }
 
-    class Transferee(val original: Int, var targetFormatterID: Int = -1, var listings: Array<Novel.Listing> = arrayOf(), var selectedURL: String = "") : Serializable
+    class Transferee(val original: Int, var targetFormatterID: Int = -1, var listings: Array<Novel.Listing> = arrayOf(), var selectedURL: String = "") {
+        val novelCard = Database.DatabaseNovels.getNovel(original)
+    }
 
     override val layoutRes: Int = R.layout.migration_view
 
@@ -100,9 +104,11 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
     }
 
     override fun onViewCreated(view: View) {
-        novelsFromRecyclerView?.addOnItemChangedListener { viewHolder, item ->
+        catalogueSelection?.layoutManager = LinearLayoutManager(context)
+        novelsFromRecyclerView?.addOnItemChangedListener { _, item ->
             setupViewWithTransferee(item)
         }
+        novelsFromRecyclerView?.adapter = TransfereeAdapter(this)
         setupViewWithTransferee(0)
     }
 
@@ -111,15 +117,37 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
         if (target.targetFormatterID == -1) {
             catalogueSelectionView?.visibility = VISIBLE
             targetSearching?.visibility = INVISIBLE
-
+            catalogueSelection?.adapter = CatalogueSelectionAdapter(this, position)
         } else {
             catalogueSelectionView?.visibility = INVISIBLE
             targetSearching?.visibility = VISIBLE
-
+            // TODO
         }
     }
 
-    class CatalogueSelectionAdapter(val transferee: Transferee) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
+    class TransfereeAdapter(val migrationController: MigrationController) : RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
+        class TransfereeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val imageView: ImageView = itemView.findViewById(R.id.image)
+            val title: TextView = itemView.findViewById(R.id.title)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransfereeViewHolder {
+            return TransfereeViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_novel_card, parent, false))
+        }
+
+        override fun getItemCount(): Int {
+            return migrationController.transferees.size
+        }
+
+        override fun onBindViewHolder(holder: TransfereeViewHolder, position: Int) {
+            val tran = migrationController.transferees[position]
+            holder.title.text = tran.novelCard.title
+            if (tran.novelCard.imageURL.isNotEmpty())
+                Picasso.get().load(tran.novelCard.imageURL).into(holder.imageView)
+        }
+    }
+
+    class CatalogueSelectionAdapter(val migrationController: MigrationController, val transfereePosition: Int) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
         class CatalogueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val imageView: ImageView = itemView.findViewById(R.id.imageView)
             val title: TextView = itemView.findViewById(R.id.textView)
@@ -142,6 +170,11 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
                         .load(form.imageURL)
                         .into(holder.imageView)
 
+            holder.id = form.formatterID
+            holder.itemView.setOnClickListener {
+                migrationController.transferees[transfereePosition].targetFormatterID = holder.id
+                migrationController.setupViewWithTransferee(transfereePosition)
+            }
         }
     }
 
