@@ -52,10 +52,14 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
     private var attachedFields = ArrayList<KMutableProperty<*>>()
 
     override fun onDestroyView(view: View) {
-        for (a in attachedFields.asReversed()) {
-            Log.d(logID, "\tDestroying ${a.name}")
-            a.setter.call(this, null)
+        val s = StringBuilder()
+        attachedFields.forEachIndexed { index, kMutableProperty ->
+            s.append(kMutableProperty.name)
+            if (index + 1 != attachedFields.size) s.append(", ")
+            kMutableProperty.setter.call(this, null)
         }
+        Log.d(logID, "Destroyed:\t$s")
+        attachedFields = ArrayList()
     }
 
     open fun onCreateView1(inflater: LayoutInflater, container: ViewGroup): View {
