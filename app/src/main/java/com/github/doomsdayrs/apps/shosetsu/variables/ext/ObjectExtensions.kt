@@ -38,7 +38,14 @@ fun String.clean(): String {
 }
 
 fun LuaError.smallMessage(): String {
-    return this.message?.let { return it.substring(it.lastIndexOf("})")) } ?: "UNKNOWN ERROR"
+    return this.message?.let { it ->
+        return it.substring(it.lastIndexOf("}").let {
+            return@let when {
+                it > 0 -> it
+                else -> 0
+            }
+        })
+    } ?: "UNKNOWN ERROR"
 }
 
 fun SharedPreferences.Editor.putString(prefKeys: Utilities.PrefKeys, string: String?): SharedPreferences.Editor {
