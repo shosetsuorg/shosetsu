@@ -5,7 +5,7 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/black_trans</item>
         <item name="appBarLayoutStyle">@style/AppTheme.AppBar</item>
     </style>
 

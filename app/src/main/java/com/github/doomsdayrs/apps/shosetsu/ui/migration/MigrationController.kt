@@ -63,7 +63,7 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
     init {
         val arrayList = ArrayList<Transferee>()
         bundle.getIntArray(TARGETS_BUNDLE_KEY)?.forEach {
-            arrayList.add(Transferee(it))
+            arrayList.add(Transferee(original = it))
         }
         transferees = arrayList.toTypedArray()
     }
@@ -86,7 +86,6 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 
     @Attach(R.id.targetView)
     var targetView: RecyclerView? = null
-
 
     //
 
