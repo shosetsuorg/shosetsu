@@ -51,14 +51,6 @@
             android:name=".ui.reader.ChapterReader"
             android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.migration.MigrationView"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".ui.migration.NewMigrationView"
-            android:theme="@style/AppTheme" />
-
-
         <activity android:name=".ui.search.SearchController">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

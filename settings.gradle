@@ -1,1 +1,5 @@
 include ':app'
+include ':shosetsuwear'
+include ':shosetsucar'
+include ':shosetsulib'
+include ':shosetsutv'
