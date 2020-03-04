@@ -56,7 +56,7 @@ android {
 
 
 dependencies {
-    implementation project (':shosetsulib')
+    implementation project (':backend')
 
     //   implementation 'com.graphql-java:graphql-java:2020-01-17T02-41-10-578985f'
     implementation fileTree(dir: 'libs', include: ['*.jar'])

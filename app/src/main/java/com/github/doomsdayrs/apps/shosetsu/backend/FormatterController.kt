@@ -270,13 +270,12 @@ object FormatterController {
                     }
                 } else {
                     PROGRESS("Application is offline, Using placeholder")
-                    Log.e("FormatterInit", "IsOffline, Cannot load data, Using stud")
+                    Log.e("FormatterInit", "Is Offline, Cannot load data, Using stud")
                     sourceJSON.put("libraries", JSONArray())
                 }
                 sourceJSON = JSONObject(json)
             }
         }
-
 
         // Auto Download all source material
         run {
@@ -295,11 +294,15 @@ object FormatterController {
                     if (compareVersions(meta.getString("version"), libraryJSON.getString("version"))) {
                         PROGRESS("Library $name update found, updating...")
                         Log.i("FormatterInit", "Installing library:\t$name")
-                        downloadLibrary(name, libraryFile)
+                        if (Utilities.isOnline)
+                            downloadLibrary(name, libraryFile)
+                        else PROGRESS("Is offline, Cannot update")
                     }
                 } else {
                     PROGRESS("Library $name not found, installing...")
-                    downloadLibrary(name, libraryFile)
+                    if (Utilities.isOnline)
+                        downloadLibrary(name, libraryFile)
+                    else PROGRESS("Is offline, Cannot install")
                 }
 
                 PROGRESS("Moving on..")
@@ -357,7 +360,6 @@ object FormatterController {
                 directory.mkdirs()
             }
         }
-
 
         PROGRESS("Loading custom scripts")
         run {
