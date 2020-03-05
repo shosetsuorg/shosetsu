@@ -31,6 +31,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Novel
  * @author github.com/doomsdayrs
  */
 class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, var novelURL: String) : AsyncTask<Void, Void, Boolean>() {
+
     interface ChapterLoaderAction {
         // What to do before task
         fun onPreExecute()
@@ -64,15 +65,13 @@ class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, v
         val novelPage: Novel.Info = formatter.parseNovel(novelURL, true) {}
 
         // Iterates through chapters
-        for ((mangaCount, novelChapter) in novelPage.chapters.withIndex()) {
-            log(novelChapter, mangaCount)
-            finalChapters.add(novelChapter)
-        }
+        for ((mangaCount, novelChapter) in novelPage.chapters.withIndex()) logAndAdd(novelChapter, mangaCount)
         action.onJustBeforePost(finalChapters)
         return true
     }
 
-    fun log(novelChapter: Novel.Chapter, mangaCount: Int) {
+    private fun logAndAdd(novelChapter: Novel.Chapter, mangaCount: Int) {
         Log.i("ChapterLoader", "Loading #$mangaCount: ${novelChapter.link}")
+        finalChapters.add(novelChapter)
     }
 }
