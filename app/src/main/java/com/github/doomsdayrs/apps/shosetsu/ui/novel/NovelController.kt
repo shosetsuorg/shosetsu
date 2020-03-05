@@ -17,6 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
@@ -53,6 +54,7 @@ class NovelController : ViewedController() {
     interface Custom {
         fun customCheck(status: Status): Boolean
     }
+
     override val layoutRes: Int = R.layout.novel
 
     // This is a never before loaded novel
@@ -124,7 +126,7 @@ class NovelController : ViewedController() {
             if (activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage.title
             setViewPager()
         }
-
+        fragmentNovelMainRefresh?.setOnRefreshListener(NovelFragmentUpdate(novelFragmentInfo!!))
     }
 
     private fun setViewPager() {

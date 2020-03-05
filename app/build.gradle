@@ -127,4 +127,7 @@ dependencies {
     // Conductor
     implementation 'com.bluelinelabs:conductor:3.0.0-rc1'
     implementation 'com.bluelinelabs:conductor-support:3.0.0-rc1'
+
+    // FastScroll
+    implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.0'
 }

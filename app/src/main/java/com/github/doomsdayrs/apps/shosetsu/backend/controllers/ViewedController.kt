@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.Nullable
 import com.bluelinelabs.conductor.Controller
@@ -51,6 +52,7 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
     open val attachToRoot: Boolean = false
     private var attachedFields = ArrayList<KMutableProperty<*>>()
 
+    @CallSuper
     override fun onDestroyView(view: View) {
         val s = StringBuilder()
         attachedFields.forEachIndexed { index, kMutableProperty ->

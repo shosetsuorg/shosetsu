@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_novel_main_refresh"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +11,8 @@
 
         <ImageView
             android:id="@+id/fragment_novel_image_background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginBottom="175dp"
             android:alpha="0.2"
             android:contentDescription="@string/todo"
@@ -20,12 +21,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_height="0dp"
-            android:layout_width="match_parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/fragment_novel_image"
+            android:id="@id/fragment_novel_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
@@ -34,7 +33,7 @@
             android:contentDescription="@string/todo"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="h:3,2"
+            app:layout_constraintDimensionRatio="2:3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,6 +54,4 @@
             <include layout="@layout/novel_main_land_info" />
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

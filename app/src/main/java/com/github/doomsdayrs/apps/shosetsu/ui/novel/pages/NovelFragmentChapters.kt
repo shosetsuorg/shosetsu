@@ -73,18 +73,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  */
 class NovelFragmentChapters : ViewedController() {
     override val layoutRes: Int = R.layout.novel_chapters
+    private lateinit var receiver: BroadcastReceiver
 
 
     @Attach(R.id.resume)
     var resume: FloatingActionButton? = null
-    @Attach(R.id.page_count)
-    var pageCount: Chip? = null
-    @Attach(R.id.fragment_novel_chapters_refresh)
-    var fragmentNovelChaptersRefresh: SwipeRefreshLayout? = null
+
     @Attach(R.id.fragment_novel_chapters_recycler)
     var fragmentNovelChaptersRecycler: RecyclerView? = null
 
-    private val chaptersLoadedAction: ChapterLoaderAction
     private var currentMaxPage = 1
     var selectedChapters = ArrayList<Int>()
     var adapter: ChaptersAdapter? = ChaptersAdapter(this)
@@ -95,67 +92,22 @@ class NovelFragmentChapters : ViewedController() {
 
     init {
         setHasOptionsMenu(true)
-        chaptersLoadedAction = object : ChapterLoaderAction {
-            override fun onPreExecute() {
-                fragmentNovelChaptersRefresh?.isRefreshing = true
-            }
-
-            override fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>) {
-                fragmentNovelChaptersRefresh?.isRefreshing = false
-
-                if (result) {
-                    novelFragment?.novelChapters = finalChapters
-                    adapter?.notifyDataSetChanged()
-                }
-            }
-
-            override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
-                val s = getString(R.string.processing_data)
-                pageCount?.post { pageCount?.text = s }
-                for ((count: Int, novelChapter: Novel.Chapter) in finalChapters.withIndex()) {
-                    val sc = s + ": $count/${finalChapters.size}"
-                    pageCount?.post { pageCount?.text = sc }
-                    if (novelFragment != null && novelFragment!!.novelID != -1) {
-                        if (isNotInChapters(novelChapter.link)) {
-                            Log.i("ChapterLoader", "Adding ${novelChapter.link}")
-                            addToChapters(novelFragment!!.novelID, novelChapter)
-                            if (!novelFragment!!.new)
-                                addToUpdates(novelFragment!!.novelID, novelChapter.link, System.currentTimeMillis())
-                        } else {
-                            updateChapter(novelChapter)
-                        }
-                    } else Log.e("ChapterLoader", "Invalid novelID")
-                }
-            }
-
-            override fun onIncrementingProgress(page: Int, max: Int) {
-                val s = "Page: $page/$max"
-                pageCount?.post { pageCount?.text = s }
-            }
-
-            override fun errorReceived(errorString: String) {
-                Log.e("ChapterLoader", errorString)
-                activity?.runOnUiThread {
-                    context?.toast(errorString)
-                }
-            }
-        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         reversed = false
         Log.d("NFChapters", "Destroy")
+    }
+
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
         activity?.unregisterReceiver(receiver)
     }
 
     override fun onViewCreated(view: View) {
         resume?.visibility = GONE
-        if (novelFragment != null)
-            fragmentNovelChaptersRefresh?.setOnRefreshListener {
-                if (novelFragment != null && novelFragment!!.novelURL.isNotEmpty())
-                    ChapterLoader(chaptersLoadedAction, novelFragment!!.formatter, novelFragment!!.novelURL).execute()
-            }
+
 
         setChapters()
         resume?.setOnClickListener {
@@ -389,6 +341,5 @@ class NovelFragmentChapters : ViewedController() {
         return max
     }
 
-    private lateinit var receiver: BroadcastReceiver
 
 }

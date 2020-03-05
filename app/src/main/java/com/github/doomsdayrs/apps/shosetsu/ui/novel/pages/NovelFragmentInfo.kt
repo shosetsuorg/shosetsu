@@ -55,8 +55,6 @@ class NovelFragmentInfo : ViewedController() {
     @Attach(id.fragment_novel_add)
     var fragmentNovelAdd: FloatingActionButton? = null
 
-    @Attach(id.fragment_novel_main_refresh)
-    var fragmentNovelMainRefresh: SwipeRefreshLayout? = null
 
     @Attach(id.fragment_novel_title)
     var fragmentNovelTitle: TextView? = null
@@ -119,7 +117,6 @@ class NovelFragmentInfo : ViewedController() {
         if (novelFragment != null) {
             novelFragment!!.novelFragmentInfo = this
         }
-        novelFragment!!.fragmentNovelMainRefresh = view.findViewById(id.fragment_novel_main_refresh)
         fragmentNovelAdd?.hide()
         if (novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) fragmentNovelAdd?.setImageResource(R.drawable.ic_baseline_check_circle_24)
         setData(view)
@@ -133,7 +130,6 @@ class NovelFragmentInfo : ViewedController() {
                     fragmentNovelAdd?.setImageResource(R.drawable.ic_add_circle_outline_black_24dp)
                 }
         }
-        fragmentNovelMainRefresh?.setOnRefreshListener(NovelFragmentUpdate(this))
     }
 
 

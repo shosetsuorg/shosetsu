@@ -17,6 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHold
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.google.android.material.card.MaterialCardView
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 
 /*
  * This file is part of Shosetsu.
@@ -39,7 +40,8 @@ import com.google.android.material.card.MaterialCardView
  *
  * @author github.com/doomsdayrs
  */
-class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) : RecyclerView.Adapter<ChaptersViewHolder>() {
+class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) : RecyclerView.Adapter<ChaptersViewHolder>(), FastScrollRecyclerView.SectionedAdapter {
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ChaptersViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_novel_chapter, viewGroup, false)
         val chaptersViewHolder = ChaptersViewHolder(view)
@@ -124,6 +126,10 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
 
     override fun getItemCount(): Int {
         return if (novelFragmentChapters.novelFragment != null) novelFragmentChapters.novelFragment!!.novelChapters.size else 0
+    }
+
+    override fun getSectionName(position: Int): String {
+        return "C ${novelFragmentChapters.novelFragment!!.novelChapters[position].order}"
     }
 
     override fun getItemId(position: Int): Long {

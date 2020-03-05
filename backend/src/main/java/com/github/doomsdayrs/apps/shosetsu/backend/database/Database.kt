@@ -45,6 +45,13 @@ import java.util.*
 //  >Library, remove all where bookmark = 0
 //  >Chapters, remove all that are not from a bookmarked library
 object Database {
+    private const val LOG_IDEN = "DatabaseID"
+    private const val LOG_DOWN = "DatabaseDown"
+    private const val LOG_NOVE = "DatabaseNovels"
+    private const val LOG_CHAP = "DatabaseChapters"
+    private const val LOG_UPDA = "DatabaseUpdates"
+    private const val LOG_FORM = "DatabaseFormatters"
+
     /**
      * SQLITEDatabase
      */
@@ -85,7 +92,7 @@ object Database {
             val cursor = sqLiteDatabase!!.rawQuery("SELECT " + PARENT_ID + " from " + Tables.NOVELS + " where " + BOOKMARKED + "=0", null)
             while (cursor.moveToNext()) {
                 val i = cursor.getInt(cursor.getColumnIndex(PARENT_ID.toString()))
-                Log.i("RemovingNovel", i.toString())
+                Log.d(LOG_IDEN, "Removing novel $i")
                 purgeNovel(i)
             }
             cursor.close()
@@ -589,7 +596,7 @@ object Database {
         fun updateChapter(novelChapter: Chapter) {
             val title = novelChapter.title.checkStringSerialize()
             val release = novelChapter.release.checkStringSerialize()
-            Log.i("DatabaseChapter", novelChapter.link + " | " + novelChapter.order)
+            Log.d(LOG_CHAP, "Updating data ${novelChapter.link} | ${novelChapter.order}")
             try {
                 sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS +
                         " set " +
@@ -612,7 +619,7 @@ object Database {
             if (!DatabaseIdentification.hasChapter(novelChapter.link)) DatabaseIdentification.addChapter(novelID, novelChapter.link)
             val title = novelChapter.title.checkStringSerialize()
             val release = novelChapter.release.checkStringSerialize()
-            Log.i("DatabaseChapter", novelChapter.link + " | " + novelChapter.order)
+            Log.d(LOG_CHAP, novelChapter.link + " | " + novelChapter.order)
             try {
                 sqLiteDatabase!!.execSQL("insert into " + Tables.CHAPTERS +
                         "(" +
@@ -894,7 +901,7 @@ object Database {
         // --Commented out by Inspection STOP (12/22/19 11:09 AM)
         val intLibrary: ArrayList<Int>
             get() {
-                Log.d("DL", "Getting")
+                Log.d(LOG_DOWN, "Getting")
                 val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(PARENT_ID.toString()), BOOKMARKED.toString() + "=1", null, null, null, null)
                 val novelCards = ArrayList<Int>()
                 return if (cursor.count <= 0) {
@@ -911,7 +918,7 @@ object Database {
             }
 
         fun getNovel(novelID: Int): NovelCard {
-            Log.d("DL", "Getting")
+            Log.d(LOG_DOWN, "Getting")
             val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(PARENT_ID.toString(), TITLE.toString(), IMAGE_URL.toString()),
                     "$BOOKMARKED=1 and $PARENT_ID=$novelID", null, null, null, null)
             if (cursor.count <= 0) {
@@ -936,7 +943,7 @@ object Database {
         }
 
         fun getNovelTitle(novelID: Int): String {
-            Log.d("DL", "Getting")
+            Log.d(LOG_DOWN, "Getting")
             val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(TITLE.toString()),
                     "$BOOKMARKED=1 and $PARENT_ID=$novelID", null, null, null, null)
             if (cursor.count <= 0) {
@@ -1104,7 +1111,7 @@ object Database {
         @Throws(IncorrectDateException::class)
         fun getTimeBetween(date1: Long, date2: Long): ArrayList<Update> {
             if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
-            Log.i("UL", "Getting dates between [" + DateTime(date1) + "] and [" + DateTime(date2) + "]")
+            Log.d(LOG_UPDA, "Getting dates between [" + DateTime(date1) + "] and [" + DateTime(date2) + "]")
             val cursor = sqLiteDatabase!!.rawQuery(
                     "SELECT " + ID + "," + PARENT_ID + "," + TIME + " from " + Tables.UPDATES +
                             " where " + TIME + "<" + date2 + " and " + TIME + ">=" + date1, null)
