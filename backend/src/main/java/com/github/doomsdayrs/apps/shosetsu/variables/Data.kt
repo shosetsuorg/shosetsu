@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.obj
+package com.github.doomsdayrs.apps.shosetsu.variables
 
 /*
  * This file is part of shosetsu.
@@ -20,20 +20,8 @@ package com.github.doomsdayrs.apps.shosetsu.variables.obj
 
 /**
  * shosetsu
- * 08 / 02 / 2020
+ * 04 / 03 / 2020
  *
  * @author github.com/doomsdayrs
  */
-object Broadcasts {
-    /**
-     * Tells receiver to update it's recycler view's adapter
-     */
-    const val BROADCAST_NOTIFY_DATA_CHANGE = "notifyDataChange"
-
-    const val DOWNLOADS_MARK_ERROR = "markError"
-    const val DOWNLOADS_REMOVE = "removeItem"
-    const val DOWNLOADS_TOGGLE = "toggleStatus"
-
-    const val DOWNLOADS_RECEIVED_URL = "chapterURL"
-
-}
+data class Update(val chapterID: Int, val novelID: Int, val date: Long)

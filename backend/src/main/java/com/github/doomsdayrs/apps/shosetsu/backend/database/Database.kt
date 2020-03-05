@@ -7,17 +7,12 @@ import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel.Chapter
-import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getText
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringDeserialize
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.checkStringSerialize
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertArrayToString
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStringToArray
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.convertStringToStati
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns.*
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Update
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import org.joda.time.DateTime
@@ -62,8 +57,8 @@ object Database {
          * @param novelID ID of novel to destroy
          */
         private fun purgeNovel(novelID: Int) {
-            sqLiteDatabase!!.execSQL("delete from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + "=" + novelID)
-            sqLiteDatabase!!.execSQL("delete from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID)
+            sqLiteDatabase!!.execSQL("delete from " + Tables.NOVEL_IDENTIFICATION + " where " + ID + "=" + novelID)
+            sqLiteDatabase!!.execSQL("delete from " + Tables.NOVELS + " where " + PARENT_ID + "=" + novelID)
             purgeChaptersOf(novelID)
         }
 
@@ -74,22 +69,22 @@ object Database {
          */
         private fun purgeChaptersOf(novelID: Int) {
             // Deletes chapters from identification
-            sqLiteDatabase!!.execSQL("delete from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.PARENT_ID + "=" + novelID)
+            sqLiteDatabase!!.execSQL("delete from " + Tables.CHAPTER_IDENTIFICATION + " where " + PARENT_ID + "=" + novelID)
 
             // Removes all chapters from chapters DB
-            sqLiteDatabase!!.execSQL("delete from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + "=" + novelID)
+            sqLiteDatabase!!.execSQL("delete from " + Tables.CHAPTERS + " where " + PARENT_ID + "=" + novelID)
 
             // Removes chapters from updates
-            sqLiteDatabase!!.execSQL("delete from " + Tables.UPDATES + " where " + Columns.PARENT_ID + "=" + novelID)
+            sqLiteDatabase!!.execSQL("delete from " + Tables.UPDATES + " where " + PARENT_ID + "=" + novelID)
         }
 
         /**
          * Finds and deletes all novels that are unbookmarked
          */
         fun purgeUnSavedNovels() {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=0", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + PARENT_ID + " from " + Tables.NOVELS + " where " + BOOKMARKED + "=0", null)
             while (cursor.moveToNext()) {
-                val i = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
+                val i = cursor.getInt(cursor.getColumnIndex(PARENT_ID.toString()))
                 Log.i("RemovingNovel", i.toString())
                 purgeNovel(i)
             }
@@ -97,7 +92,7 @@ object Database {
         }
 
         fun hasChapter(chapterURL: String): Boolean {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.URL + " = '" + chapterURL + "'", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + URL + " = '" + chapterURL + "'", null)
             val a = cursor.count
             cursor.close()
             return a > 0
@@ -106,8 +101,8 @@ object Database {
         fun addChapter(novelID: Int, chapterURL: String) {
             try {
                 sqLiteDatabase!!.execSQL("insert into " + Tables.CHAPTER_IDENTIFICATION + "(" +
-                        Columns.PARENT_ID + "," +
-                        Columns.URL +
+                        PARENT_ID + "," +
+                        URL +
                         ")" +
                         "values" +
                         "('" +
@@ -122,8 +117,8 @@ object Database {
         fun addNovel(novelURL: String, formatter: Int) {
             try {
                 sqLiteDatabase!!.execSQL("insert into " + Tables.NOVEL_IDENTIFICATION + "('" +
-                        Columns.URL + "'," +
-                        Columns.FORMATTER_ID +
+                        URL + "'," +
+                        FORMATTER_ID +
                         ")" +
                         "values" +
                         "('" +
@@ -141,13 +136,13 @@ object Database {
          * @return NovelID
          */
         fun getNovelIDFromNovelURL(url: String): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.URL + " ='" + url + "'", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + URL + " ='" + url + "'", null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 -1
             } else {
                 cursor.moveToNext()
-                val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
+                val id = cursor.getInt(cursor.getColumnIndex(ID.toString()))
                 cursor.close()
                 id
             }
@@ -158,13 +153,13 @@ object Database {
          * @return ChapterID
          */
         fun getChapterIDFromChapterURL(url: String): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.URL + " = '" + url + "'", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + URL + " = '" + url + "'", null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 0
             } else {
                 cursor.moveToNext()
-                val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
+                val id = cursor.getInt(cursor.getColumnIndex(ID.toString()))
                 cursor.close()
                 id
             }
@@ -175,12 +170,12 @@ object Database {
          * @return ChapterURL
          */
         fun getChapterURLFromChapterID(id: Int): String {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.URL + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.ID + " = " + id + "", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + URL + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + ID + " = " + id + "", null)
             if (cursor.count <= 0) {
                 cursor.close()
             } else {
                 cursor.moveToNext()
-                val url = cursor.getString(cursor.getColumnIndex(Columns.URL.toString()))
+                val url = cursor.getString(cursor.getColumnIndex(URL.toString()))
                 cursor.close()
                 return url
             }
@@ -192,13 +187,13 @@ object Database {
          * @return NovelID
          */
         fun getNovelIDFromChapterID(id: Int): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + Columns.ID + " = " + id + "", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + PARENT_ID + " from " + Tables.CHAPTER_IDENTIFICATION + " where " + ID + " = " + id + "", null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 0
             } else {
                 cursor.moveToNext()
-                val parent = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
+                val parent = cursor.getInt(cursor.getColumnIndex(PARENT_ID.toString()))
                 cursor.close()
                 parent
             }
@@ -225,12 +220,12 @@ object Database {
          * @return NovelURL
          */
         fun getNovelURLfromNovelID(id: Int): String? {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.URL + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " = " + id + "", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + URL + " from " + Tables.NOVEL_IDENTIFICATION + " where " + ID + " = " + id + "", null)
             if (cursor.count <= 0) {
                 cursor.close()
             } else {
                 cursor.moveToNext()
-                val url = cursor.getString(cursor.getColumnIndex(Columns.URL.toString()))
+                val url = cursor.getString(cursor.getColumnIndex(URL.toString()))
                 cursor.close()
                 return url
             }
@@ -244,12 +239,12 @@ object Database {
          * @return Formatter ID
          */
         fun getFormatterIDFromNovelID(id: Int): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " = " + id + "", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + ID + " = " + id + "", null)
             if (cursor.count <= 0) {
                 cursor.close()
             } else {
                 cursor.moveToNext()
-                val id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
+                val id = cursor.getInt(cursor.getColumnIndex(FORMATTER_ID.toString()))
                 cursor.close()
                 return id
             }
@@ -263,12 +258,12 @@ object Database {
          * @return Formatter ID
          */
         fun getFormatterIDFromNovelURL(url: String): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.URL + " = '" + url + "'", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + URL + " = '" + url + "'", null)
             if (cursor.count <= 0) {
                 cursor.close()
             } else {
                 cursor.moveToNext()
-                val id = cursor.getInt(cursor.getColumnIndex(Columns.FORMATTER_ID.toString()))
+                val id = cursor.getInt(cursor.getColumnIndex(FORMATTER_ID.toString()))
                 cursor.close()
                 return id
             }
@@ -297,11 +292,11 @@ object Database {
                 val downloadItems = ArrayList<DownloadItem>()
                 val cursor = sqLiteDatabase!!.rawQuery("SELECT * from " + Tables.DOWNLOADS + ";", null)
                 while (cursor.moveToNext()) {
-                    val id = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
-                    val nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()))
-                    val cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()))
+                    val id = cursor.getInt(cursor.getColumnIndex(PARENT_ID.toString()))
+                    val nName = cursor.getString(cursor.getColumnIndex(NOVEL_NAME.toString()))
+                    val cName = cursor.getString(cursor.getColumnIndex(CHAPTER_NAME.toString()))
                     val formatter = DatabaseIdentification.getFormatterIDFromChapterID(id)
-                    downloadItems.add(DownloadItem(Objects.requireNonNull(getByID(formatter)), nName, cName, id))
+                    downloadItems.add(DownloadItem((getByID(formatter)), nName, cName, id))
                 }
                 cursor.close()
                 return downloadItems
@@ -320,9 +315,9 @@ object Database {
                     null
                 } else {
                     cursor.moveToNext()
-                    val id = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
-                    val nName = cursor.getString(cursor.getColumnIndex(Columns.NOVEL_NAME.toString()))
-                    val cName = cursor.getString(cursor.getColumnIndex(Columns.CHAPTER_NAME.toString()))
+                    val id = cursor.getInt(cursor.getColumnIndex(PARENT_ID.toString()))
+                    val nName = cursor.getString(cursor.getColumnIndex(NOVEL_NAME.toString()))
+                    val cName = cursor.getString(cursor.getColumnIndex(CHAPTER_NAME.toString()))
                     val formatter = DatabaseIdentification.getFormatterIDFromChapterID(id)
                     cursor.close()
                     DownloadItem(Objects.requireNonNull(getByID(formatter)), nName, cName, id)
@@ -335,7 +330,7 @@ object Database {
          * @param downloadItem download item to remove
          */
         fun removeDownload(downloadItem: DownloadItem) {
-            sqLiteDatabase!!.delete(Tables.DOWNLOADS.toString(), Columns.PARENT_ID.toString() + "=" + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null)
+            sqLiteDatabase!!.delete(Tables.DOWNLOADS.toString(), PARENT_ID.toString() + "=" + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null)
         }
 
         /**
@@ -345,10 +340,10 @@ object Database {
          */
         fun addToDownloads(downloadItem: DownloadItem) {
             sqLiteDatabase!!.execSQL("insert into " + Tables.DOWNLOADS + " (" +
-                    Columns.PARENT_ID + "," +
-                    Columns.NOVEL_NAME + "," +
-                    Columns.CHAPTER_NAME + "," +
-                    Columns.PAUSED + ") " +
+                    PARENT_ID + "," +
+                    NOVEL_NAME + "," +
+                    CHAPTER_NAME + "," +
+                    PAUSED + ") " +
                     "values (" +
                     DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + ",'" +
                     downloadItem.novelName.clean() + "','" +
@@ -362,7 +357,7 @@ object Database {
          * @return if is in list
          */
         fun inDownloads(downloadItem: DownloadItem): Boolean {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.PARENT_ID + " from " + Tables.DOWNLOADS + " where " + Columns.PARENT_ID + " = " + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + PARENT_ID + " from " + Tables.DOWNLOADS + " where " + PARENT_ID + " = " + DatabaseIdentification.getChapterIDFromChapterURL(downloadItem.chapterURL) + "", null)
             val a = cursor.count
             cursor.close()
             return a > 0
@@ -373,7 +368,7 @@ object Database {
          */
         val downloadCount: Int
             get() {
-                val cursor = sqLiteDatabase!!.rawQuery("select " + Columns.PARENT_ID + " from " + Tables.DOWNLOADS, null)
+                val cursor = sqLiteDatabase!!.rawQuery("select " + PARENT_ID + " from " + Tables.DOWNLOADS, null)
                 val a = cursor.count
                 cursor.close()
                 return a
@@ -395,7 +390,7 @@ object Database {
          * @return Count of chapters left to read
          */
         fun getCountOfChaptersUnread(novelID: Int): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.ID + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + "=" + novelID + "" + " and " + Columns.READ_CHAPTER + "!=" + Status.READ, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + ID + " from " + Tables.CHAPTERS + " where " + PARENT_ID + "=" + novelID + "" + " and " + READ_CHAPTER + "!=" + Status.READ, null)
             val count = cursor.count
             cursor.close()
             return count
@@ -411,7 +406,7 @@ object Database {
          * @param y         integer value scroll
          */
         fun updateY(chapterID: Int, y: Int) {
-            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + Columns.Y + "='" + y + "' where " + Columns.ID + "=" + chapterID)
+            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + Y + "='" + y + "' where " + ID + "=" + chapterID)
         }
 
         /**
@@ -421,13 +416,13 @@ object Database {
          * @return order of chapter
          */
         fun getY(chapterID: Int): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.Y + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Y + " from " + Tables.CHAPTERS + " where " + ID + " =" + chapterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 0
             } else {
                 cursor.moveToNext()
-                val y = cursor.getInt(cursor.getColumnIndex(Columns.Y.toString()))
+                val y = cursor.getInt(cursor.getColumnIndex(Y.toString()))
                 cursor.close()
                 y
             }
@@ -438,13 +433,13 @@ object Database {
          * @return returns chapter status
          */
         fun getChapterStatus(chapterID: Int): Status {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + READ_CHAPTER + " from " + Tables.CHAPTERS + " where " + ID + " =" + chapterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 Status.UNREAD
             } else {
                 cursor.moveToNext()
-                val y = cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString()))
+                val y = cursor.getInt(cursor.getColumnIndex(READ_CHAPTER.toString()))
                 cursor.close()
                 if (y == 0) Status.UNREAD else if (y == 1) Status.READING else Status.READ
             }
@@ -465,15 +460,15 @@ object Database {
         //        }
         // --Commented out by Inspection STOP (12/22/19 11:09 AM)
         fun getTitle(chapterID: Int): String {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.TITLE + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + TITLE + " from " + Tables.CHAPTERS + " where " + ID + " =" + chapterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 "UNKNOWN"
             } else {
                 cursor.moveToNext()
-                val y = cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))
+                val y = cursor.getString(cursor.getColumnIndex(TITLE.toString()))
                 cursor.close()
-                checkStringDeserialize(y)
+                y.checkStringDeserialize()
             }
         }
 
@@ -484,7 +479,7 @@ object Database {
          * @param status    status to be set
          */
         fun setChapterStatus(chapterID: Int, status: Status) {
-            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + Columns.READ_CHAPTER + "=" + status + " where " + Columns.ID + "=" + chapterID)
+            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + READ_CHAPTER + "=" + status + " where " + ID + "=" + chapterID)
             if (status === Status.READ) updateY(chapterID, 0)
         }
 
@@ -495,7 +490,7 @@ object Database {
          * @param b         1 is true, 0 is false
          */
         fun setBookMark(chapterID: Int, b: Int) {
-            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + Columns.BOOKMARKED + "=" + b + " where " + Columns.ID + "=" + chapterID)
+            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + BOOKMARKED + "=" + b + " where " + ID + "=" + chapterID)
         }
 
         /**
@@ -505,13 +500,13 @@ object Database {
          * @return if bookmarked?
          */
         fun isBookMarked(chapterID: Int): Boolean {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + BOOKMARKED + " from " + Tables.CHAPTERS + " where " + ID + " =" + chapterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 false
             } else {
                 cursor.moveToNext()
-                val y = cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString()))
+                val y = cursor.getInt(cursor.getColumnIndex(BOOKMARKED.toString()))
                 cursor.close()
                 y == 1
             }
@@ -523,7 +518,7 @@ object Database {
          * @param chapterID chapter to remove save path of
          */
         fun removePath(chapterID: Int) {
-            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "=null," + Columns.IS_SAVED + "=0 where " + Columns.ID + "=" + chapterID)
+            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + SAVE_PATH + "=null," + IS_SAVED + "=0 where " + ID + "=" + chapterID)
         }
 
         /**
@@ -533,7 +528,7 @@ object Database {
          * @param chapterPath save path to set
          */
         private fun addSavedPath(chapterID: Int, chapterPath: String) {
-            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + Columns.SAVE_PATH + "='" + chapterPath + "'," + Columns.IS_SAVED + "=1 where " + Columns.ID + "=" + chapterID)
+            sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS + " set " + SAVE_PATH + "='" + chapterPath + "'," + IS_SAVED + "=1 where " + ID + "=" + chapterID)
         }
 
         fun addSavedPath(chapterURL: String, chapterPath: String) {
@@ -548,14 +543,14 @@ object Database {
          */
         fun isSaved(chapterID: Int): Boolean {
             //   Log.d("CheckSave", chapterURL);
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + chapterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + IS_SAVED + " from " + Tables.CHAPTERS + " where " + ID + "=" + chapterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 //   Log.d("CheckSave", chapterURL + " FALSE");
                 false
             } else {
                 cursor.moveToNext()
-                val y = cursor.getInt(cursor.getColumnIndex(Columns.IS_SAVED.toString()))
+                val y = cursor.getInt(cursor.getColumnIndex(IS_SAVED.toString()))
                 cursor.close()
                 //         if (y == 1)
                 //          Log.d("CheckSave", chapterURL + " TRUE");
@@ -563,24 +558,20 @@ object Database {
             }
         }
 
-        /**
-         * Gets the novel from local storage
-         *
-         * @param chapterID novelURL of the chapter
-         * @return String of passage
-         */
-        fun getSavedNovelPassage(chapterID: Int): String? {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.SAVE_PATH + " from " + Tables.CHAPTERS + " where " + Columns.ID + "=" + chapterID, null)
+
+        fun getSavedNovelPath(chapterID: Int): String {
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + SAVE_PATH + " from " + Tables.CHAPTERS + " where " + ID + "=" + chapterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 ""
             } else {
                 cursor.moveToNext()
-                val savedData = cursor.getString(cursor.getColumnIndex(Columns.SAVE_PATH.toString()))
+                val savedData = cursor.getString(cursor.getColumnIndex(SAVE_PATH.toString()))
                 cursor.close()
-                getText(savedData)
+                savedData
             }
         }
+
 
         /**
          * If the chapter URL is present or not
@@ -589,23 +580,23 @@ object Database {
          * @return if present
          */
         fun isNotInChapters(chapterURL: String): Boolean {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.IS_SAVED + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + IS_SAVED + " from " + Tables.CHAPTERS + " where " + ID + " =" + DatabaseIdentification.getChapterIDFromChapterURL(chapterURL), null)
             val a = cursor.count
             cursor.close()
             return a <= 0
         }
 
         fun updateChapter(novelChapter: Chapter) {
-            val title = checkStringSerialize(novelChapter.title)
-            val release = checkStringSerialize(novelChapter.release)
+            val title = novelChapter.title.checkStringSerialize()
+            val release = novelChapter.release.checkStringSerialize()
             Log.i("DatabaseChapter", novelChapter.link + " | " + novelChapter.order)
             try {
                 sqLiteDatabase!!.execSQL("update " + Tables.CHAPTERS +
                         " set " +
-                        Columns.TITLE + "='" + title + "'," +
-                        Columns.RELEASE_DATE + "='" + release + "'," +
-                        Columns.ORDER + "=" + novelChapter.order +
-                        " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link))
+                        TITLE + "='" + title + "'," +
+                        RELEASE_DATE + "='" + release + "'," +
+                        ORDER + "=" + novelChapter.order +
+                        " where " + ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link))
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -619,21 +610,21 @@ object Database {
          */
         fun addToChapters(novelID: Int, novelChapter: Chapter) {
             if (!DatabaseIdentification.hasChapter(novelChapter.link)) DatabaseIdentification.addChapter(novelID, novelChapter.link)
-            val title = checkStringSerialize(novelChapter.title)
-            val release = checkStringSerialize(novelChapter.release)
+            val title = novelChapter.title.checkStringSerialize()
+            val release = novelChapter.release.checkStringSerialize()
             Log.i("DatabaseChapter", novelChapter.link + " | " + novelChapter.order)
             try {
                 sqLiteDatabase!!.execSQL("insert into " + Tables.CHAPTERS +
                         "(" +
-                        Columns.ID + "," +
-                        Columns.PARENT_ID + "," +
-                        Columns.TITLE + "," +
-                        Columns.RELEASE_DATE + "," +
-                        Columns.ORDER + "," +
-                        Columns.Y + "," +
-                        Columns.READ_CHAPTER + "," +
-                        Columns.BOOKMARKED + "," +
-                        Columns.IS_SAVED +
+                        ID + "," +
+                        PARENT_ID + "," +
+                        TITLE + "," +
+                        RELEASE_DATE + "," +
+                        ORDER + "," +
+                        Y + "," +
+                        READ_CHAPTER + "," +
+                        BOOKMARKED + "," +
+                        IS_SAVED +
                         ") " +
                         "values" +
                         "(" +
@@ -656,7 +647,7 @@ object Database {
          * @return List of chapters saved of novel
          */
         fun getChapters(novelID: Int): List<Chapter> {
-            val cursor = sqLiteDatabase!!.rawQuery("select " + Columns.ID + ", " + Columns.TITLE + ", " + Columns.RELEASE_DATE + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("select " + ID + ", " + TITLE + ", " + RELEASE_DATE + ", " + ORDER + " from " + Tables.CHAPTERS + " where " + PARENT_ID + " =" + novelID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 ArrayList()
@@ -664,12 +655,12 @@ object Database {
                 val novelChapters = ArrayList<Chapter>()
                 while (cursor.moveToNext()) {
                     try {
-                        val url = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())))
+                        val url = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(ID.toString())))
                         val novelChapter = Chapter(
-                                checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString()))),
-                                checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
+                                cursor.getString(RELEASE_DATE).checkStringDeserialize(),
+                                cursor.getString(TITLE).checkStringDeserialize(),
                                 url,
-                                cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString())))
+                                cursor.getDouble(cursor.getColumnIndex(ORDER.toString())))
                         novelChapters.add(novelChapter)
                     } catch (e: RuntimeException) {
                         e.printStackTrace()
@@ -688,7 +679,7 @@ object Database {
          * @return List of chapters saved of novel (ID only)
          */
         fun getChaptersOnlyIDs(novelID: Int): List<Int> {
-            val cursor = sqLiteDatabase!!.rawQuery("select " + Columns.ID + ", " + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.PARENT_ID + " =" + novelID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("select " + ID + ", " + ORDER + " from " + Tables.CHAPTERS + " where " + PARENT_ID + " =" + novelID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 ArrayList()
@@ -696,10 +687,10 @@ object Database {
                 val novelChapters = ArrayList<MicroNovelChapter>()
                 while (cursor.moveToNext()) {
                     try {
-                        val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
+                        val id = cursor.getInt(cursor.getColumnIndex(ID.toString()))
                         val novelChapter = MicroNovelChapter()
                         novelChapter.id = id
-                        novelChapter.order = cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString()))
+                        novelChapter.order = cursor.getDouble(cursor.getColumnIndex(ORDER.toString()))
                         novelChapters.add(novelChapter)
                     } catch (e: RuntimeException) {
                         e.printStackTrace()
@@ -720,17 +711,17 @@ object Database {
          * @return NovelChapter of said chapter
          */
         fun getChapter(chapterID: Int): Chapter? {
-            val cursor = sqLiteDatabase!!.rawQuery("select " + Columns.TITLE + "," + Columns.ID + "," + Columns.RELEASE_DATE + "," + Columns.ORDER + " from " + Tables.CHAPTERS + " where " + Columns.ID + " =" + chapterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("select " + TITLE + "," + ID + "," + RELEASE_DATE + "," + ORDER + " from " + Tables.CHAPTERS + " where " + ID + " =" + chapterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 null
             } else {
                 cursor.moveToNext()
                 val novelChapter = Chapter()
-                val title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())))
-                val link = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())))
-                val release = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())))
-                val order = cursor.getDouble(cursor.getColumnIndex(Columns.ORDER.toString()))
+                val title = cursor.getString(TITLE).checkStringDeserialize()
+                val link = DatabaseIdentification.getChapterURLFromChapterID(cursor.getInt(cursor.getColumnIndex(ID.toString())))
+                val release = cursor.getString(RELEASE_DATE).checkStringDeserialize()
+                val order = cursor.getDouble(cursor.getColumnIndex(ORDER.toString()))
                 novelChapter.title = title
                 novelChapter.link = link
                 novelChapter.release = release
@@ -752,7 +743,7 @@ object Database {
          * @param novelID novelID of the novel
          */
         fun bookMark(novelID: Int) {
-            sqLiteDatabase!!.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=1 where " + Columns.PARENT_ID + "=" + novelID)
+            sqLiteDatabase!!.execSQL("update " + Tables.NOVELS + " set " + BOOKMARKED + "=1 where " + PARENT_ID + "=" + novelID)
         }
 
         /**
@@ -761,11 +752,11 @@ object Database {
          * @param novelID id
          */
         fun unBookmark(novelID: Int) {
-            sqLiteDatabase!!.execSQL("update " + Tables.NOVELS + " set " + Columns.BOOKMARKED + "=0 where " + Columns.PARENT_ID + "=" + novelID)
+            sqLiteDatabase!!.execSQL("update " + Tables.NOVELS + " set " + BOOKMARKED + "=0 where " + PARENT_ID + "=" + novelID)
         }
 
         fun isBookmarked(novelID: Int): Boolean {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.BOOKMARKED + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + BOOKMARKED + " from " + Tables.NOVELS + " where " + PARENT_ID + "=" + novelID, null)
             if (cursor.count <= 0) {
                 cursor.close()
                 return false
@@ -778,7 +769,7 @@ object Database {
         }
 
         fun setReaderType(novelID: Int, reader: Int) {
-            sqLiteDatabase!!.execSQL("update " + Tables.NOVELS + " set " + Columns.READER_TYPE + "=" + reader + " where " + Columns.PARENT_ID + "=" + novelID)
+            sqLiteDatabase!!.execSQL("update " + Tables.NOVELS + " set " + READER_TYPE + "=" + reader + " where " + PARENT_ID + "=" + novelID)
         }
 
         /**
@@ -788,14 +779,14 @@ object Database {
          * @return -2 is no such novel, -1 is default, 0 is the same as -1, and 1+ is a specific reading type
          */
         fun getReaderType(novelID: Int): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.READER_TYPE + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + READER_TYPE + " from " + Tables.NOVELS + " where " + PARENT_ID + "=" + novelID, null)
             if (cursor.count <= 0) {
                 cursor.close()
                 return -2
             }
             cursor.moveToNext()
             println(Arrays.toString(cursor.columnNames))
-            val a = cursor.getInt(cursor.getColumnIndex(Columns.READER_TYPE.toString()))
+            val a = cursor.getInt(cursor.getColumnIndex(READER_TYPE.toString()))
             cursor.close()
             return a
         }
@@ -805,33 +796,33 @@ object Database {
             val imageURL = novelPage.imageURL
             try {
                 sqLiteDatabase!!.execSQL("insert into " + Tables.NOVELS + "(" +
-                        Columns.PARENT_ID + "," +
-                        Columns.BOOKMARKED + "," +
-                        Columns.READING_STATUS + "," +
-                        Columns.READER_TYPE + "," +
-                        Columns.TITLE + "," +
-                        Columns.IMAGE_URL + "," +
-                        Columns.DESCRIPTION + "," +
-                        Columns.GENRES + "," +
-                        Columns.AUTHORS + "," +
-                        Columns.STATUS + "," +
-                        Columns.TAGS + "," +
-                        Columns.ARTISTS + "," +
-                        Columns.LANGUAGE +
+                        PARENT_ID + "," +
+                        BOOKMARKED + "," +
+                        READING_STATUS + "," +
+                        READER_TYPE + "," +
+                        TITLE + "," +
+                        IMAGE_URL + "," +
+                        DESCRIPTION + "," +
+                        GENRES + "," +
+                        AUTHORS + "," +
+                        STATUS + "," +
+                        TAGS + "," +
+                        ARTISTS + "," +
+                        LANGUAGE +
                         ")" + "values" + "(" +
                         DatabaseIdentification.getNovelIDFromNovelURL(novelURL) + "," +
                         0 + "," +
                         readingStatus + "," +
                         -1 + "," +
-                        "'" + checkStringSerialize(novelPage.title) + "'," +
+                        "'" + novelPage.title.checkStringSerialize() + "'," +
                         "'" + imageURL + "'," +
-                        "'" + checkStringSerialize(novelPage.description) + "'," +
-                        "'" + checkStringSerialize(convertArrayToString(novelPage.genres)) + "'," +
-                        "'" + checkStringSerialize(convertArrayToString(novelPage.authors)) + "'," +
+                        "'" + novelPage.description.checkStringSerialize() + "'," +
+                        "'" + novelPage.genres.convertArrayToString().checkStringSerialize() + "'," +
+                        "'" + novelPage.authors.convertArrayToString().checkStringSerialize() + "'," +
                         "'" + novelPage.status.title + "'," +
-                        "'" + checkStringSerialize(convertArrayToString(novelPage.tags)) + "'," +
-                        "'" + checkStringSerialize(convertArrayToString(novelPage.artists)) + "'," +
-                        "'" + checkStringSerialize(novelPage.language) + "')"
+                        "'" + novelPage.tags.convertArrayToString().checkStringSerialize() + "'," +
+                        "'" + novelPage.artists.convertArrayToString().checkStringSerialize() + "'," +
+                        "'" + novelPage.language.checkStringSerialize() + "')"
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -855,7 +846,7 @@ object Database {
          * @return yes or no
          */
         fun isNotInNovels(novelID: Int): Boolean {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + Columns.ID + " ='" + novelID + "'", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + ID + " ='" + novelID + "'", null)
             val i = cursor.count
             cursor.close()
             return i <= 0
@@ -904,14 +895,14 @@ object Database {
         val intLibrary: ArrayList<Int>
             get() {
                 Log.d("DL", "Getting")
-                val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(Columns.PARENT_ID.toString()), Columns.BOOKMARKED.toString() + "=1", null, null, null, null)
+                val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(PARENT_ID.toString()), BOOKMARKED.toString() + "=1", null, null, null, null)
                 val novelCards = ArrayList<Int>()
                 return if (cursor.count <= 0) {
                     cursor.close()
                     ArrayList()
                 } else {
                     while (cursor.moveToNext()) {
-                        val parent = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
+                        val parent = cursor.getInt(cursor.getColumnIndex(PARENT_ID.toString()))
                         novelCards.add(parent)
                     }
                     cursor.close()
@@ -921,17 +912,18 @@ object Database {
 
         fun getNovel(novelID: Int): NovelCard {
             Log.d("DL", "Getting")
-            val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(Columns.PARENT_ID.toString(), Columns.TITLE.toString(), Columns.IMAGE_URL.toString()),
-                    Columns.BOOKMARKED.toString() + "=1 and " + Columns.PARENT_ID + "=" + novelID, null, null, null, null)
+            val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(PARENT_ID.toString(), TITLE.toString(), IMAGE_URL.toString()),
+                    "$BOOKMARKED=1 and $PARENT_ID=$novelID", null, null, null, null)
             if (cursor.count <= 0) {
                 cursor.close()
             } else {
                 cursor.moveToNext()
                 try {
                     val novelCard = NovelCard(
-                            checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString()))),
-                            novelID, DatabaseIdentification.getNovelURLfromNovelID(novelID) ?: "",
-                            cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())),
+                            cursor.getString(TITLE).checkStringDeserialize(),
+                            novelID, DatabaseIdentification.getNovelURLfromNovelID(novelID)
+                            ?: "",
+                            cursor.getString(cursor.getColumnIndex(IMAGE_URL.toString())),
                             DatabaseIdentification.getFormatterIDFromNovelID(novelID)
                     )
                     cursor.close()
@@ -945,15 +937,15 @@ object Database {
 
         fun getNovelTitle(novelID: Int): String {
             Log.d("DL", "Getting")
-            val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(Columns.TITLE.toString()),
-                    Columns.BOOKMARKED.toString() + "=1 and " + Columns.PARENT_ID + "=" + novelID, null, null, null, null)
+            val cursor = sqLiteDatabase!!.query(Tables.NOVELS.toString(), arrayOf(TITLE.toString()),
+                    "$BOOKMARKED=1 and $PARENT_ID=$novelID", null, null, null, null)
             if (cursor.count <= 0) {
                 cursor.close()
                 return "unknown"
             } else {
                 cursor.moveToNext()
                 try {
-                    val title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())))
+                    val title = cursor.getString(TITLE).checkStringDeserialize()
                     cursor.close()
                     return title
                 } catch (e: RuntimeException) {
@@ -971,40 +963,35 @@ object Database {
          */
         fun getNovelPage(novelID: Int): Novel.Info {
             val cursor = sqLiteDatabase!!.rawQuery("SELECT " +
-                    Columns.TITLE + "," +
-                    Columns.IMAGE_URL + "," +
-                    Columns.DESCRIPTION + "," +
-                    Columns.GENRES + "," +
-                    Columns.AUTHORS + "," +
-                    Columns.STATUS + "," +
-                    Columns.TAGS + "," +
-                    Columns.ARTISTS + "," +
-                    Columns.LANGUAGE + "," +
-                    Columns.MAX_CHAPTER_PAGE +
-                    " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + "=" + novelID, null)
+                    TITLE + "," +
+                    IMAGE_URL + "," +
+                    DESCRIPTION + "," +
+                    GENRES + "," +
+                    AUTHORS + "," +
+                    STATUS + "," +
+                    TAGS + "," +
+                    ARTISTS + "," +
+                    LANGUAGE + "," +
+                    MAX_CHAPTER_PAGE +
+                    " from " + Tables.NOVELS + " where " + PARENT_ID + "=" + novelID, null)
             if (cursor.count <= 0) {
                 cursor.close()
                 return Novel.Info()
             } else {
                 cursor.moveToNext()
-                try {
-                    val novelPage = Novel.Info()
-                    novelPage.title = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())))
-                    novelPage.imageURL = cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString()))
-                    novelPage.description = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.DESCRIPTION.toString())))
-                    novelPage.genres = convertStringToArray(checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.GENRES.toString()))))
-                    novelPage.authors = convertStringToArray(checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.AUTHORS.toString()))))
-                    novelPage.status = convertStringToStati(cursor.getString(cursor.getColumnIndex(Columns.STATUS.toString())))
-                    novelPage.tags = convertStringToArray(checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.TAGS.toString()))))
-                    novelPage.artists = convertStringToArray(checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.ARTISTS.toString()))))
-                    novelPage.language = checkStringDeserialize(cursor.getString(cursor.getColumnIndex(Columns.LANGUAGE.toString())))
-                    cursor.close()
-                    return novelPage
-                } catch (e: RuntimeException) {
-                    e.printStackTrace()
-                }
+                val novelPage = Novel.Info()
+                novelPage.title = cursor.getString(TITLE).checkStringDeserialize()
+                novelPage.imageURL = cursor.getString(IMAGE_URL) ?: ""
+                novelPage.description = cursor.getString(DESCRIPTION).checkStringDeserialize()
+                novelPage.genres = cursor.getString(GENRES).checkStringDeserialize().convertStringToArray()
+                novelPage.authors = cursor.getString(AUTHORS).checkStringDeserialize().convertStringToArray()
+                novelPage.status = cursor.getString(STATUS).convertStringToStati()
+                novelPage.tags = cursor.getString(TAGS).checkStringDeserialize().convertStringToArray()
+                novelPage.artists = cursor.getString(ARTISTS).checkStringDeserialize().convertStringToArray()
+                novelPage.language = cursor.getString(LANGUAGE).checkStringDeserialize()
+                cursor.close()
+                return novelPage
             }
-            return Novel.Info()
         }
 
         // --Commented out by Inspection START (12/22/19 11:09 AM):
@@ -1013,13 +1000,13 @@ object Database {
         //        }
         // --Commented out by Inspection STOP (12/22/19 11:09 AM)
         fun getNovelStatus(novelID: Int): Status {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.READING_STATUS + " from " + Tables.NOVELS + " where " + Columns.PARENT_ID + " =" + novelID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + READING_STATUS + " from " + Tables.NOVELS + " where " + PARENT_ID + " =" + novelID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 Status.UNREAD
             } else {
                 cursor.moveToNext()
-                val y = cursor.getInt(cursor.getColumnIndex(Columns.READING_STATUS.toString()))
+                val y = cursor.getInt(cursor.getColumnIndex(READING_STATUS.toString()))
                 cursor.close()
                 if (y == 0) Status.UNREAD else if (y == 1) Status.READING else if (y == 2) Status.READ else if (y == 3) Status.ONHOLD else Status.DROPPED
             }
@@ -1028,16 +1015,16 @@ object Database {
         fun updateNovel(novelURL: String, novelPage: Novel.Info) {
             val imageURL = novelPage.imageURL
             sqLiteDatabase!!.execSQL("update " + Tables.NOVELS + " set " +
-                    Columns.TITLE + "='" + checkStringSerialize(novelPage.title) + "'," +
-                    Columns.IMAGE_URL + "='" + imageURL + "'," +
-                    Columns.DESCRIPTION + "='" + checkStringSerialize(novelPage.description) + "'," +
-                    Columns.GENRES + "='" + checkStringSerialize(convertArrayToString(novelPage.genres)) + "'," +
-                    Columns.AUTHORS + "='" + checkStringSerialize(convertArrayToString(novelPage.authors)) + "'," +
-                    Columns.STATUS + "='" + novelPage.status.title + "'," +
-                    Columns.TAGS + "='" + checkStringSerialize(convertArrayToString(novelPage.tags)) + "'," +
-                    Columns.ARTISTS + "='" + checkStringSerialize(convertArrayToString(novelPage.artists)) + "'," +
-                    Columns.LANGUAGE + "='" + checkStringSerialize(novelPage.language) + "'" +
-                    " where " + Columns.PARENT_ID + "=" + DatabaseIdentification.getNovelIDFromNovelURL(novelURL))
+                    TITLE + "='" + novelPage.title.checkStringSerialize() + "'," +
+                    IMAGE_URL + "='" + imageURL + "'," +
+                    DESCRIPTION + "='" + novelPage.description.checkStringSerialize() + "'," +
+                    GENRES + "='" + novelPage.genres.convertArrayToString().checkStringSerialize() + "'," +
+                    AUTHORS + "='" + novelPage.authors.convertArrayToString().checkStringSerialize() + "'," +
+                    STATUS + "='" + novelPage.status.title + "'," +
+                    TAGS + "='" + novelPage.tags.convertArrayToString().checkStringSerialize() + "'," +
+                    ARTISTS + "='" + novelPage.artists.convertArrayToString().checkStringSerialize() + "'," +
+                    LANGUAGE + "='" + novelPage.language.checkStringSerialize() + "'" +
+                    " where " + PARENT_ID + "=" + DatabaseIdentification.getNovelIDFromNovelURL(novelURL))
         }
 
         fun migrateNovel(oldID: Int, newURL: String, formatterID: Int, newNovel: Novel.Info, status: Int) {
@@ -1066,26 +1053,26 @@ object Database {
         }
 
         fun getStartingDay(): Long {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.TIME + " FROM " + Tables.UPDATES + " ORDER BY ROWID ASC LIMIT 1", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + TIME + " FROM " + Tables.UPDATES + " ORDER BY ROWID ASC LIMIT 1", null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 0
             } else {
                 cursor.moveToNext()
-                val day = cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString()))
+                val day = cursor.getLong(cursor.getColumnIndex(TIME.toString()))
                 cursor.close()
                 trimDate(DateTime(day)).millis
             }
         }
 
         private fun getLatestDay(): Long {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.TIME + " FROM " + Tables.UPDATES + " ORDER BY ROWID DESC LIMIT 1", null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + TIME + " FROM " + Tables.UPDATES + " ORDER BY ROWID DESC LIMIT 1", null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 0
             } else {
                 cursor.moveToNext()
-                val day = cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString()))
+                val day = cursor.getLong(cursor.getColumnIndex(TIME.toString()))
                 cursor.close()
                 trimDate(DateTime(day)).millis
             }
@@ -1101,8 +1088,8 @@ object Database {
         fun getCountBetween(date1: Long, date2: Long): Int {
             if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
             val cursor = sqLiteDatabase!!.rawQuery(
-                    "SELECT " + Columns.TIME + " from " + Tables.UPDATES +
-                            " where " + Columns.TIME + "<" + date2 + " and " + Columns.TIME + ">=" + date1, null)
+                    "SELECT " + TIME + " from " + Tables.UPDATES +
+                            " where " + TIME + "<" + date2 + " and " + TIME + ">=" + date1, null)
             val c = cursor.count
             cursor.close()
             return c
@@ -1119,8 +1106,8 @@ object Database {
             if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
             Log.i("UL", "Getting dates between [" + DateTime(date1) + "] and [" + DateTime(date2) + "]")
             val cursor = sqLiteDatabase!!.rawQuery(
-                    "SELECT " + Columns.ID + "," + Columns.PARENT_ID + "," + Columns.TIME + " from " + Tables.UPDATES +
-                            " where " + Columns.TIME + "<" + date2 + " and " + Columns.TIME + ">=" + date1, null)
+                    "SELECT " + ID + "," + PARENT_ID + "," + TIME + " from " + Tables.UPDATES +
+                            " where " + TIME + "<" + date2 + " and " + TIME + ">=" + date1, null)
             val novelCards = ArrayList<Update>()
             return if (cursor.count <= 0) {
                 cursor.close()
@@ -1128,9 +1115,9 @@ object Database {
             } else {
                 while (cursor.moveToNext()) {
                     novelCards.add(
-                            Update(cursor.getInt(cursor.getColumnIndex(Columns.ID.toString())),
-                                    cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())),
-                                    cursor.getLong(cursor.getColumnIndex(Columns.TIME.toString())))
+                            Update(cursor.getInt(cursor.getColumnIndex(ID.toString())),
+                                    cursor.getInt(cursor.getColumnIndex(PARENT_ID.toString())),
+                                    cursor.getLong(cursor.getColumnIndex(TIME.toString())))
                     )
                 }
                 cursor.close()
@@ -1139,7 +1126,7 @@ object Database {
         }
 
         fun addToUpdates(novelID: Int, chapterURL: String, time: Long) {
-            sqLiteDatabase!!.execSQL("insert into " + Tables.UPDATES + "(" + Columns.ID + "," + Columns.PARENT_ID + "," + Columns.TIME + ") values(" +
+            sqLiteDatabase!!.execSQL("insert into " + Tables.UPDATES + "(" + ID + "," + PARENT_ID + "," + TIME + ") values(" +
                     DatabaseIdentification.getChapterIDFromChapterURL(chapterURL) + "," +
                     novelID + "," +
                     time + ")")
@@ -1184,8 +1171,8 @@ object Database {
         fun addToFormatterList(name: String?, id: Int, md5: String, hasRepo: Boolean, repo: String) {
             var i = 0
             if (hasRepo) i = 1
-            sqLiteDatabase!!.execSQL("insert into " + Tables.FORMATTERS + "(" + Columns.FORMATTER_NAME + "," + Columns.FORMATTER_ID + "," + Columns.MD5 + "," + Columns.HAS_CUSTOM_REPO + "," + Columns.CUSTOM_REPO + ") values('" +
-                    checkStringSerialize(name) + "'," +
+            sqLiteDatabase!!.execSQL("insert into " + Tables.FORMATTERS + "(" + FORMATTER_NAME + "," + FORMATTER_ID + "," + MD5 + "," + HAS_CUSTOM_REPO + "," + CUSTOM_REPO + ") values('" +
+                    name.checkStringSerialize() + "'," +
                     id + ",'" +
                     md5 + "'," +
                     i + ",'" +
@@ -1193,75 +1180,75 @@ object Database {
         }
 
         fun removeFormatterFromList(name: String?) {
-            sqLiteDatabase!!.execSQL("delete from " + Tables.FORMATTERS + " where " + Columns.FORMATTER_NAME + "=" + checkStringSerialize(name))
+            sqLiteDatabase!!.execSQL("delete from " + Tables.FORMATTERS + " where " + FORMATTER_NAME + "=" + name.checkStringSerialize())
         }
 
         fun removeFormatterFromList(id: Int) {
-            sqLiteDatabase!!.execSQL("delete from " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + id)
+            sqLiteDatabase!!.execSQL("delete from " + Tables.FORMATTERS + " where " + FORMATTER_ID + "=" + id)
         }
 
         fun getMD5Sum(formatterID: Int): String {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.MD5 + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + MD5 + " FROM " + Tables.FORMATTERS + " where " + FORMATTER_ID + "=" + formatterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 ""
             } else {
                 cursor.moveToNext()
-                val string = cursor.getString(cursor.getColumnIndex(Columns.MD5.toString()))
+                val string = cursor.getString(cursor.getColumnIndex(MD5.toString()))
                 cursor.close()
                 string
             }
         }
 
         fun getFormatterName(formatterID: Int): String {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.FORMATTER_NAME + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + FORMATTER_NAME + " FROM " + Tables.FORMATTERS + " where " + FORMATTER_ID + "=" + formatterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 ""
             } else {
                 cursor.moveToNext()
-                val string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_NAME.toString()))
+                val string = cursor.getString(cursor.getColumnIndex(FORMATTER_NAME.toString()))
                 cursor.close()
-                checkStringDeserialize(string)
+                string.checkStringDeserialize()
             }
         }
 
         fun hasCustomRepo(formatterID: Int): Boolean {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.HAS_CUSTOM_REPO + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + HAS_CUSTOM_REPO + " FROM " + Tables.FORMATTERS + " where " + FORMATTER_ID + "=" + formatterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 false
             } else {
                 cursor.moveToNext()
-                val i = cursor.getInt(cursor.getColumnIndex(Columns.HAS_CUSTOM_REPO.toString()))
+                val i = cursor.getInt(cursor.getColumnIndex(HAS_CUSTOM_REPO.toString()))
                 cursor.close()
                 i == 1
             }
         }
 
         fun getCustomRepo(formatterID: Int): String {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.CUSTOM_REPO + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + CUSTOM_REPO + " FROM " + Tables.FORMATTERS + " where " + FORMATTER_ID + "=" + formatterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 ""
             } else {
                 cursor.moveToNext()
-                val string = cursor.getString(cursor.getColumnIndex(Columns.CUSTOM_REPO.toString()))
+                val string = cursor.getString(cursor.getColumnIndex(CUSTOM_REPO.toString()))
                 cursor.close()
                 string
             }
         }
 
         fun getFormatterFromSystem(formatterID: Int): LuaFormatter? {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + Columns.FORMATTER_NAME + " FROM " + Tables.FORMATTERS + " where " + Columns.FORMATTER_ID + "=" + formatterID, null)
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + FORMATTER_NAME + " FROM " + Tables.FORMATTERS + " where " + FORMATTER_ID + "=" + formatterID, null)
             return if (cursor.count <= 0) {
                 cursor.close()
                 null
             } else {
                 cursor.moveToNext()
-                val string = cursor.getString(cursor.getColumnIndex(Columns.FORMATTER_NAME.toString()))
+                val string = cursor.getString(cursor.getColumnIndex(FORMATTER_NAME.toString()))
                 cursor.close()
-                LuaFormatter(File(Environment.getExternalStorageState() + FormatterController.scriptDirectory + FormatterController.sourceFolder + string + ".lua"))
+                LuaFormatter(File(Environment.getExternalStorageState() + FormatterUtils.scriptDirectory + FormatterUtils.sourceFolder + string + ".lua"))
             }
         }
     }

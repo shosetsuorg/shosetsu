@@ -37,14 +37,17 @@ object WebViewScrapper {
     fun setUa(ua: String?) {
         WebViewScrapper.ua = ua
     }
+    /*
+
     //private boolean working = false;
-/*
+
+    \/**
+     */
      * Constructor
      *
      * @param webView  Webview to use
      * @param activity How to handle Scraping
-     */
-/*
+     *\/
 
     @SuppressLint("SetJavaScriptEnabled")
     public WebViewScrapper(WebView webView, Activity activity) {
@@ -60,7 +63,7 @@ object WebViewScrapper {
     //     Log.i("ProcessingHTML", "of latestURL");
     //     this.html = html;
     // }
-*/
+
     /**
      * Put this in an async task, or you will have a bad time
      *
@@ -110,7 +113,7 @@ object WebViewScrapper {
             }
             return cookies
         }
-    } /*
+    }
     private void clear() {
         activity.runOnUiThread(() -> webView.loadUrl("about:blank"));
     }

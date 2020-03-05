@@ -6,7 +6,7 @@ import android.os.Build
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.FileObject
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
@@ -76,14 +76,14 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
             Log.i("SusScriptDialog", "File confirmed Action\t${file.file.name}\t${file.action}")
             when (file.action) {
                 0 -> {
-                    FormatterController.trustScript(file.file)
+                    FormatterUtils.trustScript(file.file)
                     DefaultScrapers.formatters.add(LuaFormatter(file.file))
                 }
                 1 -> {
                     DefaultScrapers.formatters.add(LuaFormatter(file.file))
                 }
                 2 -> {
-                    val meta = FormatterController.getMetaData(file.file)
+                    val meta = FormatterUtils.getMetaData(file.file)
                     val js = JSONObject()
                     js.put("name", meta!!.getString("name"))
                     js.put("id", meta.getInt("id"))

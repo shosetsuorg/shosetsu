@@ -41,6 +41,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterH
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.getByID
 
 /**

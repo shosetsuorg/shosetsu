@@ -103,9 +103,9 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
                 intent?.let { i ->
                     when (i.action) {
                         Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE -> (recyclerView?.adapter as DownloadAdapter).notifyDataSetChanged()
-                        Broadcasts.DOWNLOADS_REMOVE -> i.getStringExtra(Broadcasts.DOWNLOADS_RECIEVED_URL)?.let { removeDownloads(it) }
-                        Broadcasts.DOWNLOADS_TOGGLE -> i.getStringExtra(Broadcasts.DOWNLOADS_RECIEVED_URL)?.let { toggleProcess(it) }
-                        Broadcasts.DOWNLOADS_MARK_ERROR -> i.getStringExtra(Broadcasts.DOWNLOADS_RECIEVED_URL)?.let { markError(it) }
+                        Broadcasts.DOWNLOADS_REMOVE -> i.getStringExtra(Broadcasts.DOWNLOADS_RECEIVED_URL)?.let { removeDownloads(it) }
+                        Broadcasts.DOWNLOADS_TOGGLE -> i.getStringExtra(Broadcasts.DOWNLOADS_RECEIVED_URL)?.let { toggleProcess(it) }
+                        Broadcasts.DOWNLOADS_MARK_ERROR -> i.getStringExtra(Broadcasts.DOWNLOADS_RECEIVED_URL)?.let { markError(it) }
                         else -> Log.e("DownloadsFragment", "No action provided!")
                     }
                 }

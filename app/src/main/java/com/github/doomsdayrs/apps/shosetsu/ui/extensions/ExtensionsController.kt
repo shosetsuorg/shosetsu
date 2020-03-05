@@ -5,9 +5,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
@@ -58,12 +59,12 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter>() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.refresh -> {
-                FormatterController.RefreshJSON(activity!!, this).execute()
+                FormatterService.RefreshJSON(activity!!, this).execute()
                 true
             }
             R.id.reload -> {
                 DefaultScrapers.formatters.clear()
-                FormatterController.FormatterInit(activity!!).execute()
+                FormatterService.FormatterInit(activity!!).execute()
                 true
             }
             else -> false
@@ -74,11 +75,11 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter>() {
     fun setData() {
         array.clear()
         val keys = ArrayList<String>()
-        FormatterController.sourceJSON.keys().forEach { keys.add(it) }
+        FormatterUtils.sourceJSON.keys().forEach { keys.add(it) }
         keys.remove("comments")
         keys.remove("libraries")
         for (key in keys) {
-            val obj = FormatterController.sourceJSON.getJSONObject(key)
+            val obj = FormatterUtils.sourceJSON.getJSONObject(key)
             obj.put("name", key)
             if (!array.contains(obj))
                 array.add(obj)

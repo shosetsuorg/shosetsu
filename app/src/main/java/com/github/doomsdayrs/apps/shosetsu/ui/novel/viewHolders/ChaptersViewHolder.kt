@@ -20,6 +20,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.google.android.material.card.MaterialCardView
 
 /*

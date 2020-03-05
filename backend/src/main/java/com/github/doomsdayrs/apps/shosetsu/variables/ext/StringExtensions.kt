@@ -1,0 +1,137 @@
+package com.github.doomsdayrs.apps.shosetsu.variables.ext
+
+import android.util.Base64
+import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.io.ObjectInputStream
+
+/*
+ * This file is part of shosetsu.
+ *
+ * shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * shosetsu is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * ====================================================================
+ */
+
+/**
+ * shosetsu
+ * 04 / 03 / 2020
+ *
+ * @author github.com/doomsdayrs
+ */
+
+/**
+ * Cleans a string
+ * @return string without specials
+ */
+fun String.clean(): String {
+    return replace("[^A-Za-z0-9]".toRegex(), "_")
+}
+
+
+/**
+ * Deserialize a string to the object
+ *
+ * @param string serialized string
+ * @return Object from string
+ * @throws IOException            exception
+ * @throws ClassNotFoundException exception
+ */
+@Throws(IOException::class, ClassNotFoundException::class)
+fun String.deserializeString(): Any? {
+    var editString = this
+    if (editString != "serial-null") {
+        editString = editString.substring(7)
+        //Log.d("Deserialize", string);
+        val bytes = Base64.decode(editString, Base64.NO_WRAP)
+        val byteArrayInputStream = ByteArrayInputStream(bytes)
+        val objectInputStream = ObjectInputStream(byteArrayInputStream)
+        return objectInputStream.readObject()
+    }
+    return null
+}
+
+/**
+ * Checks string before deserialization
+ * If null or empty, returns "". Else deserializes the string and returns
+ *
+ * @param string String to be checked
+ * @return Completed String
+ */
+fun String?.checkStringDeserialize(): String {
+    if (this.isNullOrBlank()) {
+        return ""
+    } else {
+        try {
+            val obj = deserializeString() ?: return ""
+            return obj as String
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: ClassNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+    return ""
+}
+
+/**
+ * Checks string before serialization
+ * If null or empty, returns "". Else serializes the string and returns
+ *
+ * @param string String to be checked
+ * @return Completed String
+ */
+fun String?.checkStringSerialize(): String {
+    if (this.isNullOrEmpty()) {
+        return ""
+    } else {
+        try {
+            return serializeToString()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+    return ""
+}
+
+/**
+ * Converts String Stati back into Stati
+ *
+ * @param s String title
+ * @return Stati
+ */
+fun String?.convertStringToStati(): Novel.Status {
+    return when (this) {
+        "Publishing" -> Novel.Status.PUBLISHING
+        "Completed" -> Novel.Status.COMPLETED
+        "Paused" -> Novel.Status.PAUSED
+        "Unknown" -> Novel.Status.UNKNOWN
+        else -> Novel.Status.UNKNOWN
+    }
+}
+
+
+/**
+ * Converts a String Array back into an Array of Strings
+ *
+ * @param s String array
+ * @return Array of Strings
+ */
+fun String.convertStringToArray(): Array<String> {
+    val a = substring(1, length - 1).split(", ".toRegex()).toTypedArray()
+    for (x in a.indices) {
+        a[x] = a[x].replace(">,<", ",")
+    }
+    return a
+}

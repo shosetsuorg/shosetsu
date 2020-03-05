@@ -9,7 +9,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.viewHolders.SusScriptCard
 
@@ -51,7 +51,7 @@ class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerV
         val fileObj = susScriptDialog.files[position]
         val file = fileObj.file
 
-        val json = FormatterController.getMetaData(file) ?: kotlin.run {
+        val json = FormatterUtils.getMetaData(file) ?: kotlin.run {
             Log.e("SusScriptAdapter", "Deleting file, Malformed URL")
             susScriptDialog.files.removeAt(position)
             this.notifyDataSetChanged()
@@ -73,14 +73,14 @@ class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerV
         val string = file.name.substring(0, file.name.length - 4)
         holder.title1.text = string
         holder.version1.text = json.getString("version")
-        holder.hash1.text = FormatterController.md5(FormatterController.getContent(file)) ?: ""
+        holder.hash1.text = FormatterUtils.md5(FormatterUtils.getContent(file)) ?: ""
 
-        if (FormatterController.sourceJSON.has(file.name.substring(0, file.name.length - 4))) {
+        if (FormatterUtils.sourceJSON.has(file.name.substring(0, file.name.length - 4))) {
             holder.title2.visibility = View.VISIBLE
             holder.version2.visibility = View.VISIBLE
             holder.hash2.visibility = View.VISIBLE
 
-            val realJSON = FormatterController.sourceJSON.getJSONObject(file.name.substring(0, file.name.length - 4))
+            val realJSON = FormatterUtils.sourceJSON.getJSONObject(file.name.substring(0, file.name.length - 4))
             holder.title2.text = file.name.substring(0, file.name.length - 4)
             holder.version2.text = realJSON.getString("version")
             holder.hash2.text = realJSON.getString("md5")

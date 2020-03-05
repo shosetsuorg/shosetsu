@@ -11,6 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.getByID
 import com.squareup.picasso.Picasso
 

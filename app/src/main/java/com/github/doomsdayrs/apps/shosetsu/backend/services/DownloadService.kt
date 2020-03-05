@@ -164,7 +164,7 @@ class DownloadService : Service() {
                     pr.setProgress(6, 0, false)
                     service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-                    sendMessage(Broadcasts.DOWNLOADS_TOGGLE, mapOf(Pair(Broadcasts.DOWNLOADS_RECIEVED_URL, downloadItem.chapterURL)))
+                    sendMessage(Broadcasts.DOWNLOADS_TOGGLE, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
 
                     try {
                         run {
@@ -204,8 +204,8 @@ class DownloadService : Service() {
                         // Clean up
                         Database.DatabaseDownloads.removeDownload(downloadItem)
 
-                        sendMessage(Broadcasts.DOWNLOADS_TOGGLE, mapOf(Pair(Broadcasts.DOWNLOADS_RECIEVED_URL, downloadItem.chapterURL)))
-                        sendMessage(Broadcasts.DOWNLOADS_REMOVE, mapOf(Pair(Broadcasts.DOWNLOADS_RECIEVED_URL, downloadItem.chapterURL)))
+                        sendMessage(Broadcasts.DOWNLOADS_TOGGLE, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
+                        sendMessage(Broadcasts.DOWNLOADS_REMOVE, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
 
                         pr.setProgress(6, 6, false)
                         service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
@@ -217,7 +217,7 @@ class DownloadService : Service() {
                         }
                     } catch (e: Exception) { // Mark download as faulted
                         Log.e(LOG_NAME, "A critical error occurred", e)
-                        sendMessage(Broadcasts.DOWNLOADS_MARK_ERROR, mapOf(Pair(Broadcasts.DOWNLOADS_RECIEVED_URL, downloadItem.chapterURL)))
+                        sendMessage(Broadcasts.DOWNLOADS_MARK_ERROR, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
 
                     }
                 }

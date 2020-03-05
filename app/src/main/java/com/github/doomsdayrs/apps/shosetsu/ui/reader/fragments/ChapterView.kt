@@ -15,6 +15,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getSavedNovelPassage
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import kotlinx.android.synthetic.main.chapter_view.*
 

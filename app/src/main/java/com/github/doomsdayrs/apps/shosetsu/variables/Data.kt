@@ -27,5 +27,4 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types
  *
  * @author github.com/doomsdayrs
  */
-data class Update(val chapterID: Int, val novelID: Int, val date: Long)
 data class SettingsCard(val id: Types)

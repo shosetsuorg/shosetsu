@@ -85,7 +85,6 @@
     <string name="reading_status">読書状況</string>
     <string name="refresh_shortcut">アップデートを確認</string>
     <string name="reload_list">リストをリロード</string>
-    <string name="regret">この機能は、時間の制約によりまだ導入されていません</string>
     <string name="remove">削除する</string>
     <string name="remove_novel_cache">小説のキャッシュを削除する</string>
     <string name="report_bug">バグを報告する</string>

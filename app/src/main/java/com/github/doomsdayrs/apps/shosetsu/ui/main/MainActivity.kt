@@ -105,7 +105,6 @@ class MainActivity : AppCompatActivity(), Supporter {
                     R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
                     R.id.nav_catalogue -> setRoot(CataloguesController(), R.id.nav_catalogue)
                     R.id.nav_extensions -> setRoot(ExtensionsController(), R.id.nav_extensions)
-
                     R.id.nav_settings -> router.pushController(SettingsController().withFadeTransaction())
                     R.id.nav_downloads -> router.pushController(DownloadsController().withFadeTransaction())
                     R.id.nav_updater -> router.pushController(UpdatesFragment().withFadeTransaction())

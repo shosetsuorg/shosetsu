@@ -5,31 +5,28 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Color.*
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.util.Base64
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast.LENGTH_LONG
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
-import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.ui.main.Supporter
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
-import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
-import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import org.doomsdayrs.apps.shosetsulib.R
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.*
 import java.util.concurrent.TimeUnit
 
 /*
@@ -125,8 +122,7 @@ object Utilities {
 
 
     fun setActivityTitle(activity: Activity?, title: String?) {
-        val supporter = activity as Supporter?
-        supporter?.setTitle(title)
+        activity?.let { it -> if (it is AppCompatActivity) it.supportActionBar?.let { it.title = title } }
     }
 
     /**
@@ -150,139 +146,6 @@ object Utilities {
 
         return if (c == -1) (screenWidthDp / columnWidthDp + 0.5).toInt() else (screenWidthDp / (screenWidthDp / c) + 0.5).toInt()
     }
-
-    /**
-     * Serialize object to string
-     *
-     * @param object object serialize
-     * @return Serialised string
-     * @throws IOException exception
-     */
-    @Throws(IOException::class)
-    fun serializeToString(`object`: Any): String {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
-        objectOutputStream.writeObject(`object`)
-        val bytes = byteArrayOutputStream.toByteArray()
-        return "serial-" + Base64.encodeToString(bytes, Base64.NO_WRAP)
-    }
-
-    /**
-     * Deserialize a string to the object
-     *
-     * @param string serialized string
-     * @return Object from string
-     * @throws IOException            exception
-     * @throws ClassNotFoundException exception
-     */
-    @Throws(IOException::class, ClassNotFoundException::class)
-    fun deserializeString(string: String): Any? {
-        var editString = string
-        if (editString != "serial-null") {
-            editString = editString.substring(7)
-            //Log.d("Deserialize", string);
-            val bytes = Base64.decode(editString, Base64.NO_WRAP)
-            val byteArrayInputStream = ByteArrayInputStream(bytes)
-            val objectInputStream = ObjectInputStream(byteArrayInputStream)
-            return objectInputStream.readObject()
-        }
-        return null
-    }
-
-    @JvmStatic
-            /**
-             * Checks string before deserialization
-             * If null or empty, returns "". Else deserializes the string and returns
-             *
-             * @param string String to be checked
-             * @return Completed String
-             */
-    fun checkStringDeserialize(string: String): String {
-        if (string.isEmpty()) {
-            return ""
-        } else {
-            try {
-                val `object` = deserializeString(string) ?: return ""
-                return `object` as String
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: ClassNotFoundException) {
-                e.printStackTrace()
-            }
-        }
-        return ""
-    }
-
-    @JvmStatic
-            /**
-             * Checks string before serialization
-             * If null or empty, returns "". Else serializes the string and returns
-             *
-             * @param string String to be checked
-             * @return Completed String
-             */
-    fun checkStringSerialize(string: String?): String {
-        if (string == null || string.isEmpty()) {
-            return ""
-        } else {
-            try {
-                return serializeToString(string)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-        return ""
-    }
-
-    @JvmStatic
-            /**
-             * Converts String Stati back into Stati
-             *
-             * @param s String title
-             * @return Stati
-             */
-    fun convertStringToStati(s: String): Novel.Status {
-        return when (s) {
-            "Publishing" -> Novel.Status.PUBLISHING
-            "Completed" -> Novel.Status.COMPLETED
-            "Paused" -> Novel.Status.PAUSED
-            "Unknown" -> Novel.Status.UNKNOWN
-            else -> Novel.Status.UNKNOWN
-        }
-    }
-
-    @JvmStatic
-            /**
-             * Converts Array of Strings into a String
-             *
-             * @param a array of strings
-             * @return String Array
-             */
-    fun convertArrayToString(a: Array<String>): String {
-        if (a.isNotEmpty()) {
-            for (x in a.indices) {
-                a[x] = a[x].replace(",", ">,<")
-            }
-            return a.contentToString()
-        }
-        return "[]"
-    }
-
-    @JvmStatic
-            /**
-             * Converts a String Array back into an Array of Strings
-             *
-             * @param s String array
-             * @return Array of Strings
-             */
-    fun convertStringToArray(s: String): Array<String> {
-        val a = s.substring(1, s.length - 1).split(", ".toRegex()).toTypedArray()
-        for (x in a.indices) {
-            a[x] = a[x].replace(">,<", ",")
-        }
-        return a
-    }
-
 
     /**
      * Initializes the settings
@@ -334,7 +197,7 @@ object Utilities {
      */
     val isOnline: Boolean
         get() {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return if (VERSION.SDK_INT >= VERSION_CODES.M) {
                 val networkCapabilities = connectivityManager?.activeNetwork ?: return false
                 val actNw = connectivityManager?.getNetworkCapabilities(networkCapabilities)
                         ?: return false
@@ -359,11 +222,11 @@ object Utilities {
         }
 
 
-    fun setNightNode() = setReaderColor(Color.WHITE, Color.BLACK)
+    fun setNightNode() = setReaderColor(WHITE, BLACK)
 
-    fun setLightMode() = setReaderColor(Color.BLACK, Color.WHITE)
+    fun setLightMode() = setReaderColor(BLACK, WHITE)
 
-    fun setSepiaMode(context: Context) = setReaderColor(Color.BLACK, ContextCompat.getColor(context, R.color.wheat))
+    fun setSepiaMode(context: Context) = setReaderColor(BLACK, ContextCompat.getColor(context, R.color.wheat))
 
 
     /**
@@ -379,8 +242,8 @@ object Utilities {
 
     fun getReaderColor(context: Context): Int =
             when (Settings.ReaderTextBackgroundColor) {
-                Color.WHITE -> 1
-                Color.BLACK -> 0
+                WHITE -> 1
+                BLACK -> 0
                 ContextCompat.getColor(context, R.color.wheat) -> 2
                 else -> 1
             }
@@ -402,41 +265,6 @@ object Utilities {
         }
     }
 
-    /**
-     * Pre resquite requires chapter to already have been added to library
-     *
-     * @param activity     activity
-     * @param novelChapter novel chapter
-     * @param novelID      id of novel
-     * @param formatterID  formatter
-     */
-    fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
-
-
-    private fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
-        val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-        if (Settings.ReaderMarkingType == MarkingTypes.ONVIEW.i) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
-        val intent = Intent(activity, ChapterReader::class.java)
-        intent.putExtra("chapterID", chapterID)
-        intent.putExtra("novelID", novelID)
-        intent.putExtra("formatter", formatterID)
-        intent.putExtra("chapters", chapters)
-        activity.startActivity(intent)
-    }
-
-    fun search(activity: Activity, query: String) {
-        val mainActivity = activity as MainActivity
-        val searchFragment = SearchController()
-        searchFragment.query = query
-        mainActivity.transitionView(searchFragment)
-    }
-
-    fun openInWebview(activity: Activity, url: String) {
-        val intent = Intent(activity, WebViewApp::class.java)
-        intent.putExtra("url", url)
-        intent.putExtra("action", Actions.VIEW.action)
-        activity.startActivity(intent)
-    }
 
     fun openInBrowser(activity: Activity, url: String) = activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
 

@@ -72,10 +72,10 @@ class LibNovelViewHolder(itemView: View, val router: Router) : RecyclerView.View
     init {
         chip.setOnClickListener {
             it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text)
-            itemView.setOnLongClickListener {
-                addToSelect()
-                true
-            }
+        }
+        itemView.setOnLongClickListener {
+            addToSelect()
+            true
         }
     }
 }

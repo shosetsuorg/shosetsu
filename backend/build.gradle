@@ -34,4 +34,10 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // Time control
+    implementation 'joda-time:joda-time:2.10.5'
+
+    // Core libraries
+    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc2.1'
 }

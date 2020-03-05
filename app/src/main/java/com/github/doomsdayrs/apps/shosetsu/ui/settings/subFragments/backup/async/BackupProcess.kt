@@ -9,6 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.serializeToString
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -137,7 +138,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
         val settings = JSONObject()
         settings.put("reader_text_color", Settings.ReaderTextColor)
         settings.put("reader_text_background_color", Settings.ReaderTextBackgroundColor)
-        settings.put("shoDir", Utilities.serializeToString(Utilities.shoDir))
+        settings.put("shoDir", Utilities.shoDir.serializeToString())
         settings.put("paused", Settings.downloadPaused)
         settings.put("textSize", Settings.ReaderTextSize.toDouble())
         settings.put("paraSpace", Settings.paragraphSpacing)

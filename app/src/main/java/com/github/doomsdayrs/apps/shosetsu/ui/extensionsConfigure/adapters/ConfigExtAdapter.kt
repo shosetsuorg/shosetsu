@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
@@ -77,7 +77,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
             id = fom.formatterID
             image = fom.imageURL
             enabled = true
-            isInteral = FormatterController.sourceJSON.has(name)
+            isInteral = FormatterUtils.sourceJSON.has(name)
         }
 
         if (image.isNotEmpty())
@@ -92,10 +92,10 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
 
 
                 val file = if (!isInteral)
-                    File(Utilities.shoDir + FormatterController.scriptDirectory + FormatterController.sourceFolder + name + ".lua")
-                else File(configureExtensions.activity!!.filesDir.absolutePath + FormatterController.sourceFolder + FormatterController.scriptDirectory + name + ".lua")
+                    File(Utilities.shoDir + FormatterUtils.scriptDirectory + FormatterUtils.sourceFolder + name + ".lua")
+                else File(configureExtensions.activity!!.filesDir.absolutePath + FormatterUtils.sourceFolder + FormatterUtils.scriptDirectory + name + ".lua")
 
-                FormatterController.confirm(file, object : FormatterController.CheckSumAction {
+                FormatterUtils.confirm(file, object : FormatterUtils.CheckSumAction {
                     override fun fail() {
                         holder.switch.isChecked = !isChecked
                     }

@@ -1,7 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.content.SharedPreferences
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getText
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import org.luaj.vm2.LuaError
 
 /*
@@ -29,24 +31,6 @@ import org.luaj.vm2.LuaError
  * @author github.com/doomsdayrs
  */
 
-/**
- * Cleans a string
- * @return string without specials
- */
-fun String.clean(): String {
-    return replace("[^A-Za-z0-9]".toRegex(), "_")
-}
-
-fun LuaError.smallMessage(): String {
-    return this.message?.let { it ->
-        return it.substring(it.lastIndexOf("}").let {
-            return@let when {
-                it > 0 -> it
-                else -> 0
-            }
-        })
-    } ?: "UNKNOWN ERROR"
-}
 
 fun SharedPreferences.Editor.putString(prefKeys: Utilities.PrefKeys, string: String?): SharedPreferences.Editor {
     return putString(prefKeys.toString(), string)
@@ -59,4 +43,15 @@ fun SharedPreferences.Editor.putInt(prefKeys: Utilities.PrefKeys, int: Int): Sha
 
 fun SharedPreferences.getInt(prefKeys: Utilities.PrefKeys, default: Int = 0): Int {
     return getInt(prefKeys.toString(), default)
+}
+
+
+/**
+ * Gets the novel from local storage
+ *
+ * @param chapterID novelURL of the chapter
+ * @return String of passage
+ */
+fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): String? {
+    return getText(getSavedNovelPath(chapterID))
 }

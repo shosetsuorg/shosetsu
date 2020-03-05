@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter
 
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -7,9 +8,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
@@ -61,7 +63,7 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
             val luaFormatter: LuaFormatter = (DefaultScrapers.getByID(id) as LuaFormatter)
             val meta = luaFormatter.getMetaData()!!
             holder.version.text = meta.getString("version")
-            if (FormatterController.compareVersions(jsonObject.getString("version"), meta.getString("version"))) {
+            if (FormatterUtils.compareVersions(jsonObject.getString("version"), meta.getString("version"))) {
                 Log.i("ExtensionsAdapter", "$id has an update")
                 holder.update = true
                 // holder.button.setImageResource(R.drawable.ic_update_black_24dp)
@@ -81,9 +83,34 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
         holder.language.text = jsonObject.getString("lang")
         holder.button.setOnClickListener {
             if (!holder.installed || holder.update) {
-                FormatterController.downloadScript(jsonObject.getString("name"), jsonObject.getString("lang"), holder, extensionsFragment.activity!!)
+                FormatterUtils.downloadScript(jsonObject.getString("name"), jsonObject.getString("lang"), extensionsFragment.activity!!,
+                        {
+                            holder.button.text = holder.itemView.context.getString(R.string.uninstall)
+                            //holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
+                            holder.installed = true
+                        },
+                        {
+                            if (holder.update) {
+                                holder.update = false
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    DefaultScrapers.formatters.removeIf { (it as LuaFormatter).formatterID == it.formatterID }
+                                } else {
+                                    DefaultScrapers.formatters.remove(DefaultScrapers.getByID(it.formatterID))
+                                }
+                            }
+                        },
+                        {
+                            extensionsFragment.activity?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+                        }
+                )
             } else
-                FormatterController.deleteScript(jsonObject.getString("name"), id, holder, extensionsFragment.activity!!)
+                FormatterUtils.deleteScript(jsonObject.getString("name"), id,
+                        { holder.button.text = holder.itemView.context.getString(R.string.download) },
+                        {
+                            extensionsFragment.activity?.applicationContext?.toast("Script deleted")
+                            extensionsFragment.activity?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
+                        }
+                ) { holder.installed = false }
 
         }
 

@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.obj
+package com.github.doomsdayrs.apps.shosetsu.variables.ext
+
+import android.database.Cursor
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 
 /*
  * This file is part of shosetsu.
@@ -20,20 +23,11 @@ package com.github.doomsdayrs.apps.shosetsu.variables.obj
 
 /**
  * shosetsu
- * 08 / 02 / 2020
+ * 04 / 03 / 2020
  *
  * @author github.com/doomsdayrs
  */
-object Broadcasts {
-    /**
-     * Tells receiver to update it's recycler view's adapter
-     */
-    const val BROADCAST_NOTIFY_DATA_CHANGE = "notifyDataChange"
 
-    const val DOWNLOADS_MARK_ERROR = "markError"
-    const val DOWNLOADS_REMOVE = "removeItem"
-    const val DOWNLOADS_TOGGLE = "toggleStatus"
-
-    const val DOWNLOADS_RECEIVED_URL = "chapterURL"
-
+fun Cursor.getString(column: Columns): String? {
+    return getString(getColumnIndex(column.toString()))
 }

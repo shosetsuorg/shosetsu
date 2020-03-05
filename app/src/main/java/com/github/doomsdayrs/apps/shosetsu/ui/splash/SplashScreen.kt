@@ -8,10 +8,12 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterController
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitPost
+import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitTask
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import java.io.File
@@ -53,7 +55,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
         }
 
         override fun doInBackground(vararg params: Void?): Void? {
-            unknown.addAll(FormatterController.formatterInitTask(splashScreen) { onProgressUpdate(it) })
+            unknown.addAll(formatterInitTask(splashScreen) { onProgressUpdate(it) })
             return null
         }
 
@@ -70,7 +72,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 
             if (unknown.size > 0) {
                 onProgressUpdate("Uh oh! We got some issues~")
-                FormatterController.formatterInitPost(unknown, splashScreen, action)
+                formatterInitPost(unknown, splashScreen, action)
             } else {
                 action()
             }
