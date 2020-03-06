@@ -1,14 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
-import android.content.DialogInterface
 import android.content.res.Resources
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -79,22 +76,7 @@ class AdvancedSettings : SettingsSubController() {
                         .setOnItemSelectedListener(ThemeChange(this)),
                 SettingsItemData(BUTTON)
                         .setTitle(R.string.remove_novel_cache)
-                        .setOnClickListenerButton { Database.DatabaseIdentification.purgeUnSavedNovels() },
-                SettingsItemData(BUTTON)
-                        .setTitle(R.string.github_token_input_title)
-                        .setOnClickListenerButton {
-                            val builder = AlertDialog.Builder(it.context)
-                            builder.setTitle((R.string.github_token_input_title))
-                            builder.setMessage((R.string.github_token_input_desc))
-
-                            val view = LayoutInflater.from(it.context).inflate(R.layout.alert_token_input, null, false)
-                            val editText: EditText = view.findViewById(R.id.input_token)
-
-                            builder.setView(view)
-                            builder.setOnDismissListener { dialog -> dialog.dismiss() }
-                            builder.setPositiveButton(android.R.string.yes) { dialog: DialogInterface?, _: Int -> setToken(editText); dialog?.dismiss() }
-                            builder.show()
-                        }
+                        .setOnClickListenerButton { Database.DatabaseIdentification.purgeUnSavedNovels() }
         )
     }
 

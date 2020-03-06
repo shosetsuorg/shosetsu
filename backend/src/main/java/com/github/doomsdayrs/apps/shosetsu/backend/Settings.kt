@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.graphics.Color
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.GITHUB_TOKEN
 import org.json.JSONArray
 
 /*
@@ -113,14 +112,6 @@ object Settings {
             Utilities.advancedPreferences.edit().putString("disabledFormatters", value.toString()).apply()
         }
         get() = JSONArray(Utilities.advancedPreferences.getString("disabledFormatters", "[]"))
-
-
-    var githubToken: String = ""
-        set(value) {
-            field = value
-            Utilities.advancedPreferences.edit().putString(GITHUB_TOKEN, value).apply()
-        }
-        get() = Utilities.advancedPreferences.getString(GITHUB_TOKEN, "") ?: ""
 
     var indentSize = 0
         set(value) {

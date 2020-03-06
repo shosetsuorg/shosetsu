@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.services
 
 import android.app.Activity
+import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
@@ -30,6 +31,7 @@ import org.jsoup.Jsoup
 import org.luaj.vm2.LuaError
 import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.File
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -245,15 +247,18 @@ object FormatterService {
     /**
      * Loads a new JSON file to be used
      */
-    class RefreshJSON(val activity: Activity, private val extensionsFragment: ExtensionsController) : AsyncTask<Void, Void, Void>() {
+    class RefreshJSON(val context: Context, private val extensionsFragment: ExtensionsController) : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void?): Void? {
-            val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
+            val sourceFile = File(context.filesDir.absolutePath + "/formatters.json")
             if (Utilities.isOnline) {
                 Log.d(FormatterUtils.logID, branch)
-                val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json").get()
-                if (doc != null) {
-                    val json = doc.body().text()
-                    writeFile(json, sourceFile)
+                try {
+                    Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json").get()?.let {
+                        val json = it.body().text()
+                        writeFile(json, sourceFile)
+                    }
+                } catch (e: IOException) {
+                    context.toast(e.message ?: "Unknown error")
                 }
             } else {
                 Log.e("FormatterInit", "IsOffline, Cannot load data, Using stud")
@@ -262,7 +267,7 @@ object FormatterService {
         }
 
         override fun onPostExecute(result: Void?) {
-            activity.toast(com.github.doomsdayrs.apps.shosetsu.R.string.updated_extensions_list)
+            context.toast(com.github.doomsdayrs.apps.shosetsu.R.string.updated_extensions_list)
             extensionsFragment.setData()
             extensionsFragment.adapter?.notifyDataSetChanged()
         }

@@ -53,9 +53,7 @@ class InfoSettings : SettingsSubController() {
                         .setOnClickListener { onClickDisclaimer() },
                 SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
                         .setTitle(R.string.license)
-                        .setOnClickListener { onClickLicense() },
-                SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
-                        .setTitle(R.string.suggest_token)
+                        .setOnClickListener { onClickLicense() }
         )
     }
 
