@@ -130,4 +130,5 @@ dependencies {
 
     // FastScroll
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.0'
+    implementation 'com.github.Doomsdayrs:Attribouter:0.1.6-rc3'
 }
