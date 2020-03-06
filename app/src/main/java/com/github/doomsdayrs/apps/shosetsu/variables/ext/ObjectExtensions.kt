@@ -1,9 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import android.content.SharedPreferences
-import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getText
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterText
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
 import java.util.*
 
 /*
@@ -31,21 +30,6 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 
-
-fun SharedPreferences.Editor.putString(prefKeys: Utilities.PrefKeys, string: String?): SharedPreferences.Editor {
-    return putString(prefKeys.toString(), string)
-}
-
-fun SharedPreferences.Editor.putInt(prefKeys: Utilities.PrefKeys, int: Int): SharedPreferences.Editor {
-    return putInt(prefKeys.toString(), int)
-}
-
-
-fun SharedPreferences.getInt(prefKeys: Utilities.PrefKeys, default: Int = 0): Int {
-    return getInt(prefKeys.toString(), default)
-}
-
-
 /**
  * Gets the novel from local storage
  *
@@ -53,6 +37,6 @@ fun SharedPreferences.getInt(prefKeys: Utilities.PrefKeys, default: Int = 0): In
  * @return String of passage
  */
 @Throws(MissingResourceException::class)
-fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): String? {
-    return getText(getSavedNovelPath(chapterID))
+fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturns<String> {
+    return getChapterText(getSavedNovelPath(chapterID))
 }

@@ -222,6 +222,9 @@
     <string name="invalid_selection">Invalid Selection</string>
     <string name="set_to">Set to:</string>
     <string name="suggest_token">In Advanced settings, Apply a github token for the fancy view uwu</string>
+    <string name="no_empty_key">Can\'t take an empty key!</string>
+    <string name="github_token_input_desc">Enable Shosetsu to access Github with an Github token</string>
+    <string name="github_token_input_title">GitHub Oauth</string>
 
     <array name="application_themes">
         <item>@string/light</item>

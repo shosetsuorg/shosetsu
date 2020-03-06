@@ -53,7 +53,9 @@ class SettingsCardViewHolder(itemView: View, private val router: Router) : Recyc
                         Types.INFO -> {
                             val t = Settings.githubToken
                             if (t.isNotEmpty())
-                                Attribouter.from(cardView.context).withGitHubToken(t).toController()
+                                Attribouter.from(cardView.context)
+                                        .withGitHubToken(t)
+                                        .toController()
                             else InfoSettings()
                         }
                         Types.ADVANCED -> AdvancedSettings()

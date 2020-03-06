@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.FormatterPrefKeys.Listing
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.LISTING_KEY
 
 /*
  * This file is part of shosetsu.
@@ -30,13 +30,13 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.FormatterPrefKeys.L
  */
 
 val Formatter.defaultListing: Int
-    get() = Utilities.formatterPreferences.getInt("$formatterID:$Listing", 0)
+    get() = Utilities.formatterPreferences.getInt("$formatterID:$LISTING_KEY", 0)
 
 
 fun Formatter.setDefaultListing(int: Int): Boolean = when {
     int >= listings.size || int < 0 -> false
     else -> {
-        Utilities.formatterPreferences.edit().putInt("$formatterID:$Listing", int).apply()
+        Utilities.formatterPreferences.edit().putInt("$formatterID:$LISTING_KEY", int).apply()
         true
     }
 }
