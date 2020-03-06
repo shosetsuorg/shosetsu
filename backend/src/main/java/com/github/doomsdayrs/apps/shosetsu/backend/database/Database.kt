@@ -244,11 +244,11 @@ object Database {
         /**
          * Returns Formatter ID via Novel ID
          *
-         * @param id Novel ID
+         * @param novelID Novel ID
          * @return Formatter ID
          */
-        fun getFormatterIDFromNovelID(id: Int): Int {
-            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + ID + " = " + id + "", null)
+        fun getFormatterIDFromNovelID(novelID: Int): Int {
+            val cursor = sqLiteDatabase!!.rawQuery("SELECT " + FORMATTER_ID + " from " + Tables.NOVEL_IDENTIFICATION + " where " + ID + " = " + novelID + "", null)
             if (cursor.count <= 0) {
                 cursor.close()
             } else {
