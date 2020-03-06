@@ -221,6 +221,7 @@
     <string name="catalogue_default_load_desc">When a catalogue is selected, This is the thing it loads</string>
     <string name="invalid_selection">Invalid Selection</string>
     <string name="set_to">Set to:</string>
+    <string name="suggest_token">In Advanced settings, Apply a github token for the fancy view uwu</string>
 
     <array name="application_themes">
         <item>@string/light</item>

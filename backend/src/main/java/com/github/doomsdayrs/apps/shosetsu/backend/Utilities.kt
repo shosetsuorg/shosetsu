@@ -78,23 +78,15 @@ object Utilities {
     var shoDir: String = "/Shosetsu/"
 
 
-    interface PrefKeys {
-        override fun toString(): String
-    }
-
     // Preference objects
     lateinit var downloadPreferences: SharedPreferences
     lateinit var viewPreferences: SharedPreferences
     lateinit var advancedPreferences: SharedPreferences
+    const val GITHUB_TOKEN = "GIT_TOKEN"
+
+
     lateinit var formatterPreferences: SharedPreferences
-
-    enum class FormatterPrefKeys(private val key: String) : PrefKeys {
-        Listing("listing");
-
-        override fun toString(): String {
-            return key
-        }
-    }
+    const val LISTING_KEY = "listing"
 
     //  lateinit var trackingPreferences: SharedPreferences
     lateinit var backupPreferences: SharedPreferences

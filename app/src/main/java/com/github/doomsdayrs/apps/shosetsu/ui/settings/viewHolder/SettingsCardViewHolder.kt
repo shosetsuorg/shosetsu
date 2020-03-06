@@ -6,9 +6,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.AdvancedSettings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.DownloadSettings
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.InfoSettings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.ViewSettings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.BackupSettings
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
@@ -48,7 +50,12 @@ class SettingsCardViewHolder(itemView: View, private val router: Router) : Recyc
             router.pushController(
                     when (type) {
                         Types.VIEW -> ViewSettings()
-                        Types.INFO -> Attribouter.from(cardView.context).withGitHubToken("").toController()
+                        Types.INFO -> {
+                            val t = Settings.githubToken
+                            if (t.isNotEmpty())
+                                Attribouter.from(cardView.context).withGitHubToken(t).toController()
+                            else InfoSettings()
+                        }
                         Types.ADVANCED -> AdvancedSettings()
                         Types.DOWNLOAD -> DownloadSettings()
                         Types.BACKUP -> BackupSettings()
