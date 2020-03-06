@@ -13,6 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapt
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ChapterViewChange
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import kotlinx.android.synthetic.main.chapter_reader.*
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -78,8 +79,12 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
         }
 
         if (chapterIDs.isEmpty()) {
-            val integers = Database.DatabaseChapter.getChaptersOnlyIDs(novelID)
-            for (x in integers.indices) chapterIDs.add(integers[x])
+            try {
+                val integers = Database.DatabaseChapter.getChaptersOnlyIDs(novelID)
+                for (x in integers.indices) chapterIDs.add(integers[x])
+            } catch (e: MissingResourceException) {
+                TODO("Add error handling here")
+            }
         }
 
         setupViewPager(savedInstanceState)

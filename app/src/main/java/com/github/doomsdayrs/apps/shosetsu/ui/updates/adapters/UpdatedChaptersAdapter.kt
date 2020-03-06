@@ -120,7 +120,7 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
                     }
                     R.id.webview -> {
                         if (updatedChapterHolder.novelChapter?.link != null)
-                            Utilities.openInWebview(updatedNovelHolder.activity, updatedChapterHolder.novelChapter!!.link)
+                            openInWebview(updatedNovelHolder.activity, updatedChapterHolder.novelChapter!!.link)
                         return@setOnMenuItemClickListener true
                     }
                     else -> return@setOnMenuItemClickListener false

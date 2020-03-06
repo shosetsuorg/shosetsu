@@ -89,7 +89,7 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
                             //holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
                             holder.installed = true
                         },
-                        {
+                        { it ->
                             if (holder.update) {
                                 holder.update = false
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
 import android.app.Activity
 import android.widget.SearchView
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.search
 
 /*
@@ -30,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.search
  */
 class CataloguesSearchQuery(private val activity: Activity?) : SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(s: String): Boolean {
-        Utilities.search(activity!!, s)
+        search(activity!!, s)
         return true
     }
 

@@ -124,7 +124,7 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
         }
     }
 
-    class TransfereeAdapter(val migrationController: MigrationController) : RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
+    class TransfereeAdapter(private val migrationController: MigrationController) : RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
         class TransfereeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val imageView: ImageView = itemView.findViewById(R.id.image)
             val title: TextView = itemView.findViewById(R.id.title)
@@ -146,7 +146,7 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
         }
     }
 
-    class CatalogueSelectionAdapter(val migrationController: MigrationController, val transfereePosition: Int) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
+    class CatalogueSelectionAdapter(private val migrationController: MigrationController, private val transfereePosition: Int) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
         class CatalogueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val imageView: ImageView = itemView.findViewById(R.id.imageView)
             val title: TextView = itemView.findViewById(R.id.textView)

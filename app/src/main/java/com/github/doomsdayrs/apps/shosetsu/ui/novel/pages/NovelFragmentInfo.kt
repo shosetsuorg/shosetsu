@@ -5,7 +5,6 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
@@ -14,10 +13,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
@@ -93,7 +92,7 @@ class NovelFragmentInfo : ViewedController() {
                 return true
             }
             id.webview -> {
-                if (activity != null) Utilities.openInWebview(activity!!, novelFragment!!.novelURL)
+                if (activity != null) openInWebview(activity!!, novelFragment!!.novelURL)
                 return true
             }
             id.browser -> {
@@ -159,9 +158,9 @@ class NovelFragmentInfo : ViewedController() {
             if (context != null) {
                 val layoutInflater = LayoutInflater.from(context)
                 for (string in novelFragment!!.novelPage.genres) {
-                    //            val chip: Chip = layoutInflater.inflate(R.layout.genre_chip, null, false) as Chip
-                    //           chip.text = string
-                    //              fragment_novel_genres!!.addView(chip)
+                    val chip: Chip = layoutInflater.inflate(R.layout.genre_chip, fragmentNovelGenres, false) as Chip
+                    chip.text = string
+                    fragmentNovelGenres?.addView(chip)
                 }
             } else fragmentNovelGenres!!.visibility = View.GONE
 

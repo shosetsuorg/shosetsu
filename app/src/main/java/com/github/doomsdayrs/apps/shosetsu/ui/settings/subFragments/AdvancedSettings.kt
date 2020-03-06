@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
+import android.content.res.Resources
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -70,6 +71,7 @@ class AdvancedSettings : SettingsSubController() {
         )
     }
 
+    @Throws(Resources.NotFoundException::class)
     override fun onViewCreated(view: View) {
         settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.application_themes)))
         val theme = (activity as AppCompatActivity).delegate.localNightMode

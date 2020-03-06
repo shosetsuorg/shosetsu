@@ -72,8 +72,7 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
 
 
             private fun removeDownloads(chapterURL: String) {
-                for (x in adapter?.downloadsController!!.downloadItems.indices ?: 0
-                ..0) if (adapter?.downloadsController!!.downloadItems[x].chapterURL == chapterURL) {
+                for (x in adapter?.downloadsController!!.downloadItems.indices) if (adapter?.downloadsController!!.downloadItems[x].chapterURL == chapterURL) {
                     adapter?.downloadsController!!.downloadItems.removeAt(x)
                     return
                 }

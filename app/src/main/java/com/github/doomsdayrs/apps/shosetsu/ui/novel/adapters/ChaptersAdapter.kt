@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters
 
+import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.Log
@@ -18,6 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.google.android.material.card.MaterialCardView
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -54,74 +56,84 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
     }
 
     override fun onBindViewHolder(chaptersViewHolder: ChaptersViewHolder, i: Int) {
-        val novelChapter = novelFragmentChapters.novelFragment!!.novelChapters[i]
-        chaptersViewHolder.novelChapter = novelChapter
-        chaptersViewHolder.title.text = novelChapter.title
-        chaptersViewHolder.novelFragmentChapters = novelFragmentChapters
-        val chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-        chaptersViewHolder.chapterID = chapterID
-        //TODO The getNovelID in this method likely will cause slowdowns due to IO
-        if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(DatabaseIdentification.getNovelIDFromNovelURL(novelFragmentChapters.novelFragment!!.novelURL), novelChapter)
-        if (Database.DatabaseChapter.isBookMarked(chapterID)) {
-            chaptersViewHolder.title.setTextColor(chaptersViewHolder.itemView.resources.getColor(R.color.bookmarked))
-            chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_bookmark).title = "UnBookmark"
-        } else {
-            chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_bookmark).title = "Bookmark"
-        }
-        if (novelFragmentChapters.contains(novelChapter)) {
-            chaptersViewHolder.cardView.strokeWidth = Utilities.selectedStrokeWidth
-            chaptersViewHolder.checkBox.isChecked = true
-        } else {
-            chaptersViewHolder.cardView.strokeWidth = 0
-            chaptersViewHolder.checkBox.isChecked = false
-        }
-        if (novelFragmentChapters.selectedChapters.size > 0) {
-            chaptersViewHolder.checkBox.visibility = View.VISIBLE
-        } else chaptersViewHolder.checkBox.visibility = View.GONE
-        if (Database.DatabaseChapter.isSaved(chapterID)) {
-            chaptersViewHolder.downloadTag.visibility = View.VISIBLE
-            chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download).title = "Delete"
-        } else {
-            chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download).title = "Download"
-            chaptersViewHolder.downloadTag.visibility = View.INVISIBLE
-        }
-        when (Database.DatabaseChapter.getChapterStatus(chapterID)) {
-            Status.READING -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
-                } else {
-                    (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
-                }
-                chaptersViewHolder.status.text = Status.READING.status
-                chaptersViewHolder.readTag.visibility = View.VISIBLE
-                chaptersViewHolder.read.visibility = View.VISIBLE
-                chaptersViewHolder.read.text = Database.DatabaseChapter.getY(chapterID).toString()
-            }
-            Status.UNREAD -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
-                } else {
-                    (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
-                }
-                chaptersViewHolder.status.text = Status.UNREAD.status
-            }
-            Status.READ -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (novelFragmentChapters.context != null) chaptersViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(novelFragmentChapters.context!!, R.color.shade))
-                } else {
-                    (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
-                }
-                chaptersViewHolder.status.text = Status.READ.status
-                chaptersViewHolder.readTag.visibility = View.GONE
-                chaptersViewHolder.read.visibility = View.GONE
-            }
-            else -> {
+        try {
 
+            val novelChapter = novelFragmentChapters.novelFragment!!.novelChapters[i]
+            chaptersViewHolder.novelChapter = novelChapter
+            chaptersViewHolder.title.text = novelChapter.title
+            chaptersViewHolder.novelFragmentChapters = novelFragmentChapters
+            val chapterID: Int
+            chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
+            chaptersViewHolder.chapterID = chapterID
+            //TODO The getNovelID in this method likely will cause slowdowns due to IO
+            if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(DatabaseIdentification.getNovelIDFromNovelURL(novelFragmentChapters.novelFragment!!.novelURL), novelChapter)
+
+            if (Database.DatabaseChapter.isBookMarked(chapterID)) {
+                chaptersViewHolder.title.setTextColor(chaptersViewHolder.itemView.resources.getColor(R.color.bookmarked))
+                chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_bookmark).title = "UnBookmark"
+            } else {
+                chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_bookmark).title = "Bookmark"
             }
+
+            if (novelFragmentChapters.contains(novelChapter)) {
+                chaptersViewHolder.cardView.strokeWidth = Utilities.selectedStrokeWidth
+                chaptersViewHolder.checkBox.isChecked = true
+            } else {
+                chaptersViewHolder.cardView.strokeWidth = 0
+                chaptersViewHolder.checkBox.isChecked = false
+            }
+            if (novelFragmentChapters.selectedChapters.size > 0) {
+                chaptersViewHolder.checkBox.visibility = View.VISIBLE
+            } else chaptersViewHolder.checkBox.visibility = View.GONE
+            if (Database.DatabaseChapter.isSaved(chapterID)) {
+                chaptersViewHolder.downloadTag.visibility = View.VISIBLE
+                chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download).title = "Delete"
+            } else {
+                chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download).title = "Download"
+                chaptersViewHolder.downloadTag.visibility = View.INVISIBLE
+            }
+            when (Database.DatabaseChapter.getChapterStatus(chapterID)) {
+                Status.READING -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
+                    } else {
+                        (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
+                    }
+                    chaptersViewHolder.status.text = Status.READING.status
+                    chaptersViewHolder.readTag.visibility = View.VISIBLE
+                    chaptersViewHolder.read.visibility = View.VISIBLE
+                    chaptersViewHolder.read.text = Database.DatabaseChapter.getY(chapterID).toString()
+                }
+                Status.UNREAD -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
+                    } else {
+                        (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
+                    }
+                    chaptersViewHolder.status.text = Status.UNREAD.status
+                }
+                Status.READ -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (novelFragmentChapters.context != null) chaptersViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(novelFragmentChapters.context!!, R.color.shade))
+                    } else {
+                        (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
+                    }
+                    chaptersViewHolder.status.text = Status.READ.status
+                    chaptersViewHolder.readTag.visibility = View.GONE
+                    chaptersViewHolder.read.visibility = View.GONE
+                }
+                else -> {
+
+                }
+            }
+            if (novelFragmentChapters.selectedChapters.size <= 0)
+                chaptersViewHolder.itemView.setOnClickListener(chaptersViewHolder)
+            else chaptersViewHolder.itemView.setOnClickListener { chaptersViewHolder.addToSelect() }
+        } catch (e: MissingResourceException) {
+            TODO("Add error handling here")
+        } catch (e: Resources.NotFoundException) {
+            TODO("Add error handling here")
         }
-        if (novelFragmentChapters.selectedChapters.size <= 0)
-            chaptersViewHolder.itemView.setOnClickListener(chaptersViewHolder)
-        else chaptersViewHolder.itemView.setOnClickListener { chaptersViewHolder.addToSelect() }
     }
 
     override fun getItemCount(): Int {
