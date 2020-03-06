@@ -10,6 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
@@ -367,10 +368,17 @@ class ChapterView : Fragment() {
     private fun dataSet() {
         if (Database.DatabaseChapter.isSaved(chapterID)) {
             Log.d("ChapterView", "Loading from storage${appendID()}")
-            unformattedText = Database.DatabaseChapter.getSavedNovelPassage(chapterID)!!
-            setUpReader()
-            scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
-            ready = true
+            val r = Database.DatabaseChapter.getSavedNovelPassage(chapterID)
+            if (r.succeeded) {
+                unformattedText = r.value!!
+                setUpReader()
+                scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
+                ready = true
+            } else {
+                ErrorAlert(activity!!.parent)
+                        .setMessage(r.e?.message)
+                        .runOnUI()
+            }
         } else {
             Log.d("ChapterView", "Loading from online${appendID()}")
             unformattedText = ""

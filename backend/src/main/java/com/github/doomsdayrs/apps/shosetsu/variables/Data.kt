@@ -25,3 +25,14 @@ package com.github.doomsdayrs.apps.shosetsu.variables
  * @author github.com/doomsdayrs
  */
 data class Update(val chapterID: Int, val novelID: Int, val date: Long)
+
+
+/**
+ * Used to handle responses from backend to front end
+ *
+ * @param succeeded [Boolean] True if task completed successfully
+ * @param failureReason [String] Reason why the task was not completed
+ * @param e [Exception] Exception? of the error
+ * @param value [T] Value to be returned
+ */
+data class HandledReturns<T>(val succeeded: Boolean = false, val failureReason: String = "", val e: Exception? = null, val value: T? = null)

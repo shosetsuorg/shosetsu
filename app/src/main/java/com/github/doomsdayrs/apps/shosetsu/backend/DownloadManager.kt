@@ -8,11 +8,11 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
+import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
-import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -30,19 +30,15 @@ import java.io.IOException
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+/**
  * Shosetsu
  * 16 / 06 / 2019
  *
  * @author github.com/doomsdayrs
+ * Manages downloading and downloaded chapters
  */
 object DownloadManager {
-
-    /**
-     * Initializes download manager
-     */
-    fun initDownloadManager(activity: Activity) {
-        DownloadService.start(activity)
-    }
 
     /**
      * Adds to download list
@@ -68,7 +64,7 @@ object DownloadManager {
         val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt")
         Database.DatabaseChapter.removePath(downloadItem.chapterID)
         if (file.exists()) if (!file.delete()) if (context != null) {
-            context.toast(R.string.download_fail_delete,duration = LENGTH_LONG)
+            context.toast(R.string.download_fail_delete, duration = LENGTH_LONG)
             return false
         }
         return true
@@ -81,7 +77,7 @@ object DownloadManager {
      * @return Passage of saved chapter
      */
     @JvmStatic
-    fun getText(path: String): String? {
+    fun getChapterText(path: String): HandledReturns<String> {
         try {
             BufferedReader(FileReader(path)).use { br ->
                 val sb = StringBuilder()
@@ -91,12 +87,11 @@ object DownloadManager {
                     sb.append(System.lineSeparator())
                     line = br.readLine()
                 }
-                return sb.toString()
+                return HandledReturns(true, value = sb.toString())
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            return HandledReturns(false, "Exception Occurred", e)
         }
-        return null
     }
 
 }

@@ -1,10 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.errorView
 
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.widget.TextView
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.variables.ErrorAlertParent
 
 /*
@@ -32,28 +28,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ErrorAlertParent
  *
  * @author github.com/doomsdayrs
  */
-class ErrorAlert(val activity: Activity, retryAction: (dialog: DialogInterface?, which: Int) -> Unit = { dialog: DialogInterface?, _: Int -> dialog?.dismiss() }) : AlertDialog.Builder(activity), ErrorAlertParent {
-
-    private val view = activity.layoutInflater.inflate(R.layout.error_view, null)!!
-    private val messageView: TextView = view.findViewById(R.id.error_message)
-    private var e: Exception? = null
-
-    init {
-        setPositiveButton(R.string.retry, retryAction)
-        setView(view)
-    }
-
-    override fun setError(e: Exception): ErrorAlert {
-        this.e = e
-        return this
-    }
-
-    override fun setMessage(message: CharSequence?): ErrorAlert {
-        messageView.text = message
-        return this
-    }
-
-    override fun runOnUI() {
-        activity.runOnUiThread { show() }
-    }
+class ErrorAlert(@Suppress("UNUSED_PARAMETER") activity: Activity) : ErrorAlertParent {
+    override fun setError(e: Exception): ErrorAlertParent = throw Exception("Stub!")
+    override fun setMessage(message: CharSequence?): ErrorAlertParent = throw Exception("Stub!")
+    override fun runOnUI() = throw Exception("Stub!")
 }

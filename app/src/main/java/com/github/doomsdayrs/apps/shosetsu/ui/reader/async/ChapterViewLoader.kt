@@ -26,8 +26,8 @@ class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, 
             chapterView.unformattedText = chapterView.chapterReader?.formatter!!.getPassage(chapterView.url)
             return true
         } catch (e: Exception) {
-            chapterView.activity?.runOnUiThread {
-                ErrorAlert(chapterView.activity!!) { dialog: DialogInterface?, _: Int -> ChapterViewLoader(chapterView).execute();dialog?.dismiss() }
+            chapterView.activity?.let {
+                ErrorAlert(it) { dialog: DialogInterface?, _: Int -> ChapterViewLoader(chapterView).execute();dialog?.dismiss() }
                         .setMessage(e.message)
                         .show()
             }
