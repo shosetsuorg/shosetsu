@@ -17,9 +17,6 @@ package org.doomsdayrs.apps.shosetsucar
 import android.app.Activity
 import android.os.Bundle
 
-/**
- * Loads [MainFragment].
- */
 class MainActivityCar : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

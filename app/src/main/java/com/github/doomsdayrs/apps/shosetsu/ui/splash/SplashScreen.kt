@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -87,7 +86,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
         Utilities.initPreferences(this)
 
         // Sets up DB
-        if (Database.sqLiteDatabase == null) Database.sqLiteDatabase = DBHelper(this).writableDatabase
+        if (!Database.isInit()) Database.sqLiteDatabase = DBHelper(this).writableDatabase
 
         // Settings setup
         Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

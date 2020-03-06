@@ -40,7 +40,11 @@ class CatalogueQuerySearch(private val catalogueFragment: CatalogueController) :
         val luaTable = LuaTable()
         luaTable["query"] = strings[0]
         val novels = catalogueFragment.formatter.search(luaTable) {}
-        for (novel in novels) result.add(NovelListingCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
+        try {
+            for ((title, link, imageURL) in novels) result.add(NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link))
+        } catch (e: MissingResourceException) {
+            TODO("Add error handling here")
+        }
         return result
     }
 

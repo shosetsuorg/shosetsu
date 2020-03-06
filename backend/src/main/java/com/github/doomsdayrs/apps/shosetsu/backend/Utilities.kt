@@ -4,12 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.Color.*
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.Log
@@ -19,10 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.regret
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import org.doomsdayrs.apps.shosetsulib.R
 import org.json.JSONArray
@@ -92,7 +88,7 @@ object Utilities {
     lateinit var advancedPreferences: SharedPreferences
     lateinit var formatterPreferences: SharedPreferences
 
-    enum class FormatterPrefKeys(val key: String) : PrefKeys {
+    enum class FormatterPrefKeys(private val key: String) : PrefKeys {
         Listing("listing");
 
         override fun toString(): String {
@@ -112,8 +108,8 @@ object Utilities {
 
     fun convertNovelArrayToString2DArray(array: Array<Novel.Listing>): ArrayList<Array<String>> {
         val a: ArrayList<Array<String>> = ArrayList()
-        for (novel in array) {
-            a.add(arrayOf(novel.title, novel.link, novel.imageURL))
+        for ((title, link, imageURL) in array) {
+            a.add(arrayOf(title, link, imageURL))
         }
         return a
     }

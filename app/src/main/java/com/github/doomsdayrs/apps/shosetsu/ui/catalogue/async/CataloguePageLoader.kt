@@ -51,7 +51,7 @@ class CataloguePageLoader(private val catalogueFragment: CatalogueController) : 
             }
             try {
                 val novels: Array<Listing> = if (integers.isNotEmpty()) CatalogueLoader(it.formatter).execute(integers[0]) else CatalogueLoader(it.formatter).execute()
-                for (novel in novels) it.catalogueNovelCards.add(NovelListingCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
+                for ((title, link, imageURL) in novels) it.catalogueNovelCards.add(NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link))
                 Log.d("FragmentRefresh", "Complete")
                 true
             } catch (e: LuaError) {

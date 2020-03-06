@@ -75,6 +75,7 @@ object FormatterUtils {
         return ""
     }
 
+    @Throws(FileNotFoundException::class)
     fun getContent(file: File): String {
         val builder = StringBuilder()
         val br = BufferedReader(FileReader(file))

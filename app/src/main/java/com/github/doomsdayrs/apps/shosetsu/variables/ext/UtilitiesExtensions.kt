@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
@@ -12,6 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -46,10 +46,12 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
  * @param novelID      id of novel
  * @param formatterID  formatter
  */
-fun Utilities.openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
+@Throws(MissingResourceException::class)
+fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
 
 
-private fun Utilities. openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
+@Throws(MissingResourceException::class)
+private fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
     val chapterID = Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
     if (Settings.ReaderMarkingType == Settings.MarkingTypes.ONVIEW.i) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
     val intent = Intent(activity, ChapterReader::class.java)
@@ -60,14 +62,14 @@ private fun Utilities. openChapter(activity: Activity, novelChapter: Novel.Chapt
     activity.startActivity(intent)
 }
 
-fun Utilities.search(activity: Activity, query: String) {
+fun search(activity: Activity, query: String) {
     val mainActivity = activity as MainActivity
     val searchFragment = SearchController()
     searchFragment.query = query
     mainActivity.transitionView(searchFragment)
 }
 
-fun Utilities.openInWebview(activity: Activity, url: String) {
+fun openInWebview(activity: Activity, url: String) {
     val intent = Intent(activity, WebViewApp::class.java)
     intent.putExtra("url", url)
     intent.putExtra("action", Actions.VIEW.action)

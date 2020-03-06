@@ -140,7 +140,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
                 val a = ArrayList<String>()
                 holder.constraintLayout.visibility = View.VISIBLE
                 fom.listings.forEach { a.add(it.name) }
-                holder.spinner.adapter = ArrayAdapter<String>(holder.itemView.context, android.R.layout.simple_spinner_item, a)
+                holder.spinner.adapter = ArrayAdapter(holder.itemView.context, android.R.layout.simple_spinner_item, a)
                 holder.spinner.setSelection(fom.defaultListing)
                 var first = true
                 holder.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

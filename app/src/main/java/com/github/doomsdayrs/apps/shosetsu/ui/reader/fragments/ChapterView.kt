@@ -72,7 +72,7 @@ class ChapterView : Fragment() {
             url = DatabaseIdentification.getChapterURLFromChapterID(value)
         }
 
-    var bookmarked = false
+    private var bookmarked = false
 
     //public View coverView;
 // public ViewPager2 viewPager2;
@@ -269,7 +269,7 @@ class ChapterView : Fragment() {
                 true
             }
             R.id.webview -> {
-                activity?.let { url.isNotEmpty().let { Utilities.openInWebview(activity!!, url) } }
+                activity?.let { url.isNotEmpty().let { openInWebview(activity!!, url) } }
                 true
             }
             R.id.reader_0 -> {

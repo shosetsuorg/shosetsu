@@ -33,7 +33,6 @@ import java.io.ObjectOutputStream
 /**
  * Serialize object to string
  *
- * @param object object serialize
  * @return Serialised string
  * @throws IOException exception
  */
@@ -50,7 +49,6 @@ fun Any.serializeToString(): String {
 /**
  * Converts Array of Strings into a String
  *
- * @param a array of strings
  * @return String Array
  */
 fun Array<String>.convertArrayToString(): String {

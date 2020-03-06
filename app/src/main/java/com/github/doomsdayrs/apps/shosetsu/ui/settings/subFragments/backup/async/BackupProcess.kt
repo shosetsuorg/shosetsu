@@ -56,7 +56,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
             Log.i("Progress", "Backing up novels")
             run {
                 val backupNovels = JSONArray()
-                val cursor = sqLiteDatabase?.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)!!
+                val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)!!
                 if (cursor.count > 0) while (cursor.moveToNext()) { // Gets if it is in library, if not then it skips
                     val bookmarked = Utilities.intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
                     Log.i("NovelBack", "Valid?: $bookmarked")
@@ -86,7 +86,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
             Log.i("Progress", "Backing up Chapters")
             run {
                 val backupChapters = JSONArray()
-                val cursor = sqLiteDatabase?.rawQuery("select * from " + Tables.CHAPTERS, null)!!
+                val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.CHAPTERS, null)!!
                 if (cursor.count > 0) while (cursor.moveToNext()) {
                     val novelID = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
                     val b = Database.DatabaseNovels.isBookmarked(novelID)

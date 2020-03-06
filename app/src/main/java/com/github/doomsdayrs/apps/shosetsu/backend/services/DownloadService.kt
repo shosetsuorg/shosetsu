@@ -144,8 +144,8 @@ class DownloadService : Service() {
             val i = Intent()
             i.action = action
 
-            for (m in data)
-                i.putExtra(m.key, m.value)
+            for ((key, value) in data)
+                i.putExtra(key, value)
 
             service.sendBroadcast(i)
         }

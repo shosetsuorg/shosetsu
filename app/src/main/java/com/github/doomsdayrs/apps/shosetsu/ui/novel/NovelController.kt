@@ -58,7 +58,7 @@ class NovelController : ViewedController() {
     override val layoutRes: Int = R.layout.novel
 
     // This is a never before loaded novel
-    var new: Boolean = true
+    private var new: Boolean = true
 
     var novelID = -2
     var novelURL: String = ""

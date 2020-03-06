@@ -1,10 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.content.SharedPreferences
-import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterText
+import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getText
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -52,6 +52,7 @@ fun SharedPreferences.getInt(prefKeys: Utilities.PrefKeys, default: Int = 0): In
  * @param chapterID novelURL of the chapter
  * @return String of passage
  */
-fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturns<String> {
-    return getChapterText(getSavedNovelPath(chapterID))
+@Throws(MissingResourceException::class)
+fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): String? {
+    return getText(getSavedNovelPath(chapterID))
 }

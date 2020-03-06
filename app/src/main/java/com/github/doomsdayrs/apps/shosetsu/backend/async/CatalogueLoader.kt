@@ -34,7 +34,7 @@ import org.luaj.vm2.LuaTable
  */
 open class CatalogueLoader(val formatter: Formatter) {
 
-    var query: String = ""
+    private var query: String = ""
 
     constructor(query: String, formatter: Formatter) : this(formatter) {
         this.query = query

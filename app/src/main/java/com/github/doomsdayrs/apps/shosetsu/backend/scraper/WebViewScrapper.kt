@@ -1,15 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.scraper
 
-import android.os.AsyncTask
-import android.util.Log
-import com.zhkrb.cloudflare_scrape_android.Cloudflare
-import com.zhkrb.cloudflare_scrape_android.Cloudflare.cfCallback
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import java.io.IOException
-import java.net.HttpCookie
-import java.util.concurrent.ExecutionException
-
 /*
  * This file is part of shosetsu.
  *
