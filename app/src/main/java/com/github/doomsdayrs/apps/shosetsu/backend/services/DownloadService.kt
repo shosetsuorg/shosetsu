@@ -218,7 +218,6 @@ class DownloadService : Service() {
                     } catch (e: Exception) { // Mark download as faulted
                         Log.e(LOG_NAME, "A critical error occurred", e)
                         sendMessage(Broadcasts.DOWNLOADS_MARK_ERROR, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
-
                     }
                 }
                 stop(service)

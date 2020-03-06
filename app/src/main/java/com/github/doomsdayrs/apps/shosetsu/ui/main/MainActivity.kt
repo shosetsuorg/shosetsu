@@ -16,11 +16,11 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.initDownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
+import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity(), Supporter {
 
         syncActivityViewWithController(router.backstack.lastOrNull()?.controller())
 
-        initDownloadManager(this)
+        DownloadService.start(this)
         when (intent.action) {
             Intent.ACTION_USER_BACKGROUND -> {
                 Log.i("MainActivity", "Updating novels")

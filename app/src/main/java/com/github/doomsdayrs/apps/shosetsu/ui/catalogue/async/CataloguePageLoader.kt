@@ -49,20 +49,16 @@ class CataloguePageLoader(private val catalogueFragment: CatalogueController) : 
             if (it.formatter.hasCloudFlare && it.activity != null) it.activity!!.runOnUiThread {
                 it.context?.toast("CLOUDFLARE")
             }
-            return try {
+            try {
                 val novels: Array<Listing> = if (integers.isNotEmpty()) CatalogueLoader(it.formatter).execute(integers[0]) else CatalogueLoader(it.formatter).execute()
                 for (novel in novels) it.catalogueNovelCards.add(NovelListingCard(novel.imageURL, novel.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(novel.link), novel.link))
                 Log.d("FragmentRefresh", "Complete")
                 true
             } catch (e: LuaError) {
-                catalogueFragment.activity?.runOnUiThread {
-                    catalogueFragment.context?.toast(e.smallMessage())
-                }
+                catalogueFragment.activity?.toast(e.smallMessage())
                 false
             } catch (e: Exception) {
-                catalogueFragment.activity?.runOnUiThread {
-                    catalogueFragment.context?.toast(e.message ?: "UNKNOWN ERROR")
-                }
+                catalogueFragment.activity?.toast(e.message ?: "UNKOWN ERROR")
                 false
             }
         }

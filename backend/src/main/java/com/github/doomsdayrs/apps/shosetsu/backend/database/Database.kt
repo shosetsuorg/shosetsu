@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database
 
+import android.app.Activity
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.os.Environment
@@ -9,6 +10,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel.Chapter
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns.*
+import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Update
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
@@ -798,7 +800,7 @@ object Database {
             return a
         }
 
-        fun addToLibrary(formatter: Int, novelPage: Novel.Info, novelURL: String, readingStatus: Int) {
+        fun addToLibrary(activity: Activity, formatter: Int, novelPage: Novel.Info, novelURL: String, readingStatus: Int) {
             DatabaseIdentification.addNovel(novelURL, formatter)
             val imageURL = novelPage.imageURL
             try {
@@ -832,7 +834,10 @@ object Database {
                         "'" + novelPage.language.checkStringSerialize() + "')"
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
+                ErrorAlert(activity)
+                        .setMessage(e.message)
+                        .setError(e)
+                        .runOnUI()
             }
         }
         // --Commented out by Inspection START (12/22/19 11:09 AM):
@@ -1034,9 +1039,9 @@ object Database {
                     " where " + PARENT_ID + "=" + DatabaseIdentification.getNovelIDFromNovelURL(novelURL))
         }
 
-        fun migrateNovel(oldID: Int, newURL: String, formatterID: Int, newNovel: Novel.Info, status: Int) {
+        fun migrateNovel(activity: Activity, oldID: Int, newURL: String, formatterID: Int, newNovel: Novel.Info, status: Int) {
             unBookmark(oldID)
-            if (isNotInNovels(newURL)) addToLibrary(formatterID, newNovel, newURL, status)
+            if (isNotInNovels(newURL)) addToLibrary(activity, formatterID, newNovel, newURL, status)
             bookMark(DatabaseIdentification.getNovelIDFromNovelURL(newURL))
         }
     }

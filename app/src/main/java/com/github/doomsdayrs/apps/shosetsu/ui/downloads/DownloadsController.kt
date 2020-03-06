@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
@@ -72,8 +73,7 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
 
 
             private fun removeDownloads(chapterURL: String) {
-                for (x in adapter?.downloadsController!!.downloadItems.indices ?: 0
-                ..0) if (adapter?.downloadsController!!.downloadItems[x].chapterURL == chapterURL) {
+                for (x in adapter?.downloadsController!!.downloadItems.indices) if (adapter?.downloadsController!!.downloadItems[x].chapterURL == chapterURL) {
                     adapter?.downloadsController!!.downloadItems.removeAt(x)
                     return
                 }
@@ -135,7 +135,7 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
                 item.setIcon(R.drawable.ic_play_circle_filled_black_24dp)
             else {
                 item.setIcon(R.drawable.ic_pause_circle_outline_black_24dp)
-                initDownloadManager(activity!!)
+                DownloadService.start(activity!!)
             }
             return true
         }

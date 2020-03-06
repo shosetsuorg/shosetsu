@@ -50,9 +50,19 @@ fun Context.toast(@StringRes resource: Int, duration: Int = LENGTH_SHORT) {
     makeText(this, resource, duration).show()
 }
 
-
 fun Context.toast(string: String, duration: Int = LENGTH_SHORT) {
     makeText(this, string, duration).show()
+}
+
+/**
+ * Like context toast, Except posts for the UI
+ */
+fun Activity.toast(string: String, duration: Int = LENGTH_SHORT) {
+    runOnUiThread { makeText(this, string, duration).show() }
+}
+
+fun Activity.toast(@StringRes resource: Int, duration: Int = LENGTH_SHORT) {
+    runOnUiThread { makeText(this, resource, duration).show() }
 }
 
 /**
