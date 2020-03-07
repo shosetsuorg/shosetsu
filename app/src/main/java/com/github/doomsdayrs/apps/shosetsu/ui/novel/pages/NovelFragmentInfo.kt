@@ -158,7 +158,7 @@ class NovelFragmentInfo : ViewedController() {
             if (context != null) {
                 val layoutInflater = LayoutInflater.from(context)
                 for (string in novelFragment!!.novelPage.genres) {
-                    val chip: Chip = layoutInflater.inflate(R.layout.genre_chip, fragmentNovelGenres, false) as Chip
+                    val chip = Chip(fragmentNovelGenres!!.context)
                     chip.text = string
                     fragmentNovelGenres?.addView(chip)
                 }

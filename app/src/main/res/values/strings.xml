@@ -225,6 +225,8 @@
     <string name="no_empty_key">Can\'t take an empty key!</string>
     <string name="github_token_input_desc">Enable Shosetsu to access Github with an Github token</string>
     <string name="github_token_input_title">GitHub Oauth</string>
+    <string name="apply">Apply</string>
+    <string name="reset">Reset</string>
 
     <array name="application_themes">
         <item>@string/light</item>

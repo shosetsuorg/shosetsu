@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.widget.SearchView
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
@@ -26,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
+import com.google.android.material.navigation.NavigationView
 
 /*
  * This file is part of Shosetsu.
@@ -52,12 +55,13 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListing
  * @author github.com/doomsdayrs
  */
 //TODO fix issue with not loading
-class CatalogueController(bundle: Bundle) : ViewedController(bundle) {
+class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDrawerController {
     override val layoutRes: Int = R.layout.catalogue
 
 
     @Attach(R.id.recyclerView)
     var recyclerView: RecyclerView? = null
+
     @Attach(R.id.swipeRefreshLayout)
     var swipeRefreshLayout: SwipeRefreshLayout? = null
 
@@ -166,6 +170,9 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle) {
         }
 
         cataloguePageLoader!!.execute(currentMaxPage)
+    }
+
+    override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
     }
 
 }

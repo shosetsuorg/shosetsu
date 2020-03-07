@@ -1,21 +1,22 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.content.res.Resources
+import android.database.SQLException
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.BUTTON
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.SPINNER
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 
 
 /*
@@ -65,10 +66,6 @@ class AdvancedSettings : SettingsSubController() {
         }
     }
 
-    fun setToken(editText: EditText) {
-        Settings.githubToken = editText.text.toString()
-    }
-
     override val settings by lazy {
         arrayListOf(
                 SettingsItemData(SPINNER)
@@ -76,7 +73,14 @@ class AdvancedSettings : SettingsSubController() {
                         .setOnItemSelectedListener(ThemeChange(this)),
                 SettingsItemData(BUTTON)
                         .setTitle(R.string.remove_novel_cache)
-                        .setOnClickListenerButton { Database.DatabaseIdentification.purgeUnSavedNovels() }
+                        .setOnClickListenerButton {
+                            try {
+                                Database.DatabaseIdentification.purgeUnSavedNovels()
+                            } catch (e: SQLException) {
+                                context?.toast("SQLITE Error")
+                                Log.e("AdvancedSettings", "DatabaseError", e)
+                            }
+                        }
         )
     }
 

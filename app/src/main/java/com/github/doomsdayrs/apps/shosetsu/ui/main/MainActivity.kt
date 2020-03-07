@@ -19,6 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.WebviewCookieHandler
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.scraper.WebViewScrapper
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
@@ -113,6 +114,7 @@ class MainActivity : AppCompatActivity(), Supporter {
             drawer_layout.closeDrawer(GravityCompat.START)
             return@setNavigationItemSelectedListener true
         }
+
 
         router = Conductor.attachRouter(this, fragment_container, savedInstanceState)
 
@@ -257,11 +259,20 @@ class MainActivity : AppCompatActivity(), Supporter {
         if (showHamburger) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             actionBarDrawerToggle.isDrawerIndicatorEnabled = true
-            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
         } else {
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
             actionBarDrawerToggle.isDrawerIndicatorEnabled = false
-            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
         }
+        if (from is SecondDrawerController) {
+            second_nav_view.removeAllViews()
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, second_nav_view)
+        }
+        if (to is SecondDrawerController) {
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, second_nav_view)
+            to.createTabs(second_nav_view, drawer_layout)
+        }
+
     }
 }

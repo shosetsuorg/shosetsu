@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,11 +18,14 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerViewBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.google.android.material.navigation.NavigationView
 import java.util.*
 
 /*
@@ -47,7 +51,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class LibraryController : RecyclerController<LibraryNovelAdapter>() {
+class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawerController {
 
     var libraryNovelCards = ArrayList<Int>()
     var selectedNovels: ArrayList<Int> = ArrayList()
@@ -162,5 +166,11 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>() {
             adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
             recyclerView?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         }
+    }
+
+    override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+        val builder = SecondDrawerViewBuilder(navigationView.context, navigationView, drawerLayout, this)
+        builder.addSwitch { compoundButton, b -> }
+        navigationView.addView(builder.build())
     }
 }

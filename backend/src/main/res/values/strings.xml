@@ -2,6 +2,5 @@
 <resources>
 
     <string name="regret">This feature have not been reintroduced yet due to time constraints :(</string>
-    <string name="input_token">Input Token</string>
 
 </resources>
