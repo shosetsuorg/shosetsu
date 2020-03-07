@@ -171,26 +171,15 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
     }
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-        val builder = SecondDrawerViewBuilder(navigationView.context, navigationView, drawerLayout, this)
-        builder.addSwitch { compoundButton, b -> }
-        builder.addEditText()
-        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
-        builder.addSwitch { compoundButton, b -> }
-        builder.addEditText()
-        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
-        builder.addSwitch { compoundButton, b -> }
-        builder.addEditText()
-        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
-        builder.addSwitch { compoundButton, b -> }
-        builder.addEditText()
-        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
-        navigationView.addView(builder.build())
-        builder.addSwitch { compoundButton, b -> }
-        builder.addEditText()
-        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
-        builder.addSwitch { compoundButton, b -> }
-        builder.addEditText()
-        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
+
+        navigationView.addView(
+                SecondDrawerViewBuilder(navigationView.context, navigationView, drawerLayout, this)
+                        .addSwitch { compoundButton, b -> }
+                        .addEditText()
+                        .addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
+                        .addRadioGroup("Design", arrayOf("A", "B", "C"))
+                        .build()
+        )
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {
