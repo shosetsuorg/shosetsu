@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -171,6 +173,27 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
         val builder = SecondDrawerViewBuilder(navigationView.context, navigationView, drawerLayout, this)
         builder.addSwitch { compoundButton, b -> }
+        builder.addEditText()
+        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
+        builder.addSwitch { compoundButton, b -> }
+        builder.addEditText()
+        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
+        builder.addSwitch { compoundButton, b -> }
+        builder.addEditText()
+        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
+        builder.addSwitch { compoundButton, b -> }
+        builder.addEditText()
+        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
         navigationView.addView(builder.build())
+        builder.addSwitch { compoundButton, b -> }
+        builder.addEditText()
+        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
+        builder.addSwitch { compoundButton, b -> }
+        builder.addEditText()
+        builder.addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
+    }
+
+    override fun handleConfirm(linearLayout: LinearLayout) {
+        TODO("Not yet implemented")
     }
 }

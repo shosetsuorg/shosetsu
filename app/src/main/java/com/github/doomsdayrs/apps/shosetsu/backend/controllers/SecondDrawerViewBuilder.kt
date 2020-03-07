@@ -7,9 +7,9 @@ import android.view.View.VISIBLE
 import android.widget.*
 import androidx.drawerlayout.widget.DrawerLayout
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.R.id.editText
-import com.github.doomsdayrs.apps.shosetsu.R.id.linearLayout
-import com.github.doomsdayrs.apps.shosetsu.R.layout.*
+import com.github.doomsdayrs.apps.shosetsu.R.id.*
+import com.github.doomsdayrs.apps.shosetsu.R.layout.drawer_item
+import com.github.doomsdayrs.apps.shosetsu.R.layout.drawer_layout
 import com.google.android.material.navigation.NavigationView
 
 /*
@@ -40,12 +40,8 @@ import com.google.android.material.navigation.NavigationView
  */
 class SecondDrawerViewBuilder(val context: Context, val navigationView: NavigationView, val drawerLayout: DrawerLayout, val secondDrawerController: SecondDrawerController) {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val scrollView: ScrollView = inflater.inflate(R.layout.drawer_layout, null, false) as ScrollView
-    private val layout: LinearLayout = scrollView.findViewById(linearLayout)
-
-    init {
-        layout.addView(inflater.inflate(drawer_header, layout, false))
-    }
+    private val parentView = inflater.inflate(drawer_layout, null, false)
+    private val layout: LinearLayout = parentView.findViewById(linearLayout)
 
     private fun getNewItem(): View {
         return inflater.inflate(drawer_item, layout, false)
@@ -66,7 +62,7 @@ class SecondDrawerViewBuilder(val context: Context, val navigationView: Navigati
         return add(item)
     }
 
-    fun addEditText(hint: String = "Not Described", action: (String) -> Unit): SecondDrawerViewBuilder {
+    fun addEditText(hint: String = "Not Described"): SecondDrawerViewBuilder {
         val item = getNewItem()
         val editText: EditText = item.findViewById(editText)
         editText.visibility = VISIBLE
@@ -74,17 +70,28 @@ class SecondDrawerViewBuilder(val context: Context, val navigationView: Navigati
         return add(item)
     }
 
+    fun addSpinner(title: String = "Not Described", spinnerAdapter: SpinnerAdapter): SecondDrawerViewBuilder {
+        val item = getNewItem()
+        val spinner: Spinner = item.findViewById(spinner)
+        spinner.visibility = VISIBLE
+        spinner.adapter = spinnerAdapter
+        val textView = item.findViewById<TextView>(R.id.textView)
+        textView.visibility = VISIBLE
+        textView.text = title
+        return add(item)
+    }
+
     fun build(): View {
-        val ender = inflater.inflate(drawer_bottom, layout, false)
-        ender.findViewById<Button>(R.id.accept).setOnClickListener {
+        parentView.findViewById<Button>(R.id.accept).setOnClickListener {
+            secondDrawerController.handleConfirm(layout)
             drawerLayout.closeDrawer(navigationView)
         }
-        ender.findViewById<Button>(R.id.reset).setOnClickListener {
+
+        parentView.findViewById<Button>(R.id.reset).setOnClickListener {
             navigationView.removeAllViews()
             secondDrawerController.createTabs(navigationView, drawerLayout)
             drawerLayout.closeDrawer(navigationView)
         }
-        add(ender)
-        return scrollView
+        return parentView
     }
 }

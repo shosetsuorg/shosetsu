@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.controllers
 
+import android.widget.LinearLayout
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 
@@ -29,4 +30,5 @@ import com.google.android.material.navigation.NavigationView
  */
 interface SecondDrawerController {
     fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout)
+    fun handleConfirm(linearLayout: LinearLayout)
 }

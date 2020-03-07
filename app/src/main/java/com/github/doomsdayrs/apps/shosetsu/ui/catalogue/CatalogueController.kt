@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -173,6 +174,10 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
     }
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+    }
+
+    override fun handleConfirm(linearLayout: LinearLayout) {
+        TODO("Not yet implemented")
     }
 
 }
