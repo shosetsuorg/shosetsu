@@ -115,7 +115,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
         Log.v("ChapterReader", "currentItem ${viewpager.currentItem}")
     }
 
-    fun getNextPosition(id: Int) = chapterIDs.indexOf(id) + if (Utilities.isInvertedSwipe) 1 else -1
+    fun getNextPosition(id: Int) = chapterIDs.indexOf(id) + if (Utilities.isInvertedSwipe) -1 else 1
 
     fun getViewPager(): ViewPager? = viewpager
 
