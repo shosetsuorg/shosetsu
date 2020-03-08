@@ -62,12 +62,11 @@ class SecondDrawerViewBuilder(val context: Context, val navigationView: Navigati
         return this
     }
 
-    fun addSwitch(title: String = "UNKNOWN", hint: String = "Not Described", action: (CompoundButton, Boolean) -> Unit): SecondDrawerViewBuilder {
+    fun addSwitch(title: String = "UNKNOWN", action: (CompoundButton, Boolean) -> Unit): SecondDrawerViewBuilder {
         val item = getNewItem()
         val switch: Switch = item.findViewById(R.id.switchView)
         switch.visibility = VISIBLE
         switch.text = title
-        switch.hint = hint
         switch.setOnCheckedChangeListener { buttonView, isChecked -> action(buttonView, isChecked) }
         return add(item)
     }
