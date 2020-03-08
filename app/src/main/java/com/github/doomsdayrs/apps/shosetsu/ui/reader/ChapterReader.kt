@@ -74,7 +74,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
             val temp = savedInstanceState.getIntArray("chapters")
             for (x in temp!!.indices) chapterIDs.add(temp[x])
         } else {
-            chapterIDs = intent.getIntegerArrayListExtra("chapters")!!
+            intent.getIntegerArrayListExtra("chapters")?.let { chapterIDs = it }
             run {
                 val chapterID: Int = intent.getIntExtra("chapterID", -1)
                 currentChapterID = chapterID
@@ -83,13 +83,10 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
             formatter = DefaultScrapers.getByID(intent.getIntExtra("formatter", -1))
         }
 
-        if (chapterIDs.isEmpty()) {
-            try {
-                val integers = Database.DatabaseChapter.getChaptersOnlyIDs(novelID)
-                for (x in integers.indices) chapterIDs.add(integers[x])
-            } catch (e: MissingResourceException) {
-                TODO("Add error handling here")
-            }
+        if (chapterIDs.isEmpty()) try {
+            chapterIDs = Database.DatabaseChapter.getChaptersOnlyIDs(novelID).toMutableList()
+        } catch (e: MissingResourceException) {
+            TODO("Add error handling here")
         }
 
         setupViewPager(savedInstanceState)
