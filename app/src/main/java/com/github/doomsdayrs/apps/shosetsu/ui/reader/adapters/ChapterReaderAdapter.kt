@@ -24,19 +24,20 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */ /**
+ */
+/**
  * shosetsu
  * 13 / 12 / 2019
  *
  * @author github.com/doomsdayrs
  */
-class ChapterReaderAdapter(fm: FragmentManager, behavior: Int, private val chapterReader: ChapterReader) : FragmentStatePagerAdapter(fm, behavior) {
+class ChapterReaderAdapter(fm: FragmentManager, behavior: Int, val chapterReader: ChapterReader) : FragmentStatePagerAdapter(fm, behavior) {
     val chapterViews = ArrayList<ChapterView>()
 
     init {
         for (i in chapterReader.chapterIDs) {
             val newChapterView = ChapterView()
-            newChapterView.chapterID = (i)
+            newChapterView.chapterID = i
             newChapterView.chapterReader = chapterReader
             chapterViews.add(newChapterView)
         }

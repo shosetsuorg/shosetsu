@@ -134,6 +134,12 @@ class ViewSettings : SettingsSubController() {
                         }),
 
                 SettingsItemData(SettingsType.SWITCH)
+                        .setTitle(R.string.inverted_swipe)
+                        .setSwitchIsChecked(Utilities.isInvertedSwipe)
+                        .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, _ ->
+                            Utilities.toggleInvertedSwipe()
+                        }),
+                SettingsItemData(SettingsType.SWITCH)
                         .setTitle(R.string.tap_to_scroll)
                         .setSwitchIsChecked(Utilities.isTapToScroll)
                         .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->

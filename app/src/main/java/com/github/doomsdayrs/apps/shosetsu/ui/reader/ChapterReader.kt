@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -8,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ChapterViewChange
@@ -39,7 +41,12 @@ import java.util.*
  */
 class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
     // NovelData
-    var chapterIDs: ArrayList<Int> = arrayListOf()
+    private var _chapterIDs: MutableList<Int> = arrayListOf()
+    var chapterIDs: MutableList<Int>
+        get() = if (Utilities.isInvertedSwipe) _chapterIDs.reversed().toMutableList() else _chapterIDs
+        set(value) { _chapterIDs = value; Log.v("ChapterReader", "set chapters - ${value.size}") }
+
+
     var formatter: Formatter? = null
     var novelID = 0
 
@@ -67,9 +74,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
             val temp = savedInstanceState.getIntArray("chapters")
             for (x in temp!!.indices) chapterIDs.add(temp[x])
         } else {
-            intent.getIntegerArrayListExtra("chapters")?.let {
-                chapterIDs = it
-            }
+            chapterIDs = intent.getIntegerArrayListExtra("chapters")!!
             run {
                 val chapterID: Int = intent.getIntExtra("chapterID", -1)
                 currentChapterID = chapterID
@@ -91,9 +96,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
+        if (item.itemId == android.R.id.home) finish()
         return false
     }
 
@@ -106,19 +109,18 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
 
         viewpager.adapter = chapterReaderAdapter
         viewpager.addOnPageChangeListener(ChapterViewChange(chapterReaderAdapter))
-        if (currentChapterID != -1) viewpager.currentItem = findCurrentPosition(currentChapterID)
+        if (currentChapterID != -1)
+            viewpager.currentItem = chapterIDs.indexOf(currentChapterID)
+        else if (Utilities.isInvertedSwipe)
+            viewpager.currentItem = chapterIDs.lastIndex
+
+        Log.v("ChapterReader", "#ids ${_chapterIDs.size} - ${chapterIDs.size}")
+        Log.v("ChapterReader", "currentItem ${viewpager.currentItem}")
     }
 
-    fun findCurrentPosition(id: Int): Int {
-        for (x in chapterIDs.indices) if (chapterIDs[x] == id) return x
-        return -1
-    }
+    fun getNextPosition(id: Int) = chapterIDs.indexOf(id) + if (Utilities.isInvertedSwipe) 1 else -1
 
-    fun getViewPager(): ViewPager? {
-        return viewpager
-    }
+    fun getViewPager(): ViewPager? = viewpager
 
-    fun getToolbar(): Toolbar? {
-        return toolbar as Toolbar
-    }
+    fun getToolbar(): Toolbar? = toolbar as Toolbar
 }

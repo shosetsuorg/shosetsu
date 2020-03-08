@@ -158,6 +158,14 @@ object Utilities {
     val isTapToScroll: Boolean
         get() = viewPreferences.getBoolean("tapToScroll", false)
 
+    fun toggleInvertedSwipe(): Boolean {
+        if (isInvertedSwipe) viewPreferences.edit().putBoolean("invertedSwipe", false).apply() else viewPreferences.edit().putBoolean("invertedSwipe", true).apply()
+        return isInvertedSwipe
+    }
+
+    val isInvertedSwipe: Boolean
+        get() = viewPreferences.getBoolean("invertedSwipe", false)
+
     fun intToBoolean(a: Int): Boolean = a == 1
 
     fun changeIndentSize(newIndent: Int) {

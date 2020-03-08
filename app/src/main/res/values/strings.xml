@@ -110,6 +110,7 @@
     <!-- Backup and restore -->
     <string name="reading_file">Reading</string>
     <string name="tap_to_scroll">Tap to scroll</string>
+    <string name="inverted_swipe">Inverted Chapter Swipe</string>
     <string name="press_to_continue_to_next_chapter">Press to continue to next chapter!</string>
     <string name="open_in_webview">Open in WebView</string>
     <string name="open_in_browser">Open in browser</string>
