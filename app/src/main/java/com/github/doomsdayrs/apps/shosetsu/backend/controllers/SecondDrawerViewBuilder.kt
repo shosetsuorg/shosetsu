@@ -62,12 +62,11 @@ class SecondDrawerViewBuilder(val context: Context, val navigationView: Navigati
         return this
     }
 
-    fun addSwitch(title: String = "UNKNOWN", action: (CompoundButton, Boolean) -> Unit): SecondDrawerViewBuilder {
+    fun addSwitch(title: String = "UNKNOWN"): SecondDrawerViewBuilder {
         val item = getNewItem()
-        val switch: Switch = item.findViewById(R.id.switchView)
+        val switch: Switch = item.findViewById(switchView)
         switch.visibility = VISIBLE
         switch.text = title
-        switch.setOnCheckedChangeListener { buttonView, isChecked -> action(buttonView, isChecked) }
         return add(item)
     }
 
@@ -79,17 +78,16 @@ class SecondDrawerViewBuilder(val context: Context, val navigationView: Navigati
         return add(item)
     }
 
-    fun addSpinner(title: String = "Not Described", spinnerAdapter: SpinnerAdapter): SecondDrawerViewBuilder {
+    fun addSpinner(title: String = "Not Described", array: Array<String>): SecondDrawerViewBuilder {
         val item = getNewItem()
         val spinner: Spinner = item.findViewById(spinner)
         spinner.visibility = VISIBLE
-        spinner.adapter = spinnerAdapter
+        spinner.adapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, array)
         val textView = item.findViewById<TextView>(R.id.textView)
         textView.visibility = VISIBLE
         textView.text = title
         return add(item)
     }
-
 
     fun addRadioGroup(title: String, array: Array<String>): SecondDrawerViewBuilder {
         val item = getNewItem()

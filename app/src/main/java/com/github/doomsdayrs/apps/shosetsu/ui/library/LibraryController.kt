@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
@@ -171,12 +170,11 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
     }
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-
         navigationView.addView(
                 SecondDrawerViewBuilder(navigationView.context, navigationView, drawerLayout, this)
-                        .addSwitch { compoundButton, b -> }
+                        .addSwitch()
                         .addEditText()
-                        .addSpinner(spinnerAdapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, arrayListOf("")))
+                        .addSpinner(array = arrayOf(""))
                         .addRadioGroup("Design", arrayOf("A", "B", "C"))
                         .build()
         )
