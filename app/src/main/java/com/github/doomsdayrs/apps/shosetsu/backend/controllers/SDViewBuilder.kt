@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.controllers
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,9 +16,7 @@ import androidx.transition.Slide
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.R.id.*
-import com.github.doomsdayrs.apps.shosetsu.R.layout.drawer_item
-import com.github.doomsdayrs.apps.shosetsu.R.layout.drawer_layout
+import com.github.doomsdayrs.apps.shosetsu.R.id.spinner
 import com.google.android.material.navigation.NavigationView
 
 
@@ -48,60 +46,60 @@ import com.google.android.material.navigation.NavigationView
  *
  * All added views are
  */
-class SecondDrawerViewBuilder(val context: Context, val navigationView: NavigationView, val drawerLayout: DrawerLayout, val secondDrawerController: SecondDrawerController) {
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val parentView = inflater.inflate(drawer_layout, null, false)
-    private val layout: LinearLayout = parentView.findViewById(linearLayout)
+open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: DrawerLayout, val secondDrawerController: SecondDrawerController) {
+    val inflater: LayoutInflater = LayoutInflater.from(navigationView.context)
+    open val layout: LinearLayout = LinearLayout(navigationView.context)
 
-    private fun getNewItem(): View {
-        return inflater.inflate(drawer_item, layout, false)
+    init {
+        layout.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        layout.orientation = LinearLayout.VERTICAL
     }
 
-    private fun add(view: View): SecondDrawerViewBuilder {
+    @SuppressLint("ResourceType")
+    open fun add(view: View): SDViewBuilder {
         layout.addView(view)
+        layout.addView(inflater.inflate(R.layout.drawer_divider, layout, false))
         return this
     }
 
-    fun addSwitch(title: String = "UNKNOWN"): SecondDrawerViewBuilder {
-        val item = getNewItem()
-        val switch: Switch = item.findViewById(switchView)
+    fun addSwitch(title: String = "UNKNOWN"): SDViewBuilder {
+        val switch = Switch(layout.context)
+        switch.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         switch.visibility = VISIBLE
         switch.text = title
-        return add(item)
+        return this.add(switch)
     }
 
-    fun addEditText(hint: String = "Not Described"): SecondDrawerViewBuilder {
-        val item = getNewItem()
-        val editText: EditText = item.findViewById(editText)
+    fun addEditText(hint: String = "Not Described"): SDViewBuilder {
+        val editText = EditText(navigationView.context)
+        editText.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         editText.visibility = VISIBLE
         editText.hint = hint
-        return add(item)
+        return this.add(editText)
     }
 
-    fun addSpinner(title: String = "Not Described", array: Array<String>): SecondDrawerViewBuilder {
-        val item = getNewItem()
+    fun addSpinner(title: String = "Not Described", array: Array<String>): SDViewBuilder {
+        val item = inflater.inflate(R.layout.drawer_item_spinner, layout, false) as LinearLayout
         val spinner: Spinner = item.findViewById(spinner)
         spinner.visibility = VISIBLE
         spinner.adapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, array)
+
         val textView = item.findViewById<TextView>(R.id.textView)
         textView.visibility = VISIBLE
         textView.text = title
-        return add(item)
+        return this.add(item)
     }
 
-    fun addRadioGroup(title: String, array: Array<String>): SecondDrawerViewBuilder {
-        val item = getNewItem()
-
-        val radioView = item.findViewById<LinearLayout>(radioGroupView)
-        radioView.visibility = VISIBLE
-
-        val bar = (radioView[0] as ConstraintLayout)
-        (bar[0] as TextView).text = title
-
-        val image = bar[1] as ImageView
-        var first = true
-
+    fun addRadioGroup(title: String, array: Array<String>): SDViewBuilder {
+        val radioView = inflater.inflate(R.layout.drawer_item_radio_group, layout, false) as LinearLayout
+        val expandableView = (radioView[0] as LinearLayout)
         val divider = radioView[1]
+
+        val bar = expandableView[0] as ConstraintLayout
+        (bar[0] as TextView).text = title
+        val image = bar[1] as ImageView
+
+        var first = true
 
         val radioGroupPar = radioView[2] as LinearLayout
         (radioGroupPar[0] as RadioGroup).let { radioGroup ->
@@ -139,20 +137,10 @@ class SecondDrawerViewBuilder(val context: Context, val navigationView: Navigati
                 } else first = !first
             }
         }
-        return add(item)
+        return this.add(radioView)
     }
 
-    fun build(): View {
-        parentView.findViewById<Button>(R.id.accept).setOnClickListener {
-            secondDrawerController.handleConfirm(layout)
-            drawerLayout.closeDrawer(navigationView)
-        }
-
-        parentView.findViewById<Button>(R.id.reset).setOnClickListener {
-            navigationView.removeAllViews()
-            secondDrawerController.createTabs(navigationView, drawerLayout)
-            drawerLayout.closeDrawer(navigationView)
-        }
-        return parentView
+    open fun build(): View {
+        return layout
     }
 }

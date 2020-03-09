@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 import com.github.doomsdayrs.api.shosetsu.services.core.*
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.LISTING_KEY
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerViewBuilder
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SDViewBuilder
 
 /*
  * This file is part of shosetsu.
@@ -44,7 +44,7 @@ fun Formatter.setDefaultListing(int: Int): Boolean = when {
 
 fun Formatter.getListing(): Formatter.Listing = listings[defaultListing]
 
-fun Filter<*>.build(builder: SecondDrawerViewBuilder) {
+fun Filter<*>.build(builder: SDViewBuilder) {
     when (this) {
         is SwitchFilter -> builder.addSwitch(name)
         is TextFilter -> builder.addEditText(name)

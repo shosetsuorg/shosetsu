@@ -228,6 +228,8 @@
     <string name="github_token_input_title">GitHub Oauth</string>
     <string name="apply">Apply</string>
     <string name="reset">Reset</string>
+    <string name="listings">Listings</string>
+    <string name="search_filters">Search Filters</string>
 
     <array name="application_themes">
         <item>@string/light</item>

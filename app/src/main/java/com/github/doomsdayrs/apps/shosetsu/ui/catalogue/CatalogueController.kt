@@ -18,8 +18,8 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SDBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerController
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerViewBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
@@ -173,11 +173,11 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
             cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this)
         }
 
-        cataloguePageLoader!!.execute(currentMaxPage)
+        cataloguePageLoader?.execute(currentMaxPage)
     }
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-        val builder = SecondDrawerViewBuilder(navigationView.context, navigationView, drawerLayout, this)
+        val builder = SDBuilder(navigationView, drawerLayout, this)
 
         // Listing selection
         val a = ArrayList<String>()
@@ -187,10 +187,14 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
         builder.addSpinner("Listing", a.toTypedArray())
 
         // Filters for Listing
-        formatter.listings[formatter.defaultListing].filters.forEach { it.build(builder) }
+        var inner = builder.newInner()
+        formatter.listings[formatter.defaultListing].filters.forEach { it.build(inner) }
+        builder.addInner((R.string.listings), inner)
 
+        inner = builder.newInner()
         // Filters for search
-        formatter.filters.forEach { it.build(builder) }
+        formatter.filters.forEach { it.build(inner) }
+        builder.addInner(R.string.search_filters, inner)
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {
