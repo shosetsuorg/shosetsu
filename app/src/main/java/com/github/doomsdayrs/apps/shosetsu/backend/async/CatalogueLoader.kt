@@ -3,10 +3,10 @@ package com.github.doomsdayrs.apps.shosetsu.backend.async
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib.Companion.FILTER_ID_QUERY
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getListing
 import org.luaj.vm2.LuaError
-import org.luaj.vm2.LuaTable
 
 
 /*
@@ -56,13 +56,12 @@ open class CatalogueLoader(val formatter: Formatter) {
         // Loads novel list
         return if (integers.isEmpty())
             if (query.isEmpty())
-                formatter.getListing().getListing(1)
+                formatter.getListing().getListing(1, mapOf())
             else {
-                val table = LuaTable()
-                table["query"] = query
-                formatter.search(table) { Log.i("Formatter", "${formatter.name}\t$it") }
+                val map = mapOf(Pair(FILTER_ID_QUERY, query))
+                formatter.search(map) { Log.i("Formatter", "${formatter.name}\t$it") }
             }
         else
-            formatter.getListing().getListing(integers[0]!!)
+            formatter.getListing().getListing(integers[0]!!, mapOf())
     }
 }

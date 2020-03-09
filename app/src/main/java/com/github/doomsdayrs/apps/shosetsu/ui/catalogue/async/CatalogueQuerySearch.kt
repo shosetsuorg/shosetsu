@@ -1,10 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
+import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
-import org.luaj.vm2.LuaTable
 import java.util.*
 
 /*
@@ -37,9 +37,8 @@ class CatalogueQuerySearch(private val catalogueFragment: CatalogueController) :
      */
     override fun doInBackground(vararg strings: String?): ArrayList<NovelListingCard> {
         val result = ArrayList<NovelListingCard>()
-        val luaTable = LuaTable()
-        luaTable["query"] = strings[0]
-        val novels = catalogueFragment.formatter.search(luaTable) {}
+        val map = mapOf(Pair(ShosetsuLib.FILTER_ID_QUERY, strings[0]))
+        val novels = catalogueFragment.formatter.search(map) {}
         try {
             for ((title, link, imageURL) in novels) result.add(NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link))
         } catch (e: MissingResourceException) {

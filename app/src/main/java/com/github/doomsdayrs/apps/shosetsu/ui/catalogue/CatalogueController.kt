@@ -19,6 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerViewBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
@@ -26,7 +27,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBo
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.build
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.google.android.material.navigation.NavigationView
@@ -174,10 +177,24 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
     }
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+        val builder = SecondDrawerViewBuilder(navigationView.context, navigationView, drawerLayout, this)
+
+        // Listing selection
+        val a = ArrayList<String>()
+        formatter.listings.forEach {
+            a.add(it.name)
+        }
+        builder.addSpinner("Listing", a.toTypedArray())
+
+        // Filters for Listing
+        formatter.listings[formatter.defaultListing].filters.forEach { it.build(builder) }
+
+        // Filters for search
+        formatter.filters.forEach { it.build(builder) }
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {
-        TODO("Not yet implemented")
+
     }
 
 }

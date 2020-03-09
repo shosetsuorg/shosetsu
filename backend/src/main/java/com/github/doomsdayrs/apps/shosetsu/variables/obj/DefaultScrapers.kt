@@ -1,9 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.obj
 
+import com.github.doomsdayrs.api.shosetsu.services.core.Filter
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
-import org.luaj.vm2.LuaTable
 
 /*
  * This file is part of Shosetsu.
@@ -32,9 +32,8 @@ object DefaultScrapers {
     class UnknownFormatter : Formatter {
         override val baseURL: String
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-
-        override val filters: LuaTable
-            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val filters: Array<Filter<*>>
+            get() = TODO("Not yet implemented")
         override val formatterID: Int = -1
         override val hasCloudFlare: Boolean
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
@@ -46,8 +45,8 @@ object DefaultScrapers {
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         override val name: String
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        override val settings: LuaTable
-            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        override val settings: Array<Filter<*>>
+            get() = TODO("Not yet implemented")
 
         override fun getPassage(chapterURL: String): String {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -57,14 +56,13 @@ object DefaultScrapers {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        override fun search(data: LuaTable, reporter: (status: String) -> Unit): Array<Novel.Listing> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        override fun search(data: Map<Int, Any?>, reporter: (status: String) -> Unit): Array<Novel.Listing> {
+            TODO("Not yet implemented")
         }
 
-        override fun setSettings(settings: LuaTable) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        override fun updateSetting(id: Int, value: Any?) {
+            TODO("Not yet implemented")
         }
-
     }
 
     val unknown = UnknownFormatter()
