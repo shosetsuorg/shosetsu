@@ -6,6 +6,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 
 /*
  * This file is part of Shosetsu.
@@ -24,8 +25,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  */
-
-
 /**
  * Shosetsu
  * 9 / June / 2019

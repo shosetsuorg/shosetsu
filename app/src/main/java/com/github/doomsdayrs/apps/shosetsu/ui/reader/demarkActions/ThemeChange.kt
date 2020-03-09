@@ -29,18 +29,11 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
  */
 
 class ThemeChange(private val chapterReader: ChapterView) : Utilities.DeMarkAction {
-
     override fun action(spared: Int) {
         when (spared) {
-            0 -> {
-                Utilities.setNightNode()
-            }
-            1 -> {
-                Utilities.setLightMode()
-            }
-            2 -> {
-                Utilities.setSepiaMode(chapterReader.context!!)
-            }
+            0 -> Utilities.setNightNode()
+            1 -> Utilities.setLightMode()
+            2 -> Utilities.setSepiaMode(chapterReader.context!!)
         }
         chapterReader.setUpReader()
     }

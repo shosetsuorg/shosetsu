@@ -21,17 +21,13 @@ import org.luaj.vm2.LuaTable
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+/**
  * Shosetsu
  * 30 / May / 2019
  *
  * @author github.com/doomsdayrs
  */
-/**
- * Moved from deprecated novelreader-core
- * Contains functional novels and their IDs
- */
-// TODO Make this full dynamic, not needing to be predefined
-// > Make IDs built into the formatter
 object DefaultScrapers {
     class UnknownFormatter : Formatter {
         override val baseURL: String
@@ -76,12 +72,8 @@ object DefaultScrapers {
     val formatters = ArrayList<Formatter>()
 
     @JvmStatic
-    fun getByID(ID: Int): Formatter {
-        for (formatter in formatters) {
-            if (formatter.formatterID == ID) return formatter
-        }
-        return unknown
-    }
+    fun getByID(ID: Int): Formatter
+            = formatters.firstOrNull { it.formatterID == ID } ?: unknown
 
     val asFormatter: ArrayList<FormatterCard>
         get() {

@@ -100,15 +100,9 @@ class ChapterView : Fragment() {
                     menu.findItem(R.id.chapter_view_reader_light),
                     menu.findItem(R.id.chapter_view_reader_sepia))
             when (Utilities.getReaderColor(context!!)) {
-                0 -> {
-                    themes[0].setChecked(true)
-                }
-                1 -> {
-                    themes[1].setChecked(true)
-                }
-                2 -> {
-                    themes[2].setChecked(true)
-                }
+                0 -> themes[0].setChecked(true)
+                1 -> themes[1].setChecked(true)
+                2 -> themes[2].setChecked(true)
                 else -> {
                     Utilities.setLightMode()
                     themes[1].setChecked(true)
@@ -342,11 +336,11 @@ class ChapterView : Fragment() {
         textView.setTextColor(Settings.ReaderTextColor)
         textView.textSize = Settings.ReaderTextSize
         next_chapter.setOnClickListener {
-            val position = chapterReader!!.findCurrentPosition(chapterID)
+            val next = chapterReader!!.getNextPosition(chapterID)
             if (chapterReader!!.chapterIDs.isNotEmpty() && chapterReader!!.getViewPager() != null) {
-                if (position + 1 < chapterReader!!.chapterIDs.size) {
+                if (next in chapterReader!!.chapterIDs.indices) {
                     next_chapter.visibility = View.GONE
-                    chapterReader!!.getViewPager()?.currentItem = position + 1
+                    chapterReader!!.getViewPager()?.currentItem = next
                 } else chapterReader?.toast("No more chapters!")
             }
         }
