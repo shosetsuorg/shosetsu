@@ -48,22 +48,22 @@ import com.google.android.material.navigation.NavigationView
  */
 open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: DrawerLayout, val secondDrawerController: SecondDrawerController) {
     val inflater: LayoutInflater = LayoutInflater.from(navigationView.context)
-    open val layout: LinearLayout = LinearLayout(navigationView.context)
+    open val layout: LinearLayout? = LinearLayout(navigationView.context)
 
     init {
-        layout.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        layout.orientation = LinearLayout.VERTICAL
+        layout?.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        layout?.orientation = LinearLayout.VERTICAL
     }
 
     @SuppressLint("ResourceType")
     open fun add(view: View): SDViewBuilder {
-        layout.addView(view)
-        layout.addView(inflater.inflate(R.layout.drawer_divider, layout, false))
+        layout?.addView(view)
+        layout?.addView(inflater.inflate(R.layout.drawer_divider, layout, false))
         return this
     }
 
     fun addSwitch(title: String = "UNKNOWN"): SDViewBuilder {
-        val switch = Switch(layout.context)
+        val switch = Switch(layout!!.context)
         switch.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         switch.visibility = VISIBLE
         switch.text = title
@@ -93,7 +93,7 @@ open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: D
     fun addRadioGroup(title: String, array: Array<String>): SDViewBuilder {
         val radioView = inflater.inflate(R.layout.drawer_item_radio_group, layout, false) as LinearLayout
         val expandableView = (radioView[0] as LinearLayout)
-        val divider = radioView[1]
+        val divider = expandableView[1]
 
         val bar = expandableView[0] as ConstraintLayout
         (bar[0] as TextView).text = title
@@ -101,7 +101,7 @@ open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: D
 
         var first = true
 
-        val radioGroupPar = radioView[2] as LinearLayout
+        val radioGroupPar = radioView[1] as LinearLayout
         (radioGroupPar[0] as RadioGroup).let { radioGroup ->
             array.forEach {
                 val r = RadioButton(radioGroup.context)
@@ -141,6 +141,6 @@ open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: D
     }
 
     open fun build(): View {
-        return layout
+        return layout!!
     }
 }

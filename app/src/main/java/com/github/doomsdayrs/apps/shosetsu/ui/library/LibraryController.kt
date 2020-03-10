@@ -19,8 +19,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SDBuilder
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
@@ -171,7 +171,7 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
         navigationView.addView(
-                SDBuilder(navigationView.context, navigationView, drawerLayout, this)
+                SDBuilder(navigationView, drawerLayout, this)
                         .addSwitch()
                         .addEditText()
                         .addSpinner(array = arrayOf(""))
