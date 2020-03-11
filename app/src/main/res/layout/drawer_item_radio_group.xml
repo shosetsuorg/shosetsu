@@ -2,12 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:id="@+id/radioGroupView"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <include layout="@layout/drawer_item_expandable" />
 
     <LinearLayout
+        android:id="@+id/radioGroupHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -15,7 +17,6 @@
             android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
             android:orientation="vertical"
             android:visibility="gone"
             tools:ignore="UselessLeaf" />

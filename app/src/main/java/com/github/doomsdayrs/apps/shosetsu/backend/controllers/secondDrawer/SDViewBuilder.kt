@@ -50,40 +50,33 @@ open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: D
     companion object {
         private const val logID = "SDViewBuilder"
     }
-    val inflater: LayoutInflater = LayoutInflater.from(navigationView.context)
-    open val layout: LinearLayout? = LinearLayout(navigationView.context)
 
-    init {
-        layout?.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        layout?.orientation = LinearLayout.VERTICAL
-    }
+    val inflater: LayoutInflater = LayoutInflater.from(navigationView.context)
+    val layout: LinearLayout = inflater.inflate(R.layout.drawer_layout_simple, navigationView, false) as LinearLayout
 
     @SuppressLint("ResourceType")
     open fun add(view: View): SDViewBuilder {
-        Log.d(logID, "${layout!!.childCount}")
-        layout?.addView(view)
-        layout?.addView(inflater.inflate(R.layout.drawer_divider, layout, false))
-        Log.d(logID, "${layout!!.childCount}")
+        layout.addView(view)
+        layout.addView(inflater.inflate(R.layout.drawer_divider, layout, false))
         return this
     }
 
     fun addSwitch(title: String = "UNKNOWN"): SDViewBuilder {
-        val switch = Switch(layout!!.context)
-        switch.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        switch.visibility = VISIBLE
+        Log.d(logID, "Adding Switch\t: $title")
+        val switch = inflater.inflate(R.layout.drawer_item_switch, layout, false) as Switch
         switch.text = title
-        return this.add(switch)
+        return add(switch)
     }
 
     fun addEditText(hint: String = "Not Described"): SDViewBuilder {
-        val editText = EditText(navigationView.context)
-        editText.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        editText.visibility = VISIBLE
+        Log.d(logID, "Adding EditText\t: $hint")
+        val editText = inflater.inflate(R.layout.drawer_item_edit_text, layout, false) as EditText
         editText.hint = hint
-        return this.add(editText)
+        return add(editText)
     }
 
     fun addSpinner(title: String = "Not Described", array: Array<String>, selectedInt: Int = 0): SDViewBuilder {
+        Log.d(logID, "Adding Spinner\t: $title")
         val item = inflater.inflate(R.layout.drawer_item_spinner, layout, false) as LinearLayout
         val spinner: Spinner = item.findViewById(spinner)
         spinner.visibility = VISIBLE
@@ -93,10 +86,11 @@ open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: D
         val textView = item.findViewById<TextView>(R.id.textView)
         textView.visibility = VISIBLE
         textView.text = title
-        return this.add(item)
+        return add(item)
     }
 
     fun addRadioGroup(title: String, array: Array<String>): SDViewBuilder {
+        Log.d(logID, "Adding RadioGroup\t: $title")
         val radioView = inflater.inflate(R.layout.drawer_item_radio_group, layout, false) as LinearLayout
         val expandableView = (radioView[0] as LinearLayout)
         val divider = expandableView[1]
@@ -143,10 +137,10 @@ open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: D
                 } else first = !first
             }
         }
-        return this.add(radioView)
+        return add(radioView)
     }
 
     open fun build(): View {
-        return layout!!
+        return layout
     }
 }

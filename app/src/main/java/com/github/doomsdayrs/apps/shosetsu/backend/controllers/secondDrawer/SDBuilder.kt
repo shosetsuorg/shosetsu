@@ -20,7 +20,6 @@ import androidx.transition.Slide
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.R.id.linearLayout
 import com.github.doomsdayrs.apps.shosetsu.R.layout.drawer_layout
 import com.google.android.material.navigation.NavigationView
 
@@ -56,13 +55,7 @@ class SDBuilder(navigationView: NavigationView, drawerLayout: DrawerLayout, seco
         private const val logID = "SDBuilder"
     }
 
-    private val parentView = inflater.inflate(drawer_layout, null, false)
-    override val layout: LinearLayout = parentView.findViewById(linearLayout)
-
-    override fun add(view: View): SDBuilder {
-        layout.addView(view)
-        return this
-    }
+    private val parentView = inflater.inflate(drawer_layout, navigationView, false)
 
     fun newInner(): SDViewBuilder {
         return SDViewBuilder(navigationView, drawerLayout, secondDrawerController)
@@ -123,7 +116,7 @@ class SDBuilder(navigationView: NavigationView, drawerLayout: DrawerLayout, seco
             secondDrawerController.handleConfirm(layout)
             drawerLayout.closeDrawer(navigationView)
         }
-
+        parentView.findViewById<LinearLayout>(R.id.linearLayout).addView(layout)
         parentView.findViewById<Button>(R.id.reset).setOnClickListener {
             navigationView.removeAllViews()
             secondDrawerController.createTabs(navigationView, drawerLayout)
