@@ -6,7 +6,6 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib.Companion.FILTER_ID_QUERY
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getListing
 import org.luaj.vm2.LuaError
 
 
@@ -65,15 +64,17 @@ open class CatalogueLoader(val formatter: Formatter, val filters: MutableMap<Int
             wait(5)
         }
         // Loads novel list
-        Log.d(logID, "Selected listing $targetListing" )
+        Log.d(logID, "Selected listing $targetListing")
         return if (integers.isEmpty())
-            if (query.isEmpty())
+            if (query.isEmpty()) {
+                Log.d(logID, "Listing ${formatter.listings[targetListing].name}")
                 formatter.listings[targetListing].getListing(1, filters)
-            else {
+            } else {
+                Log.d(logID, "Searching")
                 filters[FILTER_ID_QUERY] = query
                 formatter.search(filters) { Log.i("Formatter", "${formatter.name}\t$it") }
             }
         else
-            formatter.getListing().getListing(integers[0]!!, filters)
+            formatter.listings[targetListing].getListing(integers[0]!!, filters)
     }
 }
