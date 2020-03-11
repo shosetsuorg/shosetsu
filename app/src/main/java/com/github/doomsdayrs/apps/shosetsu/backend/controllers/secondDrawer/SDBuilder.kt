@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.controllers
+package com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer
 
 import android.util.Log
 import android.view.Gravity

@@ -26,12 +26,16 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.luaj.vm2.LuaError
 import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 /*
  * This file is part of shosetsu.
@@ -81,27 +85,41 @@ object FormatterService {
         run {
             val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
             if (sourceFile.isFile && sourceFile.exists()) {
-                sourceJSON = JSONObject(getContent(sourceFile))
+                try {
+                    sourceJSON = JSONObject(getContent(sourceFile))
+                } catch (e: JSONException) {
+                    TODO("Add error handling here")
+                } catch (e: FileNotFoundException) {
+                    TODO("Add error handling here")
+                }
                 PROGRESS("Sources found and loaded")
             } else {
                 PROGRESS("Sources not found, Downloading..")
                 Log.i("FormatterInit", "Downloading formatterJSON")
-                sourceFile.createNewFile()
-                var json = "{}"
+                try {
+                    sourceFile.createNewFile()
+                } catch (e: IOException) {
+                    Log.wtf("Could not even create a new file, Aborting program", e)
+                }
                 if (Utilities.isOnline) {
-                    val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json").get()
-                    if (doc != null) {
-                        PROGRESS("Sources downloaded, Writing..")
-                        json = doc.body().text()
-                        writeFile(json, sourceFile)
-                        PROGRESS("Sources loaded")
+                    var json = "{}"
+                    try {
+                        val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/formatters.json").get()
+                        if (doc != null) {
+                            PROGRESS("Sources downloaded, Writing..")
+                            json = doc.body().text()
+                            writeFile(json, sourceFile)
+                            PROGRESS("Sources loaded")
+                        }
+                        sourceJSON = JSONObject(json)
+                    } catch (e: IOException) {
+                        PROGRESS("Failed to download")
                     }
                 } else {
                     PROGRESS("Application is offline, Using placeholder")
                     Log.e("FormatterInit", "Is Offline, Cannot load data, Using stud")
                     sourceJSON.put("libraries", JSONArray())
                 }
-                sourceJSON = JSONObject(json)
             }
         }
 
@@ -203,26 +221,32 @@ object FormatterService {
                 if (sources != null) {
                     PROGRESS("Loading custom scripts")
                     for (source in sources) {
-                        confirm(source, object : FormatterUtils.CheckSumAction {
-                            override fun fail() {
-                                Log.i("FormatterInit", "${source.name}:\tSum does not match, Adding")
-                                unknownFormatters.add(source)
-                            }
-
-                            override fun pass() {
-                                if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
-                                    val l = LuaFormatter(source)
-                                    if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
-                                        DefaultScrapers.formatters.add(l)
+                        try {
+                            confirm(source, object : FormatterUtils.CheckSumAction {
+                                override fun fail() {
+                                    Log.i("FormatterInit", "${source.name}:\tSum does not match, Adding")
+                                    unknownFormatters.add(source)
                                 }
-                            }
 
-                            override fun noMeta() {
-                                Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
-                                unknownFormatters.add(source)
-                            }
+                                override fun pass() {
+                                    if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
+                                        val l = LuaFormatter(source)
+                                        if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
+                                            DefaultScrapers.formatters.add(l)
+                                    }
+                                }
 
-                        })
+                                override fun noMeta() {
+                                    Log.i("FormatterInit", "${source.name}:\tNo meta found, Adding")
+                                    unknownFormatters.add(source)
+                                }
+
+                            })
+                        } catch (e: JSONException) {
+                            TODO("Add error handling here")
+                        } catch (e: MissingResourceException) {
+                            TODO("Add error handling here")
+                        }
                     }
                 } else {
                     PROGRESS("No custom scripts found")

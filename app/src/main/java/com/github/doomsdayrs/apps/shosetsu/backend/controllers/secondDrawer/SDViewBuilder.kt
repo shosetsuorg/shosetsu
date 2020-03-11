@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.controllers
+package com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -47,6 +47,9 @@ import com.google.android.material.navigation.NavigationView
  * All added views are
  */
 open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: DrawerLayout, val secondDrawerController: SecondDrawerController) {
+    companion object {
+        private const val logID = "SDViewBuilder"
+    }
     val inflater: LayoutInflater = LayoutInflater.from(navigationView.context)
     open val layout: LinearLayout? = LinearLayout(navigationView.context)
 
@@ -57,8 +60,10 @@ open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: D
 
     @SuppressLint("ResourceType")
     open fun add(view: View): SDViewBuilder {
+        Log.d(logID, "${layout!!.childCount}")
         layout?.addView(view)
         layout?.addView(inflater.inflate(R.layout.drawer_divider, layout, false))
+        Log.d(logID, "${layout!!.childCount}")
         return this
     }
 

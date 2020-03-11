@@ -17,12 +17,15 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.doomsdayrs.apps.shosetsulib.BuildConfig
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.sql.SQLException
+import java.util.*
 
 
 /*
@@ -143,7 +146,11 @@ object FormatterUtils {
                     Log.d("Extension download", downloadedFile.absolutePath)
                     Log.d("Extension download", targetFile.absolutePath)
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Files.move(downloadedFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING) else downloadedFile.renameTo(targetFile)
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Files.move(downloadedFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING) else downloadedFile.renameTo(targetFile)
+                    } catch (e: IOException) {
+                        TODO("Add error handling here")
+                    }
                     downloaded()
 
                     val form = LuaFormatter(targetFile)
@@ -158,6 +165,7 @@ object FormatterUtils {
         activity.registerReceiver(onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
+    @Throws(SQLException::class)
     fun deleteScript(name: String, id: Int, pre: () -> Unit, whenFound: () -> Unit, complete: () -> Unit) {
         pre()
         var b = true
@@ -176,6 +184,7 @@ object FormatterUtils {
         Database.DatabaseFormatters.removeFormatterFromList(id)
     }
 
+    @Throws(FileNotFoundException::class, JSONException::class, SQLException::class)
     fun trustScript(file: File) {
         val name = file.name.substring(0, file.name.length - 4)
         val meta = LuaFormatter(file).getMetaData()!!
@@ -185,6 +194,7 @@ object FormatterUtils {
         Database.DatabaseFormatters.addToFormatterList(name, id, md5, repo.isNotEmpty(), repo)
     }
 
+    @Throws(IOException::class)
     fun writeFile(string: String, file: File) {
         if (!file.parentFile!!.exists())
             file.parentFile!!.mkdirs()
@@ -196,13 +206,13 @@ object FormatterUtils {
         out.close()
     }
 
+    @Throws(IOException::class)
     fun downloadLibrary(name: String, file: File) {
         val client = OkHttpClient()
         val request = Request.Builder().url("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/lib/$name.lua").build()
         val response = client.newCall(request).execute()
         writeFile(response.body!!.string(), file)
     }
-
 
 
     interface CheckSumAction {
@@ -214,6 +224,7 @@ object FormatterUtils {
     /**
      * Dynamic MD5 checking
      */
+    @Throws(JSONException::class, MissingResourceException::class)
     fun confirm(file: File, checkSumAction: CheckSumAction): Boolean {
         val meta = getMetaData(file)
         return if (meta != null) {
@@ -239,9 +250,6 @@ object FormatterUtils {
             false
         }
     }
-
-
-
 
 
 }

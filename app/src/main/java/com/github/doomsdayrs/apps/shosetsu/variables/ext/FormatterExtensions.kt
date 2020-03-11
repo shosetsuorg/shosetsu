@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 import com.github.doomsdayrs.api.shosetsu.services.core.*
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.LISTING_KEY
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SDViewBuilder
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDViewBuilder
 
 /*
  * This file is part of shosetsu.

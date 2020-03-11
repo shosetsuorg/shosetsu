@@ -20,9 +20,9 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SDBuilder
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDBuilder
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom
@@ -187,25 +187,35 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
         val builder = SDBuilder(navigationView, drawerLayout, this)
-        Log.d(logID, "${builder.layout.childCount}")
+
+        Log.d(logID, "Creating Listings\t| ${builder.layout.childCount}")
         // Listing selection
         val a = ArrayList<String>()
         formatter.listings.forEach {
+            Log.d(logID, "Adding Listing\t|${it.name}")
             a.add(it.name)
         }
-        builder.addSpinner("Listing", a.toTypedArray(), formatter.defaultListing)
+        builder.addSpinner("Listing", a.toTypedArray(), this.selectedListing)
 
+        Log.d(logID, "Creating Filters4L\t| ${builder.layout.childCount}")
         // Filters for Listing
         var inner = builder.newInner()
-        formatter.listings[formatter.defaultListing].filters.forEach { it.build(inner) }
+        formatter.listings[this.selectedListing].filters.forEach {
+            Log.d(logID, "Adding Listing\t|${it.id}${it.javaClass}")
+            it.build(inner)
+        }
         builder.addInner((R.string.listings), inner)
 
+        Log.d(logID, "Creating Filters4S\t| ${builder.layout.childCount}")
         inner = builder.newInner()
         // Filters for search
-        formatter.filters.forEach { it.build(inner) }
+        formatter.filters.forEach {
+            Log.d(logID, "Adding S_Filter\t|${it.id}${it.javaClass}")
+            it.build(inner)
+        }
         builder.addInner(R.string.search_filters, inner)
 
-        Log.d(logID, "${builder.layout.childCount}")
+        Log.d(logID, "Final layout ${builder.layout.childCount}")
         navigationView.addView(builder.build())
         listingMap = formatter.getListing().filters.defaultMap()
     }
