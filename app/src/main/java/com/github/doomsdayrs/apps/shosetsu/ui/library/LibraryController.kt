@@ -170,18 +170,21 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
     }
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-        val b = SDBuilder(navigationView, drawerLayout, this)
-        b.addInner(R.string.todo, b.newInner()
+        navigationView.addView(
+                SDBuilder(navigationView, drawerLayout, this)
+                        .createInner(R.string.todo) {
+                            it
+                                    .addSwitch()
+                                    .addEditText()
+                                    .addSpinner(array = arrayOf(""))
+                                    .addRadioGroup("DesignINNER", arrayOf("A", "B", "C"))
+                        }
                         .addSwitch()
                         .addEditText()
                         .addSpinner(array = arrayOf(""))
-                        .addRadioGroup("DesignINNER", arrayOf("A", "B", "C")))
-                .addSwitch()
-                .addEditText()
-                .addSpinner(array = arrayOf(""))
-                .addRadioGroup("Design", arrayOf("A", "B", "C"))
-
-        navigationView.addView(b.build())
+                        .addRadioGroup("Design", arrayOf("A", "B", "C"))
+                        .build()
+        )
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {

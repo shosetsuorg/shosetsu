@@ -187,8 +187,8 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
         val builder = SDBuilder(navigationView, drawerLayout, this)
-
         Log.d(logID, "Creating Listings\t| ${builder.layout.childCount}")
+
         // Listing selection
         val a = ArrayList<String>()
         formatter.listings.forEach {
@@ -197,23 +197,26 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
         }
         builder.addSpinner("Listing", a.toTypedArray(), this.selectedListing)
 
-        Log.d(logID, "Creating Filters4L\t| ${builder.layout.childCount}")
-        // Filters for Listing
-        var inner = builder.newInner()
-        formatter.listings[this.selectedListing].filters.forEach {
-            Log.d(logID, "Adding Listing\t|${it.id}${it.javaClass}")
-            it.build(inner)
+        builder.createInner((R.string.listings)) { it ->
+            Log.d(logID, "Creating Filters4L\t| ${builder.layout.childCount}")
+            // Filters for Listing
+            formatter.listings[this.selectedListing].filters.forEach { filter ->
+                Log.d(logID, "Adding Listing\t|${filter.id}${filter.javaClass}")
+                filter.build(it)
+            }
+            it
         }
-        builder.addInner((R.string.listings), inner)
 
-        Log.d(logID, "Creating Filters4S\t| ${builder.layout.childCount}")
-        inner = builder.newInner()
-        // Filters for search
-        formatter.filters.forEach {
-            Log.d(logID, "Adding S_Filter\t|${it.id}${it.javaClass}")
-            it.build(inner)
+        builder.createInner(R.string.search_filters) {
+            Log.d(logID, "Creating Filters4S\t| ${builder.layout.childCount}")
+            // Filters for search
+            Log.d(logID, "Filters found ${formatter.filters.size}")
+            formatter.filters.forEach { filter ->
+                Log.d(logID, "Adding S_Filter\t|${filter.id}${filter.javaClass}")
+                filter.build(it)
+            }
+            it
         }
-        builder.addInner(R.string.search_filters, inner)
 
         Log.d(logID, "Final layout ${builder.layout.childCount}")
         navigationView.addView(builder.build())

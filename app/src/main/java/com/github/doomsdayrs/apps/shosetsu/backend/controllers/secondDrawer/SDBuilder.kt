@@ -1,26 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer
 
-import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.ViewGroup.LayoutParams
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.StringRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.transition.Slide
-import androidx.transition.Transition
-import androidx.transition.TransitionManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.layout.drawer_layout
+import com.github.doomsdayrs.apps.shosetsu.ui.drawer.ExpandingViewBar
 import com.google.android.material.navigation.NavigationView
 
 
@@ -50,77 +37,30 @@ import com.google.android.material.navigation.NavigationView
  *
  * All added views are
  */
-class SDBuilder(navigationView: NavigationView, drawerLayout: DrawerLayout, secondDrawerController: SecondDrawerController) : SDViewBuilder(navigationView, drawerLayout, secondDrawerController) {
+class SDBuilder(val navigationView: NavigationView, val drawerLayout: DrawerLayout, secondDrawerController: SecondDrawerController) : SDViewBuilder(navigationView, secondDrawerController) {
     companion object {
         private const val logID = "SDBuilder"
     }
 
     private val parentView = inflater.inflate(drawer_layout, navigationView, false)
 
-    fun newInner(): SDViewBuilder {
-        return SDViewBuilder(navigationView, drawerLayout, secondDrawerController)
-    }
-
-    fun addInner(@StringRes string: Int, builder: SDViewBuilder): SDBuilder {
-
-        val view = LinearLayout(layout.context)
-        view.layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-
-        val expandingBar = inflater.inflate(R.layout.drawer_item_expandable, layout, false) as LinearLayout
-        val bar = expandingBar[0] as ConstraintLayout
-        (bar[0] as TextView).setText(string)
-        val image = bar[1] as ImageView
-
-        val divider = expandingBar[1]
-        val internalView = builder.build()
-
-        var first = true
-        expandingBar.setOnClickListener {
-            if (!first) {
-                when (internalView.visibility == VISIBLE) {
-                    true -> {
-                        Log.i("DrawerItem", "Closing RadioView")
-                        divider.visibility = GONE
-                        image.setImageResource(R.drawable.ic_baseline_expand_more_24)
-
-                        val transition: Transition = Slide(Gravity.BOTTOM)
-                        transition.duration = 600
-                        transition.addTarget(internalView)
-                        TransitionManager.beginDelayedTransition(view, transition)
-                    }
-                    false -> {
-                        Log.i("DrawerItem", "Opening Radio View")
-                        divider.visibility = VISIBLE
-                        image.setImageResource(R.drawable.ic_baseline_expand_less_24)
-
-                        val transition: Transition = Slide(Gravity.TOP)
-                        transition.duration = 600
-                        transition.addTarget(internalView)
-                        TransitionManager.beginDelayedTransition(view, transition)
-                    }
-                }
-                internalView.visibility = if (internalView.visibility != VISIBLE) VISIBLE else GONE
-            } else first = !first
-        }
-        Log.d(logID, "${layout.childCount}")
-        view.addView(expandingBar)
-        view.addView(internalView)
-        layout.addView(view)
-        layout.addView(inflater.inflate(R.layout.drawer_divider, layout, false))
-        Log.d(logID, "${layout.childCount}")
+    fun createInner(@StringRes string: Int, builder: (SDViewBuilder) -> SDViewBuilder): SDBuilder {
+        val expandingViewBar = ExpandingViewBar(navigationView.context)
+        expandingViewBar.setChild(builder(SDViewBuilder(expandingViewBar, secondDrawerController)).build())
+        add(expandingViewBar)
         return this
     }
 
     override fun build(): View {
         parentView.findViewById<Button>(R.id.accept).setOnClickListener {
             secondDrawerController.handleConfirm(layout)
-            drawerLayout.closeDrawer(navigationView)
+            drawerLayout.closeDrawer(viewGroup)
         }
         parentView.findViewById<LinearLayout>(R.id.linearLayout).addView(layout)
         parentView.findViewById<Button>(R.id.reset).setOnClickListener {
-            navigationView.removeAllViews()
+            viewGroup.removeAllViews()
             secondDrawerController.createTabs(navigationView, drawerLayout)
-            drawerLayout.closeDrawer(navigationView)
+            drawerLayout.closeDrawer(viewGroup)
         }
         return parentView
     }
