@@ -15,7 +15,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -39,5 +45,5 @@ dependencies {
     implementation 'joda-time:joda-time:2.10.5'
 
     // Core libraries
-    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc7'
+    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc8'
 }

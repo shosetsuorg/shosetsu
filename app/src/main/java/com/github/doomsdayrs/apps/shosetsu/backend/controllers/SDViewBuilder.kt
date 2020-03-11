@@ -78,11 +78,12 @@ open class SDViewBuilder(val navigationView: NavigationView, val drawerLayout: D
         return this.add(editText)
     }
 
-    fun addSpinner(title: String = "Not Described", array: Array<String>): SDViewBuilder {
+    fun addSpinner(title: String = "Not Described", array: Array<String>, selectedInt: Int = 0): SDViewBuilder {
         val item = inflater.inflate(R.layout.drawer_item_spinner, layout, false) as LinearLayout
         val spinner: Spinner = item.findViewById(spinner)
         spinner.visibility = VISIBLE
         spinner.adapter = ArrayAdapter(navigationView.context, android.R.layout.simple_spinner_item, array)
+        spinner.setSelection(selectedInt)
 
         val textView = item.findViewById<TextView>(R.id.textView)
         textView.visibility = VISIBLE

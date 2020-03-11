@@ -128,6 +128,11 @@ class MainActivity : AppCompatActivity(), Supporter {
         WebViewScrapper.setUa(findViewById<WebView>(R.id.absolute_webView).settings.userAgentString)
 
         ShosetsuLib.httpClient = OkHttpClient.Builder()
+                .addInterceptor {
+                    val r = it.request()
+                    Log.i("ShosetsuLib",r.url.toUrl().toExternalForm())
+                    return@addInterceptor it.proceed(r)
+                }
                 .cookieJar(WebviewCookieHandler())
                 .build()
 

@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
+import com.github.doomsdayrs.api.shosetsu.services.core.*
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterText
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
@@ -39,4 +40,19 @@ import java.util.*
 @Throws(MissingResourceException::class)
 fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturns<String> {
     return getChapterText(getSavedNovelPath(chapterID))
+}
+
+fun Array<Filter<*>>.defaultMap(): MutableMap<Int, Any> {
+    val m = mutableMapOf<Int, Any>()
+    forEach {
+        m[it.id] = when (it) {
+            is TextFilter -> ""
+            is SwitchFilter -> true
+            is DropdownFilter -> 0
+            is RadioGroupFilter -> 0
+            else -> {
+            }
+        }
+    }
+    return m
 }

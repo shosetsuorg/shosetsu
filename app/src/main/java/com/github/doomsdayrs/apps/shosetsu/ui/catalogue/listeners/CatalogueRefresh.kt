@@ -32,7 +32,6 @@ class CatalogueRefresh(private val catalogueFragment: CatalogueController) : OnR
         catalogueFragment.catalogueNovelCards = ArrayList()
         catalogueFragment.currentMaxPage = 1
         Log.d("FragmentRefresh", "Refreshing catalogue data")
-
         catalogueFragment.executePageLoader()
     }
 

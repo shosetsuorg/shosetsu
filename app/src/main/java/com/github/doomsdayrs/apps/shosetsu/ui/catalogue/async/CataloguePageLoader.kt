@@ -35,7 +35,7 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-class CataloguePageLoader(private val catalogueFragment: CatalogueController) : AsyncTask<Int, Void, Boolean>() {
+class CataloguePageLoader(private val catalogueFragment: CatalogueController, val selectedListing: Int) : AsyncTask<Int, Void, Boolean>() {
 
     /**
      * Loads up the category
@@ -50,8 +50,12 @@ class CataloguePageLoader(private val catalogueFragment: CatalogueController) : 
                 it.context?.toast("CLOUDFLARE")
             }
             try {
-                val novels: Array<Listing> = if (integers.isNotEmpty()) CatalogueLoader(it.formatter).execute(integers[0]) else CatalogueLoader(it.formatter).execute()
-                for ((title, link, imageURL) in novels) it.catalogueNovelCards.add(NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link))
+                val novels: Array<Listing> =
+                        if (integers.isNotEmpty())
+                            CatalogueLoader(it.formatter, catalogueFragment.listingMap, catalogueFragment.selectedListing).execute(integers[0])
+                        else CatalogueLoader(it.formatter, catalogueFragment.listingMap, catalogueFragment.selectedListing).execute()
+                for ((title, link, imageURL) in novels)
+                    it.catalogueNovelCards.add(NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link))
                 Log.d("FragmentRefresh", "Complete")
                 true
             } catch (e: LuaError) {

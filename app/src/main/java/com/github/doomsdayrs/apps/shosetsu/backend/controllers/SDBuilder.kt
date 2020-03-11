@@ -5,6 +5,9 @@ import android.view.Gravity
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -49,6 +52,10 @@ import com.google.android.material.navigation.NavigationView
  * All added views are
  */
 class SDBuilder(navigationView: NavigationView, drawerLayout: DrawerLayout, secondDrawerController: SecondDrawerController) : SDViewBuilder(navigationView, drawerLayout, secondDrawerController) {
+    companion object {
+        private const val logID = "SDBuilder"
+    }
+
     private val parentView = inflater.inflate(drawer_layout, null, false)
     override val layout: LinearLayout = parentView.findViewById(linearLayout)
 
@@ -62,11 +69,11 @@ class SDBuilder(navigationView: NavigationView, drawerLayout: DrawerLayout, seco
     }
 
     fun addInner(@StringRes string: Int, builder: SDViewBuilder): SDBuilder {
+
         val view = LinearLayout(layout.context)
+        view.layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
 
         val expandingBar = inflater.inflate(R.layout.drawer_item_expandable, layout, false) as LinearLayout
-
-
         val bar = expandingBar[0] as ConstraintLayout
         (bar[0] as TextView).setText(string)
         val image = bar[1] as ImageView
@@ -102,11 +109,12 @@ class SDBuilder(navigationView: NavigationView, drawerLayout: DrawerLayout, seco
                 internalView.visibility = if (internalView.visibility != VISIBLE) VISIBLE else GONE
             } else first = !first
         }
-
+        Log.d(logID, "${layout.childCount}")
         view.addView(expandingBar)
         view.addView(internalView)
         layout.addView(view)
         layout.addView(inflater.inflate(R.layout.drawer_divider, layout, false))
+        Log.d(logID, "${layout.childCount}")
         return this
     }
 

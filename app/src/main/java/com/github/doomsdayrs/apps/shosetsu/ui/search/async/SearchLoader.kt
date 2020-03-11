@@ -8,6 +8,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultMap
+import org.luaj.vm2.LuaError
 
 
 /*
@@ -44,8 +46,13 @@ class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<S
     }
 
     override fun doInBackground(vararg params: String?): Boolean {
-        val a: Array<Novel.Listing> = CatalogueLoader(searchViewHolder.query, searchViewHolder.formatter).execute()
-        array = Utilities.convertNovelArrayToString2DArray(a)
+        try {
+            val a: Array<Novel.Listing> = CatalogueLoader(searchViewHolder.query, searchViewHolder.formatter, searchViewHolder.formatter.filters.defaultMap()).execute()
+            array = Utilities.convertNovelArrayToString2DArray(a)
+        } catch (e: LuaError) {
+            e.printStackTrace()
+            return false
+        }
         return true
     }
 

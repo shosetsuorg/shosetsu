@@ -40,6 +40,9 @@ android {
         targetCompatibility = "1.8"
         sourceCompatibility = '1.8'
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     buildToolsVersion = '28.0.3'
 }
 android.applicationVariants.all { variant ->
@@ -75,7 +78,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
     // Core libraries
-    implementation 'com.github.doomsdayrs:shosetsu-services:1.0.0-rc7'
+    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc8'
 
     // Image loading
     implementation 'com.squareup.picasso:picasso:2.71828'

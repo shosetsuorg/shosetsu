@@ -170,8 +170,11 @@ object FormatterService {
                                 val l = LuaFormatter(source)
                                 if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
                                     DefaultScrapers.formatters.add(l)
-                            } catch (e: LuaError) {
-                                Log.e("FormatterInit", "LuaFormatter had an issue!${e.smallMessage()}")
+                            } catch (e: Exception) {
+                                when (e) {
+                                    is LuaError -> Log.e("FormatterInit", "LuaFormatter had an issue!${e.smallMessage()}")
+                                    else -> Log.e("FormatterInit", "LuaFormatter may be missing something!")
+                                }
                                 Log.e("FormatterInit", "We won't accept broken ones :D, Bai bai!")
                                 source.delete()
                             }

@@ -9,6 +9,8 @@ import android.view.MenuInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.SearchView
+import android.widget.Spinner
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,9 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBo
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.build
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.google.android.material.navigation.NavigationView
@@ -60,6 +60,13 @@ import com.google.android.material.navigation.NavigationView
  */
 //TODO fix issue with not loading
 class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDrawerController {
+    companion object {
+        private const val logID = "CatalogueController"
+    }
+
+    var listingMap: MutableMap<Int, Any> = mutableMapOf()
+
+
     override val layoutRes: Int = R.layout.catalogue
 
 
@@ -72,7 +79,9 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
     private var cataloguePageLoader: CataloguePageLoader? = null
     var catalogueNovelCards = ArrayList<NovelListingCard>()
 
+    var selectedListing: Int
     var formatter: Formatter
+
     lateinit var catalogueAdapter: CatalogueAdapter
 
     var currentMaxPage = 1
@@ -83,6 +92,7 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
     init {
         setHasOptionsMenu(true)
         formatter = DefaultScrapers.getByID(bundle.getInt("formatter"))
+        selectedListing = formatter.defaultListing
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -169,22 +179,21 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 
     fun executePageLoader() {
         when {
-            cataloguePageLoader?.isCancelled == false -> cataloguePageLoader = CataloguePageLoader(this)
-            cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this)
+            cataloguePageLoader?.isCancelled == false -> cataloguePageLoader = CataloguePageLoader(this, selectedListing)
+            cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this, selectedListing)
         }
-
         cataloguePageLoader?.execute(currentMaxPage)
     }
 
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
         val builder = SDBuilder(navigationView, drawerLayout, this)
-
+        Log.d(logID, "${builder.layout.childCount}")
         // Listing selection
         val a = ArrayList<String>()
         formatter.listings.forEach {
             a.add(it.name)
         }
-        builder.addSpinner("Listing", a.toTypedArray())
+        builder.addSpinner("Listing", a.toTypedArray(), formatter.defaultListing)
 
         // Filters for Listing
         var inner = builder.newInner()
@@ -195,10 +204,19 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
         // Filters for search
         formatter.filters.forEach { it.build(inner) }
         builder.addInner(R.string.search_filters, inner)
+
+        Log.d(logID, "${builder.layout.childCount}")
+        navigationView.addView(builder.build())
+        listingMap = formatter.getListing().filters.defaultMap()
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {
-
+        val listing = (linearLayout[0] as LinearLayout)[1] as Spinner
+        selectedListing = listing.selectedItemPosition
+        catalogueNovelCards = arrayListOf()
+        setLibraryCards(catalogueNovelCards)
+        catalogueAdapter.notifyDataSetChanged()
+        executePageLoader()
     }
 
 }

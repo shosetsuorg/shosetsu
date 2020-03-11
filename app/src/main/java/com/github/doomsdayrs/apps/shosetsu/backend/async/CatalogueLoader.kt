@@ -5,6 +5,7 @@ import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
 import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib.Companion.FILTER_ID_QUERY
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getListing
 import org.luaj.vm2.LuaError
 
@@ -32,11 +33,21 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-open class CatalogueLoader(val formatter: Formatter) {
+open class CatalogueLoader(val formatter: Formatter, val filters: MutableMap<Int, Any>) {
+    companion object {
+        private const val logID = "CatalogueLoader"
+    }
 
     private var query: String = ""
 
-    constructor(query: String, formatter: Formatter) : this(formatter) {
+    private var targetListing = formatter.defaultListing
+
+    constructor(formatter: Formatter, map: MutableMap<Int, Any>, selectedListing: Int) : this(formatter, map) {
+        if (targetListing != selectedListing)
+            targetListing = selectedListing
+    }
+
+    constructor(query: String, formatter: Formatter, map: MutableMap<Int, Any>) : this(formatter, map) {
         this.query = query
     }
 
@@ -48,20 +59,21 @@ open class CatalogueLoader(val formatter: Formatter) {
      */
     @Throws(LuaError::class)
     fun execute(vararg integers: Int?): Array<Novel.Listing> {
-        Log.d("CatalogueLoader", "Loading")
+        Log.d(logID, "Loading")
         if (formatter.hasCloudFlare) {
-            Log.i("CatalogueLoader", "CLOUDFLARE DETECED")
+            Log.i(logID, "CLOUDFLARE DETECED")
             wait(5)
         }
         // Loads novel list
+        Log.d(logID, "Selected listing $targetListing" )
         return if (integers.isEmpty())
             if (query.isEmpty())
-                formatter.getListing().getListing(1, mapOf())
+                formatter.listings[targetListing].getListing(1, filters)
             else {
-                val map = mapOf(Pair(FILTER_ID_QUERY, query))
-                formatter.search(map) { Log.i("Formatter", "${formatter.name}\t$it") }
+                filters[FILTER_ID_QUERY] = query
+                formatter.search(filters) { Log.i("Formatter", "${formatter.name}\t$it") }
             }
         else
-            formatter.getListing().getListing(integers[0]!!, mapOf())
+            formatter.getListing().getListing(integers[0]!!, filters)
     }
 }
