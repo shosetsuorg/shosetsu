@@ -3,11 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.annotation.StringRes
 import androidx.drawerlayout.widget.DrawerLayout
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.layout.drawer_layout
-import com.github.doomsdayrs.apps.shosetsu.ui.drawer.ExpandingViewBar
 import com.google.android.material.navigation.NavigationView
 
 
@@ -44,19 +42,7 @@ class SDBuilder(val navigationView: NavigationView, val drawerLayout: DrawerLayo
 
     private val parentView = inflater.inflate(drawer_layout, navigationView, false)
 
-    fun createInner(@StringRes string: Int, builder: (SDViewBuilder) -> SDViewBuilder): SDBuilder {
-        val expandingViewBar = ExpandingViewBar(
-                navigationView.context,
-                viewGroup
-        )
 
-        expandingViewBar.setChild(builder(SDViewBuilder(
-                expandingViewBar.layout,
-                secondDrawerController
-        )).build())
-        add(expandingViewBar.layout)
-        return this
-    }
 
     override fun build(): View {
         parentView.findViewById<Button>(R.id.accept).setOnClickListener {

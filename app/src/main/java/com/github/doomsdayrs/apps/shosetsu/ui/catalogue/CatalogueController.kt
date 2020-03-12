@@ -9,8 +9,6 @@ import android.view.MenuInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.SearchView
-import android.widget.Spinner
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -197,14 +195,21 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
         }
         builder.addSpinner("Listing", a.toTypedArray(), this.selectedListing)
 
-        builder.createInner((R.string.listings)) { it ->
+        builder.createInner((R.string.listings)) { menu ->
             Log.d(logID, "Creating Filters4L\t| ${builder.layout.childCount}")
             // Filters for Listing
-            formatter.listings[this.selectedListing].filters.forEach { filter ->
-                Log.d(logID, "Adding Listing\t|${filter.id}${filter.javaClass}")
-                filter.build(it)
+            formatter.listings.forEach { listing ->
+                menu.createInner(R.string.unknown) {
+                    listing.filters.forEach { filter ->
+                        Log.d(logID, "Adding Listing\t|${filter.id}${filter.javaClass}")
+                        filter.build(it)
+                    }
+                    it
+                }
             }
-            it
+
+
+            menu
         }
 
         builder.createInner(R.string.search_filters) {
@@ -224,8 +229,12 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {
-        val listing = (linearLayout[0] as LinearLayout)[1] as Spinner
-        selectedListing = listing.selectedItemPosition
+        val a = linearLayout.findFilters()
+        val i = a[0] as Int
+
+        selectedListing = i
+
+        listingMap
         catalogueNovelCards = arrayListOf()
         setLibraryCards(catalogueNovelCards)
         catalogueAdapter.notifyDataSetChanged()

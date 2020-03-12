@@ -1,10 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
+import android.widget.*
+import androidx.core.view.get
 import com.github.doomsdayrs.api.shosetsu.services.core.*
+import com.github.doomsdayrs.api.shosetsu.services.core.Filter
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterText
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
 import java.util.*
+import kotlin.collections.ArrayList
 
 /*
  * This file is part of shosetsu.
@@ -55,4 +59,22 @@ fun Array<Filter<*>>.defaultMap(): MutableMap<Int, Any> {
         }
     }
     return m
+}
+
+fun LinearLayout.findFilters(): Array<Any> {
+    val a = ArrayList<Any>()
+    for (i in 0 until childCount) {
+        this[i].let {
+            when (it) {
+                is RadioGroup -> a.add(it.checkedRadioButtonId)
+                is EditText -> a.add(it.text)
+                is Spinner -> a.add(it.selectedItemPosition)
+                is Switch -> a.add(it.isChecked)
+                is LinearLayout -> a.addAll(listOf(it.findFilters()))
+                else -> {
+                }
+            }
+        }
+    }
+    return a.toArray()
 }

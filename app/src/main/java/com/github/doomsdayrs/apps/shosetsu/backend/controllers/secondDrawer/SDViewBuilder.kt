@@ -7,6 +7,7 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.StringRes
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id.spinner
 import com.github.doomsdayrs.apps.shosetsu.ui.drawer.ExpandingViewBar
@@ -79,6 +80,20 @@ open class SDViewBuilder(val viewGroup: ViewGroup, val secondDrawerController: S
         textView.visibility = VISIBLE
         textView.text = title
         return add(item)
+    }
+
+    fun createInner(@StringRes string: Int, builder: (SDViewBuilder) -> SDViewBuilder): SDViewBuilder {
+        val expandingViewBar = ExpandingViewBar(
+                viewGroup.context,
+                viewGroup
+        )
+
+        expandingViewBar.setChild(builder(SDViewBuilder(
+                expandingViewBar.layout,
+                secondDrawerController
+        )).build())
+        add(expandingViewBar.layout)
+        return this
     }
 
     fun addRadioGroup(title: String, array: Array<String>): SDViewBuilder {
