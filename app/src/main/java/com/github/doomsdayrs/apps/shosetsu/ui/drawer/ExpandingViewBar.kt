@@ -1,12 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.drawer
 
 import android.content.Context
-import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -41,63 +43,55 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * @author github.com/doomsdayrs
  */
-class ExpandingViewBar(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
-    constructor(context: Context) : this(context, null)
-
+class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
+    companion object{
+        private const val logID = "ExpandingViewBar"
+    }
+    val layout: LinearLayout
     private val frameLayout: FrameLayout
 
     init {
-        layoutParams = ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        orientation = VERTICAL
-
         val inflater = LayoutInflater.from(context)
 
-        val expandableLayoutDivider = inflater.inflate(R.layout.drawer_divider, this, false)
+        layout = inflater.inflate(R.layout.drawer_layout_expandable, viewGroup, false) as LinearLayout
 
-        val bar = inflater.inflate(R.layout.drawer_item_expandable, this, false)
-
+        val bar = layout.findViewById<LinearLayout>(R.id.expandable_layout)
         bar.findViewById<TextView>(R.id.textView).setText(R.string.unknown)
-        val image = bar.findViewById<ImageView>(R.id.imageView)
 
-        frameLayout = FrameLayout(context)
+        val image = bar.findViewById<ImageView>(R.id.imageView)
+        val expandableLayoutDivider = bar.findViewById<View>(R.id.expand_divider)
+
+        val holder = layout.findViewById<LinearLayout>(R.id.radioGroupHolder)
+        frameLayout = layout.findViewById(R.id.frameLayout)
         frameLayout.visibility = View.GONE
 
         var first = true
         bar.setOnClickListener {
             if (!first) {
-                when (frameLayout.visibility == View.VISIBLE) {
+                val transition: Transition = when (frameLayout.visibility == View.VISIBLE) {
                     true -> {
                         Log.i("DrawerItem", "Closing RadioView")
-                        expandableLayoutDivider.visibility = View.GONE
                         image.setImageResource(R.drawable.ic_baseline_expand_more_24)
-
-                        val transition: Transition = Slide(Gravity.BOTTOM)
-                        transition.duration = 600
-                        transition.addTarget(frameLayout)
-                        TransitionManager.beginDelayedTransition(this, transition)
+                        Slide(Gravity.BOTTOM)
                     }
                     false -> {
                         Log.i("DrawerItem", "Opening Radio View")
-                        expandableLayoutDivider.visibility = View.VISIBLE
                         image.setImageResource(R.drawable.ic_baseline_expand_less_24)
-
-                        val transition: Transition = Slide(Gravity.TOP)
-                        transition.duration = 600
-                        transition.addTarget(frameLayout)
-                        TransitionManager.beginDelayedTransition(this, transition)
+                        Slide(Gravity.TOP)
                     }
                 }
+                transition.duration = 600
+                transition.addTarget(frameLayout)
+                TransitionManager.beginDelayedTransition(holder, transition)
+
+                expandableLayoutDivider.visibility = if (expandableLayoutDivider.visibility != View.VISIBLE) View.VISIBLE else View.GONE
                 frameLayout.visibility = if (frameLayout.visibility != View.VISIBLE) View.VISIBLE else View.GONE
             } else first = !first
         }
-
-        this.addView(bar)
-        this.addView(frameLayout)
     }
 
     fun setChild(view: View) {
-        view.layoutParams = ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        view.visibility = View.GONE
+        view.layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         frameLayout.addView(view)
     }
 }

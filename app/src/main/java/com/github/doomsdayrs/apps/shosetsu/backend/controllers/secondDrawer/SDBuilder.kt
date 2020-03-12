@@ -45,9 +45,16 @@ class SDBuilder(val navigationView: NavigationView, val drawerLayout: DrawerLayo
     private val parentView = inflater.inflate(drawer_layout, navigationView, false)
 
     fun createInner(@StringRes string: Int, builder: (SDViewBuilder) -> SDViewBuilder): SDBuilder {
-        val expandingViewBar = ExpandingViewBar(navigationView.context)
-        expandingViewBar.setChild(builder(SDViewBuilder(expandingViewBar, secondDrawerController)).build())
-        add(expandingViewBar)
+        val expandingViewBar = ExpandingViewBar(
+                navigationView.context,
+                viewGroup
+        )
+
+        expandingViewBar.setChild(builder(SDViewBuilder(
+                expandingViewBar.layout,
+                secondDrawerController
+        )).build())
+        add(expandingViewBar.layout)
         return this
     }
 

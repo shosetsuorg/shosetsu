@@ -11,13 +11,15 @@
     <LinearLayout
         android:id="@+id/radioGroupHolder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="visible">
 
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:padding="5dp"
             android:visibility="gone"
             tools:ignore="UselessLeaf" />
     </LinearLayout>

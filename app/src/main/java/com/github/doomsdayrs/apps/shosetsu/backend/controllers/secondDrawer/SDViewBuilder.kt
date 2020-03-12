@@ -83,16 +83,16 @@ open class SDViewBuilder(val viewGroup: ViewGroup, val secondDrawerController: S
 
     fun addRadioGroup(title: String, array: Array<String>): SDViewBuilder {
         Log.d(logID, "Adding RadioGroup\t: $title")
-        val expandingViewBar = ExpandingViewBar(viewGroup.context)
-        val radioGroup = RadioGroup(expandingViewBar.context)
-
+        val expandingViewBar = ExpandingViewBar(viewGroup.context, viewGroup)
+        val radioGroup = RadioGroup(expandingViewBar.layout.context)
         array.forEach {
             val r = RadioButton(radioGroup.context)
             r.text = it
             r.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             radioGroup.addView(r)
         }
-        return add(expandingViewBar)
+        expandingViewBar.setChild(radioGroup)
+        return add(expandingViewBar.layout)
     }
 
     open fun build(): View {
