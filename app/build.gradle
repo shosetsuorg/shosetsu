@@ -134,4 +134,9 @@ dependencies {
 
     // FastScroll
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.0'
+
+    //Tar library
+    implementation ('org.kamranzafar:jtar:2.3')
+
+
 }

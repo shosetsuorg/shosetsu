@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.app.Activity
 import android.content.Context
+import android.os.MemoryFile
 import android.util.Log
 import android.widget.Toast.LENGTH_LONG
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -13,6 +14,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
+import java.io.InputStreamReader
+import java.lang.reflect.Member
 
 /*
  * This file is part of Shosetsu.
@@ -61,12 +64,16 @@ object DownloadManager {
      */
     fun delete(context: Context?, downloadItem: DownloadItem): Boolean {
         Log.d("DeletingChapter", downloadItem.toString())
-        val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt")
+        val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + ".tar")
+        if (file.exists()) {
+            val tar = TarArchive(file)
+            tar.deleteTar(downloadItem.chapterName + ".txt")
+        }
         Database.DatabaseChapter.removePath(downloadItem.chapterID)
-        if (file.exists()) if (!file.delete()) if (context != null) {
+       /* if (file.exists()) if (!file.delete()) if (context != null) {
             context.toast(R.string.download_fail_delete, duration = LENGTH_LONG)
             return false
-        }
+        }*/
         return true
     }
 
@@ -79,7 +86,12 @@ object DownloadManager {
     @JvmStatic
     fun getChapterText(path: String): HandledReturns<String> {
         try {
-            BufferedReader(FileReader(path)).use { br ->
+val t = File(path.substringBeforeLast("/"))
+           val ta =TarArchive(t)
+           val r = ta.readTar(path.substringAfterLast("/"))
+
+
+            BufferedReader(InputStreamReader(r)).use { br ->
                 val sb = StringBuilder()
                 var line = br.readLine()
                 while (line != null) {
