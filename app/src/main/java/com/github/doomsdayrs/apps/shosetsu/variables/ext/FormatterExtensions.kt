@@ -46,9 +46,9 @@ fun Formatter.getListing(): Formatter.Listing = listings[defaultListing]
 
 fun Filter<*>.build(builder: SDViewBuilder) {
     when (this) {
-        is SwitchFilter -> builder.addSwitch(name)
-        is TextFilter -> builder.addEditText(name)
-        is RadioGroupFilter -> builder.addRadioGroup(name, choices)
-        is DropdownFilter -> builder.addRadioGroup(name, choices)
+        is SwitchFilter -> builder.addSwitch(name, id)
+        is TextFilter -> builder.addEditText(name, id)
+        is RadioGroupFilter -> builder.addRadioGroup(name, choices, id)
+        is DropdownFilter -> builder.addRadioGroup(name, choices, id)
     }
 }

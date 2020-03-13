@@ -35,7 +35,7 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-class CataloguePageLoader(private val catalogueFragment: CatalogueController, val selectedListing: Int) : AsyncTask<Int, Void, Boolean>() {
+class CataloguePageLoader(private val catalogueFragment: CatalogueController) : AsyncTask<Int, Void, Boolean>() {
 
     /**
      * Loads up the category

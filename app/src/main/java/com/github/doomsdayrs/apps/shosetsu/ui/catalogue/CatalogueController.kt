@@ -7,8 +7,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.SearchView
+import android.widget.Spinner
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,19 +63,18 @@ import com.google.android.material.navigation.NavigationView
 class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDrawerController {
     companion object {
         private const val logID = "CatalogueController"
+        private const val LISTING_SEL_ID = -2
     }
-
-    var listingMap: MutableMap<Int, Any> = mutableMapOf()
 
 
     override val layoutRes: Int = R.layout.catalogue
 
+    @Attach(R.id.swipeRefreshLayout)
+    var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     @Attach(R.id.recyclerView)
     var recyclerView: RecyclerView? = null
-
-    @Attach(R.id.swipeRefreshLayout)
-    var swipeRefreshLayout: SwipeRefreshLayout? = null
+    lateinit var catalogueAdapter: CatalogueAdapter
 
     private var cataloguePageLoader: CataloguePageLoader? = null
     var catalogueNovelCards = ArrayList<NovelListingCard>()
@@ -80,7 +82,6 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
     var selectedListing: Int
     var formatter: Formatter
 
-    lateinit var catalogueAdapter: CatalogueAdapter
 
     var currentMaxPage = 1
     var isInSearch = false
@@ -177,64 +178,57 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 
     fun executePageLoader() {
         when {
-            cataloguePageLoader?.isCancelled == false -> cataloguePageLoader = CataloguePageLoader(this, selectedListing)
-            cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this, selectedListing)
+            cataloguePageLoader?.isCancelled == false -> cataloguePageLoader = CataloguePageLoader(this)
+            cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this)
         }
         cataloguePageLoader?.execute(currentMaxPage)
     }
 
+
+    var listingMap: MutableMap<Int, Any> = mutableMapOf()
+
     override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
         val builder = SDBuilder(navigationView, drawerLayout, this)
-        Log.d(logID, "Creating Listings\t| ${builder.layout.childCount}")
 
         // Listing selection
         val a = ArrayList<String>()
-        formatter.listings.forEach {
-            Log.d(logID, "Adding Listing\t|${it.name}")
-            a.add(it.name)
-        }
-        builder.addSpinner("Listing", a.toTypedArray(), this.selectedListing)
+        formatter.listings.forEach { a.add(it.name) }
 
-        builder.createInner((R.string.listings)) { menu ->
-            Log.d(logID, "Creating Filters4L\t| ${builder.layout.childCount}")
-            // Filters for Listing
-            formatter.listings.forEach { listing ->
-                menu.createInner(R.string.unknown) {
-                    listing.filters.forEach { filter ->
-                        Log.d(logID, "Adding Listing\t|${filter.id}${filter.javaClass}")
-                        filter.build(it)
+        builder
+                .addSpinner("Listing", a.toTypedArray(), this.selectedListing, LISTING_SEL_ID)
+                .createInner(R.string.listings) { menu ->
+                    val method = {
+                        formatter.listings[this.selectedListing].let { listing ->
+                            listing.filters.forEach { filter -> filter.build(menu) }
+                        }
                     }
+                    method()
+                    (builder.layout[0].findViewById<Spinner>(R.id.spinner)).onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                            selectedListing = position
+                            menu.removeAll()
+                            method()
+                        }
+                    }
+                    menu
+                }
+                .createInner(R.string.search_filters) {
+                    formatter.filters.forEach { filter -> filter.build(it) }
                     it
                 }
-            }
 
-
-            menu
-        }
-
-        builder.createInner(R.string.search_filters) {
-            Log.d(logID, "Creating Filters4S\t| ${builder.layout.childCount}")
-            // Filters for search
-            Log.d(logID, "Filters found ${formatter.filters.size}")
-            formatter.filters.forEach { filter ->
-                Log.d(logID, "Adding S_Filter\t|${filter.id}${filter.javaClass}")
-                filter.build(it)
-            }
-            it
-        }
-
-        Log.d(logID, "Final layout ${builder.layout.childCount}")
         navigationView.addView(builder.build())
         listingMap = formatter.getListing().filters.defaultMap()
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {
         val a = linearLayout.findFilters()
-        val i = a[0] as Int
-
-        selectedListing = i
-
-        listingMap
+        selectedListing = a[LISTING_SEL_ID] as Int
+        listingMap.putAll(a)
+        listingMap.forEach{
+            Log.d(logID,"${it.key}\t=\t${it.value}")
+        }
         catalogueNovelCards = arrayListOf()
         setLibraryCards(catalogueNovelCards)
         catalogueAdapter.notifyDataSetChanged()

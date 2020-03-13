@@ -13,6 +13,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.transition.Slide
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
@@ -44,9 +45,12 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
-    companion object{
+    companion object {
         private const val logID = "ExpandingViewBar"
     }
+
+    val bar: LinearLayout
+    val barTitle: TextView
     val layout: LinearLayout
     private val frameLayout: FrameLayout
 
@@ -54,10 +58,9 @@ class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
         val inflater = LayoutInflater.from(context)
 
         layout = inflater.inflate(R.layout.drawer_layout_expandable, viewGroup, false) as LinearLayout
-
-        val bar = layout.findViewById<LinearLayout>(R.id.expandable_layout)
-        bar.findViewById<TextView>(R.id.textView).setText(R.string.unknown)
-
+        bar = layout.findViewById(R.id.expandable_layout)
+        barTitle = bar.findViewById(R.id.textView)
+        barTitle.setText(R.string.unknown)
         val image = bar.findViewById<ImageView>(R.id.imageView)
         val expandableLayoutDivider = bar.findViewById<View>(R.id.expand_divider)
 
@@ -88,6 +91,14 @@ class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
                 frameLayout.visibility = if (frameLayout.visibility != View.VISIBLE) View.VISIBLE else View.GONE
             } else first = !first
         }
+    }
+
+    fun setTitle(string: String) {
+        barTitle.text = string
+    }
+
+    fun setTitle(@StringRes string: Int) {
+        barTitle.setText(string)
     }
 
     fun setChild(view: View) {

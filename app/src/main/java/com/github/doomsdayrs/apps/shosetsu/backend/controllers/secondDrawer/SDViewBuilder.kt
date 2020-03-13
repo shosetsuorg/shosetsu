@@ -54,40 +54,47 @@ open class SDViewBuilder(val viewGroup: ViewGroup, val secondDrawerController: S
         return this
     }
 
-    fun addSwitch(title: String = "UNKNOWN"): SDViewBuilder {
+    fun addSwitch(title: String = "UNKNOWN", int: Int = -1): SDViewBuilder {
         Log.d(logID, "Adding Switch\t: $title")
-        val switch = inflater.inflate(R.layout.drawer_item_switch, layout, false) as Switch
+        val switch = inflater.inflate(R.layout.drawer_item_switch, layout, false) as SDSwitch
         switch.text = title
+        switch.sdID = int
         return add(switch)
     }
 
-    fun addEditText(hint: String = "Not Described"): SDViewBuilder {
+    fun addEditText(hint: String = "Not Described", int: Int = -1): SDViewBuilder {
         Log.d(logID, "Adding EditText\t: $hint")
-        val editText = inflater.inflate(R.layout.drawer_item_edit_text, layout, false) as EditText
+        val editText = inflater.inflate(R.layout.drawer_item_edit_text, layout, false) as SDEditText
         editText.hint = hint
+        editText.sdID = int
         return add(editText)
     }
 
-    fun addSpinner(title: String = "Not Described", array: Array<String>, selectedInt: Int = 0): SDViewBuilder {
+    fun addSpinner(title: String = "Not Described", array: Array<String>, selectedInt: Int = 0, int: Int = 0, changeAction: (Int) -> Unit = {}): SDViewBuilder {
         Log.d(logID, "Adding Spinner\t: $title")
         val item = inflater.inflate(R.layout.drawer_item_spinner, layout, false) as LinearLayout
-        val spinner: Spinner = item.findViewById(spinner)
+        val spinner: SDSpinner = item.findViewById(spinner)
         spinner.visibility = VISIBLE
         spinner.adapter = ArrayAdapter(viewGroup.context, android.R.layout.simple_spinner_item, array)
         spinner.setSelection(selectedInt)
-
+        spinner.sdID = int
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) = changeAction(position)
+        }
         val textView = item.findViewById<TextView>(R.id.textView)
         textView.visibility = VISIBLE
         textView.text = title
         return add(item)
     }
 
-    fun createInner(@StringRes string: Int, builder: (SDViewBuilder) -> SDViewBuilder): SDViewBuilder {
-        val expandingViewBar = ExpandingViewBar(
-                viewGroup.context,
-                viewGroup
-        )
+    fun createInner(@StringRes title: Int, builder: (SDViewBuilder) -> SDViewBuilder): SDViewBuilder =
+            createInner(viewGroup.context.getString(title), builder)
 
+    fun createInner(title: String, builder: (SDViewBuilder) -> SDViewBuilder): SDViewBuilder {
+        val expandingViewBar = ExpandingViewBar(viewGroup.context, viewGroup)
+        expandingViewBar.setTitle(title)
+        expandingViewBar.bar
         expandingViewBar.setChild(builder(SDViewBuilder(
                 expandingViewBar.layout,
                 secondDrawerController
@@ -96,19 +103,27 @@ open class SDViewBuilder(val viewGroup: ViewGroup, val secondDrawerController: S
         return this
     }
 
-    fun addRadioGroup(title: String, array: Array<String>): SDViewBuilder {
+    fun addRadioGroup(title: String, array: Array<String>, int: Int = -1): SDViewBuilder {
         Log.d(logID, "Adding RadioGroup\t: $title")
         val expandingViewBar = ExpandingViewBar(viewGroup.context, viewGroup)
-        val radioGroup = RadioGroup(expandingViewBar.layout.context)
-        array.forEach {
+        expandingViewBar.setTitle(title)
+        val radioGroup = SDRadioGroup(expandingViewBar.layout.context)
+        radioGroup.sdID = int
+        array.forEachIndexed { index, it ->
             val r = RadioButton(radioGroup.context)
             r.text = it
+            r.id = index
             r.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             radioGroup.addView(r)
         }
+        radioGroup.check(0)
+        radioGroup.checkedRadioButtonId
         expandingViewBar.setChild(radioGroup)
         return add(expandingViewBar.layout)
     }
+
+    fun removeLast() = layout.removeViewAt(layout.childCount - 1)
+    fun removeAll() = layout.removeAllViews()
 
     open fun build(): View {
         return layout
