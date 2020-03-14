@@ -10,52 +10,56 @@ class TarArchive(file:String):File(file) {
 
 
     fun read(name: String): InputStream {
-        val tar = TarInputStream(this.inputStream())
 
-        generateSequence { tar.nextEntry }.find {  it.name.contains(name,true) }
+        TarInputStream(this.inputStream()).use {
 
-        val buffer = tar.readBytes()
-        tar.close()
-        return buffer.inputStream()
+            generateSequence { it.nextEntry }.find {entry-> entry.name.contains(name, true) }
+            return it.readBytes().inputStream()
+
+        }
+
     }
 
 
 
     fun write(name: String, buffer: ByteArray) {
-        val t = TarOutputStream(this, true)
-        val header = TarHeader()
+        TarOutputStream(this, true).use {
+            val header = TarHeader()
 
-        header.name = StringBuffer(name)
-        header.size = buffer.size.toLong()
-        t.putNextEntry(TarEntry(header))
-        t.write(buffer)
-        t.close()
+            header.name = StringBuffer(name)
+            header.size = buffer.size.toLong()
+            it.putNextEntry(TarEntry(header))
+            it.write(buffer)
+        }
     }
 
 
 
     fun delete(filename: String) {
-        val tar = TarInputStream(this.inputStream())
-            val offset: Long
-            val nextOffset: Long
-            val entry = generateSequence { tar.nextEntry }.find { it.name.contains(filename, true) }
+        var offset: Long = 0
+        var nextOffset: Long = 0
+        var entry:TarEntry? = null
 
-            offset = tar.currentOffset - TarConstants.HEADER_BLOCK
-            tar.nextEntry
-            nextOffset = tar.currentOffset - TarConstants.HEADER_BLOCK
+        TarInputStream(this.inputStream()).use {
 
-            tar.close()
+            entry = generateSequence { it.nextEntry }.find { TE-> TE.name.contains(filename, true) }
+            offset = it.currentOffset - TarConstants.HEADER_BLOCK
+            it.nextEntry
+            nextOffset = it.currentOffset - TarConstants.HEADER_BLOCK
+
+        }
 
        if (entry!=null){
             val buffer = ByteArray((this.length() - nextOffset).toInt())
-            val raf = RandomAccessFile(this, "rw")
+           RandomAccessFile(this, "rw").use {
 
-            raf.seek(nextOffset)
-            raf.read(buffer)
-            raf.seek(offset)
-            raf.write(buffer)
-            raf.setLength(this.length() - (nextOffset - offset))
-            raf.close()
+               it.seek(nextOffset)
+               it.read(buffer)
+               it.seek(offset)
+               it.write(buffer)
+               it.setLength(this.length() - (nextOffset - offset))
+           }
+
         }
 
         if (this.length()<1024+512)this.delete()
