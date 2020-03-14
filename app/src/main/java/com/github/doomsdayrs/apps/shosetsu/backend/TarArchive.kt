@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
-import kotlinx.coroutines.yield
 import org.kamranzafar.jtar.*
 import java.io.File
 import java.io.InputStream
@@ -13,9 +12,10 @@ class TarArchive(file:String):File(file) {
         val tar = TarInputStream(this.inputStream())
         var buffer = ByteArray(0)
         val entries =  generateSequence { tar.nextEntry }
+       val entry = entries.find {  it.name.contains(name,true) }
 
-        entries.find {  it.name.contains(name,true) }?.run {
-            buffer = ByteArray(this.size.toInt())
+        if (entry!=null) {
+            buffer = ByteArray(entry.size.toInt())
             tar.read(buffer)
         }
 
@@ -40,12 +40,12 @@ class TarArchive(file:String):File(file) {
 
     fun delete(filename: String) {
         val tar = TarInputStream(this.inputStream())
-        val entry =  generateSequence { tar.nextEntry }
+        val entries =  generateSequence { tar.nextEntry }
         var offset: Long
         var nextoffset:Long
+        val entry = entries.find { it.name.contains(filename,true) }
 
-        entry.find { it.name.contains(filename,true) }?.run {
-
+        if (entry!=null){
             offset = tar.currentOffset - TarConstants.HEADER_BLOCK
             tar.nextEntry
             nextoffset = tar.currentOffset - TarConstants.HEADER_BLOCK
@@ -61,8 +61,8 @@ class TarArchive(file:String):File(file) {
             raf.write(buffer)
             raf.setLength(this@TarArchive.length() - (nextoffset - offset))
             raf.close()
-
         }
+        tar.close()
 
         if (this.length()<1024+512)this.delete()
     }
