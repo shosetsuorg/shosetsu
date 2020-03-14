@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
+import kotlinx.coroutines.yield
 import org.kamranzafar.jtar.*
 import java.io.File
 import java.io.InputStream
@@ -10,20 +11,19 @@ class TarArchive(file:String):File(file) {
 
     fun read(name: String): InputStream {
         val tar = TarInputStream(this.inputStream())
-        var entry = tar.nextEntry
         var buffer = ByteArray(0)
+        val entries =  generateSequence { tar.nextEntry }
 
-        while (entry != null) {
-            if (entry.name.contains(name, true)) {
-                buffer = ByteArray(entry.size.toInt())
-                tar.read(buffer)
-                break
-            }
-            entry = tar.nextEntry
+        entries.find {  it.name.contains(name,true) }?.run {
+            buffer = ByteArray(this.size.toInt())
+            tar.read(buffer)
         }
+
         tar.close()
         return buffer.inputStream()
     }
+
+
 
     fun write(name: String, buffer: ByteArray) {
         val t = TarOutputStream(this, true)
@@ -36,44 +36,37 @@ class TarArchive(file:String):File(file) {
         t.close()
     }
 
-    fun delete(name: String) {
+
+
+    fun delete(filename: String) {
         val tar = TarInputStream(this.inputStream())
-        var entry = tar.nextEntry
-        var offset: Long = 0
-        var delete = false
-        var entries = 0
-        var nextoffset: Long = this.length()
+        val entry =  generateSequence { tar.nextEntry }
+        var offset: Long
+        var nextoffset:Long
 
-        while (entry != null) {
-            entries += 1
-            if (entry.name!!.contentEquals(name)) {
-                entries -= 1
-                delete = true
-                offset = tar.currentOffset - TarConstants.HEADER_BLOCK
-                if (tar.nextEntry != null) {
-                    entries += 1
-                    nextoffset = tar.currentOffset - TarConstants.HEADER_BLOCK
-                }
-                break
-            }
-            entry = tar.nextEntry
-        }
+        entry.find { it.name.contains(filename,true) }?.run {
 
-        tar.close()
+            offset = tar.currentOffset - TarConstants.HEADER_BLOCK
+            tar.nextEntry
+            nextoffset = tar.currentOffset - TarConstants.HEADER_BLOCK
 
-        if (delete) {
-            val buffer = ByteArray((this.length() - nextoffset).toInt())
-            val raf = RandomAccessFile(this, "rw")
+            tar.close()
+
+            val buffer = ByteArray((this@TarArchive.length() - nextoffset).toInt())
+            val raf = RandomAccessFile(this@TarArchive, "rw")
 
             raf.seek(nextoffset)
             raf.read(buffer)
             raf.seek(offset)
             raf.write(buffer)
-            raf.setLength(this.length() - (nextoffset - offset))
+            raf.setLength(this@TarArchive.length() - (nextoffset - offset))
             raf.close()
 
         }
-        if (entries < 1) this.delete()
+
+        if (this.length()<1024+512)this.delete()
     }
+
+
 
 }
