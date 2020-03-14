@@ -10,15 +10,9 @@ class TarArchive(file:String):File(file) {
 
     fun read(name: String): InputStream {
         val tar = TarInputStream(this.inputStream())
-        var buffer = ByteArray(0)
         val entries =  generateSequence { tar.nextEntry }
-       val entry = entries.find {  it.name.contains(name,true) }
-
-        if (entry!=null) {
-            buffer = ByteArray(entry.size.toInt())
-            tar.read(buffer)
-        }
-
+        entries.find {  it.name.contains(name,true) }
+        val buffer = tar.readBytes()
         tar.close()
         return buffer.inputStream()
     }
