@@ -230,6 +230,7 @@
     <string name="reset">Reset</string>
     <string name="listings">Listings</string>
     <string name="search_filters">Search Filters</string>
+    <string name="save_in_Tar">Save Chapters in Tar Archive</string>
 
     <array name="application_themes">
         <item>@string/light</item>

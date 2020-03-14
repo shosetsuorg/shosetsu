@@ -21,6 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTE
 import needle.CancelableTask
 import needle.Needle
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -172,10 +173,25 @@ class DownloadService : Service() {
                             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
                             Log.d(LOG_NAME, Utilities.shoDir + "download/")
-                            val folder = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName.clean()+".tar")
-                            File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID).mkdirs()
-                            Log.d(LOG_NAME, folder.toString())
-                            if (!folder.exists()) if (!folder.createNewFile()) throw IOException("Failed to mkdirs")
+
+
+
+                          val folder = if (Settings.isSaveInTarEnabled) {
+
+                              val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName.clean() + ".tar")
+                                File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID).mkdirs()
+                                Log.d(LOG_NAME,file.toString())
+                                if (!file.exists()) if (!file.createNewFile()) throw IOException("Failed to mkdirs")
+                                file
+                            }
+                            else{
+                                val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName.clean())
+
+                                File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID).mkdirs()
+                                Log.d(LOG_NAME, file.toString())
+                                if (!file.exists()) if (!file.mkdirs()) throw IOException("Failed to mkdirs")
+                                file
+                            }
 
                             pr.setProgress(6, 2, false)
                             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
@@ -186,12 +202,18 @@ class DownloadService : Service() {
                             pr.setProgress(6, 3, false)
                             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-                           /* val fileOutputStream = FileOutputStream(folder.path + "/" + formattedName + ".txt")
-                            fileOutputStream.write(passage.toByteArray())
-                            fileOutputStream.close()*/
 
-                            val tar = TarArchive(folder)
-                            tar.writeTar(formattedName+".txt",passage.toByteArray())
+                            if (Settings.isSaveInTarEnabled) {
+
+                                TarArchive(folder.path).write(formattedName + ".txt", passage.toByteArray())
+                                TarArchive(folder.path)
+                            }
+                            else {
+                                val fileOutputStream = FileOutputStream(folder.path + "/" + formattedName + ".txt")
+                                fileOutputStream.write(passage.toByteArray())
+                                fileOutputStream.close()
+                            }
+
                             Database.DatabaseChapter.addSavedPath(downloadItem.chapterURL, folder.path + "/" + formattedName + ".txt")
                             pr.setProgress(6, 4, false)
                             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())

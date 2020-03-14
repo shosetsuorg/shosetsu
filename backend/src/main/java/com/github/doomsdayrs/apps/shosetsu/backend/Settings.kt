@@ -99,6 +99,13 @@ object Settings {
         }
         get() = Utilities.viewPreferences.getBoolean("downloadOnUpdate", false)
 
+    var isSaveInTarEnabled: Boolean = false
+        set(value) {
+            field = value
+            Utilities.viewPreferences.edit().putBoolean("SaveInTar", value).apply()
+        }
+        get() = Utilities.viewPreferences.getBoolean("SaveInTar", false)
+
     var paragraphSpacing: Int = 0
         set(value) {
             field = value

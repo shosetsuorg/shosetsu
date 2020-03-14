@@ -11,10 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import java.io.InputStreamReader
+import java.io.*
 import java.lang.reflect.Member
 
 /*
@@ -64,16 +61,19 @@ object DownloadManager {
      */
     fun delete(context: Context?, downloadItem: DownloadItem): Boolean {
         Log.d("DeletingChapter", downloadItem.toString())
-        val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + ".tar")
-        if (file.exists()) {
-            val tar = TarArchive(file)
-            tar.deleteTar(downloadItem.chapterName + ".txt")
-        }
+
+        val tar = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + ".tar")
+           if (tar.exists()) {
+           TarArchive(tar.path).delete(downloadItem.chapterName + ".txt")
+           }
+
+        val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName+"/"+downloadItem.chapterName + ".txt")
+            if (file.exists()) if (!file.delete()) if (context != null) {
+                context.toast(R.string.download_fail_delete, duration = LENGTH_LONG)
+                return false
+            }
+
         Database.DatabaseChapter.removePath(downloadItem.chapterID)
-       /* if (file.exists()) if (!file.delete()) if (context != null) {
-            context.toast(R.string.download_fail_delete, duration = LENGTH_LONG)
-            return false
-        }*/
         return true
     }
 
@@ -86,12 +86,14 @@ object DownloadManager {
     @JvmStatic
     fun getChapterText(path: String): HandledReturns<String> {
         try {
-val t = File(path.substringBeforeLast("/"))
-           val ta =TarArchive(t)
-           val r = ta.readTar(path.substringAfterLast("/"))
+            val file = File(path.substringBeforeLast("/"))
+            val reader = if (file.isDirectory){
+                FileReader(path)
+              }else{
+                InputStreamReader(TarArchive(file.path).read(path.substringAfterLast("/")))
+              }
 
-
-            BufferedReader(InputStreamReader(r)).use { br ->
+            BufferedReader(reader).use { br ->
                 val sb = StringBuilder()
                 var line = br.readLine()
                 while (line != null) {

@@ -52,7 +52,15 @@ class DownloadSettings : SettingsSubController() {
                         .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
                             Log.d("Download on update", p1.toString())
                             Settings.isDownloadOnUpdateEnabled = !Settings.isDownloadOnUpdateEnabled
+                        }),
+                        SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
+                        .setTitle(R.string.save_in_Tar)
+                        .setSwitchIsChecked(Settings.isSaveInTarEnabled)
+                        .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+                            Log.d("Save In Tar Archive", p1.toString())
+                            Settings.isSaveInTarEnabled = !Settings.isSaveInTarEnabled
                         })
+
         )
     }
 
