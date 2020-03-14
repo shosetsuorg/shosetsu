@@ -36,24 +36,24 @@ class TarArchive(file:String):File(file) {
     fun delete(filename: String) {
         val tar = TarInputStream(this.inputStream())
         val offset: Long
-        val nextoffset:Long
+        val nextOffset:Long
         val entry =  generateSequence { tar.nextEntry }.find { it.name.contains(filename,true) }
 
         if (entry!=null){
             offset = tar.currentOffset - TarConstants.HEADER_BLOCK
             tar.nextEntry
-            nextoffset = tar.currentOffset - TarConstants.HEADER_BLOCK
+            nextOffset = tar.currentOffset - TarConstants.HEADER_BLOCK
 
             tar.close()
 
-            val buffer = ByteArray((this@TarArchive.length() - nextoffset).toInt())
-            val raf = RandomAccessFile(this@TarArchive, "rw")
+            val buffer = ByteArray((this.length() - nextOffset).toInt())
+            val raf = RandomAccessFile(this, "rw")
 
-            raf.seek(nextoffset)
+            raf.seek(nextOffset)
             raf.read(buffer)
             raf.seek(offset)
             raf.write(buffer)
-            raf.setLength(this@TarArchive.length() - (nextoffset - offset))
+            raf.setLength(this.length() - (nextOffset - offset))
             raf.close()
         }
         tar.close()
