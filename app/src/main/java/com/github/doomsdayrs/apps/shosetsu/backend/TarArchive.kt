@@ -35,10 +35,9 @@ class TarArchive(file:String):File(file) {
 
     fun delete(filename: String) {
         val tar = TarInputStream(this.inputStream())
-        val entries =  generateSequence { tar.nextEntry }
-        var offset: Long
-        var nextoffset:Long
-        val entry = entries.find { it.name.contains(filename,true) }
+        val offset: Long
+        val nextoffset:Long
+        val entry =  generateSequence { tar.nextEntry }.find { it.name.contains(filename,true) }
 
         if (entry!=null){
             offset = tar.currentOffset - TarConstants.HEADER_BLOCK
