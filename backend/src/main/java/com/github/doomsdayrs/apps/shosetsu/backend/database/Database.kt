@@ -513,7 +513,7 @@ object Database {
          * @param chapterID chapter to be set
          * @param status    status to be set
          */
-        @Throws(SQLException::class)
+        @Throws(SQLException::class, MissingResourceException::class)
         fun setChapterStatus(chapterID: Int, status: Status) {
             getDatabase().execSQL("update " + Tables.CHAPTERS + " set " + READ_CHAPTER + "=" + status + " where " + ID + "=" + chapterID)
             if (status === Status.READ) updateY(chapterID, 0)

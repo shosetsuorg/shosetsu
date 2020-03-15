@@ -51,7 +51,8 @@ class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, v
 
     override fun onPostExecute(result: Boolean?) {
         super.onPostExecute(result)
-        if (result != null) action.onPostExecute(result, finalChapters)
+        if (result != null)
+            action.onPostExecute(result, finalChapters)
     }
 
     override fun onPreExecute() {

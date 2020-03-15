@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
+package com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
 
 /*
  * This file is part of Shosetsu.
@@ -20,15 +20,13 @@ import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  * Shosetsu
- * 16 / 06 / 2019
+ * 06 / 07 / 2019
  *
  * @author github.com/doomsdayrs
  */
-@Suppress("unused")
-class NovelFragmentTracking : ViewedController() {
-    override val layoutRes: Int
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+class NovelControllerUpdate(private val novelInfoController: NovelInfoController) : OnRefreshListener {
+    override fun onRefresh() {
 
-    override fun onViewCreated(view: View) =
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 }

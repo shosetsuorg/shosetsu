@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -29,10 +30,14 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.handle
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DATA_CHANGE
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_RELOAD_CHAPTERS_FROM_DB
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
+import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -62,7 +67,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  *
  */
-class NovelFragmentChapters : ViewedController() {
+class NovelChaptersController : ViewedController() {
+    companion object {
+        private const val logID = "NovelChaptersController"
+    }
+
     override val layoutRes: Int = R.layout.novel_chapters
     private lateinit var receiver: BroadcastReceiver
 
@@ -99,7 +108,6 @@ class NovelFragmentChapters : ViewedController() {
     override fun onViewCreated(view: View) {
         resume?.visibility = GONE
 
-
         setChapters()
         resume?.setOnClickListener {
             val i = novelFragment!!.lastRead()
@@ -107,10 +115,14 @@ class NovelFragmentChapters : ViewedController() {
                 if (activity != null) openChapter(activity!!, novelFragment!!.novelChapters[i], novelFragment!!.novelID, novelFragment!!.formatter.formatterID)
             } else context?.toast("No chapters! How did you even press this!")
         }
+
         val filter = IntentFilter()
-        filter.addAction(Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE)
+        filter.addAction(BC_NOTIFY_DATA_CHANGE)
+        filter.addAction(BC_RELOAD_CHAPTERS_FROM_DB)
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action == BC_RELOAD_CHAPTERS_FROM_DB)
+                    novelFragment?.let { it.novelChapters = getChapters(it.novelID) }
                 fragmentNovelChaptersRecycler?.adapter?.notifyDataSetChanged()
             }
         }
@@ -143,7 +155,7 @@ class NovelFragmentChapters : ViewedController() {
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         novelFragment = parentController as NovelController?
-        novelFragment!!.novelFragmentChapters = this
+        novelFragment!!.novelChaptersController = this
         Log.d("NovelFragmentChapters", "Creating")
         return super.onCreateView(inflater, container)
     }
@@ -212,9 +224,14 @@ class NovelFragmentChapters : ViewedController() {
                                 1 -> {
                                     // Unread
                                     for ((_, title, link) in novelFragment?.novelChapters!!) {
-                                        val id = getChapterIDFromChapterURL(link)
-                                        if (getChapterStatus(id) == (Status.UNREAD))
-                                            DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, title, id))
+                                        try {
+                                            val id = getChapterIDFromChapterURL(link)
+
+                                            if (getChapterStatus(id) == (Status.UNREAD))
+                                                DownloadManager.addToDownload(activity!!, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, title, id))
+                                        } catch (e: MissingResourceException) {
+                                            TODO("Add error handling here")
+                                        }
                                     }
                                 }
                                 2 -> {
@@ -242,16 +259,26 @@ class NovelFragmentChapters : ViewedController() {
                 true
             }
             R.id.chapter_select_all -> {
-                for (novelChapter in novelFragment!!.novelChapters) if (!contains(novelChapter)) selectedChapters.add(getChapterIDFromChapterURL(novelChapter.link))
-                updateAdapter()
+                try {
+                    for (novelChapter in novelFragment!!.novelChapters) if (!contains(novelChapter)) selectedChapters.add(getChapterIDFromChapterURL(novelChapter.link))
+                    updateAdapter()
+                } catch (e: MissingResourceException) {
+                    handleExceptionLogging(e)
+                    return false
+                }
                 true
             }
             R.id.chapter_download_selected -> {
                 for (chapterID in selectedChapters) {
-                    val chapter = getChapter(chapterID)
-                    if (!isSaved(chapterID)) {
-                        val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter!!.title, chapterID)
-                        DownloadManager.addToDownload(activity, downloadItem)
+                    try {
+                        val chapter = getChapter(chapterID)
+                        if (!isSaved(chapterID)) {
+                            val downloadItem = DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter!!.title, chapterID)
+                            DownloadManager.addToDownload(activity, downloadItem)
+                        }
+                    } catch (e: MissingResourceException) {
+                        handleExceptionLogging(e)
+                        return false
                     }
                 }
                 updateAdapter()
@@ -259,8 +286,13 @@ class NovelFragmentChapters : ViewedController() {
             }
             R.id.chapter_delete_selected -> {
                 for (chapterID in selectedChapters) {
-                    val chapter = getChapter(chapterID)
-                    if (isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter!!.title, chapterID))
+                    try {
+                        val chapter = getChapter(chapterID)
+                        if (isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelFragment!!.formatter, novelFragment!!.novelPage.title, chapter!!.title, chapterID))
+                    } catch (e: MissingResourceException) {
+                        handleExceptionLogging(e)
+                        return false
+                    }
                 }
                 updateAdapter()
                 true
@@ -273,21 +305,36 @@ class NovelFragmentChapters : ViewedController() {
             }
             R.id.chapter_mark_read -> {
                 for (chapterID in selectedChapters) {
-                    if (getChapterStatus(chapterID).a != 2) setChapterStatus(chapterID, Status.READ)
+                    try {
+                        if (getChapterStatus(chapterID).a != 2) setChapterStatus(chapterID, Status.READ)
+                    } catch (e: Exception) {
+                        handleExceptionLogging(e)
+                        return false
+                    }
                 }
                 updateAdapter()
                 true
             }
             R.id.chapter_mark_unread -> {
                 for (chapterID in selectedChapters) {
-                    if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.UNREAD)
+                    try {
+                        if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.UNREAD)
+                    } catch (e: Exception) {
+                        handleExceptionLogging(e)
+                        return false
+                    }
                 }
                 updateAdapter()
                 true
             }
             R.id.chapter_mark_reading -> {
                 for (chapterID in selectedChapters) {
-                    if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.READING)
+                    try {
+                        if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.READING)
+                    } catch (e: Exception) {
+                        handleExceptionLogging(e)
+                        return false
+                    }
                 }
                 updateAdapter()
                 true
@@ -298,8 +345,13 @@ class NovelFragmentChapters : ViewedController() {
                 var x = min
                 while (x < max) {
                     if (!contains(novelFragment!!.novelChapters[x])) {
-                        val id = getChapterIDFromChapterURL(novelFragment!!.novelChapters[x].link)
-                        selectedChapters.add(id)
+                        try {
+                            val id = getChapterIDFromChapterURL(novelFragment!!.novelChapters[x].link)
+                            selectedChapters.add(id)
+                        } catch (e: MissingResourceException) {
+                            handleExceptionLogging(e)
+                            return false
+                        }
                     }
                     x++
                 }
@@ -316,7 +368,11 @@ class NovelFragmentChapters : ViewedController() {
     }
 
     operator fun contains(novelChapter: Novel.Chapter): Boolean {
-        for (n in selectedChapters) if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true)) return true
+        try {
+            for (n in selectedChapters) if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true)) return true
+        } catch (e: MissingResourceException) {
+            e.handle(logID)
+        }
         return false
     }
 
@@ -332,5 +388,10 @@ class NovelFragmentChapters : ViewedController() {
         return max
     }
 
-
+    private fun handleExceptionLogging(e: java.lang.Exception) =
+            when (e) {
+                is MissingResourceException -> e.handle(logID)
+                is SQLiteException -> e.handle(logID)
+                else -> -1
+            }
 }

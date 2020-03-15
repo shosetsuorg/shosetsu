@@ -48,7 +48,7 @@ import com.squareup.picasso.Picasso
  * The page you see when you select a novel
  *
  */
-class NovelFragmentInfo : ViewedController() {
+class NovelInfoController : ViewedController() {
     var novelFragment: NovelController? = null
 
     @Attach(id.fragment_novel_add)
@@ -114,7 +114,7 @@ class NovelFragmentInfo : ViewedController() {
     override fun onViewCreated(view: View) {
         novelFragment = parentController as NovelController
         if (novelFragment != null) {
-            novelFragment!!.novelFragmentInfo = this
+            novelFragment!!.novelInfoController = this
         }
         fragmentNovelAdd?.hide()
         if (novelFragment != null && Database.DatabaseNovels.isBookmarked(novelFragment!!.novelID)) fragmentNovelAdd?.setImageResource(R.drawable.ic_baseline_check_circle_24)

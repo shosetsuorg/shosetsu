@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 import java.util.*
 
 /*

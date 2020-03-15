@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 
 /*
  * This file is part of shosetsu.

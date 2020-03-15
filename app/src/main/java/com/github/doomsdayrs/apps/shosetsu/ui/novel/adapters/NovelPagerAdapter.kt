@@ -8,8 +8,8 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 
 /*
@@ -48,10 +48,10 @@ class NovelPagerAdapter(router: NovelController, private val fragments: List<Con
             Log.d("SwapScreen", fragments[position].toString())
             val controller = when (position) {
                 INFO_CONTROLLER -> {
-                    NovelFragmentInfo()
+                    NovelInfoController()
                 }
                 CHAPTERS_CONTROLLER -> {
-                    NovelFragmentChapters()
+                    NovelChaptersController()
                 }
                 else -> error("Wrong position $position")
             }

@@ -14,7 +14,11 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_MARK_ERROR
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_RECEIVED_URL
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_REMOVE
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_TOGGLE
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DATA_CHANGE
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_DOWNLOAD
 import needle.CancelableTask
@@ -50,8 +54,8 @@ import java.util.concurrent.TimeUnit
  */
 class DownloadService : Service() {
     companion object {
-        private const val LOG_NAME = "DownloadService"
-
+        private const val logID = "DownloadService"
+        private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 6
 
         /**
          * Returns the status of the service.
@@ -77,7 +81,7 @@ class DownloadService : Service() {
                 } else {
                     context.startForegroundService(intent)
                 }
-            } else Log.d(LOG_NAME, "Can't start, is running")
+            } else Log.d(logID, "Can't start, is running")
         }
 
         /**
@@ -89,7 +93,6 @@ class DownloadService : Service() {
             context.stopService(Intent(context, DownloadService::class.java))
         }
     }
-
 
     private val notificationManager by lazy {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
@@ -106,12 +109,10 @@ class DownloadService : Service() {
                 .setSmallIcon(R.drawable.ic_file_download)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText("Downloading Chapters")
-                .setOngoing(true)
                 .setOnlyAlertOnce(true)
     }
 
     private var job: Job? = null
-
 
     override fun onDestroy() {
         job?.cancel()
@@ -128,15 +129,15 @@ class DownloadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(LOG_NAME, "Canceling previous task")
+        Log.d(logID, "Canceling previous task")
         job?.cancel()
-        Log.d(LOG_NAME, "Making new job")
+        Log.d(logID, "Making new job")
         job = Job(this)
-        Log.d(LOG_NAME, "Executing job")
-        Needle.onBackgroundThread().execute(job)
+        Log.d(logID, "Executing job")
+        job?.let { Needle.onBackgroundThread().execute(it) }
+                ?: Log.e(logID, "Job nullified before could be started")
         return super.onStartCommand(intent, flags, startId)
     }
-
 
     internal class Job(private val service: DownloadService) : CancelableTask() {
 
@@ -155,79 +156,78 @@ class DownloadService : Service() {
          * TODO Skip over paused chapters or move them to the bottom of the list
          */
         override fun doWork() {
-            Log.i(LOG_NAME, "Starting loop")
-            while (Database.DatabaseDownloads.downloadCount >= 1 && !Settings.downloadPaused) {
+            Log.i(logID, "Starting loop")
+            while (Database.DatabaseDownloads.downloadCount >= 1 && !Settings.downloadPaused)
                 Database.DatabaseDownloads.firstDownload?.let { downloadItem ->
 
                     val pr = service.progressNotification
+                    pr.setOngoing(true)
                     pr.setContentText(downloadItem.chapterName)
-                    pr.setProgress(6, 0, false)
+                    pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 0, false)
                     service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-                    sendMessage(Broadcasts.DOWNLOADS_TOGGLE, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
+                    sendMessage(BC_DOWNLOADS_TOGGLE, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
 
                     try {
-                        run {
-                            pr.setProgress(6, 1, false)
-                            service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+                        pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 1, false)
+                        service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-                            Log.d(LOG_NAME, Utilities.shoDir + "download/")
-                            val folder = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName.clean())
-                            Log.d(LOG_NAME, folder.toString())
-                            if (!folder.exists()) if (!folder.mkdirs()) throw IOException("Failed to mkdirs")
+                        val folder = File("${Utilities.shoDir}/download/${downloadItem.formatter.formatterID}/${downloadItem.novelName.clean()}")
+                        //Log.d(logID, folder.toString())
+                        if (!folder.exists()) if (!folder.mkdirs())
+                            throw IOException("Failed to mkdirs")
 
-                            pr.setProgress(6, 2, false)
-                            service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+                        pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 2, false)
+                        service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-                            val formattedName = (downloadItem.chapterName).clean()
-                            val passage = downloadItem.formatter.getPassage(downloadItem.chapterURL)
+                        val formattedName = (downloadItem.chapterName).clean()
+                        val passage = downloadItem.formatter.getPassage(downloadItem.chapterURL)
 
-                            pr.setProgress(6, 3, false)
-                            service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+                        pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
+                        service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-                            val fileOutputStream = FileOutputStream(folder.path + "/" + formattedName + ".txt")
-                            fileOutputStream.write(passage.toByteArray())
-                            fileOutputStream.close()
-                            Database.DatabaseChapter.addSavedPath(downloadItem.chapterURL, folder.path + "/" + formattedName + ".txt")
+                        val fileOutputStream = FileOutputStream("${folder.path}/$formattedName.txt")
+                        fileOutputStream.write(passage.toByteArray())
+                        fileOutputStream.close()
+                        Database.DatabaseChapter.addSavedPath(downloadItem.chapterURL, "${folder.path}/$formattedName.txt")
 
-                            pr.setProgress(6, 4, false)
-                            service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+                        pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 4, false)
+                        service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
+                        sendMessage(BC_NOTIFY_DATA_CHANGE)
 
-                            sendMessage(Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE)
+                        Log.d(logID, "Downloaded: ${downloadItem.chapterID} of ${downloadItem.novelName}")
 
-                            Log.d(LOG_NAME, "Downloaded:" + downloadItem.novelName + " " + formattedName)
-                        }
-                        pr.setProgress(6, 5, false)
+                        pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 5, false)
                         service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
                         // Clean up
                         Database.DatabaseDownloads.removeDownload(downloadItem)
 
-                        sendMessage(Broadcasts.DOWNLOADS_TOGGLE, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
-                        sendMessage(Broadcasts.DOWNLOADS_REMOVE, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
+                        sendMessage(BC_DOWNLOADS_TOGGLE, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
+                        sendMessage(BC_DOWNLOADS_REMOVE, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
 
-                        pr.setProgress(6, 6, false)
+                        pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 6, false)
                         service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
                         // Rate limiting
                         try {
                             TimeUnit.MILLISECONDS.sleep(10)
                         } catch (e: InterruptedException) {
-                            Log.e(LOG_NAME, "Failed to wait", e)
+                            Log.e(logID, "Failed to wait", e)
                         }
                     } catch (e: Exception) { // Mark download as faulted
-                        Log.e(LOG_NAME, "A critical error occurred", e)
-                        sendMessage(Broadcasts.DOWNLOADS_MARK_ERROR, mapOf(Pair(Broadcasts.DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
+                        Log.e(logID, "A critical error occurred", e)
+                        sendMessage(BC_DOWNLOADS_MARK_ERROR, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
+                    } catch (e: IOException) {
+
                     }
                 }
-                stop(service)
-            }
 
+            if (Settings.downloadPaused) Log.i(logID, "Loop Paused")
+            stop(service)
             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD,
-                    service.progressNotification.setOngoing(false)
-                            .setContentText(service.getString(R.string.completed))
-                            .build())
-            Log.i(LOG_NAME, "Completed download loop")
+                    service.progressNotification.setOngoing(false).setProgress(0, 0, false).setContentText(service.getString(R.string.completed)).build())
+            Log.i(logID, "Completed download loop")
         }
     }
 }

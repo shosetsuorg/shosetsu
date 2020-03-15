@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions
 
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 
 /*
  * This file is part of shosetsu.

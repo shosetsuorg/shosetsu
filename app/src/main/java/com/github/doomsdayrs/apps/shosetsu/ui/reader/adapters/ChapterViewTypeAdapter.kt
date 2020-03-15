@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewMarkdownReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader

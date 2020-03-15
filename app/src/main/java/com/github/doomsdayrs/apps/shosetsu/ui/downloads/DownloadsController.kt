@@ -18,7 +18,11 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_MARK_ERROR
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_RECEIVED_URL
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_REMOVE
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_TOGGLE
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DATA_CHANGE
 
 /*
  * This file is part of Shosetsu.
@@ -63,10 +67,10 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
         adapter!!.setHasStableIds(true)
         val filter = IntentFilter()
 
-        filter.addAction(Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE)
-        filter.addAction(Broadcasts.DOWNLOADS_MARK_ERROR)
-        filter.addAction(Broadcasts.DOWNLOADS_TOGGLE)
-        filter.addAction(Broadcasts.DOWNLOADS_REMOVE)
+        filter.addAction(BC_NOTIFY_DATA_CHANGE)
+        filter.addAction(BC_DOWNLOADS_MARK_ERROR)
+        filter.addAction(BC_DOWNLOADS_TOGGLE)
+        filter.addAction(BC_DOWNLOADS_REMOVE)
 
         receiver = object : BroadcastReceiver() {
 
@@ -101,10 +105,10 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 intent?.let { i ->
                     when (i.action) {
-                        Broadcasts.BROADCAST_NOTIFY_DATA_CHANGE -> (recyclerView?.adapter as DownloadAdapter).notifyDataSetChanged()
-                        Broadcasts.DOWNLOADS_REMOVE -> i.getStringExtra(Broadcasts.DOWNLOADS_RECEIVED_URL)?.let { removeDownloads(it) }
-                        Broadcasts.DOWNLOADS_TOGGLE -> i.getStringExtra(Broadcasts.DOWNLOADS_RECEIVED_URL)?.let { toggleProcess(it) }
-                        Broadcasts.DOWNLOADS_MARK_ERROR -> i.getStringExtra(Broadcasts.DOWNLOADS_RECEIVED_URL)?.let { markError(it) }
+                        BC_NOTIFY_DATA_CHANGE -> (recyclerView?.adapter as DownloadAdapter).notifyDataSetChanged()
+                        BC_DOWNLOADS_REMOVE -> i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let { removeDownloads(it) }
+                        BC_DOWNLOADS_TOGGLE -> i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let { toggleProcess(it) }
+                        BC_DOWNLOADS_MARK_ERROR -> i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let { markError(it) }
                         else -> Log.e("DownloadsFragment", "No action provided!")
                     }
                 }

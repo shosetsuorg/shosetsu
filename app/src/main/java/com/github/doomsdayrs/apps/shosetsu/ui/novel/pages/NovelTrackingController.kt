@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners
+package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 
 /*
  * This file is part of Shosetsu.
@@ -21,14 +20,15 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  * Shosetsu
- * 06 / 07 / 2019
+ * 16 / 06 / 2019
  *
  * @author github.com/doomsdayrs
  */
-class NovelFragmentUpdate(private val novelFragmentInfo: NovelFragmentInfo) : OnRefreshListener {
-    override fun onRefresh() {
-        if (novelFragmentInfo.novelFragment != null) NovelLoader(novelFragmentInfo.novelFragment!!.novelURL, novelFragmentInfo.novelFragment!!.novelID, novelFragmentInfo.novelFragment!!.formatter, novelFragmentInfo.novelFragment, false)
-                .execute()
-    }
+@Suppress("unused")
+class NovelTrackingController : ViewedController() {
+    override val layoutRes: Int
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
+    override fun onViewCreated(view: View) =
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 }

@@ -60,12 +60,12 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
                 novelFragment.novelPage = novelPage
 
                 // After setting the page, it will tell the view to set data
-                novelFragment.novelFragmentInfo?.setData()
+                novelFragment.novelInfoController?.setData()
 
                 // Turns off refresh view
                 novelFragment.fragmentNovelMainRefresh?.isRefreshing = false
                 novelFragment.novelChapters = novelFragment.novelPage.chapters
-                novelFragment.novelFragmentChapters?.setChapters()
+                novelFragment.novelChaptersController?.setChapters()
             }
     }
 

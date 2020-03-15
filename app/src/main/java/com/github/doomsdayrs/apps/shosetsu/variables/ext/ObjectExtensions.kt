@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import android.view.ViewGroup
 import androidx.core.view.get
@@ -82,3 +83,6 @@ fun ViewGroup.findFilters(): MutableMap<Int, Any> {
     }
     return map
 }
+
+fun MissingResourceException.handle(logID: String) = Log.e(logID, "A resource was missing", this)
+fun SQLiteException.handle(logID: String) = Log.e(logID, "Database threw an error", this)

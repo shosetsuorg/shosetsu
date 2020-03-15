@@ -122,9 +122,7 @@ class UpdateService : Service() {
             Notification.Builder(this)
         }
                 .setSmallIcon(R.drawable.ic_system_update_alt_black_24dp)
-                .setContentTitle(getString(R.string.app_name))
                 .setContentText("Update in progress")
-                .setOngoing(true)
                 .setOnlyAlertOnce(true)
     }
 
@@ -147,7 +145,7 @@ class UpdateService : Service() {
         return null
     }
 
-
+    @Throws(InvalidKeyException::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         job?.cancel()
         job = when (intent?.getIntExtra(KEY_TARGET, KEY_NOVELS) ?: KEY_NOVELS) {
@@ -177,16 +175,18 @@ class UpdateService : Service() {
             intent.getIntegerArrayListExtra(KEY_CHAPTERS)?.let { novelCards ->
                 // Main process
                 for (x in novelCards.indices) {
-
+                    val pr = updateService.progressNotification
+                    pr.setContentTitle(updateService.getString(R.string.updating))
+                    pr.setOngoing(true)
                     val novelCard = Database.DatabaseNovels.getNovel(novelCards[x])
                     val novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
                     val formatter = DefaultScrapers.getByID(novelCard.formatterID)
 
                     if (formatter != DefaultScrapers.unknown) {
                         // Updates notification
-                        updateService.progressNotification.setContentText(novelCard.title)
-                        updateService.progressNotification.setProgress(novelCards.size, x + 1, false)
-                        updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
+                        pr.setContentText(novelCard.title)
+                        pr.setProgress(novelCards.size, x + 1, false)
+                        updateService.notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
 
                         // Runs process
                         ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
@@ -211,25 +211,31 @@ class UpdateService : Service() {
                         }, formatter, novelCard.novelURL).doInBackground()
                         Utilities.wait(1000)
                     } else {
-                        updateService.progressNotification.setProgress(novelCards.size, x + 1, false)
-                        updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
+                        pr.setContentText("Unknown Formatter for ${novelCard.novelURL}")
+                        pr.setProgress(novelCards.size, x + 1, false)
+                        updateService.notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
                     }
                 }
             }
             // Completion
             val stringBuilder = StringBuilder()
+            val pr = updateService.progressNotification
             when {
                 updatedNovels.size > 0 -> {
-                    updateService.progressNotification.setContentTitle(updateService.getString(R.string.update_complete))
+                    pr.setContentTitle(updateService.getString(R.string.update_complete))
                     for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
-                    updateService.progressNotification.style = Notification.BigTextStyle()
+                    pr.style = Notification.BigTextStyle()
                 }
-                else -> stringBuilder.append(updateService.getString(R.string.update_not_found))
+                else -> {
+                    pr.setContentTitle(updateService.getString(R.string.update_complete))
+                    stringBuilder.append(updateService.getString(R.string.update_not_found))
+                }
             }
-            updateService.progressNotification.setContentText(stringBuilder.toString())
-            updateService.progressNotification.setProgress(0, 0, false)
-            updateService.progressNotification.setOngoing(false)
-            updateService.notificationManager.notify(ID_CHAPTER_UPDATE, updateService.progressNotification.build())
+            pr.setContentText(stringBuilder.toString())
+            pr.setProgress(0, 0, false)
+            pr.setOngoing(false)
+            updateService.notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+            stop(updateService)
         }
 
         private fun add(updatedNovels: ArrayList<NovelCard>, mangaCount: Int, novelID: Int, novelChapter: Novel.Chapter, novelCard: NovelCard) {

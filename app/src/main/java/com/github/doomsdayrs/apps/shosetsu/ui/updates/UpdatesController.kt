@@ -43,7 +43,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdatesFragment : ViewedController() {
+class UpdatesController : ViewedController() {
 
     init {
         setHasOptionsMenu(true)
@@ -75,13 +75,13 @@ class UpdatesFragment : ViewedController() {
     }
 
     private fun setViewPager() {
-        val updatesFragments = ArrayList<UpdateFragment>()
+        val updatesFragments = ArrayList<UpdateController>()
         val days = DatabaseUpdates.getTotalDays()
         Log.d("TotalDays", days.toString())
         var startTime = DatabaseUpdates.getStartingDay()
         Log.d("StartingDay", DateTime(startTime).toString())
         for (x in 0 until days) {
-            val updateFragment = UpdateFragment()
+            val updateFragment = UpdateController()
             updateFragment.date = (startTime)
             startTime += 86400000
             updatesFragments.add(updateFragment)
@@ -93,7 +93,7 @@ class UpdatesFragment : ViewedController() {
                 if (c <= 0) updatesFragments.removeAt(x)
         }
         // TODAY
-        val updateFragment = UpdateFragment()
+        val updateFragment = UpdateController()
         updateFragment.date = (DatabaseUpdates.trimDate(DateTime(System.currentTimeMillis())).millis)
         updatesFragments.add(updateFragment)
         updatesFragments.reverse()

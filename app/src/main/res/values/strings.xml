@@ -230,6 +230,7 @@
     <string name="reset">Reset</string>
     <string name="listings">Listings</string>
     <string name="search_filters">Search Filters</string>
+    <string name="updating">Updating</string>
 
     <array name="application_themes">
         <item>@string/light</item>

@@ -17,10 +17,11 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.listeners.NovelFragmentUpdate
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentInfo
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -68,8 +69,8 @@ class NovelController : ViewedController() {
     var status = Status.UNREAD
     var novelChapters: List<Novel.Chapter> = ArrayList()
 
-    var novelFragmentInfo: NovelFragmentInfo? = null
-    var novelFragmentChapters: NovelFragmentChapters? = null
+    var novelInfoController: NovelInfoController? = null
+    var novelChaptersController: NovelChaptersController? = null
 
 
     @Attach(R.id.fragment_novel_tabLayout)
@@ -108,10 +109,10 @@ class NovelController : ViewedController() {
         // Attach UI to program
         // Create sub-fragments
         run {
-            novelFragmentInfo = NovelFragmentInfo()
-            novelFragmentInfo!!.novelFragment = this
-            novelFragmentChapters = NovelFragmentChapters()
-            novelFragmentChapters!!.novelFragment = (this)
+            novelInfoController = NovelInfoController()
+            novelInfoController!!.novelFragment = this
+            novelChaptersController = NovelChaptersController()
+            novelChaptersController!!.novelFragment = (this)
         }
         //TODO FINISH TRACKING
         //boolean track = SettingsController.isTrackingEnabled();
@@ -126,16 +127,24 @@ class NovelController : ViewedController() {
             if (activity != null && activity!!.actionBar != null) activity!!.actionBar!!.title = novelPage.title
             setViewPager()
         }
-        fragmentNovelMainRefresh?.setOnRefreshListener(NovelFragmentUpdate(novelFragmentInfo!!))
+        fragmentNovelMainRefresh?.setOnRefreshListener {
+            novelInfoController?.let { it ->
+                it.novelFragment?.let {
+                    context?.toast("")
+                    NovelLoader(it.novelURL, it.novelID, it.formatter, it, true)
+                            .execute()
+                }
+            }
+        }
     }
 
     private fun setViewPager() {
         val fragments: MutableList<Controller> = ArrayList()
         run {
             Log.d("FragmentLoading", "Main")
-            fragments.add(novelFragmentInfo!!)
+            fragments.add(novelInfoController!!)
             Log.d("FragmentLoading", "Chapters")
-            fragments.add(novelFragmentChapters!!)
+            fragments.add(novelChaptersController!!)
         }
         val pagerAdapter = NovelPagerAdapter(this, fragments)
         fragmentNovelViewpager?.adapter = pagerAdapter
@@ -160,7 +169,7 @@ class NovelController : ViewedController() {
         if (novelChapters != null && novelChapters.isNotEmpty())
             for (x in novelChapters.indices) {
                 if (novelChapters[x] == chapterURL) {
-                    return if (novelFragmentChapters?.reversed!!) {
+                    return if (novelChaptersController?.reversed!!) {
                         if (x - 1 != -1) getChapter(novelChapters[x - 1]) else getChapter(novelChapters[x])
                     } else {
                         if (x + 1 != novelChapters.size) getChapter(novelChapters[x + 1]) else getChapter(novelChapters[x])
@@ -174,7 +183,7 @@ class NovelController : ViewedController() {
         if (novelChapters.isNotEmpty())
             for (x in novelChapters.indices) {
                 if (novelChapters[x].link == chapterURL) {
-                    return if (novelFragmentChapters?.reversed!!) {
+                    return if (novelChaptersController?.reversed!!) {
                         if (x - 1 != -1) getChapter(getChapterIDFromChapterURL(novelChapters[x - 1].link)) else getChapter(getChapterIDFromChapterURL(novelChapters[x].link))
                     } else {
                         if (x + 1 != novelChapters.size) getChapter(getChapterIDFromChapterURL(novelChapters[x + 1].link)) else getChapter(getChapterIDFromChapterURL(novelChapters[x].link))
@@ -189,7 +198,7 @@ class NovelController : ViewedController() {
         val customChapters: ArrayList<Novel.Chapter> = ArrayList()
         val lastReadChapter = getLastRead()
         var found = false
-        if (!novelChapters.isNullOrEmpty()) if (!novelFragmentChapters!!.reversed) {
+        if (!novelChapters.isNullOrEmpty()) if (!novelChaptersController!!.reversed) {
             for (x in novelChapters.size - 1 downTo 0) {
                 if (lastReadChapter.link == novelChapters[x].link)
                     found = true
@@ -229,7 +238,7 @@ class NovelController : ViewedController() {
 
     fun getLastRead(): Novel.Chapter {
         if (!novelChapters.isNullOrEmpty())
-            if (!novelFragmentChapters!!.reversed)
+            if (!novelChaptersController!!.reversed)
                 for (x in novelChapters.size - 1 downTo 0) {
                     val stat = getChapterStatus(getChapterIDFromChapterURL(novelChapters[x].link))
                     if (stat == Status.READ || stat == Status.READING)
@@ -240,7 +249,7 @@ class NovelController : ViewedController() {
                 if (stat == Status.READ || stat == Status.READING)
                     return x
             }
-        return if (novelFragmentChapters!!.reversed) novelChapters[0] else novelChapters[novelChapters.size - 1]
+        return if (novelChaptersController!!.reversed) novelChapters[0] else novelChapters[novelChapters.size - 1]
     }
 
     /**
@@ -248,7 +257,7 @@ class NovelController : ViewedController() {
      */
     fun lastRead(): Int {
         return if (novelChapters.isNotEmpty()) {
-            if (!novelFragmentChapters?.reversed!!) {
+            if (!novelChaptersController?.reversed!!) {
                 for (x in novelChapters.indices.reversed()) {
                     when (getChapterStatus(getChapterIDFromChapterURL(novelChapters[x].link))) {
                         Status.READ -> return x + 1

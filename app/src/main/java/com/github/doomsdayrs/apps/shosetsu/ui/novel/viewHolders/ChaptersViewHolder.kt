@@ -19,7 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
@@ -66,27 +66,27 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
     private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 
     var popupMenu: PopupMenu? = null
-    var novelFragmentChapters: NovelFragmentChapters? = null
+    var novelChaptersController: NovelChaptersController? = null
 
     @Throws(MissingResourceException::class)
     fun addToSelect() {
-        if (!novelFragmentChapters!!.contains(novelChapter!!)) novelFragmentChapters!!.selectedChapters.add(getChapterIDFromChapterURL(novelChapter!!.link)) else removeFromSelect()
-        if ((novelFragmentChapters!!.selectedChapters.size == 1 || novelFragmentChapters!!.selectedChapters.size <= 0) && novelFragmentChapters!!.inflater != null) novelFragmentChapters!!.activity?.invalidateOptionsMenu()
-        novelFragmentChapters!!.updateAdapter()
+        if (!novelChaptersController!!.contains(novelChapter!!)) novelChaptersController!!.selectedChapters.add(getChapterIDFromChapterURL(novelChapter!!.link)) else removeFromSelect()
+        if ((novelChaptersController!!.selectedChapters.size == 1 || novelChaptersController!!.selectedChapters.size <= 0) && novelChaptersController!!.inflater != null) novelChaptersController!!.activity?.invalidateOptionsMenu()
+        novelChaptersController!!.updateAdapter()
     }
 
     private fun removeFromSelect() {
-        if (novelFragmentChapters!!.contains(novelChapter!!)) for (x in novelFragmentChapters!!.selectedChapters.indices) if (novelFragmentChapters!!.selectedChapters[x] == getChapterIDFromChapterURL(novelChapter!!.link)) {
-            novelFragmentChapters!!.selectedChapters.removeAt(x)
+        if (novelChaptersController!!.contains(novelChapter!!)) for (x in novelChaptersController!!.selectedChapters.indices) if (novelChaptersController!!.selectedChapters[x] == getChapterIDFromChapterURL(novelChapter!!.link)) {
+            novelChaptersController!!.selectedChapters.removeAt(x)
             return
         }
     }
 
     override fun onClick(v: View) {
         try {
-            if (novelFragmentChapters != null)
-                if (novelFragmentChapters!!.activity != null && novelFragmentChapters!!.novelFragment != null)
-                    openChapter(novelFragmentChapters!!.activity!!, novelChapter!!, novelFragmentChapters!!.novelFragment!!.novelID, novelFragmentChapters!!.novelFragment!!.formatter.formatterID)
+            if (novelChaptersController != null)
+                if (novelChaptersController!!.activity != null && novelChaptersController!!.novelFragment != null)
+                    openChapter(novelChaptersController!!.activity!!, novelChapter!!, novelChaptersController!!.novelFragment!!.novelID, novelChaptersController!!.novelFragment!!.formatter.formatterID)
         } catch (e: MissingResourceException) {
             TODO("Add error handling here")
         }
@@ -106,42 +106,42 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
                             title.setTextColor(ChaptersAdapter.DefaultTextColor)
                         }
 
-                        novelFragmentChapters!!.updateAdapter()
+                        novelChaptersController!!.updateAdapter()
                         return@setOnMenuItemClickListener true
                     }
                     R.id.popup_chapter_menu_download -> {
                         if (!Database.DatabaseChapter.isSaved(chapterID)) {
-                            val downloadItem = DownloadItem(novelFragmentChapters!!.novelFragment!!.formatter, novelFragmentChapters!!.novelFragment!!.novelPage.title, novelChapter!!.title, chapterID)
-                            addToDownload(novelFragmentChapters!!.activity, downloadItem)
+                            val downloadItem = DownloadItem(novelChaptersController!!.novelFragment!!.formatter, novelChaptersController!!.novelFragment!!.novelPage.title, novelChapter!!.title, chapterID)
+                            addToDownload(novelChaptersController!!.activity, downloadItem)
                         } else {
-                            if (delete(itemView.context, DownloadItem(novelFragmentChapters!!.novelFragment!!.formatter, novelFragmentChapters!!.novelFragment!!.novelPage.title, novelChapter!!.title, chapterID))) {
+                            if (delete(itemView.context, DownloadItem(novelChaptersController!!.novelFragment!!.formatter, novelChaptersController!!.novelFragment!!.novelPage.title, novelChapter!!.title, chapterID))) {
                                 downloadTag.visibility = View.INVISIBLE
                             }
                         }
-                        novelFragmentChapters!!.updateAdapter()
+                        novelChaptersController!!.updateAdapter()
                         return@setOnMenuItemClickListener true
                     }
                     R.id.popup_chapter_menu_mark_read -> {
                         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
-                        novelFragmentChapters!!.updateAdapter()
+                        novelChaptersController!!.updateAdapter()
                         return@setOnMenuItemClickListener true
                     }
                     R.id.popup_chapter_menu_mark_unread -> {
                         Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD)
-                        novelFragmentChapters!!.updateAdapter()
+                        novelChaptersController!!.updateAdapter()
                         return@setOnMenuItemClickListener true
                     }
                     R.id.popup_chapter_menu_mark_reading -> {
                         Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
-                        novelFragmentChapters!!.updateAdapter()
+                        novelChaptersController!!.updateAdapter()
                         return@setOnMenuItemClickListener true
                     }
                     R.id.browser -> {
-                        if (novelFragmentChapters!!.activity != null) Utilities.openInBrowser(novelFragmentChapters!!.activity!!, novelChapter!!.link)
+                        if (novelChaptersController!!.activity != null) Utilities.openInBrowser(novelChaptersController!!.activity!!, novelChapter!!.link)
                         return@setOnMenuItemClickListener true
                     }
                     R.id.webview -> {
-                        if (novelFragmentChapters!!.activity != null) openInWebview(novelFragmentChapters!!.activity!!, novelChapter!!.link)
+                        if (novelChaptersController!!.activity != null) openInWebview(novelChaptersController!!.activity!!, novelChapter!!.link)
                         return@setOnMenuItemClickListener true
                     }
                     else -> return@setOnMenuItemClickListener false

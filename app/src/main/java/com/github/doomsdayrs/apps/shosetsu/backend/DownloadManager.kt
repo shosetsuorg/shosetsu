@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.app.Activity
 import android.content.Context
+import android.database.SQLException
 import android.util.Log
 import android.widget.Toast.LENGTH_LONG
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -13,6 +14,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
+import java.io.IOException
+import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -45,6 +48,7 @@ object DownloadManager {
      *
      * @param downloadItem download item to add
      */
+    @Throws(MissingResourceException::class)
     fun addToDownload(activity: Activity?, downloadItem: DownloadItem) {
         if (!Database.DatabaseDownloads.inDownloads(downloadItem)) {
             Database.DatabaseDownloads.addToDownloads(downloadItem)
@@ -59,6 +63,7 @@ object DownloadManager {
      * @param downloadItem download item to remove
      * @return if downloaded
      */
+    @Throws(SQLException::class)
     fun delete(context: Context?, downloadItem: DownloadItem): Boolean {
         Log.d("DeletingChapter", downloadItem.toString())
         val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt")
@@ -81,11 +86,15 @@ object DownloadManager {
         try {
             BufferedReader(FileReader(path)).use { br ->
                 val sb = StringBuilder()
-                var line = br.readLine()
-                while (line != null) {
-                    sb.append(line)
-                    sb.append(System.lineSeparator())
-                    line = br.readLine()
+                try {
+                    var line = br.readLine()
+                    while (line != null) {
+                        sb.append(line)
+                        sb.append(System.lineSeparator())
+                        line = br.readLine()
+                    }
+                } catch (e: IOException) {
+                    throw e
                 }
                 return HandledReturns(true, value = sb.toString())
             }

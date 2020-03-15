@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelFragmentChapters
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
@@ -42,7 +42,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) : RecyclerView.Adapter<ChaptersViewHolder>(), FastScrollRecyclerView.SectionedAdapter {
+class ChaptersAdapter(private val novelChaptersController: NovelChaptersController) : RecyclerView.Adapter<ChaptersViewHolder>(), FastScrollRecyclerView.SectionedAdapter {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ChaptersViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_novel_chapter, viewGroup, false)
@@ -58,15 +58,15 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
     override fun onBindViewHolder(chaptersViewHolder: ChaptersViewHolder, i: Int) {
         try {
 
-            val novelChapter = novelFragmentChapters.novelFragment!!.novelChapters[i]
+            val novelChapter = novelChaptersController.novelFragment!!.novelChapters[i]
             chaptersViewHolder.novelChapter = novelChapter
             chaptersViewHolder.title.text = novelChapter.title
-            chaptersViewHolder.novelFragmentChapters = novelFragmentChapters
+            chaptersViewHolder.novelChaptersController = novelChaptersController
             val chapterID: Int
             chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
             chaptersViewHolder.chapterID = chapterID
             //TODO The getNovelID in this method likely will cause slowdowns due to IO
-            if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(DatabaseIdentification.getNovelIDFromNovelURL(novelFragmentChapters.novelFragment!!.novelURL), novelChapter)
+            if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(DatabaseIdentification.getNovelIDFromNovelURL(novelChaptersController.novelFragment!!.novelURL), novelChapter)
 
             if (Database.DatabaseChapter.isBookMarked(chapterID)) {
                 chaptersViewHolder.title.setTextColor(chaptersViewHolder.itemView.resources.getColor(R.color.bookmarked))
@@ -75,14 +75,14 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
                 chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_bookmark).title = "Bookmark"
             }
 
-            if (novelFragmentChapters.contains(novelChapter)) {
+            if (novelChaptersController.contains(novelChapter)) {
                 chaptersViewHolder.cardView.strokeWidth = Utilities.selectedStrokeWidth
                 chaptersViewHolder.checkBox.isChecked = true
             } else {
                 chaptersViewHolder.cardView.strokeWidth = 0
                 chaptersViewHolder.checkBox.isChecked = false
             }
-            if (novelFragmentChapters.selectedChapters.size > 0) {
+            if (novelChaptersController.selectedChapters.size > 0) {
                 chaptersViewHolder.checkBox.visibility = View.VISIBLE
             } else chaptersViewHolder.checkBox.visibility = View.GONE
             if (Database.DatabaseChapter.isSaved(chapterID)) {
@@ -114,7 +114,7 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
                 }
                 Status.READ -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (novelFragmentChapters.context != null) chaptersViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(novelFragmentChapters.context!!, R.color.shade))
+                        if (novelChaptersController.context != null) chaptersViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(novelChaptersController.context!!, R.color.shade))
                     } else {
                         (chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
                     }
@@ -126,7 +126,7 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
 
                 }
             }
-            if (novelFragmentChapters.selectedChapters.size <= 0)
+            if (novelChaptersController.selectedChapters.size <= 0)
                 chaptersViewHolder.itemView.setOnClickListener(chaptersViewHolder)
             else chaptersViewHolder.itemView.setOnClickListener { chaptersViewHolder.addToSelect() }
         } catch (e: MissingResourceException) {
@@ -137,11 +137,11 @@ class ChaptersAdapter(private val novelFragmentChapters: NovelFragmentChapters) 
     }
 
     override fun getItemCount(): Int {
-        return if (novelFragmentChapters.novelFragment != null) novelFragmentChapters.novelFragment!!.novelChapters.size else 0
+        return if (novelChaptersController.novelFragment != null) novelChaptersController.novelFragment!!.novelChapters.size else 0
     }
 
     override fun getSectionName(position: Int): String {
-        return "C ${novelFragmentChapters.novelFragment!!.novelChapters[position].order}"
+        return "C ${novelChaptersController.novelFragment!!.novelChapters[position].order}"
     }
 
     override fun getItemId(position: Int): Long {

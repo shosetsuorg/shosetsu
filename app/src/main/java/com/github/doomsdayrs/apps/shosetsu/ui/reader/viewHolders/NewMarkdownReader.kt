@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders
 
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.fragments.ChapterView
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import us.feras.mdv.MarkdownView
 

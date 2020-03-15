@@ -31,7 +31,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdateFragment : RecyclerController<UpdatedNovelsAdapter>() {
+class UpdateController : RecyclerController<UpdatedNovelsAdapter>() {
     var date: Long = -1
     private val novels = ArrayList<Int>()
     private var updates = ArrayList<Update>()
