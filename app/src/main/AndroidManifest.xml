@@ -63,6 +63,10 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <activity
+            android:name=".ui.intro.IntroductionActivity"
+            android:theme="@style/Theme.Intro" />
+
         <service
             android:name=".backend.services.UpdateService"
             android:exported="false" />

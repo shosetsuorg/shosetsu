@@ -1,6 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.graphics.Color
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.FIRST_TIME_KEY
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.advancedPreferences
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.downloadPreferences
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.viewPreferences
 import org.json.JSONArray
 
 /*
@@ -47,19 +51,19 @@ object Settings {
     var ReaderMarkingType: Int = MarkingTypes.ONVIEW.i
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("markingType", value).apply()
+            viewPreferences.edit().putInt("markingType", value).apply()
         }
-        get() = Utilities.viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
+        get() = viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
 
 
     /**
      * Reader text size
      */
     var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
-        get() = Utilities.viewPreferences.getInt("ReaderTextSize", 14).toFloat()
+        get() = viewPreferences.getInt("ReaderTextSize", 14).toFloat()
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("ReaderTextSize", value.toInt()).apply()
+            viewPreferences.edit().putInt("ReaderTextSize", value.toInt()).apply()
         }
 
     /**
@@ -68,9 +72,9 @@ object Settings {
     var ReaderTextColor = Color.BLACK
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("ReaderTextColor", value).apply()
+            viewPreferences.edit().putInt("ReaderTextColor", value).apply()
         }
-        get() = Utilities.viewPreferences.getInt("ReaderTextColor", Color.BLACK)
+        get() = viewPreferences.getInt("ReaderTextColor", Color.BLACK)
 
     /**
      * Reader background color
@@ -78,9 +82,9 @@ object Settings {
     var ReaderTextBackgroundColor = Color.WHITE
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("ReaderBackgroundColor", value).apply()
+            viewPreferences.edit().putInt("ReaderBackgroundColor", value).apply()
         }
-        get() = Utilities.viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
+        get() = viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
 
     /**
      * If download manager is paused
@@ -88,57 +92,63 @@ object Settings {
     var downloadPaused: Boolean = false
         set(value) {
             field = value
-            Utilities.downloadPreferences.edit().putBoolean("paused", field).apply()
+            downloadPreferences.edit().putBoolean("paused", field).apply()
         }
-        get() = Utilities.downloadPreferences.getBoolean("paused", false)
+        get() = downloadPreferences.getBoolean("paused", false)
 
     var isDownloadOnUpdateEnabled: Boolean = false
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putBoolean("downloadOnUpdate", value).apply()
+            viewPreferences.edit().putBoolean("downloadOnUpdate", value).apply()
         }
-        get() = Utilities.viewPreferences.getBoolean("downloadOnUpdate", false)
+        get() = viewPreferences.getBoolean("downloadOnUpdate", false)
 
     var paragraphSpacing: Int = 0
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("paragraphSpacing", value).apply()
+            viewPreferences.edit().putInt("paragraphSpacing", value).apply()
         }
-        get() = Utilities.viewPreferences.getInt("paragraphSpacing", 1)
+        get() = viewPreferences.getInt("paragraphSpacing", 1)
 
     var disabledFormatters: JSONArray = JSONArray()
         set(value) {
             field = value
-            Utilities.advancedPreferences.edit().putString("disabledFormatters", value.toString()).apply()
+            advancedPreferences.edit().putString("disabledFormatters", value.toString()).apply()
         }
-        get() = JSONArray(Utilities.advancedPreferences.getString("disabledFormatters", "[]"))
+        get() = JSONArray(advancedPreferences.getString("disabledFormatters", "[]"))
 
     var indentSize = 0
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("indentSize", value).apply()
+            viewPreferences.edit().putInt("indentSize", value).apply()
         }
-        get() = Utilities.viewPreferences.getInt("indentSize", 1)
+        get() = viewPreferences.getInt("indentSize", 1)
 
     var columnsInNovelsViewP = -1
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("columnsInNovelsViewP", value).apply()
+            viewPreferences.edit().putInt("columnsInNovelsViewP", value).apply()
         }
-        get() = Utilities.viewPreferences.getInt("columnsInNovelsViewP", -1)
+        get() = viewPreferences.getInt("columnsInNovelsViewP", -1)
 
     var columnsInNovelsViewH = -1
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("columnsInNovelsViewH", value).apply()
+            viewPreferences.edit().putInt("columnsInNovelsViewH", value).apply()
         }
-        get() = Utilities.viewPreferences.getInt("columnsInNovelsViewH", -1)
+        get() = viewPreferences.getInt("columnsInNovelsViewH", -1)
 
     var novelCardType = 0
         set(value) {
             field = value
-            Utilities.viewPreferences.edit().putInt("novelCardType", value).apply()
+            viewPreferences.edit().putInt("novelCardType", value).apply()
         }
-        get() = Utilities.viewPreferences.getInt("novelCardType", 0)
+        get() = viewPreferences.getInt("novelCardType", 0)
 
+    var showIntro: Boolean = false
+        set(value) {
+            field = value
+            advancedPreferences.edit().putBoolean(FIRST_TIME_KEY, field).apply()
+        }
+        get() = advancedPreferences.getBoolean(FIRST_TIME_KEY, true)
 }

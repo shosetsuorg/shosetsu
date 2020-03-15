@@ -37,7 +37,6 @@ import com.github.javiersantos.appupdater.enums.AppUpdaterError
 import com.github.javiersantos.appupdater.enums.Display
 import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.javiersantos.appupdater.objects.Update
-import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 
@@ -98,7 +97,6 @@ class MainActivity : AppCompatActivity(), Supporter {
         //nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
         nav_view.setNavigationItemSelectedListener {
             val id = it.itemId
-
             val currentRoot = router.backstack.firstOrNull()
             if (currentRoot?.tag()?.toIntOrNull() != id) {
                 Log.d("Nav", "Selected $id")
@@ -115,9 +113,7 @@ class MainActivity : AppCompatActivity(), Supporter {
             return@setNavigationItemSelectedListener true
         }
 
-
         router = Conductor.attachRouter(this, fragment_container, savedInstanceState)
-
 
         val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -149,7 +145,6 @@ class MainActivity : AppCompatActivity(), Supporter {
         })
 
         syncActivityViewWithController(router.backstack.lastOrNull()?.controller())
-
         DownloadService.start(this)
         when (intent.action) {
             Intent.ACTION_USER_BACKGROUND -> {
@@ -205,17 +200,8 @@ class MainActivity : AppCompatActivity(), Supporter {
         }
     }
 
-
     private fun setRoot(controller: Controller, id: Int) {
         router.setRoot(controller.withFadeTransaction().tag(id.toString()))
-    }
-
-    fun getNavigationView(): NavigationView? {
-        return nav_view
-    }
-
-    fun getDrawerLayout(): DrawerLayout? {
-        return drawer_layout
     }
 
     private fun appUpdate() {

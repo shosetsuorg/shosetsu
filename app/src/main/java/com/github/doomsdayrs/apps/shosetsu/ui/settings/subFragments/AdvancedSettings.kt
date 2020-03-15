@@ -7,14 +7,16 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.BUTTON
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.SPINNER
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 
@@ -89,6 +91,12 @@ class AdvancedSettings : SettingsSubController() {
         settings[0].setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.application_themes)))
         val theme = (activity as AppCompatActivity).delegate.localNightMode
         settings[0].setSpinnerSelection(if (theme == AppCompatDelegate.MODE_NIGHT_YES || theme == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM || theme == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY) 1 else 0)
+        if (BuildConfig.DEBUG)
+            settings.add(SettingsItemData(SWITCH)
+                    .setTitle("Show Intro")
+                    .setSwitchIsChecked(Settings.showIntro)
+                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked -> Settings.showIntro = isChecked })
+            )
         super.onViewCreated(view)
     }
 

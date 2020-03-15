@@ -231,6 +231,13 @@
     <string name="listings">Listings</string>
     <string name="search_filters">Search Filters</string>
     <string name="updating">Updating</string>
+    <string name="intro_title_greet">Welcome to Shosetsu!</string>
+    <string name="intro_what_is_app">What is shosetsu?</string>
+    <string name="intro_what_is_app_desc">Shosetsu is a novel reading application, duh. Let\'s move on and read the license</string>
+    <string name="intro_perm_title">Permissions</string>
+    <string name="intro_perm_desc">Shosetsu is highly function, thus, we need ALL YOUR PERMS</string>
+    <string name="intro_happy_end">Wonderful!</string>
+    <string name="intro_happy_end_desc">That\'s it for an intro, Read well!</string>
 
     <array name="application_themes">
         <item>@string/light</item>

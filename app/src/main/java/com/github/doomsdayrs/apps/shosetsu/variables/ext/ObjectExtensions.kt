@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
+import android.app.Activity
 import android.database.sqlite.SQLiteException
 import android.util.Log
 import android.view.ViewGroup
@@ -9,6 +10,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterTex
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 import java.util.*
 
 /*
@@ -86,3 +90,20 @@ fun ViewGroup.findFilters(): MutableMap<Int, Any> {
 
 fun MissingResourceException.handle(logID: String) = Log.e(logID, "A resource was missing", this)
 fun SQLiteException.handle(logID: String) = Log.e(logID, "Database threw an error", this)
+
+fun Activity.readAsset(name: String): String {
+    val string = StringBuilder()
+    try {
+        val reader = BufferedReader(InputStreamReader(assets.open(name)))
+        // do reading, usually loop until end of file reading
+        var mLine: String? = reader.readLine()
+        while (mLine != null) {
+            string.append("\n").append(mLine)
+            mLine = reader.readLine()
+        }
+        reader.close()
+    } catch (e: IOException) {
+        Log.e(javaClass.name, "Failed to read asset of $name", e)
+    }
+    return string.toString()
+}

@@ -5,14 +5,18 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitPost
 import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitTask
+import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import java.io.File
@@ -44,6 +48,11 @@ import java.io.File
  * @author github.com/doomsdayrs
  */
 class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
+    companion object {
+        const val logID = "SplashScreen"
+        const val INTRO_CODE = 1944
+    }
+
     internal class BootSequence(private val splashScreen: SplashScreen) : AsyncTask<Void, String, Void>() {
         val unknown = ArrayList<File>()
 
@@ -78,6 +87,16 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == INTRO_CODE) {
+            BootSequence(this).execute()
+
+            // Set so that debug versions are perm show intro
+            if (!BuildConfig.DEBUG) Settings.showIntro = false
+        }
+    }
+
     lateinit var textView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +110,12 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
         // Settings setup
         Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         textView = findViewById(R.id.textView)
-        BootSequence(this).execute()
+        if (Settings.showIntro) {
+            Log.i(logID, "First time, Launching activity")
+            val i = Intent(this, IntroductionActivity::class.java)
+            startActivityForResult(i, INTRO_CODE)
+        } else {
+            BootSequence(this).execute()
+        }
     }
 }

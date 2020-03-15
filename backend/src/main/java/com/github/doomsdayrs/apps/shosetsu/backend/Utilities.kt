@@ -82,8 +82,8 @@ object Utilities {
     lateinit var downloadPreferences: SharedPreferences
     lateinit var viewPreferences: SharedPreferences
     lateinit var advancedPreferences: SharedPreferences
-    const val GITHUB_TOKEN = "GIT_TOKEN"
-
+    const val GITHUB_TOKEN_KEY = "GIT_TOKEN"
+    const val FIRST_TIME_KEY = "first_time"
 
     lateinit var formatterPreferences: SharedPreferences
     const val LISTING_KEY = "listing"

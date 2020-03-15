@@ -8,8 +8,7 @@ import androidx.core.os.bundleOf
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.readAsset
 
 
 /*
@@ -53,21 +52,9 @@ class TextAssetReader(private val bundleI: Bundle) : ViewedController(bundleI) {
     private var message: String = ""
 
     private fun handleB() {
-        val string = StringBuilder()
         Log.d(logID, "Setting Message")
         type = bundleI.getString(BUNDLE_KEY, "license")
-        activity?.let {
-            val reader = BufferedReader(InputStreamReader(activity!!.assets.open("$type.txt")))
-            // do reading, usually loop until end of file reading
-            var mLine: String? = reader.readLine()
-            while (mLine != null) {
-                string.append("\n").append(mLine)
-                mLine = reader.readLine()
-            }
-
-            reader.close()
-        }
-        message = string.toString()
+        message = activity?.readAsset("$type.text") ?: ""
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
