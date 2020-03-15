@@ -134,4 +134,7 @@ dependencies {
 
     // FastScroll
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.0'
+
+    // Material Intro https://github.com/heinrichreimer/material-intro#standard-slide-simpleslide
+    implementation "com.heinrichreimersoftware:material-intro:2.0.0"
 }
