@@ -43,7 +43,6 @@ fun String.clean(): String {
 /**
  * Deserialize a string to the object
  *
- * @param string serialized string
  * @return Object from string
  * @throws IOException            exception
  * @throws ClassNotFoundException exception
@@ -66,7 +65,6 @@ fun String.deserializeString(): Any? {
  * Checks string before deserialization
  * If null or empty, returns "". Else deserializes the string and returns
  *
- * @param string String to be checked
  * @return Completed String
  */
 fun String?.checkStringDeserialize(): String {
@@ -89,7 +87,6 @@ fun String?.checkStringDeserialize(): String {
  * Checks string before serialization
  * If null or empty, returns "". Else serializes the string and returns
  *
- * @param string String to be checked
  * @return Completed String
  */
 fun String?.checkStringSerialize(): String {
@@ -108,7 +105,6 @@ fun String?.checkStringSerialize(): String {
 /**
  * Converts String Stati back into Stati
  *
- * @param s String title
  * @return Stati
  */
 fun String?.convertStringToStati(): Novel.Status {
@@ -125,7 +121,6 @@ fun String?.convertStringToStati(): Novel.Status {
 /**
  * Converts a String Array back into an Array of Strings
  *
- * @param s String array
  * @return Array of Strings
  */
 fun String.convertStringToArray(): Array<String> {

@@ -9,6 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.readAsset
+import java.util.*
 
 
 /*
@@ -67,10 +68,11 @@ class TextAssetReader(private val bundleI: Bundle) : ViewedController(bundleI) {
         type = savedInstanceState.getString("t", "")
     }
 
+    @ExperimentalStdlibApi
     override fun onViewCreated(view: View) {
         if (message.isEmpty())
             handleB()
-        Utilities.setActivityTitle(activity, type.capitalize())
+        Utilities.setActivityTitle(activity, type.capitalize(Locale.ROOT))
         view.findViewById<TextView>(R.id.textView).text = message
     }
 

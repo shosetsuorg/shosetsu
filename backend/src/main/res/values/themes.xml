@@ -12,5 +12,5 @@
     <style name="ChipStyle" parent="AppTheme">
     </style>
 
-    <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog"></style>
+    <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog"/>
 </resources>

@@ -2,11 +2,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners
 
 import android.util.Log
 import androidx.viewpager.widget.ViewPager
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 
 /*
  * This file is part of Shosetsu.
