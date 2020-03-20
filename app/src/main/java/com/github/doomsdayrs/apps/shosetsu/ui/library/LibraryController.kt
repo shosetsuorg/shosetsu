@@ -25,7 +25,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNov
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.findFilters
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.google.android.material.navigation.NavigationView
 import java.util.*
@@ -171,9 +170,10 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
     }
 
     override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-        navigationView.addView(
+        // TODO
+        /*navigationView.addView(
                 SDBuilder(navigationView, drawerLayout, this)
-                        .createInner(R.string.todo) {
+                        .createInner("...") {
                             it
                                     .addSwitch()
                                     .addEditText()
@@ -185,14 +185,10 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
                         .addSpinner(array = arrayOf(""))
                         .addRadioGroup("Design", arrayOf("A", "B", "C"))
                         .build()
-        )
+        )*/
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {
-        val a = linearLayout.findFilters()
-        for(b in a){
-            println(b.toString())
-            println(b.javaClass)
-        }
+        // TODO
     }
 }

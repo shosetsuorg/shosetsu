@@ -109,7 +109,6 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
         super.onRestoreInstanceState(savedInstanceState)
         catalogueNovelCards = (savedInstanceState.getSerializable("list") as ArrayList<NovelListingCard>)
         formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
-
     }
 
     override fun onViewCreated(view: View) {

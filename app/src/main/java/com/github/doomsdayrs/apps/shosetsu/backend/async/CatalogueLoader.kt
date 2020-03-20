@@ -31,14 +31,14 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-open class CatalogueLoader(val formatter: Formatter, val filters: Array<Any?>, val query: String? = null) {
+open class CatalogueLoader(val formatter: Formatter, val filters: Array<*>, val query: String? = null) {
     companion object {
         private const val logID = "CatalogueLoader"
     }
 
     private var listing = formatter.defaultListing
 
-    constructor(formatter: Formatter, filters: Array<Any?>, selectedListing: Int) : this(formatter, filters) {
+    constructor(formatter: Formatter, filters: Array<*>, selectedListing: Int) : this(formatter, filters) {
         if (listing != selectedListing) listing = selectedListing
     }
 
