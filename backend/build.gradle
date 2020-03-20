@@ -45,5 +45,5 @@ dependencies {
     implementation 'joda-time:joda-time:2.10.5'
 
     // Core libraries
-    implementation 'com.github.shosetsuorg:kotlin-lib:v1.0.0-rc13'
+    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc8'
 }
