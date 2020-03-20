@@ -78,7 +78,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
 
     // Core libraries
-    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc8'
+    implementation 'com.github.ShosetsuOrg:kotlin-lib:v1.0.0-rc10'
 
     // Image loading
     implementation 'com.squareup.picasso:picasso:2.71828'

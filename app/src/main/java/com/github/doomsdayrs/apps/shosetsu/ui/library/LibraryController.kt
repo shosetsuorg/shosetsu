@@ -170,7 +170,7 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
         }
     }
 
-    override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+    override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
         navigationView.addView(
                 SDBuilder(navigationView, drawerLayout, this)
                         .createInner(R.string.todo) {

@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel.Listing
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
@@ -40,45 +39,38 @@ class CataloguePageLoader(private val catalogueFragment: CatalogueController) : 
     /**
      * Loads up the category
      *
-     * @param integers if length = 0, loads first page otherwise loads the page # correlated to the integer
+     * @param v if length = 0, loads first page, otherwise loads the v[0]th page
      * @return if this was completed or not
      */
-    override fun doInBackground(vararg integers: Int?): Boolean? {
+    override fun doInBackground(vararg v: Int?): Boolean? {
         Log.d("Loading", "Catalogue")
         return catalogueFragment.let {
             if (it.formatter.hasCloudFlare && it.activity != null) it.activity!!.runOnUiThread {
                 it.context?.toast("CLOUDFLARE")
             }
             try {
-                val novels: Array<Listing> =
-                        if (integers.isNotEmpty())
-                            CatalogueLoader(it.formatter, catalogueFragment.listingMap, catalogueFragment.selectedListing).execute(integers[0])
-                        else CatalogueLoader(it.formatter, catalogueFragment.listingMap, catalogueFragment.selectedListing).execute()
-                for ((title, link, imageURL) in novels)
-                    it.catalogueNovelCards.add(NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link))
+                val loader = CatalogueLoader(it.formatter, catalogueFragment.filterValues, catalogueFragment.selectedListing)
+                val novels = if (v.isNotEmpty()) loader.execute(v[0]) else loader.execute()
+                it.catalogueNovelCards.addAll(novels.map { with(it) {
+                    NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link)
+                } })
                 Log.d("FragmentRefresh", "Complete")
                 true
             } catch (e: LuaError) {
                 catalogueFragment.activity?.toast(e.smallMessage())
                 false
             } catch (e: Exception) {
-                catalogueFragment.activity?.toast(e.message ?: "UNKOWN ERROR")
+                catalogueFragment.activity?.toast(e.message ?: "UNKNOWN ERROR")
                 false
             }
         }
 
     }
 
-    /**
-     * Ends progress bar
-     */
     override fun onCancelled() {
         catalogueFragment.swipeRefreshLayout?.isRefreshing = false
     }
 
-    /**
-     * Starts the loading action
-     */
     override fun onPreExecute() {
         catalogueFragment.swipeRefreshLayout?.isRefreshing = true
     }

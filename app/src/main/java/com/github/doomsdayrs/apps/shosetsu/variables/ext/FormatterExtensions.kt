@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
+import android.view.View
+import android.widget.AdapterView
+import android.widget.RadioGroup
 import com.github.doomsdayrs.api.shosetsu.services.core.*
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.LISTING_KEY
@@ -46,9 +49,22 @@ fun Formatter.getListing(): Formatter.Listing = listings[defaultListing]
 
 fun Filter<*>.build(builder: SDViewBuilder) {
     when (this) {
-        is SwitchFilter -> builder.addSwitch(name, id)
-        is TextFilter -> builder.addEditText(name, id)
-        is RadioGroupFilter -> builder.addRadioGroup(name, choices, id)
-        is DropdownFilter -> builder.addRadioGroup(name, choices, id)
+        is TextFilter -> builder.editText(name).also {
+            it.onFocusChangeListener = View.OnFocusChangeListener { _, _ -> state = it.getValue() }
+        }
+        is SwitchFilter -> builder.switch(name, state).also {
+            it.setOnCheckedChangeListener { _, v -> state = v }
+        }
+        is DropdownFilter -> builder.spinner(name, choices, state).also {
+            it.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(_p: AdapterView<*>?) {}
+                override fun onItemSelected(_p: AdapterView<*>?, _v: View?, pos: Int, id: Long) {
+                    state = pos
+                }
+            }
+        }
+        is RadioGroupFilter -> builder.radioGroup(name, choices, state).also {
+            it.setOnCheckedChangeListener { _, i -> state = i }
+        }
     }
 }

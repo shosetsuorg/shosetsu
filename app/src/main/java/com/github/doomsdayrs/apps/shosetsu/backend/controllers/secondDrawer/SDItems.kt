@@ -32,32 +32,22 @@ import androidx.appcompat.widget.AppCompatSpinner
  * @author github.com/doomsdayrs
  */
 interface SDItem<T> {
-    var sdID: Int
     fun getValue(): T
-    override fun toString(): String
 }
 
 class SDRadioGroup(context: Context, attributeSet: AttributeSet?) : RadioGroup(context, attributeSet), SDItem<Int> {
     constructor(context: Context) : this(context, null)
-    override var sdID: Int = -1
     override fun getValue(): Int = checkedRadioButtonId
-    override fun toString(): String = "$sdID\t| ${getValue()}"
 }
 
 class SDEditText(context: Context, attributeSet: AttributeSet) : AppCompatEditText(context, attributeSet), SDItem<String> {
-    override var sdID: Int = -1
     override fun getValue(): String = text.toString()
-    override fun toString(): String = "$sdID\t| ${getValue()}"
 }
 
 class SDSpinner(context: Context, attributeSet: AttributeSet) : AppCompatSpinner(context, attributeSet), SDItem<Int> {
-    override var sdID: Int = -1
     override fun getValue(): Int = selectedItemPosition
-    override fun toString(): String = "$sdID\t| ${getValue()}"
 }
 
 class SDSwitch(context: Context, attributeSet: AttributeSet) : Switch(context, attributeSet), SDItem<Boolean> {
-    override var sdID: Int = -1
     override fun getValue(): Boolean = isChecked
-    override fun toString(): String = "$sdID\t| ${getValue()}"
 }

@@ -52,7 +52,7 @@ class SDBuilder(val navigationView: NavigationView, val drawerLayout: DrawerLayo
         parentView.findViewById<LinearLayout>(R.id.linearLayout).addView(layout)
         parentView.findViewById<Button>(R.id.reset).setOnClickListener {
             viewGroup.removeAllViews()
-            secondDrawerController.createTabs(navigationView, drawerLayout)
+            secondDrawerController.createDrawer(navigationView, drawerLayout)
             drawerLayout.closeDrawer(viewGroup)
         }
         return parentView

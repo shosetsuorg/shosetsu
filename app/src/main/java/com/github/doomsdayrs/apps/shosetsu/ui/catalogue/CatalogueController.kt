@@ -17,12 +17,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.doomsdayrs.api.shosetsu.services.core.Filter
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
+import com.github.doomsdayrs.api.shosetsu.services.core.values
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDBuilder
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDViewBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
@@ -82,16 +85,18 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
     var selectedListing: Int
     var formatter: Formatter
 
-
     var currentMaxPage = 1
     var isInSearch = false
     private var dontRefresh = false
     var isQuery = false
 
+    var filterValues: Array<*>
+
     init {
         setHasOptionsMenu(true)
         formatter = DefaultScrapers.getByID(bundle.getInt("formatter"))
         selectedListing = formatter.defaultListing
+        filterValues = formatter.listings[this.selectedListing].filters.values()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -184,53 +189,31 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
         cataloguePageLoader?.execute(currentMaxPage)
     }
 
-
-    var listingMap: MutableMap<Int, Any> = mutableMapOf()
-
-    override fun createTabs(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+    override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
         val builder = SDBuilder(navigationView, drawerLayout, this)
 
-        // Listing selection
-        val a = ArrayList<String>()
-        formatter.listings.forEach { a.add(it.name) }
+        val listingSpinner = builder.spinner("Listing", formatter.listings.map { it.name }.toTypedArray(), this.selectedListing)
+        val build = { menu: SDViewBuilder -> formatter.listings[this.selectedListing].filters.forEach { it.build(menu) } }
+        val menu = builder.inner(context!!.getString(R.string.listings), build)
+        listingSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedListing = position
+                menu.removeAll()
+                build(menu)
+            }
+        }
 
-        builder
-                .addSpinner("Listing", a.toTypedArray(), this.selectedListing, LISTING_SEL_ID)
-                .createInner(R.string.listings) { menu ->
-                    val method = {
-                        formatter.listings[this.selectedListing].let { listing ->
-                            listing.filters.forEach { filter -> filter.build(menu) }
-                        }
-                    }
-                    method()
-                    (builder.layout[0].findViewById<Spinner>(R.id.spinner)).onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onNothingSelected(parent: AdapterView<*>?) {}
-                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                            selectedListing = position
-                            menu.removeAll()
-                            method()
-                        }
-                    }
-                    menu
-                }
-                .createInner(R.string.search_filters) {
-                    formatter.filters.forEach { filter -> filter.build(it) }
-                    it
-                }
+        builder.inner(context!!.getString(R.string.search_filters)) {
+            formatter.filters.forEach { filter -> filter.build(it) }
+        }
 
         navigationView.addView(builder.build())
-        listingMap = formatter.getListing().filters.defaultMap()
     }
 
     override fun handleConfirm(linearLayout: LinearLayout) {
-        val a = linearLayout.findFilters()
-        selectedListing = a[LISTING_SEL_ID] as Int
-        listingMap.putAll(a)
-        listingMap.forEach{
-            Log.d(logID,"${it.key}\t=\t${it.value}")
-        }
-        catalogueNovelCards = arrayListOf()
-        setLibraryCards(catalogueNovelCards)
+        filterValues = formatter.listings[this.selectedListing].filters.values()
+        setLibraryCards(arrayListOf())
         catalogueAdapter.notifyDataSetChanged()
         executePageLoader()
     }
