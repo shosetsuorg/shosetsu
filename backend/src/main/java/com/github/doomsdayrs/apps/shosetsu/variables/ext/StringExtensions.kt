@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.util.Base64
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import app.shosetsu.lib.Novel
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream

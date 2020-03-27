@@ -16,7 +16,7 @@ import android.view.MenuItem
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast

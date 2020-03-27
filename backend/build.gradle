@@ -33,17 +33,29 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Kotlin STD
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Android views
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'com.google.android.material:material:1.2.0-alpha05'
+
+    // Test classes
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    // Time control
+    // Network
+	implementation( "com.squareup.okhttp3:okhttp:4.2.1")
+
+	// LuaJ
+	implementation("org.luaj:luaj-jse:3.0.1")
+
+	// Time control
     implementation 'joda-time:joda-time:2.10.5'
 
     // Core libraries
-    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc8'
+    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc17'
 }
