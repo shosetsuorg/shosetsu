@@ -60,25 +60,27 @@ android {
 
 dependencies {
     implementation project (':backend')
-
-    //   implementation 'com.graphql-java:graphql-java:2020-01-17T02-41-10-578985f'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Google view things
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    //noinspection GradleCompatible
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.work:work-runtime:2.3.3'
+    implementation 'androidx.work:work-runtime:2.3.4'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+
+
+    // Test classes
     testImplementation 'junit:junit:4.13'
     testImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
     // Annotations
     implementation 'org.jetbrains:annotations:18.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'
 
     // Core libraries
-    implementation 'com.github.ShosetsuOrg:kotlin-lib:v1.0.0-rc10'
+    implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc18'
 
     // Image loading
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -98,7 +100,6 @@ dependencies {
     // Choosing backup files
     implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
 
-
     // TODO Implement readerview provided by Mozilla
     //implementation "org.mozilla.components:feature-readerview:1.0.0"
     //implementation 'org.mozilla.components:support-base:1.0.0'
@@ -106,10 +107,16 @@ dependencies {
     // Cloud flare calculator
     implementation 'com.zhkrb.cloudflare-scrape-android:scrape-rhino:0.1.1'
 
+    // Network
+    implementation( "com.squareup.okhttp3:okhttp:4.2.1")
 
+    // LuaJ
+    implementation("org.luaj:luaj-jse:3.0.1")
+
+    // Kotlin libraries
     implementation 'androidx.core:core-ktx:1.3.0-alpha02'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.70"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.70"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.71"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
 
     // Async controller
@@ -124,9 +131,6 @@ dependencies {
     // Error logging to email
     implementation "ch.acra:acra-mail:5.1.3"
     implementation "ch.acra:acra-dialog:5.1.3"
-
-    // Kodein injection; oneday
-    //implementation 'org.kodein.di:kodein-di-generic-jvm:6.5.0'
 
     // Conductor
     implementation 'com.bluelinelabs:conductor:3.0.0-rc1'

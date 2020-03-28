@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects
 
-import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
+import app.shosetsu.lib.Formatter
 
 
 /*

@@ -4,9 +4,9 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.os.Environment
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel.Chapter
+import app.shosetsu.lib.LuaFormatter
+import app.shosetsu.lib.Novel
+import app.shosetsu.lib.Novel.Chapter
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns.*
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
