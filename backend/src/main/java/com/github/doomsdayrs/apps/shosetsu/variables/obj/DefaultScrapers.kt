@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCar
  * @author github.com/doomsdayrs
  */
 object DefaultScrapers {
-    class UnknownFormatter : Formatter {
+    val unknown = object : Formatter {
         override val baseURL: String
             get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         override val formatterID: Int = -1
@@ -65,13 +65,10 @@ object DefaultScrapers {
         }
     }
 
-    val unknown = UnknownFormatter()
-
     val formatters = ArrayList<Formatter>()
 
     @JvmStatic
-    fun getByID(ID: Int): Formatter
-            = formatters.firstOrNull { it.formatterID == ID } ?: unknown
+    fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
 
     val asFormatter: ArrayList<FormatterCard>
         get() {

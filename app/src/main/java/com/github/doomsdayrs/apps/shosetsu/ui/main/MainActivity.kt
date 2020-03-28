@@ -262,7 +262,7 @@ class MainActivity : AppCompatActivity(), Supporter {
         }
         if (to is SecondDrawerController) {
             drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, second_nav_view)
-            to.createTabs(second_nav_view, drawer_layout)
+            to.createDrawer(second_nav_view, drawer_layout)
         }
 
     }

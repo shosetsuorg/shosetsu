@@ -51,43 +51,6 @@ fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturn
     return getChapterText(getSavedNovelPath(chapterID))
 }
 
-fun Array<Filter<*>>.defaultMap(): MutableMap<Int, Any> {
-    val m = mutableMapOf<Int, Any>()
-    forEach {
-        m[it.id] = when (it) {
-            is TextFilter -> ""
-            is SwitchFilter -> true
-            is DropdownFilter -> 0
-            is RadioGroupFilter -> 0
-            else -> {
-            }
-        }
-    }
-    return m
-}
-
-fun ViewGroup.findFilters(): MutableMap<Int, Any> {
-    val map: MutableMap<Int, Any> = mutableMapOf()
-
-    for (i in 0 until childCount) {
-        this[i].let {
-            when (it) {
-                is SDRadioGroup, is SDEditText, is SDSpinner, is SDSwitch -> {
-                    val item = (it as SDItem<*>)
-                    map[item.sdID] = item.getValue()!!
-                }
-                is ViewGroup -> {
-                    map.putAll(it.findFilters())
-                }
-                else -> {
-                    Log.d("LinearLayout", "Ignoring ${it.javaClass}")
-                }
-            }
-        }
-    }
-    return map
-}
-
 fun MissingResourceException.handle(logID: String) = Log.e(logID, "A resource was missing", this)
 fun SQLiteException.handle(logID: String) = Log.e(logID, "Database threw an error", this)
 

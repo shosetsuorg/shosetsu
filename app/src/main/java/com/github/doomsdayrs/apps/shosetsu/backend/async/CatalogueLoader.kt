@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.backend.async
 import android.util.Log
 import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
 import com.github.doomsdayrs.api.shosetsu.services.core.Novel
-import com.github.doomsdayrs.api.shosetsu.services.core.ShosetsuLib.Companion.FILTER_ID_QUERY
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
 import org.luaj.vm2.LuaError
@@ -32,23 +31,17 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-open class CatalogueLoader(val formatter: Formatter, val filters: MutableMap<Int, Any>) {
+open class CatalogueLoader(val formatter: Formatter, val filters: Array<*>, val query: String? = null) {
     companion object {
         private const val logID = "CatalogueLoader"
     }
 
-    private var query: String = ""
+    private var listing = formatter.defaultListing
 
-    private var targetListing = formatter.defaultListing
-
-    constructor(formatter: Formatter, map: MutableMap<Int, Any>, selectedListing: Int) : this(formatter, map) {
-        if (targetListing != selectedListing)
-            targetListing = selectedListing
+    constructor(formatter: Formatter, filters: Array<*>, selectedListing: Int) : this(formatter, filters) {
+        if (listing != selectedListing) listing = selectedListing
     }
 
-    constructor(query: String, formatter: Formatter, map: MutableMap<Int, Any>) : this(formatter, map) {
-        this.query = query
-    }
 
     /**
      * Loads up the category
@@ -63,18 +56,14 @@ open class CatalogueLoader(val formatter: Formatter, val filters: MutableMap<Int
             Log.i(logID, "CLOUDFLARE DETECED")
             wait(5)
         }
-        // Loads novel list
-        Log.d(logID, "Selected listing $targetListing")
-        return if (integers.isEmpty())
-            if (query.isEmpty()) {
-                Log.d(logID, "Listing ${formatter.listings[targetListing].name}")
-                formatter.listings[targetListing].getListing(1, filters)
-            } else {
-                Log.d(logID, "Searching")
-                filters[FILTER_ID_QUERY] = query
-                formatter.search(filters) { Log.i("Formatter", "${formatter.name}\t$it") }
-            }
+
+        Log.d(logID, "Selected listing $listing")
+        return if (query == null)
+            formatter.listings[listing].getListing(filters,
+                    if (integers.isEmpty()) 1 else integers[0]!!)
         else
-            formatter.listings[targetListing].getListing(integers[0]!!, filters)
+            formatter.search((listOf(query)+filters).toTypedArray())
+            { Log.i("Formatter", "${formatter.name}\t$it") }
+
     }
 }
