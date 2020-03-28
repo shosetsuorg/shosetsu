@@ -12,6 +12,7 @@ import android.os.Environment
 import android.util.Log
 import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import okhttp3.OkHttpClient
@@ -158,8 +159,8 @@ object FormatterUtils {
 						DefaultScrapers.formatters.add(form)
 						DefaultScrapers.formatters.sortedWith(compareBy { it.name })
 						completed()
-					}catch (e:Exception){
-
+					} catch (e: Exception) {
+						Log.e(logID(), "Download:\tException unhandled", e)
 					}
 				}
 				activity.unregisterReceiver(this)

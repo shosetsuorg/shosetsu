@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
-import android.graphics.Color
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.FIRST_TIME_KEY
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.advancedPreferences
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.downloadPreferences
@@ -75,29 +74,6 @@ object Settings {
 			field = value
 			viewPreferences.edit().putInt("ReaderTheme", value).apply()
 		}
-
-	/**
-	 * Reader text color
-	 */
-	@Deprecated("Bad practice", replaceWith = ReplaceWith("ReaderTheme"), level = DeprecationLevel.ERROR)
-	var ReaderTextColor = Color.BLACK
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("ReaderTextColor", value).apply()
-		}
-		get() = viewPreferences.getInt("ReaderTextColor", Color.BLACK)
-
-	/**
-	 * Reader background color
-	 */
-    @Deprecated("Bad practice", replaceWith = ReplaceWith("ReaderTheme"), level = DeprecationLevel.ERROR)
-	var ReaderTextBackgroundColor = Color.WHITE
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("ReaderBackgroundColor", value).apply()
-		}
-		get() = viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
-
 
 	/**
 	 * If download manager is paused

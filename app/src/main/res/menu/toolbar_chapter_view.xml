@@ -30,6 +30,10 @@
                     android:id="@+id/chapter_view_reader_dark"
                     android:checkable="true"
                     android:title="@string/dark"/>
+                <item
+                    android:id="@+id/chapter_view_reader_dark_inv"
+                    android:checkable="true"
+                    android:title="@string/dark_inv"/>
             </menu>
         </item>
         <item

@@ -101,13 +101,15 @@ class ChapterView : Fragment() {
 					menu.findItem(R.id.chapter_view_reader_night),
 					menu.findItem(R.id.chapter_view_reader_light),
 					menu.findItem(R.id.chapter_view_reader_sepia),
-					menu.findItem(R.id.chapter_view_reader_dark)
+					menu.findItem(R.id.chapter_view_reader_dark),
+					menu.findItem(R.id.chapter_view_reader_dark_inv)
 			)
 			when (Settings.ReaderTheme) {
 				0 -> themes[0].setChecked(true)
 				1 -> themes[1].setChecked(true)
 				2 -> themes[2].setChecked(true)
 				3 -> themes[3].setChecked(true)
+				4 -> themes[4].setChecked(true)
 				else -> {
 					Settings.ReaderTheme = 1
 					themes[1].setChecked(true)
@@ -210,6 +212,10 @@ class ChapterView : Fragment() {
 			}
 			R.id.chapter_view_reader_dark -> {
 				Utilities.unmarkMenuItems(themes, 3, demarkActions[4])
+				true
+			}
+			R.id.chapter_view_reader_dark_inv -> {
+				Utilities.unmarkMenuItems(themes, 4, demarkActions[4])
 				true
 			}
 			R.id.tap_to_scroll -> {
@@ -458,6 +464,7 @@ class ChapterView : Fragment() {
 			0, 3 -> Color.BLACK
 			1 -> Color.WHITE
 			2 -> ContextCompat.getColor(context!!, org.doomsdayrs.apps.shosetsulib.R.color.wheat)
+			4 -> Color.DKGRAY
 			else -> Color.BLACK
 		}
 	}
@@ -469,6 +476,7 @@ class ChapterView : Fragment() {
 			1 -> Color.BLACK
 			2 -> Color.BLACK
 			3 -> Color.GRAY
+			4 -> Color.LTGRAY
 			else -> Color.WHITE
 		}
 	}
