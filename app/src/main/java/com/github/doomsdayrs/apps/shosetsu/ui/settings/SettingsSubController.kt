@@ -10,6 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import java.util.*
 
 /*
@@ -37,9 +38,6 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 abstract class SettingsSubController : ViewedController() {
-    companion object {
-        const val logID = "SettingsSubController"
-    }
 
     override val layoutRes: Int = R.layout.settings
     abstract val settings: ArrayList<SettingsItem.SettingsItemData>
@@ -47,7 +45,7 @@ abstract class SettingsSubController : ViewedController() {
     var recyclerView: RecyclerView? = null
 
     val adapter: SettingItemsAdapter by lazy {
-        Log.d(logID, "Creating adapter")
+        Log.d(logID(), "Creating adapter")
         SettingItemsAdapter(settings)
     }
 

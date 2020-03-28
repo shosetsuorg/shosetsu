@@ -38,11 +38,11 @@ import java.io.ObjectOutputStream
  */
 @Throws(IOException::class)
 fun Any.serializeToString(): String {
-    val byteArrayOutputStream = ByteArrayOutputStream()
-    val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
-    objectOutputStream.writeObject(this)
-    val bytes = byteArrayOutputStream.toByteArray()
-    return "serial-" + Base64.encodeToString(bytes, Base64.NO_WRAP)
+	val byteArrayOutputStream = ByteArrayOutputStream()
+	val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)
+	objectOutputStream.writeObject(this)
+	val bytes = byteArrayOutputStream.toByteArray()
+	return "serial-" + Base64.encodeToString(bytes, Base64.NO_WRAP)
 }
 
 
@@ -52,11 +52,13 @@ fun Any.serializeToString(): String {
  * @return String Array
  */
 fun Array<String>.convertArrayToString(): String {
-    if (isNotEmpty()) {
-        for (x in indices) {
-            this[x] = this[x].replace(",", ">,<")
-        }
-        return contentToString()
-    }
-    return "[]"
+	if (isNotEmpty()) {
+		for (x in indices) {
+			this[x] = this[x].replace(",", ">,<")
+		}
+		return contentToString()
+	}
+	return "[]"
 }
+
+inline fun <reified T : Any> T.logID() = T::class.java.simpleName

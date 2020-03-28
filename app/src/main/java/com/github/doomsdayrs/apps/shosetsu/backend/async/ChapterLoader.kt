@@ -2,8 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend.async
 
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 
 /*
  * This file is part of Shosetsu.

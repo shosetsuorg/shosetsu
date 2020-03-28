@@ -3,11 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 import android.app.Activity
 import android.database.sqlite.SQLiteException
 import android.util.Log
-import android.view.ViewGroup
-import androidx.core.view.get
-import com.github.doomsdayrs.api.shosetsu.services.core.*
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterText
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
 import java.io.BufferedReader

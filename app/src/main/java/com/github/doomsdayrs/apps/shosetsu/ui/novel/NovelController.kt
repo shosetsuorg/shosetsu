@@ -6,8 +6,8 @@ import android.view.View
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.bluelinelabs.conductor.Controller
-import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController

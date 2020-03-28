@@ -3,8 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.async
 import android.content.DialogInterface
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.addToChapters
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isNotInChapters
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.updateChapter

@@ -2,8 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search.async
 
 import android.os.AsyncTask
 import android.view.View
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
-import com.github.doomsdayrs.api.shosetsu.services.core.values
+import app.shosetsu.lib.values
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
@@ -47,7 +46,7 @@ class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<S
 
     override fun doInBackground(vararg params: String?): Boolean {
         try {
-            val a = CatalogueLoader(searchViewHolder.formatter, searchViewHolder.formatter.filters.values(), searchViewHolder.query).execute()
+            val a = CatalogueLoader(searchViewHolder.formatter, searchViewHolder.formatter.searchFilters.values(), searchViewHolder.query).execute()
             array = Utilities.convertNovelArrayToString2DArray(a)
         } catch (e: LuaError) {
             e.printStackTrace()

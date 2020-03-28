@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings

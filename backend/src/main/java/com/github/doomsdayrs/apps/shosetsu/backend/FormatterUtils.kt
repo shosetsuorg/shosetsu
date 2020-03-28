@@ -58,8 +58,12 @@ object FormatterUtils {
 	const val scriptDirectory = "/scripts/"
 	const val libraryDirectory = "/libraries/"
 	const val sourceFolder = "/src/"
+
+	private const val githubURL = "https://raw.githubusercontent.com/shosetsuorg/extensions/"
+	val githubBranch = if (BuildConfig.DEBUG) "v1.0.0-rewrite" else "master"
+
+
 	lateinit var sourceJSON: JSONObject
-	val branch = if (BuildConfig.DEBUG) "v1.0.0-rewrite" else "master"
 
 	fun md5(s: String): String? {
 		try {
@@ -73,7 +77,7 @@ object FormatterUtils {
 				hexString.append(Integer.toHexString(0xFF and messageDigest[i].toInt()))
 			return hexString.toString()
 		} catch (e: NoSuchAlgorithmException) {
-			e.printStackTrace()
+			Log.wtf(logID, "How could an MD5 alg be missing", e)
 		}
 		return ""
 	}
@@ -111,22 +115,17 @@ object FormatterUtils {
 		return false
 	}
 
+	@Throws(FileNotFoundException::class)
 	fun getMetaData(file: File): JSONObject? {
-		try {
-			BufferedReader(FileReader(file)).use { br ->
-				val line: String? = br.readLine()
-				br.close()
-				return if (line != null) JSONObject(line.toString().replace("-- ", "")) else null
-			}
-		} catch (e: IOException) {
-			e.printStackTrace()
-		}
-		return null
+		val br = BufferedReader(FileReader(file))
+		val line: String? = br.readLine()
+		br.close()
+		return if (line != null) JSONObject(line.toString().replace("-- ", "")) else null
 	}
 
 	fun downloadScript(name: String, lang: String, activity: Activity, downloaded: () -> Unit, process: (LuaFormatter) -> Unit, completed: () -> Unit) {
-		Log.d("DownloadScript", "Downloading:\thttps://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/src/$lang/$name.lua")
-		val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/src/$lang/$name.lua"))
+		Log.d("DownloadScript", "Downloading:\t$githubURL$githubBranch/src/main/resources/src/$lang/$name.lua")
+		val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("$githubURL$githubBranch/src/main/resources/src/$lang/$name.lua"))
 
 		request.setDescription("Installing $name")
 		request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
@@ -153,11 +152,15 @@ object FormatterUtils {
 					}
 					downloaded()
 
-					val form = LuaFormatter(targetFile)
-					process(form)
-					DefaultScrapers.formatters.add(form)
-					DefaultScrapers.formatters.sortedWith(compareBy { it.name })
-					completed()
+					try {
+						val form = LuaFormatter(targetFile)
+						process(form)
+						DefaultScrapers.formatters.add(form)
+						DefaultScrapers.formatters.sortedWith(compareBy { it.name })
+						completed()
+					}catch (e:Exception){
+
+					}
 				}
 				activity.unregisterReceiver(this)
 			}
@@ -209,7 +212,7 @@ object FormatterUtils {
 	@Throws(IOException::class)
 	fun downloadLibrary(name: String, file: File) {
 		val client = OkHttpClient()
-		val request = Request.Builder().url("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$branch/src/main/resources/lib/$name.lua").build()
+		val request = Request.Builder().url("$githubURL$githubBranch/src/main/resources/lib/$name.lua").build()
 		val response = client.newCall(request).execute()
 		writeFile(response.body!!.string(), file)
 	}

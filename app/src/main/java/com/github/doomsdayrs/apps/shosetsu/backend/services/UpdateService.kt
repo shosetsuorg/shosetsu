@@ -9,7 +9,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
@@ -18,6 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_UPDATE
@@ -206,7 +207,7 @@ class UpdateService : Service() {
                             }
 
                             override fun errorReceived(errorString: String) {
-                                Log.e("ChapterUpdater", errorString)
+                                Log.e(logID(), errorString)
                             }
                         }, formatter, novelCard.novelURL).doInBackground()
                         Utilities.wait(1000)
@@ -240,7 +241,7 @@ class UpdateService : Service() {
 
         private fun add(updatedNovels: ArrayList<NovelCard>, mangaCount: Int, novelID: Int, novelChapter: Novel.Chapter, novelCard: NovelCard) {
             if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) {
-                Log.i("ChaperUpdater", "add #$mangaCount\t: ${novelChapter.link} ")
+                Log.i(logID(), "add #$mangaCount\t: ${novelChapter.link} ")
                 Database.DatabaseChapter.addToChapters(novelID, novelChapter)
                 Database.DatabaseUpdates.addToUpdates(novelID, novelChapter.link, System.currentTimeMillis())
                 if (!updatedNovels.contains(novelCard)) updatedNovels.add(novelCard)

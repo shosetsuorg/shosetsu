@@ -10,16 +10,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.SearchView
-import android.widget.Spinner
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.github.doomsdayrs.api.shosetsu.services.core.Filter
-import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.values
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.values
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -33,7 +30,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBo
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.build
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.google.android.material.navigation.NavigationView
@@ -64,157 +63,156 @@ import com.google.android.material.navigation.NavigationView
  */
 //TODO fix issue with not loading
 class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDrawerController {
-    companion object {
-        private const val logID = "CatalogueController"
-        private const val LISTING_SEL_ID = -2
-    }
 
+	override val layoutRes: Int = R.layout.catalogue
 
-    override val layoutRes: Int = R.layout.catalogue
+	@Attach(R.id.swipeRefreshLayout)
+	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
-    @Attach(R.id.swipeRefreshLayout)
-    var swipeRefreshLayout: SwipeRefreshLayout? = null
+	@Attach(R.id.recyclerView)
+	var recyclerView: RecyclerView? = null
+	lateinit var catalogueAdapter: CatalogueAdapter
 
-    @Attach(R.id.recyclerView)
-    var recyclerView: RecyclerView? = null
-    lateinit var catalogueAdapter: CatalogueAdapter
+	private var cataloguePageLoader: CataloguePageLoader? = null
+	var catalogueNovelCards = ArrayList<NovelListingCard>()
 
-    private var cataloguePageLoader: CataloguePageLoader? = null
-    var catalogueNovelCards = ArrayList<NovelListingCard>()
+	var selectedListing: Int
+	var formatter: Formatter
 
-    var selectedListing: Int
-    var formatter: Formatter
+	var currentMaxPage = 1
+	var isInSearch = false
+	private var dontRefresh = false
+	var isQuery = false
 
-    var currentMaxPage = 1
-    var isInSearch = false
-    private var dontRefresh = false
-    var isQuery = false
+	var filterValues: Array<*>
 
-    var filterValues: Array<*>
+	init {
+		setHasOptionsMenu(true)
+		formatter = DefaultScrapers.getByID(bundle.getInt("formatter"))
+		selectedListing = formatter.defaultListing
+		filterValues = formatter.listings[this.selectedListing].filters.values()
+	}
 
-    init {
-        setHasOptionsMenu(true)
-        formatter = DefaultScrapers.getByID(bundle.getInt("formatter"))
-        selectedListing = formatter.defaultListing
-        filterValues = formatter.listings[this.selectedListing].filters.values()
-    }
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		outState.putSerializable("list", catalogueNovelCards)
+		outState.putInt("formatter", formatter.formatterID)
+	}
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("list", catalogueNovelCards)
-        outState.putInt("formatter", formatter.formatterID)
-    }
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		super.onRestoreInstanceState(savedInstanceState)
+		catalogueNovelCards = savedInstanceState.getSerializable("list") as ArrayList<NovelListingCard>
+		formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
+	}
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        catalogueNovelCards = (savedInstanceState.getSerializable("list") as ArrayList<NovelListingCard>)
-        formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
-    }
+	override fun onViewCreated(view: View) {
+		Utilities.setActivityTitle(activity, formatter.name)
+		swipeRefreshLayout?.setOnRefreshListener(CatalogueRefresh(this))
+		if (!dontRefresh) {
+			Log.d("Process", "Loading up latest")
+			setLibraryCards(catalogueNovelCards)
+			if (catalogueNovelCards.size > 0) {
+				catalogueNovelCards = ArrayList()
+				catalogueAdapter.notifyDataSetChanged()
+			}
+			if (!formatter.hasCloudFlare) {
+				executePageLoader()
+			} else {
+				val intent = Intent(activity, WebViewApp::class.java)
+				// TODO Formatter require of base URL
+				intent.putExtra("url", formatter.imageURL)
+				intent.putExtra("action", 1)
+				startActivityForResult(intent, 42)
+			}
+		} else setLibraryCards(catalogueNovelCards)
+	}
 
-    override fun onViewCreated(view: View) {
-        Utilities.setActivityTitle(activity, formatter.name)
-        swipeRefreshLayout?.setOnRefreshListener(CatalogueRefresh(this))
-        if (!dontRefresh) {
-            Log.d("Process", "Loading up latest")
-            setLibraryCards(catalogueNovelCards)
-            if (catalogueNovelCards.size > 0) {
-                catalogueNovelCards = ArrayList()
-                catalogueAdapter.notifyDataSetChanged()
-            }
-            if (!formatter.hasCloudFlare) {
-                executePageLoader()
-            } else {
-                val intent = Intent(activity, WebViewApp::class.java)
-                // TODO Formatter require of base URL
-                intent.putExtra("url", formatter.imageURL)
-                intent.putExtra("action", 1)
-                startActivityForResult(intent, 42)
-            }
-        } else setLibraryCards(catalogueNovelCards)
-    }
+	override fun onActivityPaused(activity: Activity) {
+		super.onActivityPaused(activity)
+		Log.d("Pause", "HERE")
+		dontRefresh = true
+		cataloguePageLoader?.cancel(true)
+	}
 
-    override fun onActivityPaused(activity: Activity) {
-        super.onActivityPaused(activity)
-        Log.d("Pause", "HERE")
-        dontRefresh = true
-        cataloguePageLoader?.cancel(true)
-    }
+	override fun onDestroy() {
+		super.onDestroy()
+		dontRefresh = false
+		cataloguePageLoader?.cancel(true)
+	}
 
-    override fun onDestroy() {
-        super.onDestroy()
-        dontRefresh = false
-        cataloguePageLoader?.cancel(true)
-    }
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		if (requestCode == 42) {
+			executePageLoader()
+		}
+	}
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 42) {
-            executePageLoader()
-        }
-    }
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		menu.clear()
+		inflater.inflate(R.menu.toolbar_library, menu)
+		val searchView = menu.findItem(R.id.library_search).actionView as SearchView
+		searchView.setOnQueryTextListener(CatalogueSearchQuery(this))
+		searchView.setOnCloseListener {
+			isQuery = false
+			isInSearch = false
+			setLibraryCards(catalogueNovelCards)
+			true
+		}
+	}
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.toolbar_library, menu)
-        val searchView = menu.findItem(R.id.library_search).actionView as SearchView
-        searchView.setOnQueryTextListener(CatalogueSearchQuery(this))
-        searchView.setOnCloseListener {
-            isQuery = false
-            isInSearch = false
-            setLibraryCards(catalogueNovelCards)
-            true
-        }
-    }
+	fun setLibraryCards(recycleListingCards: ArrayList<NovelListingCard>) {
+		recyclerView?.setHasFixedSize(false)
 
-    fun setLibraryCards(recycleListingCards: ArrayList<NovelListingCard>) {
-        recyclerView?.setHasFixedSize(false)
+		if (Settings.novelCardType == 0) {
+			catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card)
+			recyclerView?.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
+		} else {
+			catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card_compressed)
+			recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+		}
+		recyclerView?.adapter = catalogueAdapter
+		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
 
-        if (Settings.novelCardType == 0) {
-            catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card)
-            recyclerView?.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
-        } else {
-            catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card_compressed)
-            recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
-        recyclerView?.adapter = catalogueAdapter
-        recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
+	}
 
-    }
+	fun executePageLoader() {
+		when {
+			cataloguePageLoader?.isCancelled == false -> cataloguePageLoader = CataloguePageLoader(this)
+			cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this)
+		}
+		cataloguePageLoader?.execute(currentMaxPage)
+	}
 
-    fun executePageLoader() {
-        when {
-            cataloguePageLoader?.isCancelled == false -> cataloguePageLoader = CataloguePageLoader(this)
-            cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this)
-        }
-        cataloguePageLoader?.execute(currentMaxPage)
-    }
+	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+		val builder = SDBuilder(navigationView, drawerLayout, this)
 
-    override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-        val builder = SDBuilder(navigationView, drawerLayout, this)
+		if (formatter.listings.size > 1) {
+			val listingSpinner = builder.spinner("Listing", formatter.listings.map { it.name }.toTypedArray(), this.selectedListing)
 
-        val listingSpinner = builder.spinner("Listing", formatter.listings.map { it.name }.toTypedArray(), this.selectedListing)
-        val build = { menu: SDViewBuilder -> formatter.listings[this.selectedListing].filters.forEach { it.build(menu) } }
-        val menu = builder.inner(context!!.getString(R.string.listings), build)
-        listingSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedListing = position
-                menu.removeAll()
-                build(menu)
-            }
-        }
+			val build = { menu: SDViewBuilder -> formatter.listings[this.selectedListing].filters.forEach { it.build(menu) } }
+			val menu = builder.inner(context!!.getString(R.string.listings), build)
 
-        builder.inner(context!!.getString(R.string.search_filters)) {
-            formatter.filters.forEach { filter -> filter.build(it) }
-        }
+			listingSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+				override fun onNothingSelected(parent: AdapterView<*>?) {}
+				override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+					selectedListing = position
+					menu.removeAll()
+					build(menu)
+				}
+			}
+		}
 
-        navigationView.addView(builder.build())
-    }
+		builder.inner(context!!.getString(R.string.search_filters)) {
+			formatter.searchFilters.forEach { filter -> filter.build(it) }
+		}
 
-    override fun handleConfirm(linearLayout: LinearLayout) {
-        filterValues = formatter.listings[this.selectedListing].filters.values()
-        setLibraryCards(arrayListOf())
-        catalogueAdapter.notifyDataSetChanged()
-        executePageLoader()
-    }
+		navigationView.addView(builder.build())
+	}
+
+	override fun handleConfirm(linearLayout: LinearLayout) {
+		filterValues = formatter.listings[this.selectedListing].filters.values()
+		setLibraryCards(arrayListOf())
+		catalogueAdapter.notifyDataSetChanged()
+		executePageLoader()
+	}
 
 }

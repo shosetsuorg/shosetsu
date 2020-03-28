@@ -4,13 +4,14 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.os.Build
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.LuaFormatter
+import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.FileObject
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import org.json.JSONObject
 import java.io.File
 
@@ -64,7 +65,7 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
 
         builder.setNegativeButton(android.R.string.cancel) { _, _ ->
             for (file in files) {
-                Log.i("SusScriptDialog", "Deleting\t${file.file.name}")
+                Log.i(logID(), "Deleting\t${file.file.name}")
                 file.delete()
             }
         }
@@ -73,7 +74,7 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
 
     fun processActions() {
         for (file in files) {
-            Log.i("SusScriptDialog", "File confirmed Action\t${file.file.name}\t${file.action}")
+            Log.i(logID(), "File confirmed Action\t${file.file.name}\t${file.action}")
             when (file.action) {
                 0 -> {
                     FormatterUtils.trustScript(file.file)

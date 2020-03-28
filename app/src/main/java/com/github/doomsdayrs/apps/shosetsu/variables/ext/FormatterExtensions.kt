@@ -2,8 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.view.View
 import android.widget.AdapterView
-import android.widget.RadioGroup
-import com.github.doomsdayrs.api.shosetsu.services.core.*
+import app.shosetsu.lib.*
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.LISTING_KEY
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDViewBuilder

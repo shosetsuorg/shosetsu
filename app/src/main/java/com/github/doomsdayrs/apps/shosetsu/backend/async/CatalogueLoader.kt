@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.async
 
 import android.util.Log
-import com.github.doomsdayrs.api.shosetsu.services.core.Formatter
-import com.github.doomsdayrs.api.shosetsu.services.core.Novel
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
 import org.luaj.vm2.LuaError

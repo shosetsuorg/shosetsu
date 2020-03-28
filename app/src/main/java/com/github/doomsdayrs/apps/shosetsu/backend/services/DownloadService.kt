@@ -14,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_MARK_ERROR
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_RECEIVED_URL
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_REMOVE
@@ -54,7 +55,6 @@ import java.util.concurrent.TimeUnit
  */
 class DownloadService : Service() {
     companion object {
-        private const val logID = "DownloadService"
         private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 6
 
         /**
@@ -81,7 +81,7 @@ class DownloadService : Service() {
                 } else {
                     context.startForegroundService(intent)
                 }
-            } else Log.d(logID, "Can't start, is running")
+            } else Log.d(logID(), "Can't start, is running")
         }
 
         /**
@@ -129,13 +129,13 @@ class DownloadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(logID, "Canceling previous task")
+        Log.d(logID(), "Canceling previous task")
         job?.cancel()
-        Log.d(logID, "Making new job")
+        Log.d(logID(), "Making new job")
         job = Job(this)
-        Log.d(logID, "Executing job")
+        Log.d(logID(), "Executing job")
         job?.let { Needle.onBackgroundThread().execute(it) }
-                ?: Log.e(logID, "Job nullified before could be started")
+                ?: Log.e(logID(), "Job nullified before could be started")
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -156,7 +156,7 @@ class DownloadService : Service() {
          * TODO Skip over paused chapters or move them to the bottom of the list
          */
         override fun doWork() {
-            Log.i(logID, "Starting loop")
+            Log.i(logID(), "Starting loop")
             while (Database.DatabaseDownloads.downloadCount >= 1 && !Settings.downloadPaused)
                 Database.DatabaseDownloads.firstDownload?.let { downloadItem ->
 
@@ -173,7 +173,7 @@ class DownloadService : Service() {
                         service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
                         val folder = File("${Utilities.shoDir}/download/${downloadItem.formatter.formatterID}/${downloadItem.novelName.clean()}")
-                        //Log.d(logID, folder.toString())
+                        //Log.d(logID(), folder.toString())
                         if (!folder.exists()) if (!folder.mkdirs())
                             throw IOException("Failed to mkdirs")
 
@@ -196,7 +196,7 @@ class DownloadService : Service() {
 
                         sendMessage(BC_NOTIFY_DATA_CHANGE)
 
-                        Log.d(logID, "Downloaded: ${downloadItem.chapterID} of ${downloadItem.novelName}")
+                        Log.d(logID(), "Downloaded: ${downloadItem.chapterID} of ${downloadItem.novelName}")
 
                         pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 5, false)
                         service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
@@ -213,21 +213,21 @@ class DownloadService : Service() {
                         try {
                             TimeUnit.MILLISECONDS.sleep(10)
                         } catch (e: InterruptedException) {
-                            Log.e(logID, "Failed to wait", e)
+                            Log.e(logID(), "Failed to wait", e)
                         }
                     } catch (e: Exception) { // Mark download as faulted
-                        Log.e(logID, "A critical error occurred", e)
+                        Log.e(logID(), "A critical error occurred", e)
                         sendMessage(BC_DOWNLOADS_MARK_ERROR, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
                     } catch (e: IOException) {
 
                     }
                 }
 
-            if (Settings.downloadPaused) Log.i(logID, "Loop Paused")
+            if (Settings.downloadPaused) Log.i(logID(), "Loop Paused")
             stop(service)
             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD,
                     service.progressNotification.setOngoing(false).setProgress(0, 0, false).setContentText(service.getString(R.string.completed)).build())
-            Log.i(logID, "Completed download loop")
+            Log.i(logID(), "Completed download loop")
         }
     }
 }
