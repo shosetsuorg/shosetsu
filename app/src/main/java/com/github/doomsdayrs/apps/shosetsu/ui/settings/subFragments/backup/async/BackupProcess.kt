@@ -136,8 +136,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
     @Throws(JSONException::class, IOException::class)
     fun getSettingsInJSON(): JSONObject {
         val settings = JSONObject()
-        settings.put("reader_text_color", Settings.ReaderTextColor)
-        settings.put("reader_text_background_color", Settings.ReaderTextBackgroundColor)
+        settings.put("reader_theme", Settings.ReaderTheme)
         settings.put("shoDir", Utilities.shoDir.serializeToString())
         settings.put("paused", Settings.downloadPaused)
         settings.put("textSize", Settings.ReaderTextSize.toDouble())

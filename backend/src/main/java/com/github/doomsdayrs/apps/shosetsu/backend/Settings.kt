@@ -32,123 +32,136 @@ import org.json.JSONArray
  * Setting variables to work with
  */
 object Settings {
-    enum class MarkingTypes(val i: Int) {
-        ONVIEW(0),
-        ONSCROLL(1)
-    }
+	enum class MarkingTypes(val i: Int) {
+		ONVIEW(0),
+		ONSCROLL(1)
+	}
 
-    @Suppress("unused")
-    //TODO Use this
-    enum class TextSizes(val i: Int) {
-        SMALL(14),
-        MEDIUM(17),
-        LARGE(20)
-    }
+	@Suppress("unused")
+	//TODO Use this
+	enum class TextSizes(val i: Int) {
+		SMALL(14),
+		MEDIUM(17),
+		LARGE(20)
+	}
 
-    /**
-     * How to mark a chapter as reading
-     */
-    var ReaderMarkingType: Int = MarkingTypes.ONVIEW.i
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("markingType", value).apply()
-        }
-        get() = viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
+	/**
+	 * How to mark a chapter as reading
+	 */
+	var ReaderMarkingType: Int = MarkingTypes.ONVIEW.i
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("markingType", value).apply()
+		}
+		get() = viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
 
 
-    /**
-     * Reader text size
-     */
-    var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
-        get() = viewPreferences.getInt("ReaderTextSize", 14).toFloat()
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("ReaderTextSize", value.toInt()).apply()
-        }
+	/**
+	 * Reader text size
+	 */
+	var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
+		get() = viewPreferences.getInt("ReaderTextSize", 14).toFloat()
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("ReaderTextSize", value.toInt()).apply()
+		}
 
-    /**
-     * Reader text color
-     */
-    var ReaderTextColor = Color.BLACK
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("ReaderTextColor", value).apply()
-        }
-        get() = viewPreferences.getInt("ReaderTextColor", Color.BLACK)
+	/**
+	 * Get's the reader color
+	 */
+	var ReaderTheme: Int = 0
+		get() = viewPreferences.getInt("ReaderTheme", 0)
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("ReaderTheme", value).apply()
+		}
 
-    /**
-     * Reader background color
-     */
-    var ReaderTextBackgroundColor = Color.WHITE
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("ReaderBackgroundColor", value).apply()
-        }
-        get() = viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
+	/**
+	 * Reader text color
+	 */
+	@Deprecated("Bad practice", replaceWith = ReplaceWith("ReaderTheme"), level = DeprecationLevel.ERROR)
+	var ReaderTextColor = Color.BLACK
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("ReaderTextColor", value).apply()
+		}
+		get() = viewPreferences.getInt("ReaderTextColor", Color.BLACK)
 
-    /**
-     * If download manager is paused
-     */
-    var downloadPaused: Boolean = false
-        set(value) {
-            field = value
-            downloadPreferences.edit().putBoolean("paused", field).apply()
-        }
-        get() = downloadPreferences.getBoolean("paused", false)
+	/**
+	 * Reader background color
+	 */
+    @Deprecated("Bad practice", replaceWith = ReplaceWith("ReaderTheme"), level = DeprecationLevel.ERROR)
+	var ReaderTextBackgroundColor = Color.WHITE
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("ReaderBackgroundColor", value).apply()
+		}
+		get() = viewPreferences.getInt("ReaderBackgroundColor", Color.WHITE)
 
-    var isDownloadOnUpdateEnabled: Boolean = false
-        set(value) {
-            field = value
-            viewPreferences.edit().putBoolean("downloadOnUpdate", value).apply()
-        }
-        get() = viewPreferences.getBoolean("downloadOnUpdate", false)
 
-    var paragraphSpacing: Int = 0
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("paragraphSpacing", value).apply()
-        }
-        get() = viewPreferences.getInt("paragraphSpacing", 1)
+	/**
+	 * If download manager is paused
+	 */
+	var downloadPaused: Boolean = false
+		set(value) {
+			field = value
+			downloadPreferences.edit().putBoolean("paused", field).apply()
+		}
+		get() = downloadPreferences.getBoolean("paused", false)
 
-    var disabledFormatters: JSONArray = JSONArray()
-        set(value) {
-            field = value
-            advancedPreferences.edit().putString("disabledFormatters", value.toString()).apply()
-        }
-        get() = JSONArray(advancedPreferences.getString("disabledFormatters", "[]"))
+	var isDownloadOnUpdateEnabled: Boolean = false
+		set(value) {
+			field = value
+			viewPreferences.edit().putBoolean("downloadOnUpdate", value).apply()
+		}
+		get() = viewPreferences.getBoolean("downloadOnUpdate", false)
 
-    var indentSize = 0
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("indentSize", value).apply()
-        }
-        get() = viewPreferences.getInt("indentSize", 1)
+	var paragraphSpacing: Int = 0
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("paragraphSpacing", value).apply()
+		}
+		get() = viewPreferences.getInt("paragraphSpacing", 1)
 
-    var columnsInNovelsViewP = -1
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("columnsInNovelsViewP", value).apply()
-        }
-        get() = viewPreferences.getInt("columnsInNovelsViewP", -1)
+	var disabledFormatters: JSONArray = JSONArray()
+		set(value) {
+			field = value
+			advancedPreferences.edit().putString("disabledFormatters", value.toString()).apply()
+		}
+		get() = JSONArray(advancedPreferences.getString("disabledFormatters", "[]"))
 
-    var columnsInNovelsViewH = -1
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("columnsInNovelsViewH", value).apply()
-        }
-        get() = viewPreferences.getInt("columnsInNovelsViewH", -1)
+	var indentSize = 0
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("indentSize", value).apply()
+		}
+		get() = viewPreferences.getInt("indentSize", 1)
 
-    var novelCardType = 0
-        set(value) {
-            field = value
-            viewPreferences.edit().putInt("novelCardType", value).apply()
-        }
-        get() = viewPreferences.getInt("novelCardType", 0)
+	var columnsInNovelsViewP = -1
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("columnsInNovelsViewP", value).apply()
+		}
+		get() = viewPreferences.getInt("columnsInNovelsViewP", -1)
 
-    var showIntro: Boolean = false
-        set(value) {
-            field = value
-            advancedPreferences.edit().putBoolean(FIRST_TIME_KEY, field).apply()
-        }
-        get() = advancedPreferences.getBoolean(FIRST_TIME_KEY, true)
+	var columnsInNovelsViewH = -1
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("columnsInNovelsViewH", value).apply()
+		}
+		get() = viewPreferences.getInt("columnsInNovelsViewH", -1)
+
+	var novelCardType = 0
+		set(value) {
+			field = value
+			viewPreferences.edit().putInt("novelCardType", value).apply()
+		}
+		get() = viewPreferences.getInt("novelCardType", 0)
+
+	var showIntro: Boolean = false
+		set(value) {
+			field = value
+			advancedPreferences.edit().putBoolean(FIRST_TIME_KEY, field).apply()
+		}
+		get() = advancedPreferences.getBoolean(FIRST_TIME_KEY, true)
 }

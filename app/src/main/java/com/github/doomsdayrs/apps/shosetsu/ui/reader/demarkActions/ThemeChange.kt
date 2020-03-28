@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions
 
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 
@@ -29,13 +30,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
  */
 
 class ThemeChange(private val chapterReader: ChapterView) : Utilities.DeMarkAction {
-    override fun action(spared: Int) {
-        when (spared) {
-            0 -> Utilities.setNightNode()
-            1 -> Utilities.setLightMode()
-            2 -> Utilities.setSepiaMode(chapterReader.context!!)
-        }
-        chapterReader.setUpReader()
-    }
+	override fun action(spared: Int) {
+		Settings.ReaderTheme = spared
+		chapterReader.setUpReader()
+	}
 
 }

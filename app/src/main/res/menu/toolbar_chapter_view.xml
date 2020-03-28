@@ -26,6 +26,10 @@
                     android:id="@+id/chapter_view_reader_sepia"
                     android:checkable="true"
                     android:title="@string/sepia" />
+                <item
+                    android:id="@+id/chapter_view_reader_dark"
+                    android:checkable="true"
+                    android:title="@string/dark"/>
             </menu>
         </item>
         <item

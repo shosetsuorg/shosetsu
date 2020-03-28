@@ -1,9 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
@@ -97,13 +100,16 @@ class ChapterView : Fragment() {
 			themes = arrayOf(
 					menu.findItem(R.id.chapter_view_reader_night),
 					menu.findItem(R.id.chapter_view_reader_light),
-					menu.findItem(R.id.chapter_view_reader_sepia))
-			when (Utilities.getReaderColor(context!!)) {
+					menu.findItem(R.id.chapter_view_reader_sepia),
+					menu.findItem(R.id.chapter_view_reader_dark)
+			)
+			when (Settings.ReaderTheme) {
 				0 -> themes[0].setChecked(true)
 				1 -> themes[1].setChecked(true)
 				2 -> themes[2].setChecked(true)
+				3 -> themes[3].setChecked(true)
 				else -> {
-					Utilities.setLightMode()
+					Settings.ReaderTheme = 1
 					themes[1].setChecked(true)
 				}
 			}
@@ -194,13 +200,16 @@ class ChapterView : Fragment() {
 				Utilities.unmarkMenuItems(themes, 0, demarkActions[4])
 				true
 			}
-
 			R.id.chapter_view_reader_light -> {
 				Utilities.unmarkMenuItems(themes, 1, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_sepia -> {
 				Utilities.unmarkMenuItems(themes, 2, demarkActions[4])
+				true
+			}
+			R.id.chapter_view_reader_dark -> {
+				Utilities.unmarkMenuItems(themes, 3, demarkActions[4])
 				true
 			}
 			R.id.tap_to_scroll -> {
@@ -331,8 +340,10 @@ class ChapterView : Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 		addBottomListener()
 		chapterReader?.getToolbar()?.let { textView.setOnClickListener(ToolbarHideOnClickListener(it)) }
-		textView.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-		textView.setTextColor(Settings.ReaderTextColor)
+
+		textView.setBackgroundColor(getBackgroundColor())
+		textView.setTextColor(getTextColor())
+
 		textView.textSize = Settings.ReaderTextSize
 		next_chapter.setOnClickListener {
 			val next = chapterReader!!.getNextPosition(chapterID)
@@ -382,9 +393,11 @@ class ChapterView : Fragment() {
 
 
 	fun setUpReader() {
-		scrollView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-		textView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-		textView!!.setTextColor(Settings.ReaderTextColor)
+		//scrollView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)
+		textView!!.setBackgroundColor(getBackgroundColor())
+		textView!!.setTextColor(getTextColor())
+
+
 		textView!!.textSize = Settings.ReaderTextSize
 		if (unformattedText.isNotEmpty()) {
 			val replaceSpacing = StringBuilder("\n")
@@ -436,6 +449,27 @@ class ChapterView : Fragment() {
 			scrollView!!.setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int -> scrollHitBottom() }
 		} else {
 			scrollView!!.viewTreeObserver.addOnScrollChangedListener { scrollHitBottom() }
+		}
+	}
+
+	@ColorInt
+	private fun getBackgroundColor(): Int {
+		return when (Settings.ReaderTheme) {
+			0, 3 -> Color.BLACK
+			1 -> Color.WHITE
+			2 -> ContextCompat.getColor(context!!, org.doomsdayrs.apps.shosetsulib.R.color.wheat)
+			else -> Color.BLACK
+		}
+	}
+
+	@ColorInt
+	private fun getTextColor(): Int {
+		return when (Settings.ReaderTheme) {
+			0 -> Color.WHITE
+			1 -> Color.BLACK
+			2 -> Color.BLACK
+			3 -> Color.GRAY
+			else -> Color.WHITE
 		}
 	}
 }
