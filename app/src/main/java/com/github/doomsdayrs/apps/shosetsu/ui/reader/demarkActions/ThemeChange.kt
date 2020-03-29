@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 
 class ThemeChange(private val chapterReader: ChapterView) : Utilities.DeMarkAction {
 	override fun action(spared: Int) {
-		Settings.ReaderTheme = spared
+		Settings.readerTheme = spared
 		chapterReader.setUpReader()
 	}
 

@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings.ReaderThemes
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings.TextSizes
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
@@ -102,16 +104,19 @@ class ChapterView : Fragment() {
 					menu.findItem(R.id.chapter_view_reader_light),
 					menu.findItem(R.id.chapter_view_reader_sepia),
 					menu.findItem(R.id.chapter_view_reader_dark),
-					menu.findItem(R.id.chapter_view_reader_dark_inv)
+					menu.findItem(R.id.chapter_view_reader_gray),
+					menu.findItem(R.id.chapter_view_reader_custom)
+
 			)
-			when (Settings.ReaderTheme) {
+			when (Settings.readerTheme) {
 				0 -> themes[0].setChecked(true)
 				1 -> themes[1].setChecked(true)
 				2 -> themes[2].setChecked(true)
 				3 -> themes[3].setChecked(true)
 				4 -> themes[4].setChecked(true)
+				5 -> themes[5].setChecked(true)
 				else -> {
-					Settings.ReaderTheme = 1
+					Settings.readerTheme = 1
 					themes[1].setChecked(true)
 				}
 			}
@@ -125,7 +130,7 @@ class ChapterView : Fragment() {
 		// Tap To Scroll
 		run {
 			tapToScroll = menu.findItem(R.id.tap_to_scroll)
-			tapToScroll?.setChecked(Utilities.isTapToScroll)
+			tapToScroll?.setChecked(Settings.isTapToScroll)
 		}
 		// Text size
 		run {
@@ -134,12 +139,12 @@ class ChapterView : Fragment() {
 					menu.findItem(R.id.chapter_view_textSize_medium),
 					menu.findItem(R.id.chapter_view_textSize_large)
 			)
-			when (Settings.ReaderTextSize.toInt()) {
-				14 -> textSizes[0].setChecked(true)
-				17 -> textSizes[1].setChecked(true)
-				20 -> textSizes[2].setChecked(true)
+			when (Settings.readerTextSize) {
+				TextSizes.SMALL.i -> textSizes[0].setChecked(true)
+				TextSizes.MEDIUM.i -> textSizes[1].setChecked(true)
+				TextSizes.LARGE.i -> textSizes[2].setChecked(true)
 				else -> {
-					Settings.ReaderTextSize = 14F
+					Settings.readerTextSize = TextSizes.SMALL.i
 					textSizes[0].setChecked(true)
 				}
 			}
@@ -153,7 +158,7 @@ class ChapterView : Fragment() {
 					menu.findItem(R.id.chapter_view_paragraphSpace_large)
 			)
 
-			paragraphSpaces[Settings.paragraphSpacing].setChecked(true)
+			paragraphSpaces[Settings.readerParagraphSpacing].setChecked(true)
 		}
 		// Indent Space
 		run {
@@ -164,7 +169,7 @@ class ChapterView : Fragment() {
 					menu.findItem(R.id.chapter_view_indent_large)
 			)
 
-			indentSpaces[Settings.indentSize].setChecked(true)
+			indentSpaces[Settings.ReaderIndentSize].setChecked(true)
 		}
 		/* Reader
 		{
@@ -214,8 +219,12 @@ class ChapterView : Fragment() {
 				Utilities.unmarkMenuItems(themes, 3, demarkActions[4])
 				true
 			}
-			R.id.chapter_view_reader_dark_inv -> {
+			R.id.chapter_view_reader_gray -> {
 				Utilities.unmarkMenuItems(themes, 4, demarkActions[4])
+				true
+			}
+			R.id.chapter_view_reader_custom -> {
+				Utilities.unmarkMenuItems(themes, 5, demarkActions[4])
 				true
 			}
 			R.id.tap_to_scroll -> {
@@ -295,7 +304,7 @@ class ChapterView : Fragment() {
 	}
 
 	private fun updateBookmark() {
-		if (bookmark != null) if (bookmarked) bookmark!!.setIcon(R.drawable.ic_bookmark_black_24dp) else bookmark!!.setIcon(R.drawable.ic_bookmark_border_black_24dp)
+		if (bookmark != null) if (bookmarked) bookmark!!.setIcon(R.drawable.ic_bookmark_24dp) else bookmark!!.setIcon(R.drawable.ic_bookmark_border_24dp)
 	}
 
 	override fun onResume() {
@@ -350,7 +359,7 @@ class ChapterView : Fragment() {
 		textView.setBackgroundColor(getBackgroundColor())
 		textView.setTextColor(getTextColor())
 
-		textView.textSize = Settings.ReaderTextSize
+		textView.textSize = Settings.readerTextSize
 		next_chapter.setOnClickListener {
 			val next = chapterReader!!.getNextPosition(chapterID)
 			if (chapterReader!!.chapterIDs.isNotEmpty() && chapterReader!!.getViewPager() != null) {
@@ -404,11 +413,11 @@ class ChapterView : Fragment() {
 		textView!!.setTextColor(getTextColor())
 
 
-		textView!!.textSize = Settings.ReaderTextSize
+		textView!!.textSize = Settings.readerTextSize
 		if (unformattedText.isNotEmpty()) {
 			val replaceSpacing = StringBuilder("\n")
-			for (x in 0 until Settings.paragraphSpacing) replaceSpacing.append("\n")
-			for (x in 0 until Settings.indentSize) replaceSpacing.append("\t")
+			for (x in 0 until Settings.readerParagraphSpacing) replaceSpacing.append("\n")
+			for (x in 0 until Settings.ReaderIndentSize) replaceSpacing.append("\t")
 			text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
 			if (text!!.length > 100)
 				Log.d("ChapterView", "TextSet\t" + text!!.substring(0, 100).replace("\n", "\\n") + "\n" + appendID())
@@ -428,7 +437,7 @@ class ChapterView : Fragment() {
 		val total = scrollView!!.getChildAt(0).height - scrollView!!.height
 		if (ready) if (scrollView!!.scrollY / total.toFloat() < .99) {
 			// Inital mark of reading
-			if (!marked && Settings.ReaderMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
+			if (!marked && Settings.readerMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
 				Log.d("ChapterView", "Marking as Reading")
 				Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
 				marked = !marked
@@ -460,23 +469,24 @@ class ChapterView : Fragment() {
 
 	@ColorInt
 	private fun getBackgroundColor(): Int {
-		return when (Settings.ReaderTheme) {
-			0, 3 -> Color.BLACK
-			1 -> Color.WHITE
-			2 -> ContextCompat.getColor(context!!, org.doomsdayrs.apps.shosetsulib.R.color.wheat)
-			4 -> Color.DKGRAY
+		return when (Settings.readerTheme) {
+			ReaderThemes.NIGHT.i, ReaderThemes.DARK.i -> Color.BLACK
+			ReaderThemes.LIGHT.i -> Color.WHITE
+			ReaderThemes.SEPIA.i -> ContextCompat.getColor(context!!, org.doomsdayrs.apps.shosetsulib.R.color.wheat)
+			ReaderThemes.DARKI.i -> Color.DKGRAY
+			ReaderThemes.CUSTOM.i -> Settings.readerCustomBack
 			else -> Color.BLACK
 		}
 	}
 
 	@ColorInt
 	private fun getTextColor(): Int {
-		return when (Settings.ReaderTheme) {
-			0 -> Color.WHITE
-			1 -> Color.BLACK
-			2 -> Color.BLACK
-			3 -> Color.GRAY
-			4 -> Color.LTGRAY
+		return when (Settings.readerTheme) {
+			ReaderThemes.NIGHT.i -> Color.WHITE
+			ReaderThemes.LIGHT.i, ReaderThemes.SEPIA.i -> Color.BLACK
+			ReaderThemes.DARK.i -> Color.GRAY
+			ReaderThemes.DARKI.i -> Color.LTGRAY
+			ReaderThemes.CUSTOM.i -> Settings.readerCustomFront
 			else -> Color.WHITE
 		}
 	}

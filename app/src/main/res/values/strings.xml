@@ -138,14 +138,16 @@
     <string name="light">Light</string>
     <string name="sepia">Sepia</string>
     <string name="dark">Dark</string>
-    <string name="dark_inv">Dark Inverted</string>
+    <string name="light_dark">Gray</string>
+    <string name="custom">Custom</string>
 
     <string-array name="reader_themes">
         <item>@string/night</item>
         <item>@string/light</item>
         <item>@string/sepia</item>
         <item>@string/dark</item>
-        <item>@string/dark_inv</item>
+        <item>@string/light_dark</item>
+        <item>@string/custom</item>
     </string-array>
 
     <!-- Shortcuts -->
@@ -242,6 +244,9 @@
     <string name="intro_perm_desc">Shosetsu is highly function, thus, we need ALL YOUR PERMS</string>
     <string name="intro_happy_end">Wonderful!</string>
     <string name="intro_happy_end_desc">That\'s it for an intro, Read well!</string>
+    <string name="text_custom_color">Text Color</string>
+    <string name="text_custom_background_color">Background Color</string>
+    <string name="custom_theme_warn">Only for custom theme</string>
 
     <array name="application_themes">
         <item>@string/light</item>

@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ChapterViewChange
@@ -43,7 +43,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
     // NovelData
     private var _chapterIDs: MutableList<Int> = arrayListOf()
     var chapterIDs: MutableList<Int>
-        get() = if (Utilities.isInvertedSwipe) _chapterIDs.reversed().toMutableList() else _chapterIDs
+        get() = if (Settings.isInvertedSwipe) _chapterIDs.reversed().toMutableList() else _chapterIDs
         set(value) { _chapterIDs = value; Log.v("ChapterReader", "set chapters - ${value.size}") }
 
 
@@ -108,14 +108,14 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
         viewpager.addOnPageChangeListener(ChapterViewChange(chapterReaderAdapter))
         if (currentChapterID != -1)
             viewpager.currentItem = chapterIDs.indexOf(currentChapterID)
-        else if (Utilities.isInvertedSwipe)
+        else if (Settings.isInvertedSwipe)
             viewpager.currentItem = chapterIDs.lastIndex
 
         Log.v("ChapterReader", "#ids ${_chapterIDs.size} - ${chapterIDs.size}")
         Log.v("ChapterReader", "currentItem ${viewpager.currentItem}")
     }
 
-    fun getNextPosition(id: Int) = chapterIDs.indexOf(id) + if (Utilities.isInvertedSwipe) -1 else 1
+    fun getNextPosition(id: Int) = chapterIDs.indexOf(id) + if (Settings.isInvertedSwipe) -1 else 1
 
     fun getViewPager(): ViewPager? = viewpager
 

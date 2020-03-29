@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications
 import org.acra.ACRA
 import org.acra.annotation.AcraCore
@@ -44,12 +44,9 @@ class Shosetsu : Application() {
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         // Sets prefrences
-        Utilities.viewPreferences = getSharedPreferences("view", 0)
-        Utilities.downloadPreferences = getSharedPreferences("download", 0)
-        Utilities.advancedPreferences = getSharedPreferences("advanced", 0)
-        Utilities.formatterPreferences = getSharedPreferences("formatter", 0)
-        //   Utilities.trackingPreferences = getSharedPreferences("tracking", 0)
-        Utilities.backupPreferences = getSharedPreferences("backup", 0)
+        Settings.settings = getSharedPreferences("view", 0)
+        Settings.readerSettings = getSharedPreferences("reader", 0)
+        Settings.formatterSettings = getSharedPreferences("formatter", 0)
 
         val config = CoreConfigurationBuilder(this)
         config.setBuildConfigClass(BuildConfig::class.java).setReportFormat(StringFormat.JSON)

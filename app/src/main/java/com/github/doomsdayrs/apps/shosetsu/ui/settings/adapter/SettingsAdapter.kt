@@ -32,12 +32,24 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class SettingsAdapter(private val settingsCards: ArrayList<SettingsCard>, private val fragmentManager: Router) : RecyclerView.Adapter<SettingsCardViewHolder>() {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder =
-            SettingsCardViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_settings_card, viewGroup, false), fragmentManager)
+class SettingsAdapter(
+        private val settingsCards: ArrayList<SettingsCard>,
+        private val router: Router
+)
+	: RecyclerView.Adapter<SettingsCardViewHolder>() {
+	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder =
+			SettingsCardViewHolder(
+					LayoutInflater.from(viewGroup.context).inflate(
+							R.layout.recycler_settings_card,
+							viewGroup,
+							false
+					),
+					router
+			)
 
-    override fun onBindViewHolder(settingsCardViewHolder: SettingsCardViewHolder, i: Int) = settingsCardViewHolder.setType(settingsCards[i].id)
+	override fun onBindViewHolder(settingsCardViewHolder: SettingsCardViewHolder, i: Int) =
+			settingsCardViewHolder.setType(settingsCards[i].id)
 
-    override fun getItemCount(): Int = settingsCards.size
+	override fun getItemCount(): Int = settingsCards.size
 
 }

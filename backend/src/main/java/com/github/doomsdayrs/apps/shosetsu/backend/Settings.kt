@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.FIRST_TIME_KEY
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.advancedPreferences
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.downloadPreferences
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.viewPreferences
+import android.content.SharedPreferences
+import android.graphics.Color
 import org.json.JSONArray
 
 /*
@@ -36,108 +34,108 @@ object Settings {
 		ONSCROLL(1)
 	}
 
-	@Suppress("unused")
-	//TODO Use this
-	enum class TextSizes(val i: Int) {
-		SMALL(14),
-		MEDIUM(17),
-		LARGE(20)
+	enum class TextSizes(val i: Float) {
+		SMALL(14F),
+		MEDIUM(17F),
+		LARGE(20F)
 	}
 
+	enum class ReaderThemes(val i: Int) {
+		NIGHT(0),
+		LIGHT(1),
+		SEPIA(2),
+		DARK(3),
+		DARKI(4),
+		CUSTOM(5);
+	}
+
+	lateinit var settings: SharedPreferences
+	lateinit var readerSettings: SharedPreferences
+	lateinit var formatterSettings: SharedPreferences
+
+
+	// Constant keys
+	const val LISTING_KEY = "listing"
+
+	// READER
 	/**
 	 * How to mark a chapter as reading
 	 */
-	var ReaderMarkingType: Int = MarkingTypes.ONVIEW.i
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("markingType", value).apply()
-		}
-		get() = viewPreferences.getInt("markingType", MarkingTypes.ONVIEW.i)
+	var readerMarkingType: Int
+		set(value) = readerSettings.edit().putInt("readerMarkingType", value).apply()
+		get() = readerSettings.getInt("readerMarkingType", MarkingTypes.ONVIEW.i)
+
+	var readerTextSize: Float
+		set(value) = readerSettings.edit().putFloat("readerTextSize", value).apply()
+		get() = readerSettings.getFloat("readerTextSize", 14f)
+
+	var readerParagraphSpacing: Int
+		set(value) = readerSettings.edit().putInt("readerParagraphSpacing", value).apply()
+		get() = readerSettings.getInt("readerParagraphSpacing", 1)
 
 
-	/**
-	 * Reader text size
-	 */
-	var ReaderTextSize: Float = TextSizes.SMALL.i.toFloat()
-		get() = viewPreferences.getInt("ReaderTextSize", 14).toFloat()
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("ReaderTextSize", value.toInt()).apply()
-		}
+	var readerTheme: Int
+		set(value) = readerSettings.edit().putInt("readerTheme", value).apply()
+		get() = readerSettings.getInt("readerTheme", ReaderThemes.SEPIA.i)
 
-	/**
-	 * Get's the reader color
-	 */
-	var ReaderTheme: Int = 0
-		get() = viewPreferences.getInt("ReaderTheme", 0)
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("ReaderTheme", value).apply()
-		}
+	var readerCustomBack: Int
+		set(value) = readerSettings.edit().putInt("readerCustomBack", value).apply()
+		get() = readerSettings.getInt("readerCustomBack", Color.WHITE)
 
+	var readerCustomFront: Int
+		set(value) = readerSettings.edit().putInt("readerCustomFront", value).apply()
+		get() = readerSettings.getInt("readerCustomFront", Color.BLACK)
+
+
+	var isTapToScroll: Boolean
+		set(value) = readerSettings.edit().putBoolean("invertedSwipe", false).apply()
+		get() = readerSettings.getBoolean("tapToScroll", false)
+
+	var isInvertedSwipe: Boolean
+		get() = readerSettings.getBoolean("invertedSwipe", false)
+		set(value) = readerSettings.edit().putBoolean("invertedSwipe", value).apply()
+
+	// View Settings
 	/**
 	 * If download manager is paused
 	 */
-	var downloadPaused: Boolean = false
-		set(value) {
-			field = value
-			downloadPreferences.edit().putBoolean("paused", field).apply()
-		}
-		get() = downloadPreferences.getBoolean("paused", false)
+	var downloadPaused: Boolean
+		set(value) = settings.edit().putBoolean("paused", value).apply()
+		get() = settings.getBoolean("paused", false)
 
-	var isDownloadOnUpdateEnabled: Boolean = false
-		set(value) {
-			field = value
-			viewPreferences.edit().putBoolean("downloadOnUpdate", value).apply()
-		}
-		get() = viewPreferences.getBoolean("downloadOnUpdate", false)
+	var isDownloadOnUpdateEnabled: Boolean
+		set(value) = settings.edit().putBoolean("downloadOnUpdate", value).apply()
+		get() = settings.getBoolean("downloadOnUpdate", false)
 
-	var paragraphSpacing: Int = 0
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("paragraphSpacing", value).apply()
-		}
-		get() = viewPreferences.getInt("paragraphSpacing", 1)
 
-	var disabledFormatters: JSONArray = JSONArray()
-		set(value) {
-			field = value
-			advancedPreferences.edit().putString("disabledFormatters", value.toString()).apply()
-		}
-		get() = JSONArray(advancedPreferences.getString("disabledFormatters", "[]"))
+	var disabledFormatters: JSONArray
+		set(value) = settings.edit().putString("disabledFormatters", value.toString()).apply()
+		get() = JSONArray(settings.getString("disabledFormatters", "[]"))
 
-	var indentSize = 0
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("indentSize", value).apply()
-		}
-		get() = viewPreferences.getInt("indentSize", 1)
+	var ReaderIndentSize
+		set(value) = settings.edit().putInt("indentSize", value).apply()
+		get() = settings.getInt("indentSize", 1)
 
-	var columnsInNovelsViewP = -1
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("columnsInNovelsViewP", value).apply()
-		}
-		get() = viewPreferences.getInt("columnsInNovelsViewP", -1)
+	var columnsInNovelsViewP
+		set(value) = settings.edit().putInt("columnsInNovelsViewP", value).apply()
+		get() = settings.getInt("columnsInNovelsViewP", -1)
 
-	var columnsInNovelsViewH = -1
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("columnsInNovelsViewH", value).apply()
-		}
-		get() = viewPreferences.getInt("columnsInNovelsViewH", -1)
+	var columnsInNovelsViewH
+		set(value) = settings.edit().putInt("columnsInNovelsViewH", value).apply()
+		get() = settings.getInt("columnsInNovelsViewH", -1)
 
-	var novelCardType = 0
-		set(value) {
-			field = value
-			viewPreferences.edit().putInt("novelCardType", value).apply()
-		}
-		get() = viewPreferences.getInt("novelCardType", 0)
+	var novelCardType
+		set(value) = settings.edit().putInt("novelCardType", value).apply()
+		get() = settings.getInt("novelCardType", 0)
 
-	var showIntro: Boolean = false
-		set(value) {
-			field = value
-			advancedPreferences.edit().putBoolean(FIRST_TIME_KEY, field).apply()
-		}
-		get() = advancedPreferences.getBoolean(FIRST_TIME_KEY, true)
+
+	// Advanced Settings
+	var showIntro: Boolean
+		set(value) = settings.edit().putBoolean("first_time", value).apply()
+		get() = settings.getBoolean("first_time", true)
+
+	// Download Settings
+
+	// Formatter Settings
 }
+

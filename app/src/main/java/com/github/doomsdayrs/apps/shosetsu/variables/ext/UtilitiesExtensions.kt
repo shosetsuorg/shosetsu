@@ -50,7 +50,7 @@ fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, f
 @Throws(MissingResourceException::class)
 private fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
 	val chapterID = Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-	if (Settings.ReaderMarkingType == Settings.MarkingTypes.ONVIEW.i) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
+	if (Settings.readerMarkingType == Settings.MarkingTypes.ONVIEW.i) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
 	val intent = Intent(activity, ChapterReader::class.java)
 	intent.putExtra("chapterID", chapterID)
 	intent.putExtra("novelID", novelID)

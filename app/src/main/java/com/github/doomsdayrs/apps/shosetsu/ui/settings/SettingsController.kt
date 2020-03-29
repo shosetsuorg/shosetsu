@@ -9,7 +9,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.SettingsCard
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -33,22 +32,25 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class SettingsController : ViewedController() {
-    override val layoutRes: Int = R.layout.settings
-    private val cards: ArrayList<SettingsCard> = ArrayList()
-    init {
-        cards.add(SettingsCard(Types.DOWNLOAD))
-        cards.add(SettingsCard(Types.VIEW))
-        cards.add(SettingsCard(Types.ADVANCED))
-        cards.add(SettingsCard(Types.INFO))
-        cards.add(SettingsCard(Types.BACKUP))
-    }
+	enum class Types { DOWNLOAD, VIEW, ADVANCED, INFO, BACKUP, READER }
 
-    override fun onViewCreated(view: View) {
-        Utilities.setActivityTitle(activity, getString(R.string.settings))
+	override val layoutRes: Int = R.layout.settings
+	private val cards by lazy {
+		arrayListOf(
+				SettingsCard(Types.DOWNLOAD),
+				SettingsCard(Types.VIEW),
+				SettingsCard(Types.READER),
+				SettingsCard(Types.ADVANCED),
+				SettingsCard(Types.INFO),
+				SettingsCard(Types.BACKUP)
+		)
+	}
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
-        recyclerView.adapter = SettingsAdapter(cards, router!!)
-    }
+	override fun onViewCreated(view: View) {
+		Utilities.setActivityTitle(activity, getString(R.string.settings))
+		val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
+		recyclerView.setHasFixedSize(true)
+		recyclerView.layoutManager = LinearLayoutManager(view.context)
+		recyclerView.adapter = SettingsAdapter(cards, router)
+	}
 }

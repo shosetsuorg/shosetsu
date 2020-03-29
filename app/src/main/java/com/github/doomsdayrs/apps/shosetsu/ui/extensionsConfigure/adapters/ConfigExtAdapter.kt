@@ -58,12 +58,12 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: ConfigExtView, position: Int) {
-        var name = ""
-        var id = -1
-        var image = ""
+        val name: String
+        val id: Int
+        val image: String
 
         var enabled = false
-        var isInteral = false
+        val isInteral: Boolean
         var fom: Formatter? = null
         if (position < configureExtensions.jsonArray.length()) {
             val jsonObject: JSONObject = configureExtensions.jsonArray[position] as JSONObject

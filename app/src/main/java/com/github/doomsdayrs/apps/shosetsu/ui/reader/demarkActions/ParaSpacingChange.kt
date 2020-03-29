@@ -6,7 +6,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 
 class ParaSpacingChange(private val chapterReader: ChapterView) : DeMarkAction {
     override fun action(spared: Int) {
-        Settings.paragraphSpacing = (spared)
+        Settings.readerParagraphSpacing = (spared)
         chapterReader.setUpReader()
     }
 

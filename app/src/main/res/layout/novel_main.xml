@@ -100,7 +100,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_novel_publish"
                 app:maxImageSize="32dp"
-                app:srcCompat="@drawable/ic_add_circle_outline_black_24dp" />
+                app:srcCompat="@drawable/ic_add_circle_outline_24dp" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/fragment_novel_genres"

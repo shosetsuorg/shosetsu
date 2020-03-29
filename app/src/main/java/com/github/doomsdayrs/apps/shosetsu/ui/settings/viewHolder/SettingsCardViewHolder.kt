@@ -6,11 +6,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.AdvancedSettings
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.DownloadSettings
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.InfoSettings
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.ViewSettings
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.BackupSettings
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.google.android.material.card.MaterialCardView
@@ -39,30 +36,31 @@ import com.google.android.material.card.MaterialCardView
  * @author github.com/doomsdayrs
  */
 class SettingsCardViewHolder(itemView: View, private val router: Router) : RecyclerView.ViewHolder(itemView) {
-    private val libraryCardTitle: TextView = itemView.findViewById(R.id.recycler_settings_title)
-    private val cardView: MaterialCardView = itemView.findViewById(R.id.settings_card)
+	private val libraryCardTitle: TextView = itemView.findViewById(R.id.recycler_settings_title)
+	private val cardView: MaterialCardView = itemView.findViewById(R.id.settings_card)
 
-    fun setType(type: Types) {
-        Log.d("SettingsCardVH", "Type: ${type.name}")
-        cardView.setOnClickListener {
-            router.pushController(
-                    when (type) {
-                        Types.VIEW -> ViewSettings()
-                        Types.INFO -> InfoSettings()
-                        Types.ADVANCED -> AdvancedSettings()
-                        Types.DOWNLOAD -> DownloadSettings()
-                        Types.BACKUP -> BackupSettings()
-                    }.withFadeTransaction()
-            )
-        }
-        libraryCardTitle.text = when (type.position) {
-            0 -> itemView.context.getString(R.string.download)
-            1 -> itemView.context.getString(R.string.view)
-            2 -> itemView.context.getString(R.string.advanced)
-            3 -> itemView.context.getString(R.string.info)
-            4 -> itemView.context.getString(R.string.backup)
-            else -> itemView.context.getString(R.string.unknown)
-        }
-    }
+	fun setType(type: Types) {
+		Log.d("SettingsCardVH", "Type: ${type.name}")
+		cardView.setOnClickListener {
+			router.pushController(
+					when (type) {
+						Types.VIEW -> ViewSettings()
+						Types.INFO -> InfoSettings()
+						Types.ADVANCED -> AdvancedSettings()
+						Types.DOWNLOAD -> DownloadSettings()
+						Types.BACKUP -> BackupSettings()
+						Types.READER -> ReaderSettings()
+					}.withFadeTransaction()
+			)
+		}
+		libraryCardTitle.text = when (type) {
+			Types.DOWNLOAD -> itemView.context.getString(R.string.download)
+			Types.VIEW -> itemView.context.getString(R.string.view)
+			Types.ADVANCED -> itemView.context.getString(R.string.advanced)
+			Types.INFO -> itemView.context.getString(R.string.info)
+			Types.BACKUP -> itemView.context.getString(R.string.backup)
+			Types.READER -> itemView.context.getString(R.string.reader)
+		}
+	}
 
 }

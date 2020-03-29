@@ -38,7 +38,7 @@ class ChapterViewChange(private val chapterReaderAdapter: ChapterReaderAdapter) 
     }
 
     override fun onPageSelected(position: Int) {
-        if (Settings.ReaderMarkingType == Settings.MarkingTypes.ONVIEW.i) {
+        if (Settings.readerMarkingType == Settings.MarkingTypes.ONVIEW.i) {
             Log.d("ChapterReader", "Marking as Reading")
             Database.DatabaseChapter.setChapterStatus(chapterReaderAdapter.chapterViews[position].chapterID, Status.READING)
         }

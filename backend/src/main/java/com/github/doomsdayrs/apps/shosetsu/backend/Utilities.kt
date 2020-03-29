@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -74,20 +73,6 @@ object Utilities {
 	const val selectedStrokeWidth = 8
 	var shoDir: String = "/Shosetsu/"
 
-
-	// Preference objects
-	lateinit var downloadPreferences: SharedPreferences
-	lateinit var viewPreferences: SharedPreferences
-	lateinit var advancedPreferences: SharedPreferences
-	const val GITHUB_TOKEN_KEY = "GIT_TOKEN"
-	const val FIRST_TIME_KEY = "first_time"
-
-	lateinit var formatterPreferences: SharedPreferences
-	const val LISTING_KEY = "listing"
-
-	//  lateinit var trackingPreferences: SharedPreferences
-	lateinit var backupPreferences: SharedPreferences
-
 	fun isFormatterDisabled(jsonArray: JSONArray, name: String): Boolean {
 		for (i in 0 until jsonArray.length())
 			if (JSONObject(jsonArray[i].toString()).getString("name") == name)
@@ -140,33 +125,31 @@ object Utilities {
 	fun initPreferences(mainActivity: Activity) {
 		var dir = mainActivity.getExternalFilesDir(null)!!.absolutePath
 		dir = dir.substring(0, dir.indexOf("/Android"))
-		shoDir = downloadPreferences.getString("dir", "$dir/Shosetsu/")!!
+		shoDir = Settings.settings.getString("dir", "$dir/Shosetsu/")!!
 	}
 
 	fun setReaderMarkingType(markingType: MarkingTypes) {
-		Settings.ReaderMarkingType = markingType.i
+		Settings.readerMarkingType = markingType.i
 	}
 
 	fun toggleTapToScroll(): Boolean {
-		if (isTapToScroll) viewPreferences.edit().putBoolean("tapToScroll", false).apply() else viewPreferences.edit().putBoolean("tapToScroll", true).apply()
-		return isTapToScroll
+		val b = Settings.isTapToScroll
+		Settings.isTapToScroll = !b
+		return !b
 	}
 
-	val isTapToScroll: Boolean
-		get() = viewPreferences.getBoolean("tapToScroll", false)
 
 	fun toggleInvertedSwipe(): Boolean {
-		if (isInvertedSwipe) viewPreferences.edit().putBoolean("invertedSwipe", false).apply() else viewPreferences.edit().putBoolean("invertedSwipe", true).apply()
-		return isInvertedSwipe
+		val b = Settings.isInvertedSwipe
+		Settings.isInvertedSwipe = !b
+		return !b
 	}
 
-	val isInvertedSwipe: Boolean
-		get() = viewPreferences.getBoolean("invertedSwipe", false)
 
 	fun intToBoolean(a: Int): Boolean = a == 1
 
 	fun changeIndentSize(newIndent: Int) {
-		Settings.indentSize = newIndent
+		Settings.ReaderIndentSize = newIndent
 	}
 
 

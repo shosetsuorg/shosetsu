@@ -129,15 +129,15 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
         inflater.inflate(R.menu.toolbar_downloads, menu)
         val menuItem = menu.findItem(R.id.toolbar_downloads_pause)
         if (Settings.downloadPaused)
-            menuItem.setIcon(R.drawable.ic_play_circle_filled_black_24dp)
+            menuItem.setIcon(R.drawable.ic_play_circle_filled_24dp)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.toolbar_downloads_pause) {
             if (Utilities.togglePause())
-                item.setIcon(R.drawable.ic_play_circle_filled_black_24dp)
+                item.setIcon(R.drawable.ic_play_circle_filled_24dp)
             else {
-                item.setIcon(R.drawable.ic_pause_circle_outline_black_24dp)
+                item.setIcon(R.drawable.ic_pause_circle_outline_24dp)
                 DownloadService.start(activity!!)
             }
             return true

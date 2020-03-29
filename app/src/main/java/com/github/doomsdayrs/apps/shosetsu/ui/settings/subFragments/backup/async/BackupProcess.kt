@@ -9,6 +9,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getInt
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.serializeToString
 import org.json.JSONArray
 import org.json.JSONException
@@ -61,22 +63,22 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
                     val bookmarked = Utilities.intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
                     Log.i("NovelBack", "Valid?: $bookmarked")
                     if (bookmarked) {
-                        val novelURL = DatabaseIdentification.getNovelURLfromNovelID(cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString())))!!
+                        val novelURL = DatabaseIdentification.getNovelURLfromNovelID(cursor.getInt(Columns.PARENT_ID))!!
                         val novel = JSONObject()
                         novel.put(Columns.URL.toString(), novelURL)
                         novel.put(Columns.FORMATTER_ID.toString(), DatabaseIdentification.getFormatterIDFromNovelURL(novelURL))
-                        novel.put(Columns.READING_STATUS.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READING_STATUS.toString())))
-                        novel.put(Columns.READER_TYPE.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READER_TYPE.toString())))
-                        novel.put(Columns.TITLE.toString(), cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())))
-                        novel.put(Columns.IMAGE_URL.toString(), cursor.getString(cursor.getColumnIndex(Columns.IMAGE_URL.toString())))
-                        novel.put(Columns.DESCRIPTION.toString(), cursor.getString(cursor.getColumnIndex(Columns.DESCRIPTION.toString())))
-                        novel.put(Columns.GENRES.toString(), cursor.getString(cursor.getColumnIndex(Columns.GENRES.toString())))
-                        novel.put(Columns.AUTHORS.toString(), cursor.getString(cursor.getColumnIndex(Columns.AUTHORS.toString())))
-                        novel.put(Columns.STATUS.toString(), cursor.getString(cursor.getColumnIndex(Columns.STATUS.toString())))
-                        novel.put(Columns.TAGS.toString(), cursor.getString(cursor.getColumnIndex(Columns.TAGS.toString())))
-                        novel.put(Columns.ARTISTS.toString(), cursor.getString(cursor.getColumnIndex(Columns.ARTISTS.toString())))
-                        novel.put(Columns.LANGUAGE.toString(), cursor.getString(cursor.getColumnIndex(Columns.LANGUAGE.toString())))
-                        novel.put(Columns.MAX_CHAPTER_PAGE.toString(), cursor.getInt(cursor.getColumnIndex(Columns.MAX_CHAPTER_PAGE.toString())))
+                        novel.put(Columns.READING_STATUS.toString(), cursor.getInt(Columns.READING_STATUS))
+                        novel.put(Columns.READER_TYPE.toString(), cursor.getInt(Columns.READER_TYPE))
+                        novel.put(Columns.TITLE.toString(), cursor.getString(Columns.TITLE))
+                        novel.put(Columns.IMAGE_URL.toString(), cursor.getString(Columns.IMAGE_URL))
+                        novel.put(Columns.DESCRIPTION.toString(), cursor.getString(Columns.DESCRIPTION))
+                        novel.put(Columns.GENRES.toString(), cursor.getString(Columns.GENRES))
+                        novel.put(Columns.AUTHORS.toString(), cursor.getString(Columns.AUTHORS))
+                        novel.put(Columns.STATUS.toString(), cursor.getString(Columns.STATUS))
+                        novel.put(Columns.TAGS.toString(), cursor.getString(Columns.TAGS))
+                        novel.put(Columns.ARTISTS.toString(), cursor.getString(Columns.ARTISTS))
+                        novel.put(Columns.LANGUAGE.toString(), cursor.getString(Columns.LANGUAGE))
+                        novel.put(Columns.MAX_CHAPTER_PAGE.toString(), cursor.getInt(Columns.MAX_CHAPTER_PAGE))
                         backupNovels.put(novel)
                     }
                 }
@@ -136,13 +138,13 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
     @Throws(JSONException::class, IOException::class)
     fun getSettingsInJSON(): JSONObject {
         val settings = JSONObject()
-        settings.put("reader_theme", Settings.ReaderTheme)
+        settings.put("reader_theme", Settings.readerTheme)
         settings.put("shoDir", Utilities.shoDir.serializeToString())
         settings.put("paused", Settings.downloadPaused)
-        settings.put("textSize", Settings.ReaderTextSize.toDouble())
-        settings.put("paraSpace", Settings.paragraphSpacing)
-        settings.put("indent", Settings.indentSize)
-        settings.put("tap_to_scroll", Utilities.isTapToScroll)
+        settings.put("textSize", Settings.readerTextSize.toDouble())
+        settings.put("paraSpace", Settings.readerParagraphSpacing)
+        settings.put("indent", Settings.ReaderIndentSize)
+        settings.put("tap_to_scroll", Settings.isTapToScroll)
         return settings
     }
 }

@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.variables
 
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.Types
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types
+
 
 /*
  * This file is part of Shosetsu.

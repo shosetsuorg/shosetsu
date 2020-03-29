@@ -24,6 +24,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_play_arrow_black_24dp" />
+        app:srcCompat="@drawable/ic_play_arrow_24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

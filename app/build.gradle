@@ -108,7 +108,7 @@ dependencies {
     implementation 'com.zhkrb.cloudflare-scrape-android:scrape-rhino:0.1.1'
 
     // Network
-    implementation( "com.squareup.okhttp3:okhttp:4.2.1")
+    implementation( "com.squareup.okhttp3:okhttp:4.4.1")
 
     // LuaJ
     implementation("org.luaj:luaj-jse:3.0.1")
@@ -141,4 +141,7 @@ dependencies {
 
     // Material Intro https://github.com/heinrichreimer/material-intro#standard-slide-simpleslide
     implementation "com.heinrichreimersoftware:material-intro:2.0.0"
+
+    // Color Picker
+    implementation "com.github.skydoves:colorpickerview:2.1.6"
 }

@@ -28,6 +28,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
  * @author github.com/doomsdayrs
  */
 
-fun Cursor.getString(column: Columns): String? {
+fun Cursor.getString(column: Columns): String {
     return getString(getColumnIndex(column.toString()))
+}
+
+fun Cursor.getInt(column: Columns): Int {
+    return getInt(getColumnIndex(column.toString()))
 }

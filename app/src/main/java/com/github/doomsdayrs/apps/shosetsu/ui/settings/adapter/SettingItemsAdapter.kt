@@ -32,16 +32,19 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
  * @author github.com/doomsdayrs
  */
 class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>) : RecyclerView.Adapter<SettingsItem>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsItem {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.settings_item, parent, false)
-        return SettingsItem(view)
-    }
+	val views: ArrayList<SettingsItem> = arrayListOf()
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsItem {
+		val view = LayoutInflater.from(parent.context).inflate(R.layout.settings_item, parent, false)
+		val i = SettingsItem(view)
+		views.add(i)
+		return i
+	}
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+	override fun getItemCount(): Int {
+		return items.size
+	}
 
-    override fun onBindViewHolder(holder: SettingsItem, position: Int) {
-        holder.setData(items[position])
-    }
+	override fun onBindViewHolder(holder: SettingsItem, position: Int) {
+		holder.setData(items[position])
+	}
 }

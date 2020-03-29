@@ -1,16 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings
 
-import android.util.Log
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import java.util.*
 
 /*
@@ -37,28 +32,21 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-abstract class SettingsSubController : ViewedController() {
+abstract class SettingsSubController : RecyclerController<SettingItemsAdapter>() {
 
-    override val layoutRes: Int = R.layout.settings
-    abstract val settings: ArrayList<SettingsItem.SettingsItemData>
-    @Attach(R.id.recyclerView)
-    var recyclerView: RecyclerView? = null
+	override val layoutRes: Int = R.layout.settings
+	abstract val settings: ArrayList<SettingsItem.SettingsItemData>
 
-    val adapter: SettingItemsAdapter by lazy {
-        Log.d(logID(), "Creating adapter")
-        SettingItemsAdapter(settings)
-    }
 
-    override fun onViewCreated(view: View) {
-        recyclerView!!.layoutManager = LinearLayoutManager(context)
-        recyclerView!!.adapter = adapter
-    }
+	override fun onViewCreated(view: View) {
+		adapter = SettingItemsAdapter(settings)
+	}
 
-    fun findDataByID(@StringRes id: Int): Int {
-        for ((index, data) in settings.withIndex()) {
-            if (data.titleID == id)
-                return index
-        }
-        return -1
-    }
+	fun findDataByID(@StringRes id: Int): Int {
+		for ((index, data) in settings.withIndex()) {
+			if (data.titleID == id)
+				return index
+		}
+		return -1
+	}
 }

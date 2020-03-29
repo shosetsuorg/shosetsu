@@ -11,7 +11,7 @@
             android:title="@string/my_library" />
         <item
             android:id="@+id/nav_updater"
-            android:icon="@drawable/ic_system_update_alt_black_24dp"
+            android:icon="@drawable/ic_system_update_alt_24dp"
             android:title="@string/library_updates" />
         <item
             android:id="@+id/nav_catalogue"

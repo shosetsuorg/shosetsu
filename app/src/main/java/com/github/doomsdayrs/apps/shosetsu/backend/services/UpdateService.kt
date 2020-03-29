@@ -122,7 +122,7 @@ class UpdateService : Service() {
             @Suppress("DEPRECATION")
             Notification.Builder(this)
         }
-                .setSmallIcon(R.drawable.ic_system_update_alt_black_24dp)
+                .setSmallIcon(R.drawable.ic_system_update_alt_24dp)
                 .setContentText("Update in progress")
                 .setOnlyAlertOnce(true)
     }

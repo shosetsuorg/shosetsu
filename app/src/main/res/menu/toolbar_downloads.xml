@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/toolbar_downloads_pause"
-        android:icon="@drawable/ic_pause_circle_outline_black_24dp"
+        android:icon="@drawable/ic_pause_circle_outline_24dp"
         android:title="@string/filter"
         app:showAsAction="always" />
 </menu>

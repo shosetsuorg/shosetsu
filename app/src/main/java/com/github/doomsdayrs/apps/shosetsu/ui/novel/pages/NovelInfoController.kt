@@ -125,7 +125,7 @@ class NovelInfoController : ViewedController() {
 					fragmentNovelAdd?.setImageResource(R.drawable.ic_baseline_check_circle_24)
 				} else {
 					Database.DatabaseNovels.unBookmark(novelFragment!!.novelID)
-					fragmentNovelAdd?.setImageResource(R.drawable.ic_add_circle_outline_black_24dp)
+					fragmentNovelAdd?.setImageResource(R.drawable.ic_add_circle_outline_24dp)
 				}
 		}
 	}

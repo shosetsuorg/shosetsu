@@ -62,9 +62,9 @@ class DownloadSettings : SettingsSubController() {
     }
 
     private fun setDir(dir: String) {
-        Utilities.downloadPreferences.edit().putString("dir", dir).apply()
+        Settings.settings.edit().putString("dir", dir).apply()
         Utilities.shoDir = dir
-        recyclerView?.post { adapter.notifyDataSetChanged() }
+        recyclerView?.post { adapter?.notifyDataSetChanged() }
     }
 
     private fun performFileSearch() {

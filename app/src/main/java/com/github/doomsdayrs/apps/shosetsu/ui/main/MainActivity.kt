@@ -216,7 +216,7 @@ class MainActivity : AppCompatActivity(), Supporter {
                 .setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
                 .setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
                 .setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
-                .setIcon(R.drawable.ic_system_update_alt_black_24dp)
+                .setIcon(R.drawable.ic_system_update_alt_24dp)
                 .setCancelable(true)
                 .showEvery(5)
         appUpdater.start()

@@ -1015,7 +1015,7 @@ object Database {
                 cursor.moveToNext()
                 val novelPage = Novel.Info()
                 novelPage.title = cursor.getString(TITLE).checkStringDeserialize()
-                novelPage.imageURL = cursor.getString(IMAGE_URL) ?: ""
+                novelPage.imageURL = cursor.getString(IMAGE_URL)
                 novelPage.description = cursor.getString(DESCRIPTION).checkStringDeserialize()
                 novelPage.genres = cursor.getString(GENRES).checkStringDeserialize().convertStringToArray()
                 novelPage.authors = cursor.getString(AUTHORS).checkStringDeserialize().convertStringToArray()
