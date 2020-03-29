@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity"
-    tools:openDrawer="start">
+    tools:context="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity">
 
     <WebView
         android:id="@+id/absolute_webView"
@@ -37,7 +36,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_width="match_parent"
+            app:menu="@menu/bottom_menu"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -55,5 +57,6 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_menu" />
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
