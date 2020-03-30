@@ -67,7 +67,6 @@ object Formatters {
 
 	val formatters = ArrayList<Formatter>()
 
-	@JvmStatic
 	fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
 
 	fun getAsCards(): ArrayList<FormatterCard> {
