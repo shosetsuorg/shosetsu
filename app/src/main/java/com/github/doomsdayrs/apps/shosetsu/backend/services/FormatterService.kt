@@ -7,12 +7,12 @@ import android.util.Log
 import app.shosetsu.lib.LuaFormatter
 import app.shosetsu.lib.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.githubBranch
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.compareVersions
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.confirm
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.downloadLibrary
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.getContent
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.getMetaData
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.githubBranch
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.libraryDirectory
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.scriptDirectory
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.sourceFolder
@@ -22,6 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
@@ -275,7 +276,7 @@ object FormatterService {
 		override fun doInBackground(vararg params: Void?): Void? {
 			val sourceFile = File(context.filesDir.absolutePath + "/formatters.json")
 			if (Utilities.isOnline) {
-				Log.d(FormatterUtils.logID, githubBranch)
+				Log.d(logID(), githubBranch)
 				try {
 					Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$githubBranch/src/main/resources/formatters.json").get()?.let {
 						val json = it.body().text()

@@ -55,7 +55,6 @@ import java.util.*
  * TODO Turn this into a service
  */
 object FormatterUtils {
-	const val logID = "FormatterController"
 	const val scriptDirectory = "/scripts/"
 	const val libraryDirectory = "/libraries/"
 	const val sourceFolder = "/src/"
@@ -78,7 +77,7 @@ object FormatterUtils {
 				hexString.append(Integer.toHexString(0xFF and messageDigest[i].toInt()))
 			return hexString.toString()
 		} catch (e: NoSuchAlgorithmException) {
-			Log.wtf(logID, "How could an MD5 alg be missing", e)
+			Log.wtf(logID(), "How could an MD5 alg be missing", e)
 		}
 		return ""
 	}

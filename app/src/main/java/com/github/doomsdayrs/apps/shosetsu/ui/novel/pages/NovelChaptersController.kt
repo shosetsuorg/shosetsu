@@ -29,10 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.handle
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DATA_CHANGE
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_RELOAD_CHAPTERS_FROM_DB
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,9 +65,6 @@ import kotlin.collections.ArrayList
  *
  */
 class NovelChaptersController : ViewedController() {
-    companion object {
-        private const val logID = "NovelChaptersController"
-    }
 
     override val layoutRes: Int = R.layout.novel_chapters
     private lateinit var receiver: BroadcastReceiver
@@ -371,7 +365,7 @@ class NovelChaptersController : ViewedController() {
         try {
             for (n in selectedChapters) if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true)) return true
         } catch (e: MissingResourceException) {
-            e.handle(logID)
+            e.handle(logID())
         }
         return false
     }
@@ -390,8 +384,8 @@ class NovelChaptersController : ViewedController() {
 
     private fun handleExceptionLogging(e: java.lang.Exception) =
             when (e) {
-                is MissingResourceException -> e.handle(logID)
-                is SQLiteException -> e.handle(logID)
+                is MissingResourceException -> e.handle(logID())
+                is SQLiteException -> e.handle(logID())
                 else -> -1
             }
 }

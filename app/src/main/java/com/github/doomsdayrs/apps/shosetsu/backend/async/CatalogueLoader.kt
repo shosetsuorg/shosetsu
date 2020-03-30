@@ -5,6 +5,7 @@ import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import org.luaj.vm2.LuaError
 
 
@@ -32,9 +33,6 @@ import org.luaj.vm2.LuaError
  * @author github.com/doomsdayrs
  */
 open class CatalogueLoader(val formatter: Formatter, val filters: Array<*>, val query: String? = null) {
-    companion object {
-        private const val logID = "CatalogueLoader"
-    }
 
     private var listing = formatter.defaultListing
 
@@ -51,13 +49,13 @@ open class CatalogueLoader(val formatter: Formatter, val filters: Array<*>, val 
      */
     @Throws(LuaError::class)
     fun execute(vararg integers: Int?): Array<Novel.Listing> {
-        Log.d(logID, "Loading")
+        Log.d(logID(), "Loading")
         if (formatter.hasCloudFlare) {
-            Log.i(logID, "CLOUDFLARE DETECED")
+            Log.i(logID(), "CLOUDFLARE DETECED")
             wait(5)
         }
 
-        Log.d(logID, "Selected listing $listing")
+        Log.d(logID(), "Selected listing $listing")
         return if (query == null)
             formatter.listings[listing].getListing(filters,
                     if (integers.isEmpty()) 1 else integers[0]!!)

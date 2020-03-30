@@ -253,6 +253,7 @@
     <string name="backup_settings_option_desc">Default is off, which will not save your settings</string>
     <string name="backup_quick_option">Quick Backup</string>
     <string name="backup_quick_option_desc">Backups URL and simple data only. Will require network reload on restore</string>
+    <string name="accept_all_catalogue_choice_hint">Press this to confirm the catalogue for all</string>
 
     <array name="application_themes">
         <item>@string/light</item>

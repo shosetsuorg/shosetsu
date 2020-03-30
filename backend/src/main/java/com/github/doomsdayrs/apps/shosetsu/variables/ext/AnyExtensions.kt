@@ -60,5 +60,6 @@ fun Array<String>.convertArrayToString(): String {
 	}
 	return "[]"
 }
+
 @Suppress("unused")
 inline fun <reified T : Any> T.logID() = T::class.java.simpleName

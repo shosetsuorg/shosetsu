@@ -9,6 +9,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.Nullable
 import com.bluelinelabs.conductor.Controller
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.findAnnotation
@@ -39,9 +40,6 @@ import kotlin.reflect.full.memberProperties
  * @author github.com/doomsdayrs
  */
 abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) {
-    companion object {
-        private const val logID = "ViewedController"
-    }
 
     @Retention(AnnotationRetention.RUNTIME)
     @Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
@@ -60,7 +58,7 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
             if (index + 1 != attachedFields.size) s.append(", ")
             kMutableProperty.setter.call(this, null)
         }
-        Log.d(logID, "Destroyed:\t$s")
+        Log.d(logID(), "Destroyed:\t$s")
         attachedFields = ArrayList()
     }
 
@@ -72,9 +70,9 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
                 .filter { it.visibility == KVisibility.PUBLIC }
                 .filterIsInstance<KMutableProperty<*>>()
                 .forEach { field ->
-                    Log.d(logID, "Processing Attach Target\t${field.name}")
+                    Log.d(logID(), "Processing Attach Target\t${field.name}")
                     val a = field.findAnnotation<Attach>()!!
-                    Log.d(logID, "\tApplying ${a.id} to ${field.name}")
+                    Log.d(logID(), "\tApplying ${a.id} to ${field.name}")
                     field.setter.call(this, view.findViewById(a.id))
                     attachedFields.add(field)
                 }

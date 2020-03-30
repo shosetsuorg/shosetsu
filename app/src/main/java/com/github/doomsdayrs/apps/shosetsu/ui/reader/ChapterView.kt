@@ -24,6 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.getSavedNovelPassage
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import kotlinx.android.synthetic.main.chapter_view.*
+import org.doomsdayrs.apps.shosetsulib.R.*
 
 /*
  * This file is part of shosetsu.
@@ -472,7 +473,7 @@ class ChapterView : Fragment() {
 		return when (Settings.readerTheme) {
 			ReaderThemes.NIGHT.i, ReaderThemes.DARK.i -> Color.BLACK
 			ReaderThemes.LIGHT.i -> Color.WHITE
-			ReaderThemes.SEPIA.i -> ContextCompat.getColor(context!!, org.doomsdayrs.apps.shosetsulib.R.color.wheat)
+			ReaderThemes.SEPIA.i -> ContextCompat.getColor(context!!, color.wheat)
 			ReaderThemes.DARKI.i -> Color.DKGRAY
 			ReaderThemes.CUSTOM.i -> Settings.readerCustomTextColor
 			else -> Color.BLACK

@@ -45,9 +45,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
-    companion object {
-        private const val logID = "ExpandingViewBar"
-    }
 
     val bar: LinearLayout
     val barTitle: TextView

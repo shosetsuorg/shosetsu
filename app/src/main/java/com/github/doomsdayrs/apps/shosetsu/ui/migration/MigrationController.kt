@@ -3,8 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.migration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -71,27 +70,18 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 
     @Attach(R.id.novels_to_transfer)
     var novelsFromRecyclerView: DiscreteScrollView? = null
-
-
-    //
-
+    // Target selection
     @Attach(R.id.targetSearching)
     var targetSearching: View? = null
-
     @Attach(R.id.searchView)
     var searchView: SearchView? = null
-
     @Attach(R.id.swipeRefreshLayout)
     var swipeRefreshLayout: SwipeRefreshLayout? = null
-
     @Attach(R.id.targetView)
     var targetView: RecyclerView? = null
-
     //
-
     @Attach(R.id.catalogue_selection_view)
     var catalogueSelectionView: View? = null
-
     @Attach(R.id.catalogue_selection)
     var catalogueSelection: RecyclerView? = null
 
@@ -118,7 +108,7 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
             targetSearching?.visibility = INVISIBLE
             catalogueSelection?.adapter = CatalogueSelectionAdapter(this, position)
         } else {
-            catalogueSelectionView?.visibility = INVISIBLE
+            catalogueSelectionView?.visibility = GONE
             targetSearching?.visibility = VISIBLE
             // TODO
         }

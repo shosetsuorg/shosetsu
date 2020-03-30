@@ -38,9 +38,6 @@ import kotlinx.android.synthetic.main.intro_license.*
  * @author github.com/doomsdayrs
  */
 class IntroductionActivity : IntroActivity() {
-    companion object {
-        const val logID = "IntroActivity"
-    }
 
     internal class License : Fragment(R.layout.intro_license) {
         private var message = ""

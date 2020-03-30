@@ -1,7 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
@@ -155,7 +158,6 @@ class NovelInfoController : ViewedController() {
 				else -> fragmentNovelPublish?.setText(R.string.unknown)
 			}
 			if (context != null) {
-				val layoutInflater = LayoutInflater.from(context)
 				for (string in novelFragment!!.novelPage.genres) {
 					val chip = Chip(fragmentNovelGenres!!.context)
 					chip.text = string

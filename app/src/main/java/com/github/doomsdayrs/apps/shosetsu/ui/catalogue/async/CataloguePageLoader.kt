@@ -58,7 +58,7 @@ class CataloguePageLoader(private val catalogueFragment: CatalogueController) : 
                 true
             } catch (e: LuaError) {
                 catalogueFragment.activity?.toast(e.smallMessage())
-                Log.e("CataloguePageLoader", e.message)
+                Log.e("CataloguePageLoader", e.message?:"UNKNOWN ERROR")
                 false
             } catch (e: Exception) {
                 catalogueFragment.activity?.toast(e.message ?: "UNKNOWN ERROR")

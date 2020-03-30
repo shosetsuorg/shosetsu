@@ -8,6 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import org.json.JSONArray
 
 /*
@@ -35,22 +36,19 @@ import org.json.JSONArray
  * @author github.com/doomsdayrs
  */
 class ConfigureExtensions : RecyclerController<ConfigExtAdapter>() {
-    companion object {
-        const val logID = "ConfigureExtensions"
-    }
 
     lateinit var jsonArray: JSONArray
 
     override fun onSaveInstanceState(outState: Bundle) = outState.putString("array", jsonArray.toString())
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        Log.d(logID, "Restoring")
+        Log.d(logID(), "Restoring")
         jsonArray = JSONArray(savedInstanceState.getString("array", "[]"))
     }
 
     override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, getString(R.string.configure_extensions))
-        Log.d(logID, "Array received:\t$jsonArray")
+        Log.d(logID(), "Array received:\t$jsonArray")
         adapter = ConfigExtAdapter(this)
     }
 

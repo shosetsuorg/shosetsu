@@ -18,6 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.for
 import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitTask
 import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import java.io.File
 
@@ -49,7 +50,6 @@ import java.io.File
  */
 class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
     companion object {
-        const val logID = "SplashScreen"
         const val INTRO_CODE = 1944
     }
 
@@ -111,7 +111,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
         Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         textView = findViewById(R.id.textView)
         if (Settings.showIntro) {
-            Log.i(logID, "First time, Launching activity")
+            Log.i(logID(), "First time, Launching activity")
             val i = Intent(this, IntroductionActivity::class.java)
             startActivityForResult(i, INTRO_CODE)
         } else {

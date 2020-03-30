@@ -4,8 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.*
-import android.widget.*
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.TextView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.drawer.ExpandingViewBar
 
@@ -36,9 +40,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.drawer.ExpandingViewBar
  * All added views are
  */
 open class SDViewBuilder(val viewGroup: ViewGroup, val secondDrawerController: SecondDrawerController) {
-    companion object {
-        private const val logID = "SDViewBuilder"
-    }
 
     val inflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
     val layout: LinearLayout = inflater.inflate(R.layout.drawer_layout_simple, viewGroup, false) as LinearLayout

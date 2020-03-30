@@ -36,9 +36,6 @@ import com.google.android.material.navigation.NavigationView
  * All added views are
  */
 class SDBuilder(val navigationView: NavigationView, val drawerLayout: DrawerLayout, secondDrawerController: SecondDrawerController) : SDViewBuilder(navigationView, secondDrawerController) {
-    companion object {
-        private const val logID = "SDBuilder"
-    }
 
     private val parentView = inflater.inflate(drawer_layout, navigationView, false)
 
