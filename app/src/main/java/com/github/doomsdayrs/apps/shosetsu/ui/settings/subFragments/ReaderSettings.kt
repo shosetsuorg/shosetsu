@@ -115,28 +115,28 @@ class ReaderSettings : SettingsSubController() {
 				SettingsItemData(COLOR_PICKER)
 						.setTitle(R.string.text_custom_color)
 						.setDescription(R.string.custom_theme_warn)
-						.setPickerColor(Settings.readerCustomFront)
+						.setPickerColor(Settings.readerCustomBackColor)
 						.setColorPreference("text")
-						.setOnColorChosen { Settings.readerCustomFront = it },
+						.setOnColorChosen { Settings.readerCustomBackColor = it },
 
 				SettingsItemData(COLOR_PICKER)
 						.setTitle(R.string.text_custom_background_color)
 						.setColorPreference("back")
 						.setDescription(R.string.custom_theme_warn)
-						.setPickerColor(Settings.readerCustomBack)
-						.setOnColorChosen { Settings.readerCustomBack = it },
+						.setPickerColor(Settings.readerCustomTextColor)
+						.setOnColorChosen { Settings.readerCustomTextColor = it },
 
 				SettingsItemData(SWITCH)
 						.setTitle(R.string.inverted_swipe)
-						.setSwitchIsChecked(Settings.isInvertedSwipe)
-						.setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, _ ->
+						.setIsChecked(Settings.isInvertedSwipe)
+						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, _ ->
 							Utilities.toggleInvertedSwipe()
 						}),
 
 				SettingsItemData(SWITCH)
 						.setTitle(R.string.tap_to_scroll)
-						.setSwitchIsChecked(Settings.isTapToScroll)
-						.setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+						.setIsChecked(Settings.isTapToScroll)
+						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
 							Log.d("Tap to scroll", p1.toString())
 							Utilities.toggleTapToScroll()
 						})

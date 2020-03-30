@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 import android.content.SharedPreferences
 import android.graphics.Color
 import org.json.JSONArray
+import org.json.JSONException
 
 /*
  * This file is part of Shosetsu.
@@ -56,86 +57,133 @@ object Settings {
 
 	// Constant keys
 	const val LISTING_KEY = "listing"
+	private const val FIRST_TIME = "first_time"
+
+
+	// How things look in Reader
+	const val READER_THEME = "readerTheme"
+	const val READER_TEXT_C_COLOR = "readerCustomTextColor"
+	const val READER_BACK_C_COLOR = "readerCustomBackColor"
+
+	const val READER_TEXT_SIZE = "readerTextSize"
+	const val READER_TEXT_SPACING = "readerParagraphSpacing"
+	const val READER_TEXT_INDENT = "readerIndentSize"
+
+	// How things act in Reader
+	const val READER_IS_TAP_TO_SCROLL = "tapToScroll"
+	const val READER_IS_INVERTED_SWIPE = "invertedSwipe"
+	const val READER_MARKING_TYPE = "readerMarkingType"
+
+	// Download options
+	const val IS_DOWNLOAD_PAUSED = "isDownloadPaused"
+	const val IS_DOWNLOAD_ON_UPDATE = "isDownloadOnUpdate"
+
+	const val DISABLED_FORMATTERS = "disabledFormatters"
+
+	// View options
+	const val C_IN_NOVELS_P = "columnsInNovelsViewP"
+	const val C_IN_NOVELS_H = "columnsInNovelsViewH"
+	const val NOVEL_CARD_TYPE = "novelCardType"
+
+	// Backup Options
+	const val BACKUP_CHAPTERS = "backupChapters"
+	const val BACKUP_SETTINGS = "backupSettings"
+	const val BACKUP_QUICK = "backupQuick"
 
 	// READER
 	/**
 	 * How to mark a chapter as reading
 	 */
 	var readerMarkingType: Int
-		set(value) = readerSettings.edit().putInt("readerMarkingType", value).apply()
-		get() = readerSettings.getInt("readerMarkingType", MarkingTypes.ONVIEW.i)
+		set(value) = readerSettings.edit().putInt(READER_MARKING_TYPE, value).apply()
+		get() = readerSettings.getInt(READER_MARKING_TYPE, MarkingTypes.ONVIEW.i)
 
 	var readerTextSize: Float
-		set(value) = readerSettings.edit().putFloat("readerTextSize", value).apply()
-		get() = readerSettings.getFloat("readerTextSize", 14f)
+		set(value) = readerSettings.edit().putFloat(READER_TEXT_SIZE, value).apply()
+		get() = readerSettings.getFloat(READER_TEXT_SIZE, 14f)
 
 	var readerParagraphSpacing: Int
-		set(value) = readerSettings.edit().putInt("readerParagraphSpacing", value).apply()
-		get() = readerSettings.getInt("readerParagraphSpacing", 1)
+		set(value) = readerSettings.edit().putInt(READER_TEXT_SPACING, value).apply()
+		get() = readerSettings.getInt(READER_TEXT_SPACING, 1)
 
 
 	var readerTheme: Int
-		set(value) = readerSettings.edit().putInt("readerTheme", value).apply()
-		get() = readerSettings.getInt("readerTheme", ReaderThemes.SEPIA.i)
+		set(value) = readerSettings.edit().putInt(READER_THEME, value).apply()
+		get() = readerSettings.getInt(READER_THEME, ReaderThemes.SEPIA.i)
 
-	var readerCustomBack: Int
-		set(value) = readerSettings.edit().putInt("readerCustomBack", value).apply()
-		get() = readerSettings.getInt("readerCustomBack", Color.WHITE)
+	var readerCustomTextColor: Int
+		set(value) = readerSettings.edit().putInt(READER_TEXT_C_COLOR, value).apply()
+		get() = readerSettings.getInt(READER_TEXT_C_COLOR, Color.WHITE)
 
-	var readerCustomFront: Int
-		set(value) = readerSettings.edit().putInt("readerCustomFront", value).apply()
-		get() = readerSettings.getInt("readerCustomFront", Color.BLACK)
+	var readerCustomBackColor: Int
+		set(value) = readerSettings.edit().putInt(READER_BACK_C_COLOR, value).apply()
+		get() = readerSettings.getInt(READER_BACK_C_COLOR, Color.BLACK)
 
 
 	var isTapToScroll: Boolean
-		set(value) = readerSettings.edit().putBoolean("invertedSwipe", false).apply()
-		get() = readerSettings.getBoolean("tapToScroll", false)
+		set(value) = readerSettings.edit().putBoolean(READER_IS_TAP_TO_SCROLL, value).apply()
+		get() = readerSettings.getBoolean(READER_IS_TAP_TO_SCROLL, false)
 
 	var isInvertedSwipe: Boolean
-		get() = readerSettings.getBoolean("invertedSwipe", false)
-		set(value) = readerSettings.edit().putBoolean("invertedSwipe", value).apply()
+		set(value) = readerSettings.edit().putBoolean(READER_IS_INVERTED_SWIPE, value).apply()
+		get() = readerSettings.getBoolean(READER_IS_INVERTED_SWIPE, false)
 
 	// View Settings
 	/**
 	 * If download manager is paused
 	 */
-	var downloadPaused: Boolean
-		set(value) = settings.edit().putBoolean("paused", value).apply()
-		get() = settings.getBoolean("paused", false)
+	var isDownloadPaused: Boolean
+		set(value) = settings.edit().putBoolean(IS_DOWNLOAD_PAUSED, value).apply()
+		get() = settings.getBoolean(IS_DOWNLOAD_PAUSED, false)
 
 	var isDownloadOnUpdateEnabled: Boolean
-		set(value) = settings.edit().putBoolean("downloadOnUpdate", value).apply()
-		get() = settings.getBoolean("downloadOnUpdate", false)
+		set(value) = settings.edit().putBoolean(IS_DOWNLOAD_ON_UPDATE, value).apply()
+		get() = settings.getBoolean(IS_DOWNLOAD_ON_UPDATE, false)
 
 
 	var disabledFormatters: JSONArray
-		set(value) = settings.edit().putString("disabledFormatters", value.toString()).apply()
-		get() = JSONArray(settings.getString("disabledFormatters", "[]"))
+		set(value) = settings.edit().putString(DISABLED_FORMATTERS, value.toString()).apply()
+		@Throws(JSONException::class)
+		get() = JSONArray(settings.getString(DISABLED_FORMATTERS, "[]"))
 
 	var ReaderIndentSize
-		set(value) = settings.edit().putInt("indentSize", value).apply()
-		get() = settings.getInt("indentSize", 1)
+		set(value) = settings.edit().putInt(READER_TEXT_INDENT, value).apply()
+		get() = settings.getInt(READER_TEXT_INDENT, 1)
 
 	var columnsInNovelsViewP
-		set(value) = settings.edit().putInt("columnsInNovelsViewP", value).apply()
-		get() = settings.getInt("columnsInNovelsViewP", -1)
+		set(value) = settings.edit().putInt(C_IN_NOVELS_P, value).apply()
+		get() = settings.getInt(C_IN_NOVELS_P, -1)
 
 	var columnsInNovelsViewH
-		set(value) = settings.edit().putInt("columnsInNovelsViewH", value).apply()
-		get() = settings.getInt("columnsInNovelsViewH", -1)
+		set(value) = settings.edit().putInt(C_IN_NOVELS_H, value).apply()
+		get() = settings.getInt(C_IN_NOVELS_H, -1)
 
 	var novelCardType
-		set(value) = settings.edit().putInt("novelCardType", value).apply()
-		get() = settings.getInt("novelCardType", 0)
+		set(value) = settings.edit().putInt(NOVEL_CARD_TYPE, value).apply()
+		get() = settings.getInt(NOVEL_CARD_TYPE, 0)
 
 
 	// Advanced Settings
 	var showIntro: Boolean
-		set(value) = settings.edit().putBoolean("first_time", value).apply()
-		get() = settings.getBoolean("first_time", true)
+		set(value) = settings.edit().putBoolean(FIRST_TIME, value).apply()
+		get() = settings.getBoolean(FIRST_TIME, true)
 
 	// Download Settings
 
 	// Formatter Settings
+
+	// Backup Settings
+	var backupChapters: Boolean
+		set(value) = settings.edit().putBoolean(BACKUP_CHAPTERS, value).apply()
+		get() = settings.getBoolean(BACKUP_CHAPTERS, true)
+
+	var backupSettings: Boolean
+		set(value) = settings.edit().putBoolean(BACKUP_SETTINGS, value).apply()
+		get() = settings.getBoolean(BACKUP_SETTINGS, false)
+
+
+	var backupQuick: Boolean
+		set(value) = settings.edit().putBoolean(BACKUP_QUICK, value).apply()
+		get() = settings.getBoolean(BACKUP_QUICK, false)
 }
 

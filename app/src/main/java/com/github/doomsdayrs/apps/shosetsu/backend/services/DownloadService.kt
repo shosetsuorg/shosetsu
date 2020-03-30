@@ -157,7 +157,7 @@ class DownloadService : Service() {
          */
         override fun doWork() {
             Log.i(logID(), "Starting loop")
-            while (Database.DatabaseDownloads.downloadCount >= 1 && !Settings.downloadPaused)
+            while (Database.DatabaseDownloads.downloadCount >= 1 && !Settings.isDownloadPaused)
                 Database.DatabaseDownloads.firstDownload?.let { downloadItem ->
 
                     val pr = service.progressNotification
@@ -223,7 +223,7 @@ class DownloadService : Service() {
                     }
                 }
 
-            if (Settings.downloadPaused) Log.i(logID(), "Loop Paused")
+            if (Settings.isDownloadPaused) Log.i(logID(), "Loop Paused")
             stop(service)
             service.notificationManager.notify(ID_CHAPTER_DOWNLOAD,
                     service.progressNotification.setOngoing(false).setProgress(0, 0, false).setContentText(service.getString(R.string.completed)).build())

@@ -474,7 +474,7 @@ class ChapterView : Fragment() {
 			ReaderThemes.LIGHT.i -> Color.WHITE
 			ReaderThemes.SEPIA.i -> ContextCompat.getColor(context!!, org.doomsdayrs.apps.shosetsulib.R.color.wheat)
 			ReaderThemes.DARKI.i -> Color.DKGRAY
-			ReaderThemes.CUSTOM.i -> Settings.readerCustomBack
+			ReaderThemes.CUSTOM.i -> Settings.readerCustomTextColor
 			else -> Color.BLACK
 		}
 	}
@@ -486,7 +486,7 @@ class ChapterView : Fragment() {
 			ReaderThemes.LIGHT.i, ReaderThemes.SEPIA.i -> Color.BLACK
 			ReaderThemes.DARK.i -> Color.GRAY
 			ReaderThemes.DARKI.i -> Color.LTGRAY
-			ReaderThemes.CUSTOM.i -> Settings.readerCustomFront
+			ReaderThemes.CUSTOM.i -> Settings.readerCustomBackColor
 			else -> Color.WHITE
 		}
 	}

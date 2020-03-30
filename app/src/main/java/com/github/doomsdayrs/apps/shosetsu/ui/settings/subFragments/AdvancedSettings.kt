@@ -94,8 +94,8 @@ class AdvancedSettings : SettingsSubController() {
         if (BuildConfig.DEBUG)
             settings.add(SettingsItemData(SWITCH)
                     .setTitle("Show Intro")
-                    .setSwitchIsChecked(Settings.showIntro)
-                    .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked -> Settings.showIntro = isChecked })
+                    .setIsChecked(Settings.showIntro)
+                    .setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked -> Settings.showIntro = isChecked })
             )
         super.onViewCreated(view)
     }

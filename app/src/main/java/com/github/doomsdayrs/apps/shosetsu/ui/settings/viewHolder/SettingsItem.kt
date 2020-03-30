@@ -47,6 +47,7 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 	private val switchView: Switch = itemView.findViewById(R.id.switchView)
 	private val numberPicker: NumberPicker = itemView.findViewById(R.id.numberPicker)
 	private val colorBox: View = itemView.findViewById(R.id.colorBox)
+	private val checkBox: CheckBox = itemView.findViewById(R.id.checkbox)
 
 	fun setData(data: SettingsItemData): SettingsItem {
 		type = data.type
@@ -66,11 +67,11 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 					button.setText(data.textID)
 				else
 					button.text = data.textText
-				button.visibility = Button.VISIBLE
+				button.visibility = View.VISIBLE
 				button.setOnClickListener(data.buttonOnClickListener)
 			}
 			SettingsType.SPINNER -> {
-				spinner.visibility = Spinner.VISIBLE
+				spinner.visibility = View.VISIBLE
 				//spinner.setOnClickListener { data.spinnerOnClick }
 				spinner.adapter = data.adapter
 				spinner.setSelection(data.spinnerSelection)
@@ -84,13 +85,13 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 					textView.setText(data.textID)
 				else
 					textView.text = data.textText
-				textView.visibility = TextView.VISIBLE
+				textView.visibility = View.VISIBLE
 				textView.setOnClickListener(data.textViewOnClickListener)
 			}
 			SettingsType.SWITCH -> {
 				switchView.visibility = View.VISIBLE
-				switchView.isChecked = data.switchIsChecked
-				switchView.setOnCheckedChangeListener(data.switchOnCheckedListener)
+				switchView.isChecked = data.isChecked
+				switchView.setOnCheckedChangeListener(data.onCheckedListener)
 			}
 			SettingsType.NUMBER_PICKER -> {
 				numberPicker.visibility = View.VISIBLE
@@ -98,6 +99,11 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 				numberPicker.maxValue = data.upperBound
 				numberPicker.value = data.numberPickerValue
 				numberPicker.setOnValueChangedListener(data.numberPickerOnValueChangedListener)
+			}
+			SettingsType.CHECKBOX -> {
+				checkBox.visibility = View.VISIBLE
+				checkBox.isChecked = data.isChecked
+				checkBox.setOnCheckedChangeListener(data.onCheckedListener)
 			}
 			SettingsType.COLOR_PICKER -> {
 				colorBox.visibility = View.VISIBLE
@@ -126,7 +132,8 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 			TEXT,
 			SWITCH,
 			NUMBER_PICKER,
-			COLOR_PICKER
+			COLOR_PICKER,
+			CHECKBOX
 		}
 
 		var titleID: Int = -1
@@ -162,8 +169,8 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 
 		// Switch
 
-		var switchIsChecked: Boolean = false
-		var switchOnCheckedListener: CompoundButton.OnCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, _ -> }
+		var isChecked: Boolean = false
+		var onCheckedListener: CompoundButton.OnCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, _ -> }
 
 		// Number Picker
 		var lowerBound = 0
@@ -244,13 +251,13 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 			return this
 		}
 
-		fun setSwitchIsChecked(b: Boolean): SettingsItemData {
-			switchIsChecked = b
+		fun setIsChecked(b: Boolean): SettingsItemData {
+			isChecked = b
 			return this
 		}
 
-		fun setSwitchOnCheckedListner(onCheckedChangeListener: CompoundButton.OnCheckedChangeListener): SettingsItemData {
-			switchOnCheckedListener = onCheckedChangeListener
+		fun setOnCheckedListner(onCheckedChangeListener: CompoundButton.OnCheckedChangeListener): SettingsItemData {
+			onCheckedListener = onCheckedChangeListener
 			return this
 		}
 

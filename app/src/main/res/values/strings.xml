@@ -247,6 +247,12 @@
     <string name="text_custom_color">Text Color</string>
     <string name="text_custom_background_color">Background Color</string>
     <string name="custom_theme_warn">Only for custom theme</string>
+    <string name="backup_settings_option">Backup Settings?</string>
+    <string name="backup_chapters_option">Backup Chapters?</string>
+    <string name="backup_chapters_option_description">Default on, off will not save your progress</string>
+    <string name="backup_settings_option_desc">Default is off, which will not save your settings</string>
+    <string name="backup_quick_option">Quick Backup</string>
+    <string name="backup_quick_option_desc">Backups URL and simple data only. Will require network reload on restore</string>
 
     <array name="application_themes">
         <item>@string/light</item>

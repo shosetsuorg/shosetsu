@@ -162,8 +162,8 @@ object Utilities {
 	 * @return if paused or not
 	 */
 	fun togglePause(): Boolean {
-		Settings.downloadPaused = !Settings.downloadPaused
-		return Settings.downloadPaused
+		Settings.isDownloadPaused = !Settings.isDownloadPaused
+		return Settings.isDownloadPaused
 	}
 
 	/**

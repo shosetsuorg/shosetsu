@@ -128,7 +128,7 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_downloads, menu)
         val menuItem = menu.findItem(R.id.toolbar_downloads_pause)
-        if (Settings.downloadPaused)
+        if (Settings.isDownloadPaused)
             menuItem.setIcon(R.drawable.ic_play_circle_filled_24dp)
     }
 

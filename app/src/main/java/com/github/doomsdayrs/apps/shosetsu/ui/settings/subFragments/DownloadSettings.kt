@@ -48,8 +48,8 @@ class DownloadSettings : SettingsSubController() {
                         .setTitle(R.string.download_speed),
                 SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
                         .setTitle(R.string.download_chapter_updates)
-                        .setSwitchIsChecked(Settings.isDownloadOnUpdateEnabled)
-                        .setSwitchOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+                        .setIsChecked(Settings.isDownloadOnUpdateEnabled)
+                        .setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
                             Log.d("Download on update", p1.toString())
                             Settings.isDownloadOnUpdateEnabled = !Settings.isDownloadOnUpdateEnabled
                         })
