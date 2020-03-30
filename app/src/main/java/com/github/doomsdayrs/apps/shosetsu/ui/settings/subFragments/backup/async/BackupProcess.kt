@@ -1,4 +1,21 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async
+/*
+ * This file is part of shosetsu.
+ *
+ * shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * shosetsu is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * ====================================================================
+ */
 
 import android.os.AsyncTask
 import android.util.Log
@@ -38,45 +55,31 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
-/*
- * This file is part of shosetsu.
- *
- * shosetsu is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * shosetsu is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- */ /**
+/**
  * shosetsu
  * 16 / 08 / 2019
  *
+ * TODO Upgrade to a service
  * @author github.com/doomsdayrs
  */
 @Suppress("unused")
-class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
+class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 	override fun onPreExecute() {
 		Log.i("Progress", "Starting backup")
 	}
 
-	override fun onPostExecute(aVoid: Void?) {
-		Log.i("Progress", "Finished backup")
+	override fun onPostExecute(success: Boolean) {
+		if (success)
+			Log.i("Progress", "Finished backup")
 	}
 
-	override fun doInBackground(vararg voids: Void?): Void? {
+	override fun doInBackground(vararg voids: Void?): Boolean {
 		try {
 			val backupJSON = JSONObject()
 
 			run {
-                Log.i("Progress", "Backing up novels")
-                val backupNovels = JSONArray()
+				Log.i("Progress", "Backing up novels")
+				val backupNovels = JSONArray()
 				val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)!!
 				if (cursor.count > 0) while (cursor.moveToNext()) { // Gets if it is in library, if not then it skips
 					val bookmarked = Utilities.intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
@@ -84,20 +87,20 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
 					if (bookmarked) {
 						val novelURL = DatabaseIdentification.getNovelURLfromNovelID(cursor.getInt(Columns.PARENT_ID))!!
 						val novel = JSONObject()
-						novel.put(Columns.URL.toString(), novelURL)
-						novel.put(Columns.FORMATTER_ID.toString(), DatabaseIdentification.getFormatterIDFromNovelURL(novelURL))
-						novel.put(Columns.READING_STATUS.toString(), cursor.getInt(Columns.READING_STATUS))
-						novel.put(Columns.READER_TYPE.toString(), cursor.getInt(Columns.READER_TYPE))
-						novel.put(Columns.TITLE.toString(), cursor.getString(Columns.TITLE))
-						novel.put(Columns.IMAGE_URL.toString(), cursor.getString(Columns.IMAGE_URL))
-						novel.put(Columns.DESCRIPTION.toString(), cursor.getString(Columns.DESCRIPTION))
-						novel.put(Columns.GENRES.toString(), cursor.getString(Columns.GENRES))
-						novel.put(Columns.AUTHORS.toString(), cursor.getString(Columns.AUTHORS))
-						novel.put(Columns.STATUS.toString(), cursor.getString(Columns.STATUS))
-						novel.put(Columns.TAGS.toString(), cursor.getString(Columns.TAGS))
-						novel.put(Columns.ARTISTS.toString(), cursor.getString(Columns.ARTISTS))
-						novel.put(Columns.LANGUAGE.toString(), cursor.getString(Columns.LANGUAGE))
-						novel.put(Columns.MAX_CHAPTER_PAGE.toString(), cursor.getInt(Columns.MAX_CHAPTER_PAGE))
+						novel[Columns.URL] = novelURL
+						novel[Columns.FORMATTER_ID] = DatabaseIdentification.getFormatterIDFromNovelURL(novelURL)
+						novel[Columns.READING_STATUS] = cursor.getInt(Columns.READING_STATUS)
+						novel[Columns.READER_TYPE] = cursor.getInt(Columns.READER_TYPE)
+						novel[Columns.TITLE] = cursor.getString(Columns.TITLE)
+						novel[Columns.IMAGE_URL] = cursor.getString(Columns.IMAGE_URL)
+						novel[Columns.DESCRIPTION] = cursor.getString(Columns.DESCRIPTION)
+						novel[Columns.GENRES] = cursor.getString(Columns.GENRES)
+						novel[Columns.AUTHORS] = cursor.getString(Columns.AUTHORS)
+						novel[Columns.STATUS] = cursor.getString(Columns.STATUS)
+						novel[Columns.TAGS] = cursor.getString(Columns.TAGS)
+						novel[Columns.ARTISTS] = cursor.getString(Columns.ARTISTS)
+						novel[Columns.LANGUAGE] = cursor.getString(Columns.LANGUAGE)
+						novel[Columns.MAX_CHAPTER_PAGE] = cursor.getInt(Columns.MAX_CHAPTER_PAGE)
 						backupNovels.put(novel)
 					}
 				}
@@ -116,14 +119,15 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
 						if (b) {
 							val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
 							val chapter = JSONObject()
-							chapter.put("novelURL", DatabaseIdentification.getNovelURLfromNovelID(novelID))
-							chapter.put(Columns.URL.toString(), DatabaseIdentification.getChapterURLFromChapterID(id))
-							chapter.put(Columns.TITLE.toString(), cursor.getString(cursor.getColumnIndex(Columns.TITLE.toString())))
-							chapter.put(Columns.RELEASE_DATE.toString(), cursor.getString(cursor.getColumnIndex(Columns.RELEASE_DATE.toString())))
-							chapter.put(Columns.ORDER.toString(), cursor.getInt(cursor.getColumnIndex(Columns.ORDER.toString())))
-							chapter.put(Columns.Y.toString(), cursor.getInt(cursor.getColumnIndex(Columns.Y.toString())))
-							chapter.put(Columns.READ_CHAPTER.toString(), cursor.getInt(cursor.getColumnIndex(Columns.READ_CHAPTER.toString())))
-							chapter.put(Columns.BOOKMARKED.toString(), cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
+							chapter["novelURL"] = DatabaseIdentification.getNovelURLfromNovelID(novelID)
+									?: ""
+							chapter[Columns.URL] = DatabaseIdentification.getChapterURLFromChapterID(id)
+							chapter[Columns.TITLE] = cursor.getString(Columns.TITLE)
+							chapter[Columns.RELEASE_DATE] = cursor.getString(Columns.RELEASE_DATE)
+							chapter[Columns.ORDER] = cursor.getInt(Columns.ORDER)
+							chapter[Columns.Y] = cursor.getInt(Columns.Y)
+							chapter[Columns.READ_CHAPTER] = cursor.getInt(Columns.READ_CHAPTER)
+							chapter[Columns.BOOKMARKED] = cursor.getInt(Columns.BOOKMARKED)
 							backupChapters.put(chapter)
 						}
 					}
@@ -146,12 +150,13 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
 			)
 			fileOutputStream.write("JSON+-=$backupJSON".toByteArray())
 			fileOutputStream.close()
+			return true
 		} catch (e: IOException) {
 			e.printStackTrace()
 		} catch (e: JSONException) {
 			e.printStackTrace()
 		}
-		return null
+		return false
 	}
 
 	/**
@@ -189,7 +194,6 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
 		settings[BACKUP_SETTINGS] = Settings.backupSettings
 		settings[BACKUP_QUICK] = Settings.backupQuick
 
-
 		settings["shoDir"] = Utilities.shoDir.serializeToString()
 
 		return settings
@@ -198,3 +202,6 @@ class BackupProcess : AsyncTask<Void?, Void?, Void?>() {
 
 @Throws(JSONException::class)
 private operator fun JSONObject.set(key: String, value: Any) = put(key, value)
+
+@Throws(JSONException::class)
+private operator fun JSONObject.set(key: Columns, value: Any) = put(key.toString(), value)
