@@ -120,8 +120,6 @@ class MainActivity : AppCompatActivity(), Supporter {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // Webview agent retrieval
-        WebViewScrapper.setUa(findViewById<WebView>(R.id.absolute_webView).settings.userAgentString)
 
         ShosetsuLib.httpClient = OkHttpClient.Builder()
                 .addInterceptor {

@@ -8,11 +8,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity">
 
-    <WebView
-        android:id="@+id/absolute_webView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="match_parent"
