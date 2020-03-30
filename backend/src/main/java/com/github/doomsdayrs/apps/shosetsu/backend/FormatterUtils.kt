@@ -14,7 +14,7 @@ import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.doomsdayrs.apps.shosetsulib.BuildConfig
@@ -156,8 +156,8 @@ object FormatterUtils {
 					try {
 						val form = LuaFormatter(targetFile)
 						process(form)
-						DefaultScrapers.formatters.add(form)
-						DefaultScrapers.formatters.sortedWith(compareBy { it.name })
+						Formatters.formatters.add(form)
+						Formatters.formatters.sortedWith(compareBy { it.name })
 						completed()
 					} catch (e: Exception) {
 						Log.e(logID(), "Download:\tException unhandled", e)
@@ -174,9 +174,9 @@ object FormatterUtils {
 		pre()
 		var b = true
 		var i = 0
-		while (i < DefaultScrapers.formatters.size && b) {
-			if (DefaultScrapers.formatters[i].formatterID == id) {
-				DefaultScrapers.formatters.removeAt(i)
+		while (i < Formatters.formatters.size && b) {
+			if (Formatters.formatters[i].formatterID == id) {
+				Formatters.formatters.removeAt(i)
 				val targetFile = File(Utilities.shoDir + scriptDirectory + sourceFolder + "/$name.lua")
 				targetFile.delete()
 				b = false

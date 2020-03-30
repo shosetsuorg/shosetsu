@@ -20,7 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
@@ -181,9 +181,9 @@ class UpdateService : Service() {
                     pr.setOngoing(true)
                     val novelCard = Database.DatabaseNovels.getNovel(novelCards[x])
                     val novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCard.novelURL)
-                    val formatter = DefaultScrapers.getByID(novelCard.formatterID)
+                    val formatter = Formatters.getByID(novelCard.formatterID)
 
-                    if (formatter != DefaultScrapers.unknown) {
+                    if (formatter != Formatters.unknown) {
                         // Updates notification
                         pr.setContentText(novelCard.title)
                         pr.setProgress(novelCards.size, x + 1, false)
@@ -249,7 +249,7 @@ class UpdateService : Service() {
                 Database.DatabaseChapter.updateChapter(novelChapter)
             }
             if (Settings.isDownloadOnUpdateEnabled)
-                DownloadManager.addToDownload(updateService.applicationContext as Activity, DownloadItem(DefaultScrapers.getByID(novelCard.formatterID), novelCard.title, novelChapter.title, Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)))
+                DownloadManager.addToDownload(updateService.applicationContext as Activity, DownloadItem(Formatters.getByID(novelCard.formatterID), novelCard.title, novelChapter.title, Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)))
         }
 
 

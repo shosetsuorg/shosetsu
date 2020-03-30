@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -183,8 +183,8 @@ object FormatterService {
 							PROGRESS("${source.name} added")
 							try {
 								val l = LuaFormatter(source)
-								if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
-									DefaultScrapers.formatters.add(l)
+								if (Formatters.getByID(l.formatterID) == Formatters.unknown)
+									Formatters.formatters.add(l)
 							} catch (e: Exception) {
 								when (e) {
 									is LuaError -> Log.e("FormatterInit", "LuaFormatter had an issue!${e.smallMessage()}")
@@ -228,8 +228,8 @@ object FormatterService {
 								override fun pass() {
 									if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
 										val l = LuaFormatter(source)
-										if (DefaultScrapers.getByID(l.formatterID) == DefaultScrapers.unknown)
-											DefaultScrapers.formatters.add(l)
+										if (Formatters.getByID(l.formatterID) == Formatters.unknown)
+											Formatters.formatters.add(l)
 									}
 								}
 
@@ -257,7 +257,7 @@ object FormatterService {
 		for (unknownFormatter in unknownFormatters) {
 			Log.e("FormatterInit", "Unknown Script:\t${unknownFormatter.name}")
 		}
-		DefaultScrapers.formatters.sortedWith(compareBy { it.name })
+		Formatters.formatters.sortedWith(compareBy { it.name })
 		PROGRESS("Completed load")
 		return unknownFormatters
 	}

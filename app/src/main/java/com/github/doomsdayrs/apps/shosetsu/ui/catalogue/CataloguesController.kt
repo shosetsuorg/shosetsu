@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapt
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.asFormatter
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters.getAsCards
 
 /*
  * This file is part of Shosetsu.
@@ -40,7 +40,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.asForma
  */
 //TODO Searching mechanics here
 class CataloguesController : RecyclerController<CataloguesAdapter>() {
-    private val cards by lazy { asFormatter }
+    private val cards by lazy { getAsCards() }
 
     init {
         setHasOptionsMenu(true)

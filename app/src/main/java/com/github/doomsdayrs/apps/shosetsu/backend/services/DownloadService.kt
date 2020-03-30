@@ -27,7 +27,6 @@ import needle.Needle
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 /*
  * This file is part of shosetsu.
@@ -210,11 +209,7 @@ class DownloadService : Service() {
                         pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 6, false)
                         service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
                         // Rate limiting
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(10)
-                        } catch (e: InterruptedException) {
-                            Log.e(logID(), "Failed to wait", e)
-                        }
+                            Utilities.wait(10)
                     } catch (e: Exception) { // Mark download as faulted
                         Log.e(logID(), "A critical error occurred", e)
                         sendMessage(BC_DOWNLOADS_MARK_ERROR, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))

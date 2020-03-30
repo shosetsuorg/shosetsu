@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.Update
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers.getByID
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import org.joda.time.DateTime
 import org.joda.time.Days

@@ -17,7 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.squareup.picasso.Picasso
 import com.yarolegovich.discretescrollview.DiscreteScrollView
 
@@ -158,11 +158,11 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
         }
 
         override fun getItemCount(): Int {
-            return DefaultScrapers.formatters.size
+            return Formatters.formatters.size
         }
 
         override fun onBindViewHolder(holder: CatalogueHolder, position: Int) {
-            val form = DefaultScrapers.formatters[position]
+            val form = Formatters.formatters[position]
             holder.title.text = form.name
             if (form.imageURL.isNotEmpty())
                 Picasso.get()

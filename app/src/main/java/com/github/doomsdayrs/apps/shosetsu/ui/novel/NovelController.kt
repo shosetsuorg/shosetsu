@@ -22,7 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -98,7 +98,7 @@ class NovelController : ViewedController() {
         super.onRestoreInstanceState(savedInstanceState)
         novelID = savedInstanceState.getInt("novelID")
         novelURL = savedInstanceState.getString("novelURL", "")
-        formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
+        formatter = Formatters.getByID(savedInstanceState.getInt("formatter"))
         status = Status.getStatus(savedInstanceState.getInt("status"))
         novelPage = Database.DatabaseNovels.getNovelPage(novelID)
         new = savedInstanceState.getBoolean("new")

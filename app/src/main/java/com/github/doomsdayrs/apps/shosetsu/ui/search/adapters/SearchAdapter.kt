@@ -7,7 +7,7 @@ import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 
 /*
  * This file is part of Shosetsu.
@@ -38,7 +38,7 @@ class SearchAdapter(private val searchController: SearchController) : RecyclerVi
     private val views: ArrayList<Int> = arrayListOf(-1)
 
     init {
-        for (formatter: Formatter in DefaultScrapers.formatters)
+        for (formatter: Formatter in Formatters.formatters)
             views.add(formatter.formatterID)
 
     }

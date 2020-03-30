@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerControlle
 import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import org.json.JSONObject
 
 /*
@@ -63,7 +63,7 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter>() {
                 true
             }
             R.id.reload -> {
-                DefaultScrapers.formatters.clear()
+                Formatters.formatters.clear()
                 FormatterService.FormatterInit(activity!!).execute()
                 true
             }

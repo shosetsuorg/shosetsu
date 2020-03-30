@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.FileObject
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import org.json.JSONObject
 import java.io.File
 
@@ -78,10 +78,10 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
             when (file.action) {
                 0 -> {
                     FormatterUtils.trustScript(file.file)
-                    DefaultScrapers.formatters.add(LuaFormatter(file.file))
+                    Formatters.formatters.add(LuaFormatter(file.file))
                 }
                 1 -> {
-                    DefaultScrapers.formatters.add(LuaFormatter(file.file))
+                    Formatters.formatters.add(LuaFormatter(file.file))
                 }
                 2 -> {
                     val meta = FormatterUtils.getMetaData(file.file)
@@ -93,14 +93,14 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
                     val a = Settings.disabledFormatters
                     a.put(js)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        DefaultScrapers.formatters.removeIf { it.formatterID == meta.getInt("id") }
+                        Formatters.formatters.removeIf { it.formatterID == meta.getInt("id") }
                     } else {
                         var point = -1
-                        for (i in 0 until DefaultScrapers.formatters.size)
-                            if (DefaultScrapers.formatters[i].formatterID == meta.getInt("id"))
+                        for (i in 0 until Formatters.formatters.size)
+                            if (Formatters.formatters[i].formatterID == meta.getInt("id"))
                                 point = i
                         if (point != -1)
-                            DefaultScrapers.formatters.removeAt(point)
+                            Formatters.formatters.removeAt(point)
                     }
                     Settings.disabledFormatters = a
                 }

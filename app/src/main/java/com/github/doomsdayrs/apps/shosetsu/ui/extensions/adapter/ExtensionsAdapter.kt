@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
 
@@ -56,12 +56,12 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
 		val jsonObject: JSONObject = extensionsFragment.array[position]
 		val id = jsonObject.getInt("id")
 
-		if (DefaultScrapers.getByID(id) != DefaultScrapers.unknown) {
+		if (Formatters.getByID(id) != Formatters.unknown) {
 			holder.button.text = holder.itemView.context.getString(R.string.uninstall)
 			//  holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
 			holder.installed = true
 
-			val luaFormatter: LuaFormatter = (DefaultScrapers.getByID(id) as LuaFormatter)
+			val luaFormatter: LuaFormatter = (Formatters.getByID(id) as LuaFormatter)
 			val meta = luaFormatter.getMetaData()!!
 			holder.version.text = meta.getString("version")
 			if (FormatterUtils.compareVersions(jsonObject.getString("version"), meta.getString("version"))) {
@@ -99,9 +99,9 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
 								if (holder.update) {
 									holder.update = false
 									if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-										DefaultScrapers.formatters.removeIf { (it as LuaFormatter).formatterID == it.formatterID }
+										Formatters.formatters.removeIf { (it as LuaFormatter).formatterID == it.formatterID }
 									} else {
-										DefaultScrapers.formatters.remove(DefaultScrapers.getByID(formatter.formatterID))
+										Formatters.formatters.remove(Formatters.getByID(formatter.formatterID))
 									}
 								}
 							},

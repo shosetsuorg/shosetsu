@@ -161,7 +161,7 @@ class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawe
         recyclerView?.setHasFixedSize(false)
         if (Settings.novelCardType == 0) {
             adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
-            recyclerView?.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateNoOfColumns(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
+            recyclerView?.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateColumnCount(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
         } else {
             adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
             recyclerView?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)

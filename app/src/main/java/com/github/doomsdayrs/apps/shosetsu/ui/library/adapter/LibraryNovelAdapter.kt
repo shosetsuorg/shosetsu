@@ -9,7 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -50,7 +50,7 @@ class LibraryNovelAdapter(private val novelCards: ArrayList<Int>, private val li
             if (novelCard.imageURL.isNotEmpty()) Picasso.get().load(novelCard.imageURL).into(libNovelViewHolder.imageView)
             libNovelViewHolder.libraryFragment = libraryController
             libNovelViewHolder.novelCard = novelCard
-            libNovelViewHolder.formatter = DefaultScrapers.getByID(novelCard.formatterID)
+            libNovelViewHolder.formatter = Formatters.getByID(novelCard.formatterID)
             libNovelViewHolder.title.text = novelCard.title
         }
         val count = Database.DatabaseChapter.getCountOfChaptersUnread(novelCard.novelID)

@@ -33,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.build
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.google.android.material.navigation.NavigationView
 
@@ -88,7 +88,7 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 
 	init {
 		setHasOptionsMenu(true)
-		formatter = DefaultScrapers.getByID(bundle.getInt("formatter"))
+		formatter = Formatters.getByID(bundle.getInt("formatter"))
 		selectedListing = formatter.defaultListing
 		filterValues = formatter.listings[this.selectedListing].filters.values()
 	}
@@ -102,7 +102,7 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
 		catalogueNovelCards = savedInstanceState.getSerializable("list") as ArrayList<NovelListingCard>
-		formatter = DefaultScrapers.getByID(savedInstanceState.getInt("formatter"))
+		formatter = Formatters.getByID(savedInstanceState.getInt("formatter"))
 	}
 
 	override fun onViewCreated(view: View) {
@@ -164,7 +164,7 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 
 		if (Settings.novelCardType == 0) {
 			catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card)
-			recyclerView?.layoutManager = GridLayoutManager(context, Utilities.calculateNoOfColumns(context!!, 200f), RecyclerView.VERTICAL, false)
+			recyclerView?.layoutManager = GridLayoutManager(context, Utilities.calculateColumnCount(context!!, 200f), RecyclerView.VERTICAL, false)
 		} else {
 			catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card_compressed)
 			recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

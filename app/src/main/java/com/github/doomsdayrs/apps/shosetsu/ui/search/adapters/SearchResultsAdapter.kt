@@ -10,7 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.DefaultScrapers
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.squareup.picasso.Picasso
 
@@ -77,7 +77,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
             title = novel.title
             url = novel.novelURL
             imageURL = novel.imageURL
-            formatter = DefaultScrapers.getByID(novel.formatterID)
+            formatter = Formatters.getByID(novel.formatterID)
             id = novel.novelID
         }
 

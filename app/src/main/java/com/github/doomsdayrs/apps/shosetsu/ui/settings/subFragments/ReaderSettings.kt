@@ -92,7 +92,7 @@ class ReaderSettings : SettingsSubController() {
 							override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
 								Log.d("IndentSizeSelection", i.toString())
 								if (i in 0..3) {
-									Utilities.changeIndentSize(i)
+									Settings.ReaderIndentSize = i
 									adapterView.setSelection(i)
 								}
 							}

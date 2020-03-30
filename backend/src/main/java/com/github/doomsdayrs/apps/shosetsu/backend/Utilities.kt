@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import org.doomsdayrs.apps.shosetsulib.R
 import org.json.JSONArray
@@ -108,7 +109,7 @@ object Utilities {
 	}
 
 
-	fun calculateNoOfColumns(context: Context, columnWidthDp: Float): Int { // For example columnWidthdp=180
+	fun calculateColumnCount(context: Context, columnWidthDp: Float): Int { // For example columnWidthdp=180
 		val c = if (context.resources.configuration.orientation == 1) Settings.columnsInNovelsViewP else Settings.columnsInNovelsViewH
 
 		val displayMetrics = context.resources.displayMetrics
@@ -138,20 +139,13 @@ object Utilities {
 		return !b
 	}
 
-
 	fun toggleInvertedSwipe(): Boolean {
 		val b = Settings.isInvertedSwipe
 		Settings.isInvertedSwipe = !b
 		return !b
 	}
 
-
 	fun intToBoolean(a: Int): Boolean = a == 1
-
-	fun changeIndentSize(newIndent: Int) {
-		Settings.ReaderIndentSize = newIndent
-	}
-
 
 	//  fun changeMode(activity: Activity, newMode: Int) { if (newMode !in 0..2) throw IndexOutOfBoundsException("Non valid int passed");  Settings.themeMode = newMode; activity.recreate() // setupTheme(activity); }
 
@@ -216,19 +210,17 @@ object Utilities {
 
 	fun openInBrowser(activity: Activity, url: String) = activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
 
-
 	/**
 	 * Freezes the thread for x time
 	 *
-	 * @param time time in MS
+	 * @param time time, default in MS
 	 */
-	fun wait(time: Int) {
-		try {
-			TimeUnit.MILLISECONDS.sleep(time.toLong())
-		} catch (e: InterruptedException) {
-			Log.e("Error", e.message.toString())
-		}
-	}
+	fun wait(time: Int, unit: TimeUnit = TimeUnit.MILLISECONDS) =
+			try {
+				unit.sleep(time.toLong())
+			} catch (e: InterruptedException) {
+				Log.e(logID(), "Failed to wait", e)
+			}
 
 	//TODO Online Trackers
 //Methods below when tracking system setup
@@ -241,13 +233,6 @@ object Utilities {
 // --Commented out by Inspection STOP (12/22/19 11:10 AM)
 //       public static void addTracker () {
 //      }
-	private var debug = false
-
-	@Suppress("unused")
-
-	fun toggleDebug() {
-		debug = !debug
-	}
 
 	/**
 	 * Abstraction for Actions to take after demarking items. To simplify bulky code
