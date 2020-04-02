@@ -7,6 +7,8 @@
 
     <com.yarolegovich.discretescrollview.DiscreteScrollView
         android:id="@+id/novels_to_transfer"
+        tools:itemCount="50"
+        tools:listitem="@layout/recycler_novel_card"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="parent"

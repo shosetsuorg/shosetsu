@@ -151,9 +151,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 			fileOutputStream.write("JSON+-=$backupJSON".toByteArray())
 			fileOutputStream.close()
 			return true
-		} catch (e: IOException) {
-			e.printStackTrace()
-		} catch (e: JSONException) {
+		} catch (e: Exception) {
 			e.printStackTrace()
 		}
 		return false

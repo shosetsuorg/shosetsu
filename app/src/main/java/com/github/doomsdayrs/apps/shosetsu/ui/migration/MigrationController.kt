@@ -94,13 +94,16 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 
     override fun onViewCreated(view: View) {
         catalogueSelection?.layoutManager = LinearLayoutManager(context)
+        novelsFromRecyclerView?.adapter = TransfereeAdapter(this)
         novelsFromRecyclerView?.addOnItemChangedListener { _, item ->
             setupViewWithTransferee(item)
         }
-        novelsFromRecyclerView?.adapter = TransfereeAdapter(this)
         setupViewWithTransferee(0)
     }
 
+    /**
+     * @param position [Int] position
+     */
     fun setupViewWithTransferee(position: Int) {
         val target = transferees[position]
         if (target.targetFormatterID == -1) {
@@ -121,7 +124,11 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransfereeViewHolder {
-            return TransfereeViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_novel_card, parent, false))
+            return TransfereeViewHolder(LayoutInflater.from(parent.context).inflate(
+                    R.layout.recycler_novel_card,
+                    parent,
+                    false
+            ))
         }
 
         override fun getItemCount(): Int {
