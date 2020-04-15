@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelListingViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 
 /*
@@ -35,7 +34,7 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelListingViewHolde
     override fun doInBackground(vararg views: View?): Void? {
         try {
             if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url!!)) {
-                Database.DatabaseNovels.addToLibrary(novelCardsViewHolder.formatter.formatterID,
+                Database.DatabaseNovels.addNovelToDatabase(novelCardsViewHolder.formatter.formatterID,
                         novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url!!, false) {},
                         novelCardsViewHolder.url!!,
                         com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)

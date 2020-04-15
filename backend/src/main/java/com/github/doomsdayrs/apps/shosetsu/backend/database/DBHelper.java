@@ -60,7 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Columns.ORDER + " integer not null," +
 
             // > Scroll position, either 0 for top, or X for the position
-            Columns.Y + " integer not null," +
+            Columns.Y_POSITION + " integer not null," +
             // > Either 0 for none, or an incremented count (Status)
             Columns.READ_CHAPTER + " integer not null," +
             // > Either 0 for false or 1 for true.

@@ -163,7 +163,7 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
                                 Columns.TITLE + "," +
                                 Columns.RELEASE_DATE + "," +
                                 Columns.ORDER + "," +
-                                Columns.Y + "," +
+                                Columns.Y_POSITION + "," +
                                 Columns.READ_CHAPTER + "," +
                                 Columns.BOOKMARKED + "," +
                                 Columns.IS_SAVED +
@@ -175,13 +175,13 @@ class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticF
                                 chapter.getString(Columns.TITLE.toString()) + "','" +
                                 chapter.getString(Columns.RELEASE_DATE.toString()) + "'," +
                                 chapter.getInt(Columns.ORDER.toString()) + "," +
-                                chapter.getInt(Columns.Y.toString()) + "," +
+                                chapter.getInt(Columns.Y_POSITION.toString()) + "," +
                                 chapter.getInt(Columns.READ_CHAPTER.toString()) + "," +
                                 chapter.getInt(Columns.BOOKMARKED.toString()) + "," +
                                 0 + ")")
                     } else {
                         sqLiteDatabase.execSQL("update " + Tables.CHAPTERS + " set " +
-                                Columns.Y + "=" + chapter.getString(Columns.Y.toString()) + "," +
+                                Columns.Y_POSITION + "=" + chapter.getString(Columns.Y_POSITION.toString()) + "," +
                                 Columns.READ_CHAPTER + "=" + chapter.getString(Columns.READ_CHAPTER.toString()) + "," +
                                 Columns.BOOKMARKED + "=" + chapter.getString(Columns.BOOKMARKED.toString()) +
                                 " where " + Columns.ID + "=" + DatabaseIdentification.getChapterIDFromChapterURL(chapter.getString(Columns.URL.toString()))

@@ -27,6 +27,7 @@ enum class Status(val a: Int, val status: String) {
     // Novels and chapters
     UNREAD(0, "Unread"),
     READING(1, "Reading"), READ(2, "Read"),  // These two are for novels only
+
     ONHOLD(3, "OnHold"), DROPPED(4, "Dropped"), UNKNOWN(-1, "Unknown");
 
     override fun toString(): String {

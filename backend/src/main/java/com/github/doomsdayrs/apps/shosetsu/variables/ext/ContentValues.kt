@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import android.database.Cursor
+import android.content.ContentValues
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 
 /*
@@ -23,15 +23,12 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 15 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
 
-fun Cursor.getString(column: Columns): String = getString(getColumnIndex(column.toString()))
-
-fun Cursor.getInt(column: Columns): Int = getInt(getColumnIndex(column.toString()))
-
-fun Cursor.getDouble(column: Columns): Double = getDouble(getColumnIndex(column.toString()))
-
-fun Cursor.getLong(column: Columns): Long = getLong(getColumnIndex(column.toString()))
+fun ContentValues.put(columns: Columns, value: String) = put(columns.toString(), value)
+fun ContentValues.put(columns: Columns, value: Long) = put(columns.toString(), value)
+fun ContentValues.put(columns: Columns, value: Int) = put(columns.toString(), value)
+fun ContentValues.put(columns: Columns, value: Double) = put(columns.toString(), value)

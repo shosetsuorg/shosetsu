@@ -1,8 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import android.database.Cursor
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
-
 /*
  * This file is part of shosetsu.
  *
@@ -23,15 +20,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 15 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
 
-fun Cursor.getString(column: Columns): String = getString(getColumnIndex(column.toString()))
-
-fun Cursor.getInt(column: Columns): Int = getInt(getColumnIndex(column.toString()))
-
-fun Cursor.getDouble(column: Columns): Double = getDouble(getColumnIndex(column.toString()))
-
-fun Cursor.getLong(column: Columns): Long = getLong(getColumnIndex(column.toString()))
+fun Boolean.toInt(): Int = if (this) 1 else 0

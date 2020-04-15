@@ -149,11 +149,6 @@ object Utilities {
 		return !b
 	}
 
-	fun intToBoolean(a: Int): Boolean = a == 1
-
-	//  fun changeMode(activity: Activity, newMode: Int) { if (newMode !in 0..2) throw IndexOutOfBoundsException("Non valid int passed");  Settings.themeMode = newMode; activity.recreate() // setupTheme(activity); }
-
-
 	/**
 	 * Toggles paused downloads
 	 *

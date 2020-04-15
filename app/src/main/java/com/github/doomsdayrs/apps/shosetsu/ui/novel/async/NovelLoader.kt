@@ -9,7 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isNotInChapters
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.updateChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.addToLibrary
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.addNovelToDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInNovels
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.updateNovel
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
@@ -77,7 +77,7 @@ class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatt
 
                 // Checks if it is not in DB, if true then it adds else it updates
                 if (isNotInNovels(novelURL))
-                    addToLibrary(formatter.formatterID, novelPage, novelURL, UNREAD.a)
+                    addNovelToDatabase(formatter.formatterID, novelPage, novelURL, UNREAD.a)
                 else updateNovel(novelURL, novelPage)
 
                 // Updates novelID

@@ -47,6 +47,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getInt
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.serializeToString
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toBoolean
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -82,10 +83,10 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 				val backupNovels = JSONArray()
 				val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)!!
 				if (cursor.count > 0) while (cursor.moveToNext()) { // Gets if it is in library, if not then it skips
-					val bookmarked = Utilities.intToBoolean(cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString())))
+					val bookmarked = (cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString()))).toBoolean()
 					Log.i("NovelBack", "Valid?: $bookmarked")
 					if (bookmarked) {
-						val novelURL = DatabaseIdentification.getNovelURLfromNovelID(cursor.getInt(Columns.PARENT_ID))!!
+						val novelURL = DatabaseIdentification.getNovelURLFromNovelID(cursor.getInt(Columns.PARENT_ID))!!
 						val novel = JSONObject()
 						novel[Columns.URL] = novelURL
 						novel[Columns.FORMATTER_ID] = DatabaseIdentification.getFormatterIDFromNovelURL(novelURL)
@@ -119,13 +120,13 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 						if (b) {
 							val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
 							val chapter = JSONObject()
-							chapter["novelURL"] = DatabaseIdentification.getNovelURLfromNovelID(novelID)
+							chapter["novelURL"] = DatabaseIdentification.getNovelURLFromNovelID(novelID)
 									?: ""
 							chapter[Columns.URL] = DatabaseIdentification.getChapterURLFromChapterID(id)
 							chapter[Columns.TITLE] = cursor.getString(Columns.TITLE)
 							chapter[Columns.RELEASE_DATE] = cursor.getString(Columns.RELEASE_DATE)
 							chapter[Columns.ORDER] = cursor.getInt(Columns.ORDER)
-							chapter[Columns.Y] = cursor.getInt(Columns.Y)
+							chapter[Columns.Y_POSITION] = cursor.getInt(Columns.Y_POSITION)
 							chapter[Columns.READ_CHAPTER] = cursor.getInt(Columns.READ_CHAPTER)
 							chapter[Columns.BOOKMARKED] = cursor.getInt(Columns.BOOKMARKED)
 							backupChapters.put(chapter)
