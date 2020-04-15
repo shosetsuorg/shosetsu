@@ -1,5 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -21,10 +25,12 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getSavedNovelPassage
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
 import kotlinx.android.synthetic.main.chapter_view.*
-import org.doomsdayrs.apps.shosetsulib.R.*
+import org.doomsdayrs.apps.shosetsulib.R.color
 
 /*
  * This file is part of shosetsu.
@@ -67,7 +73,7 @@ class ChapterView : Fragment() {
 	// Order of values. Default, Markdown
 	@Suppress("unused")
 	private lateinit var readers: Array<MenuItem>
-
+	private lateinit var reciever: BroadcastReceiver
 
 	var chapterReader: ChapterReader? = null
 	var url: String = ""
@@ -194,7 +200,6 @@ class ChapterView : Fragment() {
 		}*/
 	}
 
-
 	/**
 	 * What to do when an menu item is selected
 	 *
@@ -312,8 +317,10 @@ class ChapterView : Fragment() {
 		super.onResume()
 		val title = Database.DatabaseChapter.getTitle(chapterID)
 		chapterReader?.getToolbar()?.let { it.title = title }
+
 		Log.i("ChapterView", "Resuming:${appendID()}")
 		Log.i("ChapterView", "${appendID()} \n ${text.isNullOrEmpty()} | ${unformattedText.isEmpty()} | $bookmarked | $ready ")
+
 		if (text.isNullOrEmpty() && unformattedText.isEmpty()) {
 			Log.i("ChapterView", "Text and unformatted text is null, resetting${appendID()}")
 			dataSet()
@@ -324,7 +331,6 @@ class ChapterView : Fragment() {
 		return "\tURL/ID( $url | $chapterID )"
 	}
 
-
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
 		outState.putInt("id", chapterID)
@@ -334,6 +340,11 @@ class ChapterView : Fragment() {
 		outState.putBoolean("book", bookmarked)
 		outState.putBoolean("ready", ready)
 		Log.i("ChapterView", "Saved:${appendID()}")
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		activity?.unregisterReceiver(reciever)
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -383,6 +394,26 @@ class ChapterView : Fragment() {
 			Log.d("ChapterView", "Load, Data present${appendID()}")
 			setUpReader()
 		}
+
+		val intentFilter = IntentFilter()
+		intentFilter.addAction(BC_CHAPTER_VIEW_THEME_CHANGE)
+		reciever = object : BroadcastReceiver() {
+			override fun onReceive(context: Context?, intent: Intent?) {
+				intent?.let {
+					when (it.action) {
+						BC_CHAPTER_VIEW_THEME_CHANGE -> {
+							textView?.setBackgroundColor(getBackgroundColor())
+							textView?.setTextColor(getTextColor())
+						}
+						else -> {
+							Log.d(logID(), "Unknown action")
+						}
+					}
+				}
+			}
+
+		}
+		activity?.registerReceiver(reciever, intentFilter)
 	}
 
 	private fun dataSet() {
@@ -406,7 +437,6 @@ class ChapterView : Fragment() {
 			ChapterViewLoader(this).execute()
 		}
 	}
-
 
 	fun setUpReader() {
 		//scrollView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)

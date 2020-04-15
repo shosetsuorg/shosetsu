@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions
 
+import android.content.Intent
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts
 
 /*
  * This file is part of shosetsu.
@@ -29,10 +31,12 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
  * @author github.com/doomsdayrs
  */
 
-class ThemeChange(private val chapterReader: ChapterView) : Utilities.DeMarkAction {
+class ThemeChange(private val chapterView: ChapterView) : Utilities.DeMarkAction {
 	override fun action(spared: Int) {
 		Settings.readerTheme = spared
-		chapterReader.setUpReader()
+		val intent = Intent()
+		intent.action = Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
+		chapterView.activity?.sendBroadcast(intent)
 	}
 
 }

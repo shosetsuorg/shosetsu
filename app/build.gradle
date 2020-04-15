@@ -114,9 +114,9 @@ dependencies {
     implementation("org.luaj:luaj-jse:3.0.1")
 
     // Kotlin libraries
-    implementation 'androidx.core:core-ktx:1.3.0-alpha02'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.71"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.71"
+    implementation 'androidx.core:core-ktx:1.3.0-rc01'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
 
     // Async controller

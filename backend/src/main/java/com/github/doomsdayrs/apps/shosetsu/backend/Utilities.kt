@@ -19,8 +19,11 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import org.doomsdayrs.apps.shosetsulib.R
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -74,6 +77,7 @@ object Utilities {
 	const val selectedStrokeWidth = 8
 	var shoDir: String = "/Shosetsu/"
 
+	@Throws(JSONException::class)
 	fun isFormatterDisabled(jsonArray: JSONArray, name: String): Boolean {
 		for (i in 0 until jsonArray.length())
 			if (JSONObject(jsonArray[i].toString()).getString("name") == name)
@@ -197,6 +201,7 @@ object Utilities {
 	 * @param chapterID id
 	 * @return true means added, false means removed
 	 */
+	@Throws(MissingResourceException::class)
 	fun toggleBookmarkChapter(chapterID: Int): Boolean { //TODO Simplify
 		return if (Database.DatabaseChapter.isBookMarked(chapterID)) {
 			Database.DatabaseChapter.setBookMark(chapterID, 0)

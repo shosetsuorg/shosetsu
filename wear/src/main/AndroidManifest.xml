@@ -7,6 +7,7 @@
     <uses-feature android:name="android.hardware.type.watch" />
 
     <application
+        android:fullBackupContent="true"
         android:name="com.github.doomsdayrs.apps.shosetsu.wear.ui.ShosetsuWear"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

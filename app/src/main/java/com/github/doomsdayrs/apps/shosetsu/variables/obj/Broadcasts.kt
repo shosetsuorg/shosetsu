@@ -38,4 +38,6 @@ object Broadcasts {
 
     /** Target is [com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController]*/
     const val BC_RELOAD_CHAPTERS_FROM_DB = "reloadChaptersFromDatabase"
+
+    const val BC_CHAPTER_VIEW_THEME_CHANGE = "changeChapterViewTheme"
 }
