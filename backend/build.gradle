@@ -59,5 +59,13 @@ dependencies {
     // Core libraries
     implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc18'
 
-    implementation "com.github.skydoves:colorpickerview:2.1.6"
+
+    // Room
+    def room_version = "2.2.5"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
 }
