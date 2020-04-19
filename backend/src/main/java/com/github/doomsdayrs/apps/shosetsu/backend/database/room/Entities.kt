@@ -1,10 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.room
 
-import android.content.Context
-import androidx.room.Database
-import androidx.room.Fts4
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.annotation.NonNull
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import java.io.Serializable
 
 /*
  * This file is part of shosetsu.
@@ -26,26 +26,43 @@ import androidx.room.RoomDatabase
 
 /**
  * shosetsu
- * 17 / 04 / 2020
+ * 18 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-@Fts4
-@Database(entities = [FormatterEntity::class, FRepositoryEntity::class], version = 1)
-abstract class ShosetsuRoomDatabase : RoomDatabase() {
-	companion object {
-		private lateinit var databaseShosetsu: ShosetsuRoomDatabase;
+@Entity(
+		tableName = "formatters",
+		foreignKeys = [
+			ForeignKey(
+					entity = FRepositoryEntity::class,
+					parentColumns = ["id"],
+					childColumns = ["repositoryID"],
+					onDelete = ForeignKey.NO_ACTION
+			)
+		]
+)
+data class FormatterEntity(
+		@PrimaryKey
+		var formatterID: Int = -1,
 
-		fun getRoomDatabase(context: Context): ShosetsuRoomDatabase {
-			if (!::databaseShosetsu.isInitialized)
-				synchronized(ShosetsuRoomDatabase::class) {
-					databaseShosetsu = Room.databaseBuilder(context.applicationContext, ShosetsuRoomDatabase::class.java, "room_database").build()
-				}
-			return databaseShosetsu
-		}
-	}
+		var repositoryID: Int = -1,
 
-	abstract fun formatterDa(): FormatterDao
+		@NonNull
+		var name: String = "",
 
-	abstract fun fRepositoryDao(): FRepositoryDao
-}
+		var enabled: Boolean = false,
+
+		var installed: Boolean = false,
+
+		var internal: Boolean = true,
+
+		@NonNull
+		var fileName: String = "") : Serializable
+
+@Entity(tableName = "repositories")
+data class FRepositoryEntity(
+		@PrimaryKey
+		var id: Int = -1,
+		var name: String = "",
+		var url: String = ""
+) : Serializable

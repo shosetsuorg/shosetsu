@@ -48,7 +48,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     // Network
-	implementation('com.squareup.okhttp3:okhttp:4.4.1')
+	implementation('com.squareup.okhttp3:okhttp:4.5.0')
 
 	// LuaJ
 	implementation("org.luaj:luaj-jse:3.0.1")
@@ -65,7 +65,7 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
-
+    annotationProcessor "android.arch.persistence.room:compiler:$room_version"
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
 }

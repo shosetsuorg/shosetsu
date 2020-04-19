@@ -19,6 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.CookieJarSync
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
@@ -63,203 +64,205 @@ import okhttp3.OkHttpClient
  */
 //TODO Inform users to refresh their libraries
 class MainActivity : AppCompatActivity(), Supporter {
-    private lateinit var router: Router
-    private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+	private lateinit var router: Router
+	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+	private lateinit var shosetsuRoomDatabase: ShosetsuRoomDatabase
 
-    /**
-     * Main activity
-     *
-     * @param savedInstanceState savedData from destruction
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        this.requestPerms()
-        super.onCreate(savedInstanceState)
+	/**
+	 * Main activity
+	 *
+	 * @param savedInstanceState savedData from destruction
+	 */
+	override fun onCreate(savedInstanceState: Bundle?) {
+		this.requestPerms()
+		super.onCreate(savedInstanceState)
 
-        // Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079
-        if (!isTaskRoot) {
-            finish()
-            return
-        }
+		// Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079
+		if (!isTaskRoot) {
+			finish()
+			return
+		}
+		//shosetsuRoomDatabase = ShosetsuRoomDatabase.getRoomDatabase(this)
 
-        setContentView(R.layout.activity_main)
+		setContentView(R.layout.activity_main)
 
-        appUpdate()
+		appUpdate()
 
-        //Sets the toolbar
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.todo, R.string.todo)
-
-
-        // Navigation view
-        //nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
-        nav_view.setNavigationItemSelectedListener {
-            val id = it.itemId
-            val currentRoot = router.backstack.firstOrNull()
-            if (currentRoot?.tag()?.toIntOrNull() != id) {
-                Log.d("Nav", "Selected $id")
-                when (id) {
-                    R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
-                    R.id.nav_catalogue -> setRoot(CataloguesController(), R.id.nav_catalogue)
-                    R.id.nav_extensions -> setRoot(ExtensionsController(), R.id.nav_extensions)
-                    R.id.nav_settings -> router.pushController(SettingsController().withFadeTransaction())
-                    R.id.nav_downloads -> router.pushController(DownloadsController().withFadeTransaction())
-                    R.id.nav_updater -> router.pushController(UpdatesController().withFadeTransaction())
-                }
-            }
-            drawer_layout.closeDrawer(GravityCompat.START)
-            return@setNavigationItemSelectedListener true
-        }
-
-        router = Conductor.attachRouter(this, fragment_container, savedInstanceState)
-
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
+		//Sets the toolbar
+		setSupportActionBar(toolbar)
+		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.todo, R.string.todo)
 
 
-        ShosetsuLib.httpClient = OkHttpClient.Builder()
-                .addInterceptor {
-                    val r = it.request()
-                    Log.i("ShosetsuLib",r.url.toUrl().toExternalForm())
-                    return@addInterceptor it.proceed(r)
-                }
-                .cookieJar(CookieJarSync())
-                .build()
+		// Navigation view
+		//nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
+		nav_view.setNavigationItemSelectedListener {
+			val id = it.itemId
+			val currentRoot = router.backstack.firstOrNull()
+			if (currentRoot?.tag()?.toIntOrNull() != id) {
+				Log.d("Nav", "Selected $id")
+				when (id) {
+					R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
+					R.id.nav_catalogue -> setRoot(CataloguesController(), R.id.nav_catalogue)
+					R.id.nav_extensions -> setRoot(ExtensionsController(), R.id.nav_extensions)
+					R.id.nav_settings -> router.pushController(SettingsController().withFadeTransaction())
+					R.id.nav_downloads -> router.pushController(DownloadsController().withFadeTransaction())
+					R.id.nav_updater -> router.pushController(UpdatesController().withFadeTransaction())
+				}
+			}
+			drawer_layout.closeDrawer(GravityCompat.START)
+			return@setNavigationItemSelectedListener true
+		}
 
-        toolbar.setNavigationOnClickListener { if (router.backstackSize == 1) drawer_layout.openDrawer(GravityCompat.START) else onBackPressed() }
+		router = Conductor.attachRouter(this, fragment_container, savedInstanceState)
 
-        router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
-            override fun onChangeStarted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup, handler: ControllerChangeHandler) {
-                syncActivityViewWithController(to, from)
-            }
+		val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
+				R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+		drawer_layout.addDrawerListener(toggle)
+		toggle.syncState()
 
-            override fun onChangeCompleted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup, handler: ControllerChangeHandler) {
-            }
 
-        })
+		ShosetsuLib.httpClient = OkHttpClient.Builder()
+				.addInterceptor {
+					val r = it.request()
+					Log.i("ShosetsuLib", r.url.toUrl().toExternalForm())
+					return@addInterceptor it.proceed(r)
+				}
+				.cookieJar(CookieJarSync())
+				.build()
 
-        syncActivityViewWithController(router.backstack.lastOrNull()?.controller())
-        DownloadService.start(this)
-        when (intent.action) {
-            Intent.ACTION_USER_BACKGROUND -> {
-                Log.i("MainActivity", "Updating novels")
-                init(this)
-                //TODO push to updates
-            }
-            Intent.ACTION_BOOT_COMPLETED -> {
-                Log.i("MainActivity", "Bootup")
-                if (Utilities.isOnline)
-                    init(this)
-            }
-            else -> {
+		toolbar.setNavigationOnClickListener { if (router.backstackSize == 1) drawer_layout.openDrawer(GravityCompat.START) else onBackPressed() }
 
-                if (!router.hasRootController()) {
-                    setSelectedDrawerItem(R.id.nav_library)
-                }
-                //Prevent the frag from changing on rotation
-                /*if (savedInstanceState == null) {
-                    supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, libraryFragment).commit()
-                    nav_view.setCheckedItem(R.id.nav_library)
-                }
-                */
-            }
-        }
-    }
+		router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
+			override fun onChangeStarted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup, handler: ControllerChangeHandler) {
+				syncActivityViewWithController(to, from)
+			}
 
-    /**
-     * When the back button while drawer is open, close it.
-     */
-    override fun onBackPressed() {
-        val backStackSize = router.backstackSize
-        when {
-            drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
+			override fun onChangeCompleted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup, handler: ControllerChangeHandler) {
+			}
 
-            backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null -> setSelectedDrawerItem(R.id.nav_library)
+		})
 
-            backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
-        }
-    }
+		syncActivityViewWithController(router.backstack.lastOrNull()?.controller())
+		DownloadService.start(this)
+		when (intent.action) {
+			Intent.ACTION_USER_BACKGROUND -> {
+				Log.i("MainActivity", "Updating novels")
+				init(this)
+				//TODO push to updates
+			}
+			Intent.ACTION_BOOT_COMPLETED -> {
+				Log.i("MainActivity", "Bootup")
+				if (Utilities.isOnline)
+					init(this)
+			}
+			else -> {
 
-    override fun setTitle(name: String?) {
-        if (supportActionBar != null) supportActionBar!!.title = name
-    }
+				if (!router.hasRootController()) {
+					setSelectedDrawerItem(R.id.nav_library)
+				}
+				//Prevent the frag from changing on rotation
+				/*if (savedInstanceState == null) {
+					supportFragmentManager
+							.beginTransaction()
+							.replace(R.id.fragment_container, libraryFragment).commit()
+					nav_view.setCheckedItem(R.id.nav_library)
+				}
+				*/
+			}
+		}
+	}
 
-    // From tachiyomi
-    private fun setSelectedDrawerItem(id: Int) {
-        if (!isFinishing) {
-            nav_view.setCheckedItem(id)
-            nav_view.menu.performIdentifierAction(id, 0)
-        }
-    }
+	/**
+	 * When the back button while drawer is open, close it.
+	 */
+	override fun onBackPressed() {
+		val backStackSize = router.backstackSize
+		when {
+			drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
 
-    private fun setRoot(controller: Controller, id: Int) {
-        router.setRoot(controller.withFadeTransaction().tag(id.toString()))
-    }
+			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null -> setSelectedDrawerItem(R.id.nav_library)
 
-    private fun appUpdate() {
-        val appUpdater = AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.XML)
-                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
-                .setDisplay(Display.DIALOG)
-                .setTitleOnUpdateAvailable(getString(R.string.app_update_available))
-                .setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
-                .setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
-                .setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
-                .setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
-                .setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
-                .setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
-                .setIcon(R.drawable.ic_system_update_alt_24dp)
-                .setCancelable(true)
-                .showEvery(5)
-        appUpdater.start()
-    }
+			backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
+		}
+	}
 
-    fun transitionView(target: Controller) {
-        router.pushController(target.withFadeTransaction())
-    }
+	override fun setTitle(name: String?) {
+		if (supportActionBar != null) supportActionBar!!.title = name
+	}
 
-    @Suppress("unused")
-    private fun updateUtils() {
-        val appUpdaterUtils = AppUpdaterUtils(this)
-                .setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
-                .withListener(object : UpdateListener {
-                    override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
-                        Log.d("Latest Version", isUpdateAvailable.toString())
-                        Log.d("Latest Version", update.latestVersion)
-                        Log.d("Latest Version", update.latestVersionCode.toString())
-                    }
+	// From tachiyomi
+	private fun setSelectedDrawerItem(id: Int) {
+		if (!isFinishing) {
+			nav_view.setCheckedItem(id)
+			nav_view.menu.performIdentifierAction(id, 0)
+		}
+	}
 
-                    override fun onFailed(error: AppUpdaterError) {
-                        Log.d("AppUpdater Error", "Something went wrong")
-                    }
-                })
-        appUpdaterUtils.start()
-    }
+	private fun setRoot(controller: Controller, id: Int) {
+		router.setRoot(controller.withFadeTransaction().tag(id.toString()))
+	}
 
-    @SuppressLint("ObjectAnimatorBinding")
-    private fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
-        val showHamburger = router.backstackSize == 1
-        if (showHamburger) {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            actionBarDrawerToggle.isDrawerIndicatorEnabled = true
-            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
-        } else {
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            actionBarDrawerToggle.isDrawerIndicatorEnabled = false
-            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
-        }
-        if (from is SecondDrawerController) {
-            second_nav_view.removeAllViews()
-            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, second_nav_view)
-        }
-        if (to is SecondDrawerController) {
-            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, second_nav_view)
-            to.createDrawer(second_nav_view, drawer_layout)
-        }
+	private fun appUpdate() {
+		val appUpdater = AppUpdater(this)
+				.setUpdateFrom(UpdateFrom.XML)
+				.setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+				.setDisplay(Display.DIALOG)
+				.setTitleOnUpdateAvailable(getString(R.string.app_update_available))
+				.setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
+				.setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
+				.setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
+				.setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
+				.setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
+				.setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
+				.setIcon(R.drawable.ic_system_update_alt_24dp)
+				.setCancelable(true)
+				.showEvery(5)
+		appUpdater.start()
+	}
 
-    }
+	fun transitionView(target: Controller) {
+		router.pushController(target.withFadeTransaction())
+	}
+
+	@Suppress("unused")
+	private fun updateUtils() {
+		val appUpdaterUtils = AppUpdaterUtils(this)
+				.setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+				.withListener(object : UpdateListener {
+					override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
+						Log.d("Latest Version", isUpdateAvailable.toString())
+						Log.d("Latest Version", update.latestVersion)
+						Log.d("Latest Version", update.latestVersionCode.toString())
+					}
+
+					override fun onFailed(error: AppUpdaterError) {
+						Log.d("AppUpdater Error", "Something went wrong")
+					}
+				})
+		appUpdaterUtils.start()
+	}
+
+	@SuppressLint("ObjectAnimatorBinding")
+	private fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
+		val showHamburger = router.backstackSize == 1
+		if (showHamburger) {
+			supportActionBar?.setDisplayHomeAsUpEnabled(true)
+			actionBarDrawerToggle.isDrawerIndicatorEnabled = true
+			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
+		} else {
+			supportActionBar?.setDisplayHomeAsUpEnabled(false)
+			actionBarDrawerToggle.isDrawerIndicatorEnabled = false
+			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
+		}
+		if (from is SecondDrawerController) {
+			second_nav_view.removeAllViews()
+			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, second_nav_view)
+		}
+		if (to is SecondDrawerController) {
+			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, second_nav_view)
+			to.createDrawer(second_nav_view, drawer_layout)
+		}
+
+	}
 }
