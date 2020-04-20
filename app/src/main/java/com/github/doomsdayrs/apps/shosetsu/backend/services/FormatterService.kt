@@ -141,7 +141,7 @@ object FormatterService {
 			val libraries: JSONArray = try {
 				sourceJSON.getJSONArray("libraries")
 			} catch (e: Error) {
-				println(sourceJSON.toString(4))
+				Log.w("FormatterService", sourceJSON.toString(4))
 				throw e
 			}
 
@@ -300,7 +300,7 @@ object FormatterService {
 				Log.d(logID(), githubBranch)
 				try {
 					Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$githubBranch/src/main/resources/formatters.json").get()?.let {
-						sourceFile.writeText( it.body().text())
+						sourceFile.writeText(it.body().text())
 					}
 				} catch (e: IOException) {
 					context.toast(e.message ?: "Unknown error")

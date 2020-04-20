@@ -250,7 +250,7 @@ object FormatterUtils {
 			file.parentFile!!.mkdirs()
 		}
 
-		file.writeText(response.body.toString())
+		file.writeBytes(response.body.use { it?.bytes() } ?: ByteArray(0))
 	}
 
 	fun downloadLibrary(
@@ -265,7 +265,12 @@ object FormatterUtils {
 				.url("${repo.url}/src/main/resources/lib/${scriptLibEntity.scriptName}.lua")
 				.build()
 		).execute()
-		file.writeText(response.body.toString())
+
+		if (file.parentFile?.exists() != true) {
+			file.parentFile!!.mkdirs()
+		}
+
+		file.writeBytes(response.body.use { it?.bytes() } ?: ByteArray(0))
 	}
 
 	interface CheckSumAction {
