@@ -147,11 +147,11 @@ class NovelChaptersController : ViewedController() {
      * @param container          container of this fragment
      * @return View
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
         novelFragment = parentController as NovelController?
         novelFragment!!.novelChaptersController = this
         Log.d("NovelFragmentChapters", "Creating")
-        return super.onCreateView(inflater, container)
+        return super.onCreateView(inflater, container, savedViewState)
     }
 
     /**

@@ -52,7 +52,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>>(bundle: Bundle) :
     var recyclerView: RecyclerView? = null
     var adapter: T? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
         val view = onCreateView1(inflater, container)
         recyclerView = view.findViewById(resourceID)!!
         recyclerView!!.layoutManager = LinearLayoutManager(context)

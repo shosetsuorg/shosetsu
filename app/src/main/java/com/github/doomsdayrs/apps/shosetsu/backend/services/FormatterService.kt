@@ -137,7 +137,15 @@ object FormatterService {
 		// Auto Download all source material
 		run {
 			progressUpdate("Checking libraries")
-			val libraries: JSONArray = sourceJSON.getJSONArray("libraries")
+
+			val libraries: JSONArray = try {
+				sourceJSON.getJSONArray("libraries")
+			} catch (e: Error) {
+				println(sourceJSON.toString(4))
+				throw e
+			}
+
+
 			for (index in 0 until libraries.length()) {
 				val libraryJSON: JSONObject = libraries.getJSONObject(index)
 				val name = libraryJSON.getString("name")
