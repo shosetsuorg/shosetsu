@@ -809,7 +809,7 @@ object Database {
 					stringArrayOf(ID, TITLE, RELEASE_DATE, ORDER),
 					"${PARENT_ID}=?",
 					arrayOf("$novelID"),
-					"$ORDER ASC"
+					orderBy = "$ORDER ASC"
 			)
 
 			return if (cursor.count <= 0) {
