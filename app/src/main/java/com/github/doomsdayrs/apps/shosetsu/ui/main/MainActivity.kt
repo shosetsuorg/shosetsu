@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.lib.ShosetsuLib
-import com.bluelinelabs.conductor.Conductor
+import com.bluelinelabs.conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
@@ -111,7 +111,8 @@ class MainActivity : AppCompatActivity(), Supporter {
 			return@setNavigationItemSelectedListener true
 		}
 
-		router = Conductor.attachRouter(this, fragment_container, savedInstanceState)
+        router = attachRouter(fragment_container, savedInstanceState)
+
 
 		val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
 				R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -140,7 +141,7 @@ class MainActivity : AppCompatActivity(), Supporter {
 
 		})
 
-		syncActivityViewWithController(router.backstack.lastOrNull()?.controller())
+		syncActivityViewWithController(router.backstack.lastOrNull()?.controller)
 		DownloadService.start(this)
 		when (intent.action) {
 			Intent.ACTION_USER_BACKGROUND -> {

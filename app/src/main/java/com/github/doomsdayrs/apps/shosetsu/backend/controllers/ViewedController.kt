@@ -79,7 +79,7 @@ abstract class ViewedController(bundle: Bundle = Bundle()) : Controller(bundle) 
         return view
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
         val view = onCreateView1(inflater, container)
         onViewCreated(view)
         return view
