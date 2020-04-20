@@ -1,41 +1,4 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.services
-
-import android.app.Activity
-import android.content.Context
-import android.os.AsyncTask
-import android.util.Log
-import app.shosetsu.lib.LuaFormatter
-import app.shosetsu.lib.ShosetsuLib
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.compareVersions
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.confirm
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.downloadLibrary
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.getContent
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.getMetaData
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.githubBranch
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.libraryDirectory
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.scriptDirectory
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.sourceFolder
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.sourceJSON
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
-import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import org.jsoup.Jsoup
-import org.luaj.vm2.LuaError
-import org.luaj.vm2.lib.jse.JsePlatform
-import java.io.File
-import java.io.IOException
-import java.util.*
-import kotlin.collections.ArrayList
-
 /*
  * This file is part of shosetsu.
  *
@@ -54,6 +17,41 @@ import kotlin.collections.ArrayList
  * ====================================================================
  */
 
+import android.app.Activity
+import android.content.Context
+import android.os.AsyncTask
+import android.util.Log
+import app.shosetsu.lib.LuaFormatter
+import app.shosetsu.lib.ShosetsuLib
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.compareVersions
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.confirm
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.libraryDirectory
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.scriptDirectory
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.sourceFolder
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
+import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import org.jsoup.Jsoup
+import org.luaj.vm2.LuaError
+import org.luaj.vm2.lib.jse.JsePlatform
+import java.io.File
+import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
+
+
 /**
  * shosetsu
  * 04 / 03 / 2020
@@ -61,8 +59,6 @@ import kotlin.collections.ArrayList
  * @author github.com/doomsdayrs
  */
 object FormatterService {
-	lateinit var sourceFilePath: String
-
 	class FormatterInit(val activity: Activity) : AsyncTask<Void, Void, Void>() {
 		private val unknownFormatters = ArrayList<File>()
 
@@ -77,33 +73,40 @@ object FormatterService {
 
 	}
 
-	fun initalizeValues(context: Context) {
-		sourceFilePath = context.filesDir.absolutePath + "/formatters.json"
-	}
 
-	@Throws(JSONException::class)
-	fun loadSourceFile() {
-		sourceJSON = JSONObject(getContent(File(sourceFilePath)))
-	}
-
-	fun downloadSourceFile(sourceFile: File = File(sourceFilePath), progressUpdate: (m: String) -> Unit) {
+	fun updateList(progressUpdate: (m: String) -> Unit) {
 		if (Utilities.isOnline) {
-			var json = "{}"
-			try {
-				val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$githubBranch/src/main/resources/formatters.json").get()
-				if (doc != null) {
-					progressUpdate("Sources downloaded, Writing..")
-					sourceFile.writeText(doc.body().text())
-					progressUpdate("Sources loaded")
+			progressUpdate("Online, Loading repositories")
+			val repos = shosetsuRoomDatabase.repositoryDao()
+					.loadRepositories()
+
+			for (repo in repos) {
+				val name = repo.name
+				val url = repo.url
+				val repoID = repo.id
+
+				progressUpdate("Checking $name")
+				try {
+					val doc = Jsoup.connect(
+							"$url/src/main/resources/formatters.json"
+					).get()
+					val json = JSONObject(doc.body().text())
+					val libJSON = json.getJSONArray("libraries")
+
+					val libEntities = shosetsuRoomDatabase.scriptLibDao()
+							.loadLibByRepoID(repoID)
+
+					val libsNotPresent = ArrayList<ScriptLibEntity>()
+
+
+				} catch (e: IOException) {
+					progressUpdate("Failed to download")
+				} catch (e: JSONException) {
+					Log.e(logID(), "JSON error", e)
 				}
-				sourceJSON = JSONObject(json)
-			} catch (e: IOException) {
-				progressUpdate("Failed to download")
 			}
 		} else {
-			progressUpdate("Application is offline, Using placeholder")
-			Log.e("FormatterInit", "Is Offline, Cannot load data, Using stud")
-			sourceJSON.put("libraries", JSONArray())
+			progressUpdate("Application is offline, Not updating")
 		}
 	}
 
@@ -130,7 +133,7 @@ object FormatterService {
 				} catch (e: IOException) {
 					Log.wtf("Could not even create a new file, Aborting program", e)
 				}
-				downloadSourceFile(sourceFile, progressUpdate)
+				updateList(sourceFile, progressUpdate)
 			}
 		}
 
@@ -159,15 +162,15 @@ object FormatterService {
 					if (compareVersions(meta.getString("version"), libraryJSON.getString("version"))) {
 						progressUpdate("Library $name update found, updating...")
 						Log.i("FormatterInit", "Installing library:\t$name")
-						if (Utilities.isOnline)
-							downloadLibrary(name, libraryFile)
-						else progressUpdate("Is offline, Cannot update")
+						if (Utilities.isOnline) {
+							TODO("download")
+						} else progressUpdate("Is offline, Cannot update")
 					}
 				} else {
 					progressUpdate("Library $name not found, installing...")
-					if (Utilities.isOnline)
-						downloadLibrary(name, libraryFile)
-					else progressUpdate("Is offline, Cannot install")
+					if (Utilities.isOnline) {
+						TODO("download")
+					} else progressUpdate("Is offline, Cannot install")
 				}
 
 				progressUpdate("Moving on..")
@@ -297,7 +300,6 @@ object FormatterService {
 		override fun doInBackground(vararg params: Void?): Void? {
 			val sourceFile = File(context.filesDir.absolutePath + "/formatters.json")
 			if (Utilities.isOnline) {
-				Log.d(logID(), githubBranch)
 				try {
 					Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$githubBranch/src/main/resources/formatters.json").get()?.let {
 						sourceFile.writeText(it.body().text())

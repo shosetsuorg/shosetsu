@@ -67,6 +67,20 @@ object Formatters {
 
 	val formatters = ArrayList<Formatter>()
 
+	fun removeByID(formatterID: Int) {
+		formatters.forEachIndexed { index, formatter ->
+			if (formatter.formatterID == formatterID) {
+				formatters.removeAt(index)
+				return
+			}
+		}
+	}
+
+	fun addFormatter(formatter: Formatter) {
+		formatters.add(formatter)
+		formatters.sortBy { it.name }
+	}
+
 	fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
 
 	fun getAsCards(): ArrayList<FormatterCard> {

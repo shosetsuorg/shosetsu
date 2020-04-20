@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter
 
-import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -42,10 +41,15 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : RecyclerView.Adapter<ExtensionHolder>() {
+class ExtensionsAdapter(private val extensionsFragment: ExtensionsController)
+	: RecyclerView.Adapter<ExtensionHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExtensionHolder {
-		return ExtensionHolder(LayoutInflater.from(parent.context).inflate(R.layout.extension_card, parent, false))
+		return ExtensionHolder(LayoutInflater.from(parent.context).inflate(
+				R.layout.extension_card,
+				parent,
+				false
+		))
 	}
 
 	override fun getItemCount(): Int {
@@ -64,7 +68,10 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
 			val luaFormatter: LuaFormatter = (Formatters.getByID(id) as LuaFormatter)
 			val meta = luaFormatter.getMetaData()!!
 			holder.version.text = meta.getString("version")
-			if (FormatterUtils.compareVersions(jsonObject.getString("version"), meta.getString("version"))) {
+			if (FormatterUtils.compareVersions(
+							jsonObject.getString("version"),
+							meta.getString("version")
+					)) {
 				Log.i(logID(), "$id has an update")
 				holder.update = true
 				// holder.button.setImageResource(R.drawable.ic_update_black_24dp)
@@ -86,41 +93,13 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController) : 
 		holder.button.setOnClickListener {
 			try {
 				if (!holder.installed || holder.update) {
-					FormatterUtils.downloadScript(
-							jsonObject.getString("name"),
-							jsonObject.getString("lang"),
-							extensionsFragment.activity!!,
-							{
-								holder.button.text = holder.itemView.context.getString(R.string.uninstall)
-								//holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
-								holder.installed = true
-							},
-							{ formatter ->
-								if (holder.update) {
-									holder.update = false
-									if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-										Formatters.formatters.removeIf { (it as LuaFormatter).formatterID == it.formatterID }
-									} else {
-										Formatters.formatters.remove(Formatters.getByID(formatter.formatterID))
-									}
-								}
-							},
-							{
-								extensionsFragment.activity?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
-							}
-					)
+					TODO("Download func")
 				} else {
-					FormatterUtils.deleteScript(jsonObject.getString("name"), id,
-							{ holder.button.text = holder.itemView.context.getString(R.string.download) },
-							{
-								extensionsFragment.activity?.applicationContext?.toast("Script deleted")
-								extensionsFragment.activity?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter?.notifyDataSetChanged()
-							}
-					) { holder.installed = false }
+					TODO("Delete func")
 				}
 			} catch (e: Exception) {
-                it.context.toast("Holy shit what happened")
-                Log.e(logID(),"Unhandled exception",e)
+				it.context.toast("Holy shit what happened")
+				Log.e(logID(), "Unhandled exception", e)
 			}
 
 		}

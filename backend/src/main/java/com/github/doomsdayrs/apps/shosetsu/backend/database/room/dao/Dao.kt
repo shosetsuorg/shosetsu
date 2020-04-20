@@ -1,9 +1,14 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.database.room
+package com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao
 
 import androidx.room.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.CountIDTuple
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.FormatterEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.RepositoryEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import org.doomsdayrs.apps.shosetsulib.BuildConfig
 
 /*
  * This file is part of shosetsu.
@@ -62,11 +67,13 @@ interface FormatterDao {
 interface ScriptLibDao {
 	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ScriptLibEntity::class)
 	fun insertScriptLib(scriptLibEntity: ScriptLibEntity)
+
+	@Query("SELECT * FROM script_libraries WHERE repositoryID=:repositoryID")
+	fun loadLibByRepoID(repositoryID: Int): Array<ScriptLibEntity>
 }
 
 @Dao
 interface FRepositoryDao {
-
 	@Insert(onConflict = OnConflictStrategy.ABORT, entity = RepositoryEntity::class)
 	fun insertRepository(repositoryEntity: RepositoryEntity): Long
 
@@ -86,6 +93,9 @@ interface FRepositoryDao {
 	@Query("SELECT * FROM repositories WHERE id=:repositoryID LIMIT 1")
 	fun loadRepositoryFromID(repositoryID: Int): RepositoryEntity
 
+	@Query("SELECT * FROM repositories ORDER BY id ASC")
+	fun loadRepositories(): Array<RepositoryEntity>
+
 	@Query("SELECT COUNT(*) FROM repositories WHERE url=:url")
 	fun countFromURL(url: String): Int
 
@@ -95,6 +105,16 @@ interface FRepositoryDao {
 	@Ignore
 	fun doesRepositoryExist(url: String): Boolean = countFromURL(url) > 0
 
+	@Transaction
+	fun initalizeData() {
+		val branch = if (BuildConfig.DEBUG) "v1.0.0-rewrite" else "master"
+		val name = if (BuildConfig.DEBUG) "dev" else "master"
+		val repo = RepositoryEntity(
+				url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",
+				name = name
+		)
+		createIfNotExist(repo)
+	}
 
 	@Transaction
 	fun createIfNotExist(repositoryEntity: RepositoryEntity): Int {

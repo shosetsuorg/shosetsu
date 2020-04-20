@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.database.room
+package com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities
 
 import android.content.Context
+import android.database.SQLException
 import androidx.annotation.NonNull
 import androidx.room.*
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
@@ -55,48 +56,64 @@ data class FormatterEntity(
 
 		@NonNull
 		var name: String = "",
+
 		@NonNull
 		val fileName: String = "",
+
+		var imageURL: String? = null,
+
+		var lang: String = "",
 
 		var enabled: Boolean = false,
 
 		var installed: Boolean = false,
 
-		var internal: Boolean = true,
+		var installedVersion: String? = null,
 
-		/**
-		 * if [internal] = false, this is the MD5 to be checked against
-		 */
+		var repositoryVersion: String = "0.0.0",
+
 		var md5: String = ""
 
 ) : Serializable {
+
 	@Ignore
-	fun delete(context: Context) {
-		FormatterUtils.deleteScript(this, context)
+	fun install(context: Context) {
+
 	}
+
+	@Ignore
+	@Throws(SQLException::class)
+	fun delete(context: Context) =
+			FormatterUtils.deleteScript(this, context)
 }
 
 /**
  * This class represents a library that is installed in system
  */
-@Entity(tableName = "script_libraries")
+@Entity(tableName = "script_libraries",
+		foreignKeys = [
+			ForeignKey(
+					entity = RepositoryEntity::class,
+					parentColumns = ["id"],
+					childColumns = ["repositoryID"],
+					onDelete = ForeignKey.CASCADE
+			)
+		],
+		indices = [Index("repositoryID")])
 data class ScriptLibEntity(
 		@PrimaryKey
-		val scriptName: String = "",
-		var version: String = ""
-) : Serializable {
-	@Embedded
-	@NonNull
-	lateinit var repository: RepositoryEntity
-}
+		val scriptName: String,
+		var version: String,
+		var repositoryID: Int
+) : Serializable
 
 @Entity(tableName = "repositories")
 data class RepositoryEntity(
-		var url: String = "",
-		var name: String = ""
+		var url: String,
+		var name: String
 ) : Serializable {
 	@PrimaryKey(autoGenerate = true)
-	var id: Int = -1
+	var id: Int = 0
 }
 
 data class CountIDTuple(

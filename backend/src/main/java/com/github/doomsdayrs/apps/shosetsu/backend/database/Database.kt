@@ -3,12 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database
 import android.content.ContentValues
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
-import android.os.Environment
 import android.util.Log
-import app.shosetsu.lib.LuaFormatter
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Novel.Chapter
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID
@@ -24,7 +21,6 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import org.joda.time.DateTime
 import org.joda.time.Days
-import java.io.File
 import java.util.*
 
 /*
@@ -1376,141 +1372,5 @@ object Database {
 			}
 		}
 		*/
-	}
-
-	object DatabaseFormatters {
-		@Throws(SQLException::class)
-		@Deprecated("Moving functions")
-		fun addToFormatterList(name: String?, id: Int, md5: String, hasRepo: Boolean, repo: String) {
-			val v = ContentValues()
-			v.put(FORMATTER_NAME, name.checkStringSerialize())
-			v.put(FORMATTER_ID, id)
-			v.put(MD5, md5)
-			v.put(HAS_CUSTOM_REPO, hasRepo.toInt())
-			v.put(CUSTOM_REPO, repo)
-			getDatabase().insert(FORMATTERS, v)
-		}
-
-		@Deprecated("Moving functions")
-		@Throws(SQLException::class)
-		fun removeFormatterFromList(name: String?) {
-			getDatabase().delete(
-					FORMATTERS,
-					"$FORMATTER_NAME=?",
-					arrayOf(name.checkStringSerialize())
-			)
-		}
-
-		@Deprecated("Moving functions")
-		@Throws(SQLException::class)
-		fun removeFormatterFromList(id: Int) {
-			getDatabase().delete(
-					FORMATTERS,
-					"$FORMATTER_ID=?",
-					arrayOf("$id")
-			)
-		}
-
-		@Deprecated("Moving functions")
-		@Throws(MissingResourceException::class)
-		fun getMD5Sum(formatterID: Int): String {
-			val cursor = getDatabase().query(
-					FORMATTERS,
-					stringArrayOf(MD5),
-					"${FORMATTER_ID}=?",
-					arrayOf("$formatterID"))
-			return if (cursor.count <= 0) {
-				cursor.close()
-				""
-			} else {
-				cursor.moveToNext()
-				val string = cursor.getString(MD5)
-				cursor.close()
-				string
-			}
-		}
-
-		@Deprecated("Moving functions")
-		@Throws(MissingResourceException::class)
-		fun getFormatterName(formatterID: Int): String {
-			val cursor = getDatabase().query(
-					FORMATTERS,
-					stringArrayOf(FORMATTER_NAME),
-					"${FORMATTER_ID}=?",
-					arrayOf("$formatterID"))
-			return if (cursor.count <= 0) {
-				cursor.close()
-				""
-			} else {
-				cursor.moveToNext()
-				val string = cursor.getString(FORMATTER_NAME)
-				cursor.close()
-				string.checkStringDeserialize()
-			}
-		}
-
-		@Deprecated("Moving functions")
-		@Throws(MissingResourceException::class)
-		fun hasCustomRepo(formatterID: Int): Boolean {
-			val cursor = getDatabase().query(
-					FORMATTERS,
-					stringArrayOf(HAS_CUSTOM_REPO),
-					"${FORMATTER_ID}=?",
-					arrayOf("$formatterID")
-			)
-			return if (cursor.count <= 0) {
-				cursor.close()
-				false
-			} else {
-				cursor.moveToNext()
-				val i = cursor.getInt(HAS_CUSTOM_REPO)
-				cursor.close()
-				i == 1
-			}
-		}
-
-		@Deprecated("Moving functions")
-		@Throws(MissingResourceException::class)
-		fun getCustomRepo(formatterID: Int): String {
-			val cursor = getDatabase().query(
-					FORMATTERS,
-					stringArrayOf(CUSTOM_REPO),
-					"${FORMATTER_ID}=?",
-					arrayOf("$formatterID")
-			)
-
-			return if (cursor.count <= 0) {
-				cursor.close()
-				""
-			} else {
-				cursor.moveToNext()
-				val string = cursor.getString(CUSTOM_REPO)
-				cursor.close()
-				string
-			}
-		}
-
-		@Deprecated("Moving functions")
-		@Throws(MissingResourceException::class)
-		fun getFormatterFromSystem(formatterID: Int): LuaFormatter? {
-			val cursor = getDatabase().query(
-					FORMATTERS,
-					stringArrayOf(FORMATTER_NAME),
-					"$FORMATTER_ID=?",
-					arrayOf("$formatterID")
-			)
-			return if (cursor.count <= 0) {
-				cursor.close()
-				null
-			} else {
-				cursor.moveToNext()
-				val string = cursor.getString(FORMATTER_NAME)
-				cursor.close()
-				LuaFormatter(
-						File(Environment.getExternalStorageState() +
-								FormatterUtils.scriptDirectory + FormatterUtils.sourceFolder +
-								string + ".lua"))
-			}
-		}
 	}
 }

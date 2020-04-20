@@ -111,6 +111,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		if (!Database.isInit()) {
 			Database.sqLiteDatabase = DBHelper(this).writableDatabase
 			Database.shosetsuRoomDatabase = ShosetsuRoomDatabase.getRoomDatabase(this)
+			Database.shosetsuRoomDatabase.repositoryDao().initalizeData()
 		}
 
 		// Settings setup

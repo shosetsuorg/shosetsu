@@ -1,10 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.util.Base64
+import android.util.Log
 import app.shosetsu.lib.Novel
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 
 /*
  * This file is part of shosetsu.
@@ -129,4 +132,24 @@ fun String.convertStringToArray(): Array<String> {
         a[x] = a[x].replace(">,<", ",")
     }
     return a
+}
+
+/**
+ * Makes an MD5 of the string
+ */
+fun String.md5(): String? {
+    try {
+        // Create MD5 Hash
+        val digest = MessageDigest.getInstance("MD5")
+        digest.update(toByteArray())
+        val messageDigest = digest.digest()
+        // Create Hex String
+        val hexString = StringBuffer()
+        for (i in messageDigest.indices)
+            hexString.append(Integer.toHexString(0xFF and messageDigest[i].toInt()))
+        return hexString.toString()
+    } catch (e: NoSuchAlgorithmException) {
+        Log.wtf(logID(), "How could an MD5 alg be missing", e)
+    }
+    return ""
 }

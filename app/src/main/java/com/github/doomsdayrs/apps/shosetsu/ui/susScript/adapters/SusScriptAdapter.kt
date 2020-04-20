@@ -12,6 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.viewHolders.SusScriptCard
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.md5
 
 /*
  * This file is part of shosetsu.
@@ -39,51 +40,51 @@ import com.github.doomsdayrs.apps.shosetsu.ui.susScript.viewHolders.SusScriptCar
  */
 class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerView.Adapter<SusScriptCard>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SusScriptCard {
-        return SusScriptCard(LayoutInflater.from(parent.context).inflate(R.layout.alert_extensions_handle_card, parent, false))
-    }
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SusScriptCard {
+		return SusScriptCard(LayoutInflater.from(parent.context).inflate(R.layout.alert_extensions_handle_card, parent, false))
+	}
 
-    override fun getItemCount(): Int {
-        return susScriptDialog.files.size
-    }
+	override fun getItemCount(): Int {
+		return susScriptDialog.files.size
+	}
 
-    override fun onBindViewHolder(holder: SusScriptCard, position: Int) {
-        val fileObj = susScriptDialog.files[position]
-        val file = fileObj.file
+	override fun onBindViewHolder(holder: SusScriptCard, position: Int) {
+		val fileObj = susScriptDialog.files[position]
+		val file = fileObj.file
 
-        val json = FormatterUtils.getMetaData(file) ?: kotlin.run {
-            Log.e("SusScriptAdapter", "Deleting file, Malformed URL")
-            susScriptDialog.files.removeAt(position)
-            this.notifyDataSetChanged()
-            return
-        }
+		val json = FormatterUtils.getMetaData(file) ?: kotlin.run {
+			Log.e("SusScriptAdapter", "Deleting file, Malformed URL")
+			susScriptDialog.files.removeAt(position)
+			this.notifyDataSetChanged()
+			return
+		}
 
-        holder.spinner.adapter = ArrayAdapter(holder.itemView.context!!, android.R.layout.simple_spinner_item, holder.itemView.resources.getStringArray(R.array.sus_array_actions))
-        holder.spinner.setSelection(3)
+		holder.spinner.adapter = ArrayAdapter(holder.itemView.context!!, android.R.layout.simple_spinner_item, holder.itemView.resources.getStringArray(R.array.sus_array_actions))
+		holder.spinner.setSelection(3)
 
-        holder.spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+		holder.spinner.onItemSelectedListener = object : OnItemSelectedListener {
+			override fun onNothingSelected(parent: AdapterView<*>?) {
+			}
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                fileObj.action = position
-            }
-        }
+			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+				fileObj.action = position
+			}
+		}
 
-        val string = file.nameWithoutExtension
-        holder.title1.text = string
-        holder.version1.text = json.getString("version")
-        holder.hash1.text = FormatterUtils.md5(FormatterUtils.getContent(file)) ?: ""
+		val string = file.nameWithoutExtension
+		holder.title1.text = string
+		holder.version1.text = json.getString("version")
+		holder.hash1.text = file.readText().md5() ?: ""
 
-        if (FormatterUtils.sourceJSON.has(file.nameWithoutExtension)) {
-            holder.title2.visibility = View.VISIBLE
-            holder.version2.visibility = View.VISIBLE
-            holder.hash2.visibility = View.VISIBLE
+		if (FormatterUtils.sourceJSON.has(file.nameWithoutExtension)) {
+			holder.title2.visibility = View.VISIBLE
+			holder.version2.visibility = View.VISIBLE
+			holder.hash2.visibility = View.VISIBLE
 
-            val realJSON = FormatterUtils.sourceJSON.getJSONObject(file.nameWithoutExtension)
-            holder.title2.text = file.nameWithoutExtension
-            holder.version2.text = realJSON.getString("version")
-            holder.hash2.text = realJSON.getString("md5")
-        }
-    }
+			val realJSON = FormatterUtils.sourceJSON.getJSONObject(file.nameWithoutExtension)
+			holder.title2.text = file.nameWithoutExtension
+			holder.version2.text = realJSON.getString("version")
+			holder.hash2.text = realJSON.getString("md5")
+		}
+	}
 }
