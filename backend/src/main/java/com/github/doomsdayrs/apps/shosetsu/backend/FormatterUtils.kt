@@ -245,6 +245,11 @@ object FormatterUtils {
 						.url("$githubURL$githubBranch/src/main/resources/lib/$name.lua")
 						.build()
 		).execute()
+
+		if (file.parentFile?.exists() != true) {
+			file.parentFile!!.mkdirs()
+		}
+
 		file.writeText(response.body.toString())
 	}
 
