@@ -70,18 +70,18 @@ class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerV
             }
         }
 
-        val string = file.name.substring(0, file.name.length - 4)
+        val string = file.nameWithoutExtension
         holder.title1.text = string
         holder.version1.text = json.getString("version")
         holder.hash1.text = FormatterUtils.md5(FormatterUtils.getContent(file)) ?: ""
 
-        if (FormatterUtils.sourceJSON.has(file.name.substring(0, file.name.length - 4))) {
+        if (FormatterUtils.sourceJSON.has(file.nameWithoutExtension)) {
             holder.title2.visibility = View.VISIBLE
             holder.version2.visibility = View.VISIBLE
             holder.hash2.visibility = View.VISIBLE
 
-            val realJSON = FormatterUtils.sourceJSON.getJSONObject(file.name.substring(0, file.name.length - 4))
-            holder.title2.text = file.name.substring(0, file.name.length - 4)
+            val realJSON = FormatterUtils.sourceJSON.getJSONObject(file.nameWithoutExtension)
+            holder.title2.text = file.nameWithoutExtension
             holder.version2.text = realJSON.getString("version")
             holder.hash2.text = realJSON.getString("md5")
         }

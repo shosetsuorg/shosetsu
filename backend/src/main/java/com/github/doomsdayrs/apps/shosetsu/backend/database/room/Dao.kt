@@ -51,10 +51,56 @@ interface FormatterDao {
 	fun loadFormattersOnFlowDistinctly() =
 			loadFormattersOnFlow().distinctUntilChanged()
 
-	@Query("SELECT * FROM formatters WHERE formatterID=:id")
-	fun loadFormatter(id: Int)
+	@Query("SELECT * FROM formatters WHERE formatterID = :formatterID LIMIT 1")
+	fun loadFormatter(formatterID: Int): FormatterEntity
+
+	@Query("SELECT md5 FROM formatters WHERE formatterID=:formatterID LIMIT 1")
+	fun loadFormatterMD5(formatterID: Int): String
+}
+
+@Dao
+interface ScriptLibDao {
+	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ScriptLibEntity::class)
+	fun insertScriptLib(scriptLibEntity: ScriptLibEntity)
 }
 
 @Dao
 interface FRepositoryDao {
+
+	@Insert(onConflict = OnConflictStrategy.ABORT, entity = RepositoryEntity::class)
+	fun insertRepository(repositoryEntity: RepositoryEntity): Long
+
+	@Transaction
+	fun insertRepositoryAndReturn(repositoryEntity: RepositoryEntity): RepositoryEntity =
+			loadRepositoryFromROWID(insertRepository(repositoryEntity))
+
+	/**
+	 * Run only if you know for sure the data exists
+	 */
+	@Query("SELECT * FROM repositories WHERE url=:url LIMIT 1")
+	fun loadRepositoryFromURL(url: String): RepositoryEntity
+
+	@Query("SELECT * FROM repositories WHERE rowid=:rowID LIMIT 1")
+	fun loadRepositoryFromROWID(rowID: Long): RepositoryEntity
+
+	@Query("SELECT * FROM repositories WHERE id=:repositoryID LIMIT 1")
+	fun loadRepositoryFromID(repositoryID: Int): RepositoryEntity
+
+	@Query("SELECT COUNT(*) FROM repositories WHERE url=:url")
+	fun countFromURL(url: String): Int
+
+	@Query("SELECT COUNT(*),id FROM repositories WHERE url=:url LIMIT 1")
+	fun countAndROWIDFromURL(url: String): CountIDTuple
+
+	@Ignore
+	fun doesRepositoryExist(url: String): Boolean = countFromURL(url) > 0
+
+
+	@Transaction
+	fun createIfNotExist(repositoryEntity: RepositoryEntity): Int {
+		val tuple = countAndROWIDFromURL(repositoryEntity.url)
+		if (tuple.count == 0)
+			return insertRepositoryAndReturn(repositoryEntity).id
+		return tuple.id
+	}
 }

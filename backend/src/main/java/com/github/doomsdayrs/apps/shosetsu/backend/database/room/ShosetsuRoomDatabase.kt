@@ -31,7 +31,7 @@ import androidx.room.RoomDatabase
  * @author github.com/doomsdayrs
  */
 @Fts4
-@Database(entities = [FormatterEntity::class, FRepositoryEntity::class], version = 1)
+@Database(entities = [FormatterEntity::class, RepositoryEntity::class], version = 1)
 abstract class ShosetsuRoomDatabase : RoomDatabase() {
 	companion object {
 		private lateinit var databaseShosetsu: ShosetsuRoomDatabase;
@@ -45,7 +45,7 @@ abstract class ShosetsuRoomDatabase : RoomDatabase() {
 		}
 	}
 
-	abstract fun formatterDa(): FormatterDao
+	abstract fun formatterDao(): FormatterDao
 
-	abstract fun fRepositoryDao(): FRepositoryDao
+	abstract fun repositoryDao(): FRepositoryDao
 }

@@ -12,6 +12,10 @@ import android.os.Environment
 import android.util.Log
 import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.FormatterEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.RepositoryEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ScriptLibEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
@@ -94,10 +98,8 @@ object FormatterUtils {
 		return builder.toString()
 	}
 
-
-	private fun splitVersion(version: String): Array<String> {
-		return version.split(".").toTypedArray()
-	}
+	private fun splitVersion(version: String): Array<String> =
+			version.split(".").toTypedArray()
 
 	/**
 	 * @return [Boolean] true if version difference
@@ -105,11 +107,15 @@ object FormatterUtils {
 	fun compareVersions(ver1: String, ver2: String): Boolean {
 		if (ver1 == ver2)
 			return false
+
 		val version1 = splitVersion(ver1)
 		val version2 = splitVersion(ver2)
 
-		for (i in 0..2) {
-			if (version1[i] != version2[i])
+		if (version1.size != version2.size)
+			return false
+
+		version1.forEachIndexed { index, s ->
+			if (version2[index] != s)
 				return true
 		}
 		return false
@@ -169,6 +175,7 @@ object FormatterUtils {
 	}
 
 	@Throws(SQLException::class)
+	@Deprecated("Uses inefficent old method")
 	fun deleteScript(name: String, id: Int, pre: () -> Unit, whenFound: () -> Unit, complete: () -> Unit) {
 		pre()
 		var b = true
@@ -187,36 +194,74 @@ object FormatterUtils {
 		Database.DatabaseFormatters.removeFormatterFromList(id)
 	}
 
+	fun deleteScript(formatterEntity: FormatterEntity, context: Context) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			Formatters.formatters.removeIf { it.formatterID == formatterEntity.formatterID }
+		} else {
+			Formatters.formatters.forEachIndexed loop@{ index, formatter ->
+				if (formatter.formatterID == formatterEntity.formatterID) {
+					Formatters.formatters.removeAt(index)
+					return@loop
+				}
+			}
+			File(context.filesDir.absolutePath + sourceFolder +
+					scriptDirectory + "/${formatterEntity.fileName}.lua"
+			).takeIf { it.exists() }?.delete()
+		}
+
+	}
+
+
 	@Throws(FileNotFoundException::class, JSONException::class, SQLException::class)
 	fun trustScript(file: File) {
-		val name = file.name.substring(0, file.name.length - 4)
+		val name = file.nameWithoutExtension
 		val meta = LuaFormatter(file).getMetaData()!!
 		val md5 = md5(getContent(file))!!
 		val id = meta.getInt("id")
-		val repo = meta.getString("repo")
-		Database.DatabaseFormatters.addToFormatterList(name, id, md5, repo.isNotEmpty(), repo)
+		val repo = meta.getJSONObject("repo")
+
+		shosetsuRoomDatabase.formatterDao().insertFormatter(
+				FormatterEntity(
+						formatterID = id,
+						repositoryID = shosetsuRoomDatabase.repositoryDao()
+								.createIfNotExist(RepositoryEntity(
+										url = repo.getString("URL"),
+										name = repo.getString("name")
+								)),
+						fileName = file.name,
+						installed = true,
+						internal = false,
+						name = name,
+						enabled = true
+				)
+		)
 	}
 
 	@Throws(IOException::class)
-	fun writeFile(string: String, file: File) {
-		if (!file.parentFile!!.exists())
-			file.parentFile!!.mkdirs()
-		val out = FileOutputStream(file)
-		val writer = OutputStreamWriter(out)
-		writer.write(string)
-		writer.close()
-		out.flush()
-		out.close()
-	}
-
-	@Throws(IOException::class)
+	@Deprecated("Uses old database standard")
 	fun downloadLibrary(name: String, file: File) {
-		val client = OkHttpClient()
-		val request = Request.Builder().url("$githubURL$githubBranch/src/main/resources/lib/$name.lua").build()
-		val response = client.newCall(request).execute()
-		writeFile(response.body!!.string(), file)
+		val response = OkHttpClient().newCall(
+				Request.Builder()
+						.url("$githubURL$githubBranch/src/main/resources/lib/$name.lua")
+						.build()
+		).execute()
+		file.writeText(response.body.toString())
 	}
 
+	fun downloadLibrary(
+			scriptLibEntity: ScriptLibEntity,
+			context: Context,
+			file: File = File(
+					context.filesDir.absolutePath + sourceFolder +
+							libraryDirectory + scriptLibEntity.version
+			)) {
+		val repo = scriptLibEntity.repository
+		val response = OkHttpClient().newCall(Request.Builder()
+				.url("${repo.url}/src/main/resources/lib/${scriptLibEntity.scriptName}.lua")
+				.build()
+		).execute()
+		file.writeText(response.body.toString())
+	}
 
 	interface CheckSumAction {
 		fun fail()
@@ -232,9 +277,11 @@ object FormatterUtils {
 		val meta = getMetaData(file)
 		return if (meta != null) {
 			// Checks MD5 sum
-			var sum = Database.DatabaseFormatters.getMD5Sum(meta.getInt("id"))
+			var sum = shosetsuRoomDatabase.formatterDao()
+					.loadFormatterMD5(meta.getInt("id"))
 			if (sum.isEmpty()) {
-				sum = sourceJSON.getJSONObject(file.name.substring(0, file.name.length - 4)).getString("md5")
+				sum = sourceJSON.getJSONObject(file.nameWithoutExtension)
+						.getString("md5")
 			}
 			val content = getContent(file)
 			val fileSum = md5(content)

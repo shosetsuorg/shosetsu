@@ -7,7 +7,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        applicationId "com.github.doomsdayrs.apps.shosetsu.car"
+        applicationId "app.shosetsu.car"
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1

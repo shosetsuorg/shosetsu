@@ -14,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
 import com.github.doomsdayrs.apps.shosetsu.variables.IncorrectDateException
 import com.github.doomsdayrs.apps.shosetsu.variables.Update
@@ -55,7 +56,7 @@ object Database {
 	 * SQLITEDatabase
 	 */
 	lateinit var sqLiteDatabase: SQLiteDatabase
-
+	lateinit var shosetsuRoomDatabase: ShosetsuRoomDatabase
 	fun isInit(): Boolean {
 		return this::sqLiteDatabase.isInitialized
 	}
@@ -140,13 +141,13 @@ object Database {
 		fun hasChapter(chapterURL: String): Boolean {
 			val cursor = getDatabase().query(
 					CHAPTER_IDENTIFICATION,
-					stringArrayOf(COUNT),
+					arrayOf(),
 					"$URL=?",
 					arrayOf(chapterURL)
 			)
-			val a = cursor.getInt(COUNT)
+			val count = cursor.count
 			cursor.close()
-			return a > 0
+			return count > 0
 		}
 
 		@Throws(MissingResourceException::class)
@@ -218,7 +219,12 @@ object Database {
 		 */
 		@Throws(MissingResourceException::class)
 		fun getChapterURLFromChapterID(id: Int): String {
-			val cursor = getDatabase().query(CHAPTER_IDENTIFICATION, stringArrayOf(URL), "$ID=?", arrayOf("$id"))
+			val cursor = getDatabase().query(
+					CHAPTER_IDENTIFICATION,
+					stringArrayOf(URL),
+					"$ID=?",
+					arrayOf("$id")
+			)
 			return if (cursor.count <= 0) {
 				cursor.close()
 				""
@@ -236,7 +242,12 @@ object Database {
 		 */
 		@Throws(MissingResourceException::class)
 		fun getNovelIDFromChapterID(id: Int): Int {
-			val cursor = getDatabase().query(CHAPTER_IDENTIFICATION, stringArrayOf(PARENT_ID), "$ID=?", arrayOf("$id"))
+			val cursor = getDatabase().query(
+					CHAPTER_IDENTIFICATION,
+					stringArrayOf(PARENT_ID),
+					"$ID=?",
+					arrayOf("$id")
+			)
 
 			return if (cursor.count <= 0) {
 				cursor.close()
@@ -439,8 +450,13 @@ object Database {
 		 */
 		@Throws(MissingResourceException::class)
 		fun inDownloads(downloadItem: DownloadItem): Boolean {
-			val cursor = getDatabase().query(DOWNLOADS, stringArrayOf(COUNT), "${PARENT_ID}=?", arrayOf("${getChapterIDFromChapterURL(downloadItem.chapterURL)}"))
-			val a = cursor.getInt(COUNT)
+			val cursor = getDatabase().query(
+					DOWNLOADS,
+					arrayOf(),
+					"${PARENT_ID}=?",
+					arrayOf("${getChapterIDFromChapterURL(downloadItem.chapterURL)}")
+			)
+			val a = cursor.count
 			cursor.close()
 			return a > 0
 		}
@@ -451,8 +467,8 @@ object Database {
 		val downloadCount: Int
 			@Throws(MissingResourceException::class)
 			get() {
-				val cursor = getDatabase().query(DOWNLOADS, stringArrayOf(COUNT))
-				val a = cursor.getInt(COUNT)
+				val cursor = getDatabase().query(DOWNLOADS, arrayOf())
+				val a = cursor.count
 				cursor.close()
 				return a
 			}
@@ -497,11 +513,12 @@ object Database {
 		fun getCountOfChaptersUnread(novelID: Int): Int {
 			val cursor = getDatabase().query(
 					CHAPTERS,
-					stringArrayOf(COUNT),
-					"$PARENT_ID=? AND $READ_CHAPTER!=?",
+					arrayOf(),
+					"$PARENT_ID =? AND $READ_CHAPTER !=?",
 					arrayOf("$novelID", "${Status.READ}")
 			)
-			val count = cursor.getInt(COUNT)
+
+			val count = cursor.count
 			cursor.close()
 			return count
 		}
@@ -730,11 +747,11 @@ object Database {
 		fun isNotInChapters(chapterURL: String): Boolean {
 			val cursor = getDatabase().query(
 					CHAPTERS,
-					stringArrayOf(COUNT),
+					arrayOf(),
 					"$ID=?",
 					arrayOf("${getChapterIDFromChapterURL(chapterURL)}")
 			)
-			val a = cursor.getInt(COUNT)
+			val a = cursor.count
 			cursor.close()
 			return a <= 0
 		}
@@ -888,12 +905,16 @@ object Database {
 		@Throws(SQLException::class)
 
 		fun unBookmark(novelID: Int) {
-			getDatabase().execSQL("update " + NOVELS + " set " + BOOKMARKED + "=0 WHERE " + PARENT_ID + "=" + novelID)
+			getDatabase().execSQL("update $NOVELS set $BOOKMARKED=0 WHERE $PARENT_ID=$novelID")
 		}
 
 		@Throws(MissingResourceException::class)
 		fun isBookmarked(novelID: Int): Boolean {
-			val cursor = getDatabase().rawQuery("SELECT $BOOKMARKED FROM $NOVELS WHERE $PARENT_ID=$novelID", null)
+			val cursor = getDatabase()
+					.rawQuery(
+							"SELECT $BOOKMARKED FROM $NOVELS WHERE $PARENT_ID=$novelID",
+							null
+					)
 			if (cursor.count <= 0) {
 				cursor.close()
 				return false
@@ -908,7 +929,8 @@ object Database {
 		@Throws(SQLException::class)
 
 		fun setReaderType(novelID: Int, reader: Int) {
-			getDatabase().execSQL("update " + NOVELS + " set " + READER_TYPE + "=" + reader + " WHERE " + PARENT_ID + "=" + novelID)
+			getDatabase()
+					.execSQL("update $NOVELS set $READER_TYPE=$reader WHERE $PARENT_ID=$novelID")
 		}
 
 		/**
@@ -919,7 +941,11 @@ object Database {
 		 */
 		@Throws(MissingResourceException::class)
 		fun getReaderType(novelID: Int): Int {
-			val cursor = getDatabase().rawQuery("SELECT " + READER_TYPE + " FROM " + NOVELS + " WHERE " + PARENT_ID + "=" + novelID, null)
+			val cursor = getDatabase()
+					.rawQuery(
+							"SELECT $READER_TYPE FROM $NOVELS WHERE $PARENT_ID=$novelID",
+							null
+					)
 			if (cursor.count <= 0) {
 				cursor.close()
 				return -2
@@ -932,7 +958,13 @@ object Database {
 		}
 
 		@Throws(MissingResourceException::class)
-		fun addNovelToDatabase(formatter: Int, novelPage: Novel.Info, novelURL: String, readingStatus: Int, novelID: Int = getNovelIDFromNovelURL(novelURL)) {
+		fun addNovelToDatabase(
+				formatter: Int,
+				novelPage: Novel.Info,
+				novelURL: String,
+				readingStatus: Int,
+				novelID: Int = getNovelIDFromNovelURL(novelURL)
+		) {
 			DatabaseIdentification.addNovel(novelURL, formatter)
 			val imageURL = novelPage.imageURL
 
@@ -975,11 +1007,11 @@ object Database {
 		fun isNotInNovels(novelID: Int): Boolean {
 			val cursor = getDatabase().query(
 					NOVEL_IDENTIFICATION,
-					stringArrayOf(COUNT),
+					arrayOf(),
 					"$ID=?",
 					arrayOf("$novelID")
 			)
-			val i = cursor.getInt(COUNT)
+			val i = cursor.count
 			cursor.close()
 			return i <= 0
 		}
@@ -1029,7 +1061,8 @@ object Database {
 			@Throws(MissingResourceException::class)
 			get() {
 				Log.d(logID(), "Getting")
-				val cursor = getDatabase().query(NOVELS, stringArrayOf(PARENT_ID), "$BOOKMARKED=1")
+				val cursor = getDatabase()
+						.query(NOVELS, stringArrayOf(PARENT_ID), "$BOOKMARKED=1")
 				val novelCards = ArrayList<Int>()
 				return if (cursor.count <= 0) {
 					cursor.close()
@@ -1045,8 +1078,9 @@ object Database {
 		@Throws(MissingResourceException::class)
 		fun getNovel(novelID: Int): NovelCard {
 			Log.d(logID(), "Getting")
-			val cursor = getDatabase().query(NOVELS, stringArrayOf(PARENT_ID, TITLE, IMAGE_URL),
-					"$BOOKMARKED=1 AND $PARENT_ID=$novelID")
+			val cursor = getDatabase()
+					.query(NOVELS, stringArrayOf(PARENT_ID, TITLE, IMAGE_URL),
+							"$BOOKMARKED=1 AND $PARENT_ID=$novelID")
 			if (cursor.count <= 0) {
 				cursor.close()
 			} else {
@@ -1259,11 +1293,11 @@ object Database {
 			if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
 			val cursor = getDatabase().query(
 					table = UPDATES,
-					columns = stringArrayOf(COUNT),
+					columns = arrayOf(),
 					selection = "$TIME < ? AND $TIME >= ?",
 					selectionArgs = arrayOf("$date2", "$date1")
 			)
-			val c = cursor.getInt(COUNT)
+			val c = cursor.count
 			cursor.close()
 			return c
 		}
@@ -1346,6 +1380,7 @@ object Database {
 
 	object DatabaseFormatters {
 		@Throws(SQLException::class)
+		@Deprecated("Moving functions")
 		fun addToFormatterList(name: String?, id: Int, md5: String, hasRepo: Boolean, repo: String) {
 			val v = ContentValues()
 			v.put(FORMATTER_NAME, name.checkStringSerialize())
@@ -1356,6 +1391,7 @@ object Database {
 			getDatabase().insert(FORMATTERS, v)
 		}
 
+		@Deprecated("Moving functions")
 		@Throws(SQLException::class)
 		fun removeFormatterFromList(name: String?) {
 			getDatabase().delete(
@@ -1365,6 +1401,7 @@ object Database {
 			)
 		}
 
+		@Deprecated("Moving functions")
 		@Throws(SQLException::class)
 		fun removeFormatterFromList(id: Int) {
 			getDatabase().delete(
@@ -1374,6 +1411,7 @@ object Database {
 			)
 		}
 
+		@Deprecated("Moving functions")
 		@Throws(MissingResourceException::class)
 		fun getMD5Sum(formatterID: Int): String {
 			val cursor = getDatabase().query(
@@ -1392,6 +1430,7 @@ object Database {
 			}
 		}
 
+		@Deprecated("Moving functions")
 		@Throws(MissingResourceException::class)
 		fun getFormatterName(formatterID: Int): String {
 			val cursor = getDatabase().query(
@@ -1410,6 +1449,7 @@ object Database {
 			}
 		}
 
+		@Deprecated("Moving functions")
 		@Throws(MissingResourceException::class)
 		fun hasCustomRepo(formatterID: Int): Boolean {
 			val cursor = getDatabase().query(
@@ -1429,6 +1469,7 @@ object Database {
 			}
 		}
 
+		@Deprecated("Moving functions")
 		@Throws(MissingResourceException::class)
 		fun getCustomRepo(formatterID: Int): String {
 			val cursor = getDatabase().query(
@@ -1449,6 +1490,7 @@ object Database {
 			}
 		}
 
+		@Deprecated("Moving functions")
 		@Throws(MissingResourceException::class)
 		fun getFormatterFromSystem(formatterID: Int): LuaFormatter? {
 			val cursor = getDatabase().query(

@@ -14,6 +14,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
+import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService
 import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitPost
 import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitTask
 import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
@@ -49,73 +51,77 @@ import java.io.File
  * @author github.com/doomsdayrs
  */
 class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
-    companion object {
-        const val INTRO_CODE = 1944
-    }
+	companion object {
+		const val INTRO_CODE = 1944
+	}
 
-    internal class BootSequence(private val splashScreen: SplashScreen) : AsyncTask<Void, String, Void>() {
-        val unknown = ArrayList<File>()
+	internal class BootSequence(private val splashScreen: SplashScreen) : AsyncTask<Void, String, Void>() {
+		val unknown = ArrayList<File>()
 
-        override fun onProgressUpdate(vararg values: String?) {
-            splashScreen.textView.post {
-                splashScreen.textView.text = values[0]
-            }
-        }
+		override fun onProgressUpdate(vararg values: String?) {
+			splashScreen.textView.post {
+				splashScreen.textView.text = values[0]
+			}
+		}
 
-        override fun doInBackground(vararg params: Void?): Void? {
-            unknown.addAll(formatterInitTask(splashScreen) { onProgressUpdate(it) })
-            return null
-        }
+		override fun doInBackground(vararg params: Void?): Void? {
+			FormatterService.initalizeValues(splashScreen)
+			unknown.addAll(formatterInitTask(splashScreen) { onProgressUpdate(it) })
+			return null
+		}
 
-        override fun onPostExecute(result: Void?) {
-            val action = {
-                onProgressUpdate("Setting up the application")
-                val intent = Intent(splashScreen, MainActivity::class.java)
-                intent.action = splashScreen.intent.action
-                splashScreen.intent.extras?.let { intent.putExtras(it) }
-                splashScreen.startActivity(intent)
-                onProgressUpdate("Finished! Going to app now~")
-                splashScreen.finish()
-            }
+		override fun onPostExecute(result: Void?) {
+			val action = {
+				onProgressUpdate("Setting up the application")
+				val intent = Intent(splashScreen, MainActivity::class.java)
+				intent.action = splashScreen.intent.action
+				splashScreen.intent.extras?.let { intent.putExtras(it) }
+				splashScreen.startActivity(intent)
+				onProgressUpdate("Finished! Going to app now~")
+				splashScreen.finish()
+			}
 
-            if (unknown.size > 0) {
-                onProgressUpdate("Uh oh! We got some issues~")
-                formatterInitPost(unknown, splashScreen, action)
-            } else {
-                action()
-            }
-        }
-    }
+			if (unknown.size > 0) {
+				onProgressUpdate("Uh oh! We got some issues~")
+				formatterInitPost(unknown, splashScreen, action)
+			} else {
+				action()
+			}
+		}
+	}
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == INTRO_CODE) {
-            BootSequence(this).execute()
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if (requestCode == INTRO_CODE) {
+			BootSequence(this).execute()
 
-            // Set so that debug versions are perm show intro
-            if (!BuildConfig.DEBUG) Settings.showIntro = false
-        }
-    }
+			// Set so that debug versions are perm show intro
+			if (!BuildConfig.DEBUG) Settings.showIntro = false
+		}
+	}
 
-    lateinit var textView: TextView
+	lateinit var textView: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        this.requestPerms()
-        super.onCreate(savedInstanceState)
-        Utilities.initPreferences(this)
+	override fun onCreate(savedInstanceState: Bundle?) {
+		this.requestPerms()
+		super.onCreate(savedInstanceState)
+		Utilities.initPreferences(this)
 
-        // Sets up DB
-        if (!Database.isInit()) Database.sqLiteDatabase = DBHelper(this).writableDatabase
+		// Sets up DB
+		if (!Database.isInit()) {
+			Database.sqLiteDatabase = DBHelper(this).writableDatabase
+			Database.shosetsuRoomDatabase = ShosetsuRoomDatabase.getRoomDatabase(this)
+		}
 
-        // Settings setup
-        Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        textView = findViewById(R.id.textView)
-        if (Settings.showIntro) {
-            Log.i(logID(), "First time, Launching activity")
-            val i = Intent(this, IntroductionActivity::class.java)
-            startActivityForResult(i, INTRO_CODE)
-        } else {
-            BootSequence(this).execute()
-        }
-    }
+		// Settings setup
+		Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+		textView = findViewById(R.id.textView)
+		if (Settings.showIntro) {
+			Log.i(logID(), "First time, Launching activity")
+			val i = Intent(this, IntroductionActivity::class.java)
+			startActivityForResult(i, INTRO_CODE)
+		} else {
+			BootSequence(this).execute()
+		}
+	}
 }

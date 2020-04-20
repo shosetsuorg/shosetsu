@@ -1,9 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.room
 
+import android.content.Context
 import androidx.annotation.NonNull
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import java.io.Serializable
 
 /*
@@ -30,25 +30,33 @@ import java.io.Serializable
  *
  * @author github.com/doomsdayrs
  */
+
+
+/**
+ * This class represents a formatter
+ */
 @Entity(
 		tableName = "formatters",
 		foreignKeys = [
 			ForeignKey(
-					entity = FRepositoryEntity::class,
+					entity = RepositoryEntity::class,
 					parentColumns = ["id"],
 					childColumns = ["repositoryID"],
-					onDelete = ForeignKey.NO_ACTION
+					onDelete = ForeignKey.CASCADE
 			)
-		]
+		],
+		indices = [Index("repositoryID")]
 )
 data class FormatterEntity(
 		@PrimaryKey
-		var formatterID: Int = -1,
+		val formatterID: Int,
 
-		var repositoryID: Int = -1,
+		val repositoryID: Int,
 
 		@NonNull
 		var name: String = "",
+		@NonNull
+		val fileName: String = "",
 
 		var enabled: Boolean = false,
 
@@ -56,13 +64,42 @@ data class FormatterEntity(
 
 		var internal: Boolean = true,
 
-		@NonNull
-		var fileName: String = "") : Serializable
+		/**
+		 * if [internal] = false, this is the MD5 to be checked against
+		 */
+		var md5: String = ""
+
+) : Serializable {
+	@Ignore
+	fun delete(context: Context) {
+		FormatterUtils.deleteScript(this, context)
+	}
+}
+
+/**
+ * This class represents a library that is installed in system
+ */
+@Entity(tableName = "script_libraries")
+data class ScriptLibEntity(
+		@PrimaryKey
+		val scriptName: String = "",
+		var version: String = ""
+) : Serializable {
+	@Embedded
+	@NonNull
+	lateinit var repository: RepositoryEntity
+}
 
 @Entity(tableName = "repositories")
-data class FRepositoryEntity(
-		@PrimaryKey
-		var id: Int = -1,
-		var name: String = "",
-		var url: String = ""
+data class RepositoryEntity(
+		var url: String = "",
+		var name: String = ""
+) : Serializable {
+	@PrimaryKey(autoGenerate = true)
+	var id: Int = -1
+}
+
+data class CountIDTuple(
+		@ColumnInfo(name = "COUNT(*)") val count: Int,
+		@ColumnInfo(name = "id") val id: Int
 ) : Serializable

@@ -17,7 +17,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.libraryDirecto
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.scriptDirectory
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.sourceFolder
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.sourceJSON
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.writeFile
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
@@ -62,6 +61,8 @@ import kotlin.collections.ArrayList
  * @author github.com/doomsdayrs
  */
 object FormatterService {
+	lateinit var sourceFilePath: String
+
 	class FormatterInit(val activity: Activity) : AsyncTask<Void, Void, Void>() {
 		private val unknownFormatters = ArrayList<File>()
 
@@ -76,80 +77,92 @@ object FormatterService {
 
 	}
 
-	fun formatterInitTask(activity: Activity, PROGRESS: (m: String) -> Unit): ArrayList<File> {
+	fun initalizeValues(context: Context) {
+		sourceFilePath = context.filesDir.absolutePath + "/formatters.json"
+	}
+
+	@Throws(JSONException::class)
+	fun loadSourceFile() {
+		sourceJSON = JSONObject(getContent(File(sourceFilePath)))
+	}
+
+	fun downloadSourceFile(sourceFile: File = File(sourceFilePath), progressUpdate: (m: String) -> Unit) {
+		if (Utilities.isOnline) {
+			var json = "{}"
+			try {
+				val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$githubBranch/src/main/resources/formatters.json").get()
+				if (doc != null) {
+					progressUpdate("Sources downloaded, Writing..")
+					sourceFile.writeText(doc.body().text())
+					progressUpdate("Sources loaded")
+				}
+				sourceJSON = JSONObject(json)
+			} catch (e: IOException) {
+				progressUpdate("Failed to download")
+			}
+		} else {
+			progressUpdate("Application is offline, Using placeholder")
+			Log.e("FormatterInit", "Is Offline, Cannot load data, Using stud")
+			sourceJSON.put("libraries", JSONArray())
+		}
+	}
+
+	fun formatterInitTask(activity: Activity, progressUpdate: (m: String) -> Unit): ArrayList<File> {
 		val unknownFormatters = ArrayList<File>()
 
-		PROGRESS("Initializing extensions")
+		progressUpdate("Initializing extensions")
 
 		// Source files
 		run {
-			val sourceFile = File(activity.filesDir.absolutePath + "/formatters.json")
-			if (sourceFile.isFile && sourceFile.exists()) {
+			val sourceFile = File(sourceFilePath)
+			if (sourceFile.exists() && sourceFile.isFile) {
 				try {
-					sourceJSON = JSONObject(getContent(sourceFile))
+					loadSourceFile()
 				} catch (e: Exception) {
-					TODO("Add error handling here")
+					Log.e(logID(), "I had an exception reading the json?? nani??, ill just..")
 				}
-				PROGRESS("Sources found and loaded")
+				progressUpdate("Sources found and loaded")
 			} else {
-				PROGRESS("Sources not found, Downloading..")
+				progressUpdate("Sources not found, Downloading..")
 				Log.i("FormatterInit", "Downloading formatterJSON")
 				try {
 					sourceFile.createNewFile()
 				} catch (e: IOException) {
 					Log.wtf("Could not even create a new file, Aborting program", e)
 				}
-				if (Utilities.isOnline) {
-					var json = "{}"
-					try {
-						val doc = Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$githubBranch/src/main/resources/formatters.json").get()
-						if (doc != null) {
-							PROGRESS("Sources downloaded, Writing..")
-							json = doc.body().text()
-							writeFile(json, sourceFile)
-							PROGRESS("Sources loaded")
-						}
-						sourceJSON = JSONObject(json)
-					} catch (e: IOException) {
-						PROGRESS("Failed to download")
-					}
-				} else {
-					PROGRESS("Application is offline, Using placeholder")
-					Log.e("FormatterInit", "Is Offline, Cannot load data, Using stud")
-					sourceJSON.put("libraries", JSONArray())
-				}
+				downloadSourceFile(sourceFile, progressUpdate)
 			}
 		}
 
 		// Auto Download all source material
 		run {
-			PROGRESS("Checking libraries")
+			progressUpdate("Checking libraries")
 			val libraries: JSONArray = sourceJSON.getJSONArray("libraries")
 			for (index in 0 until libraries.length()) {
 				val libraryJSON: JSONObject = libraries.getJSONObject(index)
 				val name = libraryJSON.getString("name")
 
-				PROGRESS("Checking library: $name")
+				progressUpdate("Checking library: $name")
 
 				val libraryFile = File(activity.filesDir.absolutePath + sourceFolder + libraryDirectory + "$name.lua")
 				if (libraryFile.exists()) {
-					PROGRESS("Library $name found, Checking for update")
+					progressUpdate("Library $name found, Checking for update")
 					val meta = getMetaData(libraryFile)!!
 					if (compareVersions(meta.getString("version"), libraryJSON.getString("version"))) {
-						PROGRESS("Library $name update found, updating...")
+						progressUpdate("Library $name update found, updating...")
 						Log.i("FormatterInit", "Installing library:\t$name")
 						if (Utilities.isOnline)
 							downloadLibrary(name, libraryFile)
-						else PROGRESS("Is offline, Cannot update")
+						else progressUpdate("Is offline, Cannot update")
 					}
 				} else {
-					PROGRESS("Library $name not found, installing...")
+					progressUpdate("Library $name not found, installing...")
 					if (Utilities.isOnline)
 						downloadLibrary(name, libraryFile)
-					else PROGRESS("Is offline, Cannot install")
+					else progressUpdate("Is offline, Cannot install")
 				}
 
-				PROGRESS("Moving on..")
+				progressUpdate("Moving on..")
 			}
 		}
 
@@ -169,7 +182,7 @@ object FormatterService {
 			l.call()
 		}
 
-		PROGRESS("Loading extensions")
+		progressUpdate("Loading extensions")
 		// Load the private scripts
 		run {
 			val path = activity.filesDir.absolutePath + sourceFolder + scriptDirectory
@@ -179,9 +192,9 @@ object FormatterService {
 				val jsonArray = Settings.disabledFormatters
 				if (sources != null) {
 					for (source in sources) {
-						PROGRESS("${source.name} found")
-						if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
-							PROGRESS("${source.name} added")
+						progressUpdate("${source.name} found")
+						if (!Utilities.isFormatterDisabled(jsonArray, source.nameWithoutExtension)) {
+							progressUpdate("${source.name} added")
 							try {
 								val l = LuaFormatter(source)
 								if (Formatters.getByID(l.formatterID) == Formatters.unknown)
@@ -195,20 +208,20 @@ object FormatterService {
 								source.delete()
 							}
 						} else {
-							PROGRESS("${source.name} ignored")
+							progressUpdate("${source.name} ignored")
 						}
 					}
 				} else {
-					PROGRESS("No extensions found")
+					progressUpdate("No extensions found")
 					Log.e("FormatterInit", "Sources file returned null")
 				}
 			} else {
-				PROGRESS("Extension folder not found, Creating")
+				progressUpdate("Extension folder not found, Creating")
 				directory.mkdirs()
 			}
 		}
 
-		PROGRESS("Loading custom scripts")
+		progressUpdate("Loading custom scripts")
 		run {
 			val path = Utilities.shoDir + scriptDirectory
 			// Check if script MD5 matches DB
@@ -217,7 +230,7 @@ object FormatterService {
 				val sources = directory.listFiles()
 				val jsonArray = Settings.disabledFormatters
 				if (sources != null) {
-					PROGRESS("Loading custom scripts")
+					progressUpdate("Loading custom scripts")
 					for (source in sources) {
 						try {
 							confirm(source, object : FormatterUtils.CheckSumAction {
@@ -227,7 +240,7 @@ object FormatterService {
 								}
 
 								override fun pass() {
-									if (!Utilities.isFormatterDisabled(jsonArray, source.name.substring(0, source.name.length - 4))) {
+									if (!Utilities.isFormatterDisabled(jsonArray, source.nameWithoutExtension)) {
 										val l = LuaFormatter(source)
 										if (Formatters.getByID(l.formatterID) == Formatters.unknown)
 											Formatters.formatters.add(l)
@@ -247,11 +260,11 @@ object FormatterService {
 						}
 					}
 				} else {
-					PROGRESS("No custom scripts found")
+					progressUpdate("No custom scripts found")
 					Log.e("FormatterInit", "External Sources file returned null")
 				}
 			} else {
-				PROGRESS("Custom script folder doesn't exist, Creating")
+				progressUpdate("Custom script folder doesn't exist, Creating")
 				directory.mkdirs()
 			}
 		}
@@ -259,7 +272,7 @@ object FormatterService {
 			Log.e("FormatterInit", "Unknown Script:\t${unknownFormatter.name}")
 		}
 		Formatters.formatters.sortedWith(compareBy { it.name })
-		PROGRESS("Completed load")
+		progressUpdate("Completed load")
 		return unknownFormatters
 	}
 
@@ -279,8 +292,7 @@ object FormatterService {
 				Log.d(logID(), githubBranch)
 				try {
 					Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$githubBranch/src/main/resources/formatters.json").get()?.let {
-						val json = it.body().text()
-						writeFile(json, sourceFile)
+						sourceFile.writeText( it.body().text())
 					}
 				} catch (e: IOException) {
 					context.toast(e.message ?: "Unknown error")

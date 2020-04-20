@@ -19,7 +19,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.CookieJarSync
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
@@ -66,7 +65,6 @@ import okhttp3.OkHttpClient
 class MainActivity : AppCompatActivity(), Supporter {
 	private lateinit var router: Router
 	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
-	private lateinit var shosetsuRoomDatabase: ShosetsuRoomDatabase
 
 	/**
 	 * Main activity
@@ -82,7 +80,6 @@ class MainActivity : AppCompatActivity(), Supporter {
 			finish()
 			return
 		}
-		//shosetsuRoomDatabase = ShosetsuRoomDatabase.getRoomDatabase(this)
 
 		setContentView(R.layout.activity_main)
 

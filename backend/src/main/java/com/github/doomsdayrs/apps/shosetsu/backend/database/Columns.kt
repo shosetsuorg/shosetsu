@@ -66,8 +66,7 @@ enum class Columns(private val key: String) {
 	HAS_CUSTOM_REPO("hasCustomRepo"),
 
 	// URL to repo
-	CUSTOM_REPO("customRepo"),
-	COUNT("COUNT(*)")
+	CUSTOM_REPO("customRepo")
 	;
 
 	override fun toString(): String {

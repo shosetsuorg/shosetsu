@@ -7,7 +7,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        applicationId "com.github.doomsdayrs.apps.shosetsu.tv"
+        applicationId "app.shosetsu.tv"
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
