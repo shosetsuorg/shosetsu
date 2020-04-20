@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui
 
 import android.app.Application
 import android.content.Context
+import android.net.Uri.encode
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
@@ -10,8 +11,9 @@ import org.acra.ACRA
 import org.acra.annotation.AcraCore
 import org.acra.annotation.AcraDialog
 import org.acra.config.CoreConfigurationBuilder
-import org.acra.config.MailSenderConfigurationBuilder
+import org.acra.config.HttpSenderConfigurationBuilder
 import org.acra.data.StringFormat
+import org.acra.sender.HttpSender
 import java.util.*
 
 /*
@@ -50,12 +52,19 @@ class Shosetsu : Application() {
 
         val config = CoreConfigurationBuilder(this)
         config.setBuildConfigClass(BuildConfig::class.java).setReportFormat(StringFormat.JSON)
-        config.getPluginConfigurationBuilder(MailSenderConfigurationBuilder::class.java)
-                .setMailTo("shoset.su@yandex.com")
-                .setReportAsFile(true)
-                .setSubject("#Crash Report#")
+
+        config.getPluginConfigurationBuilder(HttpSenderConfigurationBuilder::class.java)
+                .setHttpMethod(HttpSender.Method.POST)
+                .setUri("https://technojo4.com/acra.php?info=${encode(android.os.Build.MODEL)}%20${encode(Calendar.getInstance().time.toString())}")
                 .setEnabled(true)
-                .setReportFileName(android.os.Build.MODEL + " " + Calendar.getInstance().time.toString())
+
+        //config.getPluginConfigurationBuilder(MailSenderConfigurationBuilder::class.java)
+        //        .setMailTo("shoset.su@yandex.com")
+        //        .setReportAsFile(true)
+        //        .setSubject("#Crash Report#")
+        //        .setEnabled(true)
+        //        .setReportFileName(android.os.Build.MODEL + " " + Calendar.getInstance().time.toString())
+
         //TODO add custom content for reports
         // > Must Contain [ReportField] Report_ID, APP_VERSION_CODE, APP_VERSION_NAME, PACKAGE_NAME, ANDROID_VERSION, STACK_TRACE, USER_COMMENT, LOGCAT, INSTALLATION_ID
         // > All other [ReportField] constants are optional
