@@ -6,9 +6,11 @@ import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterText
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
+import org.acra.ACRA.getErrorReporter
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.lang.Exception
 import java.util.*
 
 /*
@@ -47,8 +49,10 @@ fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturn
     return getChapterText(getSavedNovelPath(chapterID))
 }
 
-fun MissingResourceException.handle(logID: String) = Log.e(logID, "A resource was missing", this)
-fun SQLiteException.handle(logID: String) = Log.e(logID, "Database threw an error", this)
+fun Exception.handle(logID: String) {
+    Log.e(logID, "ERROR", this)
+    getErrorReporter().handleException(this)
+}
 
 fun Activity.readAsset(name: String): String {
     val string = StringBuilder()

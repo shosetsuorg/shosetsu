@@ -382,10 +382,5 @@ class NovelChaptersController : ViewedController() {
         return max
     }
 
-    private fun handleExceptionLogging(e: java.lang.Exception) =
-            when (e) {
-                is MissingResourceException -> e.handle(logID())
-                is SQLiteException -> e.handle(logID())
-                else -> -1
-            }
+    private fun handleExceptionLogging(e: Exception) = e.handle(logID())
 }
