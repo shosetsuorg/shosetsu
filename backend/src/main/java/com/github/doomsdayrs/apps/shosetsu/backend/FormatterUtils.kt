@@ -128,10 +128,11 @@ object FormatterUtils {
 			file: File = File(
 					context.filesDir.absolutePath + sourceFolder +
 							libraryDirectory + scriptLibEntity.version
+			),
+			repo: RepositoryEntity = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(
+					scriptLibEntity.repositoryID
 			)) {
-		val repo = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(
-				scriptLibEntity.repositoryID
-		)
+
 		val response = OkHttpClient().newCall(Request.Builder()
 				.url("${repo.url}/src/main/resources/lib/${scriptLibEntity.scriptName}.lua")
 				.build()
@@ -139,7 +140,6 @@ object FormatterUtils {
 
 		if (file.parentFile?.exists() != true)
 			file.parentFile!!.mkdirs()
-
 
 		file.writeText(response.body!!.string())
 	}

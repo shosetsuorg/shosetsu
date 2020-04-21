@@ -61,6 +61,13 @@ interface FormatterDao {
 
 	@Query("SELECT md5 FROM formatters WHERE formatterID=:formatterID LIMIT 1")
 	fun loadFormatterMD5(formatterID: Int): String
+
+	@Query("SELECT COUNT(*) FROM formatters WHERE formatterID= :formatterID")
+	fun formatterCountFromID(formatterID: Int): Int
+
+	@Ignore
+	fun doesFormatterExist(formatterID: Int): Boolean = formatterCountFromID(formatterID) > 0
+
 }
 
 @Dao
@@ -68,12 +75,29 @@ interface ScriptLibDao {
 	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ScriptLibEntity::class)
 	fun insertScriptLib(scriptLibEntity: ScriptLibEntity)
 
-	@Query("SELECT * FROM script_libraries WHERE repositoryID=:repositoryID")
+	@Query("SELECT * FROM scripts WHERE repositoryID=:repositoryID")
 	fun loadLibByRepoID(repositoryID: Int): Array<ScriptLibEntity>
+
+	@Update
+	fun updateScriptLib(scriptLibEntity: ScriptLibEntity)
+
+	@Query("SELECT COUNT(*) FROM scripts WHERE scriptName= :name")
+	fun scriptLibCountFromName(name: String): Int
+
+	@Ignore
+	fun doesRepositoryExist(url: String): Boolean = scriptLibCountFromName(url) > 0
+
+	@Transaction
+	fun insertOrUpdateScriptLib(scriptLibEntity: ScriptLibEntity) {
+		if (scriptLibCountFromName(scriptLibEntity.scriptName) > 0) {
+			updateScriptLib(scriptLibEntity)
+		} else insertScriptLib(scriptLibEntity)
+	}
+
 }
 
 @Dao
-interface FRepositoryDao {
+interface RepositoryDao {
 	@Insert(onConflict = OnConflictStrategy.ABORT, entity = RepositoryEntity::class)
 	fun insertRepository(repositoryEntity: RepositoryEntity): Long
 
@@ -97,13 +121,13 @@ interface FRepositoryDao {
 	fun loadRepositories(): Array<RepositoryEntity>
 
 	@Query("SELECT COUNT(*) FROM repositories WHERE url=:url")
-	fun countFromURL(url: String): Int
+	fun repositoryCountFromURL(url: String): Int
 
 	@Query("SELECT COUNT(*),id FROM repositories WHERE url=:url LIMIT 1")
-	fun countAndROWIDFromURL(url: String): CountIDTuple
+	fun repositoryCountAndROWIDFromURL(url: String): CountIDTuple
 
 	@Ignore
-	fun doesRepositoryExist(url: String): Boolean = countFromURL(url) > 0
+	fun doesRepositoryExist(url: String): Boolean = repositoryCountFromURL(url) > 0
 
 	@Transaction
 	fun initalizeData() {
@@ -118,7 +142,7 @@ interface FRepositoryDao {
 
 	@Transaction
 	fun createIfNotExist(repositoryEntity: RepositoryEntity): Int {
-		val tuple = countAndROWIDFromURL(repositoryEntity.url)
+		val tuple = repositoryCountAndROWIDFromURL(repositoryEntity.url)
 		if (tuple.count == 0)
 			return insertRepositoryAndReturn(repositoryEntity).id
 		return tuple.id

@@ -18,8 +18,11 @@ package com.github.doomsdayrs.apps.shosetsu.backend.services
  */
 
 import android.app.Activity
+import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
+import android.os.IBinder
 import android.util.Log
 import app.shosetsu.lib.LuaFormatter
 import app.shosetsu.lib.ShosetsuLib
@@ -31,14 +34,11 @@ import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.scriptDirector
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils.sourceFolder
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import org.json.JSONArray
 import org.json.JSONException
@@ -58,7 +58,7 @@ import kotlin.collections.ArrayList
  *
  * @author github.com/doomsdayrs
  */
-object FormatterService {
+object FormatterService  {
 	class FormatterInit(val activity: Activity) : AsyncTask<Void, Void, Void>() {
 		private val unknownFormatters = ArrayList<File>()
 
@@ -72,9 +72,23 @@ object FormatterService {
 		}
 
 	}
+	/**
+	 * Loads a new JSON file to be used
+	 */
+	class RefreshJSON(val context: Context, private val extensionsFragment: ExtensionsController) : AsyncTask<Void, Void, Void>() {
+		override fun doInBackground(vararg params: Void?): Void? {
+			RepositoryService.task(context) {}
+			return null
+		}
 
+		override fun onPostExecute(result: Void?) {
+			context.toast(com.github.doomsdayrs.apps.shosetsu.R.string.updated_extensions_list)
+			extensionsFragment.setData()
+			extensionsFragment.adapter?.notifyDataSetChanged()
+		}
+	}
 
-	fun updateList(progressUpdate: (m: String) -> Unit) {
+	fun update(context: Context, progressUpdate: (m: String) -> Unit) {
 		if (Utilities.isOnline) {
 			progressUpdate("Online, Loading repositories")
 			val repos = shosetsuRoomDatabase.repositoryDao()
@@ -87,16 +101,60 @@ object FormatterService {
 
 				progressUpdate("Checking $name")
 				try {
-					val doc = Jsoup.connect(
+					// gets the latest list for the repo
+					val formattersJSON = JSONObject(Jsoup.connect(
 							"$url/src/main/resources/formatters.json"
-					).get()
-					val json = JSONObject(doc.body().text())
-					val libJSON = json.getJSONArray("libraries")
+					).get().body().text())
 
-					val libEntities = shosetsuRoomDatabase.scriptLibDao()
-							.loadLibByRepoID(repoID)
+					run {
+						// Array of libraries
+						val libJSONArray = formattersJSON.getJSONArray("libraries")
 
-					val libsNotPresent = ArrayList<ScriptLibEntity>()
+						// Libraries in database
+						val libEntities = shosetsuRoomDatabase.scriptLibDao()
+								.loadLibByRepoID(repoID)
+
+						// Libraries not installed or needs update
+						val libsNotPresent = ArrayList<ScriptLibEntity>()
+
+						// Loops through the json array of libraries
+						for (index in 0 until libJSONArray.length()) {
+							(libJSONArray[index] as JSONObject).let {
+								val name = it.getString("name")
+								val position = libEntities.containsName(it.getString("name"))
+								var install = false
+								var scriptLibEntity: ScriptLibEntity? = null
+
+								if (position != -1) {
+									//  Checks if an update need
+									val version = it.getString("version")
+									scriptLibEntity = libEntities[position]
+									if (compareVersions(version, scriptLibEntity.version))
+										install = true
+								} else {
+									install = true
+								}
+
+								// If install is true, then it adds it to the notPresent
+								if (install)
+									libsNotPresent.add(
+											scriptLibEntity ?: ScriptLibEntity(
+													scriptName = name,
+													version = it.getString("version"),
+													repositoryID = repoID
+											)
+									)
+
+							}
+						}
+
+						// For each library not present, installs
+						libsNotPresent.forEach {
+							progressUpdate("Updating/Installing ${it.scriptName}")
+							shosetsuRoomDatabase.scriptLibDao().insertOrUpdateScriptLib(it)
+							FormatterUtils.downloadLibrary(it, context)
+						}
+					}
 
 
 				} catch (e: IOException) {
@@ -133,7 +191,7 @@ object FormatterService {
 				} catch (e: IOException) {
 					Log.wtf("Could not even create a new file, Aborting program", e)
 				}
-				updateList(sourceFile, progressUpdate)
+				update(sourceFile, progressUpdate)
 			}
 		}
 
@@ -158,7 +216,7 @@ object FormatterService {
 				val libraryFile = File(activity.filesDir.absolutePath + sourceFolder + libraryDirectory + "$name.lua")
 				if (libraryFile.exists()) {
 					progressUpdate("Library $name found, Checking for update")
-					val meta = getMetaData(libraryFile)!!
+					val meta = libraryFile.getMeta()
 					if (compareVersions(meta.getString("version"), libraryJSON.getString("version"))) {
 						progressUpdate("Library $name update found, updating...")
 						Log.i("FormatterInit", "Installing library:\t$name")
@@ -292,32 +350,4 @@ object FormatterService {
 			SusScriptDialog(activity, unknownFormatters).execute(finalAction)
 		}
 	}
-
-	/**
-	 * Loads a new JSON file to be used
-	 */
-	class RefreshJSON(val context: Context, private val extensionsFragment: ExtensionsController) : AsyncTask<Void, Void, Void>() {
-		override fun doInBackground(vararg params: Void?): Void? {
-			val sourceFile = File(context.filesDir.absolutePath + "/formatters.json")
-			if (Utilities.isOnline) {
-				try {
-					Jsoup.connect("https://raw.githubusercontent.com/Doomsdayrs/shosetsu-extensions/$githubBranch/src/main/resources/formatters.json").get()?.let {
-						sourceFile.writeText(it.body().text())
-					}
-				} catch (e: IOException) {
-					context.toast(e.message ?: "Unknown error")
-				}
-			} else {
-				Log.e("FormatterInit", "IsOffline, Cannot load data, Using stud")
-			}
-			return null
-		}
-
-		override fun onPostExecute(result: Void?) {
-			context.toast(com.github.doomsdayrs.apps.shosetsu.R.string.updated_extensions_list)
-			extensionsFragment.setData()
-			extensionsFragment.adapter?.notifyDataSetChanged()
-		}
-	}
-
 }

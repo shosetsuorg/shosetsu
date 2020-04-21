@@ -15,9 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService
 import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitPost
-import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitTask
 import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
@@ -65,8 +63,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		}
 
 		override fun doInBackground(vararg params: Void?): Void? {
-			FormatterService.initalizeValues(splashScreen)
-			unknown.addAll(formatterInitTask(splashScreen) { onProgressUpdate(it) })
+
 			return null
 		}
 

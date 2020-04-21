@@ -74,6 +74,10 @@
         <service
             android:name=".backend.services.DownloadService"
             android:exported="false" />
+
+        <service
+            android:name=".backend.services.RepositoryService"
+            android:exported="false" />
     </application>
 
 </manifest>

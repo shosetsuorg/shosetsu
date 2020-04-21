@@ -5,11 +5,12 @@ import androidx.room.Database
 import androidx.room.Fts4
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.FRepositoryDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.FormatterDao
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.RepositoryDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.ScriptLibDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.FormatterEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.RepositoryEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
 
 /*
  * This file is part of shosetsu.
@@ -36,7 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.Reposi
  * @author github.com/doomsdayrs
  */
 @Fts4
-@Database(entities = [FormatterEntity::class, RepositoryEntity::class], version = 1)
+@Database(entities = [FormatterEntity::class, RepositoryEntity::class, ScriptLibEntity::class], version = 1)
 abstract class ShosetsuRoomDatabase : RoomDatabase() {
 	companion object {
 		private lateinit var databaseShosetsu: ShosetsuRoomDatabase;
@@ -52,7 +53,7 @@ abstract class ShosetsuRoomDatabase : RoomDatabase() {
 
 	abstract fun formatterDao(): FormatterDao
 
-	abstract fun repositoryDao(): FRepositoryDao
+	abstract fun repositoryDao(): RepositoryDao
 
 	abstract fun scriptLibDao(): ScriptLibDao
 }

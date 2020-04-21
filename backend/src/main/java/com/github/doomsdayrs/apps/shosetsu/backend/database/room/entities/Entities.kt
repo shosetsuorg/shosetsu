@@ -90,7 +90,7 @@ data class FormatterEntity(
 /**
  * This class represents a library that is installed in system
  */
-@Entity(tableName = "script_libraries",
+@Entity(tableName = "scripts",
 		foreignKeys = [
 			ForeignKey(
 					entity = RepositoryEntity::class,
