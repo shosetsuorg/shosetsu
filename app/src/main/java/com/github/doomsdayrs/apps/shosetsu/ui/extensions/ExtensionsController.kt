@@ -5,14 +5,16 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.FormatterEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toArrayList
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
-import org.json.JSONObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /*
  * This file is part of shosetsu.
@@ -38,52 +40,36 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsController : RecyclerController<ExtensionsAdapter>() {
+class ExtensionsController : RecyclerController<ExtensionsAdapter, FormatterEntity>() {
+	init {
+		setHasOptionsMenu(true)
+	}
 
-    val array: ArrayList<JSONObject> = ArrayList()
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		inflater.inflate(R.menu.toolbar_extensions, menu)
+	}
 
-    init {
-        setHasOptionsMenu(true)
-    }
+	override fun onViewCreated(view: View) {
+		Utilities.setActivityTitle(activity, getString(R.string.extensions))
+		adapter = ExtensionsAdapter(this)
+		GlobalScope.launch {
+			recyclerArray = Database.shosetsuRoomDatabase.formatterDao().loadFormatters().toArrayList()
+			adapter?.notifyDataSetChanged()
+		}
+	}
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_extensions, menu)
-    }
-
-    override fun onViewCreated(view: View) {
-        Utilities.setActivityTitle(activity, getString(R.string.extensions))
-        adapter = ExtensionsAdapter(this)
-        setData()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.refresh -> {
-                FormatterService.RefreshJSON(activity!!, this).execute()
-                true
-            }
-            R.id.reload -> {
-                Formatters.formatters.clear()
-                FormatterService.FormatterInit(activity!!).execute()
-                true
-            }
-            else -> false
-        }
-    }
-
-
-    fun setData() {
-        array.clear()
-        val keys = ArrayList<String>()
-        FormatterUtils.sourceJSON.keys().forEach { keys.add(it) }
-        keys.remove("comments")
-        keys.remove("libraries")
-        for (key in keys) {
-            val obj = FormatterUtils.sourceJSON.getJSONObject(key)
-            obj.put("name", key)
-            if (!array.contains(obj))
-                array.add(obj)
-        }
-        adapter?.notifyDataSetChanged()
-    }
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.refresh -> {
+				// TODO Refresh the json
+				true
+			}
+			R.id.reload -> {
+				Formatters.formatters.clear()
+				// TODO Load formatters once again
+				true
+			}
+			else -> false
+		}
+	}
 }

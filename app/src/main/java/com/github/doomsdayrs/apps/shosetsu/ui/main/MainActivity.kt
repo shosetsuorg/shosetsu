@@ -10,12 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.lib.ShosetsuLib
-import com.bluelinelabs.conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.attachRouter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.CookieJarSync
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
@@ -37,6 +38,8 @@ import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.javiersantos.appupdater.objects.Update
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
+import org.luaj.vm2.lib.jse.JsePlatform
+import java.io.File
 
 /*
  * This file is part of Shosetsu.
@@ -128,6 +131,23 @@ class MainActivity : AppCompatActivity(), Supporter {
 				}
 				.cookieJar(CookieJarSync())
 				.build()
+
+		ShosetsuLib.libLoader = { name ->
+			Log.i("LibraryLoaderSync", "Loading:\t$name")
+			val libraryFile = File(filesDir.absolutePath + FormatterUtils.sourceFolder + FormatterUtils.libraryDirectory + "$name.lua")
+			if (!libraryFile.exists()) Log.e("LibraryLoaderSync", "FAIL")
+			Log.d("LibraryLoaderSync", libraryFile.absolutePath)
+
+			val script = JsePlatform.standardGlobals()
+			script.load(ShosetsuLib())
+			val l = try {
+				script.load(libraryFile.readText())!!
+			} catch (e: Error) {
+				throw e
+			}
+			l.call()
+		}
+
 
 		toolbar.setNavigationOnClickListener { if (router.backstackSize == 1) drawer_layout.openDrawer(GravityCompat.START) else onBackPressed() }
 

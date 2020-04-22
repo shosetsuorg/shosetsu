@@ -14,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSear
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters.getAsCards
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 
 /*
  * This file is part of Shosetsu.
@@ -39,35 +40,35 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters.getAsCards
  * @author github.com/doomsdayrs
  */
 //TODO Searching mechanics here
-class CataloguesController : RecyclerController<CataloguesAdapter>() {
-    private val cards by lazy { getAsCards() }
+class CataloguesController : RecyclerController<CataloguesAdapter, FormatterCard>() {
+	override var recyclerArray = getAsCards()
 
-    init {
-        setHasOptionsMenu(true)
-    }
+	init {
+		setHasOptionsMenu(true)
+	}
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_catalogues, menu)
-        val searchView = menu.findItem(R.id.catalogues_search).actionView as SearchView
-        searchView.setOnQueryTextListener(CataloguesSearchQuery(activity))
-    }
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		inflater.inflate(R.menu.toolbar_catalogues, menu)
+		val searchView = menu.findItem(R.id.catalogues_search).actionView as SearchView
+		searchView.setOnQueryTextListener(CataloguesSearchQuery(activity))
+	}
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.catalogues_search -> true
-            R.id.configure_parsers -> {
-                val ce = ConfigureExtensions()
-                ce.jsonArray = Settings.disabledFormatters
-                router.pushController(ce.withFadeTransaction())
-                true
-            }
-            else -> false
-        }
-    }
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.catalogues_search -> true
+			R.id.configure_parsers -> {
+				val ce = ConfigureExtensions()
+				ce.jsonArray = Settings.disabledFormatters
+				router.pushController(ce.withFadeTransaction())
+				true
+			}
+			else -> false
+		}
+	}
 
-    override fun onViewCreated(view: View) {
-        Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.catalogues))
-        recyclerView?.setHasFixedSize(true)
-        adapter = CataloguesAdapter(cards,router)
-    }
+	override fun onViewCreated(view: View) {
+		Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.catalogues))
+		recyclerView?.setHasFixedSize(true)
+		adapter = CataloguesAdapter(recyclerArray, router)
+	}
 }

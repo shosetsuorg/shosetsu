@@ -78,7 +78,7 @@ data class FormatterEntity(
 
 	@Ignore
 	fun install(context: Context) {
-
+		FormatterUtils.installScript(this, context)
 	}
 
 	@Ignore

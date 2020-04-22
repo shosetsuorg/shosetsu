@@ -94,7 +94,6 @@ object FormatterUtils {
 		File(context.filesDir.absolutePath + sourceFolder +
 				scriptDirectory + "/${formatterEntity.fileName}.lua"
 		).takeIf { it.exists() }?.delete()
-
 	}
 
 	@Throws(FileNotFoundException::class, JSONException::class, SQLException::class)
@@ -127,7 +126,7 @@ object FormatterUtils {
 			context: Context,
 			file: File = File(
 					context.filesDir.absolutePath + sourceFolder +
-							libraryDirectory + scriptLibEntity.version
+							libraryDirectory + scriptLibEntity.scriptName + ".lua"
 			),
 			repo: RepositoryEntity = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(
 					scriptLibEntity.repositoryID
@@ -169,6 +168,20 @@ object FormatterUtils {
 			checkSumAction.fail()
 			false
 		}
+	}
+
+	fun installScript(formatterEntity: FormatterEntity, context: Context) {
+		val repo = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(formatterEntity.repositoryID)
+
+		val response = OkHttpClient().newCall(Request.Builder()
+				.url("${repo.url}/src/main/resources/$sourceFolder/$scriptDirectory/${formatterEntity.lang}/${formatterEntity.fileName}.lua")
+				.build()
+		).execute()
+		TODO("Complete")
+		//if (file.parentFile?.exists() != true)
+		//	file.parentFile!!.mkdirs()
+
+		//file.writeText(response.body!!.string())
 	}
 
 

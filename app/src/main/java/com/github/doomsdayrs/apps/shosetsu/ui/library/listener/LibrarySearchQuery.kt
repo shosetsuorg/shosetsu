@@ -38,7 +38,7 @@ class LibrarySearchQuery(private val libraryController: LibraryController)  : Se
 
     override fun onQueryTextChange(newText: String): Boolean {
         Log.d("Library search", newText)
-        val novelIDs = ArrayList(libraryController.libraryNovelCards)
+        val novelIDs = ArrayList(libraryController.recyclerArray)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             novelIDs.removeIf { novelID: Int? -> !Database.DatabaseNovels.getNovelTitle(novelID!!).toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT)) }
         } else {

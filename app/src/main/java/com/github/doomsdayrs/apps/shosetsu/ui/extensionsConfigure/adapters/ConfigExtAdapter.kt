@@ -77,7 +77,8 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
             id = fom.formatterID
             image = fom.imageURL
             enabled = true
-            isInteral = FormatterUtils.sourceJSON.has(name)
+            // TODO Fix this
+            isInteral = false
         }
 
         if (image.isNotEmpty())

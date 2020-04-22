@@ -31,26 +31,25 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdateController : RecyclerController<UpdatedNovelsAdapter>() {
-    var date: Long = -1
-    private val novels = ArrayList<Int>()
-    private var updates = ArrayList<Update>()
+class UpdateController : RecyclerController<UpdatedNovelsAdapter, Update>() {
+	var date: Long = -1
+	private val novels = ArrayList<Int>()
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putLong("date", date)
-    }
+	override fun onSaveInstanceState(outState: Bundle) {
+		outState.putLong("date", date)
+	}
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        date = savedInstanceState.getLong("date")
-    }
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		date = savedInstanceState.getLong("date")
+	}
 
 
-    override fun onViewCreated(view: View) {
-        updates = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999)
-        updates.forEach { if (!novels.contains(it.novelID)) novels.add(it.novelID) }
-        adapter = UpdatedNovelsAdapter(novels, updates, activity!!)
-        //UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(updates, getActivity());
-        recyclerView!!.post { adapter?.notifyDataSetChanged() }
-        Log.d("Updates on this day: ", updates.size.toString())
-    }
+	override fun onViewCreated(view: View) {
+		recyclerArray = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999)
+		recyclerArray.forEach { if (!novels.contains(it.novelID)) novels.add(it.novelID) }
+		adapter = UpdatedNovelsAdapter(novels, recyclerArray, activity!!)
+		//UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(recyclerArray, getActivity());
+		recyclerView!!.post { adapter?.notifyDataSetChanged() }
+		Log.d("Updates on this day: ", recyclerArray.size.toString())
+	}
 }

@@ -35,21 +35,21 @@ import org.json.JSONArray
  *
  * @author github.com/doomsdayrs
  */
-class ConfigureExtensions : RecyclerController<ConfigExtAdapter>() {
+class ConfigureExtensions : RecyclerController<ConfigExtAdapter, Any>() {
 
-    lateinit var jsonArray: JSONArray
+	lateinit var jsonArray: JSONArray
 
-    override fun onSaveInstanceState(outState: Bundle) = outState.putString("array", jsonArray.toString())
+	override fun onSaveInstanceState(outState: Bundle) = outState.putString("array", jsonArray.toString())
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        Log.d(logID(), "Restoring")
-        jsonArray = JSONArray(savedInstanceState.getString("array", "[]"))
-    }
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		Log.d(logID(), "Restoring")
+		jsonArray = JSONArray(savedInstanceState.getString("array", "[]"))
+	}
 
-    override fun onViewCreated(view: View) {
-        Utilities.setActivityTitle(activity, getString(R.string.configure_extensions))
-        Log.d(logID(), "Array received:\t$jsonArray")
-        adapter = ConfigExtAdapter(this)
-    }
+	override fun onViewCreated(view: View) {
+		Utilities.setActivityTitle(activity, getString(R.string.configure_extensions))
+		Log.d(logID(), "Array received:\t$jsonArray")
+		adapter = ConfigExtAdapter(this)
+	}
 
 }

@@ -107,7 +107,7 @@ class RepositoryService : Service() {
 					val formattersJSON: JSONObject
 					try {
 						formattersJSON = JSONObject(Jsoup.connect(
-								"$repoURL/src/main/resources/formatters.json"
+								"$repoURL/src/main/resources/index.json"
 						).get().body().text())
 					} catch (e: IOException) {
 						Log.e(logID(), "Network error", e)
@@ -283,6 +283,7 @@ class RepositoryService : Service() {
 			}
 			Log.i(logID(), "Completed Update")
 		}
+
 	}
 
 	private val notificationManager by lazy {
@@ -348,7 +349,7 @@ class RepositoryService : Service() {
 		}
 
 		override fun doWork() {
-			RepositoryService.task(service) { progressUpdate(it) }
+			task(service) { progressUpdate(it) }
 		}
 	}
 }

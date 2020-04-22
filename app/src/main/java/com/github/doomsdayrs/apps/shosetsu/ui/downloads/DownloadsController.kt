@@ -46,8 +46,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DA
  * @author github.com/doomsdayrs
  */
 //TODO selection mechanic with options to delete,  pause,  and more
-class DownloadsController : RecyclerController<DownloadAdapter>() {
-    var downloadItems: ArrayList<DownloadItem> = ArrayList()
+class DownloadsController : RecyclerController<DownloadAdapter,DownloadItem>() {
     private lateinit var receiver: BroadcastReceiver
 
     init {
@@ -61,7 +60,7 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
 
     override fun onViewCreated(view: View) {
         Utilities.setActivityTitle(activity, getString(R.string.downloads))
-        downloadItems = Database.DatabaseDownloads.downloadList
+        recyclerArray = Database.DatabaseDownloads.downloadList
         recyclerView?.setHasFixedSize(false)
         adapter = DownloadAdapter(this)
         adapter!!.setHasStableIds(true)
@@ -76,15 +75,15 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
 
 
             private fun removeDownloads(chapterURL: String) {
-                for (x in adapter?.downloadsController!!.downloadItems.indices) if (adapter?.downloadsController!!.downloadItems[x].chapterURL == chapterURL) {
-                    adapter?.downloadsController!!.downloadItems.removeAt(x)
+                for (x in adapter?.downloadsController!!.recyclerArray.indices) if (adapter?.downloadsController!!.recyclerArray[x].chapterURL == chapterURL) {
+                    adapter?.downloadsController!!.recyclerArray.removeAt(x)
                     return
                 }
                 adapter?.notifyDataSetChanged()
             }
 
             private fun markError(chapterURL: String) {
-                for (downloadItem in adapter?.downloadsController!!.downloadItems)
+                for (downloadItem in adapter?.downloadsController!!.recyclerArray)
                     if (downloadItem.chapterURL == chapterURL)
                         downloadItem.status = "Error"
 
@@ -93,7 +92,7 @@ class DownloadsController : RecyclerController<DownloadAdapter>() {
             }
 
             private fun toggleProcess(chapterURL: String) {
-                for (downloadItem in adapter?.downloadsController!!.downloadItems)
+                for (downloadItem in adapter?.downloadsController!!.recyclerArray)
                     if (downloadItem.chapterURL == chapterURL)
                         if (downloadItem.status == "Pending" || downloadItem.status == "Error")
                             downloadItem.status = "Downloading"

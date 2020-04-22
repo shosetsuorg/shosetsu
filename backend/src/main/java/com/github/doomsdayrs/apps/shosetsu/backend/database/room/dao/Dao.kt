@@ -131,7 +131,7 @@ interface RepositoryDao {
 
 	@Transaction
 	fun initalizeData() {
-		val branch = if (BuildConfig.DEBUG) "v1.0.0-rewrite" else "master"
+		val branch = if (BuildConfig.DEBUG) "dev" else "master"
 		val name = if (BuildConfig.DEBUG) "dev" else "master"
 		val repo = RepositoryEntity(
 				url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",

@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.services.FormatterService.formatterInitPost
+import com.github.doomsdayrs.apps.shosetsu.backend.services.RepositoryService
 import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
@@ -63,7 +63,9 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		}
 
 		override fun doInBackground(vararg params: Void?): Void? {
-
+			Database.shosetsuRoomDatabase = ShosetsuRoomDatabase.getRoomDatabase(splashScreen)
+			Database.shosetsuRoomDatabase.repositoryDao().initalizeData()
+			RepositoryService.task(splashScreen) { onProgressUpdate(it) }
 			return null
 		}
 
@@ -80,7 +82,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 
 			if (unknown.size > 0) {
 				onProgressUpdate("Uh oh! We got some issues~")
-				formatterInitPost(unknown, splashScreen, action)
+				//formatterInitPost(unknown, splashScreen, action)
 			} else {
 				action()
 			}
@@ -107,8 +109,6 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		// Sets up DB
 		if (!Database.isInit()) {
 			Database.sqLiteDatabase = DBHelper(this).writableDatabase
-			Database.shosetsuRoomDatabase = ShosetsuRoomDatabase.getRoomDatabase(this)
-			Database.shosetsuRoomDatabase.repositoryDao().initalizeData()
 		}
 
 		// Settings setup

@@ -35,3 +35,9 @@ fun Array<ScriptLibEntity>.containsName(name: String): Int {
 	}
 	return -1
 }
+
+fun <T> Array<T>.toArrayList(): ArrayList<T> {
+	val arrayList = ArrayList<T>()
+	arrayList.addAll(this)
+	return arrayList
+}

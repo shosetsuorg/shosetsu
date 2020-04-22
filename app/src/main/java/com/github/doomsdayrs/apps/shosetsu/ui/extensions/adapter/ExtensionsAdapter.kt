@@ -5,16 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.squareup.picasso.Picasso
-import org.json.JSONObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 /*
@@ -41,7 +43,7 @@ import org.json.JSONObject
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsAdapter(private val extensionsFragment: ExtensionsController)
+class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 	: RecyclerView.Adapter<ExtensionHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExtensionHolder {
@@ -53,49 +55,60 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController)
 	}
 
 	override fun getItemCount(): Int {
-		return extensionsFragment.array.size
+		return extensionsController.recyclerArray.size
 	}
 
 	override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
-		val jsonObject: JSONObject = extensionsFragment.array[position]
-		val id = jsonObject.getInt("id")
+		val entity = extensionsController.recyclerArray[position]
+		val id = entity.formatterID
 
 		if (Formatters.getByID(id) != Formatters.unknown) {
 			holder.button.text = holder.itemView.context.getString(R.string.uninstall)
 			//  holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
 			holder.installed = true
 
-			val luaFormatter: LuaFormatter = (Formatters.getByID(id) as LuaFormatter)
-			val meta = luaFormatter.getMetaData()!!
-			holder.version.text = meta.getString("version")
+
+			holder.version.text = entity.installedVersion
 			if (FormatterUtils.compareVersions(
-							jsonObject.getString("version"),
-							meta.getString("version")
+							entity.installedVersion ?: "",
+							entity.repositoryVersion
 					)) {
 				Log.i(logID(), "$id has an update")
 				holder.update = true
 				// holder.button.setImageResource(R.drawable.ic_update_black_24dp)
 				holder.button.text = holder.itemView.context.getText(R.string.update)
 				holder.updatedVersion.visibility = View.VISIBLE
-				holder.updatedVersion.text = jsonObject.getString("version")
+				holder.updatedVersion.text = entity.repositoryVersion
 			} else {
 				holder.updatedVersion.visibility = View.GONE
 			}
 		} else {
-			holder.version.text = jsonObject.getString("version")
+			holder.version.text = entity.installedVersion
 		}
 
-		holder.title.text = jsonObject.getString("name")
+		holder.title.text = entity.name
 		holder.id.text = id.toString()
-		holder.hash.text = jsonObject.getString("md5")
-		holder.language.text = jsonObject.getString("lang")
+		holder.hash.text = entity.md5
+		holder.language.text = entity.lang
 
 		holder.button.setOnClickListener {
 			try {
 				if (!holder.installed || holder.update) {
-					TODO("Download func")
+					GlobalScope.launch {
+						entity.install(extensionsController.context!!)
+						extensionsController.context?.toast("Installed script")
+						entity.installed = true
+						Database.shosetsuRoomDatabase.formatterDao().updateFormatter(entity)
+						this@ExtensionsAdapter.notifyDataSetChanged()
+					}
 				} else {
-					TODO("Delete func")
+					GlobalScope.launch {
+						entity.delete(extensionsController.context!!)
+						extensionsController.context?.toast("Deleted script")
+						entity.installed = false
+						Database.shosetsuRoomDatabase.formatterDao().updateFormatter(entity)
+						this@ExtensionsAdapter.notifyDataSetChanged()
+					}
 				}
 			} catch (e: Exception) {
 				it.context.toast("Holy shit what happened")
@@ -104,8 +117,8 @@ class ExtensionsAdapter(private val extensionsFragment: ExtensionsController)
 
 		}
 
-		if (!jsonObject.getString("imageURL").isNullOrEmpty()) {
-			Picasso.get().load(jsonObject.getString("imageURL")).into(holder.imageView)
+		if (!entity.imageURL.isNullOrEmpty()) {
+			Picasso.get().load(entity.imageURL).into(holder.imageView)
 		}
 	}
 }

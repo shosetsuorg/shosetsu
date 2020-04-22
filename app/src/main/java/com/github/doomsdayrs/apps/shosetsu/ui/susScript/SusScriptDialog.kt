@@ -84,23 +84,23 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
                     Formatters.formatters.add(LuaFormatter(file.file))
                 }
                 2 -> {
-                    val meta = FormatterUtils.getMetaData(file.file)
+                   // val meta = FormatterUtils.getMetaData(file.file)
                     val js = JSONObject()
-                    js.put("name", meta!!.getString("name"))
-                    js.put("id", meta.getInt("id"))
+                   // js.put("name", meta!!.getString("name"))
+                  //  js.put("id", meta.getInt("id"))
                     js.put("imageUrl", "")
 
                     val a = Settings.disabledFormatters
                     a.put(js)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        Formatters.formatters.removeIf { it.formatterID == meta.getInt("id") }
+                       // Formatters.formatters.removeIf { it.formatterID == meta.getInt("id") }
                     } else {
                         var point = -1
-                        for (i in 0 until Formatters.formatters.size)
-                            if (Formatters.formatters[i].formatterID == meta.getInt("id"))
-                                point = i
-                        if (point != -1)
-                            Formatters.formatters.removeAt(point)
+                      //  for (i in 0 until Formatters.formatters.size)
+                         //   if (Formatters.formatters[i].formatterID == meta.getInt("id"))
+                         //       point = i
+                      //  if (point != -1)
+                       //     Formatters.formatters.removeAt(point)
                     }
                     Settings.disabledFormatters = a
                 }

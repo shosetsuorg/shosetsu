@@ -51,143 +51,142 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class LibraryController : RecyclerController<LibraryNovelAdapter>(), SecondDrawerController {
+class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), SecondDrawerController {
 
-    var libraryNovelCards = ArrayList<Int>()
-    var selectedNovels: ArrayList<Int> = ArrayList()
+	var selectedNovels: ArrayList<Int> = ArrayList()
 
-    val inflater: MenuInflater?
-        get() = MenuInflater(applicationContext)
+	val inflater: MenuInflater?
+		get() = MenuInflater(applicationContext)
 
-    init {
-        setHasOptionsMenu(true)
-    }
+	init {
+		setHasOptionsMenu(true)
+	}
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putIntegerArrayList("selected", selectedNovels)
-        outState.putIntegerArrayList("lib", libraryNovelCards)
-    }
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		outState.putIntegerArrayList("selected", selectedNovels)
+		outState.putIntegerArrayList("lib", recyclerArray)
+	}
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        libraryNovelCards = savedInstanceState.getIntegerArrayList("lib")!!
-        selectedNovels = savedInstanceState.getIntegerArrayList("selected")!!
-    }
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		super.onRestoreInstanceState(savedInstanceState)
+		recyclerArray = savedInstanceState.getIntegerArrayList("lib")!!
+		selectedNovels = savedInstanceState.getIntegerArrayList("selected")!!
+	}
 
-    override fun onViewCreated(view: View) {
-        recyclerView = view.findViewById(R.id.recyclerView)
-        Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.my_library))
-        readFromDB()
-        setLibraryCards(libraryNovelCards)
-    }
+	override fun onViewCreated(view: View) {
+		recyclerView = view.findViewById(R.id.recyclerView)
+		Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.my_library))
+		readFromDB()
+		setLibraryCards(recyclerArray)
+	}
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (selectedNovels.size <= 0) {
-            Log.d("LibraryFragment", "Creating default menu")
-            inflater.inflate(R.menu.toolbar_library, menu)
-            val searchView = menu.findItem(R.id.library_search).actionView as SearchView?
-            searchView?.setOnQueryTextListener(LibrarySearchQuery(this))
-            searchView?.setOnCloseListener {
-                setLibraryCards(libraryNovelCards)
-                false
-            }
-        } else {
-            Log.d("LibraryFragment", "Creating selected menu")
-            inflater.inflate(R.menu.toolbar_library_selected, menu)
-        }
-    }
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		if (selectedNovels.size <= 0) {
+			Log.d("LibraryFragment", "Creating default menu")
+			inflater.inflate(R.menu.toolbar_library, menu)
+			val searchView = menu.findItem(R.id.library_search).actionView as SearchView?
+			searchView?.setOnQueryTextListener(LibrarySearchQuery(this))
+			searchView?.setOnCloseListener {
+				setLibraryCards(recyclerArray)
+				false
+			}
+		} else {
+			Log.d("LibraryFragment", "Creating selected menu")
+			inflater.inflate(R.menu.toolbar_library_selected, menu)
+		}
+	}
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.updater_now -> {
-                init(applicationContext!!, libraryNovelCards)
-                return true
-            }
-            R.id.chapter_select_all -> {
-                for (i in libraryNovelCards) if (!selectedNovels.contains(i)) selectedNovels.add(i)
-                recyclerView?.post { adapter?.notifyDataSetChanged() }
-                return true
-            }
-            R.id.chapter_deselect_all -> {
-                selectedNovels = ArrayList()
-                recyclerView?.post { adapter?.notifyDataSetChanged() }
-                if (inflater != null) activity?.invalidateOptionsMenu()
-                return true
-            }
-            R.id.remove_from_library -> {
-                for (i in selectedNovels) {
-                    DatabaseNovels.unBookmark(i)
-                    var x = 0
-                    while (x < libraryNovelCards.size) {
-                        if (libraryNovelCards[x] == i) libraryNovelCards.removeAt(x)
-                        x++
-                    }
-                }
-                selectedNovels = ArrayList()
-                recyclerView?.post { adapter?.notifyDataSetChanged() }
-                return true
-            }
-            R.id.source_migrate -> {
-                router.pushController(MigrationController(bundleOf(Pair(MigrationController.TARGETS_BUNDLE_KEY, selectedNovels.toIntArray()))).withFadeTransaction())
-                return true
-            }
-        }
-        return false
-    }
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		when (item.itemId) {
+			R.id.updater_now -> {
+				init(applicationContext!!, recyclerArray)
+				return true
+			}
+			R.id.chapter_select_all -> {
+				for (i in recyclerArray) if (!selectedNovels.contains(i)) selectedNovels.add(i)
+				recyclerView?.post { adapter?.notifyDataSetChanged() }
+				return true
+			}
+			R.id.chapter_deselect_all -> {
+				selectedNovels = ArrayList()
+				recyclerView?.post { adapter?.notifyDataSetChanged() }
+				if (inflater != null) activity?.invalidateOptionsMenu()
+				return true
+			}
+			R.id.remove_from_library -> {
+				for (i in selectedNovels) {
+					DatabaseNovels.unBookmark(i)
+					var x = 0
+					while (x < recyclerArray.size) {
+						if (recyclerArray[x] == i) recyclerArray.removeAt(x)
+						x++
+					}
+				}
+				selectedNovels = ArrayList()
+				recyclerView?.post { adapter?.notifyDataSetChanged() }
+				return true
+			}
+			R.id.source_migrate -> {
+				router.pushController(MigrationController(bundleOf(Pair(MigrationController.TARGETS_BUNDLE_KEY, selectedNovels.toIntArray()))).withFadeTransaction())
+				return true
+			}
+		}
+		return false
+	}
 
 
-    private fun readFromDB() {
-        libraryNovelCards = DatabaseNovels.intLibrary
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            libraryNovelCards.sortWith(Comparator { novel: Int?, t1: Int? -> DatabaseNovels.getNovelTitle(novel!!).compareTo(DatabaseNovels.getNovelTitle(t1!!)) })
-        } else {
-            for (i in libraryNovelCards.size - 1 downTo 2) {
-                for (j in 0 until i) {
-                    if (DatabaseNovels.getNovelTitle(libraryNovelCards[j]) > DatabaseNovels.getNovelTitle(libraryNovelCards[j + 1])) {
-                        val indexOne = libraryNovelCards[j]
-                        libraryNovelCards[j] = libraryNovelCards[j + 1]
-                        libraryNovelCards[j + 1] = indexOne
-                    }
-                }
-            }
-        }
-    }
+	private fun readFromDB() {
+		recyclerArray = DatabaseNovels.intLibrary
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			recyclerArray.sortWith(Comparator { novel: Int?, t1: Int? -> DatabaseNovels.getNovelTitle(novel!!).compareTo(DatabaseNovels.getNovelTitle(t1!!)) })
+		} else {
+			for (i in recyclerArray.size - 1 downTo 2) {
+				for (j in 0 until i) {
+					if (DatabaseNovels.getNovelTitle(recyclerArray[j]) > DatabaseNovels.getNovelTitle(recyclerArray[j + 1])) {
+						val indexOne = recyclerArray[j]
+						recyclerArray[j] = recyclerArray[j + 1]
+						recyclerArray[j + 1] = indexOne
+					}
+				}
+			}
+		}
+	}
 
-    /**
-     * Sets the cards to display
-     */
-    fun setLibraryCards(novelCards: ArrayList<Int>?) {
-        recyclerView?.setHasFixedSize(false)
-        if (Settings.novelCardType == 0) {
-            adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
-            recyclerView?.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateColumnCount(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
-        } else {
-            adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
-            recyclerView?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
-        }
-    }
+	/**
+	 * Sets the cards to display
+	 */
+	fun setLibraryCards(novelCards: ArrayList<Int>?) {
+		recyclerView?.setHasFixedSize(false)
+		if (Settings.novelCardType == 0) {
+			adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
+			recyclerView?.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateColumnCount(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
+		} else {
+			adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
+			recyclerView?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+		}
+	}
 
-    override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-        // TODO
-        /*navigationView.addView(
-                SDBuilder(navigationView, drawerLayout, this)
-                        .createInner("...") {
-                            it
-                                    .addSwitch()
-                                    .addEditText()
-                                    .addSpinner(array = arrayOf(""))
-                                    .addRadioGroup("DesignINNER", arrayOf("A", "B", "C"))
-                        }
-                        .addSwitch()
-                        .addEditText()
-                        .addSpinner(array = arrayOf(""))
-                        .addRadioGroup("Design", arrayOf("A", "B", "C"))
-                        .build()
-        )*/
-    }
+	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+		// TODO
+		/*navigationView.addView(
+				SDBuilder(navigationView, drawerLayout, this)
+						.createInner("...") {
+							it
+									.addSwitch()
+									.addEditText()
+									.addSpinner(array = arrayOf(""))
+									.addRadioGroup("DesignINNER", arrayOf("A", "B", "C"))
+						}
+						.addSwitch()
+						.addEditText()
+						.addSpinner(array = arrayOf(""))
+						.addRadioGroup("Design", arrayOf("A", "B", "C"))
+						.build()
+		)*/
+	}
 
-    override fun handleConfirm(linearLayout: LinearLayout) {
-        // TODO
-    }
+	override fun handleConfirm(linearLayout: LinearLayout) {
+		// TODO
+	}
 }

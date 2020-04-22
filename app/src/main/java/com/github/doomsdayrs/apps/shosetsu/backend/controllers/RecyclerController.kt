@@ -40,26 +40,27 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
  *     Default will fill with a LinearLayoutManager
  * </p>
  */
-abstract class RecyclerController<T : RecyclerView.Adapter<*>>(bundle: Bundle) : ViewedController(bundle) {
-    constructor() : this(bundleOf())
+abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle) : ViewedController(bundle) {
+	constructor() : this(bundleOf())
 
-    @LayoutRes
-    override val layoutRes: Int = R.layout.recycler_controller
+	@LayoutRes
+	override val layoutRes: Int = R.layout.recycler_controller
 
-    @IdRes
-    open val resourceID: Int = R.id.recyclerView
+	@IdRes
+	open val resourceID: Int = R.id.recyclerView
 
-    var recyclerView: RecyclerView? = null
-    var adapter: T? = null
+	var recyclerView: RecyclerView? = null
+	var adapter: T? = null
+	open var recyclerArray: ArrayList<V> = arrayListOf()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
-        val view = onCreateView1(inflater, container)
-        recyclerView = view.findViewById(resourceID)!!
-        recyclerView!!.layoutManager = LinearLayoutManager(context)
-        onViewCreated(view)
-        recyclerView?.adapter = adapter
-        return view
-    }
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
+		val view = onCreateView1(inflater, container)
+		recyclerView = view.findViewById(resourceID)!!
+		recyclerView!!.layoutManager = LinearLayoutManager(context)
+		onViewCreated(view)
+		recyclerView?.adapter = adapter
+		return view
+	}
 
-    abstract override fun onViewCreated(view: View)
+	abstract override fun onViewCreated(view: View)
 }

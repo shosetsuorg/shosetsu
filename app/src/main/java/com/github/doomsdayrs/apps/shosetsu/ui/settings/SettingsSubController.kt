@@ -32,7 +32,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-abstract class SettingsSubController : RecyclerController<SettingItemsAdapter>() {
+abstract class SettingsSubController : RecyclerController<SettingItemsAdapter, SettingsItem.SettingsItemData>() {
 
 	override val layoutRes: Int = R.layout.settings
 	abstract val settings: ArrayList<SettingsItem.SettingsItemData>
