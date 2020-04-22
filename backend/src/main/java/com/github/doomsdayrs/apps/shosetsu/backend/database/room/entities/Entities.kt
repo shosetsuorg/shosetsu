@@ -47,32 +47,19 @@ import java.io.Serializable
 		],
 		indices = [Index("repositoryID")]
 )
+
 data class ExtensionEntity(
-		@PrimaryKey
-		val formatterID: Int,
-
+		@PrimaryKey val formatterID: Int,
 		val repositoryID: Int,
-
-		@NonNull
-		var name: String = "",
-
-		@NonNull
-		val fileName: String = "",
-
+		@NonNull var name: String = "",
+		@NonNull val fileName: String = "",
 		var imageURL: String? = null,
-
 		var lang: String = "",
-
 		var enabled: Boolean = false,
-
 		var installed: Boolean = false,
-
 		var installedVersion: String? = null,
-
 		var repositoryVersion: String = "0.0.0",
-
 		var md5: String = ""
-
 ) : Serializable {
 	@Ignore
 	fun install(context: Context) {

@@ -52,7 +52,7 @@ interface FormatterDao {
 	@Query("SELECT * FROM extensions WHERE formatterID = :formatterID LIMIT 1")
 	fun loadFormatter(formatterID: Int): ExtensionEntity
 
-	@Query("SELECT md5 FROM extensions WHERE formatterID=:formatterID LIMIT 1")
+	@Query("SELECT md5 FROM extensions WHERE formatterID = :formatterID LIMIT 1")
 	fun loadFormatterMD5(formatterID: Int): String
 
 	@Query("SELECT COUNT(*) FROM extensions WHERE formatterID= :formatterID")
@@ -68,13 +68,13 @@ interface ScriptLibDao {
 	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ExtensionLibraryEntity::class)
 	fun insertScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
 
-	@Query("SELECT * FROM libs WHERE repositoryID=:repositoryID")
+	@Query("SELECT * FROM libs WHERE repositoryID = :repositoryID")
 	fun loadLibByRepoID(repositoryID: Int): Array<ExtensionLibraryEntity>
 
 	@Update
 	fun updateScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
 
-	@Query("SELECT COUNT(*) FROM libs WHERE scriptName= :name")
+	@Query("SELECT COUNT(*) FROM libs WHERE scriptName = :name")
 	fun scriptLibCountFromName(name: String): Int
 
 	@Ignore
@@ -101,22 +101,22 @@ interface RepositoryDao {
 	/**
 	 * Run only if you know for sure the data exists
 	 */
-	@Query("SELECT * FROM repositories WHERE url=:url LIMIT 1")
+	@Query("SELECT * FROM repositories WHERE url = :url LIMIT 1")
 	fun loadRepositoryFromURL(url: String): RepositoryEntity
 
-	@Query("SELECT * FROM repositories WHERE rowid=:rowID LIMIT 1")
+	@Query("SELECT * FROM repositories WHERE rowid = :rowID LIMIT 1")
 	fun loadRepositoryFromROWID(rowID: Long): RepositoryEntity
 
-	@Query("SELECT * FROM repositories WHERE id=:repositoryID LIMIT 1")
+	@Query("SELECT * FROM repositories WHERE id = :repositoryID LIMIT 1")
 	fun loadRepositoryFromID(repositoryID: Int): RepositoryEntity
 
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
 	fun loadRepositories(): Array<RepositoryEntity>
 
-	@Query("SELECT COUNT(*) FROM repositories WHERE url=:url")
+	@Query("SELECT COUNT(*) FROM repositories WHERE url = :url")
 	fun repositoryCountFromURL(url: String): Int
 
-	@Query("SELECT COUNT(*),id FROM repositories WHERE url=:url LIMIT 1")
+	@Query("SELECT COUNT(*),id FROM repositories WHERE url = :url LIMIT 1")
 	fun repositoryCountAndROWIDFromURL(url: String): CountIDTuple
 
 	@Ignore
