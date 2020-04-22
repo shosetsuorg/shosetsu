@@ -365,7 +365,7 @@ class NovelChaptersController : ViewedController() {
         try {
             for (n in selectedChapters) if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true)) return true
         } catch (e: MissingResourceException) {
-            e.handle(logID())
+            e.handle(logID(), true)
         }
         return false
     }

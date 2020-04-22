@@ -48,11 +48,11 @@ fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturn
     return getChapterText(getSavedNovelPath(chapterID))
 }
 
-fun Exception.handle(logID: String) {
+fun Exception.handle(logID: String, fatal: Boolean = false) {
     Log.e(logID, "ERROR", this)
     val reporter = getErrorReporter()
     reporter.putCustomData("INFO", "Exception at ${Calendar.getInstance().time}")
-    reporter.handleException(this, false)
+    reporter.handleException(this, fatal)
 }
 
 fun Activity.readAsset(name: String): String {
