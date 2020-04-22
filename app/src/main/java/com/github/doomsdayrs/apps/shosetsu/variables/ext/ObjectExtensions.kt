@@ -30,7 +30,6 @@ import java.util.*
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  */
-
 /**
  * shosetsu
  * 08 / 02 / 2020

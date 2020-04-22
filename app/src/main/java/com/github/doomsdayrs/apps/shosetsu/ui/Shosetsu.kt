@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui
 
 import android.app.Application
 import android.content.Context
-import android.net.Uri.encode
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
@@ -14,7 +13,6 @@ import org.acra.config.CoreConfigurationBuilder
 import org.acra.config.HttpSenderConfigurationBuilder
 import org.acra.data.StringFormat
 import org.acra.sender.HttpSender
-import java.util.*
 
 /*
  * This file is part of shosetsu.
