@@ -13,6 +13,7 @@ import org.acra.config.CoreConfigurationBuilder
 import org.acra.config.HttpSenderConfigurationBuilder
 import org.acra.data.StringFormat
 import org.acra.sender.HttpSender
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -67,6 +68,9 @@ class Shosetsu : Application() {
         // > Must Contain [ReportField] Report_ID, APP_VERSION_CODE, APP_VERSION_NAME, PACKAGE_NAME, ANDROID_VERSION, STACK_TRACE, USER_COMMENT, LOGCAT, INSTALLATION_ID
         // > All other [ReportField] constants are optional
         // > Yes there will be an option to submit ALL your data to me
+
+        ACRA.getErrorReporter().putCustomData("MODEL", android.os.Build.MODEL)
+        ACRA.getErrorReporter().putCustomData("INFO", "CRASH")
 
         ACRA.init(this, config)
         Notifications.createChannels(this)

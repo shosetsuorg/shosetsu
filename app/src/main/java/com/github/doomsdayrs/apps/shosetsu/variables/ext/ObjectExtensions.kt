@@ -51,8 +51,8 @@ fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturn
 fun Exception.handle(logID: String) {
     Log.e(logID, "ERROR", this)
     val reporter = getErrorReporter()
-    reporter.putCustomData("INFO", "${android.os.Build.MODEL} ${Calendar.getInstance().time}")
-    reporter.handleException(this)
+    reporter.putCustomData("INFO", "Exception at ${Calendar.getInstance().time}")
+    reporter.handleException(this, false)
 }
 
 fun Activity.readAsset(name: String): String {
