@@ -55,7 +55,7 @@ class Shosetsu : Application() {
 
         config.getPluginConfigurationBuilder(HttpSenderConfigurationBuilder::class.java)
                 .setHttpMethod(HttpSender.Method.POST)
-                .setUri("https://technojo4.com/acra.php?info=${encode(android.os.Build.MODEL)}%20${encode(Calendar.getInstance().time.toString())}")
+                .setUri("https://technojo4.com/acra.php")
                 .setEnabled(true)
 
         //config.getPluginConfigurationBuilder(MailSenderConfigurationBuilder::class.java)
