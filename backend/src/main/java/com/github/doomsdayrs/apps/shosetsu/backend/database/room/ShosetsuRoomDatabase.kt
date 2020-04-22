@@ -8,9 +8,9 @@ import androidx.room.RoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.FormatterDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.RepositoryDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.ScriptLibDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.FormatterEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.RepositoryEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
 
 /*
  * This file is part of shosetsu.
@@ -37,7 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.Script
  * @author github.com/doomsdayrs
  */
 @Fts4
-@Database(entities = [FormatterEntity::class, RepositoryEntity::class, ScriptLibEntity::class], version = 1)
+@Database(entities = [ExtensionEntity::class, RepositoryEntity::class, ExtensionLibraryEntity::class], version = 1)
 abstract class ShosetsuRoomDatabase : RoomDatabase() {
 	companion object {
 		private lateinit var databaseShosetsu: ShosetsuRoomDatabase;

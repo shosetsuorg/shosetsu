@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
 
 /*
  * This file is part of shosetsu.
@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.Script
  * @author github.com/doomsdayrs
  */
 
-fun Array<ScriptLibEntity>.containsName(name: String): Int {
+fun Array<ExtensionLibraryEntity>.containsName(name: String): Int {
 	forEachIndexed { index, it ->
 		if (it.scriptName == name) {
 			return index

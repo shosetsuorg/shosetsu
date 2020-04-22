@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities
 
 import android.content.Context
-import android.database.SQLException
 import androidx.annotation.NonNull
 import androidx.room.*
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
@@ -37,7 +36,7 @@ import java.io.Serializable
  * This class represents a formatter
  */
 @Entity(
-		tableName = "formatters",
+		tableName = "extensions",
 		foreignKeys = [
 			ForeignKey(
 					entity = RepositoryEntity::class,
@@ -48,7 +47,7 @@ import java.io.Serializable
 		],
 		indices = [Index("repositoryID")]
 )
-data class FormatterEntity(
+data class ExtensionEntity(
 		@PrimaryKey
 		val formatterID: Int,
 
@@ -75,22 +74,20 @@ data class FormatterEntity(
 		var md5: String = ""
 
 ) : Serializable {
-
 	@Ignore
 	fun install(context: Context) {
-		FormatterUtils.installScript(this, context)
+		FormatterUtils.installExtension(this, context)
 	}
 
 	@Ignore
-	@Throws(SQLException::class)
 	fun delete(context: Context) =
-			FormatterUtils.deleteScript(this, context)
+			FormatterUtils.deleteFormatter(this, context)
 }
 
 /**
  * This class represents a library that is installed in system
  */
-@Entity(tableName = "scripts",
+@Entity(tableName = "libs",
 		foreignKeys = [
 			ForeignKey(
 					entity = RepositoryEntity::class,
@@ -100,7 +97,7 @@ data class FormatterEntity(
 			)
 		],
 		indices = [Index("repositoryID")])
-data class ScriptLibEntity(
+data class ExtensionLibraryEntity(
 		@PrimaryKey
 		val scriptName: String,
 		var version: String,

@@ -12,8 +12,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.FormatterEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.containsName
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.forEachTyped
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
@@ -134,7 +134,7 @@ class RepositoryService : Service() {
 								.scriptLibDao().loadLibByRepoID(repoID)
 
 						// Libraries not installed or needs update
-						val libsNotPresent = ArrayList<ScriptLibEntity>()
+						val libsNotPresent = ArrayList<ExtensionLibraryEntity>()
 
 						// Loops through the json array of libraries
 						for (index in 0 until libJSONArray.length()) {
@@ -150,7 +150,7 @@ class RepositoryService : Service() {
 										name
 								)
 								var install = false
-								var scriptLibEntity: ScriptLibEntity? = null
+								var extensionLibraryEntity: ExtensionLibraryEntity? = null
 								var version = ""
 
 								if (position != -1) {
@@ -161,10 +161,10 @@ class RepositoryService : Service() {
 										Log.e(logID(), "Error ", e)
 										return@letFunction
 									}
-									scriptLibEntity = libEntities[position]
+									extensionLibraryEntity = libEntities[position]
 									if (FormatterUtils.compareVersions(
 													version,
-													scriptLibEntity.version
+													extensionLibraryEntity.version
 											))
 										install = true
 								} else {
@@ -174,7 +174,7 @@ class RepositoryService : Service() {
 								// If install is true, then it adds it to the notPresent
 								if (install)
 									libsNotPresent.add(
-											scriptLibEntity ?: ScriptLibEntity(
+											extensionLibraryEntity ?: ExtensionLibraryEntity(
 													scriptName = name,
 													version = version,
 													repositoryID = repoID
@@ -263,12 +263,12 @@ class RepositoryService : Service() {
 								formatterEntity.repositoryVersion = version
 								formatterDao.updateFormatter(formatterEntity)
 							} else {
-								formatterDao.insertFormatter(FormatterEntity(
+								formatterDao.insertFormatter(ExtensionEntity(
 										formatterID = formatterID,
 										repositoryID = repoID,
-										name = fileName,
-										fileName = imageURL,
-										imageURL = lang,
+										name = formatterName,
+										fileName = fileName,
+										imageURL = imageURL,
 										lang = lang,
 										repositoryVersion = version,
 										md5 = md5

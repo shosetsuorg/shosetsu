@@ -29,6 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener
@@ -37,9 +38,10 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.javiersantos.appupdater.objects.Update
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.luaj.vm2.lib.jse.JsePlatform
-import java.io.File
 
 /*
  * This file is part of Shosetsu.
@@ -114,7 +116,7 @@ class MainActivity : AppCompatActivity(), Supporter {
 			return@setNavigationItemSelectedListener true
 		}
 
-        router = attachRouter(fragment_container, savedInstanceState)
+		router = attachRouter(fragment_container, savedInstanceState)
 
 
 		val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
@@ -132,22 +134,27 @@ class MainActivity : AppCompatActivity(), Supporter {
 				.cookieJar(CookieJarSync())
 				.build()
 
-		ShosetsuLib.libLoader = { name ->
+		ShosetsuLib.libLoader = libLoader@{ name ->
 			Log.i("LibraryLoaderSync", "Loading:\t$name")
-			val libraryFile = File(filesDir.absolutePath + FormatterUtils.sourceFolder + FormatterUtils.libraryDirectory + "$name.lua")
-			if (!libraryFile.exists()) Log.e("LibraryLoaderSync", "FAIL")
+			val libraryFile = FormatterUtils.makeLibraryFile(this, name)
+			if (!libraryFile.exists()) {
+				Log.e("LibraryLoaderSync", "$name does not exist")
+				return@libLoader null
+			}
 			Log.d("LibraryLoaderSync", libraryFile.absolutePath)
-
 			val script = JsePlatform.standardGlobals()
 			script.load(ShosetsuLib())
 			val l = try {
-				script.load(libraryFile.readText())!!
+				script.load(libraryFile.readText())
 			} catch (e: Error) {
 				throw e
 			}
-			l.call()
+			return@libLoader l.call()
 		}
 
+		GlobalScope.launch {
+			Formatters.load(this@MainActivity)
+		}
 
 		toolbar.setNavigationOnClickListener { if (router.backstackSize == 1) drawer_layout.openDrawer(GravityCompat.START) else onBackPressed() }
 

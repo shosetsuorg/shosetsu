@@ -1,14 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.content.Context
-import android.os.Build
-import android.os.Build.VERSION_CODES
 import android.util.Log
 import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.FormatterEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.RepositoryEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getMeta
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.md5
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
@@ -56,6 +54,35 @@ object FormatterUtils {
 	const val scriptDirectory = "/scripts/"
 	const val libraryDirectory = "/libraries/"
 	const val sourceFolder = "/src/"
+	const val repoFolderStruct = "/src/main/resources/"
+
+	private fun Context.ap() = filesDir.absolutePath
+
+	fun makeLibraryFile(context: Context, le: ExtensionLibraryEntity): File {
+		return makeLibraryFile(context, le.scriptName)
+	}
+
+	fun makeLibraryFile(context: Context, scriptName: String): File {
+		val f = File("${context.ap()}$sourceFolder$libraryDirectory${scriptName}.lua")
+		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
+		return f
+	}
+
+	fun makeFormatterFile(context: Context, fe: ExtensionEntity): File {
+		return makeFormatterFile(context, fe.fileName)
+	}
+
+	fun makeFormatterFile(context: Context, fileName: String): File {
+		val f = File("${context.ap()}$sourceFolder$scriptDirectory${fileName}.lua")
+		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
+		return f
+	}
+
+	fun makeLibraryURL(repo: RepositoryEntity, le: ExtensionLibraryEntity): String =
+			"${repo.url}$repoFolderStruct/lib/${le.scriptName}.lua"
+
+	fun makeFormatterURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
+			"${repo.url}$repoFolderStruct/src/${fe.lang}/${fe.fileName}.lua"
 
 	private fun splitVersion(version: String): Array<String> =
 			version.split(".").toTypedArray()
@@ -80,21 +107,6 @@ object FormatterUtils {
 		return false
 	}
 
-	fun deleteScript(formatterEntity: FormatterEntity, context: Context) {
-		if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
-			Formatters.formatters.removeIf { it.formatterID == formatterEntity.formatterID }
-		} else {
-			Formatters.formatters.forEachIndexed loop@{ index, formatter ->
-				if (formatter.formatterID == formatterEntity.formatterID) {
-					Formatters.formatters.removeAt(index)
-					return@loop
-				}
-			}
-		}
-		File(context.filesDir.absolutePath + sourceFolder +
-				scriptDirectory + "/${formatterEntity.fileName}.lua"
-		).takeIf { it.exists() }?.delete()
-	}
 
 	@Throws(FileNotFoundException::class, JSONException::class, SQLException::class)
 	fun trustScript(file: File) {
@@ -105,7 +117,7 @@ object FormatterUtils {
 		val repo = meta.getJSONObject("repo")
 
 		shosetsuRoomDatabase.formatterDao().insertFormatter(
-				FormatterEntity(
+				ExtensionEntity(
 						formatterID = id,
 						repositoryID = shosetsuRoomDatabase.repositoryDao()
 								.createIfNotExist(RepositoryEntity(
@@ -118,29 +130,6 @@ object FormatterUtils {
 						enabled = true
 				)
 		)
-	}
-
-	// Room
-	fun downloadLibrary(
-			scriptLibEntity: ScriptLibEntity,
-			context: Context,
-			file: File = File(
-					context.filesDir.absolutePath + sourceFolder +
-							libraryDirectory + scriptLibEntity.scriptName + ".lua"
-			),
-			repo: RepositoryEntity = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(
-					scriptLibEntity.repositoryID
-			)) {
-
-		val response = OkHttpClient().newCall(Request.Builder()
-				.url("${repo.url}/src/main/resources/lib/${scriptLibEntity.scriptName}.lua")
-				.build()
-		).execute()
-
-		if (file.parentFile?.exists() != true)
-			file.parentFile!!.mkdirs()
-
-		file.writeText(response.body!!.string())
 	}
 
 
@@ -170,19 +159,53 @@ object FormatterUtils {
 		}
 	}
 
-	fun installScript(formatterEntity: FormatterEntity, context: Context) {
-		val repo = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(formatterEntity.repositoryID)
+	/**
+	 * A quick way to get a response
+	 */
+	fun quickResponse(url: String) =
+			OkHttpClient().newCall(Request.Builder()
+					.url(url)
+					.build()
+			).execute()
 
-		val response = OkHttpClient().newCall(Request.Builder()
-				.url("${repo.url}/src/main/resources/$sourceFolder/$scriptDirectory/${formatterEntity.lang}/${formatterEntity.fileName}.lua")
-				.build()
-		).execute()
-		TODO("Complete")
-		//if (file.parentFile?.exists() != true)
-		//	file.parentFile!!.mkdirs()
-
-		//file.writeText(response.body!!.string())
+	/**
+	 * Installs the library
+	 */
+	fun downloadLibrary(
+			extensionLibraryEntity: ExtensionLibraryEntity,
+			context: Context,
+			file: File = makeLibraryFile(context, extensionLibraryEntity),
+			repo: RepositoryEntity = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(
+					extensionLibraryEntity.repositoryID
+			)
+	): Boolean {
+		return quickResponse(makeLibraryURL(repo, extensionLibraryEntity)).body?.let {
+			file.writeText(it.string())
+			true
+		} ?: false
 	}
 
+	/**
+	 * Installs the extension in question
+	 */
+	fun installExtension(
+			extensionEntity: ExtensionEntity,
+			context: Context,
+			file: File = makeFormatterFile(context, extensionEntity),
+			repo: RepositoryEntity = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(
+					extensionEntity.repositoryID
+			)
+	): Boolean {
+		return quickResponse(makeFormatterURL(repo, extensionEntity)).body?.let {
+			file.writeText(it.string())
+			Formatters.addFormatter(LuaFormatter(file))
+			true
+		} ?: false
+	}
+
+	fun deleteFormatter(extensionEntity: ExtensionEntity, context: Context) {
+		Formatters.removeByID(extensionEntity.formatterID)
+		makeFormatterFile(context, extensionEntity).takeIf { it.exists() }?.delete()
+	}
 
 }

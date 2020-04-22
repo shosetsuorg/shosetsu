@@ -1,8 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.obj
 
+import android.content.Context
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.LuaFormatter
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 
 /*
@@ -67,6 +71,19 @@ object Formatters {
 
 	val formatters = ArrayList<Formatter>()
 
+	/**
+	 * Loads the formatters
+	 */
+	fun load(context: Context) {
+		val fileNames = shosetsuRoomDatabase.formatterDao()
+				.loadPoweredFormatterFileNames()
+		fileNames.forEach {
+			formatters.add(
+					LuaFormatter(FormatterUtils.makeFormatterFile(context, it))
+			)
+		}
+	}
+
 	fun removeByID(formatterID: Int) {
 		formatters.forEachIndexed { index, formatter ->
 			if (formatter.formatterID == formatterID) {
@@ -77,6 +94,7 @@ object Formatters {
 	}
 
 	fun addFormatter(formatter: Formatter) {
+		removeByID(formatter.formatterID)
 		formatters.add(formatter)
 		formatters.sortBy { it.name }
 	}

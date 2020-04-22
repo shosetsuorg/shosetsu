@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
@@ -95,19 +97,36 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 			try {
 				if (!holder.installed || holder.update) {
 					GlobalScope.launch {
-						entity.install(extensionsController.context!!)
-						extensionsController.context?.toast("Installed script")
-						entity.installed = true
-						Database.shosetsuRoomDatabase.formatterDao().updateFormatter(entity)
-						this@ExtensionsAdapter.notifyDataSetChanged()
+						extensionsController.context?.let { context ->
+							entity.install(context)
+							entity.installed = true
+							entity.enabled = true
+
+							holder.installed = true
+							holder.update = false
+							shosetsuRoomDatabase.formatterDao().updateFormatter(entity)
+							Handler(Looper.getMainLooper()).post {
+								context.toast("Installed ${entity.name}")
+								this@ExtensionsAdapter.notifyDataSetChanged()
+							}
+						} ?: Log.e(logID(), "Context is missing to delete")
+
 					}
 				} else {
 					GlobalScope.launch {
-						entity.delete(extensionsController.context!!)
-						extensionsController.context?.toast("Deleted script")
-						entity.installed = false
-						Database.shosetsuRoomDatabase.formatterDao().updateFormatter(entity)
-						this@ExtensionsAdapter.notifyDataSetChanged()
+						extensionsController.context?.let { context ->
+							entity.delete(context)
+							entity.installed = false
+							entity.enabled = false
+
+							holder.installed = false
+							holder.update = false
+							shosetsuRoomDatabase.formatterDao().updateFormatter(entity)
+							Handler(Looper.getMainLooper()).post {
+								context.toast("Deleted ${entity.name}")
+								this@ExtensionsAdapter.notifyDataSetChanged()
+							}
+						} ?: Log.e(logID(), "Context is missing to delete")
 					}
 				}
 			} catch (e: Exception) {

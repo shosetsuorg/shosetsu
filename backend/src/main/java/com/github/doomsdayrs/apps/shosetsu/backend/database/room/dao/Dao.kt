@@ -2,12 +2,9 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao
 
 import androidx.room.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.CountIDTuple
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.FormatterEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.RepositoryEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ScriptLibEntity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import org.doomsdayrs.apps.shosetsulib.BuildConfig
 
 /*
@@ -37,32 +34,28 @@ import org.doomsdayrs.apps.shosetsulib.BuildConfig
 
 @Dao
 interface FormatterDao {
-	@Insert(onConflict = OnConflictStrategy.ABORT, entity = FormatterEntity::class)
-	fun insertFormatter(formatterEntity: FormatterEntity)
+	@Insert(onConflict = OnConflictStrategy.ABORT, entity = ExtensionEntity::class)
+	fun insertFormatter(extensionEntity: ExtensionEntity)
 
 	@Update
-	fun updateFormatter(formatterEntity: FormatterEntity)
+	fun updateFormatter(extensionEntity: ExtensionEntity)
 
 	@Delete
-	fun deleteFormatter(formatterEntity: FormatterEntity)
+	fun deleteFormatter(extensionEntity: ExtensionEntity)
 
-	@Query("SELECT * FROM formatters")
-	fun loadFormatters(): Array<FormatterEntity>
+	@Query("SELECT * FROM extensions")
+	fun loadFormatters(): Array<ExtensionEntity>
 
-	@Query("SELECT * FROM formatters")
-	fun loadFormattersOnFlow(): Flow<Array<FormatterEntity>>
+	@Query("SELECT fileName FROM extensions WHERE installed = 1 AND enabled = 1 ORDER BY name ASC")
+	fun loadPoweredFormatterFileNames(): Array<String>
 
-	@ExperimentalCoroutinesApi
-	fun loadFormattersOnFlowDistinctly() =
-			loadFormattersOnFlow().distinctUntilChanged()
+	@Query("SELECT * FROM extensions WHERE formatterID = :formatterID LIMIT 1")
+	fun loadFormatter(formatterID: Int): ExtensionEntity
 
-	@Query("SELECT * FROM formatters WHERE formatterID = :formatterID LIMIT 1")
-	fun loadFormatter(formatterID: Int): FormatterEntity
-
-	@Query("SELECT md5 FROM formatters WHERE formatterID=:formatterID LIMIT 1")
+	@Query("SELECT md5 FROM extensions WHERE formatterID=:formatterID LIMIT 1")
 	fun loadFormatterMD5(formatterID: Int): String
 
-	@Query("SELECT COUNT(*) FROM formatters WHERE formatterID= :formatterID")
+	@Query("SELECT COUNT(*) FROM extensions WHERE formatterID= :formatterID")
 	fun formatterCountFromID(formatterID: Int): Int
 
 	@Ignore
@@ -72,26 +65,26 @@ interface FormatterDao {
 
 @Dao
 interface ScriptLibDao {
-	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ScriptLibEntity::class)
-	fun insertScriptLib(scriptLibEntity: ScriptLibEntity)
+	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ExtensionLibraryEntity::class)
+	fun insertScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
 
-	@Query("SELECT * FROM scripts WHERE repositoryID=:repositoryID")
-	fun loadLibByRepoID(repositoryID: Int): Array<ScriptLibEntity>
+	@Query("SELECT * FROM libs WHERE repositoryID=:repositoryID")
+	fun loadLibByRepoID(repositoryID: Int): Array<ExtensionLibraryEntity>
 
 	@Update
-	fun updateScriptLib(scriptLibEntity: ScriptLibEntity)
+	fun updateScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
 
-	@Query("SELECT COUNT(*) FROM scripts WHERE scriptName= :name")
+	@Query("SELECT COUNT(*) FROM libs WHERE scriptName= :name")
 	fun scriptLibCountFromName(name: String): Int
 
 	@Ignore
 	fun doesRepositoryExist(url: String): Boolean = scriptLibCountFromName(url) > 0
 
 	@Transaction
-	fun insertOrUpdateScriptLib(scriptLibEntity: ScriptLibEntity) {
-		if (scriptLibCountFromName(scriptLibEntity.scriptName) > 0) {
-			updateScriptLib(scriptLibEntity)
-		} else insertScriptLib(scriptLibEntity)
+	fun insertOrUpdateScriptLib(extensionLibraryEntity: ExtensionLibraryEntity) {
+		if (scriptLibCountFromName(extensionLibraryEntity.scriptName) > 0) {
+			updateScriptLib(extensionLibraryEntity)
+		} else insertScriptLib(extensionLibraryEntity)
 	}
 
 }
