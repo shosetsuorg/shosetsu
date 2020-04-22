@@ -51,13 +51,16 @@ fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturn
 
 fun Exception.handle(logID: String) {
     Log.e(logID, "ERROR", this)
-    getErrorReporter().handleException(this)
+    val reporter = getErrorReporter()
+    reporter.putCustomData("INFO", "${android.os.Build.MODEL} ${Calendar.getInstance().time}")
+    reporter.handleException(this)
 }
 
 fun Activity.readAsset(name: String): String {
     val string = StringBuilder()
     try {
         val reader = BufferedReader(InputStreamReader(assets.open(name)))
+
         // do reading, usually loop until end of file reading
         var mLine: String? = reader.readLine()
         while (mLine != null) {
