@@ -28,7 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.Extens
  * @author github.com/doomsdayrs
  */
 @Dao
-interface FormatterDao {
+interface ExtensionsDao {
 	@Insert(onConflict = OnConflictStrategy.ABORT, entity = ExtensionEntity::class)
 	fun insertFormatter(extensionEntity: ExtensionEntity)
 

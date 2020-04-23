@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Fts4
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.FormatterDao
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.ExtensionsDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.RepositoryDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.ScriptLibDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
@@ -51,7 +51,7 @@ abstract class ShosetsuRoomDatabase : RoomDatabase() {
 		}
 	}
 
-	abstract fun formatterDao(): FormatterDao
+	abstract fun formatterDao(): ExtensionsDao
 
 	abstract fun repositoryDao(): RepositoryDao
 
