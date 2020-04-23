@@ -26,13 +26,9 @@ import java.io.Serializable
 
 /**
  * shosetsu
- * 18 / 04 / 2020
+ * 22 / 04 / 2020
  *
  * @author github.com/doomsdayrs
- */
-
-
-/**
  * This class represents a formatter
  */
 @Entity(
@@ -70,37 +66,3 @@ data class ExtensionEntity(
 	fun delete(context: Context) =
 			FormatterUtils.deleteFormatter(this, context)
 }
-
-/**
- * This class represents a library that is installed in system
- */
-@Entity(tableName = "libs",
-		foreignKeys = [
-			ForeignKey(
-					entity = RepositoryEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["repositoryID"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("repositoryID")])
-data class ExtensionLibraryEntity(
-		@PrimaryKey
-		val scriptName: String,
-		var version: String,
-		var repositoryID: Int
-) : Serializable
-
-@Entity(tableName = "repositories")
-data class RepositoryEntity(
-		var url: String,
-		var name: String
-) : Serializable {
-	@PrimaryKey(autoGenerate = true)
-	var id: Int = 0
-}
-
-data class CountIDTuple(
-		@ColumnInfo(name = "COUNT(*)") val count: Int,
-		@ColumnInfo(name = "id") val id: Int
-) : Serializable

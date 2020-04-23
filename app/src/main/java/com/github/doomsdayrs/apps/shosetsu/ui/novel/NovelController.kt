@@ -1,26 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.Novel
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getNovelPage
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.getNovelStatus
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInNovels
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -59,15 +47,9 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 
 	override val layoutRes: Int = R.layout.novel
 
-	// This is a never before loaded novel
-	private var new: Boolean = true
-
 	var novelID = -2
 	var novelURL: String = ""
-	var novelPage = Novel.Info()
 	var formatter: Formatter
-
-	var status = Status.UNREAD
 
 	var novelInfoController: NovelInfoController? = null
 	var novelChaptersController: NovelChaptersController? = null
@@ -78,9 +60,6 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 	@Attach(R.id.fragment_novel_viewpager)
 	var novelViewpager: ViewPager? = null
 
-	@Attach(R.id.fragment_novel_main_refresh)
-	var fragmentNovelMainRefresh: SwipeRefreshLayout? = null
-
 	init {
 		setHasOptionsMenu(true)
 		novelID = bundle.getInt(BUNDLE_ID)
@@ -88,82 +67,15 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 		formatter = Formatters.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
 	}
 
-	override fun onSaveInstanceState(outState: Bundle) {
-		outState.putInt("status", status.a)
-		outState.putBoolean("new", new)
-	}
-
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		status = Status.getStatus(savedInstanceState.getInt("status"))
-		novelPage = getNovelPage(novelID)
-		new = savedInstanceState.getBoolean("new")
 		setViewPager()
 	}
 
-	override fun onViewCreated(view: View) {
-		// Attach UI to program
-		run {
-			if (novelInfoController == null)
-				novelInfoController = NovelInfoController()
-			novelInfoController?.let {
-				it.novelController = this
-				it.novelID = novelID
-			}
-			if (novelChaptersController == null)
-				novelChaptersController = NovelChaptersController()
-			novelChaptersController?.let {
-				it.novelController = this
-				it.novelID = novelID
-			}
-		}
-		//TODO FINISH TRACKING
-		//boolean track = SettingsController.isTrackingEnabled();
-		if (Utilities.isOnline && isNotInNovels(novelID)) {
-			setViewPager()
-			novelTabLayout!!.post {
-				NovelLoader(
-						novelURL,
-						novelID,
-						formatter,
-						this,
-						true
-				).execute()
-			}
-		} else {
-			novelPage = getNovelPage(novelID)
-			new = false
-			//   novelChapters = DatabaseChapter.getChapters(novelID)
-			status = getNovelStatus(novelID)
-			if (activity != null && activity!!.actionBar != null)
-				activity!!.actionBar!!.title = novelPage.title
-			setViewPager()
-		}
-		fragmentNovelMainRefresh?.setOnRefreshListener {
-			novelInfoController?.let { it ->
-				it.novelController?.let { novelController ->
-					context?.toast("")
-					NovelLoader(
-							novelController.novelURL,
-							novelController.novelID,
-							novelController.formatter,
-							novelController,
-							true
-					).execute()
-				}
-			}
-		}
-	}
+	override fun onViewCreated(view: View) = setViewPager()
 
 	private fun setViewPager() {
-		val fragments: MutableList<Controller> = ArrayList()
-		run {
-			Log.d("FragmentLoading", "Main")
-			fragments.add(novelInfoController!!)
-			Log.d("FragmentLoading", "Chapters")
-			fragments.add(novelChaptersController!!)
-		}
-		val pagerAdapter = NovelPagerAdapter(this, fragments)
+		val pagerAdapter = NovelPagerAdapter(this)
 		novelViewpager?.adapter = pagerAdapter
 		novelViewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(novelTabLayout))
 		novelTabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -176,5 +88,4 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 		})
 		novelTabLayout?.post { novelTabLayout?.setupWithViewPager(novelViewpager) }
 	}
-
 }

@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters
 
 import android.util.Log
 import android.widget.ArrayAdapter
-import com.bluelinelabs.conductor.Controller
+import androidx.core.os.bundleOf
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
@@ -33,8 +33,8 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
  *
  * @author github.com/doomsdayrs
  */
-class NovelPagerAdapter(router: NovelController, private val fragments: List<Controller>)
-	: RouterPagerAdapter(router) {
+class NovelPagerAdapter(val novelController: NovelController)
+	: RouterPagerAdapter(novelController) {
 	companion object {
 		const val INFO_CONTROLLER = 0
 		const val CHAPTERS_CONTROLLER = 1
@@ -43,21 +43,28 @@ class NovelPagerAdapter(router: NovelController, private val fragments: List<Con
 
 	private val titles by lazy {
 		ArrayAdapter(
-				router.context!!,
+				novelController.context!!,
 				android.R.layout.simple_spinner_item,
-				router.resources!!.getStringArray(R.array.novel_fragment_names)
+				novelController.resources!!.getStringArray(R.array.novel_fragment_names)
 		)
 	}
 
 	override fun configureRouter(router: Router, position: Int) {
 		if (!router.hasRootController()) {
-			Log.d("SwapScreen", fragments[position].toString())
+			Log.d("Swap Screen", titles.getItem(position)?:"Unknown")
+
 			val controller = when (position) {
 				INFO_CONTROLLER -> {
-					NovelInfoController()
+					NovelInfoController(bundleOf(
+							NovelController.BUNDLE_ID to novelController.novelID,
+							NovelController.BUNDLE_URL to novelController.novelURL,
+							NovelController.BUNDLE_FORMATTER to novelController.formatter.formatterID
+					))
 				}
 				CHAPTERS_CONTROLLER -> {
-					NovelChaptersController()
+					NovelChaptersController(bundleOf(
+							NovelController.BUNDLE_ID to novelController.novelID
+					))
 				}
 				else -> error("Wrong position $position")
 			}
@@ -66,7 +73,7 @@ class NovelPagerAdapter(router: NovelController, private val fragments: List<Con
 	}
 
 	override fun getCount(): Int {
-		return fragments.size
+		return 2
 	}
 
 	override fun getPageTitle(position: Int): CharSequence? {

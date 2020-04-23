@@ -361,115 +361,6 @@ object Database {
 		}
 	}
 
-	object DatabaseDownloads {
-		/**
-		 * Gets downloads that are stored
-		 *
-		 * @return DownloadItems to download
-		 */
-		val downloadList: ArrayList<DownloadItem>
-			@Throws(MissingResourceException::class)
-			get() {
-				val downloadItems = ArrayList<DownloadItem>()
-				val cursor = getDatabase().query(
-						DOWNLOADS,
-						null,
-						null,
-						null
-				)
-				while (cursor.moveToNext()) {
-					val id = cursor.getInt(PARENT_ID)
-					val nName = cursor.getString(NOVEL_NAME)
-					val cName = cursor.getString(CHAPTER_NAME)
-					val formatter = DatabaseIdentification.getFormatterIDFromChapterID(id)
-					downloadItems.add(DownloadItem((getByID(formatter)), nName, cName, id))
-				}
-				cursor.close()
-				return downloadItems
-			}
-
-		/**
-		 * Gets the first download item
-		 *
-		 * @return DownloadItem to download
-		 */
-		val firstDownload: DownloadItem?
-			@Throws(MissingResourceException::class)
-			get() {
-				val cursor = getDatabase().query(DOWNLOADS, limit = "1")
-				return if (cursor.count <= 0) {
-					cursor.close()
-					null
-				} else {
-					cursor.moveToNext()
-					val id = cursor.getInt(PARENT_ID)
-					val nName = cursor.getString(NOVEL_NAME)
-					val cName = cursor.getString(CHAPTER_NAME)
-					val formatter = DatabaseIdentification.getFormatterIDFromChapterID(id)
-					cursor.close()
-					DownloadItem(getByID(formatter), nName, cName, id)
-				}
-			}
-
-		/**
-		 * Removes download item
-		 *
-		 * @param downloadItem download item to remove
-		 */
-		@Throws(MissingResourceException::class)
-		fun removeDownload(downloadItem: DownloadItem) = getDatabase().delete(
-				DOWNLOADS,
-				"$PARENT_ID=?",
-				arrayOf("${getChapterIDFromChapterURL(downloadItem.chapterURL)}")
-		)
-
-		/**
-		 * Adds to download list
-		 *
-		 * @param downloadItem Download item to add
-		 */
-		@Throws(SQLException::class)
-		fun addToDownloads(downloadItem: DownloadItem) {
-			val v = ContentValues()
-			v.put(PARENT_ID, getChapterIDFromChapterURL(downloadItem.chapterURL))
-			v.put(NOVEL_NAME, downloadItem.novelName.clean())
-			v.put(CHAPTER_NAME, downloadItem.chapterName.clean())
-			v.put(PAUSED, 0)
-			getDatabase().insert(DOWNLOADS, v)
-		}
-
-		/**
-		 * Checks if is in download list
-		 *
-		 * @param downloadItem download item to check
-		 * @return if is in list
-		 */
-		@Throws(MissingResourceException::class)
-		fun inDownloads(downloadItem: DownloadItem): Boolean {
-			val cursor = getDatabase().query(
-					DOWNLOADS,
-					arrayOf(),
-					"${PARENT_ID}=?",
-					arrayOf("${getChapterIDFromChapterURL(downloadItem.chapterURL)}")
-			)
-			val a = cursor.count
-			cursor.close()
-			return a > 0
-		}
-
-		/**
-		 * @return count of download items
-		 */
-		val downloadCount: Int
-			@Throws(MissingResourceException::class)
-			get() {
-				val cursor = getDatabase().query(DOWNLOADS, arrayOf())
-				val a = cursor.count
-				cursor.close()
-				return a
-			}
-	}
-
 	object DatabaseChapter {
 		//TODO Dev access code
 
@@ -1058,7 +949,7 @@ object Database {
 			get() {
 				Log.d(logID(), "Getting")
 				val cursor = getDatabase()
-						.query(NOVELS, stringArrayOf(PARENT_ID), "$BOOKMARKED=1")
+						.query(NOVELS, stringArrayOf(PARENT_ID), "$BOOKMARKED=1", orderBy = "$TITLE ASC")
 				val novelCards = ArrayList<Int>()
 				return if (cursor.count <= 0) {
 					cursor.close()
@@ -1221,6 +1112,7 @@ object Database {
 		}
 	}
 
+
 	object DatabaseUpdates {
 		fun trimDate(date: DateTime): DateTime {
 			val cal = Calendar.getInstance()
@@ -1372,5 +1264,114 @@ object Database {
 			}
 		}
 		*/
+	}
+
+	object DatabaseDownloads {
+		/**
+		 * Gets downloads that are stored
+		 *
+		 * @return DownloadItems to download
+		 */
+		val downloadList: ArrayList<DownloadItem>
+			@Throws(MissingResourceException::class)
+			get() {
+				val downloadItems = ArrayList<DownloadItem>()
+				val cursor = getDatabase().query(
+						DOWNLOADS,
+						null,
+						null,
+						null
+				)
+				while (cursor.moveToNext()) {
+					val id = cursor.getInt(PARENT_ID)
+					val nName = cursor.getString(NOVEL_NAME)
+					val cName = cursor.getString(CHAPTER_NAME)
+					val formatter = DatabaseIdentification.getFormatterIDFromChapterID(id)
+					downloadItems.add(DownloadItem((getByID(formatter)), nName, cName, id))
+				}
+				cursor.close()
+				return downloadItems
+			}
+
+		/**
+		 * Gets the first download item
+		 *
+		 * @return DownloadItem to download
+		 */
+		val firstDownload: DownloadItem?
+			@Throws(MissingResourceException::class)
+			get() {
+				val cursor = getDatabase().query(DOWNLOADS, limit = "1")
+				return if (cursor.count <= 0) {
+					cursor.close()
+					null
+				} else {
+					cursor.moveToNext()
+					val id = cursor.getInt(PARENT_ID)
+					val nName = cursor.getString(NOVEL_NAME)
+					val cName = cursor.getString(CHAPTER_NAME)
+					val formatter = DatabaseIdentification.getFormatterIDFromChapterID(id)
+					cursor.close()
+					DownloadItem(getByID(formatter), nName, cName, id)
+				}
+			}
+
+		/**
+		 * Removes download item
+		 *
+		 * @param downloadItem download item to remove
+		 */
+		@Throws(MissingResourceException::class)
+		fun removeDownload(downloadItem: DownloadItem) = getDatabase().delete(
+				DOWNLOADS,
+				"$PARENT_ID=?",
+				arrayOf("${getChapterIDFromChapterURL(downloadItem.chapterURL)}")
+		)
+
+		/**
+		 * Adds to download list
+		 *
+		 * @param downloadItem Download item to add
+		 */
+		@Throws(SQLException::class)
+		fun addToDownloads(downloadItem: DownloadItem) {
+			val v = ContentValues()
+			v.put(PARENT_ID, getChapterIDFromChapterURL(downloadItem.chapterURL))
+			v.put(NOVEL_NAME, downloadItem.novelName.clean())
+			v.put(CHAPTER_NAME, downloadItem.chapterName.clean())
+			v.put(PAUSED, 0)
+			getDatabase().insert(DOWNLOADS, v)
+		}
+
+		/**
+		 * Checks if is in download list
+		 *
+		 * @param downloadItem download item to check
+		 * @return if is in list
+		 */
+		@Throws(MissingResourceException::class)
+		fun inDownloads(downloadItem: DownloadItem): Boolean {
+			val cursor = getDatabase().query(
+					DOWNLOADS,
+					arrayOf(),
+					"${PARENT_ID}=?",
+					arrayOf("${getChapterIDFromChapterURL(downloadItem.chapterURL)}")
+			)
+			val a = cursor.count
+			cursor.close()
+			return a > 0
+		}
+
+		/**
+		 * @return count of download items
+		 */
+		val downloadCount: Int
+			@Throws(MissingResourceException::class)
+			get() {
+				val cursor = getDatabase().query(DOWNLOADS, arrayOf())
+				val a = cursor.count
+				cursor.close()
+				return a
+			}
 	}
 }

@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNov
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInNovels
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.updateNovel
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD
 
 
@@ -44,7 +44,7 @@ class NovelLoader(
 		val novelURL: String,
 		var novelID: Int,
 		val formatter: Formatter,
-		private val novelController: NovelController?,
+		private val novelInfoController: NovelInfoController?,
 		private val loadChapters: Boolean
 ) : AsyncTask<Void, Void, Boolean>() {
 	private var novelPage: Novel.Info = Novel.Info()
@@ -53,35 +53,37 @@ class NovelLoader(
 			novelLoader.novelURL,
 			novelLoader.novelID,
 			novelLoader.formatter,
-			novelLoader.novelController,
+			novelLoader.novelInfoController,
 			novelLoader.loadChapters
 	)
 
 	override fun onPreExecute() {
 		super.onPreExecute()
 		// Sets the refresh layout to give the user a visible cue
-		novelController?.activity?.runOnUiThread {
-			novelController.fragmentNovelMainRefresh?.isRefreshing = true
+		novelInfoController?.activity?.runOnUiThread {
+			novelInfoController.fragmentNovelMainRefresh?.isRefreshing = true
 		}
 	}
 
 	override fun onPostExecute(result: Boolean?) {
 		super.onPostExecute(result)
 		// If successful, it will complete the task
-		if (result == true)
-			novelController?.novelViewpager?.post {
+		if (result == true) {
+			novelInfoController?.novelController?.novelViewpager?.post {
 				// Set's the novel page to the fragment
-				novelController.novelPage = novelPage
+				novelInfoController.novelPage = novelPage
 
 				// After setting the page, it will tell the view to set data
-				novelController.novelInfoController?.setData()
+				novelInfoController.setData()
 
 				// Turns off refresh view
-				novelController.fragmentNovelMainRefresh?.isRefreshing = false
-				novelController.novelChaptersController?.recyclerArray =
-						novelController.novelPage.chapters as ArrayList<Novel.Chapter>
-				novelController.novelChaptersController?.setChapters()
+				novelInfoController.fragmentNovelMainRefresh?.isRefreshing = false
+				novelInfoController.novelController?.novelChaptersController?.let {
+					it.recyclerArray = novelInfoController.novelPage.chapters as ArrayList<Novel.Chapter>
+					it.setChapters()
+				}
 			}
+		}
 	}
 
 	override fun doInBackground(vararg params: Void?): Boolean {
@@ -97,7 +99,7 @@ class NovelLoader(
 
 				// Updates novelID
 				novelID = if (novelID <= 0) getNovelIDFromNovelURL(novelURL) else novelID
-				novelController?.novelID = novelID
+				novelInfoController?.novelID = novelID
 
 				// Goes through the chapterList
 				for (chapter: Novel.Chapter in novelPage.chapters)
@@ -108,8 +110,8 @@ class NovelLoader(
 			} catch (e: Exception) {
 				// Errors out the program and returns a false
 				Log.e("NovelLoader", "Error", e)
-				novelController?.activity?.runOnUiThread {
-					ErrorAlert(novelController.activity!!) { dialog: DialogInterface?, _: Int ->
+				novelInfoController?.activity?.runOnUiThread {
+					ErrorAlert(novelInfoController.activity!!) { dialog: DialogInterface?, _: Int ->
 						NovelLoader(this).execute();dialog?.dismiss()
 					}
 							.setMessage(e.message)

@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.library
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -138,19 +137,6 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 
 	private fun readFromDB() {
 		recyclerArray = DatabaseNovels.intLibrary
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			recyclerArray.sortWith(Comparator { novel: Int?, t1: Int? -> DatabaseNovels.getNovelTitle(novel!!).compareTo(DatabaseNovels.getNovelTitle(t1!!)) })
-		} else {
-			for (i in recyclerArray.size - 1 downTo 2) {
-				for (j in 0 until i) {
-					if (DatabaseNovels.getNovelTitle(recyclerArray[j]) > DatabaseNovels.getNovelTitle(recyclerArray[j + 1])) {
-						val indexOne = recyclerArray[j]
-						recyclerArray[j] = recyclerArray[j + 1]
-						recyclerArray[j + 1] = indexOne
-					}
-				}
-			}
-		}
 	}
 
 	/**

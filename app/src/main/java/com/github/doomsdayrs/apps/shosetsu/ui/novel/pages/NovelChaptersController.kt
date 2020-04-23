@@ -7,7 +7,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,12 +66,14 @@ import kotlin.collections.ArrayList
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  *
  */
-class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapter>() {
+class NovelChaptersController(bundle: Bundle)
+	: RecyclerController<ChaptersAdapter, Novel.Chapter>(bundle) {
 	init {
 		setHasOptionsMenu(true)
 	}
 
 	override val layoutRes: Int = R.layout.novel_chapters
+	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
 	var novelController: NovelController? = null
 	var novelID: Int = -1
@@ -97,6 +102,9 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 	}
 
 	override fun onViewCreated(view: View) {
+		novelController = parentController as NovelController?
+		novelController?.novelChaptersController = this
+
 		resume?.visibility = GONE
 		setChapters()
 		resume?.setOnClickListener {
@@ -146,24 +154,6 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 				saved.getIntegerArrayList("selChapter") ?: arrayListOf()
 		)
 		novelID = saved.getInt("novelID")
-	}
-
-	/**
-	 * Creates view
-	 *
-	 * @param inflater           inflater to retrieve objects
-	 * @param container          container of this fragment
-	 * @return View
-	 */
-	override fun onCreateView(
-			inflater: LayoutInflater,
-			container: ViewGroup,
-			savedViewState: Bundle?
-	): View {
-		novelController = parentController as NovelController?
-		novelController!!.novelChaptersController = this
-		Log.d("NovelFragmentChapters", "Creating")
-		return super.onCreateView(inflater, container, savedViewState)
 	}
 
 	/**
@@ -262,7 +252,7 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 			for ((_, title, link) in ten)
 				DownloadManager.addToDownload(activity!!, DownloadItem(
 						novelController!!.formatter,
-						novelController!!.novelPage.title,
+						novelController!!.novelInfoController!!.novelPage!!.title,
 						title,
 						getChapterIDFromChapterURL(link)
 				))
@@ -271,7 +261,9 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 
 	operator fun contains(novelChapter: Novel.Chapter): Boolean {
 		try {
-			for (n in selectedChapters) if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true)) return true
+			for (n in selectedChapters)
+				if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true))
+					return true
 		} catch (e: MissingResourceException) {
 			e.handle(logID(), true)
 		}
@@ -280,13 +272,15 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 
 	private fun findMinPosition(): Int {
 		var min: Int = recyclerArray.size
-		for (x in recyclerArray.indices) if (contains(recyclerArray[x])) if (x < min) min = x
+		for (x in recyclerArray.indices) if (contains(recyclerArray[x]))
+			if (x < min) min = x
 		return min
 	}
 
 	private fun findMaxPosition(): Int {
 		var max = -1
-		for (x in recyclerArray.indices.reversed()) if (contains(recyclerArray[x])) if (x > max) max = x
+		for (x in recyclerArray.indices.reversed()) if (contains(recyclerArray[x]))
+			if (x > max) max = x
 		return max
 	}
 
@@ -302,9 +296,13 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 			for (x in novelChapters.indices) {
 				if (novelChapters[x] == chapterURL) {
 					return if (isArrayReversed!!) {
-						if (x - 1 != -1) getChapter(novelChapters[x - 1]) else getChapter(novelChapters[x])
+						if (x - 1 != -1) getChapter(novelChapters[x - 1])
+						else
+							getChapter(novelChapters[x])
 					} else {
-						if (x + 1 != novelChapters.size) getChapter(novelChapters[x + 1]) else getChapter(novelChapters[x])
+						if (x + 1 != novelChapters.size)
+							getChapter(novelChapters[x + 1]) else
+							getChapter(novelChapters[x])
 					}
 				}
 			}
@@ -316,9 +314,15 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 			for (x in novelChapters.indices) {
 				if (novelChapters[x].link == chapterURL) {
 					return if (isArrayReversed) {
-						if (x - 1 != -1) getChapter(getChapterIDFromChapterURL(novelChapters[x - 1].link)) else getChapter(getChapterIDFromChapterURL(novelChapters[x].link))
+						if (x - 1 != -1)
+							getChapter(getChapterIDFromChapterURL(novelChapters[x - 1].link))
+						else
+							getChapter(getChapterIDFromChapterURL(novelChapters[x].link))
 					} else {
-						if (x + 1 != novelChapters.size) getChapter(getChapterIDFromChapterURL(novelChapters[x + 1].link)) else getChapter(getChapterIDFromChapterURL(novelChapters[x].link))
+						if (x + 1 != novelChapters.size)
+							getChapter(getChapterIDFromChapterURL(novelChapters[x + 1].link))
+						else
+							getChapter(getChapterIDFromChapterURL(novelChapters[x].link))
 					}
 				}
 			}
@@ -426,7 +430,7 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 										activity!!,
 										DownloadItem(
 												novelController!!.formatter,
-												novelController!!.novelPage.title,
+												novelController!!.novelInfoController!!.novelPage!!.title,
 												title,
 												getChapterIDFromChapterURL(link)
 										)
@@ -443,7 +447,7 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 												activity!!,
 												DownloadItem(
 														novelController!!.formatter,
-														novelController!!.novelPage.title,
+														novelController!!.novelInfoController!!.novelPage!!.title,
 														title,
 														id
 												)
@@ -477,7 +481,7 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 										activity!!,
 										DownloadItem(
 												novelController!!.formatter,
-												novelController!!.novelPage.title,
+												novelController!!.novelInfoController!!.novelPage!!.title,
 												next.title,
 												getChapterIDFromChapterURL(next.link)
 										)
@@ -504,7 +508,12 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 			try {
 				val chapter = getChapter(chapterID)
 				if (!isSaved(chapterID)) {
-					val downloadItem = DownloadItem(novelController!!.formatter, novelController!!.novelPage.title, chapter!!.title, chapterID)
+					val downloadItem = DownloadItem(
+							novelController!!.formatter,
+							novelController!!.novelInfoController!!.novelPage!!.title,
+							chapter!!.title,
+							chapterID
+					)
 					DownloadManager.addToDownload(activity, downloadItem)
 				}
 			} catch (e: MissingResourceException) {
@@ -519,7 +528,12 @@ class NovelChaptersController : RecyclerController<ChaptersAdapter, Novel.Chapte
 		for (chapterID in selectedChapters) {
 			try {
 				val chapter = getChapter(chapterID)
-				if (isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(novelController!!.formatter, novelController!!.novelPage.title, chapter!!.title, chapterID))
+				if (isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(
+						novelController!!.formatter,
+						novelController!!.novelInfoController!!.novelPage!!.title,
+						chapter!!.title,
+						chapterID
+				))
 			} catch (e: MissingResourceException) {
 				handleExceptionLogging(e)
 				return

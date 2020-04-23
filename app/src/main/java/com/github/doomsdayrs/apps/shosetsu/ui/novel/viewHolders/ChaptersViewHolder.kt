@@ -127,14 +127,14 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 						if (!Database.DatabaseChapter.isSaved(chapterID)) {
 							val downloadItem = DownloadItem(
 									chaptersController.novelController!!.formatter,
-									chaptersController.novelController!!.novelPage.title,
+									chaptersController.novelController!!.novelInfoController!!.novelPage.title,
 									novelChapter.title,
 									chapterID
 							)
 							addToDownload(chaptersController.activity, downloadItem)
 						} else if (delete(itemView.context, DownloadItem(
 										chaptersController.novelController!!.formatter,
-										chaptersController.novelController!!.novelPage.title,
+										chaptersController.novelController!!.novelInfoController!!.novelPage.title,
 										novelChapter.title,
 										chapterID
 								))) {

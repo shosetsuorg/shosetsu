@@ -2,8 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao
 
 import androidx.room.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.CountIDTuple
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.RepositoryEntity
 import org.doomsdayrs.apps.shosetsulib.BuildConfig
 
@@ -31,64 +29,6 @@ import org.doomsdayrs.apps.shosetsulib.BuildConfig
  *
  * @author github.com/doomsdayrs
  */
-
-@Dao
-interface FormatterDao {
-	@Insert(onConflict = OnConflictStrategy.ABORT, entity = ExtensionEntity::class)
-	fun insertFormatter(extensionEntity: ExtensionEntity)
-
-	@Update
-	fun updateFormatter(extensionEntity: ExtensionEntity)
-
-	@Delete
-	fun deleteFormatter(extensionEntity: ExtensionEntity)
-
-	@Query("SELECT * FROM extensions")
-	fun loadFormatters(): Array<ExtensionEntity>
-
-	@Query("SELECT fileName FROM extensions WHERE installed = 1 AND enabled = 1 ORDER BY name ASC")
-	fun loadPoweredFormatterFileNames(): Array<String>
-
-	@Query("SELECT * FROM extensions WHERE formatterID = :formatterID LIMIT 1")
-	fun loadFormatter(formatterID: Int): ExtensionEntity
-
-	@Query("SELECT md5 FROM extensions WHERE formatterID = :formatterID LIMIT 1")
-	fun loadFormatterMD5(formatterID: Int): String
-
-	@Query("SELECT COUNT(*) FROM extensions WHERE formatterID= :formatterID")
-	fun formatterCountFromID(formatterID: Int): Int
-
-	@Ignore
-	fun doesFormatterExist(formatterID: Int): Boolean = formatterCountFromID(formatterID) > 0
-
-}
-
-@Dao
-interface ScriptLibDao {
-	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ExtensionLibraryEntity::class)
-	fun insertScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
-
-	@Query("SELECT * FROM libs WHERE repositoryID = :repositoryID")
-	fun loadLibByRepoID(repositoryID: Int): Array<ExtensionLibraryEntity>
-
-	@Update
-	fun updateScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
-
-	@Query("SELECT COUNT(*) FROM libs WHERE scriptName = :name")
-	fun scriptLibCountFromName(name: String): Int
-
-	@Ignore
-	fun doesRepositoryExist(url: String): Boolean = scriptLibCountFromName(url) > 0
-
-	@Transaction
-	fun insertOrUpdateScriptLib(extensionLibraryEntity: ExtensionLibraryEntity) {
-		if (scriptLibCountFromName(extensionLibraryEntity.scriptName) > 0) {
-			updateScriptLib(extensionLibraryEntity)
-		} else insertScriptLib(extensionLibraryEntity)
-	}
-
-}
-
 @Dao
 interface RepositoryDao {
 	@Insert(onConflict = OnConflictStrategy.ABORT, entity = RepositoryEntity::class)

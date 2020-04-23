@@ -9,19 +9,29 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.bookmarkNovel
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNovelBookmarked
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.unBookmarkNovel
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_ID
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_URL
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -54,16 +64,28 @@ import com.squareup.picasso.Picasso
  * The page you see when you select a novel
  *
  */
-class NovelInfoController : ViewedController() {
-
+class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 	override val layoutRes: Int = R.layout.novel_main
 
 	// Var
-
-	var novelID: Int = -1
+	var novelID: Int
 	var novelController: NovelController? = null
+	var novelPage = Novel.Info()
+	var novelURL: String
+	var formatter: Formatter
+	var status = Status.UNREAD
+
+	init {
+		setHasOptionsMenu(true)
+		novelID = bundle.getInt(BUNDLE_ID, -1)
+		novelURL = bundle.getString(BUNDLE_URL, "")
+		formatter = Formatters.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
+	}
 
 	// UI items
+
+	@Attach(R.id.fragment_novel_main_refresh)
+	var fragmentNovelMainRefresh: SwipeRefreshLayout? = null
 
 	@Attach(id.novel_add)
 	var novelAdd: FloatingActionButton? = null
@@ -135,10 +157,28 @@ class NovelInfoController : ViewedController() {
 	}
 
 	override fun onViewCreated(view: View) {
-		novelController = parentController as NovelController
-		if (novelController != null) {
-			novelController!!.novelInfoController = this
+		novelController = parentController as NovelController?
+		novelController?.novelInfoController = this
+
+		if (Utilities.isOnline && Database.DatabaseNovels.isNotInNovels(novelID)) {
+			novelController?.novelTabLayout!!.post {
+				NovelLoader(
+						novelURL,
+						novelID,
+						formatter,
+						this,
+						true
+				).execute()
+			}
+		} else {
+			novelPage = Database.DatabaseNovels.getNovelPage(novelID)
+			//   novelChapters = DatabaseChapter.getChapters(novelID)
+			status = Database.DatabaseNovels.getNovelStatus(novelID)
+			if (activity != null && activity!!.actionBar != null)
+				activity?.actionBar?.title = novelPage.title
 		}
+
+
 		novelAdd?.hide()
 		if (novelController != null && isNovelBookmarked(novelID))
 			novelAdd?.setImageResource(R.drawable.ic_baseline_check_circle_24)
@@ -153,6 +193,19 @@ class NovelInfoController : ViewedController() {
 					novelAdd?.setImageResource(R.drawable.ic_add_circle_outline_24dp)
 				}
 		}
+
+		fragmentNovelMainRefresh?.setOnRefreshListener {
+				novelController?.let { novelController ->
+					context?.toast("")
+					NovelLoader(
+							novelController.novelURL,
+							novelController.novelID,
+							novelController.formatter,
+							this,
+							true
+					).execute()
+			}
+		}
 	}
 
 
@@ -161,19 +214,19 @@ class NovelInfoController : ViewedController() {
 	 */
 	fun setData(view: View? = this.view) {
 		view?.post {
-			Utilities.setActivityTitle(activity, novelController!!.novelPage.title)
-			novelTitle?.text = novelController!!.novelPage.title
+			Utilities.setActivityTitle(activity, novelPage.title)
+			novelTitle?.text = novelPage.title
 
-			if (novelController!!.novelPage.authors.isNotEmpty())
-				novelAuthor?.text = novelController!!.novelPage.authors.contentToString()
+			if (novelPage.authors.isNotEmpty())
+				novelAuthor?.text = novelPage.authors.contentToString()
 
-			novelDescription?.text = novelController!!.novelPage.description
+			novelDescription?.text = novelPage.description
 
-			if (novelController!!.novelPage.artists.isNotEmpty())
-				novelArtists?.text = novelController!!.novelPage.artists.contentToString()
+			if (novelPage.artists.isNotEmpty())
+				novelArtists?.text = novelPage.artists.contentToString()
 
-			novelStatus?.text = novelController!!.status.status
-			when (novelController!!.novelPage.status) {
+			novelStatus?.text = status.status
+			when (novelPage.status) {
 				Novel.Status.PAUSED -> {
 					novelPublish?.setText(R.string.paused)
 				}
@@ -186,26 +239,20 @@ class NovelInfoController : ViewedController() {
 				else -> novelPublish?.setText(R.string.unknown)
 			}
 			if (context != null) {
-				for (string in novelController!!.novelPage.genres) {
+				for (string in novelPage.genres) {
 					val chip = Chip(novelGenres!!.context)
 					chip.text = string
 					novelGenres?.addView(chip)
 				}
 			} else novelGenres!!.visibility = View.GONE
 
-			if (novelController!!.novelPage.imageURL.isNotEmpty()) {
-				Picasso.get().load(novelController!!.novelPage.imageURL).into(novelImage)
-				Picasso.get().load(novelController!!.novelPage.imageURL).into(novelImageBackground)
+			if (novelPage.imageURL.isNotEmpty()) {
+				Picasso.get().load(novelPage.imageURL).into(novelImage)
+				Picasso.get().load(novelPage.imageURL).into(novelImageBackground)
 			}
-			novelAdd!!.show()
-			novelFormatter!!.text = novelController!!.formatter.name
+			novelAdd?.show()
+			novelFormatter?.text = novelController!!.formatter.name
 		} ?: Log.e("NovelFragmentInfo", "NovelFragmentInfo view is null")
 	}
 
-	/**
-	 * Constructor
-	 */
-	init {
-		setHasOptionsMenu(true)
-	}
 }
