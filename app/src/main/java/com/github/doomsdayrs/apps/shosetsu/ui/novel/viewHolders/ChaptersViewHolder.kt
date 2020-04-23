@@ -52,10 +52,6 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-	var novelChapter: Novel.Chapter? = null
-
-	var chapterID = -1
-
 	var cardView: MaterialCardView = itemView.findViewById(R.id.recycler_novel_chapter_card)
 	var constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraint)
 	var checkBox: CheckBox = itemView.findViewById(R.id.recycler_novel_chapter_selectCheck)
@@ -67,27 +63,39 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 	private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 
 	var popupMenu: PopupMenu? = null
-	var novelChaptersController: NovelChaptersController? = null
+
+	lateinit var chaptersController: NovelChaptersController
+	lateinit var novelChapter: Novel.Chapter
+	var chapterID = -1
 
 	@Throws(MissingResourceException::class)
 	fun addToSelect() {
-		if (!novelChaptersController!!.contains(novelChapter!!)) novelChaptersController!!.selectedChapters.add(getChapterIDFromChapterURL(novelChapter!!.link)) else removeFromSelect()
-		if ((novelChaptersController!!.selectedChapters.size == 1 || novelChaptersController!!.selectedChapters.size <= 0) && novelChaptersController!!.inflater != null) novelChaptersController!!.activity?.invalidateOptionsMenu()
-		novelChaptersController!!.updateAdapter()
+		if (!chaptersController.contains(novelChapter))
+			chaptersController.selectedChapters.add(getChapterIDFromChapterURL(novelChapter.link))
+		else removeFromSelect()
+		if ((chaptersController.selectedChapters.isNotEmpty() || chaptersController.selectedChapters.size <= 0) && chaptersController.inflater != null)
+			chaptersController.activity?.invalidateOptionsMenu()
+		chaptersController.updateAdapter()
 	}
 
 	private fun removeFromSelect() {
-		if (novelChaptersController!!.contains(novelChapter!!)) for (x in novelChaptersController!!.selectedChapters.indices) if (novelChaptersController!!.selectedChapters[x] == getChapterIDFromChapterURL(novelChapter!!.link)) {
-			novelChaptersController!!.selectedChapters.removeAt(x)
-			return
-		}
+		if (chaptersController.contains(novelChapter))
+			for (x in chaptersController.selectedChapters.indices)
+				if (chaptersController.selectedChapters[x] == getChapterIDFromChapterURL(novelChapter.link)) {
+					chaptersController.selectedChapters.removeAt(x)
+					return
+				}
 	}
 
 	override fun onClick(v: View) {
 		try {
-			if (novelChaptersController != null)
-				if (novelChaptersController!!.activity != null && novelChaptersController!!.novelFragment != null)
-					openChapter(novelChaptersController!!.activity!!, novelChapter!!, novelChaptersController!!.novelFragment!!.novelID, novelChaptersController!!.novelFragment!!.formatter.formatterID)
+			if (chaptersController.activity != null && chaptersController.novelController != null)
+				openChapter(
+						chaptersController.activity!!,
+						novelChapter,
+						chaptersController.novelController!!.novelID,
+						chaptersController.novelController!!.formatter.formatterID
+				)
 		} catch (e: MissingResourceException) {
 			TODO("Add error handling here")
 		}
@@ -102,47 +110,68 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 			try {
 				when (menuItem.itemId) {
 					R.id.popup_chapter_menu_bookmark -> {
-						if (Utilities.toggleBookmarkChapter(chapterID)) title.setTextColor(ContextCompat.getColor(itemView.context, R.color.bookmarked)) else {
+						if (Utilities.toggleBookmarkChapter(chapterID))
+							title.setTextColor(ContextCompat.getColor(
+									itemView.context,
+									R.color.bookmarked
+							))
+						else {
 							Log.i("SetDefault", ChaptersAdapter.DefaultTextColor.toString())
 							title.setTextColor(ChaptersAdapter.DefaultTextColor)
 						}
 
-						novelChaptersController!!.updateAdapter()
+						chaptersController.updateAdapter()
 						return@setOnMenuItemClickListener true
 					}
 					R.id.popup_chapter_menu_download -> {
 						if (!Database.DatabaseChapter.isSaved(chapterID)) {
-							val downloadItem = DownloadItem(novelChaptersController!!.novelFragment!!.formatter, novelChaptersController!!.novelFragment!!.novelPage.title, novelChapter!!.title, chapterID)
-							addToDownload(novelChaptersController!!.activity, downloadItem)
-						} else {
-							if (delete(itemView.context, DownloadItem(novelChaptersController!!.novelFragment!!.formatter, novelChaptersController!!.novelFragment!!.novelPage.title, novelChapter!!.title, chapterID))) {
-								downloadTag.visibility = View.INVISIBLE
-							}
+							val downloadItem = DownloadItem(
+									chaptersController.novelController!!.formatter,
+									chaptersController.novelController!!.novelPage.title,
+									novelChapter.title,
+									chapterID
+							)
+							addToDownload(chaptersController.activity, downloadItem)
+						} else if (delete(itemView.context, DownloadItem(
+										chaptersController.novelController!!.formatter,
+										chaptersController.novelController!!.novelPage.title,
+										novelChapter.title,
+										chapterID
+								))) {
+							downloadTag.visibility = View.INVISIBLE
 						}
-						novelChaptersController!!.updateAdapter()
+						chaptersController.updateAdapter()
 						return@setOnMenuItemClickListener true
 					}
 					R.id.popup_chapter_menu_mark_read -> {
 						Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
-						novelChaptersController!!.updateAdapter()
+						chaptersController.updateAdapter()
 						return@setOnMenuItemClickListener true
 					}
 					R.id.popup_chapter_menu_mark_unread -> {
 						Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD)
-						novelChaptersController!!.updateAdapter()
+						chaptersController.updateAdapter()
 						return@setOnMenuItemClickListener true
 					}
 					R.id.popup_chapter_menu_mark_reading -> {
 						Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
-						novelChaptersController!!.updateAdapter()
+						chaptersController.updateAdapter()
 						return@setOnMenuItemClickListener true
 					}
 					R.id.browser -> {
-						if (novelChaptersController!!.activity != null) Utilities.openInBrowser(novelChaptersController!!.activity!!, novelChapter!!.link)
+						if (chaptersController.activity != null)
+							Utilities.openInBrowser(
+									chaptersController.activity!!,
+									novelChapter.link
+							)
 						return@setOnMenuItemClickListener true
 					}
 					R.id.webview -> {
-						if (novelChaptersController!!.activity != null) openInWebview(novelChaptersController!!.activity!!, novelChapter!!.link)
+						if (chaptersController.activity != null)
+							openInWebview(
+									chaptersController.activity!!,
+									novelChapter.link
+							)
 						return@setOnMenuItemClickListener true
 					}
 					else -> return@setOnMenuItemClickListener false
@@ -159,7 +188,7 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 			addToSelect()
 			true
 		}
-		moreOptions.setOnClickListener { popupMenu!!.show() }
+		moreOptions.setOnClickListener { popupMenu?.show() }
 		checkBox.setOnClickListener { addToSelect() }
 
 	}

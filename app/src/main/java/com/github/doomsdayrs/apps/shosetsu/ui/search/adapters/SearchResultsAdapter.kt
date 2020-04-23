@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -38,70 +39,74 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : RecyclerView.Adapter<ResultViewHolder>() {
-    private var intArray: ArrayList<Int> = arrayListOf(-1)
-    private var novelArray: List<Array<String>> = arrayListOf()
+	private var intArray: ArrayList<Int> = arrayListOf(-1)
+	private var novelArray: List<Array<String>> = arrayListOf()
 
-    constructor(array: ArrayList<Int>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
-        this.intArray = array
-    }
+	constructor(array: ArrayList<Int>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
+		this.intArray = array
+	}
 
-    constructor(array: List<Array<String>>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
-        novelArray = array
-    }
+	constructor(array: List<Array<String>>, searchViewHolder: SearchViewHolder) : this(searchViewHolder) {
+		novelArray = array
+	}
 
-    private fun isWebsiteSearch(): Boolean {
-        return intArray.size == 1 && intArray[0] == -1
-    }
+	private fun isWebsiteSearch(): Boolean {
+		return intArray.size == 1 && intArray[0] == -1
+	}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.search_result, parent, false)
-        return ResultViewHolder(view)
-    }
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
+		val view = LayoutInflater.from(parent.context).inflate(R.layout.search_result, parent, false)
+		return ResultViewHolder(view)
+	}
 
-    override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        val title: String
-        val url: String
-        val imageURL: String
-        val formatter: Formatter
-        val id: Int
+	override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
+		val title: String
+		val url: String
+		val imageURL: String
+		val formatter: Formatter
+		val id: Int
 
-        if (isWebsiteSearch()) {
-            val novel: Array<String> = novelArray[position]
-            title = novel[0]
-            url = novel[1]
-            imageURL = novel[2]
-            formatter = searchViewHolder.formatter
-            id = Database.DatabaseIdentification.getNovelIDFromNovelURL(imageURL)
-        } else {
-            val novel: NovelCard = Database.DatabaseNovels.getNovel(intArray[position])
-            title = novel.title
-            url = novel.novelURL
-            imageURL = novel.imageURL
-            formatter = Formatters.getByID(novel.formatterID)
-            id = novel.novelID
-        }
+		if (isWebsiteSearch()) {
+			val novel: Array<String> = novelArray[position]
+			title = novel[0]
+			url = novel[1]
+			imageURL = novel[2]
+			formatter = searchViewHolder.formatter
+			id = Database.DatabaseIdentification.getNovelIDFromNovelURL(imageURL)
+		} else {
+			val novel: NovelCard = Database.DatabaseNovels.getNovel(intArray[position])
+			title = novel.title
+			url = novel.novelURL
+			imageURL = novel.imageURL
+			formatter = Formatters.getByID(novel.formatterID)
+			id = novel.novelID
+		}
 
-        if (title.isNotEmpty())
-            holder.textView.text = title
-        if (imageURL.isNotEmpty())
-            Picasso.get().load(imageURL).into(holder.imageView)
+		if (title.isNotEmpty())
+			holder.textView.text = title
+		if (imageURL.isNotEmpty())
+			Picasso.get().load(imageURL).into(holder.imageView)
 
-        holder.itemView.setOnClickListener {
-            val novelFragment = NovelController()
-            novelFragment.novelURL = url
-            novelFragment.formatter = formatter
-            novelFragment.novelID = id
-            searchViewHolder.searchController.router.pushController(novelFragment.withFadeTransaction())
-        }
+		holder.itemView.setOnClickListener {
+			searchViewHolder.searchController.router.pushController(
+					NovelController(
+							bundleOf(
+									NovelController.BUNDLE_URL to url,
+									NovelController.BUNDLE_FORMATTER to formatter.formatterID,
+									NovelController.BUNDLE_ID to id
+							)
+					).withFadeTransaction()
+			)
+		}
 
-    }
+	}
 
 
-    override fun getItemCount(): Int {
-        return if (isWebsiteSearch())
-            novelArray.size
-        else
-            intArray.size
+	override fun getItemCount(): Int {
+		return if (isWebsiteSearch())
+			novelArray.size
+		else
+			intArray.size
 
-    }
+	}
 }

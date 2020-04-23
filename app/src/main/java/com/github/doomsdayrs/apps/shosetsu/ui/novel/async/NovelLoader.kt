@@ -40,63 +40,83 @@ import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD
  *
  * @author github.com/doomsdayrs
  */
-class NovelLoader(val novelURL: String, var novelID: Int, val formatter: Formatter, private val novelFragment: NovelController?, private val loadChapters: Boolean) : AsyncTask<Void, Void, Boolean>() {
-    private var novelPage: Novel.Info = Novel.Info()
+class NovelLoader(
+		val novelURL: String,
+		var novelID: Int,
+		val formatter: Formatter,
+		private val novelController: NovelController?,
+		private val loadChapters: Boolean
+) : AsyncTask<Void, Void, Boolean>() {
+	private var novelPage: Novel.Info = Novel.Info()
 
-    constructor(novelLoader: NovelLoader) : this(novelLoader.novelURL, novelLoader.novelID, novelLoader.formatter, novelLoader.novelFragment, novelLoader.loadChapters)
+	constructor(novelLoader: NovelLoader) : this(
+			novelLoader.novelURL,
+			novelLoader.novelID,
+			novelLoader.formatter,
+			novelLoader.novelController,
+			novelLoader.loadChapters
+	)
 
-    override fun onPreExecute() {
-        super.onPreExecute()
-        // Sets the refresh layout to give the user a visible cue
-        novelFragment?.activity?.runOnUiThread { novelFragment.fragmentNovelMainRefresh?.isRefreshing = true }
-    }
+	override fun onPreExecute() {
+		super.onPreExecute()
+		// Sets the refresh layout to give the user a visible cue
+		novelController?.activity?.runOnUiThread {
+			novelController.fragmentNovelMainRefresh?.isRefreshing = true
+		}
+	}
 
-    override fun onPostExecute(result: Boolean?) {
-        super.onPostExecute(result)
-        // If successful, it will complete the task
-        if (result == true)
-            novelFragment?.fragmentNovelViewpager?.post {
-                // Set's the novel page to the fragment
-                novelFragment.novelPage = novelPage
+	override fun onPostExecute(result: Boolean?) {
+		super.onPostExecute(result)
+		// If successful, it will complete the task
+		if (result == true)
+			novelController?.novelViewpager?.post {
+				// Set's the novel page to the fragment
+				novelController.novelPage = novelPage
 
-                // After setting the page, it will tell the view to set data
-                novelFragment.novelInfoController?.setData()
+				// After setting the page, it will tell the view to set data
+				novelController.novelInfoController?.setData()
 
-                // Turns off refresh view
-                novelFragment.fragmentNovelMainRefresh?.isRefreshing = false
-                novelFragment.novelChapters = novelFragment.novelPage.chapters
-                novelFragment.novelChaptersController?.setChapters()
-            }
-    }
+				// Turns off refresh view
+				novelController.fragmentNovelMainRefresh?.isRefreshing = false
+				novelController.novelChaptersController?.recyclerArray =
+						novelController.novelPage.chapters as ArrayList<Novel.Chapter>
+				novelController.novelChaptersController?.setChapters()
+			}
+	}
 
-    override fun doInBackground(vararg params: Void?): Boolean {
-        return run {
-            try {
-                // Parses data
-                novelPage = formatter.parseNovel(novelURL, loadChapters) {}
+	override fun doInBackground(vararg params: Void?): Boolean {
+		return run {
+			try {
+				// Parses data
+				novelPage = formatter.parseNovel(novelURL, loadChapters) {}
 
-                // Checks if it is not in DB, if true then it adds else it updates
-                if (isNotInNovels(novelURL))
-                    addNovelToDatabase(formatter.formatterID, novelPage, novelURL, UNREAD.a)
-                else updateNovel(novelURL, novelPage)
+				// Checks if it is not in DB, if true then it adds else it updates
+				if (isNotInNovels(novelURL))
+					addNovelToDatabase(formatter.formatterID, novelPage, novelURL, UNREAD.a)
+				else updateNovel(novelURL, novelPage)
 
-                // Updates novelID
-                novelID = if (novelID <= 0) getNovelIDFromNovelURL(novelURL) else novelID
-                novelFragment?.novelID = novelID
+				// Updates novelID
+				novelID = if (novelID <= 0) getNovelIDFromNovelURL(novelURL) else novelID
+				novelController?.novelID = novelID
 
-                // Goes through the chapterList
-                for (chapter: Novel.Chapter in novelPage.chapters) if (isNotInChapters(chapter.link)) addToChapters(novelID, chapter) else updateChapter(chapter)
-                true
-            } catch (e: Exception) {
-                // Errors out the program and returns a false
-                Log.e("NovelLoader", "Error", e)
-                novelFragment?.activity?.runOnUiThread {
-                    ErrorAlert(novelFragment.activity!!) { dialog: DialogInterface?, _: Int -> NovelLoader(this).execute();dialog?.dismiss() }
-                            .setMessage(e.message)
-                            .show()
-                }
-                false
-            }
-        }
-    }
+				// Goes through the chapterList
+				for (chapter: Novel.Chapter in novelPage.chapters)
+					if (isNotInChapters(chapter.link))
+						addToChapters(novelID, chapter)
+					else updateChapter(chapter)
+				true
+			} catch (e: Exception) {
+				// Errors out the program and returns a false
+				Log.e("NovelLoader", "Error", e)
+				novelController?.activity?.runOnUiThread {
+					ErrorAlert(novelController.activity!!) { dialog: DialogInterface?, _: Int ->
+						NovelLoader(this).execute();dialog?.dismiss()
+					}
+							.setMessage(e.message)
+							.show()
+				}
+				false
+			}
+		}
+	}
 }

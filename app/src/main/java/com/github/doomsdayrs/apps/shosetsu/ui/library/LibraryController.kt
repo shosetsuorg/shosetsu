@@ -116,7 +116,7 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 			}
 			R.id.remove_from_library -> {
 				for (i in selectedNovels) {
-					DatabaseNovels.unBookmark(i)
+					DatabaseNovels.unBookmarkNovel(i)
 					var x = 0
 					while (x < recyclerArray.size) {
 						if (recyclerArray[x] == i) recyclerArray.removeAt(x)

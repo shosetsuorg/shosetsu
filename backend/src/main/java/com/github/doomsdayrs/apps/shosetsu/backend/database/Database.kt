@@ -889,7 +889,7 @@ object Database {
 		 * @param novelID novelID of the novel
 		 */
 		@Throws(SQLException::class)
-		fun bookMark(novelID: Int) {
+		fun bookmarkNovel(novelID: Int) {
 			getDatabase().execSQL("update $NOVELS set $BOOKMARKED=1 WHERE $PARENT_ID=$novelID")
 		}
 
@@ -900,12 +900,12 @@ object Database {
 		 */
 		@Throws(SQLException::class)
 
-		fun unBookmark(novelID: Int) {
+		fun unBookmarkNovel(novelID: Int) {
 			getDatabase().execSQL("update $NOVELS set $BOOKMARKED=0 WHERE $PARENT_ID=$novelID")
 		}
 
 		@Throws(MissingResourceException::class)
-		fun isBookmarked(novelID: Int): Boolean {
+		fun isNovelBookmarked(novelID: Int): Boolean {
 			val cursor = getDatabase()
 					.rawQuery(
 							"SELECT $BOOKMARKED FROM $NOVELS WHERE $PARENT_ID=$novelID",
@@ -1215,9 +1215,9 @@ object Database {
 				newNovel: Novel.Info,
 				status: Int
 		) {
-			unBookmark(oldID)
+			unBookmarkNovel(oldID)
 			if (isNotInNovels(newURL)) addNovelToDatabase(formatterID, newNovel, newURL, status)
-			bookMark(getNovelIDFromNovelURL(newURL))
+			bookmarkNovel(getNovelIDFromNovelURL(newURL))
 		}
 	}
 

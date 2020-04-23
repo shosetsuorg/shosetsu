@@ -33,38 +33,44 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
  *
  * @author github.com/doomsdayrs
  */
-class NovelPagerAdapter(router: NovelController, private val fragments: List<Controller>) : RouterPagerAdapter(router) {
-    companion object {
-        const val INFO_CONTROLLER = 0
-        const val CHAPTERS_CONTROLLER = 1
-        const val TRACK_CONTROLLER = 2
-    }
+class NovelPagerAdapter(router: NovelController, private val fragments: List<Controller>)
+	: RouterPagerAdapter(router) {
+	companion object {
+		const val INFO_CONTROLLER = 0
+		const val CHAPTERS_CONTROLLER = 1
+		const val TRACK_CONTROLLER = 2
+	}
 
-    private val titles = ArrayAdapter(router.context!!, android.R.layout.simple_spinner_item, router.resources!!.getStringArray(R.array.novel_fragment_names))
+	private val titles by lazy {
+		ArrayAdapter(
+				router.context!!,
+				android.R.layout.simple_spinner_item,
+				router.resources!!.getStringArray(R.array.novel_fragment_names)
+		)
+	}
 
-    override fun configureRouter(router: Router, position: Int) {
-        if (!router.hasRootController()) {
+	override fun configureRouter(router: Router, position: Int) {
+		if (!router.hasRootController()) {
+			Log.d("SwapScreen", fragments[position].toString())
+			val controller = when (position) {
+				INFO_CONTROLLER -> {
+					NovelInfoController()
+				}
+				CHAPTERS_CONTROLLER -> {
+					NovelChaptersController()
+				}
+				else -> error("Wrong position $position")
+			}
+			router.setRoot(RouterTransaction.with(controller))
+		}
+	}
 
-            Log.d("SwapScreen", fragments[position].toString())
-            val controller = when (position) {
-                INFO_CONTROLLER -> {
-                    NovelInfoController()
-                }
-                CHAPTERS_CONTROLLER -> {
-                    NovelChaptersController()
-                }
-                else -> error("Wrong position $position")
-            }
-            router.setRoot(RouterTransaction.with(controller))
-        }
-    }
+	override fun getCount(): Int {
+		return fragments.size
+	}
 
-    override fun getCount(): Int {
-        return fragments.size
-    }
-
-    override fun getPageTitle(position: Int): CharSequence? {
-        return titles.getItem(position)
-    }
+	override fun getPageTitle(position: Int): CharSequence? {
+		return titles.getItem(position)
+	}
 
 }

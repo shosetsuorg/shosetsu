@@ -4,10 +4,11 @@ import android.view.View
 import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.NovelBackgroundAdd
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
@@ -35,30 +36,31 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
  * @author github.com/doomsdayrs
  */
 class NovelListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
-    var url: String? = null
-    var novelID = 0
-    val imageView: ImageView = itemView.findViewById(R.id.image)
-    val title: TextView = itemView.findViewById(R.id.title)
+	var url: String? = null
+	var novelID = 0
+	val imageView: ImageView = itemView.findViewById(R.id.image)
+	val title: TextView = itemView.findViewById(R.id.title)
 
-    init {
-        itemView.setOnClickListener(this)
-        itemView.setOnLongClickListener(this)
-    }
+	init {
+		itemView.setOnClickListener(this)
+		itemView.setOnLongClickListener(this)
+	}
 
-    lateinit var catalogueFragment: CatalogueController
-    lateinit var formatter: Formatter
+	lateinit var catalogueFragment: CatalogueController
+	lateinit var formatter: Formatter
 
-    override fun onClick(v: View) {
-        val novelFragment = NovelController()
-        novelFragment.novelURL = url!!
-        novelFragment.formatter = formatter
-        novelFragment.novelID = Database.DatabaseIdentification.getNovelIDFromNovelURL(url!!)
-        catalogueFragment.router.pushController(novelFragment.withFadeTransaction())
-    }
+	override fun onClick(v: View) =
+			catalogueFragment.router.pushController(NovelController(
+					bundleOf(
+							NovelController.BUNDLE_URL to url,
+							NovelController.BUNDLE_FORMATTER to formatter.formatterID,
+							NovelController.BUNDLE_ID to getNovelIDFromNovelURL(url!!)
+					)
+			).withFadeTransaction())
 
-    override fun onLongClick(view: View): Boolean {
-        NovelBackgroundAdd(this).execute(view)
-        return true
-    }
+	override fun onLongClick(view: View): Boolean {
+		NovelBackgroundAdd(this).execute(view)
+		return true
+	}
 
 }

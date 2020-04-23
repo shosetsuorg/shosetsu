@@ -42,13 +42,13 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelListingViewHolde
                     views[0]?.context?.toast("Added ${novelCardsViewHolder.title.text}")
                 }
             }
-            if (novelCardsViewHolder != null && Database.DatabaseNovels.isBookmarked(novelCardsViewHolder.novelID)) {
+            if (novelCardsViewHolder != null && Database.DatabaseNovels.isNovelBookmarked(novelCardsViewHolder.novelID)) {
                 views[0]?.post {
                     views[0]?.context?.toast("Already in the library")
                 }
             } else {
                 if (novelCardsViewHolder != null) {
-                    Database.DatabaseNovels.bookMark(Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCardsViewHolder.url!!))
+                    Database.DatabaseNovels.bookmarkNovel(Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCardsViewHolder.url!!))
                     views[0]?.post {
                         views[0]?.context?.toast("Added ${novelCardsViewHolder.title.text}")
                     }

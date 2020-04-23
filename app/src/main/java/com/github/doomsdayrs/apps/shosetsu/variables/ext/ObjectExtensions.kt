@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.app.Activity
-import android.database.sqlite.SQLiteException
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterText
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
@@ -10,7 +9,6 @@ import org.acra.ACRA.getErrorReporter
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.Exception
 import java.util.*
 
 /*

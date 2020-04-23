@@ -116,7 +116,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 					val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.CHAPTERS, null)!!
 					if (cursor.count > 0) while (cursor.moveToNext()) {
 						val novelID = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
-						val b = Database.DatabaseNovels.isBookmarked(novelID)
+						val b = Database.DatabaseNovels.isNovelBookmarked(novelID)
 						if (b) {
 							val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
 							val chapter = JSONObject()

@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder
@@ -42,10 +42,19 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class ChaptersAdapter(private val novelChaptersController: NovelChaptersController) : RecyclerView.Adapter<ChaptersViewHolder>(), FastScrollRecyclerView.SectionedAdapter {
+class ChaptersAdapter(private val chaptersController: NovelChaptersController)
+	: RecyclerView.Adapter<ChaptersViewHolder>(), FastScrollRecyclerView.SectionedAdapter {
+	companion object {
+		var DefaultTextColor = 0
+		private var set = false
+	}
 
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ChaptersViewHolder {
-		val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_novel_chapter, viewGroup, false)
+		val view = LayoutInflater.from(viewGroup.context).inflate(
+				R.layout.recycler_novel_chapter,
+				viewGroup,
+				false
+		)
 		val chaptersViewHolder = ChaptersViewHolder(view)
 		if (!set) {
 			DefaultTextColor = chaptersViewHolder.title.currentTextColor
@@ -57,65 +66,88 @@ class ChaptersAdapter(private val novelChaptersController: NovelChaptersControll
 
 	override fun onBindViewHolder(chaptersViewHolder: ChaptersViewHolder, i: Int) {
 		try {
-			val novelChapter = novelChaptersController.novelFragment!!.novelChapters[i]
+			val novelChapter = chaptersController.recyclerArray[i]
 			chaptersViewHolder.novelChapter = novelChapter
 			chaptersViewHolder.title.text = novelChapter.title
-			chaptersViewHolder.novelChaptersController = novelChaptersController
+			chaptersViewHolder.chaptersController = chaptersController
 			val chapterID: Int
 			chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
 			chaptersViewHolder.chapterID = chapterID
-			//TODO The getNovelID in this method likely will cause slowdowns due to IO
-			if (Database.DatabaseChapter.isNotInChapters(novelChapter.link)) Database.DatabaseChapter.addToChapters(DatabaseIdentification.getNovelIDFromNovelURL(novelChaptersController.novelFragment!!.novelURL), novelChapter)
 
-			if (Database.DatabaseChapter.isBookMarked(chapterID)) {
-				chaptersViewHolder.title.setTextColor(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.bookmarked))
-				chaptersViewHolder.popupMenu?.menu?.findItem(R.id.popup_chapter_menu_bookmark)?.title = "UnBookmark"
+			if (DatabaseChapter.isBookMarked(chapterID)) {
+				chaptersViewHolder.title.setTextColor(ContextCompat.getColor(
+						chaptersViewHolder.itemView.context,
+						R.color.bookmarked
+				))
+				chaptersViewHolder.popupMenu?.menu?.findItem(R.id.popup_chapter_menu_bookmark)
+						?.title = "UnBookmark"
 			} else {
-				chaptersViewHolder.popupMenu?.menu?.findItem(R.id.popup_chapter_menu_bookmark)?.title = "Bookmark"
+				chaptersViewHolder.popupMenu?.menu?.findItem(R.id.popup_chapter_menu_bookmark)
+						?.title = "Bookmark"
 			}
 
-			if (novelChaptersController.contains(novelChapter)) {
+			if (chaptersController.contains(novelChapter)) {
 				chaptersViewHolder.cardView.strokeWidth = Utilities.selectedStrokeWidth
 				chaptersViewHolder.checkBox.isChecked = true
 			} else {
 				chaptersViewHolder.cardView.strokeWidth = 0
 				chaptersViewHolder.checkBox.isChecked = false
 			}
-			if (novelChaptersController.selectedChapters.size > 0) {
-				chaptersViewHolder.checkBox.visibility = View.VISIBLE
-			} else chaptersViewHolder.checkBox.visibility = View.GONE
-			if (Database.DatabaseChapter.isSaved(chapterID)) {
+
+			chaptersViewHolder.checkBox.visibility =
+					(if (chaptersController.selectedChapters.size > 0) View.VISIBLE else View.GONE)
+
+			if (DatabaseChapter.isSaved(chapterID)) {
 				chaptersViewHolder.downloadTag.visibility = View.VISIBLE
-				chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download).title = "Delete"
+				chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download)
+						.title = "Delete"
 			} else {
-				chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download).title = "Download"
+				chaptersViewHolder.popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download)
+						.title = "Download"
 				chaptersViewHolder.downloadTag.visibility = View.INVISIBLE
 			}
-			when (Database.DatabaseChapter.getChapterStatus(chapterID)) {
+			when (DatabaseChapter.getChapterStatus(chapterID)) {
 				Status.READING -> {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 						chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
 					} else {
-						(chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
+						(chaptersViewHolder.itemView as MaterialCardView).strokeColor =
+								ColorDrawable(ContextCompat.getColor(
+										chaptersViewHolder.itemView.context,
+										R.color.colorAccent
+								)).color
 					}
 					chaptersViewHolder.status.text = Status.READING.status
 					chaptersViewHolder.readTag.visibility = View.VISIBLE
 					chaptersViewHolder.read.visibility = View.VISIBLE
-					chaptersViewHolder.read.text = Database.DatabaseChapter.getY(chapterID).toString()
+					chaptersViewHolder.read.text = DatabaseChapter.getY(chapterID).toString()
 				}
 				Status.UNREAD -> {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 						chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
 					} else {
-						(chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
+						(chaptersViewHolder.itemView as MaterialCardView).strokeColor =
+								ColorDrawable(ContextCompat.getColor(
+										chaptersViewHolder.itemView.context,
+										R.color.colorAccent
+								)).color
 					}
 					chaptersViewHolder.status.text = Status.UNREAD.status
 				}
 				Status.READ -> {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-						if (novelChaptersController.context != null) chaptersViewHolder.constraintLayout.foreground = ColorDrawable(ContextCompat.getColor(novelChaptersController.context!!, R.color.shade))
+						if (chaptersController.context != null)
+							chaptersViewHolder.constraintLayout.foreground =
+									ColorDrawable(ContextCompat.getColor(
+											chaptersController.context!!,
+											R.color.shade
+									))
 					} else {
-						(chaptersViewHolder.itemView as MaterialCardView).strokeColor = ColorDrawable(ContextCompat.getColor(chaptersViewHolder.itemView.context, R.color.colorAccent)).color
+						(chaptersViewHolder.itemView as MaterialCardView).strokeColor =
+								ColorDrawable(ContextCompat.getColor(
+										chaptersViewHolder.itemView.context,
+										R.color.colorAccent
+								)).color
 					}
 					chaptersViewHolder.status.text = Status.READ.status
 					chaptersViewHolder.readTag.visibility = View.GONE
@@ -125,7 +157,7 @@ class ChaptersAdapter(private val novelChaptersController: NovelChaptersControll
 
 				}
 			}
-			if (novelChaptersController.selectedChapters.size <= 0)
+			if (chaptersController.selectedChapters.size <= 0)
 				chaptersViewHolder.itemView.setOnClickListener(chaptersViewHolder)
 			else chaptersViewHolder.itemView.setOnClickListener { chaptersViewHolder.addToSelect() }
 		} catch (e: MissingResourceException) {
@@ -136,11 +168,11 @@ class ChaptersAdapter(private val novelChaptersController: NovelChaptersControll
 	}
 
 	override fun getItemCount(): Int {
-		return if (novelChaptersController.novelFragment != null) novelChaptersController.novelFragment!!.novelChapters.size else 0
+		return chaptersController.recyclerArray.size
 	}
 
 	override fun getSectionName(position: Int): String {
-		return "C ${novelChaptersController.novelFragment!!.novelChapters[position].order}"
+		return "C ${chaptersController.recyclerArray[position].order}"
 	}
 
 	override fun getItemId(position: Int): Long {
@@ -151,9 +183,5 @@ class ChaptersAdapter(private val novelChaptersController: NovelChaptersControll
 		return position
 	}
 
-	companion object {
-		var DefaultTextColor = 0
-		private var set = false
-	}
 
 }

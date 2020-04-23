@@ -7,7 +7,7 @@
 
 
     <TextView
-        android:id="@+id/fragment_novel_description"
+        android:id="@+id/novel_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -19,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_novel_genres" />
+        app:layout_constraintTop_toBottomOf="@+id/novel_genres" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +30,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_novel_add"
+        app:layout_constraintEnd_toStartOf="@+id/novel_add"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -57,12 +57,12 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_novel_publish"
+            app:layout_constraintEnd_toStartOf="@+id/novel_publish"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
         <TextView
-            android:id="@+id/fragment_novel_publish"
+            android:id="@+id/novel_publish"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -85,7 +85,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
         <TextView
-            android:id="@+id/fragment_novel_artists"
+            android:id="@+id/novel_artists"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -107,7 +107,7 @@
             app:layout_constraintEnd_toEndOf="@+id/textView9"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_novel_title" />
+            app:layout_constraintTop_toBottomOf="@+id/novel_title" />
 
         <TextView
             android:id="@+id/textView15"
@@ -122,7 +122,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         <TextView
-            android:id="@+id/fragment_novel_title"
+            android:id="@+id/novel_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -133,7 +133,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/fragment_novel_formatter"
+            android:id="@+id/novel_formatter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -144,7 +144,7 @@
             app:layout_constraintTop_toTopOf="@+id/textView4" />
 
         <TextView
-            android:id="@+id/fragment_novel_author"
+            android:id="@+id/novel_author"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -155,7 +155,7 @@
             app:layout_constraintTop_toTopOf="@+id/textView14" />
 
         <TextView
-            android:id="@+id/fragment_novel_status"
+            android:id="@+id/novel_status"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -167,7 +167,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fragment_novel_add"
+        android:id="@+id/novel_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -180,14 +180,14 @@
         app:srcCompat="@drawable/ic_add_circle_outline_24dp" />
 
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/fragment_novel_genres"
+        android:id="@+id/novel_genres"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_novel_description"
+        app:layout_constraintBottom_toTopOf="@+id/novel_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
