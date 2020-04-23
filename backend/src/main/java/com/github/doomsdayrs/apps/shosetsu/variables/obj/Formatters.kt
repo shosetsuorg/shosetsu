@@ -8,6 +8,7 @@ import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
+import java.lang.Exception
 
 /*
  * This file is part of Shosetsu.
@@ -34,39 +35,34 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCar
  */
 object Formatters {
 	val unknown = object : Formatter {
-		override val baseURL: String
-			get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 		override val formatterID: Int = -1
+
+		override val baseURL: String
+			get() = throw Exception("Unknown Formatter")
 		override val hasCloudFlare: Boolean
-			get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+			get() = throw Exception("Unknown Formatter")
 		override val hasSearch: Boolean
-			get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+			get() = throw Exception("Unknown Formatter")
 		override val imageURL: String
-			get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+			get() = throw Exception("Unknown Formatter")
 		override val listings: Array<Formatter.Listing>
-			get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+			get() = throw Exception("Unknown Formatter")
 		override val name: String
-			get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+			get() = throw Exception("Unknown Formatter")
 		override val searchFilters: Array<Filter<*>>
-			get() = TODO("Not yet implemented")
+			get() = throw Exception("Unknown Formatter")
 		override val settings: Array<Filter<*>>
-			get() = TODO("Not yet implemented")
+			get() = throw Exception("Unknown Formatter")
 
-		override fun getPassage(chapterURL: String): String {
-			TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-		}
+		override fun getPassage(chapterURL: String): String = throw Exception("Unknown Formatter")
 
-		override fun parseNovel(novelURL: String, loadChapters: Boolean, reporter: (status: String) -> Unit): Novel.Info {
-			TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-		}
+		override fun parseNovel(novelURL: String, loadChapters: Boolean, reporter: (status: String) -> Unit) =
+				throw Exception("Unknown Formatter")
 
-		override fun search(data: Array<*>, reporter: (status: String) -> Unit): Array<Novel.Listing> {
-			TODO("Not yet implemented")
-		}
+		override fun search(data: Array<*>, reporter: (status: String) -> Unit) =
+				throw Exception("Unknown Formatter")
 
-		override fun updateSetting(id: Int, value: Any?) {
-			TODO("Not yet implemented")
-		}
+		override fun updateSetting(id: Int, value: Any?): Unit = throw Exception("Unknown Formatter")
 	}
 
 	val formatters = ArrayList<Formatter>()
