@@ -14,11 +14,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.repositoryDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.services.RepositoryService
 import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
-import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.newStruc.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import java.io.File
@@ -64,8 +62,6 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		}
 
 		override fun doInBackground(vararg params: Void?): Void? {
-			Database.shosetsuRoomDatabase = ShosetsuRoomDatabase.getRoomDatabase(splashScreen)
-			repositoryDao.initalizeData()
 			RepositoryService.task(splashScreen) { onProgressUpdate(it) }
 			return null
 		}

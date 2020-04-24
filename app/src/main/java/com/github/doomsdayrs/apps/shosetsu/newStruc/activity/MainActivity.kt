@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.main
+package com.github.doomsdayrs.apps.shosetsu.newStruc.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -68,7 +68,10 @@ import org.luaj.vm2.lib.jse.JsePlatform
  */
 //TODO Inform users to refresh their libraries
 class MainActivity : AppCompatActivity(), Supporter {
+
+	// The main router of the application
 	private lateinit var router: Router
+
 	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
 	/**
@@ -290,4 +293,6 @@ class MainActivity : AppCompatActivity(), Supporter {
 		}
 
 	}
+
+
 }

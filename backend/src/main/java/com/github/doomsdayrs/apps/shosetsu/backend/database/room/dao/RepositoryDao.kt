@@ -63,7 +63,7 @@ interface RepositoryDao {
 	fun doesRepositoryExist(url: String): Boolean = repositoryCountFromURL(url) > 0
 
 	@Transaction
-	fun initalizeData() {
+	fun initializeData() {
 		val branch = if (BuildConfig.DEBUG) "dev" else "master"
 		val name = if (BuildConfig.DEBUG) "dev" else "master"
 		val repo = RepositoryEntity(

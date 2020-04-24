@@ -1,7 +1,13 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao
+package com.github.doomsdayrs.apps.shosetsu.newStruc.viewmodel.factory
 
-import androidx.room.*
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.NovelEntity
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.github.doomsdayrs.apps.shosetsu.newStruc.application.ShosetsuApplication
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.TT
+import org.kodein.di.direct
 
 /*
  * This file is part of shosetsu.
@@ -27,23 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.NovelE
  *
  * @author github.com/doomsdayrs
  */
-@Dao
-interface NovelsDao {
-	@Insert
-	fun insertNovel(novelEntity: NovelEntity)
-
-	@Update
-	fun updateNovel(novelEntity: NovelEntity)
-
-	@Delete
-	fun deleteNovel(novelEntity: NovelEntity)
-
-	@Query("SELECT * FROM novels")
-	fun loadNovels(): Array<NovelEntity>
-
-	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadNovel(novelID: Int): NovelEntity
-
-	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters
+class ViewModelFactory(context: Context) : ViewModelProvider.Factory, KodeinAware {
+	override val kodein: Kodein = (context as ShosetsuApplication).kodein
+	override fun <T : ViewModel> create(modelClass: Class<T>): T = kodein.direct.Instance(TT(modelClass))
 }

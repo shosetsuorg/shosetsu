@@ -47,28 +47,6 @@ object Database {
 	 * SQLITEDatabase
 	 */
 	lateinit var sqLiteDatabase: SQLiteDatabase
-	lateinit var shosetsuRoomDatabase: ShosetsuRoomDatabase
-
-	val downloadsDao: DownloadsDao
-		get() = shosetsuRoomDatabase.downloadsDao()
-
-	val scriptLibDao: ScriptLibDao
-		get() = shosetsuRoomDatabase.scriptLibDao()
-
-	val updatesDao: UpdatesDao
-		get() = shosetsuRoomDatabase.updatesDao()
-
-	val repositoryDao: RepositoryDao
-		get() = shosetsuRoomDatabase.repositoryDao()
-
-	val extensionsDao: ExtensionsDao
-		get() = shosetsuRoomDatabase.formatterDao()
-
-	val chaptersDao: ChaptersDao
-		get() = shosetsuRoomDatabase.chaptersDao()
-
-	val novelsDao: NovelsDao
-		get() = shosetsuRoomDatabase.novelsDao()
 
 	fun isInit(): Boolean {
 		return this::sqLiteDatabase.isInitialized

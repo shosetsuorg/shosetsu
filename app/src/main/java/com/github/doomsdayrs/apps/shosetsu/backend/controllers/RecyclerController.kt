@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.newStruc.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 
 /*

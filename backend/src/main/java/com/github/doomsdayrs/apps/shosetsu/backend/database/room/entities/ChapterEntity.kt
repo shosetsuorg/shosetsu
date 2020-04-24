@@ -3,7 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities
 import androidx.annotation.NonNull
 import androidx.room.*
 import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
 
 /*
  * This file is part of shosetsu.
@@ -78,5 +80,14 @@ data class ChapterEntity(
 	var id: Int = -1
 
 	@Ignore
-	fun toDownload() = DownloadEntity(id, link, formatter)
+	fun toDownload(): DownloadEntity {
+		val novelEntity = novelsDao.loadNovel(novelID)
+		return DownloadEntity(
+				id,
+				link,
+				title.clean(),
+				novelEntity.title.clean(),
+				formatter
+		)
+	}
 }

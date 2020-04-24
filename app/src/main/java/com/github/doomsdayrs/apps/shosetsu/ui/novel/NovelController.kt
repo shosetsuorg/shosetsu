@@ -5,7 +5,7 @@ import android.view.View
 import androidx.viewpager.widget.ViewPager
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.newStruc.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController

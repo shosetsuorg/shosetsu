@@ -60,11 +60,12 @@ abstract class ShosetsuRoomDatabase : RoomDatabase() {
 							"room_database"
 					).build()
 				}
+			databaseShosetsu.repositoryDao().initializeData()
 			return databaseShosetsu
 		}
 	}
 
-	abstract fun formatterDao(): ExtensionsDao
+	abstract fun extensionsDao(): ExtensionsDao
 	abstract fun repositoryDao(): RepositoryDao
 	abstract fun scriptLibDao(): ScriptLibDao
 	abstract fun updatesDao(): UpdatesDao

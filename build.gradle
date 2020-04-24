@@ -4,6 +4,10 @@ ext {
 
 buildscript {
     ext.kotlin_version = '1.3.72'
+    ext.kodein_version = '6.5.5'
+    ext.conductor_version = '3.0.0-rc4'
+    ext.conductor_version_support = '3.0.0-rc2'
+
     repositories {
         google()
         jcenter()

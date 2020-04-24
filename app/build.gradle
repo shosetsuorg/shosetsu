@@ -135,9 +135,10 @@ dependencies {
     implementation "ch.acra:acra-dialog:$acra_version"
 
     // Conductor
-    implementation 'com.bluelinelabs:conductor:3.0.0-rc4'
-    implementation 'com.bluelinelabs:conductor-support:3.0.0-rc2'
-    implementation 'com.bluelinelabs:conductor-androidx-transition:3.0.0-rc4'
+    implementation "com.bluelinelabs:conductor:$conductor_version"
+    implementation "com.bluelinelabs:conductor-support:$conductor_version_support"
+    implementation "com.bluelinelabs:conductor-androidx-transition:$conductor_version"
+    implementation "com.bluelinelabs:conductor-archlifecycle:$conductor_version"
 
 
     // FastScroll
@@ -155,8 +156,8 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
-    // New UI again
-    def nav_version = "2.3.0-alpha05"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    // Kodein
+    implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
+    implementation "org.kodein.di:kodein-di-framework-android-core:$kodein_version"
+    implementation "org.kodein.di:kodein-di-framework-android-x:$kodein_version"
 }

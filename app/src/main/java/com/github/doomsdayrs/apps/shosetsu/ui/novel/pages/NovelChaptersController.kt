@@ -27,6 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
@@ -67,7 +68,7 @@ import kotlin.collections.ArrayList
  *
  */
 class NovelChaptersController(bundle: Bundle)
-	: RecyclerController<ChaptersAdapter, Novel.Chapter>(bundle) {
+	: RecyclerController<ChaptersAdapter, ChapterEntity>(bundle) {
 	init {
 		setHasOptionsMenu(true)
 	}

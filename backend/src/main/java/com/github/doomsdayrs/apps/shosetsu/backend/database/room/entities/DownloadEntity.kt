@@ -52,6 +52,8 @@ data class DownloadEntity(
 		@PrimaryKey
 		val chapterID: Int,
 		val chapterURL: String,
+		val chapterName: String,
+		val novelName: String,
 		val formatter: Formatter,
 		var status: Int = 0
 ) : Serializable

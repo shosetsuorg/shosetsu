@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity">
+    tools:context="com.github.doomsdayrs.apps.shosetsu.newStruc.activity.MainActivity">
 
 
     <LinearLayout

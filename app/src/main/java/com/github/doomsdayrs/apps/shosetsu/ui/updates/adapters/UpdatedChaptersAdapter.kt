@@ -29,14 +29,13 @@ import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.chaptersDao
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters.getByID
 
 /**
  * Shosetsu
@@ -65,9 +64,9 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
 		updatedChapterHolder.popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
 			var novelPage = Novel.Info()
 			val nURL = updatedChapterHolder.novelChapter?.link
-			if (nURL != null) novelPage = Database.DatabaseNovels.getNovelPage(getNovelIDFromNovelURL(nURL))
-			val formatter: Formatter = getByID(getFormatterIDFromNovelURL(nURL!!))
-			val chapterID = getChapterIDFromChapterURL(chapterEntity.link)
+			if (nURL != null)
+				novelPage = novelsDao.loadNovel(chapterEntity.novelID)
+			val formatter: Formatter = chapterEntity.formatter
 			when (menuItem.itemId) {
 				R.id.popup_chapter_menu_bookmark -> {
 					if (Utilities.toggleBookmarkChapter(chapterID)) updatedChapterHolder.title.setTextColor(updatedChapterHolder.itemView.resources.getColor(R.color.bookmarked)) else {
@@ -79,8 +78,8 @@ class UpdatedChaptersAdapter(private val updatedNovelHolder: UpdatedNovelHolder)
 				}
 				R.id.popup_chapter_menu_download -> {
 					run {
-						if (!isSaved(chapterID)) {
-							val downloadItem = DownloadEntity(chapterID, novelPage.title, updatedChapterHolder.novelChapter?.title!!)
+						if (!chapterEntity.isSaved) {
+							val downloadItem = chapterEntity.toDownload()
 							DownloadManager.addToDownload(updatedNovelHolder.activity, downloadItem)
 						} else {
 							if (DownloadManager.delete(updatedChapterHolder.itemView.context, DownloadEntity(chapterID, novelPage.title, updatedChapterHolder.novelChapter?.title!!))) {
