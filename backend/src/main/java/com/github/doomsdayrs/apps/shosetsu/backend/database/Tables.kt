@@ -25,15 +25,18 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database
  * @author github.com/doomsdayrs
  */
 enum class Tables(private val key: String) {
-    NOVEL_IDENTIFICATION("novel_identification"),
-    CHAPTER_IDENTIFICATION("chapter_identification"),
-    NOVELS("novels"),
-    UPDATES("updates"),
-    DOWNLOADS("downloads"),
-    CHAPTERS("chapters"),
-    FORMATTERS("formatters");
+	NOVEL_IDENTIFICATION("novel_identification"),
+	CHAPTER_IDENTIFICATION("chapter_identification"),
+	NOVELS("novels"),
+	CHAPTERS("chapters"),
 
-    override fun toString(): String {
-        return key
-    }
+	@Deprecated("ROOM")
+	UPDATES("updates"),
+
+	@Deprecated("ROOM")
+	DOWNLOADS("downloads"), ;
+
+	override fun toString(): String {
+		return key
+	}
 }

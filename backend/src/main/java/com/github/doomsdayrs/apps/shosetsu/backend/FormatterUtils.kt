@@ -3,7 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 import android.content.Context
 import android.util.Log
 import app.shosetsu.lib.LuaFormatter
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.repositoryDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.RepositoryEntity
@@ -116,10 +117,10 @@ object FormatterUtils {
 		val id = meta.getInt("id")
 		val repo = meta.getJSONObject("repo")
 
-		shosetsuRoomDatabase.formatterDao().insertFormatter(
+		extensionsDao.insertFormatter(
 				ExtensionEntity(
-						formatterID = id,
-						repositoryID = shosetsuRoomDatabase.repositoryDao()
+						id = id,
+						repoID = repositoryDao
 								.createIfNotExist(RepositoryEntity(
 										url = repo.getString("URL"),
 										name = repo.getString("name")
@@ -141,7 +142,7 @@ object FormatterUtils {
 		val meta = file.getMeta()
 
 		// Checks MD5 sum
-		val sum = shosetsuRoomDatabase.formatterDao()
+		val sum = extensionsDao
 				.loadFormatterMD5(meta.getInt("id"))
 
 		require(sum.isNotEmpty())
@@ -175,8 +176,8 @@ object FormatterUtils {
 			extensionLibraryEntity: ExtensionLibraryEntity,
 			context: Context,
 			file: File = makeLibraryFile(context, extensionLibraryEntity),
-			repo: RepositoryEntity = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(
-					extensionLibraryEntity.repositoryID
+			repo: RepositoryEntity = repositoryDao.loadRepositoryFromID(
+					extensionLibraryEntity.repoID
 			)
 	): Boolean {
 		return quickResponse(makeLibraryURL(repo, extensionLibraryEntity)).body?.let {
@@ -192,8 +193,8 @@ object FormatterUtils {
 			extensionEntity: ExtensionEntity,
 			context: Context,
 			file: File = makeFormatterFile(context, extensionEntity),
-			repo: RepositoryEntity = shosetsuRoomDatabase.repositoryDao().loadRepositoryFromID(
-					extensionEntity.repositoryID
+			repo: RepositoryEntity = repositoryDao.loadRepositoryFromID(
+					extensionEntity.repoID
 			)
 	): Boolean {
 		return quickResponse(makeFormatterURL(repo, extensionEntity)).body?.let {
@@ -204,7 +205,7 @@ object FormatterUtils {
 	}
 
 	fun deleteFormatter(extensionEntity: ExtensionEntity, context: Context) {
-		Formatters.removeByID(extensionEntity.formatterID)
+		Formatters.removeByID(extensionEntity.id)
 		makeFormatterFile(context, extensionEntity).takeIf { it.exists() }?.delete()
 	}
 

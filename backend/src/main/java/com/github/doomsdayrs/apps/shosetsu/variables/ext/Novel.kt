@@ -1,4 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.variables.ext
+
+import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -20,17 +24,17 @@ package com.github.doomsdayrs.apps.shosetsu.variables
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
 
-/**
- * Used to handle responses from backend to front end
- *
- * @param succeeded [Boolean] True if task completed successfully
- * @param failureReason [String] Reason why the task was not completed
- * @param e [Exception] Exception? of the error
- * @param value [T] Value to be returned
- */
-data class HandledReturns<T>(val succeeded: Boolean = false, val failureReason: String = "", val e: Exception? = null, val value: T? = null)
+fun Novel.Chapter.entity(novelEntity: NovelEntity) =
+		ChapterEntity(
+				link = this.link,
+				novelID = novelEntity.id,
+				formatter = novelEntity.formatter,
+				title = this.title,
+				releaseDate = this.release,
+				order = this.order
+		)

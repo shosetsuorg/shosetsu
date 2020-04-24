@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 
-
 /*
  * This file is part of Shosetsu.
  *
@@ -31,100 +30,6 @@ import androidx.annotation.NonNull;
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "database.db";
 
-
-    private static final String NOVEL_IDENTIFICATION_CREATE = "create table if not exists " +
-            Tables.NOVEL_IDENTIFICATION + "(" +
-            Columns.ID + " integer primary key autoincrement," +
-            Columns.URL + " text unique not null," +
-            Columns.FORMATTER_ID + " integer not null" +
-            ")";
-
-    private static final String CHAPTER_IDENTIFICATION_CREATE = "create table if not exists " + Tables.CHAPTER_IDENTIFICATION + "(" +
-            Columns.ID + " integer primary key autoincrement," +
-
-            // Refers to NOVEL
-            Columns.PARENT_ID + " integer not null," +
-            Columns.URL + " text unique not null" +
-            ")";
-
-
-    private static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
-            // Refers to CHAPERID
-            Columns.ID + " integer primary key," +
-
-            // Refers to NOVELID
-            Columns.PARENT_ID + " integer not null," +
-
-            Columns.TITLE + " text," +
-            Columns.RELEASE_DATE + " text," +
-            Columns.ORDER + " integer not null," +
-
-            // > Scroll position, either 0 for top, or X for the position
-            Columns.Y_POSITION + " integer not null," +
-            // > Either 0 for none, or an incremented count (Status)
-            Columns.READ_CHAPTER + " integer not null," +
-            // > Either 0 for false or 1 for true.
-            Columns.BOOKMARKED + " integer  not null," +
-
-            // If 1 then true and SAVE_PATH has data, false otherwise
-            Columns.IS_SAVED + " integer not null," +
-            Columns.SAVE_PATH + " text" +
-            ")";
-
-    //TODO Figure out a legitimate way to structure all this data
-
-    // Library that the user has saved their novels to
-    private static final String NOVELS = "create TABLE if not exists " + Tables.NOVELS + " (" +
-            // Refers to NOVELID
-            Columns.PARENT_ID + " integer not null," +
-            // If in the library
-            Columns.BOOKMARKED + " integer not null," +
-
-            Columns.READING_STATUS + " text," +
-            Columns.READER_TYPE + " integer," +
-
-            // This bulk is the data values
-            Columns.TITLE + " text," +
-            Columns.IMAGE_URL + " text," +
-            Columns.DESCRIPTION + " text," +
-            Columns.GENRES + " text," +
-            Columns.AUTHORS + " text," +
-            Columns.STATUS + " text not null," +
-            Columns.TAGS + " text," +
-            Columns.ARTISTS + " text," +
-            Columns.LANGUAGE + " text," +
-            Columns.MAX_CHAPTER_PAGE + " integer" +
-            ")";
-
-
-    // Watches download listing
-    private static final String DOWNLOADS_CREATE = "create TABLE if not exists " + Tables.DOWNLOADS + "(" +
-            // Refers to CHAPERID
-            Columns.PARENT_ID + " integer not null," +
-
-            Columns.NOVEL_NAME + " text not null," +
-            Columns.CHAPTER_NAME + " text not null," +
-
-            // If this novel should be skipped over
-            // TODO Put this into use in Download_Manager
-            // TODO put status as a column here
-            Columns.PAUSED + " integer not null)";
-
-    private static final String UPDATES_CREATE = "create table if not exists " + Tables.UPDATES + "(" +
-            // Refers to CHAPERID
-            Columns.ID + " integer not null," +
-            // Refers to NovelID
-            Columns.PARENT_ID + " integer not null," +
-            Columns.TIME + " integer not null" + ")";
-
-    private static final String FORMATTERS_CREATE = "create table if not exists " + Tables.FORMATTERS + "(" +
-            Columns.FORMATTER_NAME + " text not null unique," +
-            Columns.FORMATTER_ID + " integer not null unique," +
-            Columns.MD5 + " text not null," +
-            Columns.HAS_CUSTOM_REPO + " integer not null," +
-            Columns.CUSTOM_REPO + " text)";
-
-
     /**
      * Constructor
      *
@@ -141,15 +46,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(@NonNull SQLiteDatabase db) {
-        db.execSQL(NOVEL_IDENTIFICATION_CREATE);
-        db.execSQL(CHAPTER_IDENTIFICATION_CREATE);
-        db.execSQL(NOVELS);
-        db.execSQL(DOWNLOADS_CREATE);
-        db.execSQL(CHAPTERS_CREATE);
-        db.execSQL(UPDATES_CREATE);
-        db.execSQL(FORMATTERS_CREATE);
     }
-
 
     /**
      * Upgrades database
@@ -164,20 +61,11 @@ public class DBHelper extends SQLiteOpenHelper {
             //TODO Convert tables
             db.execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTERS);
             db.execSQL("DROP TABLE IF EXISTS " + Tables.NOVELS);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.DOWNLOADS);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.UPDATES);
-
-            db.execSQL(NOVEL_IDENTIFICATION_CREATE);
-            db.execSQL(CHAPTER_IDENTIFICATION_CREATE);
-
-            db.execSQL(NOVELS);
-            db.execSQL(DOWNLOADS_CREATE);
-            db.execSQL(CHAPTERS_CREATE);
-            db.execSQL(UPDATES_CREATE);
+            db.execSQL("DROP TABLE IF EXISTS downloads");
+            db.execSQL("DROP TABLE IF EXISTS updates");
         }
         if (oldVersion < 10) {
-            db.execSQL(FORMATTERS_CREATE);
+            // Convert to room~
         }
     }
-
 }

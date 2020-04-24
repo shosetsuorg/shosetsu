@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BU
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_ID
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_URL
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
@@ -73,7 +73,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 	var novelPage = Novel.Info()
 	var novelURL: String
 	var formatter: Formatter
-	var status = Status.UNREAD
+	var status = ReadingStatus.UNREAD
 
 	init {
 		setHasOptionsMenu(true)

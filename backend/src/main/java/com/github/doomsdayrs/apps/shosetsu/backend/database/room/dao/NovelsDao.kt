@@ -1,4 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao
+
+import androidx.room.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.NovelEntityWithChapters
 
 /*
  * This file is part of shosetsu.
@@ -20,17 +24,27 @@ package com.github.doomsdayrs.apps.shosetsu.variables
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
+@Dao
+interface NovelsDao {
+	@Insert
+	fun insertNovel(novelEntity: NovelEntity)
 
-/**
- * Used to handle responses from backend to front end
- *
- * @param succeeded [Boolean] True if task completed successfully
- * @param failureReason [String] Reason why the task was not completed
- * @param e [Exception] Exception? of the error
- * @param value [T] Value to be returned
- */
-data class HandledReturns<T>(val succeeded: Boolean = false, val failureReason: String = "", val e: Exception? = null, val value: T? = null)
+	@Update
+	fun updateNovel(novelEntity: NovelEntity)
+
+	@Delete
+	fun deleteNovel(novelEntity: NovelEntity)
+
+	@Query("SELECT * FROM novels")
+	fun loadNovels(): Array<NovelEntity>
+
+	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
+	fun loadNovel(novelID: Int): NovelEntity
+
+	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
+	fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters
+}

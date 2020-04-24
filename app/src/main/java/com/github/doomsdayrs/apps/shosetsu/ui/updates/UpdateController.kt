@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.Update
 import java.util.*
 
 /*
@@ -31,7 +31,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class UpdateController : RecyclerController<UpdatedNovelsAdapter, Update>() {
+class UpdateController : RecyclerController<UpdatedNovelsAdapter, UpdateEntity>() {
 	var date: Long = -1
 	private val novels = ArrayList<Int>()
 
@@ -45,7 +45,7 @@ class UpdateController : RecyclerController<UpdatedNovelsAdapter, Update>() {
 
 
 	override fun onViewCreated(view: View) {
-		recyclerArray = Database.DatabaseUpdates.getTimeBetween(date, date + 86399999)
+		recyclerArray.addAll(updatesDao.getTimeBetweenDates(date, date + 86399999))
 		recyclerArray.forEach { if (!novels.contains(it.novelID)) novels.add(it.novelID) }
 		adapter = UpdatedNovelsAdapter(novels, recyclerArray, activity!!)
 		//UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(recyclerArray, getActivity());

@@ -1,4 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.backend.database.room.converters
+
+import androidx.room.TypeConverter
+import app.shosetsu.lib.Novel
+import app.shosetsu.lib.Novel.Status.*
 
 /*
  * This file is part of shosetsu.
@@ -20,17 +24,24 @@ package com.github.doomsdayrs.apps.shosetsu.variables
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
+class NovelStatusConverter {
+	@TypeConverter
+	fun toInt(status: Novel.Status): Int = when (status) {
+		UNKNOWN -> -1
+		PUBLISHING -> 0
+		COMPLETED -> 1
+		PAUSED -> 2
+	}
 
-/**
- * Used to handle responses from backend to front end
- *
- * @param succeeded [Boolean] True if task completed successfully
- * @param failureReason [String] Reason why the task was not completed
- * @param e [Exception] Exception? of the error
- * @param value [T] Value to be returned
- */
-data class HandledReturns<T>(val succeeded: Boolean = false, val failureReason: String = "", val e: Exception? = null, val value: T? = null)
+	@TypeConverter
+	fun toStatus(int: Int): Novel.Status = when (int) {
+		0 -> PUBLISHING
+		1 -> COMPLETED
+		2 -> PAUSED
+		else -> UNKNOWN
+	}
+}

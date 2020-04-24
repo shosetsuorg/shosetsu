@@ -27,10 +27,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DATA_CHANGE
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_RELOAD_CHAPTERS_FROM_DB
@@ -246,15 +246,14 @@ class NovelChaptersController(bundle: Bundle)
 	}
 
 	private fun customAdd(count: Int) {
-
 		val ten = getCustom(count) { true }
 		if (!ten.isNullOrEmpty())
 			for ((_, title, link) in ten)
-				DownloadManager.addToDownload(activity!!, DownloadItem(
-						novelController!!.formatter,
+				DownloadManager.addToDownload(activity!!, DownloadEntity(
+						getChapterIDFromChapterURL(link),
 						novelController!!.novelInfoController!!.novelPage!!.title,
 						title,
-						getChapterIDFromChapterURL(link)
+						status = "Pending"
 				))
 	}
 
@@ -329,7 +328,7 @@ class NovelChaptersController(bundle: Bundle)
 		return null
 	}
 
-	fun getCustom(count: Int, check: (Status) -> Boolean): List<Novel.Chapter> {
+	fun getCustom(count: Int, check: (ReadingStatus) -> Boolean): List<Novel.Chapter> {
 		Log.d("NovelFragment", "CustomGet of chapters: Count:$count")
 		val customChapters: ArrayList<Novel.Chapter> = ArrayList()
 		val lastReadChapter = getLastRead()
@@ -377,12 +376,12 @@ class NovelChaptersController(bundle: Bundle)
 			if (!isArrayReversed)
 				for (x in recyclerArray.size - 1 downTo 0) {
 					val stat = getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].link))
-					if (stat == Status.READ || stat == Status.READING)
+					if (stat == ReadingStatus.READ || stat == ReadingStatus.READING)
 						return recyclerArray[x]
 				}
 			else for (x in recyclerArray) {
 				val stat = getChapterStatus(getChapterIDFromChapterURL(x.link))
-				if (stat == Status.READ || stat == Status.READING)
+				if (stat == ReadingStatus.READ || stat == ReadingStatus.READING)
 					return x
 			}
 		return if (isArrayReversed) recyclerArray[0] else recyclerArray[recyclerArray.size - 1]
@@ -396,8 +395,8 @@ class NovelChaptersController(bundle: Bundle)
 			if (!isArrayReversed!!) {
 				for (x in recyclerArray.indices.reversed()) {
 					when (getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].link))) {
-						Status.READ -> return x + 1
-						Status.READING -> return x
+						ReadingStatus.READ -> return x + 1
+						ReadingStatus.READING -> return x
 						else -> {
 						}
 					}
@@ -405,8 +404,8 @@ class NovelChaptersController(bundle: Bundle)
 			} else {
 				for (x in recyclerArray.indices) {
 					when (getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].link))) {
-						Status.READ -> return x - 1
-						Status.READING -> return x
+						ReadingStatus.READ -> return x - 1
+						ReadingStatus.READING -> return x
 						else -> {
 						}
 					}
@@ -428,11 +427,11 @@ class NovelChaptersController(bundle: Bundle)
 							for ((_, title, link) in recyclerArray)
 								DownloadManager.addToDownload(
 										activity!!,
-										DownloadItem(
-												novelController!!.formatter,
+										DownloadEntity(
+												getChapterIDFromChapterURL(link),
 												novelController!!.novelInfoController!!.novelPage!!.title,
 												title,
-												getChapterIDFromChapterURL(link)
+												status = "Pending"
 										)
 								)
 						}
@@ -442,14 +441,14 @@ class NovelChaptersController(bundle: Bundle)
 								try {
 									val id = getChapterIDFromChapterURL(link)
 
-									if (getChapterStatus(id) == (Status.UNREAD))
+									if (getChapterStatus(id) == (ReadingStatus.UNREAD))
 										DownloadManager.addToDownload(
 												activity!!,
-												DownloadItem(
-														novelController!!.formatter,
+												DownloadEntity(
+														id,
 														novelController!!.novelInfoController!!.novelPage!!.title,
 														title,
-														id
+														status = "Pending"
 												)
 										)
 								} catch (e: MissingResourceException) {
@@ -479,11 +478,11 @@ class NovelChaptersController(bundle: Bundle)
 							if (next != null)
 								DownloadManager.addToDownload(
 										activity!!,
-										DownloadItem(
-												novelController!!.formatter,
+										DownloadEntity(
+												getChapterIDFromChapterURL(next.link),
 												novelController!!.novelInfoController!!.novelPage!!.title,
 												next.title,
-												getChapterIDFromChapterURL(next.link)
+												status = "Pending"
 										)
 								)
 						}
@@ -508,11 +507,11 @@ class NovelChaptersController(bundle: Bundle)
 			try {
 				val chapter = getChapter(chapterID)
 				if (!isSaved(chapterID)) {
-					val downloadItem = DownloadItem(
-							novelController!!.formatter,
+					val downloadItem = DownloadEntity(
+							chapterID,
 							novelController!!.novelInfoController!!.novelPage!!.title,
 							chapter!!.title,
-							chapterID
+							status = "Pending"
 					)
 					DownloadManager.addToDownload(activity, downloadItem)
 				}
@@ -528,11 +527,11 @@ class NovelChaptersController(bundle: Bundle)
 		for (chapterID in selectedChapters) {
 			try {
 				val chapter = getChapter(chapterID)
-				if (isSaved(chapterID)) DownloadManager.delete(context, DownloadItem(
-						novelController!!.formatter,
+				if (isSaved(chapterID)) DownloadManager.delete(context, DownloadEntity(
+						chapterID,
 						novelController!!.novelInfoController!!.novelPage!!.title,
 						chapter!!.title,
-						chapterID
+						status = "Pending"
 				))
 			} catch (e: MissingResourceException) {
 				handleExceptionLogging(e)
@@ -551,7 +550,7 @@ class NovelChaptersController(bundle: Bundle)
 	private fun optionChapterMarkRead() {
 		for (chapterID in selectedChapters) {
 			try {
-				if (getChapterStatus(chapterID).a != 2) setChapterStatus(chapterID, Status.READ)
+				if (getChapterStatus(chapterID).a != 2) setChapterStatus(chapterID, ReadingStatus.READ)
 			} catch (e: Exception) {
 				handleExceptionLogging(e)
 				return
@@ -563,7 +562,7 @@ class NovelChaptersController(bundle: Bundle)
 	private fun optionChapterMarkUnread() {
 		for (chapterID in selectedChapters) {
 			try {
-				if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.UNREAD)
+				if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, ReadingStatus.UNREAD)
 			} catch (e: Exception) {
 				handleExceptionLogging(e)
 				return
@@ -575,7 +574,7 @@ class NovelChaptersController(bundle: Bundle)
 	private fun optionChapterMarkReading() {
 		for (chapterID in selectedChapters) {
 			try {
-				if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, Status.READING)
+				if (getChapterStatus(chapterID).a != 0) setChapterStatus(chapterID, ReadingStatus.READING)
 			} catch (e: Exception) {
 				handleExceptionLogging(e)
 				return

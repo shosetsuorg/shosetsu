@@ -32,7 +32,7 @@ interface ScriptLibDao {
 	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ExtensionLibraryEntity::class)
 	fun insertScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
 
-	@Query("SELECT * FROM libs WHERE repositoryID = :repositoryID")
+	@Query("SELECT * FROM libs WHERE repoID = :repositoryID")
 	fun loadLibByRepoID(repositoryID: Int): Array<ExtensionLibraryEntity>
 
 	@Update

@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
@@ -62,7 +62,7 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 
 	override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
 		val entity = extensionsController.recyclerArray[position]
-		val id = entity.formatterID
+		val id = entity.id
 
 		if (Formatters.getByID(id) != Formatters.unknown) {
 			holder.button.text = holder.itemView.context.getString(R.string.uninstall)
@@ -104,7 +104,7 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 
 							holder.installed = true
 							holder.update = false
-							shosetsuRoomDatabase.formatterDao().updateFormatter(entity)
+							extensionsDao.updateFormatter(entity)
 							Handler(Looper.getMainLooper()).post {
 								context.toast("Installed ${entity.name}")
 								this@ExtensionsAdapter.notifyDataSetChanged()
@@ -121,7 +121,7 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 
 							holder.installed = false
 							holder.update = false
-							shosetsuRoomDatabase.formatterDao().updateFormatter(entity)
+							extensionsDao.updateFormatter(entity)
 							Handler(Looper.getMainLooper()).post {
 								context.toast("Deleted ${entity.name}")
 								this@ExtensionsAdapter.notifyDataSetChanged()

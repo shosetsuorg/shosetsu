@@ -1,8 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
 
 /*
@@ -31,14 +29,27 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.Downlo
  */
 @Dao
 interface DownloadsDao {
+	@Insert(onConflict = OnConflictStrategy.ABORT)
+	fun insertDownloadEntity(downloadEntity: DownloadEntity)
+
+	@Update
+	fun updateDownloadEntity(downloadEntity: DownloadEntity)
+
+	@Delete
+	fun deleteDownloadEntity(downloadEntity: DownloadEntity)
+
 	@Query("SELECT * FROM downloads LIMIT 1")
 	fun loadFirstDownload(): DownloadEntity
 
-	@Insert
-	fun addToDownloads(downloadEntity: DownloadEntity)
-
 	@Query("SELECT COUNT(*) FROM downloads")
-	fun downloadCount():Int
+	fun loadDownloadCount(): Int
 
+	@Query("SELECT COUNT(*) FROM downloads WHERE chapterID = :chapterID")
+	fun loadDownloadCount(chapterID: Int): Int
+
+	fun isInDownloads(chapterID: Int): Boolean = loadDownloadCount(chapterID) > 0
+
+	@Query("SELECT * FROM downloads")
+	fun loadDownloadItems(): Array<DownloadEntity>
 
 }

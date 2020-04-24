@@ -39,7 +39,7 @@ import java.security.NoSuchAlgorithmException
  * @return string without specials
  */
 fun String.clean(): String {
-    return replace("[^A-Za-z0-9]".toRegex(), "_")
+	return replace("[^A-Za-z0-9]".toRegex(), "_")
 }
 
 
@@ -52,16 +52,16 @@ fun String.clean(): String {
  */
 @Throws(IOException::class, ClassNotFoundException::class)
 fun String.deserializeString(): Any? {
-    var editString = this
-    if (editString != "serial-null") {
-        editString = editString.substring(7)
-        //Log.d("Deserialize", string);
-        val bytes = Base64.decode(editString, Base64.NO_WRAP)
-        val byteArrayInputStream = ByteArrayInputStream(bytes)
-        val objectInputStream = ObjectInputStream(byteArrayInputStream)
-        return objectInputStream.readObject()
-    }
-    return null
+	var editString = this
+	if (editString != "serial-null") {
+		editString = editString.substring(7)
+		//Log.d("Deserialize", string);
+		val bytes = Base64.decode(editString, Base64.NO_WRAP)
+		val byteArrayInputStream = ByteArrayInputStream(bytes)
+		val objectInputStream = ObjectInputStream(byteArrayInputStream)
+		return objectInputStream.readObject()
+	}
+	return null
 }
 
 /**
@@ -71,19 +71,19 @@ fun String.deserializeString(): Any? {
  * @return Completed String
  */
 fun String?.checkStringDeserialize(): String {
-    if (this.isNullOrBlank()) {
-        return ""
-    } else {
-        try {
-            val obj = deserializeString() ?: return ""
-            return obj as String
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: ClassNotFoundException) {
-            e.printStackTrace()
-        }
-    }
-    return ""
+	if (this.isNullOrBlank()) {
+		return ""
+	} else {
+		try {
+			val obj = deserializeString() ?: return ""
+			return obj as String
+		} catch (e: IOException) {
+			e.printStackTrace()
+		} catch (e: ClassNotFoundException) {
+			e.printStackTrace()
+		}
+	}
+	return ""
 }
 
 /**
@@ -93,16 +93,16 @@ fun String?.checkStringDeserialize(): String {
  * @return Completed String
  */
 fun String?.checkStringSerialize(): String {
-    if (this.isNullOrEmpty()) {
-        return ""
-    } else {
-        try {
-            return serializeToString()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-    return ""
+	if (this.isNullOrEmpty()) {
+		return ""
+	} else {
+		try {
+			return serializeToString()
+		} catch (e: IOException) {
+			e.printStackTrace()
+		}
+	}
+	return ""
 }
 
 /**
@@ -111,13 +111,13 @@ fun String?.checkStringSerialize(): String {
  * @return Stati
  */
 fun String?.convertStringToStati(): Novel.Status {
-    return when (this) {
-        "Publishing" -> Novel.Status.PUBLISHING
-        "Completed" -> Novel.Status.COMPLETED
-        "Paused" -> Novel.Status.PAUSED
-        "Unknown" -> Novel.Status.UNKNOWN
-        else -> Novel.Status.UNKNOWN
-    }
+	return when (this) {
+		"Publishing" -> Novel.Status.PUBLISHING
+		"Completed" -> Novel.Status.COMPLETED
+		"Paused" -> Novel.Status.PAUSED
+		"Unknown" -> Novel.Status.UNKNOWN
+		else -> Novel.Status.UNKNOWN
+	}
 }
 
 
@@ -127,29 +127,29 @@ fun String?.convertStringToStati(): Novel.Status {
  * @return Array of Strings
  */
 fun String.convertStringToArray(): Array<String> {
-    val a = substring(1, length - 1).split(", ".toRegex()).toTypedArray()
-    for (x in a.indices) {
-        a[x] = a[x].replace(">,<", ",")
-    }
-    return a
+	val a = substring(1, length - 1).split(", ".toRegex()).toTypedArray()
+	for (x in a.indices) {
+		a[x] = a[x].replace(">,<", ",")
+	}
+	return a
 }
 
 /**
  * Makes an MD5 of the string
  */
 fun String.md5(): String? {
-    try {
-        // Create MD5 Hash
-        val digest = MessageDigest.getInstance("MD5")
-        digest.update(toByteArray())
-        val messageDigest = digest.digest()
-        // Create Hex String
-        val hexString = StringBuffer()
-        for (i in messageDigest.indices)
-            hexString.append(Integer.toHexString(0xFF and messageDigest[i].toInt()))
-        return hexString.toString()
-    } catch (e: NoSuchAlgorithmException) {
-        Log.wtf(logID(), "How could an MD5 alg be missing", e)
-    }
-    return ""
+	try {
+		// Create MD5 Hash
+		val digest = MessageDigest.getInstance("MD5")
+		digest.update(toByteArray())
+		val messageDigest = digest.digest()
+		// Create Hex String
+		val hexString = StringBuffer()
+		for (i in messageDigest.indices)
+			hexString.append(Integer.toHexString(0xFF and messageDigest[i].toInt()))
+		return hexString.toString()
+	} catch (e: NoSuchAlgorithmException) {
+		Log.wtf(logID(), "How could an MD5 alg be missing", e)
+	}
+	return ""
 }

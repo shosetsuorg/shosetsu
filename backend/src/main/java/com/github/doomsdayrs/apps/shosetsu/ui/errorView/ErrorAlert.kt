@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ErrorAlertParent
  * Conceived to simplify creation of error's
  */
 class ErrorAlert(@Suppress("UNUSED_PARAMETER") activity: Activity) : ErrorAlertParent {
-    override fun setError(e: Exception): ErrorAlertParent = throw Exception("Stub!")
-    override fun setMessage(message: CharSequence?): ErrorAlertParent = throw Exception("Stub!")
-    override fun runOnUI() = throw Exception("Stub!")
+	override fun setError(e: Exception): ErrorAlertParent = throw Exception("Stub!")
+	override fun setMessage(message: CharSequence?): ErrorAlertParent = throw Exception("Stub!")
+	override fun runOnUI() = throw Exception("Stub!")
 }

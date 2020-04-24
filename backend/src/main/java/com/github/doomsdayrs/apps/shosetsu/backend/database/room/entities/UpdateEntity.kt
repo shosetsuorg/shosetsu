@@ -1,6 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import java.io.Serializable
 
 /*
@@ -27,9 +30,20 @@ import java.io.Serializable
  *
  * @author github.com/doomsdayrs
  */
-@Entity(tableName = "updates")
+@Entity(tableName = "updates",
+		foreignKeys = [
+			ForeignKey(
+					entity = ChapterEntity::class,
+					parentColumns = ["id"],
+					childColumns = ["chapterID"],
+					onDelete = ForeignKey.CASCADE
+			)
+		],
+		indices = [Index("chapterID")]
+)
 data class UpdateEntity(
-		val novelID: Int,
+		@PrimaryKey
 		val chapterID: Int,
-		var status: String
+		val novelID: Int,
+		val time: Long
 ) : Serializable

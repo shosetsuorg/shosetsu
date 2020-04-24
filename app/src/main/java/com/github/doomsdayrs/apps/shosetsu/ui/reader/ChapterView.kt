@@ -23,7 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getSavedNovelPassage
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
@@ -470,17 +470,17 @@ class ChapterView : Fragment() {
 			// Inital mark of reading
 			if (!marked && Settings.readerMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
 				Log.d("ChapterView", "Marking as Reading")
-				Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
+				Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.READING)
 				marked = !marked
 			}
 
 			val y = scrollView!!.scrollY
 
 			if (y % 5 == 0)
-				if (Database.DatabaseChapter.getChapterStatus(chapterID) != Status.READ) Database.DatabaseChapter.updateY(chapterID, y)
+				if (Database.DatabaseChapter.getChapterStatus(chapterID) != ReadingStatus.READ) Database.DatabaseChapter.updateY(chapterID, y)
 		} else {
 			Log.i("Scroll", "Marking chapter as READ${appendID()}")
-			Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
+			Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.READ)
 			Database.DatabaseChapter.updateY(chapterID, 0)
 			next_chapter!!.visibility = View.VISIBLE
 			//TODO Get total word count of passage, then add to a storage counter that memorizes the total (Chapters read, Chapters Unread, Chapters reading, Word count)

@@ -1,6 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import app.shosetsu.lib.Formatter
 import java.io.Serializable
 
 /*
@@ -27,10 +31,27 @@ import java.io.Serializable
  *
  * @author github.com/doomsdayrs
  */
-@Entity(tableName = "downloads")
+@Entity(tableName = "downloads",
+		foreignKeys = [
+			ForeignKey(
+					entity = ChapterEntity::class,
+					parentColumns = ["id"],
+					childColumns = ["chapterID"],
+					onDelete = ForeignKey.CASCADE
+			),
+			ForeignKey(
+					entity = ChapterEntity::class,
+					parentColumns = ["link"],
+					childColumns = ["chapterURL"],
+					onDelete = ForeignKey.CASCADE
+			)
+		],
+		indices = [Index("chapterID"), Index("chapterURL")]
+)
 data class DownloadEntity(
+		@PrimaryKey
 		val chapterID: Int,
-		val novelName: String,
-		val chapterName: String,
-		var status: String
+		val chapterURL: String,
+		val formatter: Formatter,
+		var status: Int = 0
 ) : Serializable

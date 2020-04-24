@@ -9,8 +9,7 @@
         <item name="appBarLayoutStyle">@style/AppTheme.AppBar</item>
     </style>
 
-    <style name="ChipStyle" parent="AppTheme">
-    </style>
+    <style name="ChipStyle" parent="AppTheme"></style>
 
-    <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog"/>
+    <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog" />
 </resources>

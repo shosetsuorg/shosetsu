@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities
+
+import androidx.room.Embedded
+import androidx.room.Relation
 
 /*
  * This file is part of shosetsu.
@@ -20,17 +23,31 @@ package com.github.doomsdayrs.apps.shosetsu.variables
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
+data class NovelEntityWithChapters(
+		@Embedded
+		val novelEntity: NovelEntity,
+		@Relation(parentColumn = "id", entityColumn = "id", entity = ChapterEntity::class)
+		val array: Array<ChapterEntity>
+) {
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
 
-/**
- * Used to handle responses from backend to front end
- *
- * @param succeeded [Boolean] True if task completed successfully
- * @param failureReason [String] Reason why the task was not completed
- * @param e [Exception] Exception? of the error
- * @param value [T] Value to be returned
- */
-data class HandledReturns<T>(val succeeded: Boolean = false, val failureReason: String = "", val e: Exception? = null, val value: T? = null)
+		other as NovelEntityWithChapters
+
+		if (novelEntity != other.novelEntity) return false
+		if (!array.contentEquals(other.array)) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = novelEntity.hashCode()
+		result = 31 * result + array.contentHashCode()
+		return result
+	}
+}

@@ -36,14 +36,14 @@ import java.io.Serializable
 			ForeignKey(
 					entity = RepositoryEntity::class,
 					parentColumns = ["id"],
-					childColumns = ["repositoryID"],
+					childColumns = ["repoID"],
 					onDelete = ForeignKey.CASCADE
 			)
 		],
-		indices = [Index("repositoryID")])
+		indices = [Index("repoID")])
 data class ExtensionLibraryEntity(
 		@PrimaryKey
 		val scriptName: String,
 		var version: String,
-		var repositoryID: Int
+		var repoID: Int
 ) : Serializable

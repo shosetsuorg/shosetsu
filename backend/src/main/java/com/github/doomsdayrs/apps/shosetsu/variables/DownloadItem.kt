@@ -30,13 +30,14 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
  *
  * These items symbolize download items and their data
  */
+@Deprecated("ROOM", replaceWith = ReplaceWith("DownloadEntity"), level = DeprecationLevel.ERROR)
 class DownloadItem(val formatter: Formatter, novelName: String, chapterName: String, val chapterID: Int) {
 
-    val novelName: String = novelName.clean()
-    val chapterName: String = chapterName.clean()
-    val chapterURL: String = DatabaseIdentification.getChapterURLFromChapterID(chapterID)
+	val novelName: String = novelName.clean()
+	val chapterName: String = chapterName.clean()
+	val chapterURL: String = DatabaseIdentification.getChapterURLFromChapterID(chapterID)
 
-    //Variables only for download manager
-    var status = "Pending"
+	//Variables only for download manager
+	var status = "Pending"
 
 }

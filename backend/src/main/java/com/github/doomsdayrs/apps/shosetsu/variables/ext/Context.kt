@@ -47,45 +47,45 @@ import androidx.core.app.ActivityCompat
  * @param duration the duration of the toast. Defaults to short.
  */
 fun Context.toast(@StringRes resource: Int, duration: Int = LENGTH_SHORT) {
-    makeText(this, resource, duration).show()
+	makeText(this, resource, duration).show()
 }
 
 fun Context.toast(string: String, duration: Int = LENGTH_SHORT) {
-    makeText(this, string, duration).show()
+	makeText(this, string, duration).show()
 }
 
 /**
  * Like context toast, Except posts for the UI
  */
 fun Activity.toast(string: String, duration: Int = LENGTH_SHORT) {
-    runOnUiThread { makeText(this, string, duration).show() }
+	runOnUiThread { makeText(this, string, duration).show() }
 }
 
 fun Activity.toast(@StringRes resource: Int, duration: Int = LENGTH_SHORT) {
-    runOnUiThread { makeText(this, resource, duration).show() }
+	runOnUiThread { makeText(this, resource, duration).show() }
 }
 
 /**
  * Property to get the notification manager from the context.
  */
 val Context.notificationManager: NotificationManager
-    get() = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+	get() = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 fun Context.requestPerms() {
-    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED)
-        ActivityCompat.requestPermissions(
-                this as Activity,
-                arrayOf(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.WAKE_LOCK),
-                1)
+	if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+			ActivityCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED)
+		ActivityCompat.requestPermissions(
+				this as Activity,
+				arrayOf(
+						Manifest.permission.READ_EXTERNAL_STORAGE,
+						Manifest.permission.WRITE_EXTERNAL_STORAGE,
+						Manifest.permission.WAKE_LOCK),
+				1)
 }
 
 fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {
-    val className = serviceClass.name
-    val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-    @Suppress("DEPRECATION")
-    return manager.getRunningServices(Integer.MAX_VALUE).any { className == it.service.className }
+	val className = serviceClass.name
+	val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+	@Suppress("DEPRECATION")
+	return manager.getRunningServices(Integer.MAX_VALUE).any { className == it.service.className }
 }

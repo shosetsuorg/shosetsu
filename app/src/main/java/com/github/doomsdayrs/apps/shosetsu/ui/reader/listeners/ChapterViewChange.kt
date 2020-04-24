@@ -5,7 +5,7 @@ import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 
 /*
  * This file is part of Shosetsu.
@@ -40,7 +40,7 @@ class ChapterViewChange(private val chapterReaderAdapter: ChapterReaderAdapter) 
     override fun onPageSelected(position: Int) {
         if (Settings.readerMarkingType == Settings.MarkingTypes.ONVIEW.i) {
             Log.d("ChapterReader", "Marking as Reading")
-            Database.DatabaseChapter.setChapterStatus(chapterReaderAdapter.chapterViews[position].chapterID, Status.READING)
+            Database.DatabaseChapter.setChapterStatus(chapterReaderAdapter.chapterViews[position].chapterID, ReadingStatus.READING)
         }
     }
 }

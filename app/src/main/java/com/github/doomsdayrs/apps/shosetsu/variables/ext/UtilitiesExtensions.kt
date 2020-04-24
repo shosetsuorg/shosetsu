@@ -2,15 +2,15 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.app.Activity
 import android.content.Intent
-import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import java.util.*
 
 /*
@@ -44,13 +44,18 @@ import java.util.*
  * @param formatterID  formatter
  */
 @Throws(MissingResourceException::class)
-fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int) = openChapter(activity, novelChapter, novelID, formatterID, null)
+fun openChapter(activity: Activity, novelChapter: ChapterEntity, novelID: Int, formatterID: Int) =
+		openChapter(activity, novelChapter, novelID, formatterID, null)
 
 
 @Throws(MissingResourceException::class)
-private fun openChapter(activity: Activity, novelChapter: Novel.Chapter, novelID: Int, formatterID: Int, chapters: Array<String>?) {
-	val chapterID = Database.DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
-	if (Settings.readerMarkingType == Settings.MarkingTypes.ONVIEW.i) Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
+private fun openChapter(activity: Activity, novelChapter: ChapterEntity, novelID: Int, formatterID: Int, chapters: Array<String>?) {
+	val chapterID = novelChapter.id
+	if (Settings.readerMarkingType == Settings.MarkingTypes.ONVIEW.i) {
+		novelChapter
+	}
+
+	Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.READING)
 	val intent = Intent(activity, ChapterReader::class.java)
 	intent.putExtra("chapterID", chapterID)
 	intent.putExtra("novelID", novelID)

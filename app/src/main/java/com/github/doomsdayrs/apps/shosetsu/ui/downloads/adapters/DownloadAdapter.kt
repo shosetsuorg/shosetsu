@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItemView
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.chapterURL
 
 /*
  * This file is part of Shosetsu.

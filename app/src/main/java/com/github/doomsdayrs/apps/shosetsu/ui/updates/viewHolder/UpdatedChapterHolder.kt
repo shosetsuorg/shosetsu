@@ -6,12 +6,11 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters.getByID
 import com.squareup.picasso.Picasso
 
 /*
@@ -37,34 +36,39 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-    val moreOptions: ImageView = itemView.findViewById(R.id.more_options)
-    val downloadTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_download)
-    val title: TextView = itemView.findViewById(R.id.title)
-    private val image: ImageView = itemView.findViewById(R.id.image)
+	val moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+	val downloadTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_download)
+	val title: TextView = itemView.findViewById(R.id.title)
+	private val image: ImageView = itemView.findViewById(R.id.image)
 
-    var novelChapter: Novel.Chapter? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                title.text = novelChapter!!.title
-                //TODO fix this disgust
-                val novelCard = Database.DatabaseNovels.getNovel(DatabaseIdentification.getNovelIDFromChapterID(DatabaseIdentification.getChapterIDFromChapterURL(novelChapter!!.link)))
-                if (novelCard.imageURL.isNotEmpty())
-                    Picasso.get().load(novelCard.imageURL).into(image)
-                itemView.setOnClickListener(this)
-            }
-        }
+	lateinit var novelEntity: NovelEntity
 
-    val popupMenu: PopupMenu = PopupMenu(moreOptions.context, moreOptions)
+	var novelChapter: ChapterEntity? = null
+		set(value) {
+			field = value
+			if (value != null) {
+				title.text = novelChapter!!.title
+				//TODO fix this disgust
+				novelEntity = novelsDao.loadNovel(value.novelID)
+				if (novelEntity.imageURL.isNotEmpty())
+					Picasso.get().load(novelEntity.imageURL).into(image)
+				itemView.setOnClickListener(this)
+			}
+		}
+
+	val popupMenu: PopupMenu = PopupMenu(moreOptions.context, moreOptions)
 
 
-    override fun onClick(view: View) {
-        val novelURL = DatabaseIdentification.getNovelURLFromChapterURL(novelChapter!!.link)
-        val formatter = getByID(DatabaseIdentification.getFormatterIDFromNovelURL(novelURL!!))
-        openChapter((itemView.context as Activity), novelChapter!!, DatabaseIdentification.getNovelIDFromNovelURL(novelURL), formatter.formatterID)
-    }
+	override fun onClick(view: View) {
+		openChapter(
+				(itemView.context as Activity),
+				novelChapter!!,
+				novelEntity.id,
+				novelEntity.formatter
+		)
+	}
 
-    init {
-        popupMenu.inflate(R.menu.popup_chapter_menu)
-    }
+	init {
+		popupMenu.inflate(R.menu.popup_chapter_menu)
+	}
 }

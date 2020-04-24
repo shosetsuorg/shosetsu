@@ -19,10 +19,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.delete
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
-import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.google.android.material.card.MaterialCardView
@@ -125,18 +125,18 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 					}
 					R.id.popup_chapter_menu_download -> {
 						if (!Database.DatabaseChapter.isSaved(chapterID)) {
-							val downloadItem = DownloadItem(
-									chaptersController.novelController!!.formatter,
+							val downloadItem = DownloadEntity(
+									chapterID,
 									chaptersController.novelController!!.novelInfoController!!.novelPage.title,
 									novelChapter.title,
-									chapterID
+									status = "Pending"
 							)
 							addToDownload(chaptersController.activity, downloadItem)
-						} else if (delete(itemView.context, DownloadItem(
-										chaptersController.novelController!!.formatter,
+						} else if (delete(itemView.context, DownloadEntity(
+										chapterID,
 										chaptersController.novelController!!.novelInfoController!!.novelPage.title,
 										novelChapter.title,
-										chapterID
+										status = "Pending"
 								))) {
 							downloadTag.visibility = View.INVISIBLE
 						}
@@ -144,17 +144,17 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 						return@setOnMenuItemClickListener true
 					}
 					R.id.popup_chapter_menu_mark_read -> {
-						Database.DatabaseChapter.setChapterStatus(chapterID, Status.READ)
+						Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.READ)
 						chaptersController.updateAdapter()
 						return@setOnMenuItemClickListener true
 					}
 					R.id.popup_chapter_menu_mark_unread -> {
-						Database.DatabaseChapter.setChapterStatus(chapterID, Status.UNREAD)
+						Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.UNREAD)
 						chaptersController.updateAdapter()
 						return@setOnMenuItemClickListener true
 					}
 					R.id.popup_chapter_menu_mark_reading -> {
-						Database.DatabaseChapter.setChapterStatus(chapterID, Status.READING)
+						Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.READING)
 						chaptersController.updateAdapter()
 						return@setOnMenuItemClickListener true
 					}

@@ -1,6 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import org.luaj.vm2.LuaError
+import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -22,18 +26,21 @@ import org.luaj.vm2.LuaError
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
 
-fun LuaError.smallMessage(): String {
-	return this.message?.let { it ->
-		return it.substring(it.lastIndexOf("}").let {
-			return@let when {
-				it > 0 -> it
-				else -> 0
-			}
-		})
-	} ?: "UNKNOWN ERROR"
-}
+@get:Throws(MissingResourceException::class)
+@Deprecated("ROOM IN FUTURE", level = DeprecationLevel.WARNING)
+val DownloadEntity.chapterURL: String
+	get() = Database.DatabaseIdentification.getChapterURLFromChapterID(this.chapterID)
+
+
+@get:Throws(MissingResourceException::class)
+@Deprecated("ROOM IN FUTURE", level = DeprecationLevel.WARNING)
+val DownloadEntity.formatter: Formatter
+	get() = Formatters.getByID(
+			Database.DatabaseIdentification.getFormatterIDFromChapterID(this.chapterID)
+	)
+

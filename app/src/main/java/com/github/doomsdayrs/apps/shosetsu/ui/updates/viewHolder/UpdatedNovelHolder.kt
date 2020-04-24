@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.Update
 import com.google.android.material.chip.Chip
 import com.squareup.picasso.Picasso
 
@@ -40,64 +40,64 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class UpdatedNovelHolder(itemView: View, val activity: Activity) : RecyclerView.ViewHolder(itemView) {
-    private val imageView: ImageView = itemView.findViewById(R.id.imageView)
-    val title: TextView = itemView.findViewById(R.id.title)
-    val chip: Chip = itemView.findViewById(R.id.count)
-    val button: ImageButton = itemView.findViewById(R.id.button)
-    val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
-    private val expand: ImageButton = itemView.findViewById(R.id.loadMore)
+	private val imageView: ImageView = itemView.findViewById(R.id.imageView)
+	val title: TextView = itemView.findViewById(R.id.title)
+	val chip: Chip = itemView.findViewById(R.id.count)
+	val button: ImageButton = itemView.findViewById(R.id.button)
+	val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
+	private val expand: ImageButton = itemView.findViewById(R.id.loadMore)
 
 
-    private var expanded: Boolean = false
-    var novelID: Int = -1
-        set(value) {
-            val novelCard = Database.DatabaseNovels.getNovel(value)
+	private var expanded: Boolean = false
+	var novelID: Int = -1
+		set(value) {
+			val novelCard = Database.DatabaseNovels.getNovel(value)
 
-            if (novelCard.novelURL.isNotEmpty())
-                Picasso.get().load(novelCard.imageURL).into(imageView)
+			if (novelCard.novelURL.isNotEmpty())
+				Picasso.get().load(novelCard.imageURL).into(imageView)
 
-            title.text = novelCard.title
+			title.text = novelCard.title
 
 
-            field = value
-        }
+			field = value
+		}
 
-    var updates: ArrayList<Update> = ArrayList()
-        set(value) {
-            field = value
-            chip.text = value.size.toString()
-            updatersAdapter.size = if (updates.size > 20) 5 else updates.size
-            updatersAdapter.notifyDataSetChanged()
-        }
+	var updates: ArrayList<UpdateEntity> = ArrayList()
+		set(value) {
+			field = value
+			chip.text = value.size.toString()
+			updatersAdapter.size = if (updates.size > 20) 5 else updates.size
+			updatersAdapter.notifyDataSetChanged()
+		}
 
-    private var updatersAdapter: UpdatedChaptersAdapter = UpdatedChaptersAdapter(this)
+	private var updatersAdapter: UpdatedChaptersAdapter = UpdatedChaptersAdapter(this)
 
-    init {
-        button.setOnClickListener {
-            if (expanded) {
-                button.setImageResource(R.drawable.ic_baseline_expand_more_24)
-                recyclerView.visibility = View.GONE
-                expand.visibility = View.GONE
-            } else {
-                button.setImageResource(R.drawable.ic_baseline_expand_less_24)
-                recyclerView.visibility = View.VISIBLE
+	init {
+		button.setOnClickListener {
+			if (expanded) {
+				button.setImageResource(R.drawable.ic_baseline_expand_more_24)
+				recyclerView.visibility = View.GONE
+				expand.visibility = View.GONE
+			} else {
+				button.setImageResource(R.drawable.ic_baseline_expand_less_24)
+				recyclerView.visibility = View.VISIBLE
 
-                if (updatersAdapter.size < updates.size)
-                    expand.visibility = View.VISIBLE
-            }
-            expanded = !expanded
-        }
-        expand.setOnClickListener {
-            updatersAdapter.size =
-                    if (updatersAdapter.size + 5 >= updates.size) {
-                        expand.visibility = View.GONE
-                        updates.size
-                    } else updatersAdapter.size + 5
-            updatersAdapter.notifyDataSetChanged()
-        }
+				if (updatersAdapter.size < updates.size)
+					expand.visibility = View.VISIBLE
+			}
+			expanded = !expanded
+		}
+		expand.setOnClickListener {
+			updatersAdapter.size =
+					if (updatersAdapter.size + 5 >= updates.size) {
+						expand.visibility = View.GONE
+						updates.size
+					} else updatersAdapter.size + 5
+			updatersAdapter.notifyDataSetChanged()
+		}
 
-        recyclerView.adapter = updatersAdapter
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-    }
+		recyclerView.adapter = updatersAdapter
+		recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+	}
 
 }

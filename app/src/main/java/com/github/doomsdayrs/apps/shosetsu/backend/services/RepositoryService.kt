@@ -11,7 +11,9 @@ import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.repositoryDao
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.scriptLibDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.containsName
@@ -94,7 +96,7 @@ class RepositoryService : Service() {
 			Log.i(logID(), "Starting Update")
 			if (Utilities.isOnline) {
 				progressUpdate("Online, Loading repositories")
-				val repos = shosetsuRoomDatabase.repositoryDao()
+				val repos = repositoryDao
 						.loadRepositories()
 
 				for (repo in repos) {
@@ -130,8 +132,8 @@ class RepositoryService : Service() {
 						}
 
 						// Libraries in database
-						val libEntities = shosetsuRoomDatabase
-								.scriptLibDao().loadLibByRepoID(repoID)
+						val libEntities = scriptLibDao
+								.loadLibByRepoID(repoID)
 
 						// Libraries not installed or needs update
 						val libsNotPresent = ArrayList<ExtensionLibraryEntity>()
@@ -177,7 +179,7 @@ class RepositoryService : Service() {
 											extensionLibraryEntity ?: ExtensionLibraryEntity(
 													scriptName = name,
 													version = version,
-													repositoryID = repoID
+													repoID = repoID
 											)
 									)
 
@@ -187,14 +189,13 @@ class RepositoryService : Service() {
 						// For each library not present, installs
 						libsNotPresent.forEach {
 							progressUpdate("Updating/Installing ${it.scriptName}")
-							shosetsuRoomDatabase.scriptLibDao().insertOrUpdateScriptLib(it)
+							scriptLibDao.insertOrUpdateScriptLib(it)
 							FormatterUtils.downloadLibrary(it, context)
 						}
 					}
 
 					// Updates Script Info
 					run {
-						val formatterDao = shosetsuRoomDatabase.formatterDao()
 						val scriptsArray: JSONArray
 						try {
 							scriptsArray = formattersJSON.getJSONArray("scripts")
@@ -254,18 +255,18 @@ class RepositoryService : Service() {
 								return@forEachTyped
 							}
 
-							if (formatterDao.doesFormatterExist(formatterID)) {
-								val formatterEntity = formatterDao
+							if (extensionsDao.doesFormatterExist(formatterID)) {
+								val formatterEntity = extensionsDao
 										.loadFormatter(formatterID)
 								formatterEntity.name = formatterName
 								formatterEntity.imageURL = imageURL
 								formatterEntity.md5 = md5
 								formatterEntity.repositoryVersion = version
-								formatterDao.updateFormatter(formatterEntity)
+								extensionsDao.updateFormatter(formatterEntity)
 							} else {
-								formatterDao.insertFormatter(ExtensionEntity(
-										formatterID = formatterID,
-										repositoryID = repoID,
+								extensionsDao.insertFormatter(ExtensionEntity(
+										id = formatterID,
+										repoID = repoID,
 										name = formatterName,
 										fileName = fileName,
 										imageURL = imageURL,

@@ -197,6 +197,7 @@ object Utilities {
 	 * @return true means added, false means removed
 	 */
 	@Throws(MissingResourceException::class)
+	@Deprecated("ROOM", level = DeprecationLevel.WARNING)
 	fun toggleBookmarkChapter(chapterID: Int): Boolean { //TODO Simplify
 		return if (Database.DatabaseChapter.isBookMarked(chapterID)) {
 			Database.DatabaseChapter.setBookMark(chapterID, 0)

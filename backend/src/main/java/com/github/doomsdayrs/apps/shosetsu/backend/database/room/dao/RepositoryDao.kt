@@ -44,7 +44,7 @@ interface RepositoryDao {
 	@Query("SELECT * FROM repositories WHERE url = :url LIMIT 1")
 	fun loadRepositoryFromURL(url: String): RepositoryEntity
 
-	@Query("SELECT * FROM repositories WHERE rowid = :rowID LIMIT 1")
+	@Query("SELECT * FROM repositories WHERE id = :rowID LIMIT 1")
 	fun loadRepositoryFromROWID(rowID: Long): RepositoryEntity
 
 	@Query("SELECT * FROM repositories WHERE id = :repositoryID LIMIT 1")
@@ -56,7 +56,7 @@ interface RepositoryDao {
 	@Query("SELECT COUNT(*) FROM repositories WHERE url = :url")
 	fun repositoryCountFromURL(url: String): Int
 
-	@Query("SELECT COUNT(*),id FROM repositories WHERE url = :url LIMIT 1")
+	@Query("SELECT COUNT(*), id FROM repositories WHERE url = :url LIMIT 1")
 	fun repositoryCountAndROWIDFromURL(url: String): CountIDTuple
 
 	@Ignore

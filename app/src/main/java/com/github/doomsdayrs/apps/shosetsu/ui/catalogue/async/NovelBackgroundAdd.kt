@@ -37,7 +37,7 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelListingViewHolde
                 Database.DatabaseNovels.addNovelToDatabase(novelCardsViewHolder.formatter.formatterID,
                         novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url!!, false) {},
                         novelCardsViewHolder.url!!,
-                        com.github.doomsdayrs.apps.shosetsu.variables.enums.Status.UNREAD.a)
+                        com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus.UNREAD.a)
                 views[0]?.post {
                     views[0]?.context?.toast("Added ${novelCardsViewHolder.title.text}")
                 }

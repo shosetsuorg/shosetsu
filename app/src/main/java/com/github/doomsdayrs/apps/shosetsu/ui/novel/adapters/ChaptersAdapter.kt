@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.google.android.material.card.MaterialCardView
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
@@ -107,7 +107,7 @@ class ChaptersAdapter(private val chaptersController: NovelChaptersController)
 				chaptersViewHolder.downloadTag.visibility = View.INVISIBLE
 			}
 			when (DatabaseChapter.getChapterStatus(chapterID)) {
-				Status.READING -> {
+				ReadingStatus.READING -> {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 						chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
 					} else {
@@ -117,12 +117,12 @@ class ChaptersAdapter(private val chaptersController: NovelChaptersController)
 										R.color.colorAccent
 								)).color
 					}
-					chaptersViewHolder.status.text = Status.READING.status
+					chaptersViewHolder.status.text = ReadingStatus.READING.status
 					chaptersViewHolder.readTag.visibility = View.VISIBLE
 					chaptersViewHolder.read.visibility = View.VISIBLE
 					chaptersViewHolder.read.text = DatabaseChapter.getY(chapterID).toString()
 				}
-				Status.UNREAD -> {
+				ReadingStatus.UNREAD -> {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 						chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
 					} else {
@@ -132,9 +132,9 @@ class ChaptersAdapter(private val chaptersController: NovelChaptersController)
 										R.color.colorAccent
 								)).color
 					}
-					chaptersViewHolder.status.text = Status.UNREAD.status
+					chaptersViewHolder.status.text = ReadingStatus.UNREAD.status
 				}
-				Status.READ -> {
+				ReadingStatus.READ -> {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 						if (chaptersController.context != null)
 							chaptersViewHolder.constraintLayout.foreground =
@@ -149,7 +149,7 @@ class ChaptersAdapter(private val chaptersController: NovelChaptersController)
 										R.color.colorAccent
 								)).color
 					}
-					chaptersViewHolder.status.text = Status.READ.status
+					chaptersViewHolder.status.text = ReadingStatus.READ.status
 					chaptersViewHolder.readTag.visibility = View.GONE
 					chaptersViewHolder.read.visibility = View.GONE
 				}

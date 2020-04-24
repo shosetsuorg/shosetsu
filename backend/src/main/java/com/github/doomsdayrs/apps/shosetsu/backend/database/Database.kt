@@ -12,15 +12,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.variables.DownloadItem
-import com.github.doomsdayrs.apps.shosetsu.variables.IncorrectDateException
-import com.github.doomsdayrs.apps.shosetsu.variables.Update
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.Status
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.*
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters.getByID
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
-import org.joda.time.DateTime
-import org.joda.time.Days
 import java.util.*
 
 /*
@@ -53,6 +48,28 @@ object Database {
 	 */
 	lateinit var sqLiteDatabase: SQLiteDatabase
 	lateinit var shosetsuRoomDatabase: ShosetsuRoomDatabase
+
+	val downloadsDao: DownloadsDao
+		get() = shosetsuRoomDatabase.downloadsDao()
+
+	val scriptLibDao: ScriptLibDao
+		get() = shosetsuRoomDatabase.scriptLibDao()
+
+	val updatesDao: UpdatesDao
+		get() = shosetsuRoomDatabase.updatesDao()
+
+	val repositoryDao: RepositoryDao
+		get() = shosetsuRoomDatabase.repositoryDao()
+
+	val extensionsDao: ExtensionsDao
+		get() = shosetsuRoomDatabase.formatterDao()
+
+	val chaptersDao: ChaptersDao
+		get() = shosetsuRoomDatabase.chaptersDao()
+
+	val novelsDao: NovelsDao
+		get() = shosetsuRoomDatabase.novelsDao()
+
 	fun isInit(): Boolean {
 		return this::sqLiteDatabase.isInitialized
 	}
@@ -64,6 +81,7 @@ object Database {
 		return sqLiteDatabase
 	}
 
+	@Deprecated("ROOM",level = DeprecationLevel.WARNING)
 	object DatabaseIdentification {
 		/**
 		 * Gets rid of novel completely
@@ -106,12 +124,7 @@ object Database {
 			)
 
 			// Removes chapters FROM updates
-			getDatabase().delete(
-					"$UPDATES",
-					"$PARENT_ID=?",
-					arrayOf("$novelID")
-			)
-
+			updatesDao.deleteUpdateByNovelID(novelID)
 		}
 
 		/**
@@ -361,37 +374,8 @@ object Database {
 		}
 	}
 
+	@Deprecated("ROOM",level = DeprecationLevel.WARNING)
 	object DatabaseChapter {
-		//TODO Dev access code
-
-		// --Commented out by Inspection START (12/22/19 11:09 AM):
-		//        public static void purgeCache() {
-		//            getDatabase()..execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTERS);
-		//            getDatabase()..execSQL("DROP TABLE IF EXISTS " + Tables.CHAPTER_IDENTIFICATION);
-		//            getDatabase()..execSQL(DBHelper.CHAPTER_IDENTIFICATION_CREATE);
-		//            getDatabase()..execSQL(DBHelper.CHAPTERS_CREATE);
-		//        }
-		// --Commented out by Inspection STOP (12/22/19 11:09 AM)
-
-		//      public static void updateOrder(int chapterID, int order) {
-		//        getDatabase()..execSQL("update " + Tables.CHAPTERS + " set " + Columns.ORDER + "='" + order + "' WHERE " + Columns.ID + "=" + chapterID);
-		//   }
-
-		// --Commented out by Inspection START (12/22/19 11:09 AM):
-		//        public static float getOrder(int chapterID) {
-		//            Cursor cursor = getDatabase()..rawQuery("SELECT " + Columns.ORDER + " FROM " + Tables.CHAPTERS + " WHERE " + Columns.ID + " =" + chapterID, null);
-		//            if (cursor.getCount() <= 0) {
-		//                cursor.close();
-		//                return -1;
-		//            } else {
-		//                cursor.moveToNext();
-		//                float y = cursor.getFloat(Columns.ORDER);
-		//                cursor.close();
-		//                return y;
-		//            }
-		//        }
-		// --Commented out by Inspection STOP (12/22/19 11:09 AM)
-
 		/**
 		 * @param novelID ID of novel
 		 * @return Count of chapters left to read
@@ -402,7 +386,7 @@ object Database {
 					CHAPTERS,
 					arrayOf(),
 					"$PARENT_ID =? AND $READ_CHAPTER !=?",
-					arrayOf("$novelID", "${Status.READ}")
+					arrayOf("$novelID", "${ReadingStatus.READ}")
 			)
 
 			val count = cursor.count
@@ -454,7 +438,7 @@ object Database {
 		 * @return returns chapter status
 		 */
 		@Throws(MissingResourceException::class)
-		fun getChapterStatus(chapterID: Int): Status {
+		fun getChapterStatus(chapterID: Int): ReadingStatus {
 			val cursor = getDatabase().query(
 					CHAPTERS,
 					stringArrayOf(READ_CHAPTER),
@@ -463,15 +447,15 @@ object Database {
 			)
 			return if (cursor.count <= 0) {
 				cursor.close()
-				Status.UNREAD
+				ReadingStatus.UNREAD
 			} else {
 				cursor.moveToNext()
 				val y = cursor.getInt(READ_CHAPTER)
 				cursor.close()
 				when (y) {
-					0 -> Status.UNREAD
-					1 -> Status.READING
-					else -> Status.READ
+					0 -> ReadingStatus.UNREAD
+					1 -> ReadingStatus.READING
+					else -> ReadingStatus.READ
 				}
 			}
 		}
@@ -500,15 +484,15 @@ object Database {
 		 * Sets chapter status
 		 *
 		 * @param chapterID chapter to be set
-		 * @param status    status to be set
+		 * @param readingStatus    status to be set
 		 */
 		@Throws(SQLException::class, MissingResourceException::class)
-		fun setChapterStatus(chapterID: Int, status: Status) {
+		fun setChapterStatus(chapterID: Int, readingStatus: ReadingStatus) {
 			val v = ContentValues()
-			v.put(READ_CHAPTER, status.toString())
+			v.put(READ_CHAPTER, readingStatus.toString())
 			getDatabase().update(CHAPTERS, v, "$ID=?", arrayOf("$chapterID"))
 
-			if (status === Status.READ) updateY(chapterID, 0)
+			if (readingStatus === ReadingStatus.READ) updateY(chapterID, 0)
 		}
 
 		/**
@@ -663,14 +647,16 @@ object Database {
 		 *
 		 * @param novelID      ID of novel
 		 * @param novelChapter chapterURL
+		 * @return chapterID
 		 */
 		@Throws(MissingResourceException::class)
-		fun addToChapters(novelID: Int, novelChapter: Chapter) {
+		fun addToChapters(novelID: Int, novelChapter: Chapter): Int {
 			if (!DatabaseIdentification.hasChapter(novelChapter.link))
 				DatabaseIdentification.addChapter(novelID, novelChapter.link)
 
 			val v = ContentValues()
-			v.put(ID, getChapterIDFromChapterURL(novelChapter.link))
+			val chapterID = getChapterIDFromChapterURL(novelChapter.link)
+			v.put(ID, chapterID)
 			v.put(PARENT_ID, novelID)
 			v.put(TITLE, novelChapter.title.checkStringSerialize())
 			v.put(RELEASE_DATE, novelChapter.release.checkStringSerialize())
@@ -680,7 +666,7 @@ object Database {
 			v.put(BOOKMARKED, 0)
 			v.put(IS_SAVED, 0)
 			getDatabase().insert(CHAPTERS, v)
-
+			return chapterID
 		}
 
 		/**
@@ -773,6 +759,7 @@ object Database {
 
 	}
 
+	@Deprecated("ROOM",level = DeprecationLevel.WARNING)
 	object DatabaseNovels {
 		/**
 		 * Bookmarks the novel
@@ -1053,7 +1040,7 @@ object Database {
 		// --Commented out by Inspection STOP (12/22/19 11:09 AM)
 
 		@Throws(MissingResourceException::class)
-		fun getNovelStatus(novelID: Int): Status {
+		fun getNovelStatus(novelID: Int): ReadingStatus {
 			val cursor = getDatabase().query(
 					NOVELS,
 					stringArrayOf(READING_STATUS),
@@ -1062,17 +1049,17 @@ object Database {
 			)
 			return if (cursor.count <= 0) {
 				cursor.close()
-				Status.UNREAD
+				ReadingStatus.UNREAD
 			} else {
 				cursor.moveToNext()
 				val y = cursor.getInt(READING_STATUS)
 				cursor.close()
 				when (y) {
-					0 -> Status.UNREAD
-					1 -> Status.READING
-					2 -> Status.READ
-					3 -> Status.ONHOLD
-					else -> Status.DROPPED
+					0 -> ReadingStatus.UNREAD
+					1 -> ReadingStatus.READING
+					2 -> ReadingStatus.READ
+					3 -> ReadingStatus.ONHOLD
+					else -> ReadingStatus.DROPPED
 				}
 			}
 		}
@@ -1110,270 +1097,5 @@ object Database {
 			if (isNotInNovels(newURL)) addNovelToDatabase(formatterID, newNovel, newURL, status)
 			bookmarkNovel(getNovelIDFromNovelURL(newURL))
 		}
-	}
-
-
-
-
-	object DatabaseUpdates {
-		fun trimDate(date: DateTime): DateTime {
-			val cal = Calendar.getInstance()
-			cal.clear() // as per BalusC comment.
-			cal.time = date.toDate()
-			cal[Calendar.HOUR_OF_DAY] = 0
-			cal[Calendar.MINUTE] = 0
-			cal[Calendar.SECOND] = 0
-			cal[Calendar.MILLISECOND] = 0
-			return DateTime(cal.timeInMillis)
-		}
-
-		@Throws(MissingResourceException::class)
-		fun getTotalDays(): Int {
-			val firstDay = DateTime(getStartingDay())
-			val latest = DateTime(getLatestDay())
-			return Days.daysBetween(firstDay, latest).days
-		}
-
-		@Throws(MissingResourceException::class)
-		fun getStartingDay(): Long {
-			val cursor = getDatabase().query(
-					table = UPDATES,
-					columns = stringArrayOf(TIME),
-					orderBy = "ROWID ASC",
-					limit = "1"
-			)
-			return if (cursor.count <= 0) {
-				cursor.close()
-				0
-			} else {
-				cursor.moveToNext()
-				val day = cursor.getLong(TIME)
-				cursor.close()
-				trimDate(DateTime(day)).millis
-			}
-		}
-
-		@Throws(MissingResourceException::class)
-		private fun getLatestDay(): Long {
-			val cursor = getDatabase().query(
-					table = UPDATES,
-					columns = stringArrayOf(TIME),
-					orderBy = "ROWID DESC",
-					limit = "1"
-			)
-			return if (cursor.count <= 0) {
-				cursor.close()
-				0
-			} else {
-				cursor.moveToNext()
-				val day = cursor.getLong(TIME)
-				cursor.close()
-				trimDate(DateTime(day)).millis
-			}
-		}
-
-		/**
-		 * Gets count on day
-		 *
-		 * @param date1 first
-		 * @param date2 second
-		 */
-		@Throws(IncorrectDateException::class)
-		fun getCountBetween(date1: Long, date2: Long): Int {
-			if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
-			val cursor = getDatabase().query(
-					table = UPDATES,
-					columns = arrayOf(),
-					selection = "$TIME < ? AND $TIME >= ?",
-					selectionArgs = arrayOf("$date2", "$date1")
-			)
-			val c = cursor.count
-			cursor.close()
-			return c
-		}
-
-		/**
-		 * Works as long as date2 is after date1
-		 *
-		 * @param date1 first
-		 * @param date2 second
-		 */
-		@Throws(IncorrectDateException::class)
-		fun getTimeBetween(date1: Long, date2: Long): ArrayList<Update> {
-			if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
-			//Log.d(logID(), "Getting dates between [" + DateTime(date1) + "] and [" + DateTime(date2) + "]")
-			val cursor = getDatabase().query(
-					table = UPDATES,
-					columns = stringArrayOf(ID, PARENT_ID, TIME),
-					selection = "$TIME < ? AND $TIME >= ?",
-					selectionArgs = arrayOf("$date2", "$date1")
-			)
-			val novelCards = ArrayList<Update>()
-			return if (cursor.count <= 0) {
-				cursor.close()
-				ArrayList()
-			} else {
-				while (cursor.moveToNext()) {
-					novelCards.add(Update(cursor.getInt(ID),
-							cursor.getInt(PARENT_ID),
-							cursor.getLong(TIME))
-					)
-				}
-				cursor.close()
-				novelCards
-			}
-		}
-
-		@Throws(SQLException::class)
-		fun addToUpdates(novelID: Int, chapterURL: String, time: Long) {
-			val v = ContentValues()
-			v.put(ID, getChapterIDFromChapterURL(chapterURL))
-			v.put(PARENT_ID, novelID)
-			v.put(TIME, time)
-			getDatabase().insert(UPDATES, v)
-		}
-		// --Commented out by Inspection START (12/22/19 11:10 AM):
-		//        public static boolean removeNovelFromUpdates(int novelID) {
-		//            return getDatabase()..delete(Tables.UPDATES.toString(), Columns.PARENT_ID + "=" + novelID, null) > 0;
-		//        }
-		// --Commented out by Inspection STOP (12/22/19 11:10 AM)
-		// --Commented out by Inspection START (12/22/19 11:10 AM):
-		//        public static boolean removeFromUpdates(@NotNull String chapterURL) {
-		//            return getDatabase()..delete(Tables.UPDATES.toString(), Columns.ID + "=" + getChapterIDFromChapterURL(chapterURL), null) > 0;
-		//        }
-		// --Commented out by Inspection STOP (12/22/19 11:10 AM)
-
-		/*
-	  public static ArrayList<Update> getAll() {
-			Log.d("DL", "Getting");
-			Cursor cursor = getDatabase()..query(Tables.UPDATES.toString(),
-					new String[]{Columns.NOVEL_URL.toString(), Columns.CHAPTER_URL.toString(), Columns.TIME.toString()}, null, null, null, null, null);
-
-			ArrayList<Update> novelCards = new ArrayList<>();
-			if (cursor.getCount() <= 0) {
-				cursor.close();
-				return new ArrayList<>();
-			} else {
-				while (cursor.moveToNext()) {
-					novelCards.add(new Update(
-							cursor.getString(Columns.NOVEL_URL),
-							cursor.getString(Columns.CHAPTER_URL),
-							cursor.getLong(Columns.TIME)
-					));
-				}
-				cursor.close();
-				return novelCards;
-			}
-		}
-		*/
-	}
-
-	object DatabaseDownloads {
-		/**
-		 * Gets downloads that are stored
-		 *
-		 * @return DownloadItems to download
-		 */
-		val downloadList: ArrayList<DownloadItem>
-			@Throws(MissingResourceException::class)
-			get() {
-				val downloadItems = ArrayList<DownloadItem>()
-				val cursor = getDatabase().query(
-						DOWNLOADS,
-						null,
-						null,
-						null
-				)
-				while (cursor.moveToNext()) {
-					val id = cursor.getInt(PARENT_ID)
-					val nName = cursor.getString(NOVEL_NAME)
-					val cName = cursor.getString(CHAPTER_NAME)
-					val formatter = DatabaseIdentification.getFormatterIDFromChapterID(id)
-					downloadItems.add(DownloadItem((getByID(formatter)), nName, cName, id))
-				}
-				cursor.close()
-				return downloadItems
-			}
-
-		/**
-		 * Gets the first download item
-		 *
-		 * @return DownloadItem to download
-		 */
-		val firstDownload: DownloadItem?
-			@Throws(MissingResourceException::class)
-			get() {
-				val cursor = getDatabase().query(DOWNLOADS, limit = "1")
-				return if (cursor.count <= 0) {
-					cursor.close()
-					null
-				} else {
-					cursor.moveToNext()
-					val id = cursor.getInt(PARENT_ID)
-					val nName = cursor.getString(NOVEL_NAME)
-					val cName = cursor.getString(CHAPTER_NAME)
-					val formatter = DatabaseIdentification.getFormatterIDFromChapterID(id)
-					cursor.close()
-					DownloadItem(getByID(formatter), nName, cName, id)
-				}
-			}
-
-		/**
-		 * Removes download item
-		 *
-		 * @param downloadItem download item to remove
-		 */
-		@Throws(MissingResourceException::class)
-		fun removeDownload(downloadItem: DownloadItem) = getDatabase().delete(
-				DOWNLOADS,
-				"$PARENT_ID=?",
-				arrayOf("${getChapterIDFromChapterURL(downloadItem.chapterURL)}")
-		)
-
-		/**
-		 * Adds to download list
-		 *
-		 * @param downloadItem Download item to add
-		 */
-		@Throws(SQLException::class)
-		fun addToDownloads(downloadItem: DownloadItem) {
-			val v = ContentValues()
-			v.put(PARENT_ID, getChapterIDFromChapterURL(downloadItem.chapterURL))
-			v.put(NOVEL_NAME, downloadItem.novelName.clean())
-			v.put(CHAPTER_NAME, downloadItem.chapterName.clean())
-			v.put(PAUSED, 0)
-			getDatabase().insert(DOWNLOADS, v)
-		}
-
-		/**
-		 * Checks if is in download list
-		 *
-		 * @param downloadItem download item to check
-		 * @return if is in list
-		 */
-		@Throws(MissingResourceException::class)
-		fun inDownloads(downloadItem: DownloadItem): Boolean {
-			val cursor = getDatabase().query(
-					DOWNLOADS,
-					arrayOf(),
-					"${PARENT_ID}=?",
-					arrayOf("${getChapterIDFromChapterURL(downloadItem.chapterURL)}")
-			)
-			val a = cursor.count
-			cursor.close()
-			return a > 0
-		}
-
-		/**
-		 * @return count of download items
-		 */
-		val downloadCount: Int
-			@Throws(MissingResourceException::class)
-			get() {
-				val cursor = getDatabase().query(DOWNLOADS, arrayOf())
-				val a = cursor.count
-				cursor.close()
-				return a
-			}
 	}
 }

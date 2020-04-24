@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities
+package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import androidx.room.ColumnInfo
-import java.io.Serializable
+import org.joda.time.DateTime
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -23,11 +23,20 @@ import java.io.Serializable
 
 /**
  * shosetsu
- * 22 / 04 / 2020
+ * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-data class CountIDTuple(
-		@ColumnInfo(name = "COUNT(*)") val count: Int,
-		@ColumnInfo(name = "id") val id: Int
-) : Serializable
+/**
+ * @return this [DateTime] without any value lower then a day
+ */
+fun DateTime.trimDate(): DateTime {
+	val cal = Calendar.getInstance()
+	cal.clear() // as per BalusC comment.
+	cal.time = toDate()
+	cal[Calendar.HOUR_OF_DAY] = 0
+	cal[Calendar.MINUTE] = 0
+	cal[Calendar.SECOND] = 0
+	cal[Calendar.MILLISECOND] = 0
+	return DateTime(cal.timeInMillis)
+}

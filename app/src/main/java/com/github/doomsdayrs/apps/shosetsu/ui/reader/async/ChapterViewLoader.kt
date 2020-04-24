@@ -12,7 +12,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 import kotlinx.android.synthetic.main.chapter_view.*
 import java.util.concurrent.TimeUnit
 
-class ChapterViewLoader(private val chapterView: ChapterView) : AsyncTask<Any?, Void?, Boolean>() {
+class ChapterViewLoader(private val chapterView: ChapterView)
+	: AsyncTask<Any?, Void?, Boolean>() {
 
 	override fun onPreExecute() {
 		Log.i("ChapterViewLoader", "onPreExecute${chapterView.appendID()}")

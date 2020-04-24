@@ -26,7 +26,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables
  * @author github.com/doomsdayrs
  */
 interface ErrorAlertParent {
-    fun setError(e: Exception): ErrorAlertParent
-    fun setMessage(message: CharSequence?): ErrorAlertParent
-    fun runOnUI()
+	fun setError(e: Exception): ErrorAlertParent
+	fun setMessage(message: CharSequence?): ErrorAlertParent
+	fun runOnUI()
 }

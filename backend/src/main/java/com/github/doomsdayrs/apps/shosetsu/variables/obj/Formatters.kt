@@ -4,11 +4,9 @@ import android.content.Context
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
-import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.shosetsuRoomDatabase
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
-import java.lang.Exception
 
 /*
  * This file is part of Shosetsu.
@@ -71,7 +69,7 @@ object Formatters {
 	 * Loads the formatters
 	 */
 	fun load(context: Context) {
-		val fileNames = shosetsuRoomDatabase.formatterDao()
+		val fileNames = extensionsDao
 				.loadPoweredFormatterFileNames()
 		fileNames.forEach {
 			formatters.add(

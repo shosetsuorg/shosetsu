@@ -44,13 +44,13 @@ interface ExtensionsDao {
 	@Query("SELECT fileName FROM extensions WHERE installed = 1 AND enabled = 1 ORDER BY name ASC")
 	fun loadPoweredFormatterFileNames(): Array<String>
 
-	@Query("SELECT * FROM extensions WHERE formatterID = :formatterID LIMIT 1")
+	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
 	fun loadFormatter(formatterID: Int): ExtensionEntity
 
-	@Query("SELECT md5 FROM extensions WHERE formatterID = :formatterID LIMIT 1")
+	@Query("SELECT md5 FROM extensions WHERE id = :formatterID LIMIT 1")
 	fun loadFormatterMD5(formatterID: Int): String
 
-	@Query("SELECT COUNT(*) FROM extensions WHERE formatterID= :formatterID")
+	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
 	fun formatterCountFromID(formatterID: Int): Int
 
 	@Ignore

@@ -1,10 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities
 
-import android.content.Context
 import androidx.annotation.NonNull
 import androidx.room.*
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
-import java.io.Serializable
+import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.
@@ -26,43 +25,58 @@ import java.io.Serializable
 
 /**
  * shosetsu
- * 22 / 04 / 2020
+ * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
- * This class represents a formatter
  */
-@Entity(
-		tableName = "extensions",
+@Entity(tableName = "chapters",
 		foreignKeys = [
 			ForeignKey(
-					entity = RepositoryEntity::class,
+					entity = NovelEntity::class,
 					parentColumns = ["id"],
-					childColumns = ["repoID"],
+					childColumns = ["novelID"],
 					onDelete = ForeignKey.CASCADE
+			),
+			ForeignKey(
+					entity = ExtensionEntity::class,
+					parentColumns = ["id"],
+					childColumns = ["formatter"],
+					onDelete = ForeignKey.SET_NULL,
+					onUpdate = ForeignKey.CASCADE
 			)
 		],
-		indices = [Index("repoID")]
+		indices = [Index("novelID"), Index("link", unique = true), Index("formatter")]
 )
+data class ChapterEntity(
+		@NonNull
+		val link: String,
 
-data class ExtensionEntity(
-		@PrimaryKey val id: Int,
-		val repoID: Int,
-		@NonNull var name: String = "",
-		@NonNull val fileName: String = "",
-		var imageURL: String? = null,
-		var lang: String = "",
-		var enabled: Boolean = false,
-		var installed: Boolean = false,
-		var installedVersion: String? = null,
-		var repositoryVersion: String = "0.0.0",
-		var md5: String = ""
-) : Serializable {
-	@Ignore
-	fun install(context: Context) {
-		FormatterUtils.installExtension(this, context)
-	}
+		@NonNull
+		val novelID: Int,
+
+		val formatter: Formatter,
+
+		@NonNull
+		var title: String,
+
+		@NonNull
+		var releaseDate: String,
+
+		var order: Double,
+
+		var readingPosition: Int = 0,
+
+		var readingReadingStatus: ReadingStatus = ReadingStatus.UNREAD,
+
+		var bookmarked: Boolean = false,
+
+		var isSaved: Boolean = false,
+
+		var savePath: String = ""
+) {
+	@PrimaryKey(autoGenerate = true)
+	var id: Int = -1
 
 	@Ignore
-	fun delete(context: Context) =
-			FormatterUtils.deleteFormatter(this, context)
+	fun toDownload() = DownloadEntity(id, link, formatter)
 }

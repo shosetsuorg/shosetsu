@@ -1,16 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database.room
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Fts4
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.ExtensionsDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.RepositoryDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.ScriptLibDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.RepositoryEntity
+import androidx.room.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.converters.FormatterConverter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.converters.NovelStatusConverter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.converters.ReadingStatusConverter
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.converters.StringArrayConverters
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.*
 
 /*
  * This file is part of shosetsu.
@@ -37,7 +34,19 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.Reposi
  * @author github.com/doomsdayrs
  */
 @Fts4
-@Database(entities = [ExtensionEntity::class, RepositoryEntity::class, ExtensionLibraryEntity::class], version = 1)
+@Database(
+		entities = [
+			ExtensionEntity::class,
+			RepositoryEntity::class,
+			ExtensionLibraryEntity::class,
+			DownloadEntity::class,
+			UpdateEntity::class,
+			ChapterEntity::class,
+			NovelEntity::class
+		],
+		version = 1
+)
+@TypeConverters(FormatterConverter::class, ReadingStatusConverter::class, StringArrayConverters::class, NovelStatusConverter::class)
 abstract class ShosetsuRoomDatabase : RoomDatabase() {
 	companion object {
 		private lateinit var databaseShosetsu: ShosetsuRoomDatabase;
@@ -45,15 +54,21 @@ abstract class ShosetsuRoomDatabase : RoomDatabase() {
 		fun getRoomDatabase(context: Context): ShosetsuRoomDatabase {
 			if (!::databaseShosetsu.isInitialized)
 				synchronized(ShosetsuRoomDatabase::class) {
-					databaseShosetsu = Room.databaseBuilder(context.applicationContext, ShosetsuRoomDatabase::class.java, "room_database").build()
+					databaseShosetsu = Room.databaseBuilder(
+							context.applicationContext,
+							ShosetsuRoomDatabase::class.java,
+							"room_database"
+					).build()
 				}
 			return databaseShosetsu
 		}
 	}
 
 	abstract fun formatterDao(): ExtensionsDao
-
 	abstract fun repositoryDao(): RepositoryDao
-
 	abstract fun scriptLibDao(): ScriptLibDao
+	abstract fun updatesDao(): UpdatesDao
+	abstract fun downloadsDao(): DownloadsDao
+	abstract fun chaptersDao(): ChaptersDao
+	abstract fun novelsDao(): NovelsDao
 }
