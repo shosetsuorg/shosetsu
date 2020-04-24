@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashScreen">
+
+    <activity
+        android:id="@+id/splashScreen"
+        android:name="com.github.doomsdayrs.apps.shosetsu.ui.splash.SplashScreen"
+        android:label="SplashScreen" />
+    <fragment
+        android:id="@+id/chapterView"
+        android:name="com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView"
+        android:label="ChapterView" />
+    <fragment
+        android:id="@+id/license"
+        android:name="com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity.License"
+        android:label="License" />
+    <activity
+        android:id="@+id/introductionActivity"
+        android:name="com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity"
+        android:label="IntroductionActivity" />
+    <activity
+        android:id="@+id/chapterReader"
+        android:name="com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader"
+        android:label="ChapterReader" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.github.doomsdayrs.apps.shosetsu.ui.main.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+    <activity
+        android:id="@+id/webViewApp"
+        android:name="com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp"
+        android:label="WebViewApp" />
+</navigation>
