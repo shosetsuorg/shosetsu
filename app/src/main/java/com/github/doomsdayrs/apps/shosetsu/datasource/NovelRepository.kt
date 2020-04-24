@@ -1,9 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
+package com.github.doomsdayrs.apps.shosetsu.datasource
 
+import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Query
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
+import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEntity
 
 /*
@@ -26,19 +26,17 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEnti
 
 /**
  * shosetsu
- * 23 / 04 / 2020
+ * 24 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-@Dao
-interface NovelsDao : BaseDao<NovelEntity> {
+class NovelRepository(val context: Context) {
+	private val novelsDao: NovelsDao
+	private val novels: LiveData<Array<NovelEntity>>
 
-	@Query("SELECT * FROM novels")
-	fun loadNovels(): LiveData<Array<NovelEntity>>
-
-	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadNovel(novelID: Int): NovelEntity
-
-	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters
+	init {
+		val database = ShosetsuDatabase.getRoomDatabase(context)
+		novelsDao = database.novelsDao()
+		novels = novelsDao.loadNovels()
+	}
 }

@@ -51,17 +51,17 @@ import kotlinx.coroutines.launch
 @TypeConverters(FormatterConverter::class, ReadingStatusConverter::class, StringArrayConverters::class, NovelStatusConverter::class)
 abstract class ShosetsuDatabase : RoomDatabase() {
 	companion object {
+		@Volatile
 		private lateinit var databaseShosetsu: ShosetsuDatabase;
 
+		@Synchronized
 		fun getRoomDatabase(context: Context): ShosetsuDatabase {
 			if (!Companion::databaseShosetsu.isInitialized)
-				synchronized(ShosetsuDatabase::class) {
-					databaseShosetsu = Room.databaseBuilder(
-							context.applicationContext,
-							ShosetsuDatabase::class.java,
-							"room_database"
-					).build()
-				}
+				databaseShosetsu = Room.databaseBuilder(
+						context.applicationContext,
+						ShosetsuDatabase::class.java,
+						"room_database"
+				).build()
 			GlobalScope.launch {
 				databaseShosetsu.repositoryDao().initializeData()
 			}
