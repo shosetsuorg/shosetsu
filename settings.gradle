@@ -1,5 +1,3 @@
 include ':app'
 include ':wear'
-include ':car'
 include ':backend'
-include ':tv'
