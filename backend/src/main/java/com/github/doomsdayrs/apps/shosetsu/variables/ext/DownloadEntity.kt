@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import java.util.*
 

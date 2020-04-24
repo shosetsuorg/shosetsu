@@ -20,7 +20,6 @@ import app.shosetsu.lib.values
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.newStruc.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDViewBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
@@ -35,6 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.google.android.material.navigation.NavigationView
 
 /*

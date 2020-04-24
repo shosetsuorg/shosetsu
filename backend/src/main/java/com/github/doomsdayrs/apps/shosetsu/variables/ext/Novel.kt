@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEntity
 
 /*
  * This file is part of shosetsu.

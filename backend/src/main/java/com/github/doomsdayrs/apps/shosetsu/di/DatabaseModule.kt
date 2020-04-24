@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.*
+import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -33,12 +33,12 @@ import org.kodein.di.generic.provider
  */
 
 val databaseModule = Kodein.Module("database_module") {
-	bind<ChaptersDao>() with provider { instance<ShosetsuRoomDatabase>().chaptersDao() }
-	bind<NovelsDao>() with provider { instance<ShosetsuRoomDatabase>().novelsDao() }
-	bind<DownloadsDao>() with provider { instance<ShosetsuRoomDatabase>().downloadsDao() }
-	bind<UpdatesDao>() with provider { instance<ShosetsuRoomDatabase>().updatesDao() }
-	bind<ScriptLibDao>() with provider { instance<ShosetsuRoomDatabase>().scriptLibDao() }
-	bind<RepositoryDao>() with provider { instance<ShosetsuRoomDatabase>().repositoryDao() }
-	bind<ExtensionsDao>() with provider { instance<ShosetsuRoomDatabase>().extensionsDao() }
+	bind<ChaptersDao>() with provider { instance<ShosetsuDatabase>().chaptersDao() }
+	bind<NovelsDao>() with provider { instance<ShosetsuDatabase>().novelsDao() }
+	bind<DownloadsDao>() with provider { instance<ShosetsuDatabase>().downloadsDao() }
+	bind<UpdatesDao>() with provider { instance<ShosetsuDatabase>().updatesDao() }
+	bind<ExtensionLibraryDao>() with provider { instance<ShosetsuDatabase>().scriptLibDao() }
+	bind<RepositoryDao>() with provider { instance<ShosetsuDatabase>().repositoryDao() }
+	bind<ExtensionsDao>() with provider { instance<ShosetsuDatabase>().extensionsDao() }
 
 }

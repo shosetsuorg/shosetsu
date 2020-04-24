@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings
 import android.view.View
 import androidx.annotation.StringRes
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import java.util.*

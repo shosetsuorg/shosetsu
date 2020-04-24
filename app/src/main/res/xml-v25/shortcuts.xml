@@ -8,7 +8,7 @@
         <intent
             android:action="android.intent.action.USER_BACKGROUND"
             android:targetPackage="com.github.doomsdayrs.apps.shosetsu"
-            android:targetClass="com.github.doomsdayrs.apps.shosetsu.newStruc.activity.MainActivity"/>
+            android:targetClass="com.github.doomsdayrs.apps.shosetsu.activity.MainActivity"/>
 
     </shortcut>
     <!-- Specify more shortcuts here. -->

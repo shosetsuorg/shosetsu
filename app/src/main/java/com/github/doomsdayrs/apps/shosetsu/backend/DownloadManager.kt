@@ -6,7 +6,7 @@ import android.database.SQLException
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
 import java.io.BufferedReader

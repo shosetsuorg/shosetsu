@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.newStruc.view.base.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context

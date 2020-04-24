@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
 import com.squareup.picasso.Picasso
 

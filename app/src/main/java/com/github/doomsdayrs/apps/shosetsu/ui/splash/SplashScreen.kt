@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.services.RepositoryService
 import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
-import com.github.doomsdayrs.apps.shosetsu.newStruc.activity.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import java.io.File

@@ -12,17 +12,19 @@ import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_MARK_ERROR
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_RECEIVED_URL
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_REMOVE
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_DOWNLOADS_TOGGLE
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DATA_CHANGE
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.DownloadsViewModel
 
 /*
  * This file is part of Shosetsu.
@@ -48,6 +50,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DA
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadEntity>() {
 	private lateinit var receiver: BroadcastReceiver
+	val downloadsViewModel: DownloadsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)

@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.newStruc.view.base.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 
 /*
  * This file is part of Shosetsu.

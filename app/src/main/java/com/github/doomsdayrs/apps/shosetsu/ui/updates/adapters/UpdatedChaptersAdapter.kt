@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.chaptersDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus

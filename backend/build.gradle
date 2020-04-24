@@ -16,6 +16,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -57,6 +58,8 @@ dependencies {
     // Core libraries
     implementation 'org.luaj:luaj-jse:3.0.1'
     implementation 'com.github.doomsdayrs:shosetsu-services:v1.0.0-rc18'
+
+
 
 
     // Room

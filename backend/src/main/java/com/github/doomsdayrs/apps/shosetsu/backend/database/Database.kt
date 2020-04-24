@@ -11,8 +11,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterURLFromChapterID
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables.*
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.ShosetsuRoomDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.dao.*
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard

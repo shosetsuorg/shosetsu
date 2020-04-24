@@ -19,7 +19,7 @@ import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapters
@@ -27,8 +27,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus

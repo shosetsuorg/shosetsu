@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".newStruc.application.ShosetsuApplication"
+        android:name="com.github.doomsdayrs.apps.shosetsu.application.ShosetsuApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -41,7 +41,7 @@
 
 
         <activity
-            android:name="com.github.doomsdayrs.apps.shosetsu.newStruc.activity.MainActivity"
+            android:name="com.github.doomsdayrs.apps.shosetsu.activity.MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.webView.WebViewApp"

@@ -14,9 +14,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.repositoryDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.scriptLibDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ExtensionLibraryEntity
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.containsName
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.forEachTyped
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID

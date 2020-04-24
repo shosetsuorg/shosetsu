@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.room.entities.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.newStruc.activity.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
