@@ -136,4 +136,5 @@
     <string name="backup">后备</string>
     <string name="view">查看</string>
     <string name="advanced">高级</string>
+    <string name="regret">由于时间限制，尚未重新引入此功能</string>
 </resources>

@@ -255,6 +255,9 @@
     <string name="backup_quick_option_desc">Backups URL and simple data only. Will require network reload on restore</string>
     <string name="accept_all_catalogue_choice_hint">Press this to confirm the catalogue for all</string>
 
+    <string name="regret">This feature have not been reintroduced yet due to time constraints :(</string>
+    <string name="installing">Installing</string>
+
     <array name="application_themes">
         <item>@string/light</item>
         <item>@string/amoled</item>

@@ -136,4 +136,5 @@
     <string name="backup">バックアップ</string>
     <string name="view">見ます</string>
     <string name="advanced">詳細</string>
+    <string name="regret">この機能は、時間の制約によりまだ導入されていません</string>
 </resources>

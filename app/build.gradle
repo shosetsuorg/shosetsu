@@ -60,7 +60,6 @@ android {
 
 
 dependencies {
-    implementation project (':backend')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Google view things
