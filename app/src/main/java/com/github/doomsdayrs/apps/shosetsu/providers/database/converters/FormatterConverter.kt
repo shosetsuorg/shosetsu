@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.providers.database.converters
 
 import androidx.room.TypeConverter
 import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 
 /*
@@ -33,5 +34,5 @@ class FormatterConverter {
 	fun toInt(formatter: Formatter) = formatter.formatterID
 
 	@TypeConverter
-	fun toFormatter(int: Int) = FormattersRepository.getByID(int)
+	fun toFormatter(int: Int) = Formatters.getByID(int)
 }
