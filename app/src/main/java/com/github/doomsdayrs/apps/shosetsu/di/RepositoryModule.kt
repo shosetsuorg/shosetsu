@@ -1,7 +1,11 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.repository
+package com.github.doomsdayrs.apps.shosetsu.di
 
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
+import com.github.doomsdayrs.apps.shosetsu.datasource.repository.impl.DownloadsRepositoryImpl
+import com.github.doomsdayrs.apps.shosetsu.datasource.repository.model.DownloadsRepository
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.singleton
 
 /*
  * This file is part of shosetsu.
@@ -23,9 +27,11 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 
 /**
  * shosetsu
- * 24 / 04 / 2020
+ * 25 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsRepository(val extensionsDao: ExtensionsDao) : ViewModel() {
+
+val repositoryModule = Kodein.Module("repository_module") {
+	bind<DownloadsRepository>() with singleton { DownloadsRepositoryImpl(instance()) }
 }

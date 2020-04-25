@@ -35,5 +35,6 @@ import org.kodein.di.direct
  */
 class ViewModelFactory(context: Context) : ViewModelProvider.Factory, KodeinAware {
 	override val kodein: Kodein = (context as ShosetsuApplication).kodein
-	override fun <T : ViewModel> create(modelClass: Class<T>): T = kodein.direct.Instance(TT(modelClass))
+	override fun <T : ViewModel> create(modelClass: Class<T>): T =
+			kodein.direct.Instance(TT(modelClass))
 }

@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.repository
+package com.github.doomsdayrs.apps.shosetsu.datasource.repository.model
 
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionEntity
 
 /*
  * This file is part of shosetsu.
@@ -22,9 +23,11 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 
 /**
  * shosetsu
- * 24 / 04 / 2020
+ * 25 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-class NovelsRepository(val novelsDao: NovelsDao) {
+interface ExtensionsRepository {
+	fun getExtensions(): LiveData<List<ExtensionEntity>>
+	fun installExtension(extensionEntity: ExtensionEntity)
 }

@@ -1,10 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
+package com.github.doomsdayrs.apps.shosetsu.datasource.repository.impl
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Query
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.datasource.repository.model.UpdatesRepository
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
+import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.UpdateEntity
 
 /*
  * This file is part of shosetsu.
@@ -26,22 +25,17 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEnti
 
 /**
  * shosetsu
- * 23 / 04 / 2020
+ * 24 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-@Dao
-interface NovelsDao : BaseDao<NovelEntity> {
+class UpdatesRepositoryImpl(val updatesDao: UpdatesDao) : UpdatesRepository {
+	override fun addUpdate(updateEntity: UpdateEntity) {
+		TODO("Not yet implemented")
+	}
 
-	@Query("SELECT * FROM novels")
-	fun loadNovels(): LiveData<Array<NovelEntity>>
+	override fun getUpdates(): LiveData<List<UpdateEntity>> {
+		TODO("Not yet implemented")
+	}
 
-	@Query("SELECT * FROM novels WHERE bookmarked = 1")
-	fun loadBookmarkedNovels(): LiveData<List<NovelEntity>>
-
-	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadNovel(novelID: Int): NovelEntity
-
-	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters
 }

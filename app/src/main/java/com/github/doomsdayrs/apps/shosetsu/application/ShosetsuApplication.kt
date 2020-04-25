@@ -9,9 +9,9 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.di.databaseModule
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.factory.ViewModelFactory
 import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.factory.ViewModelFactory
 import org.acra.ACRA
 import org.acra.annotation.AcraCore
 import org.acra.annotation.AcraDialog
@@ -94,8 +94,10 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		bind<ShosetsuDatabase>() with singleton {
 			ShosetsuDatabase.getRoomDatabase(applicationContext)
 		}
-		import(androidXModule(this@ShosetsuApplication))
 		import(databaseModule)
+
+
+		import(androidXModule(this@ShosetsuApplication))
 	}
 
 	override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {}

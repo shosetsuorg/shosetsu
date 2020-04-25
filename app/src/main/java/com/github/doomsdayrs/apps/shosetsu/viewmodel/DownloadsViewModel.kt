@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.datasource.repository.DownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.datasource.repository.impl.DownloadsRepositoryImpl
 
 /*
  * This file is part of shosetsu.
@@ -27,5 +27,5 @@ import com.github.doomsdayrs.apps.shosetsu.datasource.repository.DownloadsReposi
  *
  * @author github.com/doomsdayrs
  */
-class DownloadsViewModel(val downloadsDao: DownloadsRepository) : ViewModel() {
+class DownloadsViewModel(val downloadsDaoImpl: DownloadsRepositoryImpl) : ViewModel() {
 }

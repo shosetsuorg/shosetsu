@@ -5,7 +5,7 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
+import org.kodein.di.generic.singleton
 
 /*
  * This file is part of shosetsu.
@@ -33,11 +33,11 @@ import org.kodein.di.generic.provider
  */
 
 val databaseModule = Kodein.Module("database_module") {
-	bind<ChaptersDao>() with provider { instance<ShosetsuDatabase>().chaptersDao() }
-	bind<NovelsDao>() with provider { instance<ShosetsuDatabase>().novelsDao() }
-	bind<DownloadsDao>() with provider { instance<ShosetsuDatabase>().downloadsDao() }
-	bind<UpdatesDao>() with provider { instance<ShosetsuDatabase>().updatesDao() }
-	bind<ExtensionLibraryDao>() with provider { instance<ShosetsuDatabase>().scriptLibDao() }
-	bind<RepositoryDao>() with provider { instance<ShosetsuDatabase>().repositoryDao() }
-	bind<ExtensionsDao>() with provider { instance<ShosetsuDatabase>().extensionsDao() }
+	bind<ChaptersDao>() with singleton { instance<ShosetsuDatabase>().chaptersDao() }
+	bind<NovelsDao>() with singleton { instance<ShosetsuDatabase>().novelsDao() }
+	bind<DownloadsDao>() with singleton { instance<ShosetsuDatabase>().downloadsDao() }
+	bind<UpdatesDao>() with singleton { instance<ShosetsuDatabase>().updatesDao() }
+	bind<ExtensionLibraryDao>() with singleton { instance<ShosetsuDatabase>().scriptLibDao() }
+	bind<RepositoryDao>() with singleton { instance<ShosetsuDatabase>().repositoryDao() }
+	bind<ExtensionsDao>() with singleton { instance<ShosetsuDatabase>().extensionsDao() }
 }
