@@ -1,8 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.converters
+package com.github.doomsdayrs.apps.shosetsu.datasource.repository
 
-import androidx.room.TypeConverter
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 
 /*
  * This file is part of shosetsu.
@@ -24,14 +22,9 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 
 /**
  * shosetsu
- * 23 / 04 / 2020
+ * 24 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-class FormatterConverter {
-	@TypeConverter
-	fun toInt(formatter: Formatter) = formatter.formatterID
-
-	@TypeConverter
-	fun toFormatter(int: Int) = FormattersRepository.getByID(int)
+class NovelsRepository(val novelsDao: NovelsDao) {
 }

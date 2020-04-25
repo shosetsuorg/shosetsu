@@ -18,7 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.viewHolders.Co
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.setDefaultListing
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
 import java.io.File
@@ -54,7 +54,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
     }
 
     override fun getItemCount(): Int {
-        return configureExtensions.jsonArray.length() + Formatters.formatters.size
+        return configureExtensions.jsonArray.length() + FormattersRepository.formatters.size
     }
 
     override fun onBindViewHolder(holder: ConfigExtView, position: Int) {
@@ -72,7 +72,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
             image = jsonObject.getString("imageUrl")
             isInteral = jsonObject.getBoolean("internal")
         } else {
-            fom = Formatters.formatters[position - configureExtensions.jsonArray.length()]
+            fom = FormattersRepository.formatters[position - configureExtensions.jsonArray.length()]
             name = fom.name
             id = fom.formatterID
             image = fom.imageURL
@@ -103,7 +103,7 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
 
                     override fun pass() {
                         configureExtensions.jsonArray.remove(findPostion(id))
-                        Formatters.formatters.add(LuaFormatter(file))
+                        FormattersRepository.formatters.add(LuaFormatter(file))
                         Settings.disabledFormatters = configureExtensions.jsonArray
                     }
 
@@ -123,14 +123,14 @@ class ConfigExtAdapter(val configureExtensions: ConfigureExtensions) : RecyclerV
                     js.put("internal", isInteral)
                     configureExtensions.jsonArray.put(js)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        Formatters.formatters.removeIf { it.formatterID == id }
+                        FormattersRepository.formatters.removeIf { it.formatterID == id }
                     } else {
                         var point = -1
-                        for (i in 0 until Formatters.formatters.size)
-                            if (Formatters.formatters[i].formatterID == id)
+                        for (i in 0 until FormattersRepository.formatters.size)
+                            if (FormattersRepository.formatters[i].formatterID == id)
                                 point = i
                         if (point != -1)
-                            Formatters.formatters.removeAt(point)
+                            FormattersRepository.formatters.removeAt(point)
                     }
                     Settings.disabledFormatters = configureExtensions.jsonArray
                 }

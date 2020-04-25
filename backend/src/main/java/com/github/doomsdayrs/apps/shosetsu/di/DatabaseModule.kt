@@ -40,5 +40,4 @@ val databaseModule = Kodein.Module("database_module") {
 	bind<ExtensionLibraryDao>() with provider { instance<ShosetsuDatabase>().scriptLibDao() }
 	bind<RepositoryDao>() with provider { instance<ShosetsuDatabase>().repositoryDao() }
 	bind<ExtensionsDao>() with provider { instance<ShosetsuDatabase>().extensionsDao() }
-
 }

@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.entity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_UPDATE
 import needle.CancelableTask
@@ -189,7 +189,7 @@ class UpdateService : Service() {
 					val novelEntity = novelsDao.loadNovel(novelID)
 					val formatter = novelEntity.formatter
 
-					if (formatter != Formatters.unknown) {
+					if (formatter != FormattersRepository.unknown) {
 						// Updates notification
 						pr.setContentText(novelEntity.title)
 						pr.setProgress(novelsIDs.size, novelID + 1, false)

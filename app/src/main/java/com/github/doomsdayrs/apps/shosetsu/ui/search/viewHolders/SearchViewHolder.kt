@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNov
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.search.async.SearchLoader
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import java.util.*
 
 /*
@@ -78,7 +78,7 @@ class SearchViewHolder(itemView: View, val searchController: SearchController) :
                 progressBar.visibility = View.GONE
             }
             else -> {
-                formatter = Formatters.getByID(id)
+                formatter = FormattersRepository.getByID(id)
                 textView.text = formatter.name
                 if (!searchController.containsData(id))
                     SearchLoader(this).execute(query)

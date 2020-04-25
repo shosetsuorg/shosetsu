@@ -9,7 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -64,7 +64,7 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 		setHasOptionsMenu(true)
 		novelID = bundle.getInt(BUNDLE_ID)
 		novelURL = bundle.getString(BUNDLE_URL, "")
-		formatter = Formatters.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
+		formatter = FormattersRepository.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {

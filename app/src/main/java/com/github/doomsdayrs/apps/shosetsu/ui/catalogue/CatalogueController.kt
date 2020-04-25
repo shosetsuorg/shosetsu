@@ -32,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.build
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.google.android.material.navigation.NavigationView
@@ -88,7 +88,7 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 
 	init {
 		setHasOptionsMenu(true)
-		formatter = Formatters.getByID(bundle.getInt("formatter"))
+		formatter = FormattersRepository.getByID(bundle.getInt("formatter"))
 		selectedListing = formatter.defaultListing
 		filterValues = formatter.listings[this.selectedListing].filters.values()
 	}
@@ -102,7 +102,7 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
 		catalogueNovelCards = savedInstanceState.getSerializable("list") as ArrayList<NovelListingCard>
-		formatter = Formatters.getByID(savedInstanceState.getInt("formatter"))
+		formatter = FormattersRepository.getByID(savedInstanceState.getInt("formatter"))
 	}
 
 	override fun onViewCreated(view: View) {

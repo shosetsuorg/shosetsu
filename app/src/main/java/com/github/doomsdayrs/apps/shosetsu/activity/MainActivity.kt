@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener
@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity(), Supporter {
 		}
 
 		GlobalScope.launch {
-			Formatters.load(this@MainActivity)
+			FormattersRepository.load(this@MainActivity)
 		}
 
 		toolbar.setNavigationOnClickListener { if (router.backstackSize == 1) drawer_layout.openDrawer(GravityCompat.START) else onBackPressed() }

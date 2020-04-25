@@ -10,7 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.FileObject
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import org.json.JSONObject
 import java.io.File
 
@@ -77,10 +77,10 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
             when (file.action) {
                 0 -> {
                    // FormatterUtils.trustScript(file.file)
-                    Formatters.formatters.add(LuaFormatter(file.file))
+                    FormattersRepository.formatters.add(LuaFormatter(file.file))
                 }
                 1 -> {
-                    Formatters.formatters.add(LuaFormatter(file.file))
+                    FormattersRepository.formatters.add(LuaFormatter(file.file))
                 }
                 2 -> {
                    // val meta = FormatterUtils.getMetaData(file.file)

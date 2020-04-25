@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -79,7 +79,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 		setHasOptionsMenu(true)
 		novelID = bundle.getInt(BUNDLE_ID, -1)
 		novelURL = bundle.getString(BUNDLE_URL, "")
-		formatter = Formatters.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
+		formatter = FormattersRepository.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
 	}
 
 	// UI items

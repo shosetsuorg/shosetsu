@@ -1,10 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource
-
-import android.content.Context
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEntity
+package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 /*
  * This file is part of shosetsu.
@@ -30,13 +24,6 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEnti
  *
  * @author github.com/doomsdayrs
  */
-class NovelRepository(val context: Context) {
-	private val novelsDao: NovelsDao
-	private val novels: LiveData<Array<NovelEntity>>
+class NovelViewViewModel() {
 
-	init {
-		val database = ShosetsuDatabase.getRoomDatabase(context)
-		novelsDao = database.novelsDao()
-		novels = novelsDao.loadNovels()
-	}
 }

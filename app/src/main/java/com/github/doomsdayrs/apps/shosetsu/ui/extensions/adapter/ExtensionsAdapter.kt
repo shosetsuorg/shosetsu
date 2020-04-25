@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHol
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -64,7 +64,7 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 		val entity = extensionsController.recyclerArray[position]
 		val id = entity.id
 
-		if (Formatters.getByID(id) != Formatters.unknown) {
+		if (FormattersRepository.getByID(id) != FormattersRepository.unknown) {
 			holder.button.text = holder.itemView.context.getString(R.string.uninstall)
 			//  holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
 			holder.installed = true

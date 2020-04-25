@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsD
 import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -64,7 +64,7 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionEnti
 				true
 			}
 			R.id.reload -> {
-				Formatters.formatters.clear()
+				FormattersRepository.formatters.clear()
 				// TODO Load formatters once again
 				true
 			}

@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Formatters
+import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import java.util.*
 
 /*
@@ -40,7 +40,7 @@ val DownloadEntity.chapterURL: String
 @get:Throws(MissingResourceException::class)
 @Deprecated("ROOM IN FUTURE", level = DeprecationLevel.WARNING)
 val DownloadEntity.formatter: Formatter
-	get() = Formatters.getByID(
+	get() = FormattersRepository.getByID(
 			Database.DatabaseIdentification.getFormatterIDFromChapterID(this.chapterID)
 	)
 
