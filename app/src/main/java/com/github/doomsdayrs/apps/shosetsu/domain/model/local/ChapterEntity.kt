@@ -1,11 +1,14 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.entities
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
 import androidx.annotation.NonNull
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.clean
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 
 /*
  * This file is part of shosetsu.
@@ -75,19 +78,22 @@ data class ChapterEntity(
 		var isSaved: Boolean = false,
 
 		var savePath: String = ""
-) {
+) : Convertible<ChapterUI> {
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = -1
 
-	@Ignore
-	fun toDownload(): DownloadEntity {
-		val novelEntity = novelsDao.loadNovel(novelID)
-		return DownloadEntity(
-				id,
-				link,
-				title.clean(),
-				novelEntity.title.clean(),
-				formatter
-		)
-	}
+	override fun convertTo(): ChapterUI =
+			ChapterUI(
+					link,
+					novelID,
+					formatter,
+					title,
+					releaseDate,
+					order,
+					readingPosition,
+					readingReadingStatus,
+					bookmarked,
+					isSaved,
+					savePath
+			)
 }

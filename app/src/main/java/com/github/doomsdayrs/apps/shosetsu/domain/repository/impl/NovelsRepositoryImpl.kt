@@ -1,10 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.entities
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.impl
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import java.io.Serializable
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -26,24 +25,14 @@ import java.io.Serializable
 
 /**
  * shosetsu
- * 22 / 04 / 2020
+ * 24 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-@Entity(tableName = "updates",
-		foreignKeys = [
-			ForeignKey(
-					entity = ChapterEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["chapterID"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("chapterID")]
-)
-data class UpdateEntity(
-		@PrimaryKey
-		val chapterID: Int,
-		val novelID: Int,
-		val time: Long
-) : Serializable
+class NovelsRepositoryImpl(val novelsDao: NovelsDao) : NovelsRepository {
+	override suspend fun getBookmarkedNovels(): LiveData<List<NovelEntity>> =
+			novelsDao.loadBookmarkedNovels()
+
+	override suspend fun updateNovel(novelEntity: NovelEntity) =
+			novelsDao.update(novelEntity)
+}

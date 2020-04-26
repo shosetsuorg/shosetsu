@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.entities
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.RepositoryUI
 import java.io.Serializable
 
 /*
@@ -32,7 +34,10 @@ import java.io.Serializable
 data class RepositoryEntity(
 		var url: String,
 		var name: String
-) : Serializable {
+) : Serializable, Convertible<RepositoryUI> {
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = 0
+
+	override fun convertTo(): RepositoryUI =
+			RepositoryUI(url, name)
 }

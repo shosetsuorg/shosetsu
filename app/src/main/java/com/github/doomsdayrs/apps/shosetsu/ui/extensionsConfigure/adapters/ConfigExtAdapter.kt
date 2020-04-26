@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions

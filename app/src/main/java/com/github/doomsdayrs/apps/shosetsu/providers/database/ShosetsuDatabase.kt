@@ -2,12 +2,12 @@ package com.github.doomsdayrs.apps.shosetsu.providers.database
 
 import android.content.Context
 import androidx.room.*
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.*
 import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.FormatterConverter
 import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.NovelStatusConverter
 import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.ReadingStatusConverter
 import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.StringArrayConverters
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.*
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.repository.model
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.impl
 
 import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.DownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 
 /*
  * This file is part of shosetsu.
@@ -23,12 +25,21 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEnti
 
 /**
  * shosetsu
- * 25 / 04 / 2020
+ * 24 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-interface NovelsRepository {
-	suspend fun getBookmarkedNovels(): LiveData<List<NovelEntity>>
-	suspend fun updateNovel(novelEntity: NovelEntity)
+class DownloadsRepositoryImpl(val downloadsDao: DownloadsDao) : DownloadsRepository {
+	override suspend fun addDownload(download: DownloadEntity) =
+			downloadsDao.insertIgnore(download)
+
+	override suspend fun updateDownload(download: DownloadEntity) =
+			downloadsDao.update(download)
+
+	override suspend fun removeDownload(download: DownloadEntity) =
+			downloadsDao.delete(download)
+	
+	override suspend fun getDownloads(): LiveData<List<DownloadEntity>> =
+			downloadsDao.loadDownloadItems()
 
 }

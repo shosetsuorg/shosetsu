@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.repository.model
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.UpdateEntity
+import androidx.room.ColumnInfo
+import java.io.Serializable
 
 /*
  * This file is part of shosetsu.
@@ -23,11 +23,17 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.UpdateEnt
 
 /**
  * shosetsu
- * 25 / 04 / 2020
+ * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-interface UpdatesRepository {
-	fun addUpdate(updateEntity: UpdateEntity)
-	fun getUpdates(): LiveData<List<UpdateEntity>>
-}
+
+data class CountIDTuple(
+		@ColumnInfo(name = "COUNT(*)") val count: Int,
+		@ColumnInfo(name = "id") val id: Int
+) : Serializable
+
+data class BooleanChapterIDTuple(
+		var boolean: Boolean,
+		@ColumnInfo(name = "chapterID") val id: Int
+)

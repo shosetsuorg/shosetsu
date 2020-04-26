@@ -14,7 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel

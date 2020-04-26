@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
-import com.github.doomsdayrs.apps.shosetsu.datasource.repository.impl.DownloadsRepositoryImpl
-import com.github.doomsdayrs.apps.shosetsu.datasource.repository.model.DownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.impl.DownloadsRepositoryImpl
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.DownloadsRepository
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance

@@ -1,9 +1,13 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.entities
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
+import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import java.io.Serializable
 
 /*
@@ -29,21 +33,41 @@ import java.io.Serializable
  * 22 / 04 / 2020
  *
  * @author github.com/doomsdayrs
- * This class represents a library that is installed in system
  */
-@Entity(tableName = "libs",
+@Entity(tableName = "downloads",
 		foreignKeys = [
 			ForeignKey(
-					entity = RepositoryEntity::class,
+					entity = ChapterEntity::class,
 					parentColumns = ["id"],
-					childColumns = ["repoID"],
+					childColumns = ["chapterID"],
+					onDelete = ForeignKey.CASCADE
+			),
+			ForeignKey(
+					entity = ChapterEntity::class,
+					parentColumns = ["link"],
+					childColumns = ["chapterURL"],
 					onDelete = ForeignKey.CASCADE
 			)
 		],
-		indices = [Index("repoID")])
-data class ExtensionLibraryEntity(
+		indices = [Index("chapterID"), Index("chapterURL")]
+)
+data class DownloadEntity(
 		@PrimaryKey
-		val scriptName: String,
-		var version: String,
-		var repoID: Int
-) : Serializable
+		val chapterID: Int,
+		val chapterURL: String,
+		val chapterName: String,
+		val novelName: String,
+		@NonNull
+		val formatter: Formatter,
+		var status: Int = 0
+) : Convertible<DownloadUI>, Serializable {
+	override fun convertTo(): DownloadUI =
+			DownloadUI(
+					chapterID,
+					chapterURL,
+					chapterName,
+					novelName,
+					formatter,
+					status
+			)
+}

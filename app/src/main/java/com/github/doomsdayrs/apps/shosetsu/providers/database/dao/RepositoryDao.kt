@@ -5,8 +5,8 @@ import androidx.room.Ignore
 import androidx.room.Query
 import androidx.room.Transaction
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.CountIDTuple
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.RepositoryEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.CountIDTuple
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import org.doomsdayrs.apps.shosetsulib.BuildConfig
 
 /*
@@ -37,7 +37,7 @@ import org.doomsdayrs.apps.shosetsulib.BuildConfig
 interface RepositoryDao : BaseDao<RepositoryEntity> {
 	@Transaction
 	suspend fun insertRepositoryAndReturn(repositoryEntity: RepositoryEntity): RepositoryEntity =
-			loadRepositoryFromROWID(insert(repositoryEntity))
+			loadRepositoryFromROWID(insertReplace(repositoryEntity))
 
 	/**
 	 * Run only if you know for sure the data exists

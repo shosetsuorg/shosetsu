@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.entities
-
-import androidx.room.ColumnInfo
-import java.io.Serializable
+package com.github.doomsdayrs.apps.shosetsu.domain.model.base
 
 /*
  * This file is part of shosetsu.
@@ -23,17 +20,10 @@ import java.io.Serializable
 
 /**
  * shosetsu
- * 23 / 04 / 2020
+ * 26 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-
-data class CountIDTuple(
-		@ColumnInfo(name = "COUNT(*)") val count: Int,
-		@ColumnInfo(name = "id") val id: Int
-) : Serializable
-
-data class BooleanChapterIDTuple(
-		var boolean: Boolean,
-		@ColumnInfo(name = "chapterID") val id: Int
-)
+interface Convertible<T> {
+	fun convertTo(): T
+}

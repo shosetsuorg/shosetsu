@@ -27,8 +27,8 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus

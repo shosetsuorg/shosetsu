@@ -3,10 +3,10 @@ package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BooleanChapterIDTuple
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.CountIDTuple
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.BooleanChapterIDTuple
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.CountIDTuple
 
 /*
  * This file is part of shosetsu.
@@ -36,7 +36,7 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.CountIDTu
 interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Transaction
 	suspend fun insertAndReturnChapterEntity(chapterEntity: ChapterEntity): ChapterEntity =
-			loadChapter(insert(chapterEntity))
+			loadChapter(insertReplace(chapterEntity))
 
 	@Query("SELECT * FROM chapters")
 	fun loadChapters(): Array<ChapterEntity>

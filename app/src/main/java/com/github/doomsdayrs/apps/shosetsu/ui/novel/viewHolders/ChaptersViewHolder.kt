@@ -19,7 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.delete
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus

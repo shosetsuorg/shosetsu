@@ -3,8 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionEntity
 
 /*
  * This file is part of shosetsu.

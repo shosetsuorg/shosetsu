@@ -19,9 +19,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.chaptersDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.entity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID

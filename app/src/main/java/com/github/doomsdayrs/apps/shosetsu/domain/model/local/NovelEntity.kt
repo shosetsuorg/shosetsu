@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.entities
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
 import androidx.annotation.NonNull
 import androidx.room.Entity
@@ -7,6 +7,8 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 
 /*
  * This file is part of shosetsu.
@@ -74,7 +76,25 @@ data class NovelEntity(
 
 		@NonNull
 		var status: Novel.Status = Novel.Status.UNKNOWN
-) {
+) : Convertible<NovelUI> {
+
+	override fun convertTo(): NovelUI = NovelUI(
+			id,
+			novelURL,
+			formatter,
+			bookmarked,
+			readerType,
+			title,
+			imageURL,
+			description,
+			language,
+			genres,
+			authors,
+			artists,
+			tags,
+			status
+	)
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false

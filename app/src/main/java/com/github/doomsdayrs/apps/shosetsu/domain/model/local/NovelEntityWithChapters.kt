@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.entities
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
 import androidx.room.Embedded
 import androidx.room.Relation

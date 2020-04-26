@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.datasource.repository.impl.DownloadsRepositoryImpl
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.impl.DownloadsRepositoryImpl
 
 /*
  * This file is part of shosetsu.

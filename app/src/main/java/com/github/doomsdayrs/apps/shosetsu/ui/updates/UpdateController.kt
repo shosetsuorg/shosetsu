@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
 import java.util.*
 

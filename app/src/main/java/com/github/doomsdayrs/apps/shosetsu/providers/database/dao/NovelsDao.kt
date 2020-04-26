@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.

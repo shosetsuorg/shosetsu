@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionLibraryEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
 
 /*
  * This file is part of shosetsu.

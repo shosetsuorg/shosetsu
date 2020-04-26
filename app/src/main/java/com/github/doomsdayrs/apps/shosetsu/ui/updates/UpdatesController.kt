@@ -9,16 +9,19 @@ import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.trimDate
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import org.joda.time.DateTime
+import org.kodein.di.direct
+import org.kodein.di.generic.instance
 import java.util.*
 
 /*
@@ -78,6 +81,7 @@ class UpdatesController : ViewedController() {
 
 	private fun setViewPager() {
 		val updatesFragments = ArrayList<UpdateController>()
+		val updatesDao: UpdatesDao = kodein.direct.instance()
 		val days = updatesDao.getTotalDays()
 		Log.d("TotalDays", days.toString())
 		var startTime = updatesDao.getStartingDayTime()

@@ -1,10 +1,12 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.entities
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
+import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionsUI
 import java.io.Serializable
 
 /*
@@ -30,30 +32,47 @@ import java.io.Serializable
  * 22 / 04 / 2020
  *
  * @author github.com/doomsdayrs
+ * This class represents a formatter
  */
-@Entity(tableName = "downloads",
+@Entity(
+		tableName = "extensions",
 		foreignKeys = [
 			ForeignKey(
-					entity = ChapterEntity::class,
+					entity = RepositoryEntity::class,
 					parentColumns = ["id"],
-					childColumns = ["chapterID"],
-					onDelete = ForeignKey.CASCADE
-			),
-			ForeignKey(
-					entity = ChapterEntity::class,
-					parentColumns = ["link"],
-					childColumns = ["chapterURL"],
+					childColumns = ["repoID"],
 					onDelete = ForeignKey.CASCADE
 			)
 		],
-		indices = [Index("chapterID"), Index("chapterURL")]
+		indices = [Index("repoID")]
 )
-data class DownloadEntity(
-		@PrimaryKey
-		val chapterID: Int,
-		val chapterURL: String,
-		val chapterName: String,
-		val novelName: String,
-		val formatter: Formatter,
-		var status: Int = 0
-) : Serializable
+
+data class ExtensionEntity(
+		@PrimaryKey val id: Int,
+		val repoID: Int,
+		@NonNull var name: String = "",
+		@NonNull val fileName: String = "",
+		var imageURL: String? = null,
+		var lang: String = "",
+		var enabled: Boolean = false,
+		var installed: Boolean = false,
+		var installedVersion: String? = null,
+		var repositoryVersion: String = "0.0.0",
+		var md5: String = ""
+) : Serializable, Convertible<ExtensionsUI> {
+
+	override fun convertTo(): ExtensionsUI =
+			ExtensionsUI(
+					id,
+					repoID,
+					name,
+					fileName,
+					imageURL,
+					lang,
+					enabled,
+					installed,
+					installedVersion,
+					repositoryVersion,
+					md5
+			)
+}

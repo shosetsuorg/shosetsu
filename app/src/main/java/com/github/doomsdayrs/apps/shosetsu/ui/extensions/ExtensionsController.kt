@@ -8,7 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository

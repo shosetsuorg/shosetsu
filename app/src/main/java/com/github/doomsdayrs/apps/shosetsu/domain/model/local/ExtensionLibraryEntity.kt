@@ -1,7 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.repository.model
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionEntity
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import java.io.Serializable
 
 /*
  * This file is part of shosetsu.
@@ -23,11 +26,24 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.Extension
 
 /**
  * shosetsu
- * 25 / 04 / 2020
+ * 22 / 04 / 2020
  *
  * @author github.com/doomsdayrs
+ * This class represents a library that is installed in system
  */
-interface ExtensionsRepository {
-	fun getExtensions(): LiveData<List<ExtensionEntity>>
-	fun installExtension(extensionEntity: ExtensionEntity)
-}
+@Entity(tableName = "libs",
+		foreignKeys = [
+			ForeignKey(
+					entity = RepositoryEntity::class,
+					parentColumns = ["id"],
+					childColumns = ["repoID"],
+					onDelete = ForeignKey.CASCADE
+			)
+		],
+		indices = [Index("repoID")])
+data class ExtensionLibraryEntity(
+		@PrimaryKey
+		val scriptName: String,
+		var version: String,
+		var repoID: Int
+) : Serializable

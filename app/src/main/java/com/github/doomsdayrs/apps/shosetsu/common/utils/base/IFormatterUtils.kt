@@ -1,9 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.repository.impl
-
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.datasource.repository.model.ExtensionsRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.ExtensionEntity
+package com.github.doomsdayrs.apps.shosetsu.common.utils.base
 
 /*
  * This file is part of shosetsu.
@@ -25,16 +20,9 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.Extension
 
 /**
  * shosetsu
- * 24 / 04 / 2020
+ * 26 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsRepositoryImpl(val extensionsDao: ExtensionsDao) : ExtensionsRepository {
-	override fun getExtensions(): LiveData<List<ExtensionEntity>> {
-		TODO("Not yet implemented")
-	}
-
-	override fun installExtension(extensionEntity: ExtensionEntity) {
-		TODO("Not yet implemented")
-	}
+interface IFormatterUtils {
 }

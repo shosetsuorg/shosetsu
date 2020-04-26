@@ -16,11 +16,11 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.attachRouter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.CookieJarSync
-import com.github.doomsdayrs.apps.shosetsu.backend.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
@@ -41,6 +41,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.luaj.vm2.lib.jse.JsePlatform
 
 /*
@@ -67,12 +71,16 @@ import org.luaj.vm2.lib.jse.JsePlatform
  * @author github.com/doomsdayrs
  */
 //TODO Inform users to refresh their libraries
-class MainActivity : AppCompatActivity(), Supporter {
+class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 
 	// The main router of the application
 	private lateinit var router: Router
 
 	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+
+	override val kodein: Kodein by closestKodein()
+
+	private val formatterUtils: FormatterUtils by instance()
 
 	/**
 	 * Main activity
@@ -156,7 +164,7 @@ class MainActivity : AppCompatActivity(), Supporter {
 		}
 
 		GlobalScope.launch {
-			FormattersRepository.load(this@MainActivity)
+			formatterUtils.load(this@MainActivity)
 		}
 
 		toolbar.setNavigationOnClickListener { if (router.backstackSize == 1) drawer_layout.openDrawer(GravityCompat.START) else onBackPressed() }

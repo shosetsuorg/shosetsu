@@ -1,9 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadE
  * @author github.com/doomsdayrs
  */
 @Dao
-interface DownloadsDao: BaseDao<DownloadEntity> {
+interface DownloadsDao : BaseDao<DownloadEntity> {
 	@Query("SELECT * FROM downloads LIMIT 1")
 	fun loadFirstDownload(): DownloadEntity
 
@@ -43,6 +44,8 @@ interface DownloadsDao: BaseDao<DownloadEntity> {
 	fun isInDownloads(chapterID: Int): Boolean = loadDownloadCount(chapterID) > 0
 
 	@Query("SELECT * FROM downloads")
-	fun loadDownloadItems(): Array<DownloadEntity>
+	fun loadDownloadItems(): LiveData<List<DownloadEntity>>
 
+	@Query("SELECT * FROM downloads WHERE chapterID = :chapterID LIMIT 1")
+	fun loadDownload(chapterID: Int): LiveData<DownloadEntity>
 }

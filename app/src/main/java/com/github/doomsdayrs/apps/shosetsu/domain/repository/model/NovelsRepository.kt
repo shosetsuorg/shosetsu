@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.repository.model
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.DownloadEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -28,8 +27,8 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.entities.UpdateEnt
  *
  * @author github.com/doomsdayrs
  */
-interface DownloadsRepository {
-	fun addDownload(download: DownloadEntity)
-	fun getDownloads(): LiveData<List<DownloadEntity>>
-	fun updateDownload(updateEntity: UpdateEntity)
+interface NovelsRepository {
+	suspend fun getBookmarkedNovels(): LiveData<List<NovelEntity>>
+	suspend fun updateNovel(novelEntity: NovelEntity)
+
 }

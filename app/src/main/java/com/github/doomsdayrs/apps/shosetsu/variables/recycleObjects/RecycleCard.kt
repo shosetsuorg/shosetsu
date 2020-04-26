@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects
 
-import org.doomsdayrs.apps.shosetsulib.R
+import com.github.doomsdayrs.apps.shosetsu.R
 
 
 /*
