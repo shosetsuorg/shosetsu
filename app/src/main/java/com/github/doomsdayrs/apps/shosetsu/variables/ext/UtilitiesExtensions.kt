@@ -1,18 +1,4 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
-
-import android.app.Activity
-import android.content.Intent
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
-import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
-import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
-import java.util.*
-
 /*
  * This file is part of shosetsu.
  *
@@ -28,8 +14,21 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+import android.app.Activity
+import android.content.Intent
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
+import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
+import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
+import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
+import java.util.*
+
+
 
 /**
  * shosetsu

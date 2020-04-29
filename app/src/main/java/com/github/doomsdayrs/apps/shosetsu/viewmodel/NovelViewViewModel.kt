@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
+
 /*
  * This file is part of shosetsu.
  *
@@ -15,7 +18,6 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -24,6 +26,6 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
  *
  * @author github.com/doomsdayrs
  */
-class NovelViewViewModel() {
+class NovelViewViewModel() : ViewModel(), INovelViewViewModel {
 
 }

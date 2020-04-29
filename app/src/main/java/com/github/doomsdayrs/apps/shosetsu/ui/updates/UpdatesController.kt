@@ -1,29 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates
 
-import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import androidx.viewpager.widget.ViewPager
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.trimDate
-import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
-import org.joda.time.DateTime
-import org.kodein.di.direct
-import org.kodein.di.generic.instance
-import java.util.*
-
 /*
  * This file is part of Shosetsu.
  *
@@ -39,8 +15,28 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import androidx.viewpager.widget.ViewPager
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+
 /**
  * shosetsu
  * 15 / 07 / 2019
@@ -48,7 +44,6 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class UpdatesController : ViewedController() {
-
 	init {
 		setHasOptionsMenu(true)
 	}
@@ -61,12 +56,11 @@ class UpdatesController : ViewedController() {
 	@Attach(R.id.tabLayout)
 	var tabLayout: TabLayout? = null
 
+	private val updatesViewModel: IUpdatesViewModel by viewModel()
+
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return if (item.itemId == R.id.updater_now) {
-			if (context != null) {
-				UpdateManager.init(context!!)
-				true
-			} else false
+			context?.let { UpdateManager.init(it); true } ?: false
 		} else false
 	}
 
@@ -76,37 +70,16 @@ class UpdatesController : ViewedController() {
 
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, getString(R.string.updates))
-		setViewPager()
+		GlobalScope.launch {
+			setViewPager()
+		}
 	}
 
-	private fun setViewPager() {
-		val updatesFragments = ArrayList<UpdateController>()
-		val updatesDao: UpdatesDao = kodein.direct.instance()
-		val days = updatesDao.getTotalDays()
-		Log.d("TotalDays", days.toString())
-		var startTime = updatesDao.getStartingDayTime()
-		Log.d("StartingDay", DateTime(startTime).toString())
-		for (x in 0 until days) {
-			val updateFragment = UpdateController()
-			updateFragment.date = (startTime)
-			startTime += 86400000
-			updatesFragments.add(updateFragment)
-		}
-		// Removing empty days
-		for (x in updatesFragments.size - 1 downTo 1) {
-			val updateFragment = updatesFragments[x]
-			val c = updatesDao.loadDayCountBetweenDates(
-					updateFragment.date,
-					updateFragment.date + 86399999
-			)
-			if (c <= 0) updatesFragments.removeAt(x)
-		}
-		// TODAY
-		val updateFragment = UpdateController()
-		updateFragment.date = DateTime(System.currentTimeMillis()).trimDate().millis
-		updatesFragments.add(updateFragment)
-		updatesFragments.reverse()
-		val pagerAdapter = UpdatedDaysPager(this, updatesFragments.toTypedArray())
+	private suspend fun setViewPager() {
+		val pagerAdapter = UpdatedDaysPager(
+				this,
+				updatesViewModel.createControllers().toTypedArray()
+		)
 		viewpager?.adapter = pagerAdapter
 		viewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
 		tabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -119,6 +92,4 @@ class UpdatesController : ViewedController() {
 		})
 		tabLayout?.post { tabLayout?.setupWithViewPager(viewpager) }
 	}
-
-
 }

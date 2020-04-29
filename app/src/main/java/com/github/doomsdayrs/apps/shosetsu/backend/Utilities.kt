@@ -13,11 +13,10 @@ import android.view.MenuItem
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import org.doomsdayrs.apps.shosetsulib.R
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -198,15 +197,7 @@ object Utilities {
 	 */
 	@Throws(MissingResourceException::class)
 	@Deprecated("ROOM", level = DeprecationLevel.WARNING)
-	fun toggleBookmarkChapter(chapterID: Int): Boolean { //TODO Simplify
-		return if (Database.DatabaseChapter.isBookMarked(chapterID)) {
-			Database.DatabaseChapter.setBookMark(chapterID, 0)
-			false
-		} else {
-			Database.DatabaseChapter.setBookMark(chapterID, 1)
-			true
-		}
-	}
+	fun toggleBookmarkChapter(chapterID: Int): Boolean = throw Exception("STUD")
 
 
 	fun openInBrowser(activity: Activity, url: String) = activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))

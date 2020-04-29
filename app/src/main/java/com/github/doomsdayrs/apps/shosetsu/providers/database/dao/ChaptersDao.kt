@@ -47,7 +47,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("SELECT * FROM chapters WHERE _rowid_ = :rowID LIMIT 1")
 	fun loadChapter(rowID: Long): ChapterEntity
 
-	@Query("SELECT COUNT(*),id FROM chapters WHERE link = :chapterURL")
+	@Query("SELECT COUNT(*),id FROM chapters WHERE url = :chapterURL")
 	fun loadChapterCount(chapterURL: String): CountIDTuple
 
 	fun hasChapter(chapterURL: String): BooleanChapterIDTuple {

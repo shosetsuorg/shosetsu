@@ -31,5 +31,5 @@ interface DownloadsRepository {
 	suspend fun addDownload(download: DownloadEntity): Long
 	suspend fun updateDownload(download: DownloadEntity)
 	suspend fun removeDownload(download: DownloadEntity)
-	suspend fun getDownloads(): LiveData<List<DownloadEntity>>
+	fun getDownloads(): LiveData<List<DownloadEntity>>
 }

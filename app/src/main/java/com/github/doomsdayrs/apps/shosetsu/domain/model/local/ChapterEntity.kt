@@ -54,7 +54,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 )
 data class ChapterEntity(
 		@NonNull
-		val link: String,
+		val url: String,
 
 		@NonNull
 		val novelID: Int,
@@ -82,9 +82,12 @@ data class ChapterEntity(
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = -1
 
+	fun toDownload(novelName: String) =
+			DownloadEntity(id, url, title, novelName, formatter)
+
 	override fun convertTo(): ChapterUI =
 			ChapterUI(
-					link,
+					url,
 					novelID,
 					formatter,
 					title,

@@ -11,9 +11,9 @@ import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ChapterViewChange
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import kotlinx.android.synthetic.main.chapter_reader.*
 import java.util.*
 
@@ -68,7 +68,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (savedInstanceState != null) {
             // Sets default values
-            formatter = FormattersRepository.getByID(savedInstanceState.getInt("formatter"))
+            formatter = FormatterUtils.getByID(savedInstanceState.getInt("formatter"))
             novelID = savedInstanceState.getInt("novelID")
 
             val temp = savedInstanceState.getIntArray("chapters")
@@ -80,7 +80,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader) {
                 currentChapterID = chapterID
             }
             novelID = intent.getIntExtra("novelID", -1)
-            formatter = FormattersRepository.getByID(intent.getIntExtra("formatter", -1))
+            formatter = FormatterUtils.getByID(intent.getIntExtra("formatter", -1))
         }
 
         if (chapterIDs.isEmpty()) try {

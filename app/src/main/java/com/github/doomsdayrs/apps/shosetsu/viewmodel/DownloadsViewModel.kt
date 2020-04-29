@@ -1,7 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.impl.DownloadsRepositoryImpl
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -18,7 +20,6 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.impl.DownloadsRepos
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -27,5 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.impl.DownloadsRepos
  *
  * @author github.com/doomsdayrs
  */
-class DownloadsViewModel(val downloadsDaoImpl: DownloadsRepositoryImpl) : ViewModel() {
+class DownloadsViewModel(val downloadsDaoImpl: DownloadsRepositoryImpl) : ViewModel(), IDownloadsViewModel {
+	override fun loadDownloadItems(): List<DownloadEntity> =
+			downloadsDaoImpl.getDownloads().value ?: arrayListOf()
 }

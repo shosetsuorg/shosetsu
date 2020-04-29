@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 
 /*
  * This file is part of Shosetsu.
@@ -38,7 +38,7 @@ class SearchAdapter(private val searchController: SearchController) : RecyclerVi
     private val views: ArrayList<Int> = arrayListOf(-1)
 
     init {
-        for (formatter: Formatter in FormattersRepository.formatters)
+        for (formatter: Formatter in FormatterUtils.formatters)
             views.add(formatter.formatterID)
 
     }

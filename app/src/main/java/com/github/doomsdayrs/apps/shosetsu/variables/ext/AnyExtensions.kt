@@ -1,6 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
 import android.util.Base64
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.ObjectOutputStream
@@ -63,3 +66,5 @@ fun Array<String>.convertArrayToString(): String {
 
 @Suppress("unused")
 inline fun <reified T : Any> T.logID() = T::class.java.simpleName
+
+fun Any.launchAsync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch { block() }

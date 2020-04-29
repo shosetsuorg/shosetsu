@@ -1,18 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
-import android.app.Activity
-import android.content.Context
-import android.database.SQLException
-import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
-import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
-import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
-import java.io.BufferedReader
-import java.io.FileReader
-import java.io.IOException
-
 /*
  * This file is part of Shosetsu.
  *
@@ -28,8 +15,20 @@ import java.io.IOException
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+import android.app.Activity
+import android.content.Context
+import android.database.SQLException
+import android.util.Log
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
+import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
+import java.io.BufferedReader
+import java.io.FileReader
+import java.io.IOException
+
 /**
  * Shosetsu
  * 16 / 06 / 2019

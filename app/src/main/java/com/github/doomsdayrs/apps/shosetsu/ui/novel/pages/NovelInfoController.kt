@@ -15,11 +15,11 @@ import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.bookmarkNovel
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNovelBookmarked
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.unBookmarkNovel
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_FORMATTER
@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -79,7 +79,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 		setHasOptionsMenu(true)
 		novelID = bundle.getInt(BUNDLE_ID, -1)
 		novelURL = bundle.getString(BUNDLE_URL, "")
-		formatter = FormattersRepository.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
+		formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
 	}
 
 	// UI items

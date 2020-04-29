@@ -59,7 +59,7 @@ class FormatterUtils(
 		const val libraryDirectory = "/libraries/"
 		const val sourceFolder = "/src/"
 		const val repoFolderStruct = "/src/main/resources/"
-		const val unknown = object : Formatter {
+		val unknown = object : Formatter {
 			override val formatterID: Int = -1
 
 			override val baseURL: String
@@ -89,6 +89,25 @@ class FormatterUtils(
 
 			override fun updateSetting(id: Int, value: Any?): Unit = throw Exception("Unknown Formatter")
 		}
+		val formatters = ArrayList<Formatter>()
+
+		fun removeByID(formatterID: Int) {
+			formatters.forEachIndexed { index, formatter ->
+				if (formatter.formatterID == formatterID) {
+					formatters.removeAt(index)
+					return
+				}
+			}
+		}
+
+		fun addFormatter(formatter: Formatter) {
+			removeByID(formatter.formatterID)
+			formatters.add(formatter)
+			formatters.sortBy { it.name }
+		}
+
+		fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
+
 
 		private fun Context.ap() = filesDir.absolutePath
 
@@ -240,9 +259,6 @@ class FormatterUtils(
 		makeFormatterFile(context, extensionEntity).takeIf { it.exists() }?.delete()
 	}
 
-
-	val formatters = ArrayList<Formatter>()
-
 	/**
 	 * Loads the formatters
 	 */
@@ -256,22 +272,6 @@ class FormatterUtils(
 		}
 	}
 
-	fun removeByID(formatterID: Int) {
-		formatters.forEachIndexed { index, formatter ->
-			if (formatter.formatterID == formatterID) {
-				formatters.removeAt(index)
-				return
-			}
-		}
-	}
-
-	fun addFormatter(formatter: Formatter) {
-		removeByID(formatter.formatterID)
-		formatters.add(formatter)
-		formatters.sortBy { it.name }
-	}
-
-	fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
 
 	fun getAsCards(): ArrayList<FormatterCard> {
 		val catalogueCards = ArrayList<FormatterCard>()

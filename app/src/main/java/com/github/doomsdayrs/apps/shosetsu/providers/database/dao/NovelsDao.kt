@@ -3,8 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 
 /*
  * This file is part of shosetsu.
@@ -41,6 +42,9 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	fun loadNovel(novelID: Int): NovelEntity
+
+	@Query("SELECT url,imageURL,title FROM novels WHERE id = :novelID LIMIT 1")
+	fun loadURLImageTitle(novelID: Int): URLImageTitle
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters

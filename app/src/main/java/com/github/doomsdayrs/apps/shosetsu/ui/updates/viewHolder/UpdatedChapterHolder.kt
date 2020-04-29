@@ -1,18 +1,4 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder
-
-import android.app.Activity
-import android.view.View
-import android.widget.ImageView
-import android.widget.PopupMenu
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
-import com.squareup.picasso.Picasso
-
 /*
  * This file is part of shosetsu.
  *
@@ -28,47 +14,26 @@ import com.squareup.picasso.Picasso
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- */ /**
+ */
+import android.view.View
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.R
+
+/**
  * shosetsu
  * 17 / 08 / 2019
  *
  * @author github.com/doomsdayrs
  */
-class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	val moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 	val downloadTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_download)
 	val title: TextView = itemView.findViewById(R.id.title)
-	private val image: ImageView = itemView.findViewById(R.id.image)
+	val image: ImageView = itemView.findViewById(R.id.image)
+	val popupMenu = PopupMenu(moreOptions.context, moreOptions)
 
-	lateinit var novelEntity: NovelEntity
-
-	var novelChapter: ChapterEntity? = null
-		set(value) {
-			field = value
-			if (value != null) {
-				title.text = novelChapter!!.title
-				//TODO fix this disgust
-				novelEntity = novelsDao.loadNovel(value.novelID)
-				if (novelEntity.imageURL.isNotEmpty())
-					Picasso.get().load(novelEntity.imageURL).into(image)
-				itemView.setOnClickListener(this)
-			}
-		}
-
-	val popupMenu: PopupMenu = PopupMenu(moreOptions.context, moreOptions)
-
-
-	override fun onClick(view: View) {
-		openChapter(
-				(itemView.context as Activity),
-				novelChapter!!,
-				novelEntity.id,
-				novelEntity.formatter
-		)
-	}
-
-	init {
-		popupMenu.inflate(R.menu.popup_chapter_menu)
-	}
+	init { popupMenu.inflate(R.menu.popup_chapter_menu) }
 }

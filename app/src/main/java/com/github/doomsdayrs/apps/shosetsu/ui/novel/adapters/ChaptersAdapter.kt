@@ -71,7 +71,7 @@ class ChaptersAdapter(private val chaptersController: NovelChaptersController)
 			chaptersViewHolder.title.text = novelChapter.title
 			chaptersViewHolder.chaptersController = chaptersController
 			val chapterID: Int
-			chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.link)
+			chapterID = DatabaseIdentification.getChapterIDFromChapterURL(novelChapter.url)
 			chaptersViewHolder.chapterID = chapterID
 
 			if (DatabaseChapter.isBookMarked(chapterID)) {

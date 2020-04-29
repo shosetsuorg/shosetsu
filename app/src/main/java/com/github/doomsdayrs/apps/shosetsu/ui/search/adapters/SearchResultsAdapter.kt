@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.squareup.picasso.Picasso
 
@@ -78,7 +78,7 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
 			title = novel.title
 			url = novel.novelURL
 			imageURL = novel.imageURL
-			formatter = FormattersRepository.getByID(novel.formatterID)
+			formatter = FormatterUtils.getByID(novel.formatterID)
 			id = novel.novelID
 		}
 

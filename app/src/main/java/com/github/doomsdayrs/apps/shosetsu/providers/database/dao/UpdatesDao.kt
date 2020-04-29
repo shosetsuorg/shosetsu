@@ -1,10 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 import com.github.doomsdayrs.apps.shosetsu.variables.IncorrectDateException
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.trimDate
 import org.joda.time.DateTime
@@ -56,7 +57,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	 * Raw query without checking dates, suggested to use [getTimeBetweenDates]
 	 */
 	@Query("SELECT * FROM updates WHERE time < :date2 AND time >= :date1")
-	fun loadUpdatesBetweenDates(date1: Long, date2: Long): Array<UpdateEntity>
+	fun loadUpdatesBetweenDates(date1: Long, date2: Long): LiveData<Array<UpdateEntity>>
 
 	@Transaction
 	fun getTotalDays(): Int {
@@ -69,7 +70,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	 * [loadUpdatesBetweenDates] but with error checking
 	 */
 	@Transaction
-	fun getTimeBetweenDates(date1: Long, date2: Long): Array<UpdateEntity> {
+	fun getTimeBetweenDates(date1: Long, date2: Long): LiveData<Array<UpdateEntity>> {
 		if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
 		return loadUpdatesBetweenDates(date1, date2)
 	}

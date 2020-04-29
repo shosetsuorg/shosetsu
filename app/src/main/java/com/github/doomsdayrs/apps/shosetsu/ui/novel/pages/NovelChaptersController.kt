@@ -336,13 +336,13 @@ class NovelChaptersController(bundle: Bundle)
 		var found = false
 		if (!recyclerArray.isNullOrEmpty()) if (!isArrayReversed) {
 			for (x in recyclerArray.size - 1 downTo 0) {
-				if (lastReadChapter.link == recyclerArray[x].link)
+				if (lastReadChapter.link == recyclerArray[x].url)
 					found = true
 				if (found) {
 					var y = x
 					while (y < recyclerArray.size) {
 						if (customChapters.size <= count) {
-							if (check(getChapterStatus(getChapterIDFromChapterURL(recyclerArray[y].link))))
+							if (check(getChapterStatus(getChapterIDFromChapterURL(recyclerArray[y].url))))
 								customChapters.add(recyclerArray[y])
 						}
 						Log.d("NovelFragment", "Size ${customChapters.size}")
@@ -353,13 +353,13 @@ class NovelChaptersController(bundle: Bundle)
 			}
 		} else {
 			for (x in recyclerArray.indices) {
-				if (lastReadChapter.link == recyclerArray[x].link)
+				if (lastReadChapter.link == recyclerArray[x].url)
 					found = true
 				if (found) {
 					var y = x
 					while (y > 0) {
 						if (customChapters.size <= count) {
-							if (check(getChapterStatus(getChapterIDFromChapterURL(recyclerArray[y].link))))
+							if (check(getChapterStatus(getChapterIDFromChapterURL(recyclerArray[y].url))))
 								customChapters.add(recyclerArray[y])
 						}
 						y--
@@ -376,12 +376,12 @@ class NovelChaptersController(bundle: Bundle)
 		if (!recyclerArray.isNullOrEmpty())
 			if (!isArrayReversed)
 				for (x in recyclerArray.size - 1 downTo 0) {
-					val stat = getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].link))
+					val stat = getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].url))
 					if (stat == ReadingStatus.READ || stat == ReadingStatus.READING)
 						return recyclerArray[x]
 				}
 			else for (x in recyclerArray) {
-				val stat = getChapterStatus(getChapterIDFromChapterURL(x.link))
+				val stat = getChapterStatus(getChapterIDFromChapterURL(x.url))
 				if (stat == ReadingStatus.READ || stat == ReadingStatus.READING)
 					return x
 			}
@@ -395,7 +395,7 @@ class NovelChaptersController(bundle: Bundle)
 		return if (recyclerArray.isNotEmpty()) {
 			if (!isArrayReversed!!) {
 				for (x in recyclerArray.indices.reversed()) {
-					when (getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].link))) {
+					when (getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].url))) {
 						ReadingStatus.READ -> return x + 1
 						ReadingStatus.READING -> return x
 						else -> {
@@ -404,7 +404,7 @@ class NovelChaptersController(bundle: Bundle)
 				}
 			} else {
 				for (x in recyclerArray.indices) {
-					when (getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].link))) {
+					when (getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].url))) {
 						ReadingStatus.READ -> return x - 1
 						ReadingStatus.READING -> return x
 						else -> {
@@ -496,7 +496,7 @@ class NovelChaptersController(bundle: Bundle)
 		try {
 			for (novelChapter in recyclerArray)
 				if (!contains(novelChapter))
-					selectedChapters.add(getChapterIDFromChapterURL(novelChapter.link))
+					selectedChapters.add(getChapterIDFromChapterURL(novelChapter.url))
 			updateAdapter()
 		} catch (e: MissingResourceException) {
 			handleExceptionLogging(e)
@@ -591,7 +591,7 @@ class NovelChaptersController(bundle: Bundle)
 		while (x < max) {
 			if (!contains(recyclerArray[x])) {
 				try {
-					val id = getChapterIDFromChapterURL(recyclerArray[x].link)
+					val id = getChapterIDFromChapterURL(recyclerArray[x].url)
 					selectedChapters.add(id)
 				} catch (e: MissingResourceException) {
 					handleExceptionLogging(e)

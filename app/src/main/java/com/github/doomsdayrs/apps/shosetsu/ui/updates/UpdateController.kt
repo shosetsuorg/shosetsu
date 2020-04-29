@@ -1,14 +1,4 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates
-
-import android.os.Bundle
-import android.util.Log
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
-import java.util.*
-
 /*
  * This file is part of shosetsu.
  *
@@ -24,32 +14,58 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- */ /**
+ */
+
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.lifecycle.Observer
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
+import java.util.*
+
+/**
  * shosetsu
  * 20 / 08 / 2019
  *
  * @author github.com/doomsdayrs
  */
-class UpdateController : RecyclerController<UpdatedNovelsAdapter, UpdateEntity>() {
-	var date: Long = -1
-	private val novels = ArrayList<Int>()
+class UpdateController(bundle: Bundle)
+	: RecyclerController<UpdatedNovelsAdapter, UpdateEntity>() {
+	val updatesViewModel: IUpdatesViewModel by viewModel()
 
-	override fun onSaveInstanceState(outState: Bundle) {
-		outState.putLong("date", date)
-	}
+	var date: Long = bundle.getLong("date")
 
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		date = savedInstanceState.getLong("date")
-	}
-
+	val novelIDs = ArrayList<Int>()
 
 	override fun onViewCreated(view: View) {
-		recyclerArray.addAll(updatesDao.getTimeBetweenDates(date, date + 86399999))
-		recyclerArray.forEach { if (!novels.contains(it.novelID)) novels.add(it.novelID) }
-		adapter = UpdatedNovelsAdapter(novels, recyclerArray, activity!!)
-		//UpdatedChaptersAdapter updatersAdapter = new UpdatedChaptersAdapter(recyclerArray, getActivity());
-		recyclerView!!.post { adapter?.notifyDataSetChanged() }
-		Log.d("Updates on this day: ", recyclerArray.size.toString())
+		launchAsync {
+			updatesViewModel.getTimeBetweenDates(
+					date,
+					date + 86399999
+			).observe(
+					this@UpdateController,
+					Observer {
+						with(recyclerArray) {
+							clear()
+							addAll(it)
+							filter { !novelIDs.contains(it.novelID) }
+									.forEach { novelIDs.add(it.novelID) }
+						}
+						recyclerView?.post { adapter?.notifyDataSetChanged() }
+					}
+			)
+		}
+
+		adapter = UpdatedNovelsAdapter(this, activity!!)
+		recyclerView?.post { adapter?.notifyDataSetChanged() }
+				?: Log.e(logID(), "Recyclerview is null")
+
+		Log.d(logID(), "Updates on this day: " + recyclerArray.size.toString())
 	}
 }

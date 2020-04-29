@@ -26,4 +26,10 @@ package com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects
  *     Database representation of a novel and it's information
  * </p>
  */
-class NovelCard(title: String, val novelID: Int, val novelURL: String, val imageURL: String, val formatterID: Int) : RecycleCard(title)
+class NovelCard(
+		title: String,
+		val novelID: Int,
+		val novelURL: String,
+		val imageURL: String,
+		val formatterID: Int
+) : RecycleCard(title)

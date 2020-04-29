@@ -1,19 +1,4 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder
-
-import android.app.Activity
-import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedChaptersAdapter
-import com.google.android.material.chip.Chip
-import com.squareup.picasso.Picasso
-
 /*
  * This file is part of Shosetsu.
  *
@@ -29,8 +14,18 @@ import com.squareup.picasso.Picasso
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+import android.app.Activity
+import android.view.View
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.google.android.material.chip.Chip
+
+
 
 
 /**
@@ -40,64 +35,20 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class UpdatedNovelHolder(itemView: View, val activity: Activity) : RecyclerView.ViewHolder(itemView) {
-	private val imageView: ImageView = itemView.findViewById(R.id.imageView)
+	val imageView: ImageView = itemView.findViewById(R.id.imageView)
 	val title: TextView = itemView.findViewById(R.id.title)
 	val chip: Chip = itemView.findViewById(R.id.count)
 	val button: ImageButton = itemView.findViewById(R.id.button)
 	val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
-	private val expand: ImageButton = itemView.findViewById(R.id.loadMore)
-
-
-	private var expanded: Boolean = false
-	var novelID: Int = -1
-		set(value) {
-			val novelCard = Database.DatabaseNovels.getNovel(value)
-
-			if (novelCard.novelURL.isNotEmpty())
-				Picasso.get().load(novelCard.imageURL).into(imageView)
-
-			title.text = novelCard.title
-
-
-			field = value
-		}
+	val expand: ImageButton = itemView.findViewById(R.id.loadMore)
 
 	var updates: ArrayList<UpdateEntity> = ArrayList()
+
+	var novelName: String = ""
 		set(value) {
 			field = value
-			chip.text = value.size.toString()
-			updatersAdapter.size = if (updates.size > 20) 5 else updates.size
-			updatersAdapter.notifyDataSetChanged()
+			title.post { title.text = value }
 		}
 
-	private var updatersAdapter: UpdatedChaptersAdapter = UpdatedChaptersAdapter(this)
-
-	init {
-		button.setOnClickListener {
-			if (expanded) {
-				button.setImageResource(R.drawable.ic_baseline_expand_more_24)
-				recyclerView.visibility = View.GONE
-				expand.visibility = View.GONE
-			} else {
-				button.setImageResource(R.drawable.ic_baseline_expand_less_24)
-				recyclerView.visibility = View.VISIBLE
-
-				if (updatersAdapter.size < updates.size)
-					expand.visibility = View.VISIBLE
-			}
-			expanded = !expanded
-		}
-		expand.setOnClickListener {
-			updatersAdapter.size =
-					if (updatersAdapter.size + 5 >= updates.size) {
-						expand.visibility = View.GONE
-						updates.size
-					} else updatersAdapter.size + 5
-			updatersAdapter.notifyDataSetChanged()
-		}
-
-		recyclerView.adapter = updatersAdapter
-		recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-	}
-
+	var novelID: Int = -1
 }

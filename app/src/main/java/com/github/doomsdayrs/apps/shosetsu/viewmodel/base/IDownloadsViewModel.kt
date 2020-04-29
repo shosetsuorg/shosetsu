@@ -1,8 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.converters
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import androidx.room.TypeConverter
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 
 /*
  * This file is part of shosetsu.
@@ -21,16 +19,13 @@ import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 /**
  * shosetsu
- * 23 / 04 / 2020
+ * 29 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-class FormatterConverter {
-	@TypeConverter
-	fun toInt(formatter: Formatter) = formatter.formatterID
-
-	@TypeConverter
-	fun toFormatter(int: Int) = FormatterUtils.getByID(int)
+interface IDownloadsViewModel {
+	fun loadDownloadItems(): Collection<DownloadEntity>
 }

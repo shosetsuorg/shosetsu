@@ -51,7 +51,7 @@ data class NovelEntity(
 		val id: Int = -1,
 
 		@NonNull
-		val novelURL: String,
+		val url: String,
 
 		val formatter: Formatter,
 
@@ -80,7 +80,7 @@ data class NovelEntity(
 
 	override fun convertTo(): NovelUI = NovelUI(
 			id,
-			novelURL,
+			url,
 			formatter,
 			bookmarked,
 			readerType,

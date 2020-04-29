@@ -1,9 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.impl
 
 import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.DownloadsRepository
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 
 /*
  * This file is part of shosetsu.
@@ -39,7 +39,7 @@ class DownloadsRepositoryImpl(val downloadsDao: DownloadsDao) : DownloadsReposit
 	override suspend fun removeDownload(download: DownloadEntity) =
 			downloadsDao.delete(download)
 	
-	override suspend fun getDownloads(): LiveData<List<DownloadEntity>> =
+	override  fun getDownloads(): LiveData<List<DownloadEntity>> =
 			downloadsDao.loadDownloadItems()
 
 }
