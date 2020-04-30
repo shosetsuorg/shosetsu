@@ -1,10 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import android.view.View
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerUI
-import com.github.doomsdayrs.apps.shosetsu.view.viewholders.DownloadViewHolder
 
 /*
  * This file is part of shosetsu.
@@ -55,8 +52,4 @@ data class NovelUI(
 		var tags: Array<String>,
 
 		var status: Novel.Status
-) : BaseRecyclerUI<DownloadViewHolder>(){
-	override fun getViewHolder(v: View): DownloadViewHolder {
-		TODO("Not yet implemented")
-	}
-}
+)

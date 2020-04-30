@@ -38,7 +38,7 @@ class ExtensionsViewModel(
 ) : ViewModel(), IExtensionsViewModel {
 	override var liveData: LiveData<List<ExtensionEntity>> = extensionsDao.loadPoweredFormatters()
 
-	override fun loadData(): List<ExtensionEntity> = liveData.value ?: arrayListOf()
+	override suspend fun loadData(): List<ExtensionEntity> = liveData.value ?: arrayListOf()
 
 	override fun subscribeObserver(
 			owner: LifecycleOwner,

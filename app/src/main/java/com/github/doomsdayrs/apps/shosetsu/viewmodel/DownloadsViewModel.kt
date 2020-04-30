@@ -1,11 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.impl.DownloadsRepositoryImpl
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 
 /*
@@ -31,14 +30,14 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
  *
  * @author github.com/doomsdayrs
  */
-class DownloadsViewModel(val downloadsDaoImpl: DownloadsRepositoryImpl)
+class DownloadsViewModel(private val downloadsRepository: IDownloadsRepository)
 	: ViewModel(), IDownloadsViewModel {
-	override val liveData: LiveData<List<DownloadEntity>> by lazy { downloadsDaoImpl.getDownloads() }
-
-	override fun loadData(): List<DownloadEntity> = liveData.value ?: arrayListOf()
 
 	override fun subscribeObserver(
 			owner: LifecycleOwner,
-			observer: Observer<List<DownloadEntity>>
-	) = liveData.observe(owner, observer)
+			observer: Observer<List<DownloadUI>>
+	) = downloadsRepository.subscribeRepository(owner, observer)
+
+	override suspend fun loadData(): List<DownloadUI> = downloadsRepository.loadData()
+
 }

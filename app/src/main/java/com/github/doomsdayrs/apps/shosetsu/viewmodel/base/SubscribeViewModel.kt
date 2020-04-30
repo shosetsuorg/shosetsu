@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 
 /*
@@ -29,7 +28,6 @@ import androidx.lifecycle.Observer
  * @author github.com/doomsdayrs
  */
 interface SubscribeViewModel<T> {
-	val liveData: LiveData<T>
 	fun subscribeObserver(owner: LifecycleOwner, observer: Observer<T>)
-	fun loadData(): T
+	suspend fun loadData(): T
 }

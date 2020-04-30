@@ -56,9 +56,7 @@ class CataloguesController : RecyclerController<CataloguesAdapter, FormatterCard
 		return when (item.itemId) {
 			R.id.catalogues_search -> true
 			R.id.configure_parsers -> {
-				val ce = ConfigureExtensions()
-				ce.jsonArray = Settings.disabledFormatters
-				router.pushController(ce.withFadeTransaction())
+				router.pushController(ConfigureExtensions().withFadeTransaction())
 				true
 			}
 			else -> false

@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setReaderMarkingType
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
@@ -45,11 +45,16 @@ class ViewSettings : SettingsSubController() {
 						.setTitle(R.string.marking_mode)
 						.setOnItemSelectedListener(object : OnItemSelectedListener {
 							override fun onNothingSelected(p0: AdapterView<*>?) {}
-							override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+							override fun onItemSelected(
+									p0: AdapterView<*>?,
+									p1: View?,
+									p2: Int,
+									p3: Long
+							) {
 								Log.d("MarkingMode", p2.toString())
 								when (p2) {
-									0 -> Utilities.setReaderMarkingType(Settings.MarkingTypes.ONVIEW)
-									1 -> Utilities.setReaderMarkingType(Settings.MarkingTypes.ONSCROLL)
+									0 -> setReaderMarkingType(Settings.MarkingTypes.ONVIEW)
+									1 -> setReaderMarkingType(Settings.MarkingTypes.ONSCROLL)
 									else -> Log.e("MarkingMode", "UnknownType")
 								}
 							}
@@ -57,7 +62,9 @@ class ViewSettings : SettingsSubController() {
 				SettingsItemData(SettingsType.NUMBER_PICKER)
 						.setTitle(R.string.columns_of_novel_listing_p)
 						.setDescription((R.string.columns_zero_automatic))
-						.setNumberValue(Settings.columnsInNovelsViewP.let { if (it == -1) 0 else it })
+						.setNumberValue(Settings.columnsInNovelsViewP.let {
+							if (it == -1) 0 else it
+						})
 						.setNumberLowerBound(0)
 						.setNumberUpperBound(10)
 						.setNumberPickerOnValueChangedListener { _, _, newVal ->
@@ -69,7 +76,9 @@ class ViewSettings : SettingsSubController() {
 				SettingsItemData(SettingsType.NUMBER_PICKER)
 						.setTitle(R.string.columns_of_novel_listing_h)
 						.setDescription(R.string.columns_zero_automatic)
-						.setNumberValue(Settings.columnsInNovelsViewH.let { if (it == -1) 0 else it })
+						.setNumberValue(Settings.columnsInNovelsViewH.let {
+							if (it == -1) 0 else it
+						})
 						.setNumberLowerBound(0)
 						.setNumberUpperBound(10)
 						.setNumberPickerOnValueChangedListener { _, _, newVal ->
@@ -86,7 +95,12 @@ class ViewSettings : SettingsSubController() {
 							override fun onNothingSelected(parent: AdapterView<*>?) {
 							}
 
-							override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+							override fun onItemSelected(
+									parent: AdapterView<*>?,
+									view: View?,
+									position: Int,
+									id: Long
+							) {
 								Settings.novelCardType = position
 							}
 
@@ -98,13 +112,21 @@ class ViewSettings : SettingsSubController() {
 		super.onViewCreated(view)
 		run {
 			val x = findDataByID(R.string.marking_mode)
-			settings[x].adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.marking_names))
+			settings[x].adapter = ArrayAdapter(
+					view.context,
+					android.R.layout.simple_spinner_item,
+					resources!!.getStringArray(R.array.marking_names)
+			)
 			settings[x].spinnerSelection = Settings.readerMarkingType
 		}
 
 		run {
 			val x = findDataByID(R.string.novel_card_type_selector_title)
-			settings[x].adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.novel_card_types))
+			settings[x].adapter = ArrayAdapter(
+					view.context,
+					android.R.layout.simple_spinner_item,
+					resources!!.getStringArray(R.array.novel_card_types)
+			)
 		}
 		Log.i("onViewCreated", "Finished creation")
 		recyclerView?.layoutManager = LinearLayoutManager(context)

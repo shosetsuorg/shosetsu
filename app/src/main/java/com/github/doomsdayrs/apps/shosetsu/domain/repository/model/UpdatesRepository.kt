@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 
 /*
@@ -23,11 +25,17 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 
 /**
  * shosetsu
- * 25 / 04 / 2020
+ * 24 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-interface UpdatesRepository {
-	fun addUpdate(updateEntity: UpdateEntity)
-	fun getUpdates(): LiveData<List<UpdateEntity>>
+class UpdatesRepository(val updatesDao: UpdatesDao) : IUpdatesRepository {
+	override fun addUpdate(updateEntity: UpdateEntity) {
+		TODO("Not yet implemented")
+	}
+
+	override fun getUpdates(): LiveData<List<UpdateEntity>> {
+		TODO("Not yet implemented")
+	}
+
 }

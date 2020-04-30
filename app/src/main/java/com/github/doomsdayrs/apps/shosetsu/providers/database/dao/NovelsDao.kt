@@ -35,7 +35,7 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 @Dao
 interface NovelsDao : BaseDao<NovelEntity> {
 	@Query("SELECT * FROM novels")
-	fun loadNovels(): LiveData<Array<NovelEntity>>
+	fun loadNovels(): LiveData<List<NovelEntity>>
 
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
 	fun loadBookmarkedNovels(): LiveData<List<NovelEntity>>

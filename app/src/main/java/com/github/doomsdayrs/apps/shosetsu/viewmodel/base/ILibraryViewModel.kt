@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 
 /*
  * This file is part of shosetsu.
@@ -27,12 +26,18 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  *
  * @author github.com/doomsdayrs
  */
-interface ILibraryViewModel : SubscribeViewModel<List<NovelEntity>> {
+interface ILibraryViewModel : SubscribeViewModel<List<NovelUI>> {
 	var selectedNovels: ArrayList<Int>
+	suspend fun selectAll()
+	suspend fun deselectAll()
+	suspend fun removeAllFromLibrary()
+	suspend fun loadNovelIDs(): List<Int>
+	suspend fun loadChaptersUnread(novelID: Int): Int
+	fun loadNovel(id: Int): NovelUI?
+	fun getCachedData(): List<NovelUI>
 
-	suspend fun selectAll(callback: () -> Unit = {})
-	suspend fun deselectAll(callback: () -> Unit = {})
-	suspend fun removeAllFromLibrary(recyclerView: RecyclerView)
-	fun loadNovelIDs(): List<Int>
-	fun loadChaptersUnread(novelID: Int): Int
+	/**
+	 * @return new list
+	 */
+	fun search(search:String):List<NovelUI>
 }

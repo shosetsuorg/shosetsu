@@ -1,4 +1,20 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.library
+/*
+ * This file is part of Shosetsu.
+ *
+ * Shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Shosetsu is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 import android.util.Log
 import android.view.Menu
@@ -31,34 +47,14 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.LibraryViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.navigation.NavigationView
-import java.util.*
 
-/*
- * This file is part of Shosetsu.
- *
- * Shosetsu is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Shosetsu is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- */
 /**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-class LibraryController :
-		RecyclerController<LibraryNovelAdapter, Int>(), SecondDrawerController {
-
+class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), SecondDrawerController {
 	val viewModel: ILibraryViewModel by viewModel()
 
 	val inflater: MenuInflater?
@@ -71,8 +67,12 @@ class LibraryController :
 	override fun onViewCreated(view: View) {
 		recyclerView = view.findViewById(R.id.recyclerView)
 		Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.my_library))
-		recyclerArray.addAll(viewModel.loadNovelIDs())
-		setLibraryCards(recyclerArray)
+		launchAsync {
+			recyclerArray.addAll(viewModel.loadNovelIDs())
+			runOnMain {
+				setLibraryCards(recyclerArray)
+			}
+		}
 		subscribe()
 	}
 
@@ -127,7 +127,7 @@ class LibraryController :
 			}
 			R.id.remove_from_library -> {
 				launchAsync {
-					viewModel.removeAllFromLibrary(recyclerView!!)
+					viewModel.removeAllFromLibrary()
 				}
 				return true
 			}
@@ -147,30 +147,37 @@ class LibraryController :
 	 */
 	fun setLibraryCards(novelCards: ArrayList<Int>) {
 		recyclerView?.setHasFixedSize(false)
-		if (Settings.novelCardType == 0) {
-			adapter = LibraryNovelAdapter(
-					novelCards,
-					this,
+
+		adapter = LibraryNovelAdapter(
+				novelCards,
+				this,
+				if (Settings.novelCardType == 0)
 					R.layout.recycler_novel_card
-			)
-			recyclerView?.layoutManager = GridLayoutManager(
+				else R.layout.recycler_novel_card_compressed
+		)
+
+		recyclerView?.layoutManager = if (Settings.novelCardType == 0)
+			GridLayoutManager(
 					applicationContext,
 					Utilities.calculateColumnCount(applicationContext!!, 200f),
 					RecyclerView.VERTICAL,
 					false
-			)
-		} else {
-			adapter = LibraryNovelAdapter(
-					novelCards,
-					this,
-					R.layout.recycler_novel_card_compressed
-			)
-			recyclerView?.layoutManager = LinearLayoutManager(
+			) else
+			LinearLayoutManager(
 					applicationContext,
 					LinearLayoutManager.VERTICAL,
 					false
 			)
-		}
+	}
+
+	fun changeLibraryCards(newCards: List<Int>) {
+		val dif = DiffUtil.calculateDiff(LibraryViewModel.LibraryDiffCallBack(
+				recyclerArray,
+				newCards
+		))
+		recyclerArray.clear()
+		recyclerArray.addAll(newCards)
+		adapter?.let { dif.dispatchUpdatesTo(it) }
 	}
 
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {

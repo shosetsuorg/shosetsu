@@ -1,10 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.repository.impl
-
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.UpdatesRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
-
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 /*
  * This file is part of shosetsu.
  *
@@ -20,22 +14,21 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+
 
 /**
  * shosetsu
- * 24 / 04 / 2020
+ * 25 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-class UpdatesRepositoryImpl(val updatesDao: UpdatesDao) : UpdatesRepository {
-	override fun addUpdate(updateEntity: UpdateEntity) {
-		TODO("Not yet implemented")
-	}
-
-	override fun getUpdates(): LiveData<List<UpdateEntity>> {
-		TODO("Not yet implemented")
-	}
-
+interface INovelsRepository :
+		SubscribeRepository<List<NovelUI>>,
+		SubscribeLiveData<List<NovelEntity>> {
+	suspend fun getBookmarkedNovels(): List<NovelUI>
+	suspend fun updateNovel(novelEntity: NovelEntity)
+	suspend fun unBookmarkNovels(selectedNovels: List<Int>)
 }

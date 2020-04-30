@@ -1,9 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.repository.impl
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 
 /*
  * This file is part of shosetsu.
@@ -29,10 +27,30 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  *
  * @author github.com/doomsdayrs
  */
-class NovelsRepositoryImpl(val novelsDao: NovelsDao) : NovelsRepository {
-	override suspend fun getBookmarkedNovels(): LiveData<List<NovelEntity>> =
-			novelsDao.loadBookmarkedNovels()
-
-	override suspend fun updateNovel(novelEntity: NovelEntity) =
-			novelsDao.update(novelEntity)
+data class ExtensionUI(
+		val id: Int,
+		val repoID: Int,
+		var name: String,
+		val fileName: String,
+		var imageURL: String?,
+		var lang: String,
+		var extensionEnabled: Boolean,
+		var installed: Boolean,
+		var installedVersion: String?,
+		var repositoryVersion: String,
+		var md5: String
+) : Convertible<ExtensionEntity> {
+	override fun convertTo() = ExtensionEntity(
+			id,
+			repoID,
+			name,
+			fileName,
+			imageURL,
+			lang,
+			extensionEnabled,
+			installed,
+			installedVersion,
+			repositoryVersion,
+			md5
+	)
 }

@@ -31,10 +31,15 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
  *
  * @author github.com/doomsdayrs
  */
-class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>) : RecyclerView.Adapter<SettingsItem>() {
+class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>)
+	: RecyclerView.Adapter<SettingsItem>() {
 	private val views: ArrayList<SettingsItem> = arrayListOf()
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsItem {
-		val view = LayoutInflater.from(parent.context).inflate(R.layout.settings_item, parent, false)
+		val view = LayoutInflater.from(parent.context).inflate(
+				R.layout.settings_item,
+				parent,
+				false
+		)
 		val i = SettingsItem(view)
 		views.add(i)
 		return i

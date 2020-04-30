@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle
-import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import java.io.Serializable
 
 /*
@@ -45,83 +47,87 @@ import java.io.Serializable
  * TODO When opening a novel from here, Prevent reloading of already established DATA
  */
 class SearchController : ViewedController() {
-    private class InternalQuery(val searchController: SearchController) : SearchView.OnQueryTextListener {
+	private class InternalQuery(val searchController: SearchController) : SearchView.OnQueryTextListener {
 
-        override fun onQueryTextSubmit(query: String?): Boolean {
-            return if (query != null) {
-                searchController.query = query
-                searchController.array = arrayListOf()
-                searchController.adapter.notifyDataSetChanged()
-                return true
-            } else false
-        }
+		override fun onQueryTextSubmit(query: String?): Boolean {
+			return if (query != null) {
+				searchController.query = query
+				searchController.array = arrayListOf()
+				searchController.adapter.notifyDataSetChanged()
+				return true
+			} else false
+		}
 
-        override fun onQueryTextChange(newText: String?): Boolean {
-            return true
-        }
+		override fun onQueryTextChange(newText: String?): Boolean {
+			return true
+		}
 
-    }
+	}
 
-    class StoredData(val id: Int) : Serializable {
-        //TODO This is dirty, Maybe replace with CatalogueNovelCard later
-        var novelArray: List<Array<String>> = arrayListOf()
-        var intArray: List<Int> = arrayListOf()
-    }
+	class StoredData(val id: Int) : Serializable {
+		//TODO This is dirty, Maybe replace with CatalogueNovelCard later
+		var novelArray: List<Array<String>> = arrayListOf()
+		var intArray: List<Int> = arrayListOf()
+	}
 
-    override val layoutRes: Int = search_activity
-    var adapter: SearchAdapter = SearchAdapter(this)
-    var query: String = ""
-    var array: ArrayList<StoredData> = arrayListOf()
+	override val layoutRes: Int = search_activity
 
-    @Attach(R.id.recyclerView)
-    var recyclerView: RecyclerView? = null
+	//TODO replace with searchControllerViewModel
+	val libraryViewModel: ILibraryViewModel by viewModel()
 
-    init {
-        setHasOptionsMenu(true)
-    }
+	var adapter: SearchAdapter = SearchAdapter(this)
+	var query: String = ""
+	var array: ArrayList<StoredData> = arrayListOf()
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_search, menu)
-        val searchView = menu.findItem(R.id.catalogues_search).actionView as SearchView
-        searchView.setQuery(query, false)
-        searchView.setOnQueryTextListener(InternalQuery(this))
-    }
+	@Attach(R.id.recyclerView)
+	var recyclerView: RecyclerView? = null
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return true
-    }
+	init {
+		setHasOptionsMenu(true)
+	}
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString("query", query)
-        outState.putSerializable("data", array)
-    }
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		inflater.inflate(R.menu.toolbar_search, menu)
+		val searchView = menu.findItem(R.id.catalogues_search).actionView as SearchView
+		searchView.setQuery(query, false)
+		searchView.setOnQueryTextListener(InternalQuery(this))
+	}
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        query = savedInstanceState.getString("query")!!
-        array = savedInstanceState.getSerializable("data") as ArrayList<StoredData>
-    }
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return true
+	}
 
-    override fun onViewCreated(view: View) {
-        setActivityTitle(activity, getString(R.string.results))
-        Log.i("SearchQueryReceived", query)
-        Log.d("SearchController","Is view null?${recyclerView == null}")
-        recyclerView?.layoutManager = LinearLayoutManager(context)
-        adapter = SearchAdapter(this)
-        recyclerView?.adapter = adapter
-    }
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		outState.putString("query", query)
+		outState.putSerializable("data", array)
+	}
 
-    fun containsData(id: Int): Boolean {
-        for (data in array)
-            if (data.id == id)
-                return true
-        return false
-    }
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		query = savedInstanceState.getString("query")!!
+		array = savedInstanceState.getSerializable("data") as ArrayList<StoredData>
+	}
 
-    fun getData(id: Int): StoredData {
-        for (data in array)
-            if (data.id == id)
-                return data
-        return StoredData(id)
-    }
+	override fun onViewCreated(view: View) {
+		setActivityTitle(activity, getString(R.string.results))
+		Log.i("SearchQueryReceived", query)
+		Log.d("SearchController", "Is view null?${recyclerView == null}")
+		recyclerView?.layoutManager = LinearLayoutManager(context)
+		adapter = SearchAdapter(this)
+		recyclerView?.adapter = adapter
+	}
+
+	fun containsData(id: Int): Boolean {
+		for (data in array)
+			if (data.id == id)
+				return true
+		return false
+	}
+
+	fun getData(id: Int): StoredData {
+		for (data in array)
+			if (data.id == id)
+				return data
+		return StoredData(id)
+	}
 }

@@ -8,6 +8,7 @@ import java.io.IOException
 import java.io.ObjectInputStream
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -153,3 +154,6 @@ fun String.md5(): String? {
 	}
 	return ""
 }
+
+
+fun String.toLowerCaseR() = this.toLowerCase(Locale.ROOT)

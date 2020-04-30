@@ -60,7 +60,7 @@ class UpdatesController : ViewedController() {
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return if (item.itemId == R.id.updater_now) {
-			context?.let { UpdateManager.init(it); true } ?: false
+			contet?.let { UpdateManager.init(it); true } ?: false
 		} else false
 	}
 

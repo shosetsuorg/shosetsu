@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.view.viewholders
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
-import com.mikepenz.fastadapter.FastAdapter
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 
 /*
  * This file is part of shosetsu.
@@ -19,15 +18,15 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 24 / 04 / 2020
+ * 30 / 04 / 2020
  *
  * @author github.com/doomsdayrs
- * Class needs to be overridden by program
  */
-abstract class ExtensionsViewHolder(itemView: View) : FastAdapter.ViewHolder<ExtensionUI>(itemView) {
+interface SubscribeRepository<T> {
+	fun subscribeRepository(owner: LifecycleOwner, observer: Observer<T>)
+	fun loadData(): T
 }

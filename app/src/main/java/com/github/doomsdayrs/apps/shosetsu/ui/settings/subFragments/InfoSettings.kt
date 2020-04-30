@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -57,8 +58,13 @@ class InfoSettings : SettingsSubController() {
         )
     }
 
-    private fun onClickReportBug() = startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.report_bug_link))))
-    private fun onClickAuthor() = startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.author_github))))
-    private fun onClickDisclaimer() = router.pushController(TextAssetReader(DISCLAIMER.bundle).withFadeTransaction())
-    private fun onClickLicense() = router.pushController(TextAssetReader(LICENSE.bundle).withFadeTransaction())
+    private fun onClickReportBug() {
+        startActivity(Intent(ACTION_VIEW, Uri.parse(getString(R.string.report_bug_link))))
+    }
+    private fun onClickAuthor() =
+            startActivity(Intent(ACTION_VIEW, Uri.parse(getString(R.string.author_github))))
+    private fun onClickDisclaimer() =
+            router.pushController(TextAssetReader(DISCLAIMER.bundle).withFadeTransaction())
+    private fun onClickLicense() =
+            router.pushController(TextAssetReader(LICENSE.bundle).withFadeTransaction())
 }

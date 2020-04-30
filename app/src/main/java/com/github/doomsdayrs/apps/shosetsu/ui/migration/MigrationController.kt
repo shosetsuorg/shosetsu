@@ -11,12 +11,11 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.squareup.picasso.Picasso
 import com.yarolegovich.discretescrollview.DiscreteScrollView
 
@@ -47,131 +46,136 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView
  * yes, a THIRD ONE
  */
 class MigrationController(bundle: Bundle) : ViewedController(bundle) {
-    companion object {
-        const val TARGETS_BUNDLE_KEY = "targets"
-    }
+	companion object {
+		const val TARGETS_BUNDLE_KEY = "targets"
+	}
 
-    class Transferee(val original: Int, var targetFormatterID: Int = -1, var listings: Array<Novel.Listing> = arrayOf(), var selectedURL: String = "") {
-        val novelCard = Database.DatabaseNovels.getNovel(original)
-    }
+	class Transferee(val original: Int, var targetFormatterID: Int = -1, var listings: Array<Novel.Listing> = arrayOf(), var selectedURL: String = "") {
+	}
 
-    override val layoutRes: Int = R.layout.migration_view
+	override val layoutRes: Int = R.layout.migration_view
 
-    private var transferees: Array<Transferee>
+	private var transferees: Array<Transferee>
 
-    init {
-        val arrayList = ArrayList<Transferee>()
-        bundle.getIntArray(TARGETS_BUNDLE_KEY)?.forEach {
-            arrayList.add(Transferee(original = it))
-        }
-        transferees = arrayList.toTypedArray()
-    }
-
-
-    @Attach(R.id.novels_to_transfer)
-    var novelsFromRecyclerView: DiscreteScrollView? = null
-    // Target selection
-    @Attach(R.id.targetSearching)
-    var targetSearching: View? = null
-    @Attach(R.id.searchView)
-    var searchView: SearchView? = null
-    @Attach(R.id.swipeRefreshLayout)
-    var swipeRefreshLayout: SwipeRefreshLayout? = null
-    @Attach(R.id.targetView)
-    var targetView: RecyclerView? = null
-    //
-    @Attach(R.id.catalogue_selection_view)
-    var catalogueSelectionView: View? = null
-    @Attach(R.id.catalogue_selection)
-    var catalogueSelection: RecyclerView? = null
+	init {
+		val arrayList = ArrayList<Transferee>()
+		bundle.getIntArray(TARGETS_BUNDLE_KEY)?.forEach {
+			arrayList.add(Transferee(original = it))
+		}
+		transferees = arrayList.toTypedArray()
+	}
 
 
-    override fun onSaveInstanceState(outState: Bundle) {
-    }
+	@Attach(R.id.novels_to_transfer)
+	var novelsFromRecyclerView: DiscreteScrollView? = null
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-    }
+	// Target selection
+	@Attach(R.id.targetSearching)
+	var targetSearching: View? = null
 
-    override fun onViewCreated(view: View) {
-        catalogueSelection?.layoutManager = LinearLayoutManager(context)
-        novelsFromRecyclerView?.adapter = TransfereeAdapter(this)
-        novelsFromRecyclerView?.addOnItemChangedListener { _, item ->
-            setupViewWithTransferee(item)
-        }
-        setupViewWithTransferee(0)
-    }
+	@Attach(R.id.searchView)
+	var searchView: SearchView? = null
 
-    /**
-     * @param position [Int] position
-     */
-    fun setupViewWithTransferee(position: Int) {
-        val target = transferees[position]
-        if (target.targetFormatterID == -1) {
-            catalogueSelectionView?.visibility = VISIBLE
-            targetSearching?.visibility = INVISIBLE
-            catalogueSelection?.adapter = CatalogueSelectionAdapter(this, position)
-        } else {
-            catalogueSelectionView?.visibility = GONE
-            targetSearching?.visibility = VISIBLE
-            // TODO
-        }
-    }
+	@Attach(R.id.swipeRefreshLayout)
+	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
-    class TransfereeAdapter(private val migrationController: MigrationController) : RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
-        class TransfereeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val imageView: ImageView = itemView.findViewById(R.id.image)
-            val title: TextView = itemView.findViewById(R.id.title)
-        }
+	@Attach(R.id.targetView)
+	var targetView: RecyclerView? = null
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransfereeViewHolder {
-            return TransfereeViewHolder(LayoutInflater.from(parent.context).inflate(
-                    R.layout.recycler_novel_card,
-                    parent,
-                    false
-            ))
-        }
+	//
+	@Attach(R.id.catalogue_selection_view)
+	var catalogueSelectionView: View? = null
 
-        override fun getItemCount(): Int {
-            return migrationController.transferees.size
-        }
+	@Attach(R.id.catalogue_selection)
+	var catalogueSelection: RecyclerView? = null
 
-        override fun onBindViewHolder(holder: TransfereeViewHolder, position: Int) {
-            val tran = migrationController.transferees[position]
-            holder.title.text = tran.novelCard.title
-            if (tran.novelCard.imageURL.isNotEmpty())
-                Picasso.get().load(tran.novelCard.imageURL).into(holder.imageView)
-        }
-    }
 
-    class CatalogueSelectionAdapter(private val migrationController: MigrationController, private val transfereePosition: Int) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
-        class CatalogueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val imageView: ImageView = itemView.findViewById(R.id.imageView)
-            val title: TextView = itemView.findViewById(R.id.textView)
-            var id: Int = -1
-        }
+	override fun onSaveInstanceState(outState: Bundle) {
+	}
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogueHolder {
-            return CatalogueHolder(LayoutInflater.from(parent.context).inflate(R.layout.catalogue_item_card, parent, false))
-        }
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+	}
 
-        override fun getItemCount(): Int {
-            return FormattersRepository.formatters.size
-        }
+	override fun onViewCreated(view: View) {
+		catalogueSelection?.layoutManager = LinearLayoutManager(context)
+		novelsFromRecyclerView?.adapter = TransfereeAdapter(this)
+		novelsFromRecyclerView?.addOnItemChangedListener { _, item ->
+			setupViewWithTransferee(item)
+		}
+		setupViewWithTransferee(0)
+	}
 
-        override fun onBindViewHolder(holder: CatalogueHolder, position: Int) {
-            val form = FormattersRepository.formatters[position]
-            holder.title.text = form.name
-            if (form.imageURL.isNotEmpty())
-                Picasso.get()
-                        .load(form.imageURL)
-                        .into(holder.imageView)
+	/**
+	 * @param position [Int] position
+	 */
+	fun setupViewWithTransferee(position: Int) {
+		val target = transferees[position]
+		if (target.targetFormatterID == -1) {
+			catalogueSelectionView?.visibility = VISIBLE
+			targetSearching?.visibility = INVISIBLE
+			catalogueSelection?.adapter = CatalogueSelectionAdapter(this, position)
+		} else {
+			catalogueSelectionView?.visibility = GONE
+			targetSearching?.visibility = VISIBLE
+			// TODO
+		}
+	}
 
-            holder.id = form.formatterID
-            holder.itemView.setOnClickListener {
-                migrationController.transferees[transfereePosition].targetFormatterID = holder.id
-                migrationController.setupViewWithTransferee(transfereePosition)
-            }
-        }
-    }
+	class TransfereeAdapter(private val migrationController: MigrationController) : RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
+		class TransfereeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+			val imageView: ImageView = itemView.findViewById(R.id.image)
+			val title: TextView = itemView.findViewById(R.id.title)
+		}
+
+		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransfereeViewHolder {
+			return TransfereeViewHolder(LayoutInflater.from(parent.context).inflate(
+					R.layout.recycler_novel_card,
+					parent,
+					false
+			))
+		}
+
+		override fun getItemCount(): Int {
+			return migrationController.transferees.size
+		}
+
+		override fun onBindViewHolder(holder: TransfereeViewHolder, position: Int) {
+			val tran = migrationController.transferees[position]
+			//holder.title.text = tran.novelCard.title
+			//if (tran.novelCard.imageURL.isNotEmpty())
+			//	Picasso.get().load("TODO").into(holder.imageView)
+		}
+	}
+
+	class CatalogueSelectionAdapter(private val migrationController: MigrationController, private val transfereePosition: Int) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
+		class CatalogueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+			val imageView: ImageView = itemView.findViewById(R.id.imageView)
+			val title: TextView = itemView.findViewById(R.id.textView)
+			var id: Int = -1
+		}
+
+		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogueHolder {
+			return CatalogueHolder(LayoutInflater.from(parent.context).inflate(R.layout.catalogue_item_card, parent, false))
+		}
+
+		override fun getItemCount(): Int {
+			return -1
+		}
+
+		override fun onBindViewHolder(holder: CatalogueHolder, position: Int) {
+			val form: Formatter? = null
+			holder.title.text = form?.name
+			if (form?.imageURL?.isNotEmpty()!!)
+				Picasso.get()
+						.load(form?.imageURL)
+						.into(holder.imageView)
+
+			holder.id = form.formatterID
+			holder.itemView.setOnClickListener {
+				migrationController.transferees[transfereePosition].targetFormatterID = holder.id
+				migrationController.setupViewWithTransferee(transfereePosition)
+			}
+		}
+	}
 
 }

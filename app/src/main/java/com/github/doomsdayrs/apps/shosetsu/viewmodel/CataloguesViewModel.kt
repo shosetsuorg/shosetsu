@@ -1,8 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.view.viewholders
+package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
-import android.view.View
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
-import com.mikepenz.fastadapter.FastAdapter
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICataloguesViewModel
 
 /*
  * This file is part of shosetsu.
@@ -19,15 +20,20 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+
+
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
- * Class needs to be overridden by program
+ * 30 / 04 / 2020
  */
-abstract class ExtensionsViewHolder(itemView: View) : FastAdapter.ViewHolder<ExtensionUI>(itemView) {
+class CataloguesViewModel(
+		val formatterRepository: IFormatterRepository
+) : ViewModel(), ICataloguesViewModel {
+	override fun loadList(): ExtensionUI {
+		TODO("Not yet implemented")
+	}
+
 }

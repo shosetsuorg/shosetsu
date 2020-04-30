@@ -81,7 +81,8 @@ class BackupSettings : SettingsSubController() {
 
 	@Suppress("unused")
 	private fun performFileSelection() {
-		context?.toast("Please make sure this is on the main storage, SD card storage is not functional yet", duration = LENGTH_LONG)
+		context?.toast("Please make sure this is on the main storage, " +
+				"SD card storage is not functional yet", duration = LENGTH_LONG)
 		val intent = Intent(context, NormalFilePickActivity::class.java)
 		intent.putExtra(Constant.MAX_NUMBER, 9)
 		intent.putExtra(NormalFilePickActivity.SUFFIX, arrayOf("shoback", "json"))
@@ -92,7 +93,8 @@ class BackupSettings : SettingsSubController() {
 		super.onActivityResult(requestCode, resultCode, data)
 		if (Constant.REQUEST_CODE_PICK_FILE == requestCode && resultCode == Activity.RESULT_OK) {
 			if (data != null) {
-				val list: ArrayList<NormalFile>? = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE)
+				val list: ArrayList<NormalFile>? =
+						data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE)
 				if (list != null && list.size > 0) {
 					val normalFile = list[0]
 					RestoreProcess(normalFile.path, context!!).execute()
@@ -107,9 +109,11 @@ class BackupSettings : SettingsSubController() {
 					if (fileEnding.equalsIgnoreCase("shoback")) {
 						Log.i("Selected Folder", "Uri: " + path);
 						//TODO Fix this shit, need's a proper integrated file manager
-						new RestoreProcess("/Shosetsu/backup/backup-Mon Oct 28 20:46:16 EDT 2019.shoback", getContext()).execute();
+						new RestoreProcess("/Shosetsu/backup/backup-Mon Oct
+						28 20:46:16 EDT 2019.shoback", getContext()).execute();
 					} else
-						Toast.makeText(getContext(), "Invalid file to use!", Toast.LENGTH_LONG).show();
+						Toast.makeText(getContext(), "Invalid file to use!",
+						 Toast.LENGTH_LONG).show();
 				}*/
 			}
 		}

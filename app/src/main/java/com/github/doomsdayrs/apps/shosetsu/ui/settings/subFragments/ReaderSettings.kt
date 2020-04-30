@@ -43,9 +43,18 @@ class ReaderSettings : SettingsSubController() {
 				SettingsItemData(SPINNER)
 						.setTitle(R.string.spacing)
 						.setSpinnerSelection(Settings.readerParagraphSpacing)
-						.setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.sizes_with_none)))
+						.setArrayAdapter(ArrayAdapter(
+								context!!,
+								android.R.layout.simple_spinner_item,
+								resources!!.getStringArray(R.array.sizes_with_none)
+						))
 						.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-							override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+							override fun onItemSelected(
+									adapterView: AdapterView<*>,
+									view: View,
+									i: Int,
+									l: Long
+							) {
 								Log.d("SpaceSelection", i.toString())
 								if (i in 0..3) {
 									Settings.readerParagraphSpacing = (i)
@@ -58,7 +67,11 @@ class ReaderSettings : SettingsSubController() {
 
 				SettingsItemData(SPINNER)
 						.setTitle(R.string.text_size)
-						.setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.sizes_no_none)))
+						.setArrayAdapter(ArrayAdapter(
+								context!!,
+								android.R.layout.simple_spinner_item,
+								resources!!.getStringArray(R.array.sizes_no_none)
+						))
 						.setSpinnerSelection(when (Settings.readerTextSize.toInt()) {
 							14 -> 0
 							17 -> 1
@@ -66,7 +79,12 @@ class ReaderSettings : SettingsSubController() {
 							else -> 0
 						})
 						.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-							override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+							override fun onItemSelected(
+									adapterView: AdapterView<*>,
+									view: View,
+									i: Int,
+									l: Long
+							) {
 								Log.d("TextSizeSelection", i.toString())
 								if (i in 0..2) {
 									var size = 14
@@ -86,7 +104,11 @@ class ReaderSettings : SettingsSubController() {
 
 				SettingsItemData(SPINNER)
 						.setTitle(R.string.indent_size)
-						.setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.sizes_with_none)))
+						.setArrayAdapter(ArrayAdapter(
+								context!!,
+								android.R.layout.simple_spinner_item,
+								resources!!.getStringArray(R.array.sizes_with_none)
+						))
 						.setSpinnerSelection(Settings.ReaderIndentSize)
 						.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
 							override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
@@ -103,10 +125,19 @@ class ReaderSettings : SettingsSubController() {
 				SettingsItemData(SPINNER)
 						.setTitle(R.string.reader_theme)
 						.setSpinnerSelection(Settings.readerTheme)
-						.setArrayAdapter(ArrayAdapter(context!!, android.R.layout.simple_spinner_item, resources!!.getStringArray(R.array.reader_themes)))
+						.setArrayAdapter(ArrayAdapter(
+								context!!,
+								android.R.layout.simple_spinner_item,
+								resources!!.getStringArray(R.array.reader_themes)
+						))
 						.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
 							override fun onNothingSelected(p0: AdapterView<*>?) {}
-							override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+							override fun onItemSelected(
+									p0: AdapterView<*>?,
+									p1: View?,
+									p2: Int,
+									p3: Long
+							) {
 								Log.d("NightMode", p1.toString())
 								Settings.readerTheme = p2
 							}

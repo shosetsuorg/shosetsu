@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionsUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import java.io.Serializable
 
 /*
@@ -59,9 +59,9 @@ data class ExtensionEntity(
 		var installedVersion: String? = null,
 		var repositoryVersion: String = "0.0.0",
 		var md5: String = ""
-) : Serializable, Convertible<ExtensionsUI> {
-	override fun convertTo(): ExtensionsUI =
-			ExtensionsUI(
+) : Serializable, Convertible<ExtensionUI> {
+	override fun convertTo(): ExtensionUI =
+			ExtensionUI(
 					id,
 					repoID,
 					name,

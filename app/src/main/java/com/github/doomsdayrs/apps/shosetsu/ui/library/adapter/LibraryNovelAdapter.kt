@@ -22,10 +22,10 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.runOnMain
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -49,33 +49,38 @@ class LibraryNovelAdapter(
 	}
 
 	override fun onBindViewHolder(libNovelViewHolder: LibNovelViewHolder, i: Int) {
-		val novelCard = Database.DatabaseNovels.getNovel(novelIDs[i])
-		//Sets values
-		run {
-			if (novelCard.imageURL.isNotEmpty())
-				Picasso.get().load(novelCard.imageURL).into(libNovelViewHolder.imageView)
-			libNovelViewHolder.setLibraryControllerFun(libraryController)
-			libNovelViewHolder.novelCard = novelCard
-			libNovelViewHolder.formatterID = novelCard.formatterID
-			libNovelViewHolder.title.text = novelCard.title
-		}
-		val count = viewModel.loadChaptersUnread(novelCard.novelID)
+		viewModel.loadNovel(novelIDs[i])?.let { novelUI ->
+			//Sets values
+			run {
+				if (novelUI.imageURL.isNotEmpty())
+					Picasso.get().load(novelUI.imageURL).into(libNovelViewHolder.imageView)
+				libNovelViewHolder.setLibraryControllerFun(libraryController)
+				libNovelViewHolder.novelCard = novelUI
+				libNovelViewHolder.formatterID = novelUI.formatter.formatterID
+				libNovelViewHolder.title.text = novelUI.title
+			}
+			launchAsync {
+				val count = viewModel.loadChaptersUnread(novelUI.id)
+				runOnMain {
+					libNovelViewHolder.itemView.post {
+						if (count != 0) {
+							libNovelViewHolder.chip.visibility = View.VISIBLE
+							libNovelViewHolder.chip.text = count.toString()
+						} else libNovelViewHolder.chip.visibility = View.INVISIBLE
+					}
+				}
+			}
+			libNovelViewHolder.materialCardView.strokeWidth =
+					if (viewModel.selectedNovels.contains(novelUI.id))
+						Utilities.selectedStrokeWidth else 0
 
-		if (count != 0) {
-			libNovelViewHolder.chip.visibility = View.VISIBLE
-			libNovelViewHolder.chip.text = count.toString()
-		} else libNovelViewHolder.chip.visibility = View.INVISIBLE
-
-		if (viewModel.selectedNovels.contains(novelCard.novelID)) {
-			libNovelViewHolder.materialCardView.strokeWidth = Utilities.selectedStrokeWidth
-		} else {
-			libNovelViewHolder.materialCardView.strokeWidth = 0
-		}
-
-		if (viewModel.selectedNovels.size > 0) {
-			libNovelViewHolder.itemView.setOnClickListener { launchAsync { libNovelViewHolder.handleSelection() } }
-		} else {
-			libNovelViewHolder.itemView.setOnClickListener(libNovelViewHolder)
+			if (viewModel.selectedNovels.size > 0) {
+				libNovelViewHolder.itemView.setOnClickListener {
+					launchAsync { libNovelViewHolder.handleSelection() }
+				}
+			} else {
+				libNovelViewHolder.itemView.setOnClickListener(libNovelViewHolder)
+			}
 		}
 	}
 

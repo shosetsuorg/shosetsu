@@ -40,7 +40,7 @@ class ExtensionsConfigureViewModel(
 	: ViewModel(), IExtensionsConfigureViewModel {
 	override val liveData: LiveData<List<ExtensionEntity>> by lazy { extensionsDao.loadFormatters() }
 
-	override fun loadData(): List<ExtensionEntity> = liveData.value ?: arrayListOf()
+	override suspend fun loadData(): List<ExtensionEntity> = liveData.value ?: arrayListOf()
 
 	override fun disableExtension(
 			extensionEntity: ExtensionEntity,

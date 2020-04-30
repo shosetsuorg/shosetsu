@@ -1,10 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import android.view.View
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerUI
-import com.github.doomsdayrs.apps.shosetsu.view.viewholders.ChapterViewHolder
 
 /*
  * This file is part of shosetsu.
@@ -42,9 +39,4 @@ data class ChapterUI(
 		var bookmarked: Boolean,
 		var isSaved: Boolean,
 		var savePath: String
-) : BaseRecyclerUI<ChapterViewHolder>() {
-	override fun getViewHolder(v: View): ChapterViewHolder {
-		TODO("Not yet implemented")
-	}
-
-}
+)

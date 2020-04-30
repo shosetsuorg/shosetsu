@@ -12,7 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
@@ -48,7 +48,7 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 
 	private lateinit var libraryController: LibraryController
 	lateinit var viewModel: ILibraryViewModel
-	lateinit var novelCard: NovelCard
+	lateinit var novelCard: NovelUI
 	var formatterID: Int = -1
 
 	fun setLibraryControllerFun(library: LibraryController) {
@@ -57,8 +57,8 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 	}
 
 	fun handleSelection() {
-		if (!viewModel.selectedNovels.contains(novelCard.novelID))
-			viewModel.selectedNovels.add(novelCard.novelID)
+		if (!viewModel.selectedNovels.contains(novelCard.id))
+			viewModel.selectedNovels.add(novelCard.id)
 		else removeFromSelect()
 
 		if (viewModel.selectedNovels.size <= 0 || viewModel.selectedNovels.size == 1)
@@ -68,8 +68,8 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 	}
 
 	private fun removeFromSelect() {
-		if (viewModel.selectedNovels.contains(novelCard.novelID))
-			viewModel.selectedNovels.removeAt(viewModel.selectedNovels.indexOf(novelCard.novelID))
+		if (viewModel.selectedNovels.contains(novelCard.id))
+			viewModel.selectedNovels.removeAt(viewModel.selectedNovels.indexOf(novelCard.id))
 	}
 
 	override fun onClick(v: View) =
@@ -77,7 +77,7 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 					bundleOf(
 							NovelController.BUNDLE_URL to novelCard.novelURL,
 							NovelController.BUNDLE_FORMATTER to formatterID,
-							NovelController.BUNDLE_ID to novelCard.novelID
+							NovelController.BUNDLE_ID to novelCard.id
 					)
 			).withFadeTransaction())
 

@@ -18,13 +18,11 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
  */
 
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ChaptersDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 
 /**
@@ -34,8 +32,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
  * @author github.com/doomsdayrs
  */
 class LibraryViewModel(
-		val novelsDao: NovelsDao,
-		val chaptersDao: ChaptersDao
+		val novelsRepository: INovelsRepository,
+		val chaptersRepository: IChaptersRepository
 ) : ILibraryViewModel {
 	class LibraryDiffCallBack(
 			private val oldList: List<Int>,
@@ -52,57 +50,48 @@ class LibraryViewModel(
 				areItemsTheSame(oldItemPosition, newItemPosition)
 	}
 
-	override val liveData: LiveData<List<NovelEntity>> by lazy { novelsDao.loadBookmarkedNovels() }
 	override var selectedNovels = ArrayList<Int>()
 
 	/**
 	 * Internal cache of what [liveData] returns, for [selectedNovels]
 	 */
-	private val cachedIDs: ArrayList<Int> = arrayListOf()
-		@Synchronized
-		get
+	private val cachedNovel: ArrayList<NovelUI> = novelsRepository.loadData() as ArrayList<NovelUI>
 
 	@Synchronized
-	private fun clearAndAdd(list: List<NovelEntity>) {
-		cachedIDs.clear()
-		cachedIDs.addAll(list.map { it.id })
+	private fun clearAndAdd(list: List<NovelUI>) {
+		cachedNovel.clear()
+		cachedNovel.addAll(list)
 	}
 
-	override suspend fun selectAll(callback: () -> Unit) {
-		cachedIDs.filter { !selectedNovels.contains(it) }
-				.forEach { selectedNovels.add(it) }
-		callback()
-	}
+	override suspend fun selectAll() = cachedNovel
+			.filter { !selectedNovels.contains(it.id) }
+			.forEach { selectedNovels.add(it.id) }
 
-	override suspend fun deselectAll(callback: () -> Unit) {
-		selectedNovels.clear()
-		callback()
-	}
+	override suspend fun deselectAll() = selectedNovels.clear()
 
-	override suspend fun removeAllFromLibrary(recyclerView: RecyclerView) {
-		novelsDao.unBookmarkNovels(selectedNovels, liveData.value ?: arrayListOf())
+	override suspend fun removeAllFromLibrary() {
+		novelsRepository.unBookmarkNovels(selectedNovels)
 		selectedNovels.clear()
 	}
 
-	override fun loadNovelIDs(): List<Int> {
-		loadData()
-		return cachedIDs
-	}
+	override suspend fun loadNovelIDs(): List<Int> = loadData().map { it.id }
 
-	override fun loadChaptersUnread(novelID: Int): Int = chaptersDao.loadChapterUnreadCount(novelID)
+	override suspend fun loadChaptersUnread(novelID: Int): Int =
+			chaptersRepository.loadChapterUnreadCount(novelID)
+
+	override fun loadNovel(id: Int): NovelUI? = cachedNovel.find { it.id == id }
+	override fun getCachedData(): List<NovelUI> = cachedNovel
+
+	override fun search(search: String): List<NovelUI> =
+			cachedNovel.filter { it.title.contains(search, ignoreCase = true) }
 
 	override fun subscribeObserver(
 			owner: LifecycleOwner,
-			observer: Observer<List<NovelEntity>>
-	) {
-		liveData.observe(owner, Observer {
-			clearAndAdd(it)
-			observer.onChanged(it)
-		})
-	}
+			observer: Observer<List<NovelUI>>
+	) = novelsRepository.subscribeRepository(owner, observer)
 
-	override fun loadData(): List<NovelEntity> {
-		val data = liveData.value ?: arrayListOf()
+	override suspend fun loadData(): List<NovelUI> {
+		val data = novelsRepository.loadData()
 		clearAndAdd(data)
 		return data
 	}

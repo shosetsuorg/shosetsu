@@ -1,9 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import android.view.View
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerUI
-import com.github.doomsdayrs.apps.shosetsu.view.viewholders.DownloadViewHolder
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 
 /*
  * This file is part of shosetsu.
@@ -36,8 +35,13 @@ data class DownloadUI(
 		val novelName: String,
 		val formatter: Formatter,
 		var status: Int
-) : BaseRecyclerUI<DownloadViewHolder>() {
-	override fun getViewHolder(v: View): DownloadViewHolder {
-		TODO("Not yet implemented")
-	}
+) : Convertible<DownloadEntity> {
+	override fun convertTo() = DownloadEntity(
+			chapterID,
+			chapterURL,
+			chapterName,
+			novelName,
+			formatter,
+			status
+	)
 }
