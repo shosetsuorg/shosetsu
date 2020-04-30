@@ -1,26 +1,4 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter
-
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
-import com.squareup.picasso.Picasso
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-
-
 /*
  * This file is part of shosetsu.
  *
@@ -36,8 +14,21 @@ import kotlinx.coroutines.launch
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.squareup.picasso.Picasso
 
 /**
  * shosetsu
@@ -47,6 +38,10 @@ import kotlinx.coroutines.launch
  */
 class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 	: RecyclerView.Adapter<ExtensionHolder>() {
+
+	init {
+		setHasStableIds(true)
+	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExtensionHolder {
 		return ExtensionHolder(LayoutInflater.from(parent.context).inflate(
@@ -60,11 +55,13 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 		return extensionsController.recyclerArray.size
 	}
 
+	override fun getItemId(position: Int) = position.toLong()
+
 	override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
 		val entity = extensionsController.recyclerArray[position]
 		val id = entity.id
 
-		if (FormattersRepository.getByID(id) != FormattersRepository.unknown) {
+		if (entity.installed && entity.enabled) {
 			holder.button.text = holder.itemView.context.getString(R.string.uninstall)
 			//  holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
 			holder.installed = true
@@ -96,38 +93,23 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 		holder.button.setOnClickListener {
 			try {
 				if (!holder.installed || holder.update) {
-					GlobalScope.launch {
-						extensionsController.context?.let { context ->
-							entity.install(context)
-							entity.installed = true
-							entity.enabled = true
+					extensionsController.context?.let { context ->
+						extensionsController.extensionViewModel.installExtension(entity)
+						holder.installed = true
+						holder.update = false
+						context.toast("Installed ${entity.name}")
+						this@ExtensionsAdapter.notifyItemChanged(position)
+					} ?: Log.e(logID(), "Context is missing to delete")
 
-							holder.installed = true
-							holder.update = false
-							extensionsDao.updateFormatter(entity)
-							Handler(Looper.getMainLooper()).post {
-								context.toast("Installed ${entity.name}")
-								this@ExtensionsAdapter.notifyDataSetChanged()
-							}
-						} ?: Log.e(logID(), "Context is missing to delete")
-
-					}
 				} else {
-					GlobalScope.launch {
-						extensionsController.context?.let { context ->
-							entity.delete(context)
-							entity.installed = false
-							entity.enabled = false
+					extensionsController.context?.let { context ->
+						extensionsController.extensionViewModel.uninstallExtension(entity)
 
-							holder.installed = false
-							holder.update = false
-							extensionsDao.updateFormatter(entity)
-							Handler(Looper.getMainLooper()).post {
-								context.toast("Deleted ${entity.name}")
-								this@ExtensionsAdapter.notifyDataSetChanged()
-							}
-						} ?: Log.e(logID(), "Context is missing to delete")
-					}
+						holder.installed = false
+						holder.update = false
+						context.toast("Deleted ${entity.name}")
+						this@ExtensionsAdapter.notifyItemChanged(position)
+					} ?: Log.e(logID(), "Context is missing to delete")
 				}
 			} catch (e: Exception) {
 				it.context.toast("Holy shit what happened")

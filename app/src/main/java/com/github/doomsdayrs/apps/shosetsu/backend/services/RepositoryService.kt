@@ -9,13 +9,14 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.repositoryDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.scriptLibDao
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.forEachTyped
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
@@ -95,8 +96,7 @@ class RepositoryService : Service() {
 			Log.i(logID(), "Starting Update")
 			if (Utilities.isOnline) {
 				progressUpdate("Online, Loading repositories")
-				val repos = repositoryDao
-						.loadRepositories()
+				val repos: List<RepositoryEntity> = repositoryDao.loadRepositories()
 
 				for (repo in repos) {
 					val repoName = repo.name
@@ -131,7 +131,7 @@ class RepositoryService : Service() {
 						}
 
 						// Libraries in database
-						val libEntities = scriptLibDao
+						val libEntities: List<ExtensionLibraryEntity> = scriptLibDao
 								.loadLibByRepoID(repoID)
 
 						// Libraries not installed or needs update

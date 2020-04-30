@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+
 /*
  * This file is part of shosetsu.
  *
@@ -24,5 +27,6 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
  *
  * @author github.com/doomsdayrs
  */
-interface INovelViewViewModel {
+interface INovelViewViewModel
+	: SubscribeViewModel<NovelEntity>, Subscribe2ViewModel<List<ChapterEntity>> {
 }

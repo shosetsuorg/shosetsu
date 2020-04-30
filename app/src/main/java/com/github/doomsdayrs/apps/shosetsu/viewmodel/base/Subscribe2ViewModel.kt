@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 /*
  * This file is part of shosetsu.
@@ -26,5 +28,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsViewModel: SubscribeViewModel<List<DownloadEntity>> {
+interface Subscribe2ViewModel<T> {
+	val liveData2: LiveData<T>
+	fun subscribeObserver2(owner: LifecycleOwner, observer: Observer<T>)
+	fun loadData2(): T
 }

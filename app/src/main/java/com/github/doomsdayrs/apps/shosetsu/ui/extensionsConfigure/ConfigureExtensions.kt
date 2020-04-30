@@ -1,15 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure
 
-import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import org.json.JSONArray
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
 
 /*
  * This file is part of shosetsu.
@@ -36,20 +35,11 @@ import org.json.JSONArray
  * @author github.com/doomsdayrs
  */
 class ConfigureExtensions : RecyclerController<ConfigExtAdapter, Any>() {
-
-	lateinit var jsonArray: JSONArray
-
-	override fun onSaveInstanceState(outState: Bundle) = outState.putString("array", jsonArray.toString())
-
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		Log.d(logID(), "Restoring")
-		jsonArray = JSONArray(savedInstanceState.getString("array", "[]"))
-	}
-
+	val viewModel: IExtensionsConfigureViewModel by viewModel()
+	val arrayList: List<ExtensionEntity> by lazy { viewModel.loadExtensions() }
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, getString(R.string.configure_extensions))
-		Log.d(logID(), "Array received:\t$jsonArray")
 		adapter = ConfigExtAdapter(this)
+		viewModel
 	}
-
 }

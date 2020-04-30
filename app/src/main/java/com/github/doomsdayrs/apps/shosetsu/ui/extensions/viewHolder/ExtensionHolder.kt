@@ -32,11 +32,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class ExtensionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    var installed: Boolean = false
-    var update: Boolean = false
     val imageView: ImageView = itemView.findViewById(R.id.imageView)
     val language: TextView = itemView.findViewById(R.id.language)
-
     val title: TextView = itemView.findViewById(R.id.title)
     val hash: TextView = itemView.findViewById(R.id.hash)
     val id: TextView = itemView.findViewById(R.id.id)
@@ -44,4 +41,6 @@ class ExtensionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val updatedVersion: TextView = itemView.findViewById(R.id.update_version)
     val button: Button = itemView.findViewById(R.id.button)
 
+    var installed: Boolean = false
+    var update: Boolean = false
 }

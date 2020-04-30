@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 
 /*
  * This file is part of shosetsu.
@@ -26,5 +26,9 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsViewModel: SubscribeViewModel<List<DownloadEntity>> {
+interface IExtensionsViewModel : SubscribeViewModel<List<ExtensionEntity>> {
+	fun reloadFormatters()
+	fun refreshRepository()
+	fun installExtension(extensionEntity: ExtensionEntity)
+	fun uninstallExtension(extensionEntity: ExtensionEntity)
 }

@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.library
 
-import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,20 +9,27 @@ import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
+import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.runOnMain
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.LibraryViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.navigation.NavigationView
 import java.util.*
 
@@ -50,9 +56,10 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), SecondDrawerController {
+class LibraryController :
+		RecyclerController<LibraryNovelAdapter, Int>(), SecondDrawerController {
 
-	var selectedNovels: ArrayList<Int> = ArrayList()
+	val viewModel: ILibraryViewModel by viewModel()
 
 	val inflater: MenuInflater?
 		get() = MenuInflater(applicationContext)
@@ -61,30 +68,33 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 		setHasOptionsMenu(true)
 	}
 
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		outState.putIntegerArrayList("selected", selectedNovels)
-		outState.putIntegerArrayList("lib", recyclerArray)
-	}
-
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		super.onRestoreInstanceState(savedInstanceState)
-		recyclerArray = savedInstanceState.getIntegerArrayList("lib")!!
-		selectedNovels = savedInstanceState.getIntegerArrayList("selected")!!
-	}
-
 	override fun onViewCreated(view: View) {
 		recyclerView = view.findViewById(R.id.recyclerView)
 		Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.my_library))
-		readFromDB()
+		recyclerArray.addAll(viewModel.loadNovelIDs())
 		setLibraryCards(recyclerArray)
+		subscribe()
+	}
+
+	private fun subscribe() {
+		viewModel.subscribeObserver(this, Observer { newRecyclerArray ->
+			val difCallbacck = LibraryViewModel.LibraryDiffCallBack(
+					recyclerArray,
+					newRecyclerArray.map { it.id }
+			)
+			val diffResult = DiffUtil.calculateDiff(difCallbacck)
+			recyclerArray.clear()
+			recyclerArray.addAll(newRecyclerArray.map { it.id })
+			adapter?.let { it -> diffResult.dispatchUpdatesTo(it) }
+		})
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		if (selectedNovels.size <= 0) {
+		if (viewModel.selectedNovels.size <= 0) {
 			Log.d("LibraryFragment", "Creating default menu")
 			inflater.inflate(R.menu.toolbar_library, menu)
-			val searchView = menu.findItem(R.id.library_search).actionView as SearchView?
+			val searchView =
+					menu.findItem(R.id.library_search).actionView as SearchView?
 			searchView?.setOnQueryTextListener(LibrarySearchQuery(this))
 			searchView?.setOnCloseListener {
 				setLibraryCards(recyclerArray)
@@ -99,35 +109,32 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.updater_now -> {
-				init(applicationContext!!, recyclerArray)
+				UpdateService.init(applicationContext!!, recyclerArray)
 				return true
 			}
 			R.id.chapter_select_all -> {
-				for (i in recyclerArray) if (!selectedNovels.contains(i)) selectedNovels.add(i)
-				recyclerView?.post { adapter?.notifyDataSetChanged() }
+				launchAsync { viewModel.selectAll() }
 				return true
 			}
 			R.id.chapter_deselect_all -> {
-				selectedNovels = ArrayList()
-				recyclerView?.post { adapter?.notifyDataSetChanged() }
-				if (inflater != null) activity?.invalidateOptionsMenu()
+				launchAsync {
+					viewModel.deselectAll()
+					runOnMain {
+						if (inflater != null) activity?.invalidateOptionsMenu()
+					}
+				}
 				return true
 			}
 			R.id.remove_from_library -> {
-				for (i in selectedNovels) {
-					DatabaseNovels.unBookmarkNovel(i)
-					var x = 0
-					while (x < recyclerArray.size) {
-						if (recyclerArray[x] == i) recyclerArray.removeAt(x)
-						x++
-					}
+				launchAsync {
+					viewModel.removeAllFromLibrary(recyclerView!!)
 				}
-				selectedNovels = ArrayList()
-				recyclerView?.post { adapter?.notifyDataSetChanged() }
 				return true
 			}
 			R.id.source_migrate -> {
-				router.pushController(MigrationController(bundleOf(Pair(MigrationController.TARGETS_BUNDLE_KEY, selectedNovels.toIntArray()))).withFadeTransaction())
+				router.pushController(MigrationController(bundleOf(
+						TARGETS_BUNDLE_KEY to viewModel.selectedNovels.toIntArray()
+				)).withFadeTransaction())
 				return true
 			}
 		}
@@ -135,41 +142,39 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 	}
 
 
-	private fun readFromDB() {
-		recyclerArray = DatabaseNovels.intLibrary
-	}
-
 	/**
 	 * Sets the cards to display
 	 */
-	fun setLibraryCards(novelCards: ArrayList<Int>?) {
+	fun setLibraryCards(novelCards: ArrayList<Int>) {
 		recyclerView?.setHasFixedSize(false)
 		if (Settings.novelCardType == 0) {
-			adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card)
-			recyclerView?.layoutManager = GridLayoutManager(applicationContext, Utilities.calculateColumnCount(applicationContext!!, 200f), RecyclerView.VERTICAL, false)
+			adapter = LibraryNovelAdapter(
+					novelCards,
+					this,
+					R.layout.recycler_novel_card
+			)
+			recyclerView?.layoutManager = GridLayoutManager(
+					applicationContext,
+					Utilities.calculateColumnCount(applicationContext!!, 200f),
+					RecyclerView.VERTICAL,
+					false
+			)
 		} else {
-			adapter = LibraryNovelAdapter(novelCards!!, this, R.layout.recycler_novel_card_compressed)
-			recyclerView?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+			adapter = LibraryNovelAdapter(
+					novelCards,
+					this,
+					R.layout.recycler_novel_card_compressed
+			)
+			recyclerView?.layoutManager = LinearLayoutManager(
+					applicationContext,
+					LinearLayoutManager.VERTICAL,
+					false
+			)
 		}
 	}
 
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
 		// TODO
-		/*navigationView.addView(
-				SDBuilder(navigationView, drawerLayout, this)
-						.createInner("...") {
-							it
-									.addSwitch()
-									.addEditText()
-									.addSpinner(array = arrayOf(""))
-									.addRadioGroup("DesignINNER", arrayOf("A", "B", "C"))
-						}
-						.addSwitch()
-						.addEditText()
-						.addSpinner(array = arrayOf(""))
-						.addRadioGroup("Design", arrayOf("A", "B", "C"))
-						.build()
-		)*/
 	}
 
 	override fun handleConfirm(linearLayout: LinearLayout) {

@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -26,5 +27,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsViewModel: SubscribeViewModel<List<DownloadEntity>> {
+interface ILibraryViewModel : SubscribeViewModel<List<NovelEntity>> {
+	var selectedNovels: ArrayList<Int>
+
+	suspend fun selectAll(callback: () -> Unit = {})
+	suspend fun deselectAll(callback: () -> Unit = {})
+	suspend fun removeAllFromLibrary(recyclerView: RecyclerView)
+	fun loadNovelIDs(): List<Int>
+	fun loadChaptersUnread(novelID: Int): Int
 }

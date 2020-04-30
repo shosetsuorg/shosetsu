@@ -1,6 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
 
 /*
@@ -27,5 +32,26 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
  * @author github.com/doomsdayrs
  */
 class NovelViewViewModel() : ViewModel(), INovelViewViewModel {
+	override val liveData: LiveData<NovelEntity>
+		get() = TODO("Not yet implemented")
+
+	override fun subscribeObserver(owner: LifecycleOwner, observer: Observer<NovelEntity>) {
+		TODO("Not yet implemented")
+	}
+
+	override fun loadData(): NovelEntity {
+		TODO("Not yet implemented")
+	}
+
+	override val liveData2: LiveData<List<ChapterEntity>>
+		get() = TODO("Not yet implemented")
+
+	override fun subscribeObserver2(owner: LifecycleOwner, observer: Observer<List<ChapterEntity>>) {
+		TODO("Not yet implemented")
+	}
+
+	override fun loadData2(): List<ChapterEntity> {
+		TODO("Not yet implemented")
+	}
 
 }

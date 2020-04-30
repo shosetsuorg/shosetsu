@@ -1,20 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensions
 
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-
 /*
  * This file is part of shosetsu.
  *
@@ -30,8 +15,21 @@ import kotlinx.coroutines.launch
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import androidx.lifecycle.Observer
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
 
 /**
  * shosetsu
@@ -44,28 +42,44 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionEnti
 		setHasOptionsMenu(true)
 	}
 
+	val extensionViewModel: IExtensionsViewModel by viewModel()
+
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_extensions, menu)
 	}
 
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, getString(R.string.extensions))
+		createRecycler()
+	}
+
+	private fun createRecycler() {
 		adapter = ExtensionsAdapter(this)
-		GlobalScope.launch {
-			recyclerArray = extensionsDao.loadFormatters().toArrayList()
-			adapter?.notifyDataSetChanged()
-		}
+		recyclerArray.addAll(extensionViewModel.loadFormatters())
+		adapter?.notifyDataSetChanged()
+	}
+
+	private fun establishObserver() {
+		extensionViewModel.subscribeObserver(this, Observer {
+			val initialSize = recyclerArray.size
+			val newSize = it.size
+			recyclerArray.clear()
+			recyclerArray.addAll(it)
+			when {
+				initialSize > newSize -> adapter?.notifyItemRemoved(0)
+				else -> adapter?.notifyDataSetChanged()
+			}
+		})
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.refresh -> {
-				// TODO Refresh the json
+				extensionViewModel.refreshRepository()
 				true
 			}
 			R.id.reload -> {
-				FormattersRepository.formatters.clear()
-				// TODO Load formatters once again
+				extensionViewModel.reloadFormatters()
 				true
 			}
 			else -> false

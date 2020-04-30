@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
@@ -33,7 +34,10 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 @Dao
 interface ExtensionsDao : BaseDao<ExtensionEntity> {
 	@Query("SELECT * FROM extensions")
-	fun loadFormatters(): Array<ExtensionEntity>
+	fun loadFormatters(): LiveData<List<ExtensionEntity>>
+
+	@Query("SELECT * FROM extensions WHERE installed = 1 AND enabled = 1")
+	fun loadPoweredFormatters(): LiveData<List<ExtensionEntity>>
 
 	@Query("SELECT fileName FROM extensions WHERE installed = 1 AND enabled = 1 ORDER BY name ASC")
 	fun loadPoweredFormatterFileNames(): Array<String>

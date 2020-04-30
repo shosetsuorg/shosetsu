@@ -1,12 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
-import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItemView
-
 /*
  * This file is part of Shosetsu.
  *
@@ -22,16 +15,30 @@ import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItem
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
+ */
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
+import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItemView
+
+/**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-class DownloadAdapter(val downloadsController: DownloadsController) : RecyclerView.Adapter<DownloadItemView>() {
+class DownloadAdapter(val downloadsController: DownloadsController)
+	: RecyclerView.Adapter<DownloadItemView>() {
 
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DownloadItemView {
-		val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.recycler_download_card, viewGroup, false)
+		val view = LayoutInflater.from(viewGroup.context).inflate(
+				R.layout.recycler_download_card,
+				viewGroup,
+				false
+		)
 		return DownloadItemView(view)
 	}
 
@@ -41,16 +48,9 @@ class DownloadAdapter(val downloadsController: DownloadsController) : RecyclerVi
 		downloadItemView.status.text = downloadItem.status.toString()
 	}
 
-	override fun getItemCount(): Int {
-		return downloadsController.recyclerArray.size
-	}
+	override fun getItemCount(): Int = downloadsController.recyclerArray.size
 
-	override fun getItemId(position: Int): Long {
-		return position.toLong()
-	}
+	override fun getItemId(position: Int): Long = position.toLong()
 
-	override fun getItemViewType(position: Int): Int {
-		return position
-	}
-
+	override fun getItemViewType(position: Int): Int = position
 }

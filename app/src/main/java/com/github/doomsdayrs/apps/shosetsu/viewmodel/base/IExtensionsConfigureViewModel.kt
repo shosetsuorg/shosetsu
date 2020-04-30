@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 
 /*
  * This file is part of shosetsu.
@@ -26,5 +27,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsViewModel: SubscribeViewModel<List<DownloadEntity>> {
+interface IExtensionsConfigureViewModel : SubscribeViewModel<List<ExtensionEntity>> {
+	fun disableExtension(extensionEntity: ExtensionEntity, callback: (ExtensionEntity) -> Unit)
+	fun enableExtension(extensionEntity: ExtensionEntity, callback: (ExtensionEntity) -> Unit)
+	fun loadFormatterIfEnabled(extensionEntity: ExtensionEntity): Formatter?
 }

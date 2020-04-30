@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.util.Log
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -22,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.entity
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
@@ -31,6 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_U
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_UPDATE
 import needle.CancelableTask
 import needle.Needle
+import org.kodein.di.generic.instance
 import java.security.InvalidKeyException
 
 /*
@@ -68,6 +71,14 @@ class UpdateService : Service() {
 		const val KEY_NOVELS = 0x00
 		const val KEY_CATEGORY = 0x01
 
+
+		fun init(
+				context: Context,
+				cards: ArrayList<Int> = ((context as MainActivity).kodein.instance<NovelsDao>()
+						as NovelsDao).loadBookmarkedIDs()
+						as ArrayList<Int>
+		) =
+				start(context, KEY_NOVELS, cards)
 
 		/**
 		 * Returns the status of the service.

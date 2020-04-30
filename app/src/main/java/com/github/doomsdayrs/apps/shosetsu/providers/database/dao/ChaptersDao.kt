@@ -58,6 +58,9 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 		)
 	}
 
-	@Query("SELECT COUNT(*) FROM chapters WHERE readingReadingStatus != 2")
+	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
 	fun loadChapterUnreadCount(): Int
+
+	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2 AND novelID = :novelID")
+	fun loadChapterUnreadCount(novelID: Int): Int
 }

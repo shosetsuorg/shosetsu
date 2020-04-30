@@ -44,7 +44,7 @@ import java.io.Serializable
 			),
 			ForeignKey(
 					entity = ChapterEntity::class,
-					parentColumns = ["link"],
+					parentColumns = ["url"],
 					childColumns = ["chapterURL"],
 					onDelete = ForeignKey.CASCADE
 			)

@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -67,7 +68,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadEntity>(
 	}
 
 	private fun createRecycler() {
-		recyclerArray.addAll(downloadsViewModel.loadDownloadItems())
+		recyclerArray.addAll(downloadsViewModel.loadData())
 		recyclerView?.setHasFixedSize(false)
 		adapter = DownloadAdapter(this)
 		adapter?.setHasStableIds(true)
@@ -123,6 +124,17 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadEntity>(
 
 		}
 		activity?.registerReceiver(receiver, filter)
+
+		downloadsViewModel.subscribeObserver(this, Observer {
+			val initialSize = recyclerArray.size
+			val newSize = it.size
+			recyclerArray.clear()
+			recyclerArray.addAll(it)
+			when {
+				initialSize > newSize -> adapter?.notifyItemRemoved(0)
+				else -> adapter?.notifyDataSetChanged()
+			}
+		})
 	}
 
 	/**

@@ -5,14 +5,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.Formatter
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
+import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 
@@ -38,35 +39,44 @@ import com.google.android.material.chip.Chip
  *
  * @author github.com/doomsdayrs
  */
-class LibNovelViewHolder(itemView: View, val router: Router) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+class LibNovelViewHolder(itemView: View, val router: Router)
+	: RecyclerView.ViewHolder(itemView), View.OnClickListener {
 	val materialCardView: MaterialCardView = itemView.findViewById(R.id.novel_item_card)
 	val imageView: ImageView = itemView.findViewById(R.id.image)
 	val title: TextView = itemView.findViewById(R.id.title)
 	val chip: Chip = itemView.findViewById(R.id.novel_item_left_to_read)
 
-	lateinit var libraryFragment: LibraryController
-	lateinit var formatter: Formatter
+	private lateinit var libraryController: LibraryController
+	lateinit var viewModel: ILibraryViewModel
 	lateinit var novelCard: NovelCard
+	var formatterID: Int = -1
 
-	fun addToSelect() {
-		if (!libraryFragment.selectedNovels.contains(novelCard.novelID)) libraryFragment.selectedNovels.add(novelCard.novelID) else removeFromSelect()
-		if (libraryFragment.selectedNovels.size <= 0 || libraryFragment.selectedNovels.size == 1)
-			libraryFragment.inflater?.let { libraryFragment.activity?.invalidateOptionsMenu() }
-		libraryFragment.recyclerView?.post { libraryFragment.adapter?.notifyDataSetChanged() }
+	fun setLibraryControllerFun(library: LibraryController) {
+		libraryController = library
+		viewModel = library.viewModel
+	}
+
+	fun handleSelection() {
+		if (!viewModel.selectedNovels.contains(novelCard.novelID))
+			viewModel.selectedNovels.add(novelCard.novelID)
+		else removeFromSelect()
+
+		if (viewModel.selectedNovels.size <= 0 || viewModel.selectedNovels.size == 1)
+			libraryController.inflater?.let { libraryController.activity?.invalidateOptionsMenu() }
+
+		libraryController.recyclerView?.post { libraryController.adapter?.notifyDataSetChanged() }
 	}
 
 	private fun removeFromSelect() {
-		if (libraryFragment.selectedNovels.contains(novelCard.novelID)) for (x in libraryFragment.selectedNovels.indices) if (libraryFragment.selectedNovels[x] == novelCard.novelID) {
-			libraryFragment.selectedNovels.removeAt(x)
-			return
-		}
+		if (viewModel.selectedNovels.contains(novelCard.novelID))
+			viewModel.selectedNovels.removeAt(viewModel.selectedNovels.indexOf(novelCard.novelID))
 	}
 
 	override fun onClick(v: View) =
 			router.pushController(NovelController(
 					bundleOf(
 							NovelController.BUNDLE_URL to novelCard.novelURL,
-							NovelController.BUNDLE_FORMATTER to formatter.formatterID,
+							NovelController.BUNDLE_FORMATTER to formatterID,
 							NovelController.BUNDLE_ID to novelCard.novelID
 					)
 			).withFadeTransaction())
@@ -76,7 +86,7 @@ class LibNovelViewHolder(itemView: View, val router: Router) : RecyclerView.View
 			it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text)
 		}
 		itemView.setOnLongClickListener {
-			addToSelect()
+			it.context.launchAsync { handleSelection() }
 			true
 		}
 	}

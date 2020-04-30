@@ -1,6 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import android.os.Handler
+import android.os.Looper
+import kotlinx.coroutines.CoroutineScope
 
 /*
  * This file is part of shosetsu.
@@ -22,9 +24,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 
 /**
  * shosetsu
- * 29 / 04 / 2020
+ * 30 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsViewModel: SubscribeViewModel<List<DownloadEntity>> {
-}
+
+fun CoroutineScope.runOnMain(unit: () -> Unit) =
+		Handler(Looper.getMainLooper()).post(unit)

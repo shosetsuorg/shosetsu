@@ -50,7 +50,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 					onUpdate = ForeignKey.CASCADE
 			)
 		],
-		indices = [Index("novelID"), Index("link", unique = true), Index("formatter")]
+		indices = [Index("novelID"), Index("url", unique = true), Index("formatter")]
 )
 data class ChapterEntity(
 		@NonNull
@@ -71,7 +71,7 @@ data class ChapterEntity(
 
 		var readingPosition: Int = 0,
 
-		var readingReadingStatus: ReadingStatus = ReadingStatus.UNREAD,
+		var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
 
 		var bookmarked: Boolean = false,
 
@@ -94,7 +94,7 @@ data class ChapterEntity(
 					releaseDate,
 					order,
 					readingPosition,
-					readingReadingStatus,
+					readingStatus,
 					bookmarked,
 					isSaved,
 					savePath

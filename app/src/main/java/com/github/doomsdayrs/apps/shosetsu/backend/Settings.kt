@@ -2,8 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.content.SharedPreferences
 import android.graphics.Color
-import org.json.JSONArray
-import org.json.JSONException
 
 /*
  * This file is part of Shosetsu.
@@ -139,12 +137,6 @@ object Settings {
 	var isDownloadOnUpdateEnabled: Boolean
 		set(value) = settings.edit().putBoolean(IS_DOWNLOAD_ON_UPDATE, value).apply()
 		get() = settings.getBoolean(IS_DOWNLOAD_ON_UPDATE, false)
-
-
-	var disabledFormatters: JSONArray
-		set(value) = settings.edit().putString(DISABLED_FORMATTERS, value.toString()).apply()
-		@Throws(JSONException::class)
-		get() = JSONArray(settings.getString(DISABLED_FORMATTERS, "[]"))
 
 	var ReaderIndentSize
 		set(value) = settings.edit().putInt(READER_TEXT_INDENT, value).apply()

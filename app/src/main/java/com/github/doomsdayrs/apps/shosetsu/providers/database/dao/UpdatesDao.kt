@@ -70,9 +70,9 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	 * [loadUpdatesBetweenDates] but with error checking
 	 */
 	@Transaction
-	fun getTimeBetweenDates(date1: Long, date2: Long): LiveData<Array<UpdateEntity>> {
+	fun getTimeBetweenDates(date1: Long, date2: Long): Array<UpdateEntity> {
 		if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
-		return loadUpdatesBetweenDates(date1, date2)
+		return loadUpdatesBetweenDates(date1, date2).value ?: arrayOf()
 	}
 
 

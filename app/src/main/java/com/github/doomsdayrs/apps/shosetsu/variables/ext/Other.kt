@@ -1,14 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.variables.ext
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.bluelinelabs.conductor.archlifecycle.LifecycleController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.factory.ViewModelFactory
-import org.kodein.di.KodeinAware
-import org.kodein.di.direct
-import org.kodein.di.generic.instance
-
 /*
  * This file is part of shosetsu.
  *
@@ -24,8 +15,16 @@ import org.kodein.di.generic.instance
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.bluelinelabs.conductor.archlifecycle.LifecycleController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.factory.ViewModelFactory
+import org.kodein.di.KodeinAware
+import org.kodein.di.direct
+import org.kodein.di.generic.instance
 
 /**
  * shosetsu

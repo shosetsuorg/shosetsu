@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateController
@@ -76,4 +77,8 @@ class UpdatesViewModel(
 
 	override suspend fun getTimeBetweenDates(date: Long, date2: Long) =
 			updatesDao.loadUpdatesBetweenDates(date, date2)
+
+	override suspend fun getURLImageTitle(novelID: Int): URLImageTitle {
+		TODO("Not yet implemented")
+	}
 }

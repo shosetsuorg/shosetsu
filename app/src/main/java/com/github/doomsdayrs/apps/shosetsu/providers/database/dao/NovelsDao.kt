@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
@@ -33,7 +34,6 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
  */
 @Dao
 interface NovelsDao : BaseDao<NovelEntity> {
-
 	@Query("SELECT * FROM novels")
 	fun loadNovels(): LiveData<Array<NovelEntity>>
 
@@ -45,6 +45,19 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Query("SELECT url,imageURL,title FROM novels WHERE id = :novelID LIMIT 1")
 	fun loadURLImageTitle(novelID: Int): URLImageTitle
+
+	@Query("SELECT id FROM novels")
+	fun loadBookmarkedIDs(): List<Int>
+
+	@Transaction
+	suspend fun unBookmarkNovels(selectedNovels: List<Int>, entities: List<NovelEntity>) {
+		selectedNovels.forEach { targetID ->
+			entities.find { it.id == targetID }?.let { novelEntity ->
+				novelEntity.bookmarked = false
+				update(novelEntity)
+			}
+		}
+	}
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters
