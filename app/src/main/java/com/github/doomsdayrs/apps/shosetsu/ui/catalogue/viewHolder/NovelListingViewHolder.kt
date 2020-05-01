@@ -12,7 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_URL
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.NovelBackgroundAdd
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
@@ -49,11 +49,11 @@ class NovelListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 		itemView.setOnLongClickListener(this)
 	}
 
-	lateinit var catalogueFragment: CatalogueController
+	lateinit var catalogFragment: CatalogController
 	lateinit var formatter: Formatter
 
 	override fun onClick(v: View) =
-			catalogueFragment.router.pushController(NovelController(
+			catalogFragment.router.pushController(NovelController(
 					bundleOf(
 							BUNDLE_NOVEL_URL to url,
 							BUNDLE_FORMATTER to formatter.formatterID,

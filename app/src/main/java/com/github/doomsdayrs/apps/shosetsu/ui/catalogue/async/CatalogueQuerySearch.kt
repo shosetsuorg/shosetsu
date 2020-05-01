@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import java.util.*
 
@@ -27,7 +27,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueQuerySearch(private val catalogueFragment: CatalogueController) : AsyncTask<String?, Void?, ArrayList<NovelListingCard>>() {
+class CatalogueQuerySearch(private val catalogFragment: CatalogController) : AsyncTask<String?, Void?, ArrayList<NovelListingCard>>() {
     /**
      * Search catalogue
      *
@@ -36,8 +36,8 @@ class CatalogueQuerySearch(private val catalogueFragment: CatalogueController) :
      */
     override fun doInBackground(vararg strings: String?): ArrayList<NovelListingCard> {
         val result = ArrayList<NovelListingCard>()
-        val novels = catalogueFragment.formatter.search(
-                (listOf(strings[0])+catalogueFragment.filterValues).toTypedArray()
+        val novels = catalogFragment.formatter.search(
+                (listOf(strings[0])+catalogFragment.filterValues).toTypedArray()
         ) {}.forEach {
             result.add(NovelListingCard(it.imageURL, it.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(it.link), it.link))
         }

@@ -16,6 +16,8 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 
 

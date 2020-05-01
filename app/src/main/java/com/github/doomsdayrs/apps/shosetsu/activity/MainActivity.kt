@@ -21,7 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CataloguesController
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 				Log.d("Nav", "Selected $id")
 				when (id) {
 					R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
-					R.id.nav_catalogue -> setRoot(CataloguesController(), R.id.nav_catalogue)
+					R.id.nav_catalogue -> setRoot(CatalogsController(), R.id.nav_catalogue)
 					R.id.nav_extensions -> setRoot(ExtensionsController(), R.id.nav_extensions)
 					R.id.nav_settings -> router.pushController(SettingsController().withFadeTransaction())
 					R.id.nav_downloads -> router.pushController(DownloadsController().withFadeTransaction())

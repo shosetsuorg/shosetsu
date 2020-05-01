@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 
 /*
  * This file is part of Shosetsu.
@@ -25,14 +25,14 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueHitBottom(private val catalogueFragment: CatalogueController) : RecyclerView.OnScrollListener() {
+class CatalogueHitBottom(private val catalogFragment: CatalogController) : RecyclerView.OnScrollListener() {
     private var running = false
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        if (!catalogueFragment.isQuery && !catalogueFragment.isInSearch) if (!running) if (!catalogueFragment.recyclerView!!.canScrollVertically(1)) {
+        if (!catalogFragment.isQuery && !catalogFragment.isInSearch) if (!running) if (!catalogFragment.recyclerView!!.canScrollVertically(1)) {
             Log.d("CatalogueFragmentLoad", "Getting next page")
             running = true
-            catalogueFragment.currentMaxPage++
-            catalogueFragment.executePageLoader()
+            catalogFragment.currentMaxPage++
+            catalogFragment.executePageLoader()
         }
     }
 

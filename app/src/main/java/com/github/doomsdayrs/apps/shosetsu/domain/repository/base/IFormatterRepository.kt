@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeRepository
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 

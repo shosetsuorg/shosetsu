@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.SubscribeLiveData
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 
 /*

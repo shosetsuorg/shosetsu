@@ -7,11 +7,11 @@ import android.view.View
 import android.widget.SearchView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.CataloguesViewModel
@@ -40,7 +40,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.CataloguesViewModel
  * @author github.com/doomsdayrs
  */
 //TODO Searching mechanics here
-class CataloguesController : RecyclerController<CataloguesAdapter, FormatterCard>() {
+class CatalogsController : RecyclerController<CataloguesAdapter, FormatterCard>() {
 	val cataloguesViewModel: CataloguesViewModel by viewModel()
 
 	init {

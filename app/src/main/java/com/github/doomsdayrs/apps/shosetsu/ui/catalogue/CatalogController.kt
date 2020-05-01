@@ -65,7 +65,7 @@ import com.google.android.material.navigation.NavigationView
  * @author github.com/doomsdayrs
  */
 //TODO fix issue with not loading
-class CatalogueController(bundle: Bundle)
+class CatalogController(bundle: Bundle)
 	: RecyclerController<CatalogueAdapter, NovelListingCard>(bundle), SecondDrawerController {
 	override val layoutRes: Int = R.layout.catalogue
 

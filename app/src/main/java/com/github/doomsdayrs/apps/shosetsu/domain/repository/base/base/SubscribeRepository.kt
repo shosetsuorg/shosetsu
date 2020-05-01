@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer

@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 import android.os.Build
 import android.util.Log
 import android.widget.SearchView
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CatalogueQuerySearch
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import java.util.*
@@ -29,14 +29,14 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueSearchQuery(private val catalogueFragment: CatalogueController) : SearchView.OnQueryTextListener {
+class CatalogueSearchQuery(private val catalogFragment: CatalogController) : SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean {
-        catalogueFragment.isQuery = false
-        catalogueFragment.isInSearch = true
+        catalogFragment.isQuery = false
+        catalogFragment.isInSearch = true
         try {
             Log.d("CatalogueSearchQuery", "Query:\t$query")
-            val searchResults = CatalogueQuerySearch(catalogueFragment).execute(query).get()
-            catalogueFragment.setLibraryCards(searchResults)
+            val searchResults = CatalogueQuerySearch(catalogFragment).execute(query).get()
+            catalogFragment.setLibraryCards(searchResults)
             return true
         } catch (e: Exception) {
             Log.e("CatalogueSearchQuery", "Error on query", e)
@@ -46,8 +46,8 @@ class CatalogueSearchQuery(private val catalogueFragment: CatalogueController) :
 
     override fun onQueryTextChange(newText: String): Boolean {
         Log.d("Library search", newText)
-        catalogueFragment.isQuery = true
-        val recycleCards = ArrayList(catalogueFragment.recyclerArray)
+        catalogFragment.isQuery = true
+        val recycleCards = ArrayList(catalogFragment.recyclerArray)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             recycleCards.removeIf { recycleListingCard: NovelListingCard? -> !recycleListingCard!!.title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT)) }
         } else {
@@ -57,7 +57,7 @@ class CatalogueSearchQuery(private val catalogueFragment: CatalogueController) :
                 }
             }
         }
-        catalogueFragment.setLibraryCards(recycleCards)
+        catalogFragment.setLibraryCards(recycleCards)
         return recycleCards.size != 0
     }
 

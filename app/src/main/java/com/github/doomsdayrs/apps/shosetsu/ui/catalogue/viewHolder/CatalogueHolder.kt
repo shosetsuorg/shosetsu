@@ -12,7 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 
 /*
  * This file is part of shosetsu.
@@ -51,7 +51,7 @@ class CatalogueHolder(itemView: View, private val router: Router) : RecyclerView
         if (Utilities.isOnline) {
             val bundle = Bundle()
             bundle.putInt("formatter", formatter.formatterID)
-            val catalogueFragment = CatalogueController(bundle)
+            val catalogueFragment = CatalogController(bundle)
             router.pushController(catalogueFragment.withFadeTransaction())
             //TODO Router push to catalogue
         } else v.context.toast(R.string.you_not_online)
