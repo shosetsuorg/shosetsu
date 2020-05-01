@@ -10,15 +10,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.services.RepositoryService
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
-import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
 import java.io.File
 
 
@@ -109,7 +109,8 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		}
 
 		// Settings setup
-		Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+		Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE)
+				as ConnectivityManager
 		textView = findViewById(R.id.textView)
 		if (Settings.showIntro) {
 			Log.i(logID(), "First time, Launching activity")

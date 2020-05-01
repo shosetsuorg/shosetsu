@@ -44,10 +44,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getInt
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.serializeToString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toBoolean
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getInt
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.serializeToString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toBoolean
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject

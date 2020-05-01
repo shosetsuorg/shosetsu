@@ -5,9 +5,9 @@ import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.smallMessage
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.smallMessage
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import org.luaj.vm2.LuaError
 
@@ -51,7 +51,7 @@ class CataloguePageLoader(private val catalogueFragment: CatalogueController) : 
             try {
                 val loader = CatalogueLoader(it.formatter, catalogueFragment.filterValues, catalogueFragment.selectedListing)
                 val novels = if (v.isNotEmpty()) loader.execute(v[0]) else loader.execute()
-                it.catalogueNovelCards.addAll(novels.map { with(it) {
+                it.recyclerArray.addAll(novels.map { with(it) {
                     NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link)
                 } })
                 Log.d("FragmentRefresh", "Complete")

@@ -22,9 +22,9 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import java.util.*

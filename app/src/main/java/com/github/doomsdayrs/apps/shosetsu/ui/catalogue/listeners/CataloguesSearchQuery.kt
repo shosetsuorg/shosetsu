@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
 import android.app.Activity
 import android.widget.SearchView
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.search
+import com.github.doomsdayrs.apps.shosetsu.common.ext.search
 
 /*
  * This file is part of Shosetsu.

@@ -6,13 +6,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bluelinelabs.conductor.Router
 import app.shosetsu.lib.Formatter
+import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
 
 /*
  * This file is part of shosetsu.

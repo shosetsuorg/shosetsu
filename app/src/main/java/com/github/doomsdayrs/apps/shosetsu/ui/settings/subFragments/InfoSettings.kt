@@ -9,8 +9,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.TextAssetReader.Target.DISCLAIMER
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.TextAssetReader.Target.LICENSE
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 
 /*
  * This file is part of Shosetsu.

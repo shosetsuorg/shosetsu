@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.library.listener
 import android.util.Log
 import android.widget.SearchView
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 
 /*
  * This file is part of shosetsu.

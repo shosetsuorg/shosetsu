@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
-import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
+import com.github.doomsdayrs.apps.shosetsu.variables.variables.HandledReturns
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException

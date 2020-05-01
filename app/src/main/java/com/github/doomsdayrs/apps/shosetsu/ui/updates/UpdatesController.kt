@@ -23,12 +23,12 @@ import android.view.MenuItem
 import android.view.View
 import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import com.google.android.material.tabs.TabLayout
@@ -60,7 +60,7 @@ class UpdatesController : ViewedController() {
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return if (item.itemId == R.id.updater_now) {
-			contet?.let { UpdateManager.init(it); true } ?: false
+			context?.let { UpdateService.init(it); true } ?: false
 		} else false
 	}
 

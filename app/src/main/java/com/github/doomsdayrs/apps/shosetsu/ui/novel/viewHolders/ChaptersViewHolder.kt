@@ -22,9 +22,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebview
 import com.google.android.material.card.MaterialCardView
 import java.util.*
 

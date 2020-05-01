@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_ID
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.NovelBackgroundAdd
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 
 /*
  * This file is part of Shosetsu.
@@ -52,9 +55,9 @@ class NovelListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 	override fun onClick(v: View) =
 			catalogueFragment.router.pushController(NovelController(
 					bundleOf(
-							NovelController.BUNDLE_URL to url,
-							NovelController.BUNDLE_FORMATTER to formatter.formatterID,
-							NovelController.BUNDLE_ID to getNovelIDFromNovelURL(url!!)
+							BUNDLE_NOVEL_URL to url,
+							BUNDLE_FORMATTER to formatter.formatterID,
+							BUNDLE_NOVEL_ID to getNovelIDFromNovelURL(url!!)
 					)
 			).withFadeTransaction())
 

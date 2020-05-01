@@ -7,6 +7,7 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.android.synthetic.main.webview.*
+import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -30,26 +31,40 @@ import kotlinx.android.synthetic.main.webview.*
  * @author github.com/doomsdayrs
  */
 class WebViewApp : AppCompatActivity(R.layout.webview) {
-    @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
+	enum class Actions(val action: Int) {
+		VIEW(0), CLOUD_FLARE(1);
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val intent = intent
-        val action = Actions.actions[intent.getIntExtra("action", 0)]
-        webview.settings.javaScriptEnabled = true
-        when (action) {
-            Actions.VIEW -> webview.webViewClient = WebViewClient()
-            Actions.CLOUD_FLARE -> {
-                // webview.addJavascriptInterface(JSInterface(), "HtmlViewer")
-                webview.webViewClient = object : WebViewClient() {
-                    override fun onPageFinished(view: WebView, url: String) {
-                        webview.loadUrl("javascript:window.HtmlViewer.showHTML" +
-                                "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');")
-                        finish()
-                    }
-                }
-            }
-        }
-        webview.loadUrl(intent.getStringExtra("url"))
-    }
+		companion object {
+			val actions = ArrayList<Actions>()
+
+			init {
+				actions.add(VIEW)
+				actions.add(CLOUD_FLARE)
+			}
+		}
+
+	}
+
+	@SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		val intent = intent
+		val action = Actions.actions[intent.getIntExtra("action", 0)]
+		webview.settings.javaScriptEnabled = true
+		when (action) {
+			Actions.VIEW -> webview.webViewClient = WebViewClient()
+			Actions.CLOUD_FLARE -> {
+				// webview.addJavascriptInterface(JSInterface(), "HtmlViewer")
+				webview.webViewClient = object : WebViewClient() {
+					override fun onPageFinished(view: WebView, url: String) {
+						webview.loadUrl("javascript:window.HtmlViewer.showHTML" +
+								"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');")
+						finish()
+					}
+				}
+			}
+		}
+		webview.loadUrl(intent.getStringExtra("url"))
+	}
 }

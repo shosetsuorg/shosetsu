@@ -10,7 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 
 /*
  * This file is part of shosetsu.
@@ -42,6 +42,7 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
  */
 abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle) : ViewedController(bundle) {
 	constructor() : this(bundleOf())
+
 
 	@LayoutRes
 	override val layoutRes: Int = R.layout.recycler_controller

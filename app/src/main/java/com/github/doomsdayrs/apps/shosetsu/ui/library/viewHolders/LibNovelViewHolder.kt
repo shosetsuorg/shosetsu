@@ -7,11 +7,14 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_ID
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.card.MaterialCardView
@@ -75,9 +78,9 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 	override fun onClick(v: View) =
 			router.pushController(NovelController(
 					bundleOf(
-							NovelController.BUNDLE_URL to novelCard.novelURL,
-							NovelController.BUNDLE_FORMATTER to formatterID,
-							NovelController.BUNDLE_ID to novelCard.id
+							BUNDLE_NOVEL_URL to novelCard.novelURL,
+							BUNDLE_FORMATTER to formatterID,
+							BUNDLE_NOVEL_ID to novelCard.id
 					)
 			).withFadeTransaction())
 

@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
-
-import android.database.Cursor
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
+package com.github.doomsdayrs.apps.shosetsu.common.consts
 
 /*
  * This file is part of shosetsu.
@@ -23,15 +20,24 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 08 / 02 / 2020
  *
  * @author github.com/doomsdayrs
  */
+object Broadcasts {
+    /** Tells receiver to update it's recycler view's adapter */
+    const val BC_NOTIFY_DATA_CHANGE = "notifyDataChange"
 
-fun Cursor.getString(column: Columns): String = getString(getColumnIndex(column.toString()))
+    /** BroadCasted by [com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService]*/
+    const val BC_DOWNLOADS_MARK_ERROR = "markError"
+    const val BC_DOWNLOADS_REMOVE = "removeItem"
+    const val BC_DOWNLOADS_TOGGLE = "toggleStatus"
+    const val BC_DOWNLOADS_RECEIVED_URL = "chapterURL"
 
-fun Cursor.getInt(column: Columns): Int = getInt(getColumnIndex(column.toString()))
+    const val BC_CHAPTER_ADDED = "chapterAdded"
 
-fun Cursor.getDouble(column: Columns): Double = getDouble(getColumnIndex(column.toString()))
+    /** Target is [com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController]*/
+    const val BC_RELOAD_CHAPTERS_FROM_DB = "reloadChaptersFromDatabase"
 
-fun Cursor.getLong(column: Columns): Long = getLong(getColumnIndex(column.toString()))
+    const val BC_CHAPTER_VIEW_THEME_CHANGE = "changeChapterViewTheme"
+}

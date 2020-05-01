@@ -28,14 +28,12 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
-import com.squareup.picasso.Picasso
 
 /**
  * Shosetsu

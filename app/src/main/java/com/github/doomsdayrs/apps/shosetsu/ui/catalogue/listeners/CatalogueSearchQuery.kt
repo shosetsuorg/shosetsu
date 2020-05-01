@@ -47,7 +47,7 @@ class CatalogueSearchQuery(private val catalogueFragment: CatalogueController) :
     override fun onQueryTextChange(newText: String): Boolean {
         Log.d("Library search", newText)
         catalogueFragment.isQuery = true
-        val recycleCards = ArrayList(catalogueFragment.catalogueNovelCards)
+        val recycleCards = ArrayList(catalogueFragment.recyclerArray)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             recycleCards.removeIf { recycleListingCard: NovelListingCard? -> !recycleListingCard!!.title.toLowerCase(Locale.ROOT).contains(newText.toLowerCase(Locale.ROOT)) }
         } else {

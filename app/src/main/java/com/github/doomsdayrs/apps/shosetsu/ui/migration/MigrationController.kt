@@ -14,7 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.squareup.picasso.Picasso
 import com.yarolegovich.discretescrollview.DiscreteScrollView
@@ -88,13 +88,6 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 
 	@Attach(R.id.catalogue_selection)
 	var catalogueSelection: RecyclerView? = null
-
-
-	override fun onSaveInstanceState(outState: Bundle) {
-	}
-
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-	}
 
 	override fun onViewCreated(view: View) {
 		catalogueSelection?.layoutManager = LinearLayoutManager(context)

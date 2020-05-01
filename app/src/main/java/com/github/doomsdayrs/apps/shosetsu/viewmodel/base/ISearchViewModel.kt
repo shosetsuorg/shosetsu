@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import android.content.ContentValues
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
+import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 
 /*
  * This file is part of shosetsu.
@@ -18,17 +18,16 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+
+
 
 /**
  * shosetsu
- * 15 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 05 / 2020
  */
-
-fun ContentValues.put(columns: Columns, value: String) = put(columns.toString(), value)
-fun ContentValues.put(columns: Columns, value: Long) = put(columns.toString(), value)
-fun ContentValues.put(columns: Columns, value: Int) = put(columns.toString(), value)
-fun ContentValues.put(columns: Columns, value: Double) = put(columns.toString(), value)
+interface ISearchViewModel {
+	fun searchLibrary(query: String): List<NovelUI>
+	fun searchFormatter(query: String, formatter: Formatter)
+}

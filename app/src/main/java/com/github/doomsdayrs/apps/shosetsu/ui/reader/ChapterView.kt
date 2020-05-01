@@ -23,12 +23,11 @@ import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getSavedNovelPassage
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebview
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
 import kotlinx.android.synthetic.main.chapter_view.*
 
 /*

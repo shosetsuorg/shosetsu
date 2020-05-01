@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIde
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader

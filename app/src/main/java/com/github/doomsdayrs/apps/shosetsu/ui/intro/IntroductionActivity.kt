@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.splash.SplashScreen.Companion.INTRO_CODE
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.readAsset
+import com.github.doomsdayrs.apps.shosetsu.common.ext.readAsset
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.heinrichreimersoftware.materialintro.app.NavigationPolicy
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
@@ -38,7 +38,6 @@ import kotlinx.android.synthetic.main.intro_license.*
  * @author github.com/doomsdayrs
  */
 class IntroductionActivity : IntroActivity() {
-
     internal class License : Fragment(R.layout.intro_license) {
         private var message = ""
         override fun onSaveInstanceState(outState: Bundle) {

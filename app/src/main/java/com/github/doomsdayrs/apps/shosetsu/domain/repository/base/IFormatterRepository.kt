@@ -1,5 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
+
 /*
  * This file is part of shosetsu.
  *
@@ -22,5 +26,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * shosetsu
  * 30 / 04 / 2020
  */
-interface IFormatterRepository {
+interface IFormatterRepository :
+		SubscribeRepository<List<ExtensionUI>>, SubscribeLiveData<List<ExtensionEntity>> {
+	fun getCards(): List<FormatterCard>
 }

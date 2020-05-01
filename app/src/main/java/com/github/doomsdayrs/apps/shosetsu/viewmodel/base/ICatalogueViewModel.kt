@@ -1,8 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
-
-import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 /*
  * This file is part of shosetsu.
@@ -19,22 +15,17 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+
+
 
 /**
  * shosetsu
- * 23 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 05 / 2020
+ * Used for showing the specific listing of a novel
  */
-
-fun Novel.Chapter.entity(novelEntity: NovelEntity) =
-		ChapterEntity(
-				url = this.link,
-				novelID = novelEntity.id,
-				formatter = novelEntity.formatter,
-				title = this.title,
-				releaseDate = this.release,
-				order = this.order
-		)
+interface ICatalogueViewModel {
+	var currentMaxPage: Int
+	fun executePageLoader()
+}

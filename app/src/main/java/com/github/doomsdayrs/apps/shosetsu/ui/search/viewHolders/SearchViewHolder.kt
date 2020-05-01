@@ -62,7 +62,7 @@ class SearchViewHolder(itemView: View, val searchController: SearchController)
 				textView.setText(R.string.my_library)
 				if (!searchController.containsData(id)) {
 					val intArray: List<Int> =
-							searchController.libraryViewModel.search(query).map { it.id }
+							searchController.iSearchViewModel.search(query).map { it.id }
 					val data = StoredData(id)
 					data.intArray = intArray
 					searchController.array.add(data)

@@ -31,10 +31,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.*
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_NOTIFY_DATA_CHANGE
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Broadcasts.BC_RELOAD_CHAPTERS_FROM_DB
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.ext.*
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_NOTIFY_DATA_CHANGE
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_RELOAD_CHAPTERS_FROM_DB
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 import kotlin.collections.ArrayList

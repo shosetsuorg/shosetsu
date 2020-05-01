@@ -1,7 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import org.joda.time.DateTime
-import java.util.*
+import android.os.Handler
+import android.os.Looper
+import kotlinx.coroutines.CoroutineScope
 
 /*
  * This file is part of shosetsu.
@@ -18,25 +19,15 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
 
 /**
  * shosetsu
- * 23 / 04 / 2020
+ * 30 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-/**
- * @return this [DateTime] without any value lower then a day
- */
-fun DateTime.trimDate(): DateTime {
-	val cal = Calendar.getInstance()
-	cal.clear() // as per BalusC comment.
-	cal.time = toDate()
-	cal[Calendar.HOUR_OF_DAY] = 0
-	cal[Calendar.MINUTE] = 0
-	cal[Calendar.SECOND] = 0
-	cal[Calendar.MILLISECOND] = 0
-	return DateTime(cal.timeInMillis)
-}
+
+fun CoroutineScope.runOnMain(unit: () -> Unit) =
+		Handler(Looper.getMainLooper()).post(unit)

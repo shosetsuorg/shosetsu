@@ -7,8 +7,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.SettingsCard
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.SettingsCard
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
 
 /*
  * This file is part of Shosetsu.

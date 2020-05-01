@@ -7,8 +7,8 @@ import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.trimDate
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
 import org.joda.time.DateTime
 
 /*

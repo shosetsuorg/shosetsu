@@ -1,10 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import android.app.Activity
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager.getChapterText
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.variables.HandledReturns
+import com.github.doomsdayrs.apps.shosetsu.variables.variables.HandledReturns
 import org.acra.ACRA.getErrorReporter
 import java.io.BufferedReader
 import java.io.IOException

@@ -1,6 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
-
-import org.luaj.vm2.LuaError
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 /*
  * This file is part of shosetsu.
@@ -22,18 +20,9 @@ import org.luaj.vm2.LuaError
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 15 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
 
-fun LuaError.smallMessage(): String {
-	return this.message?.let { it ->
-		return it.substring(it.lastIndexOf("}").let {
-			return@let when {
-				it > 0 -> it
-				else -> 0
-			}
-		})
-	} ?: "UNKNOWN ERROR"
-}
+fun Int.toBoolean(): Boolean = this == 1

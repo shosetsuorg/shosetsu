@@ -1,8 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
-
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.File
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 /*
  * This file is part of shosetsu.
@@ -24,11 +20,9 @@ import java.io.File
 
 /**
  * shosetsu
- * 20 / 04 / 2020
+ * 15 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
 
-@Throws(JSONException::class)
-fun File.getMeta() = JSONObject(this.useLines { it.first() }.toString()
-		.replace("--", "").trim())
+fun Boolean.toInt(): Int = if (this) 1 else 0

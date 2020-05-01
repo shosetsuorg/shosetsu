@@ -1,7 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.converters
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import androidx.room.TypeConverter
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -27,10 +28,13 @@ import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
  *
  * @author github.com/doomsdayrs
  */
-class ReadingStatusConverter {
-	@TypeConverter
-	fun toInt(readingStatus: ReadingStatus): Int = readingStatus.a
 
-	@TypeConverter
-	fun toStatus(int: Int): ReadingStatus = ReadingStatus.getStatus(int)
-}
+fun Novel.Chapter.entity(novelEntity: NovelEntity) =
+		ChapterEntity(
+				url = this.link,
+				novelID = novelEntity.id,
+				formatter = novelEntity.formatter,
+				title = this.title,
+				releaseDate = this.release,
+				order = this.order
+		)

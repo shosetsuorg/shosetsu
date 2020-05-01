@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import android.content.ContentValues
 import android.database.Cursor

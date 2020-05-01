@@ -9,7 +9,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.Nullable
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import kotlin.reflect.KMutableProperty

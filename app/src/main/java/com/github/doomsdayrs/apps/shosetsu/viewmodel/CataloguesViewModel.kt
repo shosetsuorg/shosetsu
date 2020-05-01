@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICataloguesViewModel
 
 /*
@@ -32,8 +32,5 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICataloguesViewModel
 class CataloguesViewModel(
 		val formatterRepository: IFormatterRepository
 ) : ViewModel(), ICataloguesViewModel {
-	override fun loadList(): ExtensionUI {
-		TODO("Not yet implemented")
-	}
-
+	override fun loadCards(): List<FormatterCard> = formatterRepository.getCards()
 }

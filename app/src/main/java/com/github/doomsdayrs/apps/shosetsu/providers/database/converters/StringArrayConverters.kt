@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.converters
 
 import androidx.room.TypeConverter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.convertArrayToString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.convertStringToArray
+import com.github.doomsdayrs.apps.shosetsu.common.ext.convertArrayToString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.convertStringToArray
 
 /*
  * This file is part of shosetsu.

@@ -17,11 +17,11 @@ import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.forEachTyped
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.isServiceRunning
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.CHANNEL_DOWNLOAD
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications.ID_CHAPTER_DOWNLOAD
+import com.github.doomsdayrs.apps.shosetsu.common.ext.forEachTyped
+import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_DOWNLOAD
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import needle.CancelableTask
 import needle.Needle
 import okio.IOException

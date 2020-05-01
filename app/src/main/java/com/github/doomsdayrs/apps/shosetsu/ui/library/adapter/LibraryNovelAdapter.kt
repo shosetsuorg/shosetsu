@@ -24,8 +24,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.runOnMain
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.runOnMain
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.squareup.picasso.Picasso
 import java.util.*

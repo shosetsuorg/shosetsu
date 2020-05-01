@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.common.ext
+
+import android.content.ContentValues
+import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 
 /*
  * This file is part of shosetsu.
@@ -25,4 +28,7 @@ package com.github.doomsdayrs.apps.shosetsu.variables.ext
  * @author github.com/doomsdayrs
  */
 
-fun Int.toBoolean(): Boolean = this == 1
+fun ContentValues.put(columns: Columns, value: String) = put(columns.toString(), value)
+fun ContentValues.put(columns: Columns, value: Long) = put(columns.toString(), value)
+fun ContentValues.put(columns: Columns, value: Int) = put(columns.toString(), value)
+fun ContentValues.put(columns: Columns, value: Double) = put(columns.toString(), value)

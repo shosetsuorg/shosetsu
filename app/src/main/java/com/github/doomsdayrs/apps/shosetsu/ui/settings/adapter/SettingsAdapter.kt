@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsCardViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.SettingsCard
+import com.github.doomsdayrs.apps.shosetsu.common.SettingsCard
 import java.util.*
 
 /*
@@ -33,8 +33,8 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class SettingsAdapter(
-        private val settingsCards: ArrayList<SettingsCard>,
-        private val router: Router
+		private val settingsCards: ArrayList<SettingsCard>,
+		private val router: Router
 )
 	: RecyclerView.Adapter<SettingsCardViewHolder>() {
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder =

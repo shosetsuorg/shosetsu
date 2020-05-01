@@ -1,10 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.obj
+package com.github.doomsdayrs.apps.shosetsu.common.consts
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.notificationManager
+import com.github.doomsdayrs.apps.shosetsu.common.ext.notificationManager
 
 /*
  * This file is part of shosetsu.
@@ -31,19 +31,27 @@ import com.github.doomsdayrs.apps.shosetsu.variables.ext.notificationManager
  * @author github.com/doomsdayrs
  */
 object Notifications {
-    const val CHANNEL_UPDATE = "shosetsu_updater"
-    const val ID_CHAPTER_UPDATE = 1917
+	const val CHANNEL_UPDATE = "shosetsu_updater"
+	const val ID_CHAPTER_UPDATE = 1917
 
-    const val CHANNEL_DOWNLOAD = "shosetsu_download"
-    const val ID_CHAPTER_DOWNLOAD = 1949
+	const val CHANNEL_DOWNLOAD = "shosetsu_download"
+	const val ID_CHAPTER_DOWNLOAD = 1949
 
-    fun createChannels(context: Context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val channels = listOf(
-                NotificationChannel(CHANNEL_UPDATE, "Shosetsu Update", NotificationManager.IMPORTANCE_LOW),
-                NotificationChannel(CHANNEL_DOWNLOAD, "Shosetsu Download", NotificationManager.IMPORTANCE_LOW)
-        )
-        context.notificationManager.createNotificationChannels(channels)
-    }
+	fun createChannels(context: Context) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+		val channels = listOf(
+				NotificationChannel(
+						CHANNEL_UPDATE,
+						"Shosetsu Update",
+						NotificationManager.IMPORTANCE_LOW
+				),
+				NotificationChannel(
+						CHANNEL_DOWNLOAD,
+						"Shosetsu Download",
+						NotificationManager.IMPORTANCE_LOW
+				)
+		)
+		context.notificationManager.createNotificationChannels(channels)
+	}
 
 }

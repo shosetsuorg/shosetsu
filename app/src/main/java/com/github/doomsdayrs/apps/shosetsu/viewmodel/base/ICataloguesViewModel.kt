@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 
 /*
  * This file is part of shosetsu.
@@ -27,5 +27,5 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
  * 30 / 04 / 2020
  */
 interface ICataloguesViewModel {
-	fun loadList(): ExtensionUI
+	fun loadCards(): List<FormatterCard>
 }

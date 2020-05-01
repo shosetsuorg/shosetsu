@@ -1,9 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
+package com.github.doomsdayrs.apps.shosetsu.common
 
-import android.util.Log
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogueController
-import java.util.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types
+
 
 /*
  * This file is part of Shosetsu.
@@ -21,18 +19,14 @@ import java.util.*
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
+ */
+
+
+/**
  * Shosetsu
- * 18 / 06 / 2019
+ * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueRefresh(private val catalogueFragment: CatalogueController) : OnRefreshListener {
-    override fun onRefresh() {
-        catalogueFragment.swipeRefreshLayout?.isRefreshing = true
-        catalogueFragment.recyclerArray = ArrayList()
-        catalogueFragment.currentMaxPage = 1
-        Log.d("FragmentRefresh", "Refreshing catalogue data")
-        catalogueFragment.executePageLoader()
-    }
-
-}
+data class SettingsCard(val id: Types)
+data class HandledReturns<T>(val succeeded: Boolean = false, val failureReason: String = "", val e: Exception? = null, val value: T? = null)

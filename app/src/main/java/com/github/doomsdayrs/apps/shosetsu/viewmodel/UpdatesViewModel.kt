@@ -7,7 +7,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.trimDate
+import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import org.joda.time.DateTime
 import java.util.*

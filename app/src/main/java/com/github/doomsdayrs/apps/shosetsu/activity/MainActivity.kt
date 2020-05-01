@@ -27,8 +27,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.requestPerms
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener

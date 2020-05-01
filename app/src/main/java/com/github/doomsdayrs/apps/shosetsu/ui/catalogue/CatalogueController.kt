@@ -23,18 +23,21 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDViewBuilder
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.ext.build
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.build
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
-import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogueViewModel
 import com.google.android.material.navigation.NavigationView
 
 /*
@@ -62,47 +65,41 @@ import com.google.android.material.navigation.NavigationView
  * @author github.com/doomsdayrs
  */
 //TODO fix issue with not loading
-class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDrawerController {
-
+class CatalogueController(bundle: Bundle)
+	: RecyclerController<CatalogueAdapter, NovelListingCard>(bundle), SecondDrawerController {
 	override val layoutRes: Int = R.layout.catalogue
 
 	@Attach(R.id.swipeRefreshLayout)
 	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
-	@Attach(R.id.recyclerView)
-	var recyclerView: RecyclerView? = null
-	lateinit var catalogueAdapter: CatalogueAdapter
-
 	private var cataloguePageLoader: CataloguePageLoader? = null
-	var catalogueNovelCards = ArrayList<NovelListingCard>()
 
-	var selectedListing: Int
-	var formatter: Formatter
+	val viewModel: ICatalogueViewModel by viewModel()
+
+	var formatter: Formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER))
+	var selectedListing: Int = formatter.defaultListing
+	var filterValues: Array<*> = formatter.listings[this.selectedListing].filters.values()
 
 	var currentMaxPage = 1
 	var isInSearch = false
 	private var dontRefresh = false
 	var isQuery = false
 
-	var filterValues: Array<*>
-
 	init {
 		setHasOptionsMenu(true)
-		formatter = FormattersRepository.getByID(bundle.getInt("formatter"))
-		selectedListing = formatter.defaultListing
-		filterValues = formatter.listings[this.selectedListing].filters.values()
 	}
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
-		outState.putSerializable("list", catalogueNovelCards)
-		outState.putInt("formatter", formatter.formatterID)
+		outState.putSerializable("list", recyclerArray)
+		outState.putInt(BUNDLE_FORMATTER, formatter.formatterID)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		catalogueNovelCards = savedInstanceState.getSerializable("list") as ArrayList<NovelListingCard>
-		formatter = FormattersRepository.getByID(savedInstanceState.getInt("formatter"))
+		recyclerArray = savedInstanceState.getSerializable("list")
+				as ArrayList<NovelListingCard>
+		formatter = FormatterUtils.getByID(savedInstanceState.getInt(BUNDLE_FORMATTER))
 	}
 
 	override fun onViewCreated(view: View) {
@@ -110,10 +107,10 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 		swipeRefreshLayout?.setOnRefreshListener(CatalogueRefresh(this))
 		if (!dontRefresh) {
 			Log.d("Process", "Loading up latest")
-			setLibraryCards(catalogueNovelCards)
-			if (catalogueNovelCards.size > 0) {
-				catalogueNovelCards = ArrayList()
-				catalogueAdapter.notifyDataSetChanged()
+			setLibraryCards(recyclerArray)
+			if (recyclerArray.size > 0) {
+				recyclerArray = ArrayList()
+				adapter?.notifyDataSetChanged()
 			}
 			if (!formatter.hasCloudFlare) {
 				executePageLoader()
@@ -124,7 +121,7 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 				intent.putExtra("action", 1)
 				startActivityForResult(intent, 42)
 			}
-		} else setLibraryCards(catalogueNovelCards)
+		} else setLibraryCards(recyclerArray)
 	}
 
 	override fun onActivityPaused(activity: Activity) {
@@ -154,30 +151,44 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 		searchView.setOnCloseListener {
 			isQuery = false
 			isInSearch = false
-			setLibraryCards(catalogueNovelCards)
+			setLibraryCards(recyclerArray)
 			true
 		}
 	}
 
 	fun setLibraryCards(recycleListingCards: ArrayList<NovelListingCard>) {
 		recyclerView?.setHasFixedSize(false)
-
-		if (Settings.novelCardType == 0) {
-			catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card)
-			recyclerView?.layoutManager = GridLayoutManager(context, Utilities.calculateColumnCount(context!!, 200f), RecyclerView.VERTICAL, false)
-		} else {
-			catalogueAdapter = CatalogueAdapter(recycleListingCards, this, formatter, R.layout.recycler_novel_card_compressed)
-			recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-		}
-		recyclerView?.adapter = catalogueAdapter
+		recyclerView?.adapter = CatalogueAdapter(
+				recycleListingCards,
+				this,
+				formatter,
+				if (Settings.novelCardType == 0)
+					R.layout.recycler_novel_card
+				else R.layout.recycler_novel_card_compressed
+		)
+		recyclerView?.layoutManager =
+				if (Settings.novelCardType == 0)
+					GridLayoutManager(
+							context,
+							Utilities.calculateColumnCount(context!!, 200f),
+							RecyclerView.VERTICAL,
+							false
+					)
+				else
+					LinearLayoutManager(
+							context,
+							LinearLayoutManager.VERTICAL,
+							false
+					)
 		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
-
 	}
 
 	fun executePageLoader() {
 		when {
-			cataloguePageLoader?.isCancelled == false -> cataloguePageLoader = CataloguePageLoader(this)
-			cataloguePageLoader == null -> cataloguePageLoader = CataloguePageLoader(this)
+			cataloguePageLoader?.isCancelled == false ->
+				cataloguePageLoader = CataloguePageLoader(this)
+			cataloguePageLoader == null ->
+				cataloguePageLoader = CataloguePageLoader(this)
 		}
 		cataloguePageLoader?.execute(currentMaxPage)
 	}
@@ -186,19 +197,32 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 		val builder = SDBuilder(navigationView, drawerLayout, this)
 
 		if (formatter.listings.size > 1) {
-			val listingSpinner = builder.spinner("Listing", formatter.listings.map { it.name }.toTypedArray(), this.selectedListing)
+			val listingSpinner = builder.spinner(
+					"Listing",
+					formatter.listings.map { it.name }.toTypedArray(),
+					this.selectedListing
+			)
 
-			val build = { menu: SDViewBuilder -> formatter.listings[this.selectedListing].filters.forEach { it.build(menu) } }
+			val build = { menu: SDViewBuilder ->
+				formatter.listings[this.selectedListing].filters.forEach { it.build(menu) }
+
+			}
 			val menu = builder.inner(context!!.getString(R.string.listings), build)
 
-			listingSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-				override fun onNothingSelected(parent: AdapterView<*>?) {}
-				override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-					selectedListing = position
-					menu.removeAll()
-					build(menu)
-				}
-			}
+			listingSpinner.onItemSelectedListener =
+					object : AdapterView.OnItemSelectedListener {
+						override fun onNothingSelected(parent: AdapterView<*>?) {}
+						override fun onItemSelected(
+								parent: AdapterView<*>?,
+								view: View?,
+								position: Int,
+								id: Long
+						) {
+							selectedListing = position
+							menu.removeAll()
+							build(menu)
+						}
+					}
 		}
 
 		builder.inner(context!!.getString(R.string.search_filters)) {
@@ -211,7 +235,7 @@ class CatalogueController(bundle: Bundle) : ViewedController(bundle), SecondDraw
 	override fun handleConfirm(linearLayout: LinearLayout) {
 		filterValues = formatter.listings[this.selectedListing].filters.values()
 		setLibraryCards(arrayListOf())
-		catalogueAdapter.notifyDataSetChanged()
+		adapter?.notifyDataSetChanged()
 		executePageLoader()
 	}
 

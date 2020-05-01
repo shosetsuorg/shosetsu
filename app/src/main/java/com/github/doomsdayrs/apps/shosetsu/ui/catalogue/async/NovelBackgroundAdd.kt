@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelListingViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 
 /*
  * This file is part of Shosetsu.
@@ -37,7 +37,7 @@ class NovelBackgroundAdd(private val novelCardsViewHolder: NovelListingViewHolde
                 Database.DatabaseNovels.addNovelToDatabase(novelCardsViewHolder.formatter.formatterID,
                         novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url!!, false) {},
                         novelCardsViewHolder.url!!,
-                        com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus.UNREAD.a)
+                        com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.UNREAD.a)
                 views[0]?.post {
                     views[0]?.context?.toast("Added ${novelCardsViewHolder.title.text}")
                 }

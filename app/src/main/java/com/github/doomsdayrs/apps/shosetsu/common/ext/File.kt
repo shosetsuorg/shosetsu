@@ -1,31 +1,34 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types
-
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.File
 
 /*
- * This file is part of Shosetsu.
+ * This file is part of shosetsu.
  *
- * Shosetsu is free software: you can redistribute it and/or modify
+ * shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Shosetsu is distributed in the hope that it will be useful,
+ * shosetsu is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
  */
 
-
 /**
- * Shosetsu
- * 9 / June / 2019
+ * shosetsu
+ * 20 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
-data class SettingsCard(val id: Types)
+
+@Throws(JSONException::class)
+fun File.getMeta() = JSONObject(this.useLines { it.first() }.toString()
+		.replace("--", "").trim())

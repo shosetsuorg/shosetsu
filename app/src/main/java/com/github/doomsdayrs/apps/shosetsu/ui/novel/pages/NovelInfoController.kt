@@ -26,11 +26,11 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BU
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_ID
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_URL
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.openInWebview
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebview
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup

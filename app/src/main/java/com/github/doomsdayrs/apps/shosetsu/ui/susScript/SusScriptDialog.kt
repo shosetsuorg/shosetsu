@@ -9,7 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.FileObject
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import org.json.JSONObject
 import java.io.File

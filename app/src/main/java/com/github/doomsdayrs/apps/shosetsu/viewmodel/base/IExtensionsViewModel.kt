@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.SubscribeLiveData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 
 /*
  * This file is part of shosetsu.
@@ -26,9 +28,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
  *
  * @author github.com/doomsdayrs
  */
-interface IExtensionsViewModel : SubscribeViewModel<List<ExtensionEntity>> {
+interface IExtensionsViewModel
+	: SubscribeViewModel<List<ExtensionUI>>, SubscribeLiveData<List<ExtensionEntity>> {
 	fun reloadFormatters()
 	fun refreshRepository()
-	fun installExtension(extensionEntity: ExtensionEntity)
-	fun uninstallExtension(extensionEntity: ExtensionEntity)
+	fun installExtension(extensionEntity: ExtensionUI)
+	fun uninstallExtension(extensionEntity: ExtensionUI)
 }

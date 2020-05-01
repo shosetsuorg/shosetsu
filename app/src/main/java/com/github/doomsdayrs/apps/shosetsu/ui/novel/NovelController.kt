@@ -5,6 +5,9 @@ import android.view.View
 import androidx.viewpager.widget.ViewPager
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_ID
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
@@ -40,9 +43,7 @@ import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
  */
 class NovelController(bundle: Bundle) : ViewedController(bundle) {
 	companion object {
-		const val BUNDLE_URL = "novelURL"
-		const val BUNDLE_ID = "novelID"
-		const val BUNDLE_FORMATTER = "formatter"
+
 	}
 
 	override val layoutRes: Int = R.layout.novel
@@ -62,8 +63,8 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 
 	init {
 		setHasOptionsMenu(true)
-		novelID = bundle.getInt(BUNDLE_ID)
-		novelURL = bundle.getString(BUNDLE_URL, "")
+		novelID = bundle.getInt(BUNDLE_NOVEL_ID)
+		novelURL = bundle.getString(BUNDLE_NOVEL_URL, "")
 		formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
 	}
 

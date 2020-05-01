@@ -22,13 +22,17 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.runOnMain
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.ExtensionsViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
 
 /**
@@ -37,7 +41,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionEntity>() {
+class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>() {
 	init {
 		setHasOptionsMenu(true)
 	}
@@ -51,24 +55,27 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionEnti
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, getString(R.string.extensions))
 		createRecycler()
+		establishObserver()
 	}
 
 	private fun createRecycler() {
 		adapter = ExtensionsAdapter(this)
-		recyclerArray.addAll(extensionViewModel.loadFormatters())
-		adapter?.notifyDataSetChanged()
+		launchAsync {
+			recyclerArray.addAll(extensionViewModel.loadData())
+			runOnMain {
+				recyclerView?.post { adapter?.notifyDataSetChanged() }
+			}
+		}
 	}
 
 	private fun establishObserver() {
-		extensionViewModel.subscribeObserver(this, Observer {
-			val initialSize = recyclerArray.size
-			val newSize = it.size
+		extensionViewModel.subscribeObserver(this, Observer { list ->
+			val dif = DiffUtil.calculateDiff(
+					ExtensionsViewModel.ExtensionsDifCalc(recyclerArray, list)
+			)
 			recyclerArray.clear()
-			recyclerArray.addAll(it)
-			when {
-				initialSize > newSize -> adapter?.notifyItemRemoved(0)
-				else -> adapter?.notifyDataSetChanged()
-			}
+			recyclerArray.addAll(list)
+			adapter?.let { dif.dispatchUpdatesTo(it) }
 		})
 	}
 

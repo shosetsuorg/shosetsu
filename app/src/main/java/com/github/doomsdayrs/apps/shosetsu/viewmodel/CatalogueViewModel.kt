@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
-import android.os.Handler
-import android.os.Looper
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogueViewModel
 
 /*
  * This file is part of shosetsu.
@@ -22,12 +21,17 @@ import kotlinx.coroutines.CoroutineScope
  */
 
 
+
+
 /**
  * shosetsu
- * 30 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 05 / 2020
  */
+class CatalogueViewModel()
+	: ViewModel(), ICatalogueViewModel {
+	override var currentMaxPage: Int = 1
 
-fun CoroutineScope.runOnMain(unit: () -> Unit) =
-		Handler(Looper.getMainLooper()).post(unit)
+	override fun executePageLoader() {
+		TODO("Not yet implemented")
+	}
+}

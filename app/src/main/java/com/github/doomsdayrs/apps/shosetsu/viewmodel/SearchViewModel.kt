@@ -1,7 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISearchViewModel
 
 /*
  * This file is part of shosetsu.
@@ -18,25 +21,24 @@ import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+
+
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 05 / 2020
  */
-data class ChapterUI(
-		val link: String,
-		val novelID: Int,
-		val formatter: Formatter,
-		var title: String,
-		var releaseDate: String,
-		var order: Double,
-		var readingPosition: Int,
-		var readingReadingStatus: ReadingStatus,
-		var bookmarked: Boolean,
-		var isSaved: Boolean,
-		var savePath: String
-)
+class SearchViewModel(
+		val iNovelsRepository: INovelsRepository,
+		val iFormatterRepository: IFormatterRepository
+) : ISearchViewModel {
+	override fun searchLibrary(query: String): List<NovelUI> {
+		TODO("Not yet implemented")
+	}
+
+	override fun searchFormatter(query: String, formatter: Formatter) {
+		TODO("Not yet implemented")
+	}
+}

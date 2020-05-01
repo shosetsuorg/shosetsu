@@ -11,8 +11,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEn
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.RepositoryDao
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getMeta
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.md5
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getMeta
+import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -108,23 +108,28 @@ class FormatterUtils(
 
 		fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
 
+		private var filesDir: String? = null
 
-		private fun Context.ap() = filesDir.absolutePath
+		private fun ap(context: Context?): String {
+			filesDir?.let { return it }
+			filesDir = context!!.filesDir.absolutePath
+			return filesDir!!
+		}
 
-		fun makeLibraryFile(context: Context, le: ExtensionLibraryEntity): File =
+		fun makeLibraryFile(context: Context? = null, le: ExtensionLibraryEntity): File =
 				makeLibraryFile(context, le.scriptName)
 
-		fun makeLibraryFile(context: Context, scriptName: String): File {
-			val f = File("${context.ap()}$sourceFolder$libraryDirectory${scriptName}.lua")
+		fun makeLibraryFile(context: Context? = null, scriptName: String): File {
+			val f = File("${ap(context)}$sourceFolder$libraryDirectory${scriptName}.lua")
 			f.parentFile?.let { if (!it.exists()) it.mkdirs() }
 			return f
 		}
 
-		fun makeFormatterFile(context: Context, fe: ExtensionEntity): File =
+		fun makeFormatterFile(context: Context? = null, fe: ExtensionEntity): File =
 				makeFormatterFile(context, fe.fileName)
 
-		fun makeFormatterFile(context: Context, fileName: String): File {
-			val f = File("${context.ap()}$sourceFolder$scriptDirectory${fileName}.lua")
+		fun makeFormatterFile(context: Context? = null, fileName: String): File {
+			val f = File("${ap(context)}$sourceFolder$scriptDirectory${fileName}.lua")
 			f.parentFile?.let { if (!it.exists()) it.mkdirs() }
 			return f
 		}

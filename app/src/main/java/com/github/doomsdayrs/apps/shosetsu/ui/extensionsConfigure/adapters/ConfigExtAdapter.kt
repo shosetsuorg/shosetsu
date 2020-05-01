@@ -25,10 +25,10 @@ import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.viewHolders.ConfigExtView
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.defaultListing
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.setDefaultListing
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setDefaultListing
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.squareup.picasso.Picasso
 
 

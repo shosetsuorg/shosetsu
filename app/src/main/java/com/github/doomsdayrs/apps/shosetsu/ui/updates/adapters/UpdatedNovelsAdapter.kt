@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import com.squareup.picasso.Picasso
 

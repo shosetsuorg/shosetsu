@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.viewHolders.SusScriptCard
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.md5
+import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 
 /*
  * This file is part of shosetsu.

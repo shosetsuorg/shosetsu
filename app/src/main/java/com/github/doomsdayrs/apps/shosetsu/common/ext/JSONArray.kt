@@ -1,4 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.common.ext
+
+import org.json.JSONArray
 
 /*
  * This file is part of shosetsu.
@@ -20,17 +22,25 @@ package com.github.doomsdayrs.apps.shosetsu.variables
 
 /**
  * shosetsu
- * 04 / 03 / 2020
+ * 20 / 04 / 2020
  *
  * @author github.com/doomsdayrs
  */
 
 /**
- * Used to handle responses from backend to front end
- *
- * @param succeeded [Boolean] True if task completed successfully
- * @param failureReason [String] Reason why the task was not completed
- * @param e [Exception] Exception? of the error
- * @param value [T] Value to be returned
+ * Performs the given [action] on each element.
  */
-data class HandledReturns<T>(val succeeded: Boolean = false, val failureReason: String = "", val e: Exception? = null, val value: T? = null)
+public inline fun JSONArray.forEach(action: (Any) -> Unit) {
+	for (index in 0 until length())
+		action(this[index])
+}
+
+public inline fun <T> JSONArray.forEachTyped(action: (T) -> Unit) {
+	for (index in 0 until length())
+		action(this[index] as T)
+}
+
+public inline fun JSONArray.forEachIndexed(action: (index: Int, Any) -> Unit) {
+	for (index in 0 until length())
+		action(index, this[index])
+}

@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 /*
  * This file is part of shosetsu.
  *
@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.variables.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import java.util.*
 
 

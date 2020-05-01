@@ -12,7 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.di.databaseModule
 import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.Notifications
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.factory.ViewModelFactory
 import org.acra.ACRA
 import org.acra.annotation.AcraCore

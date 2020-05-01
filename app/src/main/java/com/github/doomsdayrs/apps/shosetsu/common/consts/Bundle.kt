@@ -1,6 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
-
-import org.json.JSONArray
+package com.github.doomsdayrs.apps.shosetsu.common.consts
 
 /*
  * This file is part of shosetsu.
@@ -17,30 +15,18 @@ import org.json.JSONArray
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+
+
 
 /**
  * shosetsu
- * 20 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 05 / 2020
  */
-
-/**
- * Performs the given [action] on each element.
- */
-public inline fun JSONArray.forEach(action: (Any) -> Unit) {
-	for (index in 0 until length())
-		action(this[index])
-}
-
-public inline fun <T> JSONArray.forEachTyped(action: (T) -> Unit) {
-	for (index in 0 until length())
-		action(this[index] as T)
-}
-
-public inline fun JSONArray.forEachIndexed(action: (index: Int, Any) -> Unit) {
-	for (index in 0 until length())
-		action(index, this[index])
+object Bundle {
+	const val BUNDLE_FORMATTER = "formatter"
+	const val BUNDLE_NOVEL_URL = "novelURL"
+	const val BUNDLE_NOVEL_ID = "novelID"
+	const val BUNDLE_QUERY = "query"
 }

@@ -7,11 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_ID
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.squareup.picasso.Picasso
 
@@ -91,9 +94,9 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
 			searchViewHolder.searchController.router.pushController(
 					NovelController(
 							bundleOf(
-									NovelController.BUNDLE_URL to url,
-									NovelController.BUNDLE_FORMATTER to formatter.formatterID,
-									NovelController.BUNDLE_ID to id
+									BUNDLE_NOVEL_URL to url,
+									BUNDLE_FORMATTER to formatter.formatterID,
+									BUNDLE_NOVEL_ID to id
 							)
 					).withFadeTransaction()
 			)

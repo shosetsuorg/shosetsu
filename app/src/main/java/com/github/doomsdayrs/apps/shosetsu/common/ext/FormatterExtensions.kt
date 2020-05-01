@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import android.view.View
 import android.widget.AdapterView

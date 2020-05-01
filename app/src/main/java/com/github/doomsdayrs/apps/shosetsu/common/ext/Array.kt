@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.variables.ext
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
 

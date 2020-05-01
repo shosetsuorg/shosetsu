@@ -39,10 +39,10 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapte
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.runOnMain
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.runOnMain
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.LibraryViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel

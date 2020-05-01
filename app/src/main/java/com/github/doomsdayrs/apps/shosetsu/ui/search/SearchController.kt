@@ -12,12 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_QUERY
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchAdapter
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.context
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.variables.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISearchViewModel
 import java.io.Serializable
 
 /*
@@ -73,7 +74,7 @@ class SearchController : ViewedController() {
 	override val layoutRes: Int = search_activity
 
 	//TODO replace with searchControllerViewModel
-	val libraryViewModel: ILibraryViewModel by viewModel()
+	val iSearchViewModel: ISearchViewModel by viewModel()
 
 	var adapter: SearchAdapter = SearchAdapter(this)
 	var query: String = ""
@@ -99,12 +100,12 @@ class SearchController : ViewedController() {
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
-		outState.putString("query", query)
+		outState.putString(BUNDLE_QUERY, query)
 		outState.putSerializable("data", array)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		query = savedInstanceState.getString("query")!!
+		query = savedInstanceState.getString(BUNDLE_QUERY)!!
 		array = savedInstanceState.getSerializable("data") as ArrayList<StoredData>
 	}
 
