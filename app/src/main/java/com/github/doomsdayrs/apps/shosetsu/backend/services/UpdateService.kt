@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import app.shosetsu.lib.Novel
@@ -16,23 +17,32 @@ import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.chaptersDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NULLIFIED
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_UPDATE
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.common.ext.entity
 import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_UPDATE
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_UPDATE
 import needle.CancelableTask
 import needle.Needle
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import java.security.InvalidKeyException
 
@@ -63,7 +73,7 @@ import java.security.InvalidKeyException
  *     Handles update requests for the entire application
  * </p>
  */
-class UpdateService : Service() {
+class UpdateService : Service(), KodeinAware {
 	companion object {
 		const val KEY_TARGET = "Target"
 		const val KEY_CHAPTERS = "Novels"
@@ -126,11 +136,11 @@ class UpdateService : Service() {
 	 */
 	//  private lateinit var wakeLock: PowerManager.WakeLock
 
-	private val notificationManager by lazy {
+	internal val notificationManager by lazy {
 		(getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
 	}
 
-	private val progressNotification by lazy {
+	internal val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			Notification.Builder(this, CHANNEL_UPDATE)
 		} else {
@@ -142,6 +152,11 @@ class UpdateService : Service() {
 				.setContentText("Update in progress")
 				.setOnlyAlertOnce(true)
 	}
+
+	override val kodein: Kodein by closestKodein()
+	internal val iChaptersRepository by instance<IChaptersRepository>()
+	internal val iNovelsRepository by instance<INovelsRepository>()
+	internal val iUpdatesRepository by instance<IUpdatesRepository>()
 
 	private var job: CancelableTask? = null
 
@@ -164,18 +179,20 @@ class UpdateService : Service() {
 
 	@Throws(InvalidKeyException::class)
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+		Log.d(logID(), SERVICE_CANCEL_PREVIOUS)
 		job?.cancel()
+		Log.d(logID(), SERVICE_NEW)
 		job = when (intent?.getIntExtra(KEY_TARGET, KEY_NOVELS) ?: KEY_NOVELS) {
 			KEY_NOVELS ->
-				UpdateManga(this, intent
-						?: Intent().putIntegerArrayListExtra(KEY_CHAPTERS, Database.DatabaseNovels.intLibrary))
+				UpdateManga()
 
 			KEY_CATEGORY ->
 				UpdateCategory()
 
 			else -> throw InvalidKeyException("How did you reach this point")
 		}
-		Needle.onBackgroundThread().execute(job)
+		job?.let { Needle.onBackgroundThread().execute(it) }
+				?: Log.e(logID(), SERVICE_NULLIFIED)
 		return super.onStartCommand(intent, flags, startId)
 	}
 
@@ -186,25 +203,24 @@ class UpdateService : Service() {
 
 	}
 
-	internal class UpdateManga(private val updateService: UpdateService, val intent: Intent) : CancelableTask() {
+	inner class UpdateManga(val bundle: Bundle)
+		: CancelableTask() {
 		override fun doWork() {
 			val updatedNovels = ArrayList<NovelEntity>()
-			intent.getIntegerArrayListExtra(KEY_CHAPTERS)?.let { novelsIDs ->
-
+			iNovelsRepository.blockingGetBookmarkedNovels().let { novelEntities ->
 				// Main process
-				for (novelID in novelsIDs.indices) {
-					val pr = updateService.progressNotification
-					pr.setContentTitle(updateService.getString(R.string.updating))
+				novelEntities.forEachIndexed { index, novelEntity ->
+					val pr = progressNotification
+					pr.setContentTitle(getString(R.string.updating))
 					pr.setOngoing(true)
 
-					val novelEntity = novelsDao.loadNovel(novelID)
 					val formatter = novelEntity.formatter
 
-					if (formatter != FormattersRepository.unknown) {
+					if (formatter != FormatterUtils.unknown) {
 						// Updates notification
 						pr.setContentText(novelEntity.title)
-						pr.setProgress(novelsIDs.size, novelID + 1, false)
-						updateService.notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+						pr.setProgress(novelEntities.size, index + 1, false)
+						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
 
 						// Runs process
 						ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
@@ -219,34 +235,34 @@ class UpdateService : Service() {
 
 							override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
 								for ((index, chapter) in finalChapters.withIndex()) {
-									val tuple = chaptersDao.hasChapter(chapter.link) // One
+									val tuple = iChaptersRepository.hasChapter(chapter.link) // One
 									val chapterEntity: ChapterEntity
 									if (!tuple.boolean) {
 										Log.i(logID(), "add #$index\t: ${chapter.link} ")
 										chapterEntity =
-												chaptersDao.insertAndReturnChapterEntity( // two
+												iChaptersRepository.insertAndReturnChapterEntity( // two
 														chapter.entity(novelEntity)
 												)
 
-										updatesDao.insertUpdate(UpdateEntity( // three
+										iUpdatesRepository.insertUpdate(UpdateEntity( // three
 												chapterEntity.id,
-												novelID,
+												novelEntity.id,
 												System.currentTimeMillis()
 										))
 
 										if (!updatedNovels.contains(novelEntity))
 											updatedNovels.add(novelEntity)
 									} else {
-										chapterEntity = chaptersDao.loadChapter(tuple.id)
+										chapterEntity = iChaptersRepository.loadChapter(tuple.id)
 										chapterEntity.title = chapter.title
 										chapterEntity.order = chapter.order
 										chapterEntity.releaseDate = chapter.release
-										chaptersDao.updateChapter(chapterEntity)
+										iChaptersRepository.updateChapter(chapterEntity)
 									}
 
 									if (Settings.isDownloadOnUpdateEnabled)
 										DownloadManager.addToDownload(
-												updateService.applicationContext as Activity,
+												applicationContext as Activity,
 												chapterEntity.toDownload()
 										)
 								}
@@ -258,35 +274,35 @@ class UpdateService : Service() {
 							override fun errorReceived(errorString: String) {
 								Log.e(logID(), errorString)
 							}
-						}, formatter, novelEntity.novelURL).doInBackground()
+						}, formatter, novelEntity.url).doInBackground()
 						Utilities.wait(1000)
 					} else {
-						pr.setContentText("Unknown Formatter for ${novelEntity.novelURL}")
-						pr.setProgress(novelsIDs.size, novelID + 1, false)
-						updateService.notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+						pr.setContentText("Unknown Formatter for ${novelEntity.url}")
+						pr.setProgress(novelEntities.size, index + 1, false)
+						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
 					}
 				}
 
 			}
 			// Completion
 			val stringBuilder = StringBuilder()
-			val pr = updateService.progressNotification
+			val pr = progressNotification
 			when {
 				updatedNovels.size > 0 -> {
-					pr.setContentTitle(updateService.getString(R.string.update_complete))
+					pr.setContentTitle(getString(R.string.update_complete))
 					for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
 					pr.style = Notification.BigTextStyle()
 				}
 				else -> {
-					pr.setContentTitle(updateService.getString(R.string.update_complete))
-					stringBuilder.append(updateService.getString(R.string.update_not_found))
+					pr.setContentTitle(getString(R.string.update_complete))
+					stringBuilder.append(getString(R.string.update_not_found))
 				}
 			}
 			pr.setContentText(stringBuilder.toString())
 			pr.setProgress(0, 0, false)
 			pr.setOngoing(false)
-			updateService.notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-			stop(updateService)
+			notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+			stop(this@UpdateService)
 		}
 
 	}

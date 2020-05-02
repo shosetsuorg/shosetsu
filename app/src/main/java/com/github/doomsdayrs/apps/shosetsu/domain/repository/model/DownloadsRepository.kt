@@ -23,7 +23,6 @@ import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 
 /**
  * shosetsu
@@ -35,26 +34,23 @@ class DownloadsRepository(private val downloadsDao: DownloadsDao) : IDownloadsRe
 	override val daoLiveData: LiveData<List<DownloadEntity>>
 			by lazy { downloadsDao.loadDownloadItems() }
 
-	override suspend fun addDownload(download: DownloadUI): Long =
-			downloadsDao.insertIgnore(download.convertTo())
+	override fun loadFirstDownload(): DownloadEntity = downloadsDao.loadAndStartFirstDownload()
 
-	override suspend fun updateDownload(download: DownloadUI) =
-			downloadsDao.update(download.convertTo())
+	override fun loadDownloadCount(): Int = downloadsDao.loadDownloadCount()
 
-	override suspend fun removeDownload(download: DownloadUI) =
-			downloadsDao.delete(download.convertTo())
+	override suspend fun addDownload(download: DownloadEntity): Long =
+			downloadsDao.insertIgnore(download)
 
-	override fun subscribeRepository(
-			owner: LifecycleOwner,
-			observer: Observer<List<DownloadUI>>
-	) = subscribeDao(owner, Observer { observer.onChanged(it.map { l -> l.convertTo() }) })
+	override suspend fun suspendedUpdate(download: DownloadEntity) =
+			downloadsDao.suspendedUpdate(download)
+
+	override suspend fun suspendedDelete(download: DownloadEntity) =
+			downloadsDao.suspendedDelete(download)
 
 	override fun subscribeDao(
 			owner: LifecycleOwner,
 			observer: Observer<List<DownloadEntity>>
 	) = daoLiveData.observe(owner, Observer { observer.onChanged(it) })
-
-	override fun loadData(): List<DownloadUI> = loadDataSnap().map { it.convertTo() }
 
 	override fun loadDataSnap(): List<DownloadEntity> = daoLiveData.value ?: arrayListOf()
 }

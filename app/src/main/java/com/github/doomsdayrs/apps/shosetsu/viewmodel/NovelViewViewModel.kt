@@ -39,7 +39,7 @@ class NovelViewViewModel() : ViewModel(), INovelViewViewModel {
 		TODO("Not yet implemented")
 	}
 
-	override suspend fun loadData(): NovelEntity {
+	override suspend fun getLiveData(): NovelEntity {
 		TODO("Not yet implemented")
 	}
 

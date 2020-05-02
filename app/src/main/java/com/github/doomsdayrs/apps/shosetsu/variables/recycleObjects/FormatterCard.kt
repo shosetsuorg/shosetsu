@@ -25,5 +25,6 @@ import app.shosetsu.lib.Formatter
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
+ * @param formatter
  */
-class FormatterCard(val formatter: Formatter) : RecycleCard(formatter.name)
+data class FormatterCard(val formatter: Formatter) : RecycleCard(formatter.name)

@@ -1,8 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 
 /*
  * This file is part of shosetsu.
@@ -22,11 +24,19 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  */
 
 
+
+
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 02 / 05 / 2020
+ * Returns the formatters present as a list of formatterCards
  */
-interface IDownloadsViewModel : SubscribeViewModel<HResult<List<DownloadUI>>> {
+class FormatterAsCardsUseCase(
+		val formatterRepository: IFormatterRepository
+) : (() -> LiveData<HResult<List<FormatterCard>>>) {
+	override fun invoke(): LiveData<HResult<List<FormatterCard>>> {
+		return liveData {
+			emitSource(formatterRepository.getCards())
+		}
+	}
 }

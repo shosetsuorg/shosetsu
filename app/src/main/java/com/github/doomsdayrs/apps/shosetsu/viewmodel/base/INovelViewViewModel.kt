@@ -1,8 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.Subscribe2ViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
 
 /*
  * This file is part of shosetsu.
@@ -29,5 +28,20 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.Subscribe2ViewMod
  * @author github.com/doomsdayrs
  */
 interface INovelViewViewModel
-	: Subscribe2ViewModel<List<ChapterEntity>, NovelEntity> {
+	: SubscribeViewModel<NovelUI> {
+
+	/**
+	 * Instruction to download the next [count] chapters
+	 */
+	fun downloadNext(count: Int)
+
+	/**
+	 * Instruction to download everything
+	 */
+	fun downloadAll()
+
+	/**
+	 * Deletes the previous chapter
+	 */
+	fun deletePrevious()
 }

@@ -17,8 +17,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  */
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 
 
 /**
@@ -28,9 +26,9 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
  * @author github.com/doomsdayrs
  */
 interface INovelsRepository :
-		SubscribeRepository<List<NovelUI>>,
 		SubscribeLiveData<List<NovelEntity>> {
-	suspend fun getBookmarkedNovels(): List<NovelUI>
+	suspend fun suspendedGetBookmarkedNovels(): List<NovelEntity>
+	fun blockingGetBookmarkedNovels(): List<NovelEntity>
 	suspend fun updateNovel(novelEntity: NovelEntity)
 	suspend fun unBookmarkNovels(selectedNovels: List<Int>)
 }

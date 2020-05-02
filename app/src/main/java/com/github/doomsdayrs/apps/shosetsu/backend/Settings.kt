@@ -67,7 +67,7 @@ object Settings {
 	const val READER_TEXT_SPACING = "readerParagraphSpacing"
 	const val READER_TEXT_INDENT = "readerIndentSize"
 
-	// How things act in Reader
+	//- How things act in Reader
 	const val READER_IS_TAP_TO_SCROLL = "tapToScroll"
 	const val READER_IS_INVERTED_SWIPE = "invertedSwipe"
 	const val READER_MARKING_TYPE = "readerMarkingType"
@@ -77,6 +77,7 @@ object Settings {
 	const val IS_DOWNLOAD_ON_UPDATE = "isDownloadOnUpdate"
 
 	const val DISABLED_FORMATTERS = "disabledFormatters"
+	const val DELETE_READ_CHAPTER = "deleteReadChapter"
 
 	// View options
 	const val C_IN_NOVELS_P = "columnsInNovelsViewP"
@@ -125,6 +126,16 @@ object Settings {
 	var isInvertedSwipe: Boolean
 		set(value) = readerSettings.edit().putBoolean(READER_IS_INVERTED_SWIPE, value).apply()
 		get() = readerSettings.getBoolean(READER_IS_INVERTED_SWIPE, false)
+
+	/**
+	 * Which chapter to delete after reading
+	 * If -1, then does nothing
+	 * If 0, then deletes the read chapter
+	 * If 1+, deletes the chapter of READ CHAPTER - [deletePreviousChapter]
+	 */
+	var deletePreviousChapter: Int
+		set(value) = readerSettings.edit().putInt(DELETE_READ_CHAPTER, value).apply()
+		get() = readerSettings.getInt(DELETE_READ_CHAPTER, -1)
 
 	// View Settings
 	/**

@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ChaptersDao
 
 /*
  * This file is part of shosetsu.
@@ -22,11 +21,17 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  */
 
 
+
+
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 02 / 05 / 2020
  */
-interface IDownloadsViewModel : SubscribeViewModel<HResult<List<DownloadUI>>> {
+class ChaptersRepository(
+		val chaptersDao: ChaptersDao
+) : IChaptersRepository {
+	override fun loadChapterUnreadCount(novelID: Int) = chaptersDao.loadChapterUnreadCount()
+
+	override fun addSavePath(chapterID: Int, savePath: String) =
+			chaptersDao.setChapterSavePath(chapterID, savePath)
 }

@@ -31,14 +31,14 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
-import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_DOWNLOADS_MARK_ERROR
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_DOWNLOADS_RECEIVED_URL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_DOWNLOADS_REMOVE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_DOWNLOADS_TOGGLE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_NOTIFY_DATA_CHANGE
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
@@ -51,6 +51,14 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
  */
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
+	override val diffToolCallBack: RecyclerDiffToolCallBack = object : RecyclerDiffToolCallBack() {
+		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+				oldList[oldItemPosition].chapterID == newList[newItemPosition].chapterID
+
+		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+				oldList[oldItemPosition] == newList[newItemPosition]
+	}
+
 	private lateinit var receiver: BroadcastReceiver
 	private val downloadsViewModel: IDownloadsViewModel by viewModel()
 
@@ -66,11 +74,11 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, getString(R.string.downloads))
 		createRecycler()
-		establishReceiver()
+		// establishReceiver()
+		downloadsViewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
 	}
 
 	private fun createRecycler() {
-		recyclerArray.addAll(downloadsViewModel.loadData())
 		recyclerView?.setHasFixedSize(false)
 		adapter = DownloadAdapter(this)
 		adapter?.setHasStableIds(true)
@@ -83,13 +91,12 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 		filter.addAction(BC_DOWNLOADS_TOGGLE)
 		filter.addAction(BC_DOWNLOADS_REMOVE)
 		receiver = object : BroadcastReceiver() {
-
-
 			private fun removeDownloads(chapterURL: String) {
-				for (x in adapter?.downloadsController!!.recyclerArray.indices) if (adapter?.downloadsController!!.recyclerArray[x].chapterURL == chapterURL) {
-					adapter?.downloadsController!!.recyclerArray.removeAt(x)
-					return
-				}
+				for (x in adapter?.downloadsController!!.recyclerArray.indices)
+					if (adapter?.downloadsController!!.recyclerArray[x].chapterURL == chapterURL) {
+						adapter?.downloadsController!!.recyclerArray.removeAt(x)
+						return
+					}
 				adapter?.notifyDataSetChanged()
 			}
 
@@ -115,10 +122,16 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 			override fun onReceive(context: Context?, intent: Intent?) {
 				intent?.let { i ->
 					when (i.action) {
-						BC_NOTIFY_DATA_CHANGE -> (recyclerView?.adapter as DownloadAdapter).notifyDataSetChanged()
-						BC_DOWNLOADS_REMOVE -> i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let { removeDownloads(it) }
-						BC_DOWNLOADS_TOGGLE -> i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let { toggleProcess(it) }
-						BC_DOWNLOADS_MARK_ERROR -> i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let { markError(it) }
+						BC_NOTIFY_DATA_CHANGE ->
+							(recyclerView?.adapter as DownloadAdapter).notifyDataSetChanged()
+						BC_DOWNLOADS_REMOVE ->
+							i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let {
+								removeDownloads(it)
+							}
+						BC_DOWNLOADS_TOGGLE ->
+							i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let { toggleProcess(it) }
+						BC_DOWNLOADS_MARK_ERROR ->
+							i.getStringExtra(BC_DOWNLOADS_RECEIVED_URL)?.let { markError(it) }
 						else -> Log.e("DownloadsFragment", "No action provided!")
 					}
 				}
@@ -126,17 +139,6 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
 		}
 		activity?.registerReceiver(receiver, filter)
-
-		downloadsViewModel.subscribeObserver(this, Observer {
-			val initialSize = recyclerArray.size
-			val newSize = it.size
-			recyclerArray.clear()
-			recyclerArray.addAll(it)
-			when {
-				initialSize > newSize -> adapter?.notifyItemRemoved(0)
-				else -> adapter?.notifyDataSetChanged()
-			}
-		})
 	}
 
 	/**

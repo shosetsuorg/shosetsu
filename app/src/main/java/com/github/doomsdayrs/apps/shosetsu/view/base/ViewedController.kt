@@ -120,4 +120,12 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	 * What to do once the view is created
 	 */
 	abstract fun onViewCreated(view: View)
+
+	fun showLoading() {
+		TODO("Loader")
+	}
+
+	fun showError(message: String) {
+		TODO("Error")
+	}
 }

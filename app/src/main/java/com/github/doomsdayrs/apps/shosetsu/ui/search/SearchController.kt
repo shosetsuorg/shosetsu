@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setActivityTitle
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Bundle.BUNDLE_QUERY
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_QUERY
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel

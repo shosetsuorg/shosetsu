@@ -54,7 +54,7 @@ interface NovelsDao : BaseDao<NovelEntity> {
 		selectedNovels.forEach { targetID ->
 			entities.find { it.id == targetID }?.let { novelEntity ->
 				novelEntity.bookmarked = false
-				update(novelEntity)
+				suspendedUpdate(novelEntity)
 			}
 		}
 	}

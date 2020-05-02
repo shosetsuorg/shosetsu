@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeRepository
@@ -27,8 +29,9 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 /**
  * shosetsu
  * 30 / 04 / 2020
+ * Repository for formatters
  */
 interface IFormatterRepository :
 		SubscribeRepository<List<ExtensionUI>>, SubscribeLiveData<List<ExtensionEntity>> {
-	fun getCards(): List<FormatterCard>
+	fun getCards(): LiveData<HResult<List<FormatterCard>>>
 }

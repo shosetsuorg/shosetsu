@@ -43,17 +43,28 @@ import java.io.Serializable
 					onDelete = ForeignKey.CASCADE
 			),
 			ForeignKey(
+					entity = NovelEntity::class,
+					parentColumns = ["id"],
+					childColumns = ["novelID"],
+					onDelete = ForeignKey.CASCADE
+			),
+			ForeignKey(
 					entity = ChapterEntity::class,
 					parentColumns = ["url"],
 					childColumns = ["chapterURL"],
 					onDelete = ForeignKey.CASCADE
 			)
 		],
-		indices = [Index("chapterID"), Index("chapterURL")]
+		indices = [
+			Index("chapterID"),
+			Index("novelID"),
+			Index("chapterURL")
+		]
 )
 data class DownloadEntity(
 		@PrimaryKey
 		val chapterID: Int,
+		val novelID: Int,
 		val chapterURL: String,
 		val chapterName: String,
 		val novelName: String,

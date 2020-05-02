@@ -20,13 +20,11 @@ import okhttp3.HttpUrl
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- * shosetsu
- * 01 / 08 / 2019
- *
  */
 /**
- * Provides a synchronization point between the webview cookie store and okhttp3.OkHttpClient cookie store
+ * shosetsu
+ * 01 / 08 / 2019
+ * Provides a synchronization point between [androidCookieManager] & [CookieJar]
  */
 class CookieJarSync : CookieJar {
 	private val androidCookieManager = CookieManager.getInstance()

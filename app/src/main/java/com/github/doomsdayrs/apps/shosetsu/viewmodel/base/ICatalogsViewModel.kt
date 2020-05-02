@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -26,6 +27,4 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCar
  * shosetsu
  * 30 / 04 / 2020
  */
-interface ICatalogsViewModel {
-	fun loadCards(): List<FormatterCard>
-}
+interface ICatalogsViewModel : SubscribeHandleViewModel<List<FormatterCard>>

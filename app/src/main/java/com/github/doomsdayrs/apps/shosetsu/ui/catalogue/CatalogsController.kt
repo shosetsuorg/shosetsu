@@ -1,12 +1,16 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue
 
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
@@ -41,7 +45,16 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.CatalogsViewModel
  */
 //TODO Searching mechanics here
 class CatalogsController : RecyclerController<CataloguesAdapter, FormatterCard>() {
-	val cataloguesViewModel: CatalogsViewModel by viewModel()
+	override val diffToolCallBack: RecyclerDiffToolCallBack = object : RecyclerDiffToolCallBack() {
+		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+				newList[newItemPosition].formatter.formatterID ==
+						oldList[oldItemPosition].formatter.formatterID
+
+		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+				newList[newItemPosition] == oldList[oldItemPosition]
+	}
+
+	val viewModel: CatalogsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)
@@ -67,7 +80,22 @@ class CatalogsController : RecyclerController<CataloguesAdapter, FormatterCard>(
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.catalogues))
 		recyclerView?.setHasFixedSize(true)
-		recyclerArray.addAll(cataloguesViewModel.loadCards())
 		adapter = CataloguesAdapter(recyclerArray, router)
+		viewModel.liveData.observe(this, Observer(::handleFormatterRepository))
+	}
+
+	/**
+	 *
+	 */
+	private fun handleFormatterRepository(result: HResult<List<FormatterCard>>) {
+		when (result) {
+			is HResult.Loading -> {
+				Log.i(logID(), "Loading UWU")
+			}
+			is HResult.Success -> updateUI(result.data)
+			is HResult.Error -> {
+				Log.i(logID(), "ERROR OWO ${result.message}")
+			}
+		}
 	}
 }

@@ -61,7 +61,7 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 	private fun createRecycler() {
 		adapter = ExtensionsAdapter(this)
 		launchAsync {
-			recyclerArray.addAll(extensionViewModel.loadData())
+			recyclerArray.addAll(extensionViewModel.getLiveData())
 			runOnMain {
 				recyclerView?.post { adapter?.notifyDataSetChanged() }
 			}

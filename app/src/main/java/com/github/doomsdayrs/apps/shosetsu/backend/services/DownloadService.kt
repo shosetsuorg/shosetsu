@@ -11,20 +11,26 @@ import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
-import com.github.doomsdayrs.apps.shosetsu.common.ext.*
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_DOWNLOADS_MARK_ERROR
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_DOWNLOADS_RECEIVED_URL
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_DOWNLOADS_REMOVE
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_DOWNLOADS_TOGGLE
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_NOTIFY_DATA_CHANGE
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_EXECUTE
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NULLIFIED
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_REJECT_RUNNING
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
+import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
 import needle.CancelableTask
 import needle.Needle
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 
 /*
@@ -51,7 +57,7 @@ import java.io.IOException
  *
  * @author github.com/doomsdayrs
  */
-class DownloadService : Service() {
+class DownloadService : Service(), KodeinAware {
 	companion object {
 		private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 6
 
@@ -79,7 +85,7 @@ class DownloadService : Service() {
 				} else {
 					context.startForegroundService(intent)
 				}
-			} else Log.d(logID(), "Can't start, is running")
+			} else Log.d(logID(), SERVICE_REJECT_RUNNING)
 		}
 
 		/**
@@ -90,13 +96,20 @@ class DownloadService : Service() {
 		fun stop(context: Context) {
 			context.stopService(Intent(context, DownloadService::class.java))
 		}
+
+		/**
+		 * Makes a download path for a downloadEntity
+		 */
+		fun makeDownloadPath(downloadEntity: DownloadEntity): String = with(downloadEntity) {
+			"${Utilities.shoDir}/download/${formatter.formatterID}/${novelID}"
+		}
 	}
 
-	private val notificationManager by lazy {
+	internal val notificationManager by lazy {
 		(getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
 	}
 
-	private val progressNotification by lazy {
+	internal val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			Notification.Builder(this, CHANNEL_DOWNLOAD)
 		} else {
@@ -109,6 +122,10 @@ class DownloadService : Service() {
 				.setContentText("Downloading Chapters")
 				.setOnlyAlertOnce(true)
 	}
+
+	override val kodein: Kodein by closestKodein()
+	internal val downloadsRepo by kodein.instance<IDownloadsRepository>()
+	internal val chaptersRepo by kodein.instance<IChaptersRepository>()
 
 	private var job: Job? = null
 
@@ -127,99 +144,95 @@ class DownloadService : Service() {
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-		Log.d(logID(), "Canceling previous task")
+		Log.d(logID(), SERVICE_CANCEL_PREVIOUS)
 		job?.cancel()
-		Log.d(logID(), "Making new job")
-		job = Job(this)
-		Log.d(logID(), "Executing job")
-		job?.let { Needle.onBackgroundThread().execute(it) }
-				?: Log.e(logID(), "Job nullified before could be started")
+		Log.d(logID(), SERVICE_NEW)
+		job = Job((applicationContext as KodeinAware).kodein)
+		Log.d(logID(), SERVICE_EXECUTE)
+		job?.let { Needle.onBackgroundThread().execute(it) } ?: Log.e(logID(), SERVICE_NULLIFIED)
 		return super.onStartCommand(intent, flags, startId)
 	}
 
-	internal class Job(private val service: DownloadService) : CancelableTask() {
-
-		private fun sendMessage(action: String, data: Map<String, String?> = mapOf()) {
-			val i = Intent()
-			i.action = action
-
-			for ((key, value) in data)
-				i.putExtra(key, value)
-
-			service.sendBroadcast(i)
-		}
-
+	/**
+	 * Job of this class
+	 */
+	inner class Job(override val kodein: Kodein) : CancelableTask(), KodeinAware {
 		/**
 		 * Download loop controller
 		 * TODO Skip over paused chapters or move them to the bottom of the list
 		 */
 		override fun doWork() {
+			downloadsRepo.resetList()
 			Log.i(logID(), "Starting loop")
-			while (downloadsDao.loadDownloadCount() >= 1 && !Settings.isDownloadPaused)
-				downloadsDao.loadFirstDownload().let { downloadItem ->
-					val pr = service.progressNotification
+			while (downloadsRepo.loadDownloadCount() >= 1 && !Settings.isDownloadPaused)
+				downloadsRepo.loadFirstDownload().let { downloadEntity: DownloadEntity ->
+					val pr = progressNotification
 					pr.setOngoing(true)
-					pr.setContentText(downloadItem.chapterName)
+					pr.setContentText(downloadEntity.chapterName)
 					pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 0, false)
-					service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
-
-					sendMessage(BC_DOWNLOADS_TOGGLE, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
+					notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
 					try {
 						pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 1, false)
-						service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-						val folder = File("${Utilities.shoDir}/download/${downloadItem.formatter.formatterID}/${downloadItem.novelName.clean()}")
+						val folder = File(makeDownloadPath(downloadEntity))
+
 						//Log.d(logID(), folder.toString())
 						if (!folder.exists()) if (!folder.mkdirs())
 							throw IOException("Failed to mkdirs")
 
 						pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 2, false)
-						service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-						val formattedName = (downloadItem.chapterName).clean()
-						val passage = downloadItem.formatter.getPassage(downloadItem.chapterURL)
+						val formattedName = (downloadEntity.chapterID)
+						val passage = downloadEntity.formatter.getPassage(downloadEntity.chapterURL)
 
 						pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
-						service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-						val fileOutputStream = FileOutputStream("${folder.path}/$formattedName.txt")
-						fileOutputStream.write(passage.toByteArray())
-						fileOutputStream.close()
-						Database.DatabaseChapter.addSavedPath(downloadItem.chapterURL, "${folder.path}/$formattedName.txt")
+						File("${folder.path}/$formattedName.txt").writeText(passage)
+
+						chaptersRepo.addSavePath(
+								downloadEntity.chapterID,
+								"${folder.path}/$formattedName.txt"
+						)
 
 						pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 4, false)
-						service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
-						sendMessage(BC_NOTIFY_DATA_CHANGE)
 
-						Log.d(logID(), "Downloaded: ${downloadItem.chapterID} of ${downloadItem.novelName}")
+						Log.d(logID(), "Downloaded: ${downloadEntity.chapterID} of ${downloadEntity.novelName}")
 
 						pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 5, false)
-						service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
 						// Clean up
-						downloadsDao.deleteDownloadEntity(downloadItem)
-						sendMessage(BC_DOWNLOADS_TOGGLE, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
-						sendMessage(BC_DOWNLOADS_REMOVE, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
+						launchAsync {
+							downloadsRepo.suspendedDelete(downloadEntity)
+						}
 
 						pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 6, false)
-						service.notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
+						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 						// Rate limiting
 						Utilities.wait(10)
 					} catch (e: Exception) { // Mark download as faulted
 						Log.e(logID(), "A critical error occurred", e)
-						sendMessage(BC_DOWNLOADS_MARK_ERROR, mapOf(Pair(BC_DOWNLOADS_RECEIVED_URL, downloadItem.chapterURL)))
-					} catch (e: IOException) {
-
+						downloadEntity.status = -1
+						downloadsRepo.blockingUpdate(downloadEntity)
 					}
 				}
 
 			if (Settings.isDownloadPaused) Log.i(logID(), "Loop Paused")
-			stop(service)
-			service.notificationManager.notify(ID_CHAPTER_DOWNLOAD,
-					service.progressNotification.setOngoing(false).setProgress(0, 0, false).setContentText(service.getString(R.string.completed)).build())
+			notificationManager.notify(ID_CHAPTER_DOWNLOAD,
+					progressNotification.setOngoing(false).setProgress(
+							0,
+							0,
+							false
+					).setContentText(getString(R.string.completed)).build())
 			Log.i(logID(), "Completed download loop")
+			downloadsRepo.resetList()
+			stop(this@DownloadService)
 		}
 	}
 }

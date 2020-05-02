@@ -52,10 +52,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	fun hasChapter(chapterURL: String): BooleanChapterIDTuple {
 		val c = loadChapterCount(chapterURL)
-		return BooleanChapterIDTuple(
-				c.count > 0,
-				c.id
-		)
+		return BooleanChapterIDTuple(c.count > 0, c.id)
 	}
 
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
@@ -63,4 +60,13 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2 AND novelID = :novelID")
 	fun loadChapterUnreadCount(novelID: Int): Int
+
+	@Query("SELECT id FROM chapters WHERE novelID = :novelID AND readingStatus != 2 ORDER BY `order` DESC")
+	fun findLastUnread(novelID: Int): Int
+
+	@Query("UPDATE chapters SET isSaved = 1 AND savePath = :path WHERE id = :id")
+	fun setChapterSavePath(id: Int, path: String)
+
+	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :id")
+	suspend fun removeChapterSavePath(id: Int)
 }

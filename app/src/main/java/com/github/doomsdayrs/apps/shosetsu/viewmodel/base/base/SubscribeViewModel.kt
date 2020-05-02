@@ -1,7 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base
 
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -26,8 +28,14 @@ import androidx.lifecycle.Observer
  * 29 / 04 / 2020
  *
  * @author github.com/doomsdayrs
+ * Allows a view to subscribe to the view model
  */
 interface SubscribeViewModel<T> {
+	/**
+	 * LiveData of this class
+	 */
+	val liveData: LiveData<T>
+
 	/**
 	 * This subscribes the UI to the viewmodel
 	 */
@@ -36,5 +44,11 @@ interface SubscribeViewModel<T> {
 	/**
 	 * Loads the data for the UI
 	 */
-	suspend fun loadData(): T
+	suspend fun getLiveData(): T
 }
+
+/**
+ * Child of [SubscribeViewModel]
+ * Passed [T] as an [HResult] of [T]
+ */
+interface SubscribeHandleViewModel<T : Any> : SubscribeViewModel<HResult<T>>

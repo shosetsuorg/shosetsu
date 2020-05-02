@@ -74,7 +74,7 @@ class LibraryViewModel(
 		selectedNovels.clear()
 	}
 
-	override suspend fun loadNovelIDs(): List<Int> = loadData().map { it.id }
+	override suspend fun loadNovelIDs(): List<Int> = getLiveData().map { it.id }
 
 	override suspend fun loadChaptersUnread(novelID: Int): Int =
 			chaptersRepository.loadChapterUnreadCount(novelID)
@@ -90,7 +90,7 @@ class LibraryViewModel(
 			observer: Observer<List<NovelUI>>
 	) = novelsRepository.subscribeRepository(owner, observer)
 
-	override suspend fun loadData(): List<NovelUI> {
+	override suspend fun getLiveData(): List<NovelUI> {
 		val data = novelsRepository.loadData()
 		clearAndAdd(data)
 		return data

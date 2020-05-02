@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 
@@ -32,8 +33,22 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
  */
 @Dao
 interface DownloadsDao : BaseDao<DownloadEntity> {
-	@Query("SELECT * FROM downloads LIMIT 1")
+	/**
+	 * Loads the first download
+	 */
+	@Query("SELECT * FROM downloads WHERE status !=-1 AND status !=1 LIMIT 1")
 	fun loadFirstDownload(): DownloadEntity
+
+	/**
+	 * Loads the first download, and also sets it as downloading
+	 */
+	@Transaction
+	fun loadAndStartFirstDownload(): DownloadEntity {
+		val d = loadFirstDownload()
+		d.status = 1
+		blockingUpdate(d)
+		return d
+	}
 
 	@Query("SELECT COUNT(*) FROM downloads")
 	fun loadDownloadCount(): Int

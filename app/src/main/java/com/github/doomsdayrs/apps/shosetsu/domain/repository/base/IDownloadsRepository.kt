@@ -17,8 +17,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  */
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 
 
 /**
@@ -27,10 +25,37 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsRepository :
-		SubscribeRepository<List<DownloadUI>>,
-		SubscribeLiveData<List<DownloadEntity>> {
-	suspend fun addDownload(download: DownloadUI): Long
-	suspend fun updateDownload(download: DownloadUI)
-	suspend fun removeDownload(download: DownloadUI)
+interface IDownloadsRepository : SubscribeLiveData<List<DownloadEntity>> {
+
+	/**
+	 * Loads the first download in the list, also starts it
+	 */
+	fun loadFirstDownload(): DownloadEntity
+
+	/**
+	 * Queries for the download count
+	 */
+	fun loadDownloadCount(): Int
+
+	/**
+	 * Adds a new download to the repository
+	 */
+	suspend fun addDownload(download: DownloadEntity): Long
+
+	/**
+	 * Updates a download in repository
+	 */
+	suspend fun suspendedUpdate(download: DownloadEntity)
+
+	fun blockingUpdate(download: DownloadEntity)
+
+	/**
+	 * Removes a download from the repository
+	 */
+	suspend fun suspendedDelete(download: DownloadEntity)
+
+	/**
+	 * Orders database to set all values back to pending
+	 */
+	fun resetList()
 }

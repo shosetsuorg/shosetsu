@@ -96,7 +96,7 @@ class CatalogViewModel()
 	}
 
 
-	override suspend fun loadData(): List<NovelListingCard> {
+	override suspend fun getLiveData(): List<NovelListingCard> {
 		TODO("Not yet implemented")
 	}
 

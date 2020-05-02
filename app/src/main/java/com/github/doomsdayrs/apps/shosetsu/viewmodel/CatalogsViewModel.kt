@@ -1,9 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
+import androidx.lifecycle.*
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.FormatterAsCardsUseCase
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +34,22 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
  * 30 / 04 / 2020
  */
 class CatalogsViewModel(
-		val formatterRepository: IFormatterRepository
+		private val formatterAsCardsUseCase: FormatterAsCardsUseCase
 ) : ViewModel(), ICatalogsViewModel {
-	override fun loadCards(): List<FormatterCard> = formatterRepository.getCards()
+
+	override val liveData: LiveData<HResult<List<FormatterCard>>> by lazy {
+		liveData(context = viewModelScope.coroutineContext + Dispatchers.Main) {
+			emit(loading())
+			emitSource(formatterAsCardsUseCase.invoke())
+		}
+	}
+
+	override fun subscribeObserver(
+			owner: LifecycleOwner,
+			observer: Observer<HResult<List<FormatterCard>>>
+	): Unit = liveData.observe(owner, observer)
+
+	override suspend fun getLiveData(): HResult<List<FormatterCard>> =
+			liveData.value ?: emptyResult()
 }
+

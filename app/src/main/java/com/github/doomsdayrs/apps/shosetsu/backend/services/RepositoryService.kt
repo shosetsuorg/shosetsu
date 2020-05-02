@@ -13,15 +13,20 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.repositoryDao
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.scriptLibDao
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_EXECUTE
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NULLIFIED
+import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_REJECT_RUNNING
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_DOWNLOAD
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
+import com.github.doomsdayrs.apps.shosetsu.common.ext.forEachTyped
+import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
-import com.github.doomsdayrs.apps.shosetsu.common.ext.forEachTyped
-import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_DOWNLOAD
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import needle.CancelableTask
 import needle.Needle
 import okio.IOException
@@ -29,6 +34,9 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import org.jsoup.Jsoup
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
 
 /*
  * This file is part of shosetsu.
@@ -54,7 +62,7 @@ import org.jsoup.Jsoup
  *
  * @author github.com/doomsdayrs
  */
-class RepositoryService : Service() {
+class RepositoryService : Service(), KodeinAware {
 	companion object {
 
 		/**
@@ -80,7 +88,7 @@ class RepositoryService : Service() {
 				} else {
 					context.startForegroundService(intent)
 				}
-			} else Log.d(logID(), "Can't start, is running")
+			} else Log.d(logID(), SERVICE_REJECT_RUNNING)
 		}
 
 		/**
@@ -286,6 +294,8 @@ class RepositoryService : Service() {
 
 	}
 
+	override val kodein: Kodein by closestKodein()
+
 	private val notificationManager by lazy {
 		(getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
 	}
@@ -321,16 +331,14 @@ class RepositoryService : Service() {
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-		Log.d(logID(), "Canceling previous task")
+		Log.d(logID(), SERVICE_CANCEL_PREVIOUS)
 		job?.cancel()
-		Log.d(logID(), "Making new job")
+		Log.d(logID(), SERVICE_NEW)
 		job = Job(this)
-		Log.d(logID(), "Executing job")
-		job?.let { Needle.onBackgroundThread().execute(it) }
-				?: Log.e(logID(), "Job nullified before could be started")
+		Log.d(logID(), SERVICE_EXECUTE)
+		job?.let { Needle.onBackgroundThread().execute(it) } ?: Log.e(logID(), SERVICE_NULLIFIED)
 		return super.onStartCommand(intent, flags, startId)
 	}
-
 
 	internal class Job(private val service: RepositoryService) : CancelableTask() {
 

@@ -6,7 +6,6 @@ import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 
 /*
  * This file is part of shosetsu.
@@ -37,19 +36,11 @@ class NovelsRepository(val novelsDao: NovelsDao) : INovelsRepository {
 	// updates
 
 	override suspend fun updateNovel(novelEntity: NovelEntity) =
-			novelsDao.update(novelEntity)
+			novelsDao.suspendedUpdate(novelEntity)
 
 	override suspend fun unBookmarkNovels(selectedNovels: List<Int>) =
 			novelsDao.unBookmarkNovels(selectedNovels, loadDataSnap())
 
-
-	// Subscribe
-
-	override fun subscribeRepository(
-			owner: LifecycleOwner,
-			observer: Observer<List<NovelUI>>
-	) =
-			subscribeDao(owner, Observer { observer.onChanged(it.map { l -> l.convertTo() }) })
 
 	override fun subscribeDao(
 			owner: LifecycleOwner,
@@ -59,9 +50,9 @@ class NovelsRepository(val novelsDao: NovelsDao) : INovelsRepository {
 
 	// get data
 
-	override suspend fun getBookmarkedNovels(): List<NovelUI> = loadData().filter { it.bookmarked }
+	override suspend fun suspendedGetBookmarkedNovels() = blockingGetBookmarkedNovels()
 
-	override fun loadData(): List<NovelUI> = loadDataSnap().map { it.convertTo() }
+	override fun blockingGetBookmarkedNovels() = loadDataSnap().filter { it.bookmarked }
 
 	override fun loadDataSnap(): List<NovelEntity> = daoLiveData.value ?: arrayListOf()
 

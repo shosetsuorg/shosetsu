@@ -80,7 +80,7 @@ class ExtensionsViewModel(
 		TODO("Not yet implemented")
 	}
 
-	override suspend fun loadData(): List<ExtensionUI> =
+	override suspend fun getLiveData(): List<ExtensionUI> =
 			loadDataSnap().map { it.convertTo() }
 
 	override fun subscribeDao(

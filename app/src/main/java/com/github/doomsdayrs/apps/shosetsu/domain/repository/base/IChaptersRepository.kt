@@ -28,4 +28,5 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  */
 interface IChaptersRepository {
 	fun loadChapterUnreadCount(novelID: Int): Int
+	fun addSavePath(chapterID: Int, savePath: String)
 }

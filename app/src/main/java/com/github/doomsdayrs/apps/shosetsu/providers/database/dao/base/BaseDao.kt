@@ -49,8 +49,14 @@ interface BaseDao<T> {
 	suspend fun insertAbort(data: T): Long
 
 	@Update
-	suspend fun update(data: T)
+	suspend fun suspendedUpdate(data: T)
+
+	@Update
+	fun blockingUpdate(data: T)
 
 	@Delete
-	suspend fun delete(data: T)
+	suspend fun suspendedDelete(data: T)
+
+	@Delete
+	fun blockingDelete(data: T)
 }
