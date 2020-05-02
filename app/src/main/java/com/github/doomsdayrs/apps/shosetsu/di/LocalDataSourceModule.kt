@@ -1,8 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
-
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+package com.github.doomsdayrs.apps.shosetsu.di
 
 /*
  * This file is part of shosetsu.
@@ -24,12 +20,5 @@ import androidx.lifecycle.Observer
 
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 05 / 2020
  */
-interface Subscribe2ViewModel<T> {
-	val liveData2: LiveData<T>
-	fun subscribeObserver2(owner: LifecycleOwner, observer: Observer<T>)
-	fun loadData2(): T
-}

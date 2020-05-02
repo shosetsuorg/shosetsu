@@ -26,4 +26,5 @@ import java.io.Serializable
  *
  * @author github.com/doomsdayrs
  */
-class NovelListingCard(val imageURL: String, title: String, val novelID: Int, val novelURL: String) : RecycleCard(title), Serializable
+class NovelListingCard(val imageURL: String, title: String, val novelID: Int, val novelURL: String)
+	: RecycleCard(title), Serializable

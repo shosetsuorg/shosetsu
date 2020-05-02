@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
-
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+package com.github.doomsdayrs.apps.shosetsu.di
 
 /*
  * This file is part of shosetsu.
@@ -23,9 +20,5 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
 
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 05 / 2020
  */
-interface IDownloadsViewModel : SubscribeViewModel<List<DownloadUI>> {
-}

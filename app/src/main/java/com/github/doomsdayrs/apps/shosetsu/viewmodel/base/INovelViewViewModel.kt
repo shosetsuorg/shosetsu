@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.Subscribe2ViewModel
 
 /*
  * This file is part of shosetsu.
@@ -28,5 +29,5 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  * @author github.com/doomsdayrs
  */
 interface INovelViewViewModel
-	: SubscribeViewModel<NovelEntity>, Subscribe2ViewModel<List<ChapterEntity>> {
+	: Subscribe2ViewModel<List<ChapterEntity>, NovelEntity> {
 }

@@ -37,7 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearc
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogueViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 import com.google.android.material.navigation.NavigationView
 
 /*
@@ -74,7 +74,7 @@ class CatalogController(bundle: Bundle)
 
 	private var cataloguePageLoader: CataloguePageLoader? = null
 
-	val viewModel: ICatalogueViewModel by viewModel()
+	val viewModel: ICatalogViewModel by viewModel()
 
 	var formatter: Formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER))
 	var selectedListing: Int = formatter.defaultListing
@@ -91,14 +91,11 @@ class CatalogController(bundle: Bundle)
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
-		outState.putSerializable("list", recyclerArray)
 		outState.putInt(BUNDLE_FORMATTER, formatter.formatterID)
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 		super.onRestoreInstanceState(savedInstanceState)
-		recyclerArray = savedInstanceState.getSerializable("list")
-				as ArrayList<NovelListingCard>
 		formatter = FormatterUtils.getByID(savedInstanceState.getInt(BUNDLE_FORMATTER))
 	}
 
@@ -113,7 +110,7 @@ class CatalogController(bundle: Bundle)
 				adapter?.notifyDataSetChanged()
 			}
 			if (!formatter.hasCloudFlare) {
-				executePageLoader()
+				viewModel.loadMore()
 			} else {
 				val intent = Intent(activity, WebViewApp::class.java)
 				// TODO Formatter require of base URL
@@ -139,7 +136,7 @@ class CatalogController(bundle: Bundle)
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		if (requestCode == 42) {
-			executePageLoader()
+			viewModel.loadMore()
 		}
 	}
 
@@ -181,16 +178,6 @@ class CatalogController(bundle: Bundle)
 							false
 					)
 		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
-	}
-
-	fun executePageLoader() {
-		when {
-			cataloguePageLoader?.isCancelled == false ->
-				cataloguePageLoader = CataloguePageLoader(this)
-			cataloguePageLoader == null ->
-				cataloguePageLoader = CataloguePageLoader(this)
-		}
-		cataloguePageLoader?.execute(currentMaxPage)
 	}
 
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
@@ -236,7 +223,7 @@ class CatalogController(bundle: Bundle)
 		filterValues = formatter.listings[this.selectedListing].filters.values()
 		setLibraryCards(arrayListOf())
 		adapter?.notifyDataSetChanged()
-		executePageLoader()
+		viewModel.loadMore()
 	}
 
 }

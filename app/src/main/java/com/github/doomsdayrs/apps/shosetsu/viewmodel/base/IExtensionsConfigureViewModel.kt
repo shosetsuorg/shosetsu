@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
 
 /*
  * This file is part of shosetsu.

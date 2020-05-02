@@ -68,6 +68,10 @@ dependencies {
     implementation 'androidx.work:work-runtime:2.3.4'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
+	// Life Cycle
+	implementation "androidx.lifecycle:lifecycle-extensions:+"
+	implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:+"
+	implementation "androidx.lifecycle:lifecycle-livedata-ktx:+"
 
     // Test classes
     testImplementation 'junit:junit:4.13'

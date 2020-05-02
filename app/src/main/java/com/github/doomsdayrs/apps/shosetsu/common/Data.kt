@@ -29,4 +29,3 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types
  * @author github.com/doomsdayrs
  */
 data class SettingsCard(val id: Types)
-data class HandledReturns<T>(val succeeded: Boolean = false, val failureReason: String = "", val e: Exception? = null, val value: T? = null)

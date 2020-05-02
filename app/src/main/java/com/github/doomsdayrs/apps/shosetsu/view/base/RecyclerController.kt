@@ -55,7 +55,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	open var recyclerArray: ArrayList<V> = arrayListOf()
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
-		val view = onCreateView1(inflater, container)
+		val view = createViewInstance(inflater, container)
 		recyclerView = view.findViewById(resourceID)!!
 		recyclerView!!.layoutManager = LinearLayoutManager(context)
 		onViewCreated(view)

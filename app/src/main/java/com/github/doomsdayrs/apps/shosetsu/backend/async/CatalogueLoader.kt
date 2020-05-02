@@ -32,36 +32,40 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-open class CatalogueLoader(val formatter: Formatter, val filters: Array<*>, val query: String? = null) {
+open class CatalogueLoader(
+		val formatter: Formatter,
+		val filters: Array<*>,
+		val query: String? = null
+) {
+	private var listing = formatter.defaultListing
 
-    private var listing = formatter.defaultListing
+	constructor(formatter: Formatter, filters: Array<*>, selectedListing: Int)
+			: this(formatter, filters) {
+		if (listing != selectedListing)
+			listing = selectedListing
+	}
 
-    constructor(formatter: Formatter, filters: Array<*>, selectedListing: Int) : this(formatter, filters) {
-        if (listing != selectedListing) listing = selectedListing
-    }
+	/**
+	 * Loads up the category
+	 *
+	 * @param integers if length = 0, loads first page otherwise
+	 * loads the page # correlated to the integer
+	 * @return if this was completed or not
+	 */
+	@Throws(LuaError::class)
+	fun execute(vararg integers: Int?): Array<Novel.Listing> {
+		Log.d(logID(), "Loading")
+		if (formatter.hasCloudFlare) {
+			Log.i(logID(), "CLOUDFLARE DETECED")
+			wait(5)
+		}
 
-
-    /**
-     * Loads up the category
-     *
-     * @param integers if length = 0, loads first page otherwise loads the page # correlated to the integer
-     * @return if this was completed or not
-     */
-    @Throws(LuaError::class)
-    fun execute(vararg integers: Int?): Array<Novel.Listing> {
-        Log.d(logID(), "Loading")
-        if (formatter.hasCloudFlare) {
-            Log.i(logID(), "CLOUDFLARE DETECED")
-            wait(5)
-        }
-
-        Log.d(logID(), "Selected listing $listing")
-        return if (query == null)
-            formatter.listings[listing].getListing(filters,
-                    if (integers.isEmpty()) 1 else integers[0]!!)
-        else
-            formatter.search((listOf(query)+filters).toTypedArray())
-            { Log.i("Formatter", "${formatter.name}\t$it") }
-
-    }
+		Log.d(logID(), "Selected listing $listing")
+		return if (query == null)
+			formatter.listings[listing].getListing(filters,
+					if (integers.isEmpty()) 1 else integers[0]!!)
+		else
+			formatter.search((listOf(query) + filters).toTypedArray())
+			{ Log.i("Formatter", "${formatter.name}\t$it") }
+	}
 }

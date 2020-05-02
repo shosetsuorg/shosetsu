@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -28,6 +28,13 @@ import androidx.lifecycle.Observer
  * @author github.com/doomsdayrs
  */
 interface SubscribeViewModel<T> {
+	/**
+	 * This subscribes the UI to the viewmodel
+	 */
 	fun subscribeObserver(owner: LifecycleOwner, observer: Observer<T>)
+
+	/**
+	 * Loads the data for the UI
+	 */
 	suspend fun loadData(): T
 }

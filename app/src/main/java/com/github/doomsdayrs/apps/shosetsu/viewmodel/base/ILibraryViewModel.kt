@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
 
 /*
  * This file is part of shosetsu.

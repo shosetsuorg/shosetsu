@@ -1,5 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+
 /*
  * This file is part of shosetsu.
  *
@@ -25,7 +30,21 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
  * 01 / 05 / 2020
  * Used for showing the specific listing of a novel
  */
-interface ICatalogueViewModel {
+interface ICatalogViewModel :
+		SubscribeViewModel<List<NovelListingCard>>,
+		SubscribeLiveData<HResult<List<NovelListingCard>>> {
+	/**
+	 * The current max page loaded, if 2, then the current page that has been appended is 2
+	 */
 	var currentMaxPage: Int
-	fun executePageLoader()
+
+	/**
+	 * Instructs the view model to load more UwU
+	 */
+	fun loadMore()
+
+	/**
+	 * Instruction to clear loaded chapters, append more UwU
+	 */
+	fun clearAndLoad()
 }

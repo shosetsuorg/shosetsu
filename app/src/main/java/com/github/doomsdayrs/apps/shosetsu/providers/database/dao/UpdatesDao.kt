@@ -6,7 +6,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.variables.IncorrectDateException
+import com.github.doomsdayrs.apps.shosetsu.common.IncorrectDateException
 import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
 import org.joda.time.DateTime
 import org.joda.time.Days

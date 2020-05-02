@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel
-
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogueViewModel
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
 /*
  * This file is part of shosetsu.
@@ -27,11 +24,5 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogueViewModel
  * shosetsu
  * 01 / 05 / 2020
  */
-class CatalogueViewModel()
-	: ViewModel(), ICatalogueViewModel {
-	override var currentMaxPage: Int = 1
-
-	override fun executePageLoader() {
-		TODO("Not yet implemented")
-	}
+interface IExtensionLibraryRepository {
 }

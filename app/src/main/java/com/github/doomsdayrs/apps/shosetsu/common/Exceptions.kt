@@ -1,6 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
-
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
+package com.github.doomsdayrs.apps.shosetsu.common
 
 /*
  * This file is part of shosetsu.
@@ -17,15 +15,13 @@ import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCar
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * ====================================================================
  */
-
-
-
 
 /**
  * shosetsu
- * 30 / 04 / 2020
+ * 15 / 04 / 2020
+ *
+ * @author github.com/doomsdayrs
  */
-interface ICataloguesViewModel {
-	fun loadCards(): List<FormatterCard>
-}
+class IncorrectDateException(message: String?) : Exception(message)

@@ -1,4 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.variables
+package com.github.doomsdayrs.apps.shosetsu.viewmodel
+
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -15,13 +20,17 @@ package com.github.doomsdayrs.apps.shosetsu.variables
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+
+
 
 /**
  * shosetsu
- * 15 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 30 / 04 / 2020
  */
-class IncorrectDateException(message: String?) : Exception(message)
+class CatalogsViewModel(
+		val formatterRepository: IFormatterRepository
+) : ViewModel(), ICatalogsViewModel {
+	override fun loadCards(): List<FormatterCard> = formatterRepository.getCards()
+}

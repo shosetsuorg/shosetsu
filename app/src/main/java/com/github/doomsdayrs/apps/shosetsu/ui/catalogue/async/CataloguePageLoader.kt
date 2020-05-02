@@ -2,14 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.common.ext.smallMessage
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
-import org.luaj.vm2.LuaError
 
 /*
  * This file is part of Shosetsu.
@@ -34,61 +27,34 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
-class CataloguePageLoader(private val catalogFragment: CatalogController) : AsyncTask<Int, Void, Boolean>() {
+class CataloguePageLoader(private val catalogController: CatalogController)
+	: AsyncTask<Int, Void, Boolean>() {
 
-    /**
-     * Loads up the category
-     *
-     * @param v if length = 0, loads first page, otherwise loads the v[0]th page
-     * @return if this was completed or not
-     */
-    override fun doInBackground(vararg v: Int?): Boolean? {
-        Log.d("Loading", "Catalogue")
-        return catalogFragment.let {
-            if (it.formatter.hasCloudFlare && it.activity != null) it.activity!!.runOnUiThread {
-                it.context?.toast("CLOUDFLARE")
-            }
-            try {
-                val loader = CatalogueLoader(it.formatter, catalogFragment.filterValues, catalogFragment.selectedListing)
-                val novels = if (v.isNotEmpty()) loader.execute(v[0]) else loader.execute()
-                it.recyclerArray.addAll(novels.map { with(it) {
-                    NovelListingCard(imageURL, title, Database.DatabaseIdentification.getNovelIDFromNovelURL(link), link)
-                } })
-                Log.d("FragmentRefresh", "Complete")
-                true
-            } catch (e: LuaError) {
-                catalogFragment.activity?.toast(e.smallMessage())
-                Log.e("CataloguePageLoader", e.message?:"UNKNOWN ERROR")
-                false
-            } catch (e: Exception) {
-                catalogFragment.activity?.toast(e.message ?: "UNKNOWN ERROR")
-                false
-            }
-        }
+	/**
+	 * Loads up the category
+	 *
+	 * @param v if length = 0, loads first page, otherwise loads the v[0]th page
+	 * @return if this was completed or not
+	 */
+	override fun doInBackground(vararg v: Int?): Boolean? {
+		Log.d("Loading", "Catalogue")
+		return false
+	}
 
-    }
+	override fun onCancelled() {
+		catalogController.swipeRefreshLayout?.isRefreshing = false
+	}
 
-    override fun onCancelled() {
-        catalogFragment.swipeRefreshLayout?.isRefreshing = false
-    }
+	override fun onPreExecute() {
+		catalogController.swipeRefreshLayout?.isRefreshing = true
+	}
 
-    override fun onPreExecute() {
-        catalogFragment.swipeRefreshLayout?.isRefreshing = true
-    }
-
-    /**
-     * Once done remove progress bar
-     *
-     * @param aBoolean result of doInBackground
-     */
-    override fun onPostExecute(aBoolean: Boolean?) {
-        aBoolean?.let {
-            if (it) {
-                catalogFragment.catalogueAdapter.notifyDataSetChanged()
-            }
-        }
-        catalogFragment.swipeRefreshLayout?.isRefreshing = false
-    }
-
-
+	/**
+	 * Once done remove progress bar
+	 *
+	 * @param aBoolean result of doInBackground
+	 */
+	override fun onPostExecute(aBoolean: Boolean?) {
+		catalogController.swipeRefreshLayout?.isRefreshing = false
+	}
 }

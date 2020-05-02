@@ -1,9 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 
 /*
  * This file is part of shosetsu.
@@ -23,16 +20,12 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  */
 
 
+
+
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 30 / 04 / 2020
  */
-interface IExtensionsViewModel
-	: SubscribeViewModel<List<ExtensionUI>>, SubscribeLiveData<List<ExtensionEntity>> {
-	fun reloadFormatters()
-	fun refreshRepository()
-	fun installExtension(extensionEntity: ExtensionUI)
-	fun uninstallExtension(extensionEntity: ExtensionUI)
+interface ICatalogsViewModel {
+	fun loadCards(): List<FormatterCard>
 }

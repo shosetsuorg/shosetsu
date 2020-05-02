@@ -1,9 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base
 
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICataloguesViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 /*
  * This file is part of shosetsu.
@@ -23,14 +22,14 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICataloguesViewModel
  */
 
 
-
-
 /**
  * shosetsu
- * 30 / 04 / 2020
+ * 29 / 04 / 2020
+ *
+ * @author github.com/doomsdayrs
  */
-class CataloguesViewModel(
-		val formatterRepository: IFormatterRepository
-) : ViewModel(), ICataloguesViewModel {
-	override fun loadCards(): List<FormatterCard> = formatterRepository.getCards()
+interface Subscribe2ViewModel<T, V> : SubscribeViewModel<V> {
+	val liveData2: LiveData<T>
+	fun subscribeObserver2(owner: LifecycleOwner, observer: Observer<T>)
+	fun loadData2(): T
 }

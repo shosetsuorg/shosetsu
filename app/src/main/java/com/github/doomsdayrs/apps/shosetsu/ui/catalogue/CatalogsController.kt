@@ -14,7 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSear
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.CataloguesViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.CatalogsViewModel
 
 /*
  * This file is part of Shosetsu.
@@ -41,7 +41,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.CataloguesViewModel
  */
 //TODO Searching mechanics here
 class CatalogsController : RecyclerController<CataloguesAdapter, FormatterCard>() {
-	val cataloguesViewModel: CataloguesViewModel by viewModel()
+	val cataloguesViewModel: CatalogsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)

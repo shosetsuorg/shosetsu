@@ -42,6 +42,10 @@ import kotlin.reflect.full.memberProperties
  * @author github.com/doomsdayrs
  */
 abstract class ViewedController : LifecycleController, KodeinAware {
+	/**
+	 * Tells [ViewedController] to attach [id] to ihe [AnnotationTarget.FIELD]
+	 * @param id ID of the view
+	 */
 	@Retention(AnnotationRetention.RUNTIME)
 	@Target(AnnotationTarget.PROPERTY, AnnotationTarget.FIELD)
 	@Nullable
@@ -51,14 +55,23 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	constructor(args: Bundle) : super(args)
 
 	override val kodein: Kodein by lazy { (applicationContext as KodeinAware).kodein }
+
+	/**
+	 * Layout res of the view to build
+	 */
 	abstract val layoutRes: Int
 
+	/**
+	 * Should this be attached to root
+	 */
 	open val attachToRoot: Boolean = false
 	private var attachedFields = ArrayList<KMutableProperty<*>>()
 
+	/**
+	 * Function run when destroying the UI
+	 */
 	@CallSuper
 	override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
 		val s = StringBuilder()
 		attachedFields.forEachIndexed { index, kMutableProperty ->
 			s.append(kMutableProperty.name)
@@ -69,7 +82,11 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 		attachedFields = ArrayList()
 	}
 
-	open fun onCreateView1(inflater: LayoutInflater, container: ViewGroup): View {
+	/**
+	 * This creates the view of the activity, Also attaches all [Attach] annotations
+	 */
+	@CallSuper
+	open fun createViewInstance(inflater: LayoutInflater, container: ViewGroup): View {
 		val view = inflater.inflate(layoutRes, container, attachToRoot)
 		this::class.memberProperties
 				.filter { it.annotations.isNotEmpty() }
@@ -86,11 +103,21 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 		return view
 	}
 
-	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
-		val view = onCreateView1(inflater, container)
+	/**
+	 * The main creation method
+	 */
+	override fun onCreateView(
+			inflater: LayoutInflater,
+			container: ViewGroup,
+			savedViewState: Bundle?
+	): View {
+		val view = createViewInstance(inflater, container)
 		onViewCreated(view)
 		return view
 	}
 
+	/**
+	 * What to do once the view is created
+	 */
 	abstract fun onViewCreated(view: View)
 }
