@@ -6,10 +6,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.BackupSettings
-import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.google.android.material.card.MaterialCardView
 
 /*
@@ -35,7 +35,10 @@ import com.google.android.material.card.MaterialCardView
  *
  * @author github.com/doomsdayrs
  */
-class SettingsCardViewHolder(itemView: View, private val router: Router) : RecyclerView.ViewHolder(itemView) {
+class SettingsCardViewHolder(
+		itemView: View,
+		private val router: Router
+) : RecyclerView.ViewHolder(itemView) {
 	private val libraryCardTitle: TextView = itemView.findViewById(R.id.recycler_settings_title)
 	private val cardView: MaterialCardView = itemView.findViewById(R.id.settings_card)
 

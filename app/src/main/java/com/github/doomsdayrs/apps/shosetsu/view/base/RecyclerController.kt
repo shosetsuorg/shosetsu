@@ -103,9 +103,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 		return view
 	}
 
-	/**
-	 *
-	 */
+	/** @param result [HResult], if [HResult.Success] then updates UI */
 	fun handleRecyclerUpdate(result: HResult<List<V>>) {
 		when (result) {
 			is HResult.Loading -> {

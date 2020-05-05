@@ -15,20 +15,22 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.attachRouter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.CookieJarSync
-import com.github.doomsdayrs.apps.shosetsu.backend.UpdateManager.init
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
+import com.github.doomsdayrs.apps.shosetsu.common.consts.SHOSETSU_UPDATE_URL
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
-import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
-import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener
@@ -37,8 +39,6 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.javiersantos.appupdater.objects.Update
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -71,7 +71,6 @@ import org.luaj.vm2.lib.jse.JsePlatform
  */
 //TODO Inform users to refresh their libraries
 class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
-
 	// The main router of the application
 	private lateinit var router: Router
 
@@ -79,7 +78,9 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 
 	override val kodein: Kodein by closestKodein()
 
-	private val formatterUtils: FormatterUtils by instance()
+	private val formatterUtils: IFormatterUtils by instance<IFormatterUtils>()
+	private val okHttpClient: OkHttpClient by instance<OkHttpClient>()
+
 
 	/**
 	 * Main activity
@@ -103,8 +104,13 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 		//Sets the toolbar
 		setSupportActionBar(toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.todo, R.string.todo)
-
+		actionBarDrawerToggle = ActionBarDrawerToggle(
+				this,
+				drawer_layout,
+				toolbar,
+				R.string.todo,
+				R.string.todo
+		)
 
 		// Navigation view
 		//nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
@@ -135,14 +141,7 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 		toggle.syncState()
 
 
-		ShosetsuLib.httpClient = OkHttpClient.Builder()
-				.addInterceptor {
-					val r = it.request()
-					Log.i("ShosetsuLib", r.url.toUrl().toExternalForm())
-					return@addInterceptor it.proceed(r)
-				}
-				.cookieJar(CookieJarSync())
-				.build()
+		ShosetsuLib.httpClient = okHttpClient
 
 		ShosetsuLib.libLoader = libLoader@{ name ->
 			Log.i("LibraryLoaderSync", "Loading:\t$name")
@@ -162,18 +161,34 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 			return@libLoader l.call()
 		}
 
-		GlobalScope.launch {
+		launchAsync {
 			formatterUtils.load(this@MainActivity)
 		}
 
-		toolbar.setNavigationOnClickListener { if (router.backstackSize == 1) drawer_layout.openDrawer(GravityCompat.START) else onBackPressed() }
+		toolbar.setNavigationOnClickListener {
+			if (router.backstackSize == 1)
+				drawer_layout.openDrawer(GravityCompat.START)
+			else onBackPressed()
+		}
 
 		router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
-			override fun onChangeStarted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup, handler: ControllerChangeHandler) {
+			override fun onChangeStarted(
+					to: Controller?,
+					from: Controller?,
+					isPush: Boolean,
+					container: ViewGroup,
+					handler: ControllerChangeHandler
+			) {
 				syncActivityViewWithController(to, from)
 			}
 
-			override fun onChangeCompleted(to: Controller?, from: Controller?, isPush: Boolean, container: ViewGroup, handler: ControllerChangeHandler) {
+			override fun onChangeCompleted(
+					to: Controller?,
+					from: Controller?,
+					isPush: Boolean,
+					container: ViewGroup,
+					handler: ControllerChangeHandler
+			) {
 			}
 
 		})
@@ -183,27 +198,18 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 		when (intent.action) {
 			Intent.ACTION_USER_BACKGROUND -> {
 				Log.i("MainActivity", "Updating novels")
-				init(this)
+				UpdateService.init(this)
 				//TODO push to updates
 			}
 			Intent.ACTION_BOOT_COMPLETED -> {
 				Log.i("MainActivity", "Bootup")
 				if (Utilities.isOnline)
-					init(this)
+					UpdateService.init(this)
 			}
 			else -> {
-
 				if (!router.hasRootController()) {
 					setSelectedDrawerItem(R.id.nav_library)
 				}
-				//Prevent the frag from changing on rotation
-				/*if (savedInstanceState == null) {
-					supportFragmentManager
-							.beginTransaction()
-							.replace(R.id.fragment_container, libraryFragment).commit()
-					nav_view.setCheckedItem(R.id.nav_library)
-				}
-				*/
 			}
 		}
 	}
@@ -214,10 +220,10 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 	override fun onBackPressed() {
 		val backStackSize = router.backstackSize
 		when {
-			drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
-
-			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null -> setSelectedDrawerItem(R.id.nav_library)
-
+			drawer_layout.isDrawerOpen(GravityCompat.START) ->
+				drawer_layout.closeDrawer(GravityCompat.START)
+			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
+				setSelectedDrawerItem(R.id.nav_library)
 			backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
 		}
 	}
@@ -241,15 +247,18 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 	private fun appUpdate() {
 		val appUpdater = AppUpdater(this)
 				.setUpdateFrom(UpdateFrom.XML)
-				.setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+				.setUpdateXML(SHOSETSU_UPDATE_URL)
 				.setDisplay(Display.DIALOG)
 				.setTitleOnUpdateAvailable(getString(R.string.app_update_available))
 				.setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
 				.setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
 				.setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
-				.setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
-				.setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
-				.setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
+				.setButtonUpdate(getString(R.string.update_app_now_question))
+				//.setButtonUpdateClickListener(...)
+				.setButtonDismiss(getString(R.string.update_dismiss))
+				//.setButtonDismissClickListener(...)
+				.setButtonDoNotShowAgain(getString(R.string.update_not_interested))
+				//.setButtonDoNotShowAgainClickListener(...)
 				.setIcon(R.drawable.ic_system_update_alt_24dp)
 				.setCancelable(true)
 				.showEvery(5)
@@ -263,12 +272,12 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 	@Suppress("unused")
 	private fun updateUtils() {
 		val appUpdaterUtils = AppUpdaterUtils(this)
-				.setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+				.setUpdateFrom(UpdateFrom.XML).setUpdateXML(SHOSETSU_UPDATE_URL)
 				.withListener(object : UpdateListener {
 					override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
-						Log.d("Latest Version", isUpdateAvailable.toString())
-						Log.d("Latest Version", update.latestVersion)
-						Log.d("Latest Version", update.latestVersionCode.toString())
+						Log.i("Latest Version", isUpdateAvailable.toString())
+						Log.i("Latest Version", update.latestVersion)
+						Log.i("Latest Version", update.latestVersionCode.toString())
 					}
 
 					override fun onFailed(error: AppUpdaterError) {
@@ -300,6 +309,4 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 		}
 
 	}
-
-
 }

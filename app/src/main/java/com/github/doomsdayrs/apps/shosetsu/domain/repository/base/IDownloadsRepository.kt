@@ -1,4 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
+
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+
 /*
  * This file is part of shosetsu.
  *
@@ -15,9 +20,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
-
 
 /**
  * shosetsu
@@ -25,28 +27,33 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.Subscribe
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsRepository : SubscribeLiveData<List<DownloadEntity>> {
+interface IDownloadsRepository {
+
+	fun loadDownloads(): LiveData<HResult<DownloadEntity>>
 
 	/**
 	 * Loads the first download in the list, also starts it
 	 */
-	fun loadFirstDownload(): DownloadEntity
+	fun loadFirstDownload(): HResult<DownloadEntity>
 
 	/**
 	 * Queries for the download count
 	 */
-	fun loadDownloadCount(): Int
+	fun loadDownloadCount(): HResult<Int>
 
 	/**
 	 * Adds a new download to the repository
 	 */
-	suspend fun addDownload(download: DownloadEntity): Long
+	suspend fun addDownload(download: DownloadEntity): HResult<Long>
 
 	/**
 	 * Updates a download in repository
 	 */
 	suspend fun suspendedUpdate(download: DownloadEntity)
 
+	/**
+	 * [suspendedUpdate] but blocks the thread
+	 */
 	fun blockingUpdate(download: DownloadEntity)
 
 	/**

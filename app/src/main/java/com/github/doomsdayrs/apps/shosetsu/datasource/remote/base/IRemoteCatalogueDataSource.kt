@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.di
+package com.github.doomsdayrs.apps.shosetsu.datasource.remote.base
 
 /*
  * This file is part of shosetsu.
@@ -18,7 +18,11 @@ package com.github.doomsdayrs.apps.shosetsu.di
  */
 
 
+
+
 /**
  * shosetsu
- * 01 / 05 / 2020
+ * 04 / 05 / 2020
  */
+interface IRemoteCatalogueDataSource {
+}

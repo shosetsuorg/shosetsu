@@ -1,9 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
+package com.github.doomsdayrs.apps.shosetsu.datasource.cache.base
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -20,15 +17,22 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 04 / 05 / 2020
+ * This caches chapters, to prevent reloading issues
  */
-class UpdatesRepository(val updatesDao: UpdatesDao) : IUpdatesRepository {
+interface ICacheChaptersDataSource {
+	/**
+	 * Puts a chapter passage into cache, if cache exists this overwrites
+	 */
+	fun saveChapterInCache(chapterID: Int, passage: String)
 
+	/**
+	 * Gets chapter passage via it's ID
+	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
+	 */
+	fun loadChapterFromCache(chapterID: Int): HResult<String>
 }

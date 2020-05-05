@@ -39,27 +39,4 @@ class FormatterRepository(
 		val extensionsDao: ExtensionsDao
 ) : IFormatterRepository {
 
-	override val daoLiveData: LiveData<List<ExtensionEntity>> =
-			extensionsDao.loadPoweredFormatters()
-
-	override fun getCards(): List<FormatterCard> = formatterUtils.getAsCards()
-
-	override fun subscribeRepository(
-			owner: LifecycleOwner,
-			observer: Observer<List<ExtensionUI>>
-	) =
-			subscribeDao(owner, Observer { observer.onChanged(it.map { l -> l.convertTo() }) })
-
-	override fun loadData(): List<ExtensionUI> =
-			loadDataSnap().map { it.convertTo() }
-
-	override fun subscribeDao(
-			owner: LifecycleOwner,
-			observer: Observer<List<ExtensionEntity>>
-	) =
-			daoLiveData.observe(owner, observer)
-
-	override fun loadDataSnap(): List<ExtensionEntity> =
-			daoLiveData.value ?: arrayListOf()
-
 }

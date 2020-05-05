@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.common.utils.base
 
+import android.content.Context
+
 /*
  * This file is part of shosetsu.
  *
@@ -25,4 +27,5 @@ package com.github.doomsdayrs.apps.shosetsu.common.utils.base
  * @author github.com/doomsdayrs
  */
 interface IFormatterUtils {
+	fun load(context: Context)
 }

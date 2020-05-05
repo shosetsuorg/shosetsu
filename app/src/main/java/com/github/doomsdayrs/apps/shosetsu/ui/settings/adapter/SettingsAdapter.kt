@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsCardViewHolder
 import com.github.doomsdayrs.apps.shosetsu.common.SettingsCard
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsCardViewHolder
 import java.util.*
 
 /*
@@ -35,8 +35,7 @@ import java.util.*
 class SettingsAdapter(
 		private val settingsCards: ArrayList<SettingsCard>,
 		private val router: Router
-)
-	: RecyclerView.Adapter<SettingsCardViewHolder>() {
+) : RecyclerView.Adapter<SettingsCardViewHolder>() {
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder =
 			SettingsCardViewHolder(
 					LayoutInflater.from(viewGroup.context).inflate(

@@ -30,11 +30,5 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
  * @author github.com/doomsdayrs
  */
 class ExtensionsRepository(val extensionsDao: ExtensionsDao) : IExtensionsRepository {
-	override fun getExtensions(): LiveData<List<ExtensionEntity>> {
-		TODO("Not yet implemented")
-	}
 
-	override fun installExtension(extensionEntity: ExtensionEntity) {
-		TODO("Not yet implemented")
-	}
 }

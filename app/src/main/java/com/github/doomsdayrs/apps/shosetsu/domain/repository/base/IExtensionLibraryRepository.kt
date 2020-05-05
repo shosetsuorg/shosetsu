@@ -17,9 +17,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 01 / 05 / 2020

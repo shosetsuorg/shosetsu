@@ -1,11 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
+import com.skydoves.colorpickerview.ColorPickerDialog
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 
 
 /*
@@ -34,6 +37,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
 class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>)
 	: RecyclerView.Adapter<SettingsItem>() {
 	private val views: ArrayList<SettingsItem> = arrayListOf()
+
+	@Suppress("KDocMissingDocumentation")
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsItem {
 		val view = LayoutInflater.from(parent.context).inflate(
 				R.layout.settings_item,
@@ -45,11 +50,87 @@ class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>)
 		return i
 	}
 
-	override fun getItemCount(): Int {
-		return items.size
-	}
+	@Suppress("KDocMissingDocumentation")
+	override fun getItemCount(): Int = items.size
 
+	@Suppress("KDocMissingDocumentation")
 	override fun onBindViewHolder(holder: SettingsItem, position: Int) {
-		holder.setData(items[position])
+		val data = items[position]
+		with(holder) {
+			type = data.type
+			if (data.titleID != -1)
+				itemTitle.setText(data.titleID)
+			else
+				itemTitle.text = data.titleText
+
+			if (data.descID != -1)
+				itemDescription.setText(data.descID)
+			else
+				itemDescription.text = data.descriptionText
+
+			when (type) {
+				SettingsItemData.SettingsType.BUTTON -> {
+					if (data.textID != -1)
+						button.setText(data.textID)
+					else
+						button.text = data.textText
+					button.visibility = View.VISIBLE
+					button.setOnClickListener(data.buttonOnClickListener)
+				}
+				SettingsItemData.SettingsType.SPINNER -> {
+					spinner.visibility = View.VISIBLE
+					//spinner.setOnClickListener { data.spinnerOnClick }
+					spinner.adapter = data.adapter
+					spinner.setSelection(data.spinnerSelection)
+					spinner.onItemSelectedListener = data.spinnerOnItemSelectedListener
+				}
+				SettingsItemData.SettingsType.INFORMATION -> {
+					itemView.setOnClickListener(data.itemViewOnClick)
+				}
+				SettingsItemData.SettingsType.TEXT -> {
+					if (data.textID != -1)
+						textView.setText(data.textID)
+					else
+						textView.text = data.textText
+					textView.visibility = View.VISIBLE
+					textView.setOnClickListener(data.textViewOnClickListener)
+				}
+				SettingsItemData.SettingsType.SWITCH -> {
+					switchView.visibility = View.VISIBLE
+					switchView.isChecked = data.isChecked
+					switchView.setOnCheckedChangeListener(data.onCheckedListener)
+				}
+				SettingsItemData.SettingsType.NUMBER_PICKER -> {
+					numberPicker.visibility = View.VISIBLE
+					numberPicker.minValue = data.lowerBound
+					numberPicker.maxValue = data.upperBound
+					numberPicker.value = data.numberPickerValue
+					numberPicker.setOnValueChangedListener(data.numberPickerOnValueChangedListener)
+				}
+				SettingsItemData.SettingsType.CHECKBOX -> {
+					checkBox.visibility = View.VISIBLE
+					checkBox.isChecked = data.isChecked
+					checkBox.setOnCheckedChangeListener(data.onCheckedListener)
+				}
+				SettingsItemData.SettingsType.COLOR_PICKER -> {
+					colorBox.visibility = View.VISIBLE
+					colorBox.setBackgroundColor(data.itemColor)
+					colorBox.setOnClickListener {
+						ColorPickerDialog.Builder(view.context)
+								.setTitle("ColorPicker Dialog")
+								.setPreferenceName(data.colorPreferenceName)
+								.setPositiveButton(
+										view.context.getString(R.string.confirm),
+										ColorEnvelopeListener { envelope, _ ->
+											data.colorFunction(envelope.color)
+											colorBox.setBackgroundColor(envelope.color)
+										}
+								)
+								.setNegativeButton(view.context.getString(android.R.string.cancel))
+								{ dialogInterface, _ -> dialogInterface.dismiss() }.show()
+					}
+				}
+			}
+		}
 	}
 }

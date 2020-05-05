@@ -16,6 +16,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 
 
@@ -28,5 +29,5 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
  */
 interface IUpdatesRepository {
 	fun addUpdate(updateEntity: UpdateEntity)
-	fun getUpdates(): LiveData<List<UpdateEntity>>
+	fun getUpdates(): LiveData<HResult<List<UpdateEntity>>>
 }

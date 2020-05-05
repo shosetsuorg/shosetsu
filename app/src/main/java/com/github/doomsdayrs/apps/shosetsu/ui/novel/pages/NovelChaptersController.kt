@@ -389,7 +389,8 @@ class NovelChaptersController(bundle: Bundle)
 	}
 
 	/**
-	 * @return position of last read chapter, reads array from reverse. If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
+	 * @return position of last read chapter, reads array from reverse.
+	 * If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
 	 */
 	fun lastRead(): Int {
 		return if (recyclerArray.isNotEmpty()) {
@@ -605,9 +606,11 @@ class NovelChaptersController(bundle: Bundle)
 
 	private fun optionChapterFilter() {
 		recyclerArray.reverse()
-
 		isArrayReversed = !isArrayReversed
 		updateAdapter()
 	}
+
+	override val diffToolCallBack: RecyclerDiffToolCallBack
+		get() = TODO("Not yet implemented")
 
 }

@@ -31,29 +31,5 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
  * @author github.com/doomsdayrs
  */
 class NovelsRepository(val novelsDao: NovelsDao) : INovelsRepository {
-	override val daoLiveData: LiveData<List<NovelEntity>> by lazy { novelsDao.loadNovels() }
-
-	// updates
-
-	override suspend fun updateNovel(novelEntity: NovelEntity) =
-			novelsDao.suspendedUpdate(novelEntity)
-
-	override suspend fun unBookmarkNovels(selectedNovels: List<Int>) =
-			novelsDao.unBookmarkNovels(selectedNovels, loadDataSnap())
-
-
-	override fun subscribeDao(
-			owner: LifecycleOwner,
-			observer: Observer<List<NovelEntity>>
-	) =
-			daoLiveData.observe(owner, observer)
-
-	// get data
-
-	override suspend fun suspendedGetBookmarkedNovels() = blockingGetBookmarkedNovels()
-
-	override fun blockingGetBookmarkedNovels() = loadDataSnap().filter { it.bookmarked }
-
-	override fun loadDataSnap(): List<NovelEntity> = daoLiveData.value ?: arrayListOf()
 
 }

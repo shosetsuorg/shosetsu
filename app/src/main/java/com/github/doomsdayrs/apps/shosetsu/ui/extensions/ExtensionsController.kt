@@ -22,7 +22,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DiffUtil
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
@@ -32,7 +31,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.ExtensionsViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
 
 /**
@@ -70,12 +68,7 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 
 	private fun establishObserver() {
 		extensionViewModel.subscribeObserver(this, Observer { list ->
-			val dif = DiffUtil.calculateDiff(
-					ExtensionsViewModel.ExtensionsDifCalc(recyclerArray, list)
-			)
-			recyclerArray.clear()
-			recyclerArray.addAll(list)
-			adapter?.let { dif.dispatchUpdatesTo(it) }
+			updateUI(list)
 		})
 	}
 
@@ -92,4 +85,7 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 			else -> false
 		}
 	}
+
+	override val diffToolCallBack: RecyclerDiffToolCallBack
+		get() = TODO("Not yet implemented")
 }

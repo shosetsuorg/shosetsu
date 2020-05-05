@@ -5,14 +5,14 @@ import android.util.Log
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getMeta
+import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.RepositoryDao
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getMeta
-import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -267,7 +267,7 @@ class FormatterUtils(
 	/**
 	 * Loads the formatters
 	 */
-	fun load(context: Context) {
+	override fun load(context: Context) {
 		val fileNames = extensionsDao
 				.loadPoweredFormatterFileNames()
 		fileNames.forEach {
@@ -277,12 +277,10 @@ class FormatterUtils(
 		}
 	}
 
-
 	fun getAsCards(): ArrayList<FormatterCard> {
 		val catalogueCards = ArrayList<FormatterCard>()
 		for (formatter in formatters) catalogueCards.add(FormatterCard(formatter))
 		catalogueCards.sortedWith(compareBy { it.title })
 		return catalogueCards
 	}
-
 }

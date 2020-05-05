@@ -1,5 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
+import com.github.doomsdayrs.apps.shosetsu.providers.network.createOkHttpClient
+import okhttp3.OkHttpClient
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.singleton
+
 /*
  * This file is part of shosetsu.
  *
@@ -22,3 +28,6 @@ package com.github.doomsdayrs.apps.shosetsu.di
  * shosetsu
  * 01 / 05 / 2020
  */
+val networkModule = Kodein.Module("network_module") {
+	bind<OkHttpClient>() with singleton { createOkHttpClient() }
+}

@@ -1,9 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
+package com.github.doomsdayrs.apps.shosetsu.datasource.remote.base
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -20,15 +17,16 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 04 / 05 / 2020
+ * This class loads chapters from the internet
  */
-class UpdatesRepository(val updatesDao: UpdatesDao) : IUpdatesRepository {
-
+interface IRemoteChaptersDataSource {
+	/**
+	 * Loads the chapter passage from network
+	 */
+	fun loadChapterPassageFromOnline(): HResult<String>
 }

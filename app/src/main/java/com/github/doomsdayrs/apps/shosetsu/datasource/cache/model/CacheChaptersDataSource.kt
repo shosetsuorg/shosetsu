@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
+package com.github.doomsdayrs.apps.shosetsu.datasource.cache.model
 
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheChaptersDataSource
 
 /*
  * This file is part of shosetsu.
@@ -20,27 +22,20 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 30 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 04 / 05 / 2020
  */
-interface IChaptersRepository {
+class CacheChaptersDataSource : ICacheChaptersDataSource {
 	/**
-	 * Loads the chapter
-	 * First checks if it is in cache
-	 * Then checks the file system
-	 * Then loads the chapter from the internet
-	 * @param chapterEntity Chapter to load
+	 * Map of Chapter ID to Chapter Passage
 	 */
-	suspend fun loadChapterPassage(chapterEntity: ChapterEntity): HResult<String>
-	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, string: String)
-	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, string: String)
+	val chapters: MutableMap<Int, String> = mutableMapOf()
 
-	fun loadChapterUnreadCount(novelID: Int): HResult<Int>
-	fun addSavePath(chapterID: Int, savePath: String)
+	override fun saveChapterInCache(chapterID: Int, passage: String) {
+		chapters[chapterID] = passage
+	}
+
+	override fun loadChapterFromCache(chapterID: Int): HResult<String> =
+			chapters[chapterID]?.let { successResult(it) } ?: emptyResult()
 }

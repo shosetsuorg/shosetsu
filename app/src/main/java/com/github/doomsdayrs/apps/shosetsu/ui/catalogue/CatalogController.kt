@@ -67,6 +67,16 @@ import com.google.android.material.navigation.NavigationView
 //TODO fix issue with not loading
 class CatalogController(bundle: Bundle)
 	: RecyclerController<CatalogueAdapter, NovelListingCard>(bundle), SecondDrawerController {
+	override val diffToolCallBack: RecyclerDiffToolCallBack = object : RecyclerDiffToolCallBack() {
+		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+			TODO("Not yet implemented")
+		}
+
+		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+			TODO("Not yet implemented")
+		}
+	}
+
 	override val layoutRes: Int = R.layout.catalogue
 
 	@Attach(R.id.swipeRefreshLayout)

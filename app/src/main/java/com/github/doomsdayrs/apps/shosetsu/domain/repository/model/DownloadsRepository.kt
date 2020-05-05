@@ -31,26 +31,5 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
  * @author github.com/doomsdayrs
  */
 class DownloadsRepository(private val downloadsDao: DownloadsDao) : IDownloadsRepository {
-	override val daoLiveData: LiveData<List<DownloadEntity>>
-			by lazy { downloadsDao.loadDownloadItems() }
 
-	override fun loadFirstDownload(): DownloadEntity = downloadsDao.loadAndStartFirstDownload()
-
-	override fun loadDownloadCount(): Int = downloadsDao.loadDownloadCount()
-
-	override suspend fun addDownload(download: DownloadEntity): Long =
-			downloadsDao.insertIgnore(download)
-
-	override suspend fun suspendedUpdate(download: DownloadEntity) =
-			downloadsDao.suspendedUpdate(download)
-
-	override suspend fun suspendedDelete(download: DownloadEntity) =
-			downloadsDao.suspendedDelete(download)
-
-	override fun subscribeDao(
-			owner: LifecycleOwner,
-			observer: Observer<List<DownloadEntity>>
-	) = daoLiveData.observe(owner, Observer { observer.onChanged(it) })
-
-	override fun loadDataSnap(): List<DownloadEntity> = daoLiveData.value ?: arrayListOf()
 }

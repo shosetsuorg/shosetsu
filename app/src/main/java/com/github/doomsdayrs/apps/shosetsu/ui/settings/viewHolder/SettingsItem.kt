@@ -7,8 +7,6 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
-import com.skydoves.colorpickerview.ColorPickerDialog
-import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 
 
 /*
@@ -37,93 +35,20 @@ import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
  */
 @Suppress("unused")
 class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
-	private var type: SettingsType = SettingsType.INFORMATION
+	var type: SettingsType = SettingsType.INFORMATION
+	val itemTitle: TextView = itemView.findViewById(R.id.settings_item_title)
+	val itemDescription: TextView = itemView.findViewById(R.id.settings_item_desc)
+	val button: Button = itemView.findViewById(R.id.button)
+	val spinner: Spinner = itemView.findViewById(R.id.spinner)
+	val textView: TextView = itemView.findViewById(R.id.text)
+	val switchView: Switch = itemView.findViewById(R.id.switchView)
+	val numberPicker: NumberPicker = itemView.findViewById(R.id.numberPicker)
+	val colorBox: View = itemView.findViewById(R.id.colorBox)
+	val checkBox: CheckBox = itemView.findViewById(R.id.checkbox)
 
-	private val itemTitle: TextView = itemView.findViewById(R.id.settings_item_title)
-	private val itemDescription: TextView = itemView.findViewById(R.id.settings_item_desc)
-	private val button: Button = itemView.findViewById(R.id.button)
-	private val spinner: Spinner = itemView.findViewById(R.id.spinner)
-	private val textView: TextView = itemView.findViewById(R.id.text)
-	private val switchView: Switch = itemView.findViewById(R.id.switchView)
-	private val numberPicker: NumberPicker = itemView.findViewById(R.id.numberPicker)
-	private val colorBox: View = itemView.findViewById(R.id.colorBox)
-	private val checkBox: CheckBox = itemView.findViewById(R.id.checkbox)
-
-	fun setData(data: SettingsItemData): SettingsItem {
-		type = data.type
-		if (data.titleID != -1)
-			itemTitle.setText(data.titleID)
-		else
-			itemTitle.text = data.titleText
-
-		if (data.descID != -1)
-			itemDescription.setText(data.descID)
-		else
-			itemDescription.text = data.descriptionText
-
-		when (type) {
-			SettingsType.BUTTON -> {
-				if (data.textID != -1)
-					button.setText(data.textID)
-				else
-					button.text = data.textText
-				button.visibility = View.VISIBLE
-				button.setOnClickListener(data.buttonOnClickListener)
-			}
-			SettingsType.SPINNER -> {
-				spinner.visibility = View.VISIBLE
-				//spinner.setOnClickListener { data.spinnerOnClick }
-				spinner.adapter = data.adapter
-				spinner.setSelection(data.spinnerSelection)
-				spinner.onItemSelectedListener = data.spinnerOnItemSelectedListener
-			}
-			SettingsType.INFORMATION -> {
-				itemView.setOnClickListener(data.itemViewOnClick)
-			}
-			SettingsType.TEXT -> {
-				if (data.textID != -1)
-					textView.setText(data.textID)
-				else
-					textView.text = data.textText
-				textView.visibility = View.VISIBLE
-				textView.setOnClickListener(data.textViewOnClickListener)
-			}
-			SettingsType.SWITCH -> {
-				switchView.visibility = View.VISIBLE
-				switchView.isChecked = data.isChecked
-				switchView.setOnCheckedChangeListener(data.onCheckedListener)
-			}
-			SettingsType.NUMBER_PICKER -> {
-				numberPicker.visibility = View.VISIBLE
-				numberPicker.minValue = data.lowerBound
-				numberPicker.maxValue = data.upperBound
-				numberPicker.value = data.numberPickerValue
-				numberPicker.setOnValueChangedListener(data.numberPickerOnValueChangedListener)
-			}
-			SettingsType.CHECKBOX -> {
-				checkBox.visibility = View.VISIBLE
-				checkBox.isChecked = data.isChecked
-				checkBox.setOnCheckedChangeListener(data.onCheckedListener)
-			}
-			SettingsType.COLOR_PICKER -> {
-				colorBox.visibility = View.VISIBLE
-				colorBox.setBackgroundColor(data.itemColor)
-				colorBox.setOnClickListener {
-					ColorPickerDialog.Builder(view.context)
-							.setTitle("ColorPicker Dialog")
-							.setPreferenceName(data.colorPreferenceName)
-							.setPositiveButton(view.context.getString(R.string.confirm), ColorEnvelopeListener { envelope, _ ->
-								data.colorFunction(envelope.color)
-								colorBox.setBackgroundColor(envelope.color)
-							})
-							.setNegativeButton(view.context.getString(android.R.string.cancel))
-							{ dialogInterface, _ -> dialogInterface.dismiss() }.show()
-				}
-			}
-		}
-		return this
-	}
-
+	/**
+	 * Data for [SettingsItem]
+	 */
 	class SettingsItemData(val type: SettingsType) {
 		enum class SettingsType {
 			INFORMATION,
@@ -157,26 +82,34 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 
 		// Spinner
 		private var spinnerOnClick: (View) -> Unit
-		var spinnerOnItemSelectedListener: AdapterView.OnItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-			override fun onNothingSelected(parent: AdapterView<*>?) {
-			}
+		var spinnerOnItemSelectedListener: AdapterView.OnItemSelectedListener =
+				object : AdapterView.OnItemSelectedListener {
+					override fun onNothingSelected(parent: AdapterView<*>?) {
+					}
 
-			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-			}
-		}
+					override fun onItemSelected(
+							parent: AdapterView<*>?,
+							view: View?,
+							position: Int,
+							id: Long
+					) {
+					}
+				}
 		lateinit var adapter: ArrayAdapter<*>
 		var spinnerSelection: Int = -1
 
 		// Switch
 
 		var isChecked: Boolean = false
-		var onCheckedListener: CompoundButton.OnCheckedChangeListener = CompoundButton.OnCheckedChangeListener { _, _ -> }
+		var onCheckedListener: CompoundButton.OnCheckedChangeListener =
+				CompoundButton.OnCheckedChangeListener { _, _ -> }
 
 		// Number Picker
 		var lowerBound = 0
 		var upperBound = 0
 		var numberPickerValue: Int = 0
-		lateinit var numberPickerOnValueChangedListener: (picker: NumberPicker?, oldVal: Int, newVal: Int) -> Unit
+		lateinit var numberPickerOnValueChangedListener:
+				(picker: NumberPicker?, oldVal: Int, newVal: Int) -> Unit
 
 		init {
 			textViewOnClickListener = {}
@@ -221,7 +154,8 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 			return this
 		}
 
-		fun setOnItemSelectedListener(onItemSelectedListener: AdapterView.OnItemSelectedListener): SettingsItemData {
+		fun setOnItemSelectedListener(onItemSelectedListener: AdapterView.OnItemSelectedListener)
+				: SettingsItemData {
 			spinnerOnItemSelectedListener = onItemSelectedListener
 			return this
 		}
@@ -256,7 +190,8 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 			return this
 		}
 
-		fun setOnCheckedListner(onCheckedChangeListener: CompoundButton.OnCheckedChangeListener): SettingsItemData {
+		fun setOnCheckedListner(onCheckedChangeListener: CompoundButton.OnCheckedChangeListener)
+				: SettingsItemData {
 			onCheckedListener = onCheckedChangeListener
 			return this
 		}
@@ -277,7 +212,11 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 		}
 
 		@RequiresApi
-		fun setNumberPickerOnValueChangedListener(function: (picker: NumberPicker?, oldVal: Int, newVal: Int) -> Unit): SettingsItemData {
+		fun setNumberPickerOnValueChangedListener(function: (
+				picker: NumberPicker?,
+				oldVal: Int,
+				newVal: Int
+		) -> Unit): SettingsItemData {
 			this.numberPickerOnValueChangedListener = function
 			return this
 		}
@@ -297,5 +236,4 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 			return this
 		}
 	}
-
 }
