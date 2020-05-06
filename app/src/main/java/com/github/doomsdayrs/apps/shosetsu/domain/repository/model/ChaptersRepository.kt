@@ -30,6 +30,9 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepos
 /**
  * shosetsu
  * 02 / 05 / 2020
+ * @param memorySource Source from memory
+ * @param localSource Source from storage
+ * @param remoteSource Source from online
  */
 class ChaptersRepository(
 		val memorySource: ICacheChaptersDataSource,
@@ -43,15 +46,18 @@ class ChaptersRepository(
 							.takeIf { it is HResult.Success }
 					?: remoteSource.loadChapterPassageFromOnline()
 
-	override suspend fun saveChapterPassageToMemory(chapterID: Int, savePath: String) =
-			memorySource.saveChapterInCache(chapterID, savePath)
+	override suspend fun saveChapterPassageToMemory(
+			chapterEntity: ChapterEntity,
+			passage: String
+	): Unit = memorySource.saveChapterInCache(chapterEntity.id, passage)
 
-	override fun loadChapterUnreadCount(novelID: Int): HResult<Int> {
-		TODO("Not yet implemented")
+	override suspend fun saveChapterPassageToStorage(
+			chapterEntity: ChapterEntity,
+			passage: String
+	): Unit = saveChapterPassageToMemory(chapterEntity, passage).also {
+		localSource.saveChapterPassageToStorage(chapterEntity, passage)
 	}
 
-	override fun addSavePath(chapterID: Int, savePath: String) {
-		TODO("Not yet implemented")
-	}
-
+	override fun loadChapterUnreadCount(novelID: Int): HResult<Int> =
+			localSource.loadUnreadChapterCount(novelID)
 }

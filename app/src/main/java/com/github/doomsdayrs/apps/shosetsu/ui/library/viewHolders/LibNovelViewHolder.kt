@@ -10,11 +10,11 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_URL
-import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.card.MaterialCardView
@@ -89,7 +89,7 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 			it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text)
 		}
 		itemView.setOnLongClickListener {
-			it.context.launchAsync { handleSelection() }
+			launchUI { handleSelection() }
 			true
 		}
 	}

@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
+
 /*
  * This file is part of shosetsu.
  *
@@ -25,4 +28,6 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
  * 04 / 05 / 2020
  */
 interface ILocalRepositoryDataSource {
+	fun loadRepositories(): HResult<List<RepositoryEntity>>
+	fun updateRepository(): HResult<List<RepositoryEntity>>
 }

@@ -35,12 +35,21 @@ interface IChaptersRepository {
 	 * First checks if it is in cache
 	 * Then checks the file system
 	 * Then loads the chapter from the internet
-	 * @param chapterEntity Chapter to load
 	 */
 	suspend fun loadChapterPassage(chapterEntity: ChapterEntity): HResult<String>
-	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, string: String)
-	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, string: String)
 
+	/**
+	 * Save the chapter to memory
+	 */
+	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, passage: String)
+
+	/**
+	 * Save the chapter to storage
+	 */
+	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
+
+	/**
+	 * Loads count of unread chapters
+	 */
 	fun loadChapterUnreadCount(novelID: Int): HResult<Int>
-	fun addSavePath(chapterID: Int, savePath: String)
 }

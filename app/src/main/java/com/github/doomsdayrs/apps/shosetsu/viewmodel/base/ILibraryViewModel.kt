@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -27,13 +27,13 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  *
  * @author github.com/doomsdayrs
  */
-interface ILibraryViewModel : SubscribeViewModel<List<NovelUI>> {
+interface ILibraryViewModel : SubscribeHandleViewModel<List<NovelUI>> {
 	var selectedNovels: ArrayList<Int>
-	suspend fun selectAll()
-	suspend fun deselectAll()
-	suspend fun removeAllFromLibrary()
-	suspend fun loadNovelIDs(): List<Int>
-	suspend fun loadChaptersUnread(novelID: Int): Int
+	fun selectAll()
+	fun deselectAll()
+	fun removeAllFromLibrary()
+	fun loadNovelIDs(): List<Int>
+	fun loadChaptersUnread(novelID: Int): Int
 	fun loadNovel(id: Int): NovelUI?
 	fun getCachedData(): List<NovelUI>
 

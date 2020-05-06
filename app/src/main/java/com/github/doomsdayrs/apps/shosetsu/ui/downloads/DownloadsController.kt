@@ -42,13 +42,6 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
  */
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
-	override val diffToolCallBack: RecyclerDiffToolCallBack = object : RecyclerDiffToolCallBack() {
-		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-				oldList[oldItemPosition].chapterID == newList[newItemPosition].chapterID
-
-		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-				oldList[oldItemPosition] == newList[newItemPosition]
-	}
 
 	private lateinit var receiver: BroadcastReceiver
 	private val downloadsViewModel: IDownloadsViewModel by viewModel()
@@ -99,4 +92,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 		}
 		return false
 	}
+
+	override fun difAreItemsTheSame(oldItem: DownloadUI, newItem: DownloadUI): Boolean =
+			oldItem.chapterID == newItem.chapterID
 }

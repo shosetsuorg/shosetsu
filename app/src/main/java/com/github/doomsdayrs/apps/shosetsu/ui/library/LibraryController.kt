@@ -26,7 +26,6 @@ import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,16 +34,13 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
+import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.library.adapter.LibraryNovelAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.library.listener.LibrarySearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.common.ext.runOnMain
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.LibraryViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.navigation.NavigationView
 
@@ -54,11 +50,13 @@ import com.google.android.material.navigation.NavigationView
  *
  * @author github.com/doomsdayrs
  */
-class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), SecondDrawerController {
+class LibraryController
+	: RecyclerController<LibraryNovelAdapter, NovelUI>(), SecondDrawerController {
+	/***/
 	val viewModel: ILibraryViewModel by viewModel()
 
-	val inflater: MenuInflater?
-		get() = MenuInflater(applicationContext)
+	/** Inflater */
+	val inflater: MenuInflater = MenuInflater(applicationContext)
 
 	init {
 		setHasOptionsMenu(true)
@@ -67,28 +65,10 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 	override fun onViewCreated(view: View) {
 		recyclerView = view.findViewById(R.id.recyclerView)
 		Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.my_library))
-		launchAsync {
-			recyclerArray.addAll(viewModel.loadNovelIDs())
-			runOnMain {
-				setLibraryCards(recyclerArray)
-			}
-		}
-		subscribe()
+		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 	}
 
-	private fun subscribe() {
-		viewModel.subscribeObserver(this, Observer { newRecyclerArray ->
-			val difCallbacck = LibraryViewModel.LibraryDiffCallBack(
-					recyclerArray,
-					newRecyclerArray.map { it.id }
-			)
-			val diffResult = DiffUtil.calculateDiff(difCallbacck)
-			recyclerArray.clear()
-			recyclerArray.addAll(newRecyclerArray.map { it.id })
-			adapter?.let { it -> diffResult.dispatchUpdatesTo(it) }
-		})
-	}
-
+	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (viewModel.selectedNovels.size <= 0) {
 			Log.d("LibraryFragment", "Creating default menu")
@@ -106,10 +86,14 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 		}
 	}
 
+	/***/
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.updater_now -> {
-				UpdateService.init(applicationContext!!, recyclerArray)
+				UpdateService.init(
+						applicationContext!!,
+						recyclerArray.map { it.id } as ArrayList<Int>
+				)
 				return true
 			}
 			R.id.chapter_select_all -> {
@@ -117,10 +101,10 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 				return true
 			}
 			R.id.chapter_deselect_all -> {
-				launchAsync {
+				launchUI {
 					viewModel.deselectAll()
 					runOnMain {
-						if (inflater != null) activity?.invalidateOptionsMenu()
+						activity?.invalidateOptionsMenu()
 					}
 				}
 				return true
@@ -145,7 +129,7 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 	/**
 	 * Sets the cards to display
 	 */
-	fun setLibraryCards(novelCards: ArrayList<Int>) {
+	fun setLibraryCards(novelCards: ArrayList<NovelUI>) {
 		recyclerView?.setHasFixedSize(false)
 
 		adapter = LibraryNovelAdapter(
@@ -170,16 +154,6 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 			)
 	}
 
-	fun changeLibraryCards(newCards: List<Int>) {
-		val dif = DiffUtil.calculateDiff(LibraryViewModel.LibraryDiffCallBack(
-				recyclerArray,
-				newCards
-		))
-		recyclerArray.clear()
-		recyclerArray.addAll(newCards)
-		adapter?.let { dif.dispatchUpdatesTo(it) }
-	}
-
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
 		// TODO
 	}
@@ -187,4 +161,7 @@ class LibraryController : RecyclerController<LibraryNovelAdapter, Int>(), Second
 	override fun handleConfirm(linearLayout: LinearLayout) {
 		// TODO
 	}
+
+	override fun difAreItemsTheSame(oldItem: NovelUI, newItem: NovelUI): Boolean =
+			oldItem.id == newItem.id
 }

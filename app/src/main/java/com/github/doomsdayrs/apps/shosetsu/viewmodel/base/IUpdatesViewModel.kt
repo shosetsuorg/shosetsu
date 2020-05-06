@@ -1,9 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
 import java.util.*
 
 /*
@@ -31,7 +32,7 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 interface IUpdatesViewModel {
-	suspend fun createControllers(): ArrayList<UpdateController>
-	suspend fun getTimeBetweenDates(date: Long, date2: Long): LiveData<Array<UpdateEntity>>
-	suspend fun getURLImageTitle(novelID: Int): URLImageTitle
+	fun createControllers(): ArrayList<UpdateController>
+	fun getTimeBetweenDates(date: Long, date2: Long): LiveData<HResult<List<UpdateUI>>>
+	fun getURLImageTitle(novelID: Int): URLImageTitle
 }

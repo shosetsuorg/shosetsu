@@ -62,7 +62,7 @@ class SearchViewHolder(itemView: View, val searchController: SearchController)
 				textView.setText(R.string.my_library)
 				if (!searchController.containsData(id)) {
 					val intArray: List<Int> =
-							searchController.iSearchViewModel.search(query).map { it.id }
+							searchController.viewModel.search(query).map { it.id }
 					val data = StoredData(id)
 					data.intArray = intArray
 					searchController.array.add(data)
@@ -81,7 +81,7 @@ class SearchViewHolder(itemView: View, val searchController: SearchController)
 				progressBar.visibility = View.GONE
 			}
 			else -> {
-                //TODO finix
+				//TODO finix
 				//formatter = FormattersRepository.getByID(id)
 				//	textView.text = formatter.name
 				if (!searchController.containsData(id))

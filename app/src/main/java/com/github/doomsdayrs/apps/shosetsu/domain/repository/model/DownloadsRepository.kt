@@ -17,12 +17,8 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalDownloadsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
 
 /**
  * shosetsu
@@ -30,6 +26,8 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
  *
  * @author github.com/doomsdayrs
  */
-class DownloadsRepository(private val downloadsDao: DownloadsDao) : IDownloadsRepository {
+class DownloadsRepository(
+		private val iLocalDownloadsDataSource: ILocalDownloadsDataSource
+) : IDownloadsRepository {
 
 }

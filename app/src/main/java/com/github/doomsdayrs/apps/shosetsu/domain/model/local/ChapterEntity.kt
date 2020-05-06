@@ -6,8 +6,8 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 
 /*
@@ -82,11 +82,10 @@ data class ChapterEntity(
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = -1
 
-	fun toDownload(novelName: String) =
-			DownloadEntity(id, url, title, novelName, formatter)
-
 	override fun convertTo(): ChapterUI =
 			ChapterUI(
+					id,
+					novelID,
 					url,
 					novelID,
 					formatter,

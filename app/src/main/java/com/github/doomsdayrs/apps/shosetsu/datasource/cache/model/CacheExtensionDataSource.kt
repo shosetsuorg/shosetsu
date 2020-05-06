@@ -1,8 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
+package com.github.doomsdayrs.apps.shosetsu.datasource.cache.model
 
-import androidx.lifecycle.LiveData
+import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 
 /*
  * This file is part of shosetsu.
@@ -21,14 +23,20 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 04 / 05 / 2020
  */
-interface ILocalNovelsDataSource {
-	/** load list of novels that are to be bookmarked */
-	suspend fun loadBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>>
+class CacheExtensionDataSource : ICacheExtensionsDataSource {
+	/**
+	 * Map of Formatter ID to Formatter
+	 */
+	private val formatters: MutableMap<Int, Formatter> = mutableMapOf()
+
+	override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<Formatter> =
+			formatters[formatterID]?.let { successResult(it) } ?: emptyResult()
+
+	override suspend fun putFormatterInMemory(formatter: Formatter) {
+		formatters[formatter.formatterID] = formatter
+	}
 }

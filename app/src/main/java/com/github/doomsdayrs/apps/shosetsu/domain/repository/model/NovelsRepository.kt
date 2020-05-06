@@ -1,11 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalNovelsDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteNovelDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 
 /*
  * This file is part of shosetsu.
@@ -30,6 +27,9 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
  *
  * @author github.com/doomsdayrs
  */
-class NovelsRepository(val novelsDao: NovelsDao) : INovelsRepository {
+class NovelsRepository(
+		val iLocalNovelsDataSource: ILocalNovelsDataSource,
+		val iRemoteNovelDataSource: IRemoteNovelDataSource
+) : INovelsRepository {
 
 }

@@ -34,9 +34,9 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class ConfigExtView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val imageView: ImageView = itemView.findViewById(R.id.imageView)
-    val title: TextView = itemView.findViewById(R.id.title)
-    val switch: Switch = itemView.findViewById(R.id.switchView)
-    val constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraint)
-    val spinner: Spinner = itemView.findViewById(R.id.spinner)
+	val imageView: ImageView = itemView.findViewById(R.id.imageView)
+	val title: TextView = itemView.findViewById(R.id.title)
+	val switch: Switch = itemView.findViewById(R.id.switchView)
+	val constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraint)
+	val spinner: Spinner = itemView.findViewById(R.id.spinner)
 }

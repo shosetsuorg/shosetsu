@@ -19,8 +19,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.search
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
 /**
  * Shosetsu
  * 9 / June / 2019
@@ -28,13 +28,13 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.search
  * @author github.com/doomsdayrs
  */
 class CataloguesSearchQuery(private val activity: Activity?) : SearchView.OnQueryTextListener {
-    override fun onQueryTextSubmit(s: String): Boolean {
-        search(activity!!, s)
-        return true
-    }
+	override fun onQueryTextSubmit(s: String): Boolean {
+		search(activity!!, s)
+		return true
+	}
 
-    override fun onQueryTextChange(s: String): Boolean {
-        return false
-    }
+	override fun onQueryTextChange(s: String): Boolean {
+		return false
+	}
 
 }

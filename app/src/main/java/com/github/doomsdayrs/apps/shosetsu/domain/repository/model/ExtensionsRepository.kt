@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 
 /*
  * This file is part of shosetsu.
@@ -29,6 +27,8 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsRepository(val extensionsDao: ExtensionsDao) : IExtensionsRepository {
+class ExtensionsRepository(
+		val localExtensionsDataSource: ICacheExtensionsDataSource
+) : IExtensionsRepository {
 
 }

@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.remote.base
 
+import app.shosetsu.lib.Formatter
+
 /*
  * This file is part of shosetsu.
  *
@@ -17,12 +19,10 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.remote.base
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 04 / 05 / 2020
  */
 interface IRemoteNovelDataSource {
+	fun loadNovel(novelURL: String, formatter: Formatter)
 }

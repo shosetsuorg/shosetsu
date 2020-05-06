@@ -5,7 +5,7 @@ import android.view.View
 import app.shosetsu.lib.values
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController.StoredData
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import org.luaj.vm2.LuaError
@@ -35,41 +35,46 @@ import org.luaj.vm2.LuaError
  * @author github.com/doomsdayrs
  */
 class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<String, Void, Boolean>() {
-    var array: List<Array<String>> = arrayListOf()
+	var array: List<Array<String>> = arrayListOf()
 
-    override fun onPreExecute() {
-        super.onPreExecute()
-        searchViewHolder.itemView.post {
-            searchViewHolder.progressBar.visibility = View.VISIBLE
-        }
-    }
+	override fun onPreExecute() {
+		super.onPreExecute()
+		searchViewHolder.itemView.post {
+			searchViewHolder.progressBar.visibility = View.VISIBLE
+		}
+	}
 
-    override fun doInBackground(vararg params: String?): Boolean {
-        try {
-            val a = CatalogueLoader(searchViewHolder.formatter, searchViewHolder.formatter.searchFilters.values(), searchViewHolder.query).execute()
-            array = Utilities.convertNovelArrayToString2DArray(a)
-        } catch (e: LuaError) {
-            e.printStackTrace()
-            return false
-        }
-        return true
-    }
+	override fun doInBackground(vararg params: String?): Boolean {
+		try {
+			val a = CatalogueLoader(
+					searchViewHolder.formatter,
+					searchViewHolder.formatter.searchFilters.values(),
+					searchViewHolder.query
+			).execute()
+			array = Utilities.convertNovelArrayToString2DArray(a)
+		} catch (e: LuaError) {
+			e.printStackTrace()
+			return false
+		}
+		return true
+	}
 
-    override fun onPostExecute(result: Boolean?) {
-        super.onPostExecute(result)
-        searchViewHolder.itemView.post {
-            searchViewHolder.progressBar.visibility = View.GONE
-        }
-        searchViewHolder.itemView.post {
-            // Stores DATA
-            val data: SearchController.StoredData = SearchController.StoredData(searchViewHolder.formatter.formatterID)
-            data.novelArray = array
-            searchViewHolder.searchController.array.add(data)
+	override fun onPostExecute(result: Boolean?) {
+		super.onPostExecute(result)
+		searchViewHolder.itemView.post {
+			searchViewHolder.progressBar.visibility = View.GONE
+		}
+		searchViewHolder.itemView.post {
+			// Stores DATA
+			with(StoredData(searchViewHolder.formatter.formatterID)) {
+				novelArray = array
+				searchViewHolder.searchController.array.add(this)
+			}
 
-            // Displays DATA
-            searchViewHolder.searchResultsAdapter = SearchResultsAdapter(array, searchViewHolder)
-            searchViewHolder.setAdapter()
-        }
-    }
+			// Displays DATA
+			searchViewHolder.searchResultsAdapter = SearchResultsAdapter(array, searchViewHolder)
+			searchViewHolder.setAdapter()
+		}
+	}
 
 }

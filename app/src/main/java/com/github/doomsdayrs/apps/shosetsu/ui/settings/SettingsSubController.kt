@@ -33,16 +33,6 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 abstract class SettingsSubController : RecyclerController<SettingItemsAdapter, SettingsItem.SettingsItemData>() {
-	override val diffToolCallBack: RecyclerDiffToolCallBack = object : RecyclerDiffToolCallBack() {
-		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-			TODO("Not yet implemented")
-		}
-
-		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-			TODO("Not yet implemented")
-		}
-	}
-
 	override val layoutRes: Int = R.layout.settings
 
 	/** Settings to be used*/

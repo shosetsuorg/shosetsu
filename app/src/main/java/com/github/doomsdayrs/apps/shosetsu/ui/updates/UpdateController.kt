@@ -20,12 +20,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import java.util.*
 
@@ -36,7 +35,7 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class UpdateController(bundle: Bundle)
-	: RecyclerController<UpdatedNovelsAdapter, UpdateEntity>() {
+	: RecyclerController<UpdatedNovelsAdapter, UpdateUI>() {
 	val updatesViewModel: IUpdatesViewModel by viewModel()
 
 	var date: Long = bundle.getLong("date")
@@ -44,28 +43,23 @@ class UpdateController(bundle: Bundle)
 	val novelIDs = ArrayList<Int>()
 
 	override fun onViewCreated(view: View) {
-		launchAsync {
-			updatesViewModel.getTimeBetweenDates(
-					date,
-					date + 86399999
-			).observe(
-					this@UpdateController,
-					Observer {
-						with(recyclerArray) {
-							clear()
-							addAll(it)
-							filter { !novelIDs.contains(it.novelID) }
-									.forEach { novelIDs.add(it.novelID) }
-						}
-						recyclerView?.post { adapter?.notifyDataSetChanged() }
-					}
-			)
-		}
-
 		adapter = UpdatedNovelsAdapter(this, activity!!)
 		recyclerView?.post { adapter?.notifyDataSetChanged() }
 				?: Log.e(logID(), "Recyclerview is null")
-
-		Log.d(logID(), "Updates on this day: " + recyclerArray.size.toString())
+		updatesViewModel.getTimeBetweenDates(
+				date,
+				date + 86399999
+		).observe(this@UpdateController, Observer { handleRecyclerUpdate(it) })
 	}
+
+	override fun updateUI(list: List<UpdateUI>) {
+		super.updateUI(list)
+		with(list) {
+			filter { !novelIDs.contains(it.novelID) }
+					.forEach { novelIDs.add(it.novelID) }
+		}
+	}
+
+	override fun difAreItemsTheSame(oldItem: UpdateUI, newItem: UpdateUI): Boolean =
+			oldItem.chapterID == newItem.chapterID
 }

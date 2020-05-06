@@ -1,5 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+
 /*
  * This file is part of shosetsu.
  *
@@ -25,4 +29,7 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
  * 04 / 05 / 2020
  */
 interface ILocalExtensionsDataSource {
+	suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
+	suspend fun updateExtension(extensionEntity: ExtensionEntity)
+	suspend fun deleteExtension(extensionEntity: ExtensionEntity)
 }

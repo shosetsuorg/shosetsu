@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.FormatterAsCardsUseCase
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
@@ -36,20 +38,11 @@ import kotlinx.coroutines.Dispatchers
 class CatalogsViewModel(
 		private val formatterAsCardsUseCase: FormatterAsCardsUseCase
 ) : ViewModel(), ICatalogsViewModel {
-
 	override val liveData: LiveData<HResult<List<FormatterCard>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Main) {
 			emit(loading())
 			emitSource(formatterAsCardsUseCase.invoke())
 		}
 	}
-
-	override fun subscribeObserver(
-			owner: LifecycleOwner,
-			observer: Observer<HResult<List<FormatterCard>>>
-	): Unit = liveData.observe(owner, observer)
-
-	override suspend fun getLiveData(): HResult<List<FormatterCard>> =
-			liveData.value ?: emptyResult()
 }
 

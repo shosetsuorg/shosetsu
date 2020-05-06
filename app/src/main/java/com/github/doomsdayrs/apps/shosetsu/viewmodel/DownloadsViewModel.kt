@@ -1,9 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
@@ -33,15 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
  */
 class DownloadsViewModel(private val downloadsRepository: IDownloadsRepository)
 	: ViewModel(), IDownloadsViewModel {
-
-	override val liveData: LiveData<List<DownloadUI>>
+	override val liveData: LiveData<HResult<List<DownloadUI>>>
 		get() = TODO("Not yet implemented")
-
-	override fun subscribeObserver(
-			owner: LifecycleOwner,
-			observer: Observer<List<DownloadUI>>
-	) = downloadsRepository.subscribeRepository(owner, observer)
-
-	override suspend fun getLiveData(): List<DownloadUI> = downloadsRepository.loadData()
 
 }

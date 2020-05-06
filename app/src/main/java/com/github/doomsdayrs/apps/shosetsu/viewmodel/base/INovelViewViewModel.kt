@@ -1,7 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -28,7 +31,9 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  * @author github.com/doomsdayrs
  */
 interface INovelViewViewModel
-	: SubscribeViewModel<NovelUI> {
+	: SubscribeHandleViewModel<NovelUI> {
+	val chapters: LiveData<HResult<ChapterUI>>
+	var isArrayReversed: Boolean
 
 	/**
 	 * Instruction to download the next [count] chapters
@@ -44,4 +49,9 @@ interface INovelViewViewModel
 	 * Deletes the previous chapter
 	 */
 	fun deletePrevious()
+
+	/**
+	 * Next chapter to read uwu
+	 */
+	fun loadLastRead(): LiveData<HResult<ChapterUI>>
 }

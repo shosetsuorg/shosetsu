@@ -22,10 +22,11 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
-import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.common.ext.runOnMain
+import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
+import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -38,18 +39,22 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class LibraryNovelAdapter(
-		private val novelIDs: ArrayList<Int>,
+		private val novels: ArrayList<NovelUI>,
 		private val libraryController: LibraryController,
 		@LayoutRes val layout: Int,
 		private val viewModel: ILibraryViewModel = libraryController.viewModel
 ) : RecyclerView.Adapter<LibNovelViewHolder>() {
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): LibNovelViewHolder {
-		val view = LayoutInflater.from(viewGroup.context).inflate(layout, viewGroup, false)
+		val view = LayoutInflater.from(viewGroup.context).inflate(
+				layout,
+				viewGroup,
+				false
+		)
 		return LibNovelViewHolder(view, libraryController.router)
 	}
 
 	override fun onBindViewHolder(libNovelViewHolder: LibNovelViewHolder, i: Int) {
-		viewModel.loadNovel(novelIDs[i])?.let { novelUI ->
+		novels[i].let { novelUI ->
 			//Sets values
 			run {
 				if (novelUI.imageURL.isNotEmpty())
@@ -84,7 +89,5 @@ class LibraryNovelAdapter(
 		}
 	}
 
-	override fun getItemCount(): Int {
-		return novelIDs.size
-	}
+	override fun getItemCount(): Int = novels.size
 }

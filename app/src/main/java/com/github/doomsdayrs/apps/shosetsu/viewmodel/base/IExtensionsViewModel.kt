@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  * @author github.com/doomsdayrs
  */
 interface IExtensionsViewModel
-	: SubscribeViewModel<List<ExtensionUI>>, SubscribeLiveData<List<ExtensionEntity>> {
+	: SubscribeHandleViewModel<List<ExtensionUI>> {
 	fun reloadFormatters()
 	fun refreshRepository()
 	fun installExtension(extensionEntity: ExtensionUI)

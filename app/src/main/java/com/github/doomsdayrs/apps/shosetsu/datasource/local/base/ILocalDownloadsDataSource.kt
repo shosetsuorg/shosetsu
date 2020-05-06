@@ -1,5 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+
 /*
  * This file is part of shosetsu.
  *
@@ -17,12 +21,14 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 04 / 05 / 2020
  */
 interface ILocalDownloadsDataSource {
+	fun loadDownloads(): LiveData<HResult<List<DownloadEntity>>>
+	fun updateDownload(downloadEntity: DownloadEntity)
+	fun removeDownload(downloadEntity: DownloadEntity)
+	fun addDownload(downloadEntity: DownloadEntity)
+	fun clearDownloads()
 }

@@ -42,11 +42,11 @@ class DownloadAdapter(val downloadsController: DownloadsController)
 		return DownloadItemView(view)
 	}
 
-	override fun onBindViewHolder(downloadItemView: DownloadItemView, i: Int) {
-		val downloadItem = downloadsController.recyclerArray[i]
-		downloadItemView.title.text = downloadItem.chapterURL
-		downloadItemView.status.text = downloadItem.status.toString()
-	}
+	override fun onBindViewHolder(downloadItemView: DownloadItemView, i: Int) =
+			with(downloadsController.recyclerArray[i]) {
+				downloadItemView.title.text = chapterURL
+				downloadItemView.status.text = status.toString()
+			}
 
 	override fun getItemCount(): Int = downloadsController.recyclerArray.size
 

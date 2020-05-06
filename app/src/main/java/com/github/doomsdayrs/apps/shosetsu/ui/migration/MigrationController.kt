@@ -50,8 +50,12 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 		const val TARGETS_BUNDLE_KEY = "targets"
 	}
 
-	class Transferee(val original: Int, var targetFormatterID: Int = -1, var listings: Array<Novel.Listing> = arrayOf(), var selectedURL: String = "") {
-	}
+	class Transferee(
+			val original: Int,
+			var targetFormatterID: Int = -1,
+			var listings: Array<Novel.Listing> = arrayOf(),
+			var selectedURL: String = ""
+	)
 
 	override val layoutRes: Int = R.layout.migration_view
 

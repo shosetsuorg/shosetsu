@@ -1,10 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
 import android.app.AlertDialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -12,14 +8,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.Novel
+import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapter
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.getChapters
@@ -27,14 +19,17 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseCha
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.setChapterStatus
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.common.ext.*
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_NOTIFY_DATA_CHANGE
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_RELOAD_CHAPTERS_FROM_DB
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 import kotlin.collections.ArrayList
@@ -68,7 +63,7 @@ import kotlin.collections.ArrayList
  *
  */
 class NovelChaptersController(bundle: Bundle)
-	: RecyclerController<ChaptersAdapter, ChapterEntity>(bundle) {
+	: RecyclerController<ChaptersAdapter, ChapterUI>(bundle) {
 	init {
 		setHasOptionsMenu(true)
 	}
@@ -76,85 +71,27 @@ class NovelChaptersController(bundle: Bundle)
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
-	var novelController: NovelController? = null
-	var novelID: Int = -1
-
-	private lateinit var receiver: BroadcastReceiver
-
 	@Attach(R.id.resume)
 	var resume: FloatingActionButton? = null
 
-	@Attach(R.id.fragment_novel_chapters_recycler)
-	var novelChaptersRecycler: RecyclerView? = null
-
-	var selectedChapters = ArrayList<Int>()
-	private var isArrayReversed = false
+	val viewModel: INovelViewViewModel = (parentController as NovelController).viewModel
 
 
-	override fun onDestroy() {
-		super.onDestroy()
-		isArrayReversed = false
-		Log.d("NFChapters", "Destroy")
-	}
-
-	override fun onDestroyView(view: View) {
-		super.onDestroyView(view)
-		activity?.unregisterReceiver(receiver)
-	}
+	val inflater: MenuInflater = MenuInflater(context)
 
 	override fun onViewCreated(view: View) {
-		novelController = parentController as NovelController?
-		novelController?.novelChaptersController = this
-
 		resume?.visibility = GONE
-		setChapters()
 		resume?.setOnClickListener {
-			val i = lastRead()
-			if (i != -1 && i != -2) {
-				if (activity != null) openChapter(
-						activity!!,
-						recyclerArray[i],
-						novelID,
-						novelController!!.formatter.formatterID
-				)
-			} else context?.toast("No chapters! How did you even press this!")
-		}
-
-		// Attach receiver
-		run {
-			val filter = IntentFilter()
-			filter.addAction(BC_NOTIFY_DATA_CHANGE)
-			filter.addAction(BC_RELOAD_CHAPTERS_FROM_DB)
-			receiver = object : BroadcastReceiver() {
-				override fun onReceive(context: Context?, intent: Intent?) {
-					if (intent?.action == BC_RELOAD_CHAPTERS_FROM_DB)
-						novelController?.let {
-							recyclerArray = getChapters(it.novelID) as ArrayList<Novel.Chapter>
-						}
-					novelChaptersRecycler?.adapter?.notifyDataSetChanged()
+			viewModel.loadLastRead().observe(this, Observer { result ->
+				when (result) {
+					is HResult.Error -> {
+					}
+					is HResult.Empty -> {
+					}
+					is HResult.Success -> activity?.let { openChapter(it, result.data) }
 				}
-			}
-			activity?.registerReceiver(receiver, filter)
+			})
 		}
-	}
-
-	/**
-	 * Save data of view before destroyed
-	 *
-	 * @param outState output save
-	 */
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		outState.putIntegerArrayList("selChapter", selectedChapters)
-		outState.putInt("novelID", novelID)
-	}
-
-	override fun onRestoreInstanceState(saved: Bundle) {
-		super.onRestoreInstanceState(saved)
-		selectedChapters.addAll(
-				saved.getIntegerArrayList("selChapter") ?: arrayListOf()
-		)
-		novelID = saved.getInt("novelID")
 	}
 
 	/**
@@ -221,201 +158,8 @@ class NovelChaptersController(bundle: Bundle)
 		}
 	}
 
-	/**
-	 * Sets the novel chapters down
-	 */
-	fun setChapters() {
-		novelChaptersRecycler!!.post {
-			novelChaptersRecycler!!.setHasFixedSize(false)
-			val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-			if (novelController != null && !DatabaseNovels.isNotInNovels(novelID)) {
-				recyclerArray = getChapters(novelID) as ArrayList<Novel.Chapter>
-				if (recyclerArray.isNotEmpty()) resume!!.visibility = VISIBLE
-			}
-			adapter = ChaptersAdapter(this)
-			adapter!!.setHasStableIds(true)
-			novelChaptersRecycler!!.layoutManager = layoutManager
-			novelChaptersRecycler!!.adapter = adapter
-		}
-	}
-
-	val inflater: MenuInflater?
-		get() = MenuInflater(context)
-
-	fun updateAdapter(): Boolean {
-		return novelChaptersRecycler!!.post { if (adapter != null) adapter!!.notifyDataSetChanged() }
-	}
-
-	private fun customAdd(count: Int) {
-		val ten = getCustom(count) { true }
-		if (!ten.isNullOrEmpty())
-			for ((_, title, link) in ten)
-				DownloadManager.addToDownload(activity!!, DownloadEntity(
-						getChapterIDFromChapterURL(link),
-						novelController!!.novelInfoController!!.novelPage!!.title,
-						title,
-						status = "Pending"
-				))
-	}
-
-
-	operator fun contains(novelChapter: Novel.Chapter): Boolean {
-		try {
-			for (n in selectedChapters)
-				if (getChapter(n)!!.link.equals(novelChapter.link, ignoreCase = true))
-					return true
-		} catch (e: MissingResourceException) {
-			e.handle(logID(), true)
-		}
-		return false
-	}
-
-	private fun findMinPosition(): Int {
-		var min: Int = recyclerArray.size
-		for (x in recyclerArray.indices) if (contains(recyclerArray[x]))
-			if (x < min) min = x
-		return min
-	}
-
-	private fun findMaxPosition(): Int {
-		var max = -1
-		for (x in recyclerArray.indices.reversed()) if (contains(recyclerArray[x]))
-			if (x > max) max = x
-		return max
-	}
-
-	private fun handleExceptionLogging(e: Exception) = e.handle(logID())
-
-	@Suppress("unused")
-			/**
-			 * @param chapterURL Current chapter URL
-			 * @return chapter after the input, returns the current chapter if no more
-			 */
-	fun getNextChapter(chapterURL: Int, novelChapters: IntArray?): Novel.Chapter? {
-		if (novelChapters != null && novelChapters.isNotEmpty())
-			for (x in novelChapters.indices) {
-				if (novelChapters[x] == chapterURL) {
-					return if (isArrayReversed!!) {
-						if (x - 1 != -1) getChapter(novelChapters[x - 1])
-						else
-							getChapter(novelChapters[x])
-					} else {
-						if (x + 1 != novelChapters.size)
-							getChapter(novelChapters[x + 1]) else
-							getChapter(novelChapters[x])
-					}
-				}
-			}
-		return null
-	}
-
-	fun getNextChapter(chapterURL: String, novelChapters: List<Novel.Chapter>): Novel.Chapter? {
-		if (novelChapters.isNotEmpty())
-			for (x in novelChapters.indices) {
-				if (novelChapters[x].link == chapterURL) {
-					return if (isArrayReversed) {
-						if (x - 1 != -1)
-							getChapter(getChapterIDFromChapterURL(novelChapters[x - 1].link))
-						else
-							getChapter(getChapterIDFromChapterURL(novelChapters[x].link))
-					} else {
-						if (x + 1 != novelChapters.size)
-							getChapter(getChapterIDFromChapterURL(novelChapters[x + 1].link))
-						else
-							getChapter(getChapterIDFromChapterURL(novelChapters[x].link))
-					}
-				}
-			}
-		return null
-	}
-
-	fun getCustom(count: Int, check: (ReadingStatus) -> Boolean): List<Novel.Chapter> {
-		Log.d("NovelFragment", "CustomGet of chapters: Count:$count")
-		val customChapters: ArrayList<Novel.Chapter> = ArrayList()
-		val lastReadChapter = getLastRead()
-		var found = false
-		if (!recyclerArray.isNullOrEmpty()) if (!isArrayReversed) {
-			for (x in recyclerArray.size - 1 downTo 0) {
-				if (lastReadChapter.link == recyclerArray[x].url)
-					found = true
-				if (found) {
-					var y = x
-					while (y < recyclerArray.size) {
-						if (customChapters.size <= count) {
-							if (check(getChapterStatus(getChapterIDFromChapterURL(recyclerArray[y].url))))
-								customChapters.add(recyclerArray[y])
-						}
-						Log.d("NovelFragment", "Size ${customChapters.size}")
-						y++
-					}
-				}
-
-			}
-		} else {
-			for (x in recyclerArray.indices) {
-				if (lastReadChapter.link == recyclerArray[x].url)
-					found = true
-				if (found) {
-					var y = x
-					while (y > 0) {
-						if (customChapters.size <= count) {
-							if (check(getChapterStatus(getChapterIDFromChapterURL(recyclerArray[y].url))))
-								customChapters.add(recyclerArray[y])
-						}
-						y--
-					}
-				}
-
-			}
-		}
-
-		return customChapters
-	}
-
-	fun getLastRead(): Novel.Chapter {
-		if (!recyclerArray.isNullOrEmpty())
-			if (!isArrayReversed)
-				for (x in recyclerArray.size - 1 downTo 0) {
-					val stat = getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].url))
-					if (stat == ReadingStatus.READ || stat == ReadingStatus.READING)
-						return recyclerArray[x]
-				}
-			else for (x in recyclerArray) {
-				val stat = getChapterStatus(getChapterIDFromChapterURL(x.url))
-				if (stat == ReadingStatus.READ || stat == ReadingStatus.READING)
-					return x
-			}
-		return if (isArrayReversed) recyclerArray[0] else recyclerArray[recyclerArray.size - 1]
-	}
-
-	/**
-	 * @return position of last read chapter, reads array from reverse.
-	 * If -1 then the array is null, if -2 the array is empty, else if not found plausible chapter returns the first.
-	 */
-	fun lastRead(): Int {
-		return if (recyclerArray.isNotEmpty()) {
-			if (!isArrayReversed!!) {
-				for (x in recyclerArray.indices.reversed()) {
-					when (getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].url))) {
-						ReadingStatus.READ -> return x + 1
-						ReadingStatus.READING -> return x
-						else -> {
-						}
-					}
-				}
-			} else {
-				for (x in recyclerArray.indices) {
-					when (getChapterStatus(getChapterIDFromChapterURL(recyclerArray[x].url))) {
-						ReadingStatus.READ -> return x - 1
-						ReadingStatus.READING -> return x
-						else -> {
-						}
-					}
-				}
-			}
-			0
-		} else -2
-	}
+	override fun difAreItemsTheSame(oldItem: ChapterUI, newItem: ChapterUI): Boolean =
+			oldItem.id == newItem.id
 
 	// Option menu functions
 
@@ -426,15 +170,14 @@ class NovelChaptersController(bundle: Bundle)
 					when (which) {
 						0 -> {
 							// All
-							for ((_, title, link) in recyclerArray)
+							for (chapterUI in recyclerArray)
 								DownloadManager.addToDownload(
 										activity!!,
-										DownloadEntity(
-												getChapterIDFromChapterURL(link),
-												novelController!!.novelInfoController!!.novelPage!!.title,
-												title,
-												status = "Pending"
-										)
+										with(chapterUI) {
+											DownloadEntity(id, novelID, link, title,
+													novelController
+											)
+										}
 								)
 						}
 						1 -> {
@@ -609,8 +352,4 @@ class NovelChaptersController(bundle: Bundle)
 		isArrayReversed = !isArrayReversed
 		updateAdapter()
 	}
-
-	override val diffToolCallBack: RecyclerDiffToolCallBack
-		get() = TODO("Not yet implemented")
-
 }

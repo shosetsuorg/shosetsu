@@ -8,11 +8,11 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_URL
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -42,18 +42,14 @@ import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
  * @author github.com/doomsdayrs
  */
 class NovelController(bundle: Bundle) : ViewedController(bundle) {
-	companion object {
-
-	}
-
 	override val layoutRes: Int = R.layout.novel
 
-	var novelID = -2
-	var novelURL: String = ""
-	var formatter: Formatter
+	val viewModel: INovelViewViewModel by viewModel()
 
-	var novelInfoController: NovelInfoController? = null
-	var novelChaptersController: NovelChaptersController? = null
+	val novelID = bundle.getInt(BUNDLE_NOVEL_ID)
+	var novelURL: String = bundle.getString(BUNDLE_NOVEL_URL, "")
+	var formatter: Formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
+
 
 	@Attach(R.id.fragment_novel_tabLayout)
 	var novelTabLayout: TabLayout? = null
@@ -63,9 +59,6 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 
 	init {
 		setHasOptionsMenu(true)
-		novelID = bundle.getInt(BUNDLE_NOVEL_ID)
-		novelURL = bundle.getString(BUNDLE_NOVEL_URL, "")
-		formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {

@@ -17,17 +17,18 @@ package com.github.doomsdayrs.apps.shosetsu.common.ext
  */
 import android.app.Activity
 import android.content.Intent
+import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.Actions
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp.Actions
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import java.util.*
-
 
 
 /**
@@ -43,12 +44,18 @@ import java.util.*
  * @param formatterID  formatter
  */
 @Throws(MissingResourceException::class)
-fun openChapter(activity: Activity, novelChapter: ChapterEntity, novelID: Int, formatterID: Int) =
-		openChapter(activity, novelChapter, novelID, formatterID, null)
+fun openChapter(
+		activity: Activity,
+		novelChapter: ChapterUI
+) = openChapter(activity, novelChapter, null)
 
 
 @Throws(MissingResourceException::class)
-private fun openChapter(activity: Activity, novelChapter: ChapterEntity, novelID: Int, formatterID: Int, chapters: Array<String>?) {
+private fun openChapter(
+		activity: Activity,
+		novelChapter: ChapterUI,
+		chapters: Array<String>?
+) {
 	val chapterID = novelChapter.id
 	if (Settings.readerMarkingType == Settings.MarkingTypes.ONVIEW.i) {
 		novelChapter

@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -31,8 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  * Used for showing the specific listing of a novel
  */
 interface ICatalogViewModel :
-		SubscribeViewModel<List<NovelListingCard>>,
-		SubscribeLiveData<HResult<List<NovelListingCard>>> {
+		SubscribeHandleViewModel<List<NovelListingCard>> {
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */

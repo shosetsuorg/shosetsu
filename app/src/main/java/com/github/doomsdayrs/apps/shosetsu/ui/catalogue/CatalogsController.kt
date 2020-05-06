@@ -45,14 +45,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.CatalogsViewModel
  */
 //TODO Searching mechanics here
 class CatalogsController : RecyclerController<CataloguesAdapter, FormatterCard>() {
-	override val diffToolCallBack: RecyclerDiffToolCallBack = object : RecyclerDiffToolCallBack() {
-		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-				newList[newItemPosition].formatter.formatterID ==
-						oldList[oldItemPosition].formatter.formatterID
 
-		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-				newList[newItemPosition] == oldList[oldItemPosition]
-	}
 
 	val viewModel: CatalogsViewModel by viewModel()
 
@@ -98,4 +91,7 @@ class CatalogsController : RecyclerController<CataloguesAdapter, FormatterCard>(
 			}
 		}
 	}
+
+	override fun difAreItemsTheSame(oldItem: FormatterCard, newItem: FormatterCard): Boolean =
+			oldItem.formatter.formatterID == newItem.formatter.formatterID
 }

@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalUpdatesDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 
 /*
  * This file is part of shosetsu.
@@ -29,6 +27,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
  *
  * @author github.com/doomsdayrs
  */
-class UpdatesRepository(val updatesDao: UpdatesDao) : IUpdatesRepository {
+class UpdatesRepository(
+		val iLocalUpdatesDataSource: ILocalUpdatesDataSource
+) : IUpdatesRepository {
 
 }

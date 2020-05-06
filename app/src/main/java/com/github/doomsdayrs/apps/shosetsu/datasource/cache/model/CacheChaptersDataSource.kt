@@ -30,12 +30,12 @@ class CacheChaptersDataSource : ICacheChaptersDataSource {
 	/**
 	 * Map of Chapter ID to Chapter Passage
 	 */
-	val chapters: MutableMap<Int, String> = mutableMapOf()
+	private val chapters: MutableMap<Int, String> = mutableMapOf()
 
-	override fun saveChapterInCache(chapterID: Int, passage: String) {
+	override suspend fun saveChapterInCache(chapterID: Int, passage: String) {
 		chapters[chapterID] = passage
 	}
 
-	override fun loadChapterFromCache(chapterID: Int): HResult<String> =
+	override suspend fun loadChapterFromCache(chapterID: Int): HResult<String> =
 			chapters[chapterID]?.let { successResult(it) } ?: emptyResult()
 }

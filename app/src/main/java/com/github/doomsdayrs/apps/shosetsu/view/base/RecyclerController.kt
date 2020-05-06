@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
@@ -46,25 +47,36 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
  */
 abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle)
 	: ViewedController(bundle) {
-	constructor() : this(bundleOf())
-
 	/**
 	 * Call back to update ui of [RecyclerController]
 	 * @param oldList Old list
 	 * @param newList New List
 	 */
-	abstract inner class RecyclerDiffToolCallBack(
+	inner class RecyclerDiffToolCallBack(
 			var newList: List<V> = arrayListOf(),
 			val oldList: List<V> = recyclerArray
 	) : DiffUtil.Callback() {
-		override fun getOldListSize() = oldList.size
-		override fun getNewListSize() = newList.size
+		override fun getOldListSize(): Int = oldList.size
+		override fun getNewListSize(): Int = newList.size
+		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+				this@RecyclerController.difAreContentsTheSame(
+						oldList[oldItemPosition],
+						newList[newItemPosition]
+				)
+
+		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+				this@RecyclerController.difAreItemsTheSame(
+						oldList[oldItemPosition],
+						newList[newItemPosition]
+				)
 	}
+
+	constructor() : this(bundleOf())
 
 	/**
 	 *  DiffToolCallback to be used
 	 */
-	abstract val diffToolCallBack: RecyclerDiffToolCallBack
+	private val diffToolCallBack: RecyclerDiffToolCallBack = RecyclerDiffToolCallBack()
 
 	@LayoutRes
 	override val layoutRes: Int = R.layout.recycler_controller
@@ -116,17 +128,22 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 		}
 	}
 
-
 	abstract override fun onViewCreated(view: View)
 
 	/**
 	 * Updates the UI with a new list
 	 */
-	fun updateUI(list: List<V>) {
+	@CallSuper
+	open fun updateUI(list: List<V>) {
 		diffToolCallBack.newList = list
 		val callback = DiffUtil.calculateDiff(diffToolCallBack)
 		recyclerArray.clear()
 		recyclerArray.addAll(list)
 		adapter?.let { callback.dispatchUpdatesTo(it) }
 	}
+
+	open fun difAreContentsTheSame(oldItem: V, newItem: V): Boolean =
+			oldItem == newItem
+
+	abstract fun difAreItemsTheSame(oldItem: V, newItem: V): Boolean
 }

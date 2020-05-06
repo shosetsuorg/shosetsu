@@ -27,4 +27,6 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * shosetsu
  * 30 / 04 / 2020
  */
-interface ICatalogsViewModel : SubscribeHandleViewModel<List<FormatterCard>>
+interface ICatalogsViewModel : SubscribeHandleViewModel<List<FormatterCard>>{
+
+}

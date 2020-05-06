@@ -1,14 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 
 /*
  * This file is part of shosetsu.
@@ -27,16 +21,13 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 30 / 04 / 2020
  */
 class FormatterRepository(
-		val formatterUtils: FormatterUtils,
-		val extensionsDao: ExtensionsDao
+		val iLocalExtensionsDataSource: ILocalExtensionsDataSource,
+		val formatterUtils: FormatterUtils
 ) : IFormatterRepository {
 
 }

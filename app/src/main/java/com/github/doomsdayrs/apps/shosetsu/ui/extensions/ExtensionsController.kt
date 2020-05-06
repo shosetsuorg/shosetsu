@@ -25,8 +25,6 @@ import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.common.ext.runOnMain
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -44,6 +42,7 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 		setHasOptionsMenu(true)
 	}
 
+	/***/
 	val extensionViewModel: IExtensionsViewModel by viewModel()
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -52,24 +51,8 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, getString(R.string.extensions))
-		createRecycler()
-		establishObserver()
-	}
-
-	private fun createRecycler() {
 		adapter = ExtensionsAdapter(this)
-		launchAsync {
-			recyclerArray.addAll(extensionViewModel.getLiveData())
-			runOnMain {
-				recyclerView?.post { adapter?.notifyDataSetChanged() }
-			}
-		}
-	}
-
-	private fun establishObserver() {
-		extensionViewModel.subscribeObserver(this, Observer { list ->
-			updateUI(list)
-		})
+		extensionViewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -86,6 +69,6 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 		}
 	}
 
-	override val diffToolCallBack: RecyclerDiffToolCallBack
-		get() = TODO("Not yet implemented")
+	override fun difAreItemsTheSame(oldItem: ExtensionUI, newItem: ExtensionUI): Boolean =
+			oldItem.id == newItem.id
 }

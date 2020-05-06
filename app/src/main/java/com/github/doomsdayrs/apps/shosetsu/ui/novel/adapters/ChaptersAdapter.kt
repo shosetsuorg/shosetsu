@@ -48,6 +48,9 @@ class ChaptersAdapter(private val chaptersController: NovelChaptersController)
 		var DefaultTextColor = 0
 		private var set = false
 	}
+	init {
+		setHasStableIds(true)
+	}
 
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ChaptersViewHolder {
 		val view = LayoutInflater.from(viewGroup.context).inflate(

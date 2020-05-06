@@ -2,8 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.library.listener
 
 import android.util.Log
 import android.widget.SearchView
-import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 
 /*
  * This file is part of shosetsu.
@@ -29,9 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
  * @author github.com/doomsdayrs
  */
 class LibrarySearchQuery(private val libraryController: LibraryController) : SearchView.OnQueryTextListener {
-	override fun onQueryTextSubmit(query: String): Boolean {
-		return false
-	}
+	override fun onQueryTextSubmit(query: String): Boolean = false
 
 	override fun onQueryTextChange(newText: String): Boolean {
 		Log.d(logID(), "Query:\t[$newText]")

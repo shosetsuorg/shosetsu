@@ -1,13 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure
 
 import android.view.View
+import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
 import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
 
 /*
@@ -34,12 +35,15 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureVi
  *
  * @author github.com/doomsdayrs
  */
-class ConfigureExtensions : RecyclerController<ConfigExtAdapter, Any>() {
+class ConfigureExtensions : RecyclerController<ConfigExtAdapter, ExtensionUI>() {
 	val viewModel: IExtensionsConfigureViewModel by viewModel()
-	val arrayList: List<ExtensionEntity> by lazy { viewModel.loadExtensions() }
+
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, getString(R.string.configure_extensions))
 		adapter = ConfigExtAdapter(this)
-		viewModel
+		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 	}
+
+	override fun difAreItemsTheSame(oldItem: ExtensionUI, newItem: ExtensionUI): Boolean =
+			oldItem.id == newItem.id
 }

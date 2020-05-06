@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -28,8 +28,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  *
  * @author github.com/doomsdayrs
  */
-interface IExtensionsConfigureViewModel : SubscribeViewModel<List<ExtensionEntity>> {
-	fun disableExtension(extensionEntity: ExtensionEntity, callback: (ExtensionEntity) -> Unit)
-	fun enableExtension(extensionEntity: ExtensionEntity, callback: (ExtensionEntity) -> Unit)
-	fun loadFormatterIfEnabled(extensionEntity: ExtensionEntity): Formatter?
+interface IExtensionsConfigureViewModel : SubscribeHandleViewModel<List<ExtensionUI>> {
+	fun disableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit)
+	fun enableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit)
+	fun loadFormatterIfEnabled(extensionEntity: ExtensionUI): Formatter?
 }

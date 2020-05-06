@@ -1,8 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -28,5 +27,4 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsViewModel : SubscribeViewModel<HResult<List<DownloadUI>>> {
-}
+interface IDownloadsViewModel : SubscribeHandleViewModel<List<DownloadUI>>

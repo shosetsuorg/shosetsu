@@ -24,6 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.variables.variables.HandledReturns
 import java.io.BufferedReader
 import java.io.FileReader
@@ -75,7 +76,7 @@ object DownloadManager {
 	 * @return Passage of saved chapter
 	 */
 	@JvmStatic
-	fun getChapterText(path: String): HandledReturns<String> {
+	fun getChapterText(path: String): HResult<String> {
 		try {
 			BufferedReader(FileReader(path)).use { br ->
 				val sb = StringBuilder()

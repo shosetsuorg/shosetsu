@@ -28,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
  * 01 / 05 / 2020
  */
 interface ISearchViewModel {
+	var query: String
 	fun searchLibrary(query: String): List<NovelUI>
 	fun searchFormatter(query: String, formatter: Formatter)
 }

@@ -35,25 +35,25 @@ import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolde
  * @author github.com/doomsdayrs
  */
 class SearchAdapter(private val searchController: SearchController) : RecyclerView.Adapter<SearchViewHolder>() {
-    private val views: ArrayList<Int> = arrayListOf(-1)
+	private val views: ArrayList<Int> = arrayListOf(-1)
 
-    init {
-        for (formatter: Formatter in FormatterUtils.formatters)
-            views.add(formatter.formatterID)
+	init {
+		for (formatter: Formatter in FormatterUtils.formatters)
+			views.add(formatter.formatterID)
 
-    }
+	}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_search_row, parent, false)
-        return SearchViewHolder(view, searchController)
-    }
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
+		val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_search_row, parent, false)
+		return SearchViewHolder(view, searchController)
+	}
 
-    override fun getItemCount(): Int {
-        return views.size
-    }
+	override fun getItemCount(): Int {
+		return views.size
+	}
 
-    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.query = searchController.query
-        holder.setId(views[position])
-    }
+	override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+		holder.query = searchController.query
+		holder.setId(views[position])
+	}
 }
