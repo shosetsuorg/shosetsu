@@ -41,10 +41,9 @@ class ChapterReaderAdapter(
 		TODO("Not yet implemented")
 	}
 
-	override fun getItemCount(): Int = chapterReader.chapterIDs.size
+	override fun getItemCount(): Int = chapterReader.chapters.size
 
 	override fun onBindViewHolder(holder: NewTextReader, position: Int) {
-		TODO("Not yet implemented")
-	}
 
+	}
 }

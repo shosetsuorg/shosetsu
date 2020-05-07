@@ -75,10 +75,10 @@ class ChapterReaderViewModel(
 		TODO("Not yet implemented")
 	}
 
-
-	override fun appendID(): String {
+	override fun appendID(chapterReaderUI: ChapterReaderUI): String {
 		TODO("Not yet implemented")
 	}
+
 
 	override fun markAsRead() {
 		TODO("Not yet implemented")

@@ -29,20 +29,16 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  */
 interface IChapterReaderViewModel : SubscribeHandleViewModel<List<ChapterReaderUI>> {
 
-	val currentChapterID: MutableLiveData<Int>
 	var novelID: MutableLiveData<Int>
 	val backgroundColor: MutableLiveData<Int>
 	val textColor: MutableLiveData<Int>
+	val currentChapterID: Int
 
 	/** Set the novelID */
 	fun setNovelID(novelID: Int)
 
 	fun getChapterPassage(): LiveData<HResult<String>>
-
-
-	fun appendID(): String
-	fun markAsRead()
+	fun appendID(chapterReaderUI: ChapterReaderUI): String
 	fun bookmark()
-
-
+	fun updateChapter(chapterReaderUI: ChapterReaderUI)
 }

@@ -36,8 +36,5 @@ class NewTextReader(itemView: View, val chapterView: ChapterView) : NewReader(it
 	}
 
 	override fun bind() {
-		chapterView.chapterReader?.let {
-			textView.setOnClickListener(ToolbarHideOnClickListener(it.getToolbar()))
-		}
 	}
 }
