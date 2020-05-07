@@ -43,7 +43,7 @@ class ChapterViewLoader(private val chapterView: ChapterView)
 			chapterView.progress.visibility = GONE
 			chapterView.setUpReader()
 			chapterView.scrollView.post { chapterView.scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterView.chapterID)) }
-			chapterView.ready = true
+			chapterView.chapterLoaded = true
 		}
 	}
 }

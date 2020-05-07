@@ -44,7 +44,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
 	private lateinit var receiver: BroadcastReceiver
-	private val downloadsViewModel: IDownloadsViewModel by viewModel()
+	private val viewModel: IDownloadsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)
@@ -58,7 +58,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 	override fun onViewCreated(view: View) {
 		Utilities.setActivityTitle(activity, getString(R.string.downloads))
 		createRecycler()
-		downloadsViewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
+		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
 	}
 
 	private fun createRecycler() {
@@ -82,7 +82,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		if (item.itemId == R.id.toolbar_downloads_pause) {
-			if (Utilities.togglePause())
+			if (viewModel.togglePause())
 				item.setIcon(R.drawable.ic_play_circle_filled_24dp)
 			else {
 				item.setIcon(R.drawable.ic_pause_circle_outline_24dp)

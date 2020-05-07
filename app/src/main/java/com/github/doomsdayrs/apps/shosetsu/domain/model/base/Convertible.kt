@@ -25,5 +25,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.model.base
  * @author github.com/doomsdayrs
  */
 interface Convertible<T> {
+	/** States this [Convertible] can turn into [T]*/
 	fun convertTo(): T
 }

@@ -19,6 +19,9 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONException
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.generic.instance
 import java.io.File
 import java.io.FileNotFoundException
 import java.sql.SQLException
@@ -51,14 +54,17 @@ import java.util.*
  * TODO Turn this into a service
  */
 class FormatterUtils(
+		val context: Context,
 		val extensionsDao: ExtensionsDao,
-		val repositoryDao: RepositoryDao
-) : IFormatterUtils {
+		val repositoryDao: RepositoryDao,
+		override val kodein: Kodein
+) : IFormatterUtils, KodeinAware {
 	companion object {
 		const val scriptDirectory = "/scripts/"
 		const val libraryDirectory = "/libraries/"
 		const val sourceFolder = "/src/"
 		const val repoFolderStruct = "/src/main/resources/"
+
 		val unknown = object : Formatter {
 			override val formatterID: Int = -1
 
@@ -89,50 +95,6 @@ class FormatterUtils(
 
 			override fun updateSetting(id: Int, value: Any?): Unit = throw Exception("Unknown Formatter")
 		}
-		val formatters = ArrayList<Formatter>()
-
-		fun removeByID(formatterID: Int) {
-			formatters.forEachIndexed { index, formatter ->
-				if (formatter.formatterID == formatterID) {
-					formatters.removeAt(index)
-					return
-				}
-			}
-		}
-
-		fun addFormatter(formatter: Formatter) {
-			removeByID(formatter.formatterID)
-			formatters.add(formatter)
-			formatters.sortBy { it.name }
-		}
-
-		fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
-
-		private var filesDir: String? = null
-
-		private fun ap(context: Context?): String {
-			filesDir?.let { return it }
-			filesDir = context!!.filesDir.absolutePath
-			return filesDir!!
-		}
-
-		fun makeLibraryFile(context: Context? = null, le: ExtensionLibraryEntity): File =
-				makeLibraryFile(context, le.scriptName)
-
-		fun makeLibraryFile(context: Context? = null, scriptName: String): File {
-			val f = File("${ap(context)}$sourceFolder$libraryDirectory${scriptName}.lua")
-			f.parentFile?.let { if (!it.exists()) it.mkdirs() }
-			return f
-		}
-
-		fun makeFormatterFile(context: Context? = null, fe: ExtensionEntity): File =
-				makeFormatterFile(context, fe.fileName)
-
-		fun makeFormatterFile(context: Context? = null, fileName: String): File {
-			val f = File("${ap(context)}$sourceFolder$scriptDirectory${fileName}.lua")
-			f.parentFile?.let { if (!it.exists()) it.mkdirs() }
-			return f
-		}
 
 		fun makeLibraryURL(repo: RepositoryEntity, le: ExtensionLibraryEntity): String =
 				"${repo.url}$repoFolderStruct/lib/${le.scriptName}.lua"
@@ -162,15 +124,57 @@ class FormatterUtils(
 			}
 			return false
 		}
+	}
 
-		/**
-		 * A quick way to get a response
-		 */
-		fun quickResponse(url: String) =
-				OkHttpClient().newCall(Request.Builder()
-						.url(url)
-						.build()
-				).execute()
+	val okHttpClient by kodein.instance<OkHttpClient>()
+	val formatters = ArrayList<Formatter>()
+
+	fun removeByID(formatterID: Int) {
+		formatters.forEachIndexed { index, formatter ->
+			if (formatter.formatterID == formatterID) {
+				formatters.removeAt(index)
+				return
+			}
+		}
+	}
+
+	fun addFormatter(formatter: Formatter) {
+		removeByID(formatter.formatterID)
+		formatters.add(formatter)
+		formatters.sortBy { it.name }
+	}
+
+	fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
+
+	/**
+	 * A quick way to get a response
+	 */
+	fun quickResponse(url: String) = okHttpClient.newCall(Request.Builder()
+			.url(url)
+			.build()
+	).execute()
+
+	/**
+	 * AbsolutePath of application file directory
+	 */
+	val ap: String = context.filesDir.absolutePath
+
+	fun makeLibraryFile(le: ExtensionLibraryEntity): File =
+			makeLibraryFile(le.scriptName)
+
+	fun makeLibraryFile(scriptName: String): File {
+		val f = File("${ap}$sourceFolder$libraryDirectory${scriptName}.lua")
+		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
+		return f
+	}
+
+	fun makeFormatterFile(fe: ExtensionEntity): File =
+			makeFormatterFile(fe.fileName)
+
+	fun makeFormatterFile(fileName: String): File {
+		val f = File("${ap}$sourceFolder$scriptDirectory${fileName}.lua")
+		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
+		return f
 	}
 
 	@Throws(FileNotFoundException::class, JSONException::class, SQLException::class)
@@ -229,8 +233,7 @@ class FormatterUtils(
 	 */
 	fun downloadLibrary(
 			extensionLibraryEntity: ExtensionLibraryEntity,
-			context: Context,
-			file: File = makeLibraryFile(context, extensionLibraryEntity),
+			file: File = makeLibraryFile(extensionLibraryEntity),
 			repo: RepositoryEntity = repositoryDao.loadRepositoryFromID(
 					extensionLibraryEntity.repoID
 			)
@@ -246,8 +249,7 @@ class FormatterUtils(
 	 */
 	fun installExtension(
 			extensionEntity: ExtensionEntity,
-			context: Context,
-			file: File = makeFormatterFile(context, extensionEntity),
+			file: File = makeFormatterFile(extensionEntity),
 			repo: RepositoryEntity = repositoryDao.loadRepositoryFromID(
 					extensionEntity.repoID
 			)
@@ -259,20 +261,20 @@ class FormatterUtils(
 		} ?: false
 	}
 
-	fun deleteFormatter(extensionEntity: ExtensionEntity, context: Context) {
+	fun deleteFormatter(extensionEntity: ExtensionEntity) {
 		removeByID(extensionEntity.id)
-		makeFormatterFile(context, extensionEntity).takeIf { it.exists() }?.delete()
+		makeFormatterFile(extensionEntity).takeIf { it.exists() }?.delete()
 	}
 
 	/**
 	 * Loads the formatters
 	 */
-	override fun load(context: Context) {
+	override fun load() {
 		val fileNames = extensionsDao
 				.loadPoweredFormatterFileNames()
 		fileNames.forEach {
 			formatters.add(
-					LuaFormatter(makeFormatterFile(context, it))
+					LuaFormatter(makeFormatterFile(it))
 			)
 		}
 	}

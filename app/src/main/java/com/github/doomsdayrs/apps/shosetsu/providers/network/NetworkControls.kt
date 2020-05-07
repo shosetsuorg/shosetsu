@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.network
 
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.CookieJarSync
+import com.github.doomsdayrs.apps.shosetsu.common.utils.CookieJarSync
 import okhttp3.OkHttpClient
 
 /*

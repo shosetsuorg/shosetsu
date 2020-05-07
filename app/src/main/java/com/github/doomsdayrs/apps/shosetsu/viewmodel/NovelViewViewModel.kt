@@ -5,7 +5,7 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.backend.DownloadManager
+import com.github.doomsdayrs.apps.shosetsu.common.utils.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.handle

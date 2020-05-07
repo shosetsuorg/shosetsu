@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer
+package com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer
 
 import android.content.Context
 import android.util.AttributeSet

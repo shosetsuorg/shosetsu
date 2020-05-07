@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.splash
 
-import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.AsyncTask
@@ -8,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
@@ -109,7 +109,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		}
 
 		// Settings setup
-		Utilities.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE)
+		Utilities.connectivityManager = getSystemService<ConnectivityManager>()!!
 				as ConnectivityManager
 		textView = findViewById(R.id.textView)
 		if (Settings.showIntro) {

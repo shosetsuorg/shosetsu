@@ -87,7 +87,6 @@ data class ChapterEntity(
 					id,
 					novelID,
 					url,
-					novelID,
 					formatter,
 					title,
 					releaseDate,

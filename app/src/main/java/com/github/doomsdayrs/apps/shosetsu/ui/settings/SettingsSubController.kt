@@ -1,10 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings
 
 import android.view.View
-import androidx.annotation.StringRes
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import java.util.*
 
@@ -32,22 +31,24 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-abstract class SettingsSubController : RecyclerController<SettingItemsAdapter, SettingsItem.SettingsItemData>() {
+abstract class SettingsSubController : RecyclerController<SettingItemsAdapter, SettingsItemData>() {
 	override val layoutRes: Int = R.layout.settings
 
 	/** Settings to be used*/
-	abstract val settings: ArrayList<SettingsItem.SettingsItemData>
+	abstract val settings: ArrayList<SettingsItemData>
 
 	override fun onViewCreated(view: View) {
 		adapter = SettingItemsAdapter(settings)
 	}
 
+	override fun difAreItemsTheSame(oldItem: SettingsItemData, newItem: SettingsItemData): Boolean =
+			oldItem.id == newItem.id
+
 	/** Finds a setting via its data ID */
-	fun findDataByID(@StringRes id: Int): Int {
-		for ((index, data) in settings.withIndex()) {
-			if (data.titleID == id)
+	fun findDataByID(id: Int): Int {
+		for ((index, data) in settings.withIndex())
+			if (data.id == id)
 				return index
-		}
 		return -1
 	}
 }

@@ -19,15 +19,14 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings.TextSizes
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
-import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebview
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
+import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import kotlinx.android.synthetic.main.chapter_view.*
 
 /*
@@ -54,23 +53,10 @@ import kotlinx.android.synthetic.main.chapter_view.*
  * @author github.com/doomsdayrs
  */
 class ChapterView : Fragment() {
-	private val demarkActions = arrayOf(TextSizeChange(this), ParaSpacingChange(this), IndentChange(this), ReaderChange(this), ThemeChange(this))
 
-	// Order of values. Night, Light, Sepia
-	private lateinit var themes: Array<MenuItem>
-
-	// Order of values. Small,Medium,Large
-	private lateinit var textSizes: Array<MenuItem>
-
-	// Order of values. Non,Small,Medium,Large
-	private lateinit var paragraphSpaces: Array<MenuItem>
-
-	// Order of values. Non,Small,Medium,Large
-	private lateinit var indentSpaces: Array<MenuItem>
 
 	// Order of values. Default, Markdown
 	@Suppress("unused")
-	private lateinit var readers: Array<MenuItem>
 	private lateinit var reciever: BroadcastReceiver
 
 	var chapterReader: ChapterReader? = null
@@ -86,14 +72,12 @@ class ChapterView : Fragment() {
 	//public View coverView;
 // public ViewPager2 viewPager2;
 //public NewReader currentReader;
-	var ready = false
+	var chapterLoaded = false
 	var unformattedText: String = ""
 	var text: String? = null
 
-
 	private var bookmark: MenuItem? = null
 	private var tapToScroll: MenuItem? = null
-
 
 	init {
 		setHasOptionsMenu(true)
@@ -317,7 +301,7 @@ class ChapterView : Fragment() {
 		chapterReader?.getToolbar()?.let { it.title = title }
 
 		Log.i("ChapterView", "Resuming:${appendID()}")
-		Log.i("ChapterView", "${appendID()} \n ${text.isNullOrEmpty()} | ${unformattedText.isEmpty()} | $bookmarked | $ready ")
+		Log.i("ChapterView", "${appendID()} \n ${text.isNullOrEmpty()} | ${unformattedText.isEmpty()} | $bookmarked | $chapterLoaded ")
 
 		if (text.isNullOrEmpty() && unformattedText.isEmpty()) {
 			Log.i("ChapterView", "Text and unformatted text is null, resetting${appendID()}")
@@ -336,7 +320,7 @@ class ChapterView : Fragment() {
 		outState.putString("text", text)
 		outState.putString("unform", unformattedText)
 		outState.putBoolean("book", bookmarked)
-		outState.putBoolean("ready", ready)
+		outState.putBoolean("ready", chapterLoaded)
 		Log.i("ChapterView", "Saved:${appendID()}")
 	}
 
@@ -354,7 +338,7 @@ class ChapterView : Fragment() {
 			unformattedText = savedInstanceState.getString("unform", "")
 			text = savedInstanceState.getString("text")
 			bookmarked = savedInstanceState.getBoolean("book")
-			ready = savedInstanceState.getBoolean("ready")
+			chapterLoaded = savedInstanceState.getBoolean("ready")
 			Log.i("ChapterView", "Restored:${appendID()}")
 		}
 		Log.i("ChapterView", "Created:${appendID()}")
@@ -384,7 +368,7 @@ class ChapterView : Fragment() {
 		//holder.viewPager2.setAdapter(newChapterReaderTypeAdapter);
 		//holder.viewPager2.setCurrentItem(getReaderType(newChapterReader.novelID));
 
-		ready = false
+		chapterLoaded = false
 
 		if (savedInstanceState == null) {
 			dataSet()
@@ -409,7 +393,6 @@ class ChapterView : Fragment() {
 					}
 				}
 			}
-
 		}
 		activity?.registerReceiver(reciever, intentFilter)
 	}
@@ -422,7 +405,7 @@ class ChapterView : Fragment() {
 				unformattedText = r.value!!
 				setUpReader()
 				scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
-				ready = true
+				chapterLoaded = true
 			} else {
 				ErrorAlert(activity!!.parent)
 						.setMessage(r.e?.message)
@@ -448,10 +431,16 @@ class ChapterView : Fragment() {
 			for (x in 0 until Settings.readerParagraphSpacing) replaceSpacing.append("\n")
 			for (x in 0 until Settings.ReaderIndentSize) replaceSpacing.append("\t")
 			text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
+
 			if (text!!.length > 100)
-				Log.d("ChapterView", "TextSet\t" + text!!.substring(0, 100).replace("\n", "\\n") + "\n" + appendID())
+				Log.d("ChapterView", "TextSet\t" +
+						text!!.substring(0, 100).replace("\n", "\\n") +
+						"\n" + appendID())
 			else if (text!!.isNotEmpty())
-				Log.d("ChapterView", "TextSet\t" + text!!.substring(0, text!!.length - 1).replace("\n", "\\n") + "\n" + appendID())
+				Log.d("ChapterView", "TextSet\t" +
+						text!!.substring(0, text!!.length - 1).replace("\n", "\\n")
+						+ "\n" + appendID())
+
 			textView!!.text = text
 			// viewPager2.post(() -> currentReader.setText(text));
 		}
@@ -464,7 +453,7 @@ class ChapterView : Fragment() {
 	 */
 	private fun scrollHitBottom() {
 		val total = scrollView!!.getChildAt(0).height - scrollView!!.height
-		if (ready) if (scrollView!!.scrollY / total.toFloat() < .99) {
+		if (chapterLoaded) if (scrollView!!.scrollY / total.toFloat() < .99) {
 			// Inital mark of reading
 			if (!marked && Settings.readerMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
 				Log.d("ChapterView", "Marking as Reading")
@@ -473,7 +462,7 @@ class ChapterView : Fragment() {
 			}
 
 			val y = scrollView!!.scrollY
-
+;hug
 			if (y % 5 == 0)
 				if (Database.DatabaseChapter.getChapterStatus(chapterID) != ReadingStatus.READ) Database.DatabaseChapter.updateY(chapterID, y)
 		} else {
@@ -493,30 +482,6 @@ class ChapterView : Fragment() {
 			scrollView!!.setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int -> scrollHitBottom() }
 		} else {
 			scrollView!!.viewTreeObserver.addOnScrollChangedListener { scrollHitBottom() }
-		}
-	}
-
-	@ColorInt
-	private fun getBackgroundColor(): Int {
-		return when (Settings.readerTheme) {
-			ReaderThemes.NIGHT.i, ReaderThemes.DARK.i -> Color.BLACK
-			ReaderThemes.LIGHT.i -> Color.WHITE
-			ReaderThemes.SEPIA.i -> ContextCompat.getColor(context!!, R.color.wheat)
-			ReaderThemes.DARKI.i -> Color.DKGRAY
-			ReaderThemes.CUSTOM.i -> Settings.readerCustomTextColor
-			else -> Color.BLACK
-		}
-	}
-
-	@ColorInt
-	private fun getTextColor(): Int {
-		return when (Settings.readerTheme) {
-			ReaderThemes.NIGHT.i -> Color.WHITE
-			ReaderThemes.LIGHT.i, ReaderThemes.SEPIA.i -> Color.BLACK
-			ReaderThemes.DARK.i -> Color.GRAY
-			ReaderThemes.DARKI.i -> Color.LTGRAY
-			ReaderThemes.CUSTOM.i -> Settings.readerCustomBackColor
-			else -> Color.WHITE
 		}
 	}
 }

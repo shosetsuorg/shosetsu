@@ -30,49 +30,30 @@ import app.shosetsu.lib.Novel
  *
  * @author github.com/doomsdayrs
  */
-class ChapterLoader(val action: ChapterLoaderAction, var formatter: Formatter, var novelURL: String) : AsyncTask<Void, Void, Boolean>() {
+@Deprecated("AsyncTask is bad")
+class ChapterLoader( var formatter: Formatter, var novelURL: String) : AsyncTask<Void, Void, Boolean>() {
 
-    interface ChapterLoaderAction {
-        // What to do before task
-        fun onPreExecute()
-
-        // After task with results
-        fun onPostExecute(result: Boolean, finalChapters: ArrayList<Novel.Chapter>)
-
-        fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>)
-
-        // If formatter is an incrementing chapterList, This is called when an update occurs
-        fun onIncrementingProgress(page: Int, max: Int)
-
-        fun errorReceived(errorString: String)
-    }
-
-    private val finalChapters: ArrayList<Novel.Chapter> = ArrayList()
-
-    override fun onPostExecute(result: Boolean?) {
-        super.onPostExecute(result)
-        if (result != null)
-            action.onPostExecute(result, finalChapters)
-    }
-
-    override fun onPreExecute() {
-        super.onPreExecute()
-        action.onPreExecute()
-    }
+	private val finalChapters: ArrayList<Novel.Chapter> = ArrayList()
 
 
-    public override fun doInBackground(vararg p0: Void?): Boolean {
-        // loads page
-        val novelPage: Novel.Info = formatter.parseNovel(novelURL, true) {}
+	override fun onPreExecute() {
+		super.onPreExecute()
+		action.onPreExecute()
+	}
 
-        // Iterates through chapters
-        for ((mangaCount, novelChapter) in novelPage.chapters.withIndex()) logAndAdd(novelChapter, mangaCount)
-        action.onJustBeforePost(finalChapters)
-        return true
-    }
 
-    private fun logAndAdd(novelChapter: Novel.Chapter, mangaCount: Int) {
-        Log.i("ChapterLoader", "Loading #$mangaCount: ${novelChapter.link}")
-        finalChapters.add(novelChapter)
-    }
+	public override fun doInBackground(vararg p0: Void?): Boolean {
+		// loads page
+		val novelPage: Novel.Info = formatter.parseNovel(novelURL, true) {}
+
+		// Iterates through chapters
+		for ((mangaCount, novelChapter) in novelPage.chapters.withIndex()) logAndAdd(novelChapter, mangaCount)
+		action.onJustBeforePost(finalChapters)
+		return true
+	}
+
+	private fun logAndAdd(novelChapter: Novel.Chapter, mangaCount: Int) {
+		Log.i("ChapterLoader", "Loading #$mangaCount: ${novelChapter.link}")
+		finalChapters.add(novelChapter)
+	}
 }

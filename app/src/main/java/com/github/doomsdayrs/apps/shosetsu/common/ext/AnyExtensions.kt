@@ -1,10 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import android.util.Base64
+import android.util.Log
 import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.ObjectOutputStream
+import java.util.concurrent.TimeUnit
 
 /*
  * This file is part of shosetsu.
@@ -64,6 +66,18 @@ fun Array<String>.convertArrayToString(): String {
 
 @Suppress("unused")
 inline fun <reified T : Any> T.logID() = T::class.java.simpleName
+
+/**
+ * Freezes the thread for x time
+ *
+ * @param time time, default in MS
+ */
+inline fun <reified T : Any> T.wait(time: Int, unit: TimeUnit = TimeUnit.MILLISECONDS) =
+		try {
+			unit.sleep(time.toLong())
+		} catch (e: InterruptedException) {
+			Log.e(logID(), "Failed to wait", e)
+		}
 
 fun launchUI(block: suspend CoroutineScope.() -> Unit) =
 		GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT, block)

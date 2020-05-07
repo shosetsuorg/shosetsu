@@ -1,12 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters
 
-import android.util.Log
-import androidx.fragment.app.Fragment
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
-import java.util.*
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
 
 /*
  * This file is part of shosetsu.
@@ -30,26 +29,22 @@ import java.util.*
  * 13 / 12 / 2019
  *
  * @author github.com/doomsdayrs
+ * @param chapterReader ChapterReader
  */
-class ChapterReaderAdapter(fm: FragmentManager, behavior: Int, val chapterReader: ChapterReader) : FragmentStatePagerAdapter(fm, behavior) {
-    val chapterViews = ArrayList<ChapterView>()
+class ChapterReaderAdapter(
+		fm: FragmentManager,
+		l: Lifecycle,
+		val chapterReader: ChapterReader
+) : RecyclerView.Adapter<NewTextReader>() {
 
-    init {
-        for (i in chapterReader.chapterIDs) {
-            val newChapterView = ChapterView()
-            newChapterView.chapterID = i
-            newChapterView.chapterReader = chapterReader
-            chapterViews.add(newChapterView)
-        }
-    }
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewTextReader {
+		TODO("Not yet implemented")
+	}
 
-    override fun getItem(position: Int): Fragment {
-        return chapterViews[position]
-    }
+	override fun getItemCount(): Int = chapterReader.chapterIDs.size
 
-    override fun getCount(): Int {
-        Log.i("size", chapterReader.chapterIDs.size.toString())
-        return chapterReader.chapterIDs.size
-    }
+	override fun onBindViewHolder(holder: NewTextReader, position: Int) {
+		TODO("Not yet implemented")
+	}
 
 }

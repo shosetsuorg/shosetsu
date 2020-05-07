@@ -1,8 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import android.widget.LinearLayout
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 
 /*
  * This file is part of shosetsu.
@@ -19,16 +19,12 @@ import com.google.android.material.navigation.NavigationView
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 06 / 03 / 2020
- *
- * @author github.com/doomsdayrs
+ * 06 / 05 / 2020
  */
-interface SecondDrawerController {
-    fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout)
-    fun handleConfirm(linearLayout: LinearLayout)
-}
+
+fun Activity.openInBrowser(url: Uri) = startActivity(Intent(Intent.ACTION_VIEW, url))
+fun Activity.openInBrowser(url: String) = openInBrowser(Uri.parse(url))

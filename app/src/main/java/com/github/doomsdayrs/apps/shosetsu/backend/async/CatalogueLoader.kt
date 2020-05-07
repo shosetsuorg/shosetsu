@@ -32,6 +32,7 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
+@Deprecated("Nobel idea but bad")
 open class CatalogueLoader(
 		val formatter: Formatter,
 		val filters: Array<*>,

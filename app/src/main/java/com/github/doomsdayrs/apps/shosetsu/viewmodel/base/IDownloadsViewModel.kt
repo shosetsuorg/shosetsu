@@ -27,4 +27,11 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsViewModel : SubscribeHandleViewModel<List<DownloadUI>>
+interface IDownloadsViewModel : SubscribeHandleViewModel<List<DownloadUI>>{
+	/**
+	 * Toggles paused downloads
+	 *
+	 * @return if paused or not
+	 */
+	fun togglePause(): Boolean
+}

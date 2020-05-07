@@ -8,11 +8,10 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.setReaderMarkingType
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 
 /*
  * This file is part of Shosetsu.
@@ -41,7 +40,7 @@ class ViewSettings : SettingsSubController() {
 
 	override val settings by lazy {
 		arrayListOf(
-				SettingsItemData(SettingsType.SPINNER)
+				SettingsItemData(SettingsType.SPINNER, 0)
 						.setTitle(R.string.marking_mode)
 						.setOnItemSelectedListener(object : OnItemSelectedListener {
 							override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -59,7 +58,7 @@ class ViewSettings : SettingsSubController() {
 								}
 							}
 						}),
-				SettingsItemData(SettingsType.NUMBER_PICKER)
+				SettingsItemData(SettingsType.NUMBER_PICKER, 1)
 						.setTitle(R.string.columns_of_novel_listing_p)
 						.setDescription((R.string.columns_zero_automatic))
 						.setNumberValue(Settings.columnsInNovelsViewP.let {
@@ -73,7 +72,7 @@ class ViewSettings : SettingsSubController() {
 								else -> Settings.columnsInNovelsViewP = newVal
 							}
 						},
-				SettingsItemData(SettingsType.NUMBER_PICKER)
+				SettingsItemData(SettingsType.NUMBER_PICKER, 2)
 						.setTitle(R.string.columns_of_novel_listing_h)
 						.setDescription(R.string.columns_zero_automatic)
 						.setNumberValue(Settings.columnsInNovelsViewH.let {
@@ -87,7 +86,7 @@ class ViewSettings : SettingsSubController() {
 								else -> Settings.columnsInNovelsViewH = newVal
 							}
 						},
-				SettingsItemData(SettingsType.SPINNER)
+				SettingsItemData(SettingsType.SPINNER, 3)
 						.setTitle((R.string.novel_card_type_selector_title))
 						.setDescription((R.string.novel_card_type_selector_desc))
 						.setSpinnerSelection(Settings.novelCardType)
@@ -131,5 +130,9 @@ class ViewSettings : SettingsSubController() {
 		Log.i("onViewCreated", "Finished creation")
 		recyclerView?.layoutManager = LinearLayoutManager(context)
 		recyclerView?.adapter = adapter
+	}
+
+	fun setReaderMarkingType(markingType: Settings.MarkingTypes) {
+		Settings.readerMarkingType = markingType.i
 	}
 }

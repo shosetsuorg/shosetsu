@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
@@ -105,9 +106,8 @@ class DownloadService : Service(), KodeinAware {
 		}
 	}
 
-	internal val notificationManager by lazy {
-		(getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-	}
+	internal val notificationManager: NotificationManager by lazy { getSystemService()!! }
+
 
 	internal val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

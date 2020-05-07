@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.content.SharedPreferences
 import android.graphics.Color
+import androidx.core.content.edit
 
 /*
  * This file is part of Shosetsu.
@@ -94,37 +95,39 @@ object Settings {
 	 * How to mark a chapter as reading
 	 */
 	var readerMarkingType: Int
-		set(value) = readerSettings.edit().putInt(READER_MARKING_TYPE, value).apply()
+		set(value) {
+			readerSettings.edit { putInt(READER_MARKING_TYPE, value) }
+		}
 		get() = readerSettings.getInt(READER_MARKING_TYPE, MarkingTypes.ONVIEW.i)
 
 	var readerTextSize: Float
-		set(value) = readerSettings.edit().putFloat(READER_TEXT_SIZE, value).apply()
+		set(value) = readerSettings.edit { putFloat(READER_TEXT_SIZE, value) }
 		get() = readerSettings.getFloat(READER_TEXT_SIZE, 14f)
 
 	var readerParagraphSpacing: Int
-		set(value) = readerSettings.edit().putInt(READER_TEXT_SPACING, value).apply()
+		set(value) = readerSettings.edit { putInt(READER_TEXT_SPACING, value) }
 		get() = readerSettings.getInt(READER_TEXT_SPACING, 1)
 
 
 	var readerTheme: Int
-		set(value) = readerSettings.edit().putInt(READER_THEME, value).apply()
+		set(value) = readerSettings.edit { putInt(READER_THEME, value) }
 		get() = readerSettings.getInt(READER_THEME, ReaderThemes.SEPIA.i)
 
 	var readerCustomTextColor: Int
-		set(value) = readerSettings.edit().putInt(READER_TEXT_C_COLOR, value).apply()
+		set(value) = readerSettings.edit { putInt(READER_TEXT_C_COLOR, value) }
 		get() = readerSettings.getInt(READER_TEXT_C_COLOR, Color.WHITE)
 
 	var readerCustomBackColor: Int
-		set(value) = readerSettings.edit().putInt(READER_BACK_C_COLOR, value).apply()
+		set(value) = readerSettings.edit { putInt(READER_BACK_C_COLOR, value) }
 		get() = readerSettings.getInt(READER_BACK_C_COLOR, Color.BLACK)
 
 
 	var isTapToScroll: Boolean
-		set(value) = readerSettings.edit().putBoolean(READER_IS_TAP_TO_SCROLL, value).apply()
+		set(value) = readerSettings.edit { putBoolean(READER_IS_TAP_TO_SCROLL, value) }
 		get() = readerSettings.getBoolean(READER_IS_TAP_TO_SCROLL, false)
 
 	var isInvertedSwipe: Boolean
-		set(value) = readerSettings.edit().putBoolean(READER_IS_INVERTED_SWIPE, value).apply()
+		set(value) = readerSettings.edit { putBoolean(READER_IS_INVERTED_SWIPE, value) }
 		get() = readerSettings.getBoolean(READER_IS_INVERTED_SWIPE, false)
 
 	/**
@@ -134,7 +137,7 @@ object Settings {
 	 * If 1+, deletes the chapter of READ CHAPTER - [deletePreviousChapter]
 	 */
 	var deletePreviousChapter: Int
-		set(value) = readerSettings.edit().putInt(DELETE_READ_CHAPTER, value).apply()
+		set(value) = readerSettings.edit { putInt(DELETE_READ_CHAPTER, value) }
 		get() = readerSettings.getInt(DELETE_READ_CHAPTER, -1)
 
 	// View Settings
@@ -142,33 +145,33 @@ object Settings {
 	 * If download manager is paused
 	 */
 	var isDownloadPaused: Boolean
-		set(value) = settings.edit().putBoolean(IS_DOWNLOAD_PAUSED, value).apply()
+		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_PAUSED, value) }
 		get() = settings.getBoolean(IS_DOWNLOAD_PAUSED, false)
 
 	var isDownloadOnUpdateEnabled: Boolean
-		set(value) = settings.edit().putBoolean(IS_DOWNLOAD_ON_UPDATE, value).apply()
+		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_ON_UPDATE, value) }
 		get() = settings.getBoolean(IS_DOWNLOAD_ON_UPDATE, false)
 
 	var ReaderIndentSize
-		set(value) = settings.edit().putInt(READER_TEXT_INDENT, value).apply()
+		set(value) = settings.edit { putInt(READER_TEXT_INDENT, value) }
 		get() = settings.getInt(READER_TEXT_INDENT, 1)
 
 	var columnsInNovelsViewP
-		set(value) = settings.edit().putInt(C_IN_NOVELS_P, value).apply()
+		set(value) = settings.edit { putInt(C_IN_NOVELS_P, value) }
 		get() = settings.getInt(C_IN_NOVELS_P, -1)
 
 	var columnsInNovelsViewH
-		set(value) = settings.edit().putInt(C_IN_NOVELS_H, value).apply()
+		set(value) = settings.edit { putInt(C_IN_NOVELS_H, value) }
 		get() = settings.getInt(C_IN_NOVELS_H, -1)
 
 	var novelCardType
-		set(value) = settings.edit().putInt(NOVEL_CARD_TYPE, value).apply()
+		set(value) = settings.edit { putInt(NOVEL_CARD_TYPE, value) }
 		get() = settings.getInt(NOVEL_CARD_TYPE, 0)
 
 
 	// Advanced Settings
 	var showIntro: Boolean
-		set(value) = settings.edit().putBoolean(FIRST_TIME, value).apply()
+		set(value) = settings.edit { putBoolean(FIRST_TIME, value) }
 		get() = settings.getBoolean(FIRST_TIME, true)
 
 	// Download Settings
@@ -177,16 +180,16 @@ object Settings {
 
 	// Backup Settings
 	var backupChapters: Boolean
-		set(value) = settings.edit().putBoolean(BACKUP_CHAPTERS, value).apply()
+		set(value) = settings.edit { putBoolean(BACKUP_CHAPTERS, value) }
 		get() = settings.getBoolean(BACKUP_CHAPTERS, true)
 
 	var backupSettings: Boolean
-		set(value) = settings.edit().putBoolean(BACKUP_SETTINGS, value).apply()
+		set(value) = settings.edit { putBoolean(BACKUP_SETTINGS, value) }
 		get() = settings.getBoolean(BACKUP_SETTINGS, false)
 
 
 	var backupQuick: Boolean
-		set(value) = settings.edit().putBoolean(BACKUP_QUICK, value).apply()
+		set(value) = settings.edit { putBoolean(BACKUP_QUICK, value) }
 		get() = settings.getBoolean(BACKUP_QUICK, false)
 }
 

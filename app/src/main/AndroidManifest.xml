@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name="com.github.doomsdayrs.apps.shosetsu.application.ShosetsuApplication"
+        android:name=".application.ShosetsuApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,32 +25,29 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
-
-
+        <activity android:name=".ui.reader.ChapterReaderActvity"></activity>
         <activity
-            android:name="com.github.doomsdayrs.apps.shosetsu.ui.splash.SplashScreen"
+            android:name=".ui.splash.SplashScreen"
             android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-
-
         <activity
-            android:name="com.github.doomsdayrs.apps.shosetsu.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.webView.WebViewApp"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".ui.reader.ChapterReader"
             android:theme="@style/AppTheme" />
-
         <activity android:name=".ui.search.SearchController">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -58,11 +55,11 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".ui.intro.IntroductionActivity"
             android:theme="@style/Theme.Intro" />
@@ -70,11 +67,9 @@
         <service
             android:name=".backend.services.UpdateService"
             android:exported="false" />
-
         <service
             android:name=".backend.services.DownloadService"
             android:exported="false" />
-
         <service
             android:name=".backend.services.RepositoryService"
             android:exported="false" />

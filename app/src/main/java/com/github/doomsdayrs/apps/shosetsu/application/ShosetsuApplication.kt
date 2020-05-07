@@ -63,6 +63,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		Settings.formatterSettings = getSharedPreferences("formatter", 0)
 
 		Notifications.createChannels(this)
+		setupARCA()
 	}
 
 	private fun setupARCA() {

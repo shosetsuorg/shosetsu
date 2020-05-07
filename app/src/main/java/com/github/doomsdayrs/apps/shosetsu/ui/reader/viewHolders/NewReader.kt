@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 
 /*
  * This file is part of shosetsu.
@@ -26,7 +25,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
  *
  * @author github.com/doomsdayrs
  */
-abstract class NewReader internal constructor(itemView: View, val chapterView: ChapterView) : RecyclerView.ViewHolder(itemView) {
-    abstract fun setText(text: String?)
-    abstract fun bind()
+abstract class NewReader internal constructor(
+		itemView: View
+) : RecyclerView.ViewHolder(itemView) {
+	abstract fun setText(text: String?)
+	abstract fun bind()
 }

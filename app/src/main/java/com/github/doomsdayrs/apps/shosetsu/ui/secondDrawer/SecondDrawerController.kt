@@ -1,7 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer
 
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import android.widget.LinearLayout
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
 
 /*
  * This file is part of shosetsu.
@@ -23,21 +24,11 @@ import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 
 /**
  * shosetsu
- * 24 / 04 / 2020
+ * 06 / 03 / 2020
  *
  * @author github.com/doomsdayrs
  */
-data class ChapterUI(
-		val id: Int,
-		val novelID: Int,
-		val link: String,
-		val formatter: Formatter,
-		var title: String,
-		var releaseDate: String,
-		var order: Double,
-		var readingPosition: Int,
-		var readingReadingStatus: ReadingStatus,
-		var bookmarked: Boolean,
-		var isSaved: Boolean,
-		var savePath: String
-)
+interface SecondDrawerController {
+    fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout)
+    fun handleConfirm(linearLayout: LinearLayout)
+}

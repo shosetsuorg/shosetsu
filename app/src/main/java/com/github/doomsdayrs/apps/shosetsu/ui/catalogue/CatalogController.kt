@@ -20,9 +20,9 @@ import app.shosetsu.lib.values
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDBuilder
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDViewBuilder
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SecondDrawerController
+import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDBuilder
+import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDViewBuilder
+import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.ext.build
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context

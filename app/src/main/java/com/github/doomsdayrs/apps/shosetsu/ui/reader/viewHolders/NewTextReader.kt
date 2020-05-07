@@ -28,14 +28,16 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClic
  *
  * @author github.com/doomsdayrs
  */
-class NewTextReader(itemView: View, chapterReader: ChapterView) : NewReader(itemView, chapterReader) {
-    private val textView: TextView = itemView.findViewById(R.id.textview)
+class NewTextReader(itemView: View, val chapterView: ChapterView) : NewReader(itemView) {
+	private val textView: TextView = itemView.findViewById(R.id.textview)
 
-    override fun setText(text: String?) {
-        textView.text = text
-    }
+	override fun setText(text: String?) {
+		textView.text = text
+	}
 
-    override fun bind() {
-        chapterView.chapterReader?.let { textView.setOnClickListener(ToolbarHideOnClickListener(it.getToolbar())) }
-    }
+	override fun bind() {
+		chapterView.chapterReader?.let {
+			textView.setOnClickListener(ToolbarHideOnClickListener(it.getToolbar()))
+		}
+	}
 }

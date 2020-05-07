@@ -5,7 +5,7 @@ import android.widget.AdapterView
 import app.shosetsu.lib.*
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.LISTING_KEY
-import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDViewBuilder
+import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDViewBuilder
 
 /*
  * This file is part of shosetsu.
@@ -33,37 +33,37 @@ import com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDVi
  */
 
 val Formatter.defaultListing: Int
-    get() = Settings.formatterSettings.getInt("$formatterID:$LISTING_KEY", 0)
+	get() = Settings.formatterSettings.getInt("$formatterID:$LISTING_KEY", 0)
 
 
 fun Formatter.setDefaultListing(int: Int): Boolean = when {
-    int >= listings.size || int < 0 -> false
-    else -> {
-        Settings.formatterSettings.edit().putInt("$formatterID:$LISTING_KEY", int).apply()
-        true
-    }
+	int >= listings.size || int < 0 -> false
+	else -> {
+		Settings.formatterSettings.edit().putInt("$formatterID:$LISTING_KEY", int).apply()
+		true
+	}
 }
 
 fun Formatter.getListing(): Formatter.Listing = listings[defaultListing]
 
 fun Filter<*>.build(builder: SDViewBuilder) {
-    when (this) {
-        is TextFilter -> builder.editText(name).also {
-            it.onFocusChangeListener = View.OnFocusChangeListener { _, _ -> state = it.getValue() }
-        }
-        is SwitchFilter -> builder.switch(name, state).also {
-            it.setOnCheckedChangeListener { _, v -> state = v }
-        }
-        is DropdownFilter -> builder.spinner(name, choices, state).also {
-            it.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(_p: AdapterView<*>?) {}
-                override fun onItemSelected(_p: AdapterView<*>?, _v: View?, pos: Int, id: Long) {
-                    state = pos
-                }
-            }
-        }
-        is RadioGroupFilter -> builder.radioGroup(name, choices, state).also {
-            it.setOnCheckedChangeListener { _, i -> state = i }
-        }
-    }
+	when (this) {
+		is TextFilter -> builder.editText(name).also {
+			it.onFocusChangeListener = View.OnFocusChangeListener { _, _ -> state = it.getValue() }
+		}
+		is SwitchFilter -> builder.switch(name, state).also {
+			it.setOnCheckedChangeListener { _, v -> state = v }
+		}
+		is DropdownFilter -> builder.spinner(name, choices, state).also {
+			it.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+				override fun onNothingSelected(_p: AdapterView<*>?) {}
+				override fun onItemSelected(_p: AdapterView<*>?, _v: View?, pos: Int, id: Long) {
+					state = pos
+				}
+			}
+		}
+		is RadioGroupFilter -> builder.radioGroup(name, choices, state).also {
+			it.setOnCheckedChangeListener { _, i -> state = i }
+		}
+	}
 }

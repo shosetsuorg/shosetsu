@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.github.doomsdayrs.apps.shosetsu.backend.controllers.secondDrawer.SDSpinner
+    <com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDSpinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

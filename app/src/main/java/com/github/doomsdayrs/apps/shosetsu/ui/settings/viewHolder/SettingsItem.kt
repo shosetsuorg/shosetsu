@@ -49,7 +49,7 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 	/**
 	 * Data for [SettingsItem]
 	 */
-	class SettingsItemData(val type: SettingsType) {
+	class SettingsItemData(val type: SettingsType, val id: Int) {
 		enum class SettingsType {
 			INFORMATION,
 			BUTTON,

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
@@ -296,9 +297,7 @@ class RepositoryService : Service(), KodeinAware {
 
 	override val kodein: Kodein by closestKodein()
 
-	private val notificationManager by lazy {
-		(getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-	}
+	private val notificationManager: NotificationManager by lazy { getSystemService()!! }
 
 	private val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -7,11 +7,10 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 
 /*
  * This file is part of shosetsu.
@@ -40,7 +39,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 class ReaderSettings : SettingsSubController() {
 	override val settings by lazy {
 		arrayListOf(
-				SettingsItemData(SPINNER)
+				SettingsItemData(SPINNER, 0)
 						.setTitle(R.string.spacing)
 						.setSpinnerSelection(Settings.readerParagraphSpacing)
 						.setArrayAdapter(ArrayAdapter(
@@ -65,7 +64,7 @@ class ReaderSettings : SettingsSubController() {
 							override fun onNothingSelected(adapterView: AdapterView<*>?) {}
 						}),
 
-				SettingsItemData(SPINNER)
+				SettingsItemData(SPINNER, 1)
 						.setTitle(R.string.text_size)
 						.setArrayAdapter(ArrayAdapter(
 								context!!,
@@ -102,7 +101,7 @@ class ReaderSettings : SettingsSubController() {
 							override fun onNothingSelected(adapterView: AdapterView<*>?) {}
 						}),
 
-				SettingsItemData(SPINNER)
+				SettingsItemData(SPINNER, 1)
 						.setTitle(R.string.indent_size)
 						.setArrayAdapter(ArrayAdapter(
 								context!!,
@@ -122,7 +121,7 @@ class ReaderSettings : SettingsSubController() {
 							override fun onNothingSelected(adapterView: AdapterView<*>?) {}
 						}),
 
-				SettingsItemData(SPINNER)
+				SettingsItemData(SPINNER, 1)
 						.setTitle(R.string.reader_theme)
 						.setSpinnerSelection(Settings.readerTheme)
 						.setArrayAdapter(ArrayAdapter(
@@ -143,35 +142,46 @@ class ReaderSettings : SettingsSubController() {
 							}
 						}),
 
-				SettingsItemData(COLOR_PICKER)
+				SettingsItemData(COLOR_PICKER, 1)
 						.setTitle(R.string.text_custom_color)
 						.setDescription(R.string.custom_theme_warn)
 						.setPickerColor(Settings.readerCustomBackColor)
 						.setColorPreference("text")
 						.setOnColorChosen { Settings.readerCustomBackColor = it },
 
-				SettingsItemData(COLOR_PICKER)
+				SettingsItemData(COLOR_PICKER, 1)
 						.setTitle(R.string.text_custom_background_color)
 						.setColorPreference("back")
 						.setDescription(R.string.custom_theme_warn)
 						.setPickerColor(Settings.readerCustomTextColor)
 						.setOnColorChosen { Settings.readerCustomTextColor = it },
 
-				SettingsItemData(SWITCH)
+				SettingsItemData(SWITCH, 1)
 						.setTitle(R.string.inverted_swipe)
 						.setIsChecked(Settings.isInvertedSwipe)
 						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, _ ->
-							Utilities.toggleInvertedSwipe()
+							toggleInvertedSwipe()
 						}),
 
-				SettingsItemData(SWITCH)
+				SettingsItemData(SWITCH, 1)
 						.setTitle(R.string.tap_to_scroll)
 						.setIsChecked(Settings.isTapToScroll)
 						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
 							Log.d("Tap to scroll", p1.toString())
-							Utilities.toggleTapToScroll()
+							toggleTapToScroll()
 						})
 		)
 	}
 
+	fun toggleTapToScroll(): Boolean {
+		val b = Settings.isTapToScroll
+		Settings.isTapToScroll = !b
+		return !b
+	}
+
+	fun toggleInvertedSwipe(): Boolean {
+		val b = Settings.isInvertedSwipe
+		Settings.isInvertedSwipe = !b
+		return !b
+	}
 }

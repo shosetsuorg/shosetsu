@@ -2,27 +2,16 @@ package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
-import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings.MarkingTypes
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -76,24 +65,7 @@ object Utilities {
 	const val selectedStrokeWidth = 8
 	var shoDir: String = "/Shosetsu/"
 
-	@Throws(JSONException::class)
-	fun isFormatterDisabled(jsonArray: JSONArray, name: String): Boolean {
-		for (i in 0 until jsonArray.length())
-			if (JSONObject(jsonArray[i].toString()).getString("name") == name)
-				return true
-		return false
-	}
-
-	fun convertNovelArrayToString2DArray(array: Array<Novel.Listing>): ArrayList<Array<String>> {
-		val a: ArrayList<Array<String>> = ArrayList()
-		for ((title, link, imageURL) in array) {
-			a.add(arrayOf(title, link, imageURL))
-		}
-		return a
-	}
-
 	fun regret(context: Context) = context.toast(R.string.regret, duration = LENGTH_LONG)
-
 
 	fun setActivityTitle(activity: Activity?, title: String?) {
 		activity?.let { it -> if (it is AppCompatActivity) it.supportActionBar?.let { it.title = title } }
@@ -135,31 +107,7 @@ object Utilities {
 		shoDir = Settings.settings.getString("dir", "$dir/Shosetsu/")!!
 	}
 
-	fun setReaderMarkingType(markingType: MarkingTypes) {
-		Settings.readerMarkingType = markingType.i
-	}
 
-	fun toggleTapToScroll(): Boolean {
-		val b = Settings.isTapToScroll
-		Settings.isTapToScroll = !b
-		return !b
-	}
-
-	fun toggleInvertedSwipe(): Boolean {
-		val b = Settings.isInvertedSwipe
-		Settings.isInvertedSwipe = !b
-		return !b
-	}
-
-	/**
-	 * Toggles paused downloads
-	 *
-	 * @return if paused or not
-	 */
-	fun togglePause(): Boolean {
-		Settings.isDownloadPaused = !Settings.isDownloadPaused
-		return Settings.isDownloadPaused
-	}
 
 	/**
 	 * Checks if online
@@ -201,33 +149,6 @@ object Utilities {
 	@Throws(MissingResourceException::class)
 	@Deprecated("ROOM", level = DeprecationLevel.WARNING)
 	fun toggleBookmarkChapter(chapterID: Int): Boolean = throw Exception("STUD")
-
-
-	fun openInBrowser(activity: Activity, url: String) = activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-
-	/**
-	 * Freezes the thread for x time
-	 *
-	 * @param time time, default in MS
-	 */
-	fun wait(time: Int, unit: TimeUnit = TimeUnit.MILLISECONDS) =
-			try {
-				unit.sleep(time.toLong())
-			} catch (e: InterruptedException) {
-				Log.e(logID(), "Failed to wait", e)
-			}
-
-	//TODO Online Trackers
-//Methods below when tracking system setup
-	//   public static boolean isTrackingEnabled() {
-// --Commented out by Inspection START (12/22/19 11:10 AM):
-//        return trackingPreferences.getBoolean("enabled", false);
-//    }
-//
-//    @SuppressWarnings({"EmptyMethod", "unused"})
-// --Commented out by Inspection STOP (12/22/19 11:10 AM)
-//       public static void addTracker () {
-//      }
 
 	/**
 	 * Abstraction for Actions to take after demarking items. To simplify bulky code

@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
+package com.github.doomsdayrs.apps.shosetsu.common.utils
 
 import android.webkit.CookieManager
 import okhttp3.Cookie

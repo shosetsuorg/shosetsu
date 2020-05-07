@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
+package com.github.doomsdayrs.apps.shosetsu.common.utils
 
 /*
  * This file is part of Shosetsu.
@@ -37,8 +37,7 @@ import java.io.IOException
  * @author github.com/doomsdayrs
  * Manages downloading and downloaded chapters
  */
-object DownloadManager {
-
+class DownloadManager() {
 	/**
 	 * Adds to download list
 	 *

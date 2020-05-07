@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
-import app.shosetsu.lib.Formatter
+import androidx.annotation.NonNull
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterReaderUI
 
 /*
  * This file is part of shosetsu.
@@ -18,26 +20,39 @@ import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 06 / 05 / 2020
  */
-data class ChapterUI(
+data class ChapterReaderSubEntity(
 		val id: Int,
-		val novelID: Int,
-		val link: String,
-		val formatter: Formatter,
+		@NonNull
+		val url: String,
+
+		@NonNull
 		var title: String,
-		var releaseDate: String,
-		var order: Double,
-		var readingPosition: Int,
-		var readingReadingStatus: ReadingStatus,
-		var bookmarked: Boolean,
-		var isSaved: Boolean,
-		var savePath: String
-)
+
+		var readingPosition: Int = 0,
+
+		var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
+
+		var bookmarked: Boolean = false,
+
+		var isSaved: Boolean = false,
+
+		var savePath: String = ""
+) : Convertible<ChapterReaderUI> {
+	override fun convertTo(): ChapterReaderUI = ChapterReaderUI(
+			id,
+			url,
+			title,
+			readingPosition,
+			readingStatus,
+			bookmarked,
+			isSaved,
+			savePath
+	)
+
+}
