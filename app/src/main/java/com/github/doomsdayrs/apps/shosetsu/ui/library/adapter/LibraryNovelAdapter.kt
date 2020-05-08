@@ -21,7 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.selectedStrokeWidth
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.common.ext.runOnMain
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
@@ -61,7 +61,7 @@ class LibraryNovelAdapter(
 					Picasso.get().load(novelUI.imageURL).into(libNovelViewHolder.imageView)
 				libNovelViewHolder.setLibraryControllerFun(libraryController)
 				libNovelViewHolder.novelCard = novelUI
-				libNovelViewHolder.formatterID = novelUI.formatter.formatterID
+				libNovelViewHolder.formatterID = novelUI.formatterID
 				libNovelViewHolder.title.text = novelUI.title
 			}
 			launchAsync {
@@ -77,7 +77,7 @@ class LibraryNovelAdapter(
 			}
 			libNovelViewHolder.materialCardView.strokeWidth =
 					if (viewModel.selectedNovels.contains(novelUI.id))
-						Utilities.selectedStrokeWidth else 0
+						selectedStrokeWidth else 0
 
 			if (viewModel.selectedNovels.size > 0) {
 				libNovelViewHolder.itemView.setOnClickListener {

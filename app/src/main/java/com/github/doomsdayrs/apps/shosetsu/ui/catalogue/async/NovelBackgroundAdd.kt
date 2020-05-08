@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.NovelListingViewHolder
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 
 /*
  * This file is part of Shosetsu.
@@ -31,44 +30,44 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
  * @author github.com/doomsdayrs
  */
 class NovelBackgroundAdd(private val novelCardsViewHolder: NovelListingViewHolder?) : AsyncTask<View?, Void, Void>() {
-    override fun doInBackground(vararg views: View?): Void? {
-        try {
-            if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url!!)) {
-                Database.DatabaseNovels.addNovelToDatabase(novelCardsViewHolder.formatter.formatterID,
-                        novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url!!, false) {},
-                        novelCardsViewHolder.url!!,
-                        com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.UNREAD.a)
-                views[0]?.post {
-                    views[0]?.context?.toast("Added ${novelCardsViewHolder.title.text}")
-                }
-            }
-            if (novelCardsViewHolder != null && Database.DatabaseNovels.isNovelBookmarked(novelCardsViewHolder.novelID)) {
-                views[0]?.post {
-                    views[0]?.context?.toast("Already in the library")
-                }
-            } else {
-                if (novelCardsViewHolder != null) {
-                    Database.DatabaseNovels.bookmarkNovel(Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCardsViewHolder.url!!))
-                    views[0]?.post {
-                        views[0]?.context?.toast("Added ${novelCardsViewHolder.title.text}")
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            if (novelCardsViewHolder != null) {
-                views[0]?.post {
-                    views[0]?.context?.toast("Failed to add to library: ${novelCardsViewHolder.title.text}")
-                }
-                views[0]?.post { Log.e("NovelBackgroundAdd", novelCardsViewHolder.title.text.toString() + " : " + e.message) }
-            }
-        }
-        return null
-    }
+	override fun doInBackground(vararg views: View?): Void? {
+		try {
+			if (novelCardsViewHolder != null && Database.DatabaseNovels.isNotInNovels(novelCardsViewHolder.url!!)) {
+				Database.DatabaseNovels.addNovelToDatabase(novelCardsViewHolder.formatter.formatterID,
+						novelCardsViewHolder.formatter.parseNovel(novelCardsViewHolder.url!!, false) {},
+						novelCardsViewHolder.url!!,
+						com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.UNREAD.a)
+				views[0]?.post {
+					views[0]?.context?.toastOnUI("Added ${novelCardsViewHolder.title.text}")
+				}
+			}
+			if (novelCardsViewHolder != null && Database.DatabaseNovels.isNovelBookmarked(novelCardsViewHolder.novelID)) {
+				views[0]?.post {
+					views[0]?.context?.toastOnUI("Already in the library")
+				}
+			} else {
+				if (novelCardsViewHolder != null) {
+					Database.DatabaseNovels.bookmarkNovel(Database.DatabaseIdentification.getNovelIDFromNovelURL(novelCardsViewHolder.url!!))
+					views[0]?.post {
+						views[0]?.context?.toastOnUI("Added ${novelCardsViewHolder.title.text}")
+					}
+				}
+			}
+		} catch (e: Exception) {
+			if (novelCardsViewHolder != null) {
+				views[0]?.post {
+					views[0]?.context?.toastOnUI("Failed to add to library: ${novelCardsViewHolder.title.text}")
+				}
+				views[0]?.post { Log.e("NovelBackgroundAdd", novelCardsViewHolder.title.text.toString() + " : " + e.message) }
+			}
+		}
+		return null
+	}
 
-    override fun onPostExecute(aVoid: Void?) {
-        novelCardsViewHolder?.catalogFragment?.recyclerView?.post {
-            novelCardsViewHolder.catalogFragment.catalogueAdapter.notifyDataSetChanged()
-        }
-    }
+	override fun onPostExecute(aVoid: Void?) {
+		novelCardsViewHolder?.catalogFragment?.recyclerView?.post {
+			novelCardsViewHolder.catalogFragment.catalogueAdapter.notifyDataSetChanged()
+		}
+	}
 
 }

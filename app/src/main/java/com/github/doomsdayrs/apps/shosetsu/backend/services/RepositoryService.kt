@@ -10,10 +10,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.extensionsDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.repositoryDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.scriptLibDao
+import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_EXECUTE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
@@ -103,7 +100,7 @@ class RepositoryService : Service(), KodeinAware {
 
 		fun task(context: Context, progressUpdate: (String) -> Unit) {
 			Log.i(logID(), "Starting Update")
-			if (Utilities.isOnline) {
+			if (isOnline) {
 				progressUpdate("Online, Loading repositories")
 				val repos: List<RepositoryEntity> = repositoryDao.loadRepositories()
 

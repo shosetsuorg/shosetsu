@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.search
  */
 class CataloguesSearchQuery(private val activity: Activity?) : SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(s: String): Boolean {
-		search(activity!!, s)
+		activity!!.search(s)
 		return true
 	}
 

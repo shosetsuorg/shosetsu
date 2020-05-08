@@ -8,11 +8,11 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.di.databaseModule
 import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.factory.ViewModelFactory
 import org.acra.ACRA
 import org.acra.annotation.AcraCore
@@ -99,7 +99,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 			ShosetsuDatabase.getRoomDatabase(applicationContext)
 		}
 		import(databaseModule)
-		bind<IFormatterUtils>() with singleton { FormatterUtils(instance(), instance()) }
+		bind<IFormatterUtils>() with singleton { FormatterUtils(instance(), instance(), instance(), instance()) }
 
 		import(androidXModule(this@ShosetsuApplication))
 	}

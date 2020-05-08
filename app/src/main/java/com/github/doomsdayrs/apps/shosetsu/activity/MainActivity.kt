@@ -9,26 +9,22 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import app.shosetsu.lib.ShosetsuLib
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.attachRouter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SecondDrawerController
+import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
 import com.github.doomsdayrs.apps.shosetsu.common.consts.SHOSETSU_UPDATE_URL
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
+import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
 import com.github.javiersantos.appupdater.AppUpdater
@@ -44,7 +40,6 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import org.luaj.vm2.lib.jse.JsePlatform
 
 /*
  * This file is part of Shosetsu.
@@ -78,7 +73,6 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 
 	override val kodein: Kodein by closestKodein()
 
-	private val formatterUtils: IFormatterUtils by instance<IFormatterUtils>()
 	private val okHttpClient: OkHttpClient by instance<OkHttpClient>()
 
 
@@ -140,31 +134,6 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 		drawer_layout.addDrawerListener(toggle)
 		toggle.syncState()
 
-
-		ShosetsuLib.httpClient = okHttpClient
-
-		ShosetsuLib.libLoader = libLoader@{ name ->
-			Log.i("LibraryLoaderSync", "Loading:\t$name")
-			val libraryFile = FormatterUtils.makeLibraryFile(this, name)
-			if (!libraryFile.exists()) {
-				Log.e("LibraryLoaderSync", "$name does not exist")
-				return@libLoader null
-			}
-			Log.d("LibraryLoaderSync", libraryFile.absolutePath)
-			val script = JsePlatform.standardGlobals()
-			script.load(ShosetsuLib())
-			val l = try {
-				script.load(libraryFile.readText())
-			} catch (e: Error) {
-				throw e
-			}
-			return@libLoader l.call()
-		}
-
-		launchAsync {
-			formatterUtils.load(this@MainActivity)
-		}
-
 		toolbar.setNavigationOnClickListener {
 			if (router.backstackSize == 1)
 				drawer_layout.openDrawer(GravityCompat.START)
@@ -203,8 +172,7 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 			}
 			Intent.ACTION_BOOT_COMPLETED -> {
 				Log.i("MainActivity", "Bootup")
-				if (Utilities.isOnline)
-					UpdateService.init(this)
+				if (isOnline) UpdateService.init(this)
 			}
 			else -> {
 				if (!router.hasRootController()) {
@@ -307,6 +275,5 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, second_nav_view)
 			to.createDrawer(second_nav_view, drawer_layout)
 		}
-
 	}
 }

@@ -28,8 +28,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BU
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebview
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toastOnUI
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.google.android.material.chip.Chip
@@ -130,7 +130,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 				return true
 			}
 			id.webview -> {
-				if (activity != null) openInWebview(activity!!, novelController!!.novelURL)
+				if (activity != null) openInWebView(activity!!, novelController!!.novelURL)
 				return true
 			}
 			id.browser -> {
@@ -196,7 +196,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 
 		fragmentNovelMainRefresh?.setOnRefreshListener {
 				novelController?.let { novelController ->
-					context?.toast("")
+					context?.toastOnUI("")
 					NovelLoader(
 							novelController.novelURL,
 							novelController.novelID,

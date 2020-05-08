@@ -1,15 +1,17 @@
 package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import android.Manifest
+import android.Manifest.permission.*
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.Context
-import android.content.pm.PackageManager
-import android.widget.Toast.LENGTH_SHORT
-import android.widget.Toast.makeText
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.widget.Toast.*
+import androidx.annotation.NonNull
 import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 
 /*
  * This file is part of shosetsu.
@@ -54,16 +56,8 @@ fun Context.toast(string: String, duration: Int = LENGTH_SHORT) {
 	makeText(this, string, duration).show()
 }
 
-/**
- * Like context toast, Except posts for the UI
- */
-fun Activity.toast(string: String, duration: Int = LENGTH_SHORT) {
-	runOnUiThread { makeText(this, string, duration).show() }
-}
-
-fun Activity.toast(@StringRes resource: Int, duration: Int = LENGTH_SHORT) {
-	runOnUiThread { makeText(this, resource, duration).show() }
-}
+fun Context.checkActivitySelfPermission(@NonNull permission: String) =
+		ActivityCompat.checkSelfPermission(this, permission)
 
 /**
  * Property to get the notification manager from the context.
@@ -72,15 +66,17 @@ val Context.notificationManager: NotificationManager
 	get() = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 fun Context.requestPerms() {
-	if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-			ActivityCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED)
-		ActivityCompat.requestPermissions(
-				this as Activity,
-				arrayOf(
-						Manifest.permission.READ_EXTERNAL_STORAGE,
-						Manifest.permission.WRITE_EXTERNAL_STORAGE,
-						Manifest.permission.WAKE_LOCK),
-				1)
+	if (
+			checkActivitySelfPermission(WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED
+			||
+			checkActivitySelfPermission(WAKE_LOCK) != PERMISSION_GRANTED
+	) ActivityCompat.requestPermissions(
+			this as Activity,
+			arrayOf(
+					READ_EXTERNAL_STORAGE,
+					WRITE_EXTERNAL_STORAGE,
+					WAKE_LOCK),
+			1)
 }
 
 fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {
@@ -88,4 +84,22 @@ fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {
 	val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 	@Suppress("DEPRECATION")
 	return manager.getRunningServices(Integer.MAX_VALUE).any { className == it.service.className }
+}
+
+/**
+ * Regret message if a feature isn't re-introduced yet
+ */
+fun Context.regret() = toast(R.string.regret, duration = LENGTH_LONG)
+
+
+fun Context.calculateColumnCount(columnWidthDp: Float): Int { // For example columnWidthdp=180
+	val c = if (resources.configuration.orientation == 1)
+		Settings.columnsInNovelsViewP
+	else Settings.columnsInNovelsViewH
+
+	val displayMetrics = resources.displayMetrics
+	val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
+
+	return if (c == -1) (screenWidthDp / columnWidthDp + 0.5).toInt()
+	else (screenWidthDp / (screenWidthDp / c) + 0.5).toInt()
 }

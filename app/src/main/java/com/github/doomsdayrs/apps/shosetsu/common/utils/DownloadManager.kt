@@ -26,6 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.variables.variables.HandledReturns
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException
@@ -43,7 +44,7 @@ class DownloadManager() {
 	 *
 	 * @param downloadEntity download item to add
 	 */
-	fun addToDownload(activity: Activity?, downloadEntity: DownloadEntity) {
+	fun addToDownload(activity: Activity?, downloadEntity: DownloadUI) {
 		downloadsDao.insertDownloadEntity(downloadEntity)
 		activity?.let { DownloadService.start(it) }
 	}
@@ -55,12 +56,11 @@ class DownloadManager() {
 	 * @param downloadItem download item to remove
 	 * @return if downloaded
 	 */
-	@Throws(SQLException::class)
-	fun delete(context: Context?, downloadItem: DownloadEntity): Boolean {
+	fun delete(context: Context?, downloadItem: DownloadUI): Boolean {
 		TODO("FIX")
 		Log.d("DeletingChapter", downloadItem.toString())
 		//	val file = File(Utilities.shoDir + "/download/" + downloadItem.formatter.formatterID + "/" + downloadItem.novelName + "/" + downloadItem.chapterName + ".txt")
-		Database.DatabaseChapter.removePath(downloadItem.chapterID)
+		//removePath(downloadItem.chapterID)
 		//	if (file.exists()) if (!file.delete()) if (context != null) {
 		//		context.toast(R.string.download_fail_delete, duration = LENGTH_LONG)
 //			return false

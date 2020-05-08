@@ -6,10 +6,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.readAsset
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
+import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import java.util.*
 
 
@@ -39,40 +39,40 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class TextAssetReader(private val bundleI: Bundle) : ViewedController(bundleI) {
-    companion object {
-        const val BUNDLE_KEY: String = "target"
-    }
+	companion object {
+		const val BUNDLE_KEY: String = "target"
+	}
 
-    enum class Target(val bundle: Bundle) {
-        LICENSE(bundleOf(Pair(BUNDLE_KEY, "license"))),
-        DISCLAIMER(bundleOf(Pair(BUNDLE_KEY, "disclaimer")));
-    }
+	enum class Target(val bundle: Bundle) {
+		LICENSE(bundleOf(Pair(BUNDLE_KEY, "license"))),
+		DISCLAIMER(bundleOf(Pair(BUNDLE_KEY, "disclaimer")));
+	}
 
-    override val layoutRes: Int = R.layout.large_reader
-    private var type: String = ""
-    private var message: String = ""
+	override val layoutRes: Int = R.layout.large_reader
+	private var type: String = ""
+	private var message: String = ""
 
-    private fun handleB() {
-        Log.d(logID(), "Setting Message")
-        type = bundleI.getString(BUNDLE_KEY, "license")
-        message = activity?.readAsset("$type.text") ?: ""
-    }
+	private fun handleB() {
+		Log.d(logID(), "Setting Message")
+		type = bundleI.getString(BUNDLE_KEY, "license")
+		message = activity?.readAsset("$type.text") ?: ""
+	}
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString("m", message)
-        outState.putString("t", type)
-    }
+	override fun onSaveInstanceState(outState: Bundle) {
+		outState.putString("m", message)
+		outState.putString("t", type)
+	}
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        message = savedInstanceState.getString("m", "")
-        type = savedInstanceState.getString("t", "")
-    }
+	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+		message = savedInstanceState.getString("m", "")
+		type = savedInstanceState.getString("t", "")
+	}
 
-    @ExperimentalStdlibApi
-    override fun onViewCreated(view: View) {
-        if (message.isEmpty()) handleB()
-        Utilities.setActivityTitle(activity, type.capitalize(Locale.ROOT))
-        view.findViewById<TextView>(R.id.textView).text = message
-    }
+	@ExperimentalStdlibApi
+	override fun onViewCreated(view: View) {
+		if (message.isEmpty()) handleB()
+		activity?.setActivityTitle(type.capitalize(Locale.ROOT))
+		view.findViewById<TextView>(R.id.textView).text = message
+	}
 
 }

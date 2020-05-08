@@ -38,7 +38,6 @@ class ChapterLoader( var formatter: Formatter, var novelURL: String) : AsyncTask
 
 	override fun onPreExecute() {
 		super.onPreExecute()
-		action.onPreExecute()
 	}
 
 
@@ -48,7 +47,6 @@ class ChapterLoader( var formatter: Formatter, var novelURL: String) : AsyncTask
 
 		// Iterates through chapters
 		for ((mangaCount, novelChapter) in novelPage.chapters.withIndex()) logAndAdd(novelChapter, mangaCount)
-		action.onJustBeforePost(finalChapters)
 		return true
 	}
 

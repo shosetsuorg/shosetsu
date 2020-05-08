@@ -32,7 +32,7 @@ class CatalogueRefresh(private val catalogFragment: CatalogController) : OnRefre
         catalogFragment.recyclerArray = ArrayList()
         catalogFragment.currentMaxPage = 1
         Log.d("FragmentRefresh", "Refreshing catalogue data")
-        catalogFragment.executePageLoader()
+        catalogFragment.viewModel.loadMore()
     }
 
 }

@@ -9,11 +9,11 @@ import android.widget.CompoundButton
 import android.widget.Toast.LENGTH_LONG
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 
 /*
  * This file is part of Shosetsu.
@@ -39,13 +39,13 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 class DownloadSettings : SettingsSubController() {
 	override val settings by lazy {
 		arrayListOf(
-				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.TEXT)
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.TEXT,1)
 						.setTitle(R.string.download_directory)
-						.setTextViewText(Utilities.shoDir)
+						.setTextViewText(shoDir)
 						.setTextOnClickListener { performFileSearch() },
-				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER)
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER,2)
 						.setTitle(R.string.download_speed),
-				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH)
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH,3)
 						.setTitle(R.string.download_chapter_updates)
 						.setIsChecked(Settings.isDownloadOnUpdateEnabled)
 						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
@@ -66,7 +66,7 @@ class DownloadSettings : SettingsSubController() {
 
 	private fun setDir(dir: String) {
 		Settings.settings.edit().putString("dir", dir).apply()
-		Utilities.shoDir = dir
+		shoDir = dir
 		recyclerView?.post { adapter?.notifyDataSetChanged() }
 	}
 

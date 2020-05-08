@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.providers.database
 import android.content.Context
 import androidx.room.*
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.*
-import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.FormatterConverter
 import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.NovelStatusConverter
 import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.ReadingStatusConverter
 import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.StringArrayConverters
@@ -48,7 +47,11 @@ import kotlinx.coroutines.launch
 		],
 		version = 1
 )
-@TypeConverters(FormatterConverter::class, ReadingStatusConverter::class, StringArrayConverters::class, NovelStatusConverter::class)
+@TypeConverters(
+		ReadingStatusConverter::class,
+		StringArrayConverters::class,
+		NovelStatusConverter::class
+)
 abstract class ShosetsuDatabase : RoomDatabase() {
 	companion object {
 		@Volatile

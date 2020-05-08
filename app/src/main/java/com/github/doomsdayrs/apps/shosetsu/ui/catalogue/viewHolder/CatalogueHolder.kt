@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
@@ -37,24 +37,24 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
  * @author github.com/doomsdayrs
  */
 class CatalogueHolder(itemView: View, private val router: Router) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-    val imageView: ImageView = itemView.findViewById(R.id.imageView)
-    val title: TextView = itemView.findViewById(R.id.textView)
-    lateinit var formatter: Formatter
+	val imageView: ImageView = itemView.findViewById(R.id.imageView)
+	val title: TextView = itemView.findViewById(R.id.textView)
+	lateinit var formatter: Formatter
 
-    init {
-        itemView.setOnClickListener(this)
-    }
+	init {
+		itemView.setOnClickListener(this)
+	}
 
 
-    override fun onClick(v: View) {
-        Log.d("FormatterSelection", formatter.name)
-        if (Utilities.isOnline) {
-            val bundle = Bundle()
-            bundle.putInt("formatter", formatter.formatterID)
-            val catalogueFragment = CatalogController(bundle)
-            router.pushController(catalogueFragment.withFadeTransaction())
-            //TODO Router push to catalogue
-        } else v.context.toast(R.string.you_not_online)
-    }
+	override fun onClick(v: View) {
+		Log.d("FormatterSelection", formatter.name)
+		if (isOnline) {
+			val bundle = Bundle()
+			bundle.putInt("formatter", formatter.formatterID)
+			val catalogueFragment = CatalogController(bundle)
+			router.pushController(catalogueFragment.withFadeTransaction())
+			//TODO Router push to catalogue
+		} else v.context.toast(R.string.you_not_online)
+	}
 
 }

@@ -34,6 +34,10 @@ class SearchViewModel(
 		val iNovelsRepository: INovelsRepository,
 		val iFormatterRepository: IFormatterRepository
 ) : ISearchViewModel {
+	override var query: String
+		get() = TODO("Not yet implemented")
+		set(value) {}
+
 	override fun searchLibrary(query: String): List<NovelUI> {
 		TODO("Not yet implemented")
 	}

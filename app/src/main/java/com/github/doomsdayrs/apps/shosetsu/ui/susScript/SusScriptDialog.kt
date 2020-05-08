@@ -2,16 +2,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.susScript
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.os.Build
 import android.util.Log
-import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.DialogBody
 import com.github.doomsdayrs.apps.shosetsu.ui.susScript.objects.FileObject
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
-import org.json.JSONObject
 import java.io.File
 
 /*
@@ -41,77 +36,77 @@ import java.io.File
 class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
 
 
-    val files = ArrayList<FileObject>()
+	val files = ArrayList<FileObject>()
 
-    init {
-        for (file in fileList) {
-            files.add(FileObject(file))
-        }
-    }
+	init {
+		for (file in fileList) {
+			files.add(FileObject(file))
+		}
+	}
 
-    fun execute(finalAction: () -> Unit) {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
-        builder.setTitle(activity.getString(R.string.sus_script_title))
-        builder.setMessage(R.string.sus_scripts)
+	fun execute(finalAction: () -> Unit) {
+		val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
+		builder.setTitle(activity.getString(R.string.sus_script_title))
+		builder.setMessage(R.string.sus_scripts)
 
-        val dialog = DialogBody(activity.layoutInflater, builder, this)
-        builder.setView(dialog.view)
+		val dialog = DialogBody(activity.layoutInflater, builder, this)
+		builder.setView(dialog.view)
 
-        builder.setPositiveButton(android.R.string.yes) { _, _ ->
-            processActions()
-            finalAction()
-        }
+		builder.setPositiveButton(android.R.string.yes) { _, _ ->
+			processActions()
+			finalAction()
+		}
 
-        builder.setNegativeButton(android.R.string.cancel) { _, _ ->
-            for (file in files) {
-                Log.i(logID(), "Deleting\t${file.file.name}")
-                file.delete()
-            }
-        }
-        dialog.dialog = builder.show()
-    }
+		builder.setNegativeButton(android.R.string.cancel) { _, _ ->
+			for (file in files) {
+				Log.i(logID(), "Deleting\t${file.file.name}")
+				file.delete()
+			}
+		}
+		dialog.dialog = builder.show()
+	}
 
-    fun processActions() {
-        for (file in files) {
-            Log.i(logID(), "File confirmed Action\t${file.file.name}\t${file.action}")
-            when (file.action) {
-                0 -> {
-                   // FormatterUtils.trustScript(file.file)
-                    FormattersRepository.formatters.add(LuaFormatter(file.file))
-                }
-                1 -> {
-                    FormattersRepository.formatters.add(LuaFormatter(file.file))
-                }
-                2 -> {
-                   // val meta = FormatterUtils.getMetaData(file.file)
-                    val js = JSONObject()
-                   // js.put("name", meta!!.getString("name"))
-                  //  js.put("id", meta.getInt("id"))
-                    js.put("imageUrl", "")
+	fun processActions() {
+		for (file in files) {
+			Log.i(logID(), "File confirmed Action\t${file.file.name}\t${file.action}")
+			when (file.action) {
+				0 -> {
+					// FormatterUtils.trustScript(file.file)
+					//		FormattersRepository.formatters.add(LuaFormatter(file.file))
+				}
+				1 -> {
+					//		FormattersRepository.formatters.add(LuaFormatter(file.file))
+				}
+				2 -> {
+					/*			// val meta = FormatterUtils.getMetaData(file.file)
+								val js = JSONObject()
+								// js.put("name", meta!!.getString("name"))
+								//  js.put("id", meta.getInt("id"))
+								js.put("imageUrl", "")
 
-                    val a = Settings.disabledFormatters
-                    a.put(js)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                       // Formatters.formatters.removeIf { it.formatterID == meta.getInt("id") }
-                    } else {
-                        var point = -1
-                      //  for (i in 0 until Formatters.formatters.size)
-                         //   if (Formatters.formatters[i].formatterID == meta.getInt("id"))
-                         //       point = i
-                      //  if (point != -1)
-                       //     Formatters.formatters.removeAt(point)
-                    }
-                    Settings.disabledFormatters = a
-                }
-                3 -> {
-                    file.delete()
-                }
-            }
-        }
-    }
+								val a = Settings.disabledFormatters
+								a.put(js)
+								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+									// Formatters.formatters.removeIf { it.formatterID == meta.getInt("id") }
+								} else {
+									var point = -1
+									//  for (i in 0 until Formatters.formatters.size)
+									//   if (Formatters.formatters[i].formatterID == meta.getInt("id"))
+									//       point = i
+									//  if (point != -1)
+									//     Formatters.formatters.removeAt(point)
+								}
+								Settings.disabledFormatters = a*/
+				}
+				3 -> {
+					file.delete()
+				}
+			}
+		}
+	}
 
-    fun setAll(int: Int) {
-        for (file in files)
-            file.action = int
-    }
+	fun setAll(int: Int) {
+		for (file in files)
+			file.action = int
+	}
 }

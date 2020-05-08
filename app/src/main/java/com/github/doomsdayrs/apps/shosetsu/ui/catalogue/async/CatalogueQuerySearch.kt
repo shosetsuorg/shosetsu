@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async
 
 import android.os.AsyncTask
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import java.util.*
@@ -28,20 +27,20 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class CatalogueQuerySearch(private val catalogFragment: CatalogController) : AsyncTask<String?, Void?, ArrayList<NovelListingCard>>() {
-    /**
-     * Search catalogue
-     *
-     * @param strings ignored
-     * @return List of results
-     */
-    override fun doInBackground(vararg strings: String?): ArrayList<NovelListingCard> {
-        val result = ArrayList<NovelListingCard>()
-        val novels = catalogFragment.formatter.search(
-                (listOf(strings[0])+catalogFragment.filterValues).toTypedArray()
-        ) {}.forEach {
-            result.add(NovelListingCard(it.imageURL, it.title, Database.DatabaseIdentification.getNovelIDFromNovelURL(it.link), it.link))
-        }
-        return result
-    }
+	/**
+	 * Search catalogue
+	 *
+	 * @param strings ignored
+	 * @return List of results
+	 */
+	override fun doInBackground(vararg strings: String?): ArrayList<NovelListingCard> {
+		val result = ArrayList<NovelListingCard>()
+		val novels = catalogFragment.formatter.search(
+				(listOf(strings[0]) + catalogFragment.filterValues).toTypedArray()
+		) {}.forEach {
+			result.add(NovelListingCard(it.imageURL, it.title, TODO("IMPLEMENT"), it.link))
+		}
+		return result
+	}
 
 }

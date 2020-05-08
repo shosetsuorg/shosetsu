@@ -25,3 +25,5 @@ package com.github.doomsdayrs.apps.shosetsu.common.consts
 
 const val SHOSETSU_UPDATE_URL: String =
 		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml"
+
+const val selectedStrokeWidth = 8

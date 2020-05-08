@@ -25,5 +25,5 @@ package com.github.doomsdayrs.apps.shosetsu.common.utils.base
  * @author github.com/doomsdayrs
  */
 interface IFormatterUtils {
-	fun load()
+	fun initalize()
 }

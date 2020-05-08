@@ -15,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
@@ -89,7 +88,7 @@ class AdvancedSettings : SettingsSubController() {
 							try {
 								// TODO purge
 							} catch (e: SQLException) {
-								context?.toast("SQLITE Error")
+								context?.toastOnUI("SQLITE Error")
 								Log.e("AdvancedSettings", "DatabaseError", e)
 							}
 						}
@@ -110,7 +109,7 @@ class AdvancedSettings : SettingsSubController() {
 				theme == MODE_NIGHT_AUTO_BATTERY)
 			1 else 0)
 		if (BuildConfig.DEBUG)
-			settings.add(SettingsItemData(SWITCH)
+			settings.add(SettingsItemData(SWITCH, 9)
 					.setTitle("Show Intro")
 					.setIsChecked(Settings.showIntro)
 					.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->

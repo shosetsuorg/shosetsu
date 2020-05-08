@@ -22,7 +22,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
 import com.google.android.material.chip.Chip
 
 
@@ -42,7 +42,7 @@ class UpdatedNovelHolder(itemView: View, val activity: Activity) : RecyclerView.
 	val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
 	val expand: ImageButton = itemView.findViewById(R.id.loadMore)
 
-	var updates: ArrayList<UpdateEntity> = ArrayList()
+	var updates: ArrayList<UpdateUI> = ArrayList()
 
 	var novelName: String = ""
 		set(value) {

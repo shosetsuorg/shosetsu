@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
-import androidx.room.Embedded
 import androidx.room.Relation
 
 /*
@@ -28,7 +27,6 @@ import androidx.room.Relation
  * @author github.com/doomsdayrs
  */
 data class NovelEntityWithChapters(
-		@Embedded
 		val novelEntity: NovelEntity,
 		@Relation(parentColumn = "id", entityColumn = "id", entity = ChapterEntity::class)
 		val array: Array<ChapterEntity>

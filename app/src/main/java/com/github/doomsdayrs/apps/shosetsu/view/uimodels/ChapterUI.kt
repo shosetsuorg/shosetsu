@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 
 /*
@@ -31,7 +30,7 @@ data class ChapterUI(
 		val id: Int,
 		val novelID: Int,
 		val link: String,
-		val formatter: Formatter,
+		val formatterID: Int,
 		var title: String,
 		var releaseDate: String,
 		var order: Double,

@@ -12,9 +12,10 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.connectivityManager
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
+import com.github.doomsdayrs.apps.shosetsu.backend.initPreferences
 import com.github.doomsdayrs.apps.shosetsu.backend.services.RepositoryService
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
@@ -101,7 +102,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
-		Utilities.initPreferences(this)
+		initPreferences(this)
 
 		// Sets up DB
 		if (!Database.isInit()) {
@@ -109,7 +110,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		}
 
 		// Settings setup
-		Utilities.connectivityManager = getSystemService<ConnectivityManager>()!!
+		connectivityManager = getSystemService<ConnectivityManager>()!!
 				as ConnectivityManager
 		textView = findViewById(R.id.textView)
 		if (Settings.showIntro) {

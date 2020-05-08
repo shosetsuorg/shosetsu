@@ -20,20 +20,18 @@ import app.shosetsu.lib.values
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDBuilder
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDViewBuilder
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SecondDrawerController
+import com.github.doomsdayrs.apps.shosetsu.backend.calculateColumnCount
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
-import com.github.doomsdayrs.apps.shosetsu.common.ext.build
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
+import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDBuilder
+import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDViewBuilder
+import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -168,7 +166,7 @@ class CatalogController(bundle: Bundle)
 				if (Settings.novelCardType == 0)
 					GridLayoutManager(
 							context,
-							Utilities.calculateColumnCount(context!!, 200f),
+							context!!.calculateColumnCount(200f),
 							RecyclerView.VERTICAL,
 							false
 					)

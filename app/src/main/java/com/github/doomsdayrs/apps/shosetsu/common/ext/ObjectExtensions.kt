@@ -1,13 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import android.app.Activity
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.variables.variables.HandledReturns
 import org.acra.ACRA.getErrorReporter
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
 import java.util.*
 
 /*
@@ -34,38 +28,9 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 
-/**
- * Gets the novel from local storage
- *
- * @param chapterID novelURL of the chapter
- * @return String of passage
- */
-@Throws(MissingResourceException::class)
-fun Database.DatabaseChapter.getSavedNovelPassage(chapterID: Int): HandledReturns<String> {
-    return getChapterText(getSavedNovelPath(chapterID))
-}
-
 fun Exception.handle(logID: String, fatal: Boolean = false) {
-    Log.e(logID, "ERROR", this)
-    val reporter = getErrorReporter()
-    reporter.putCustomData("INFO", "Exception at ${Calendar.getInstance().time}")
-    reporter.handleException(this, fatal)
-}
-
-fun Activity.readAsset(name: String): String {
-    val string = StringBuilder()
-    try {
-        val reader = BufferedReader(InputStreamReader(assets.open(name)))
-
-        // do reading, usually loop until end of file reading
-        var mLine: String? = reader.readLine()
-        while (mLine != null) {
-            string.append("\n").append(mLine)
-            mLine = reader.readLine()
-        }
-        reader.close()
-    } catch (e: IOException) {
-        Log.e(javaClass.name, "Failed to read asset of $name", e)
-    }
-    return string.toString()
+	Log.e(logID, "ERROR", this)
+	val reporter = getErrorReporter()
+	reporter.putCustomData("INFO", "Exception at ${Calendar.getInstance().time}")
+	reporter.handleException(this, fatal)
 }

@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
@@ -45,12 +44,12 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 			ForeignKey(
 					entity = ExtensionEntity::class,
 					parentColumns = ["id"],
-					childColumns = ["formatter"],
+					childColumns = ["formatterID"],
 					onDelete = ForeignKey.SET_NULL,
 					onUpdate = ForeignKey.CASCADE
 			)
 		],
-		indices = [Index("novelID"), Index("url", unique = true), Index("formatter")]
+		indices = [Index("novelID"), Index("url", unique = true), Index("formatterID")]
 )
 data class ChapterEntity(
 		@NonNull
@@ -59,7 +58,7 @@ data class ChapterEntity(
 		@NonNull
 		val novelID: Int,
 
-		val formatter: Formatter,
+		val formatterID: Int,
 
 		@NonNull
 		var title: String,
@@ -87,7 +86,7 @@ data class ChapterEntity(
 					id,
 					novelID,
 					url,
-					formatter,
+					formatterID,
 					title,
 					releaseDate,
 					order,

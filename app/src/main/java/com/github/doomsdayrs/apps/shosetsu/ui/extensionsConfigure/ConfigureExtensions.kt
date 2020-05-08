@@ -3,8 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure
 import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -39,7 +38,7 @@ class ConfigureExtensions : RecyclerController<ConfigExtAdapter, ExtensionUI>() 
 	val viewModel: IExtensionsConfigureViewModel by viewModel()
 
 	override fun onViewCreated(view: View) {
-		Utilities.setActivityTitle(activity, getString(R.string.configure_extensions))
+		activity?.setActivityTitle(R.string.configure_extensions)
 		adapter = ConfigExtAdapter(this)
 		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 	}

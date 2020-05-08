@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.database.converters
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
-import androidx.room.TypeConverter
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateChapterUI
 
 /*
  * This file is part of shosetsu.
@@ -23,14 +22,17 @@ import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 
 /**
  * shosetsu
- * 23 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 07 / 05 / 2020
  */
-class FormatterConverter {
-	@TypeConverter
-	fun toInt(formatter: Formatter) = formatter.formatterID
-
-	@TypeConverter
-	fun toFormatter(int: Int) = FormatterUtils.getByID(int)
+data class UpdateChapterSubEntity(
+		val id: Int,
+		val url: String,
+		val title: String,
+		val novelID: Int,
+		val bookmarked: Boolean,
+		val formatterID: Int,
+		val isSaved: Boolean
+) : Convertible<UpdateChapterUI> {
+	override fun convertTo(): UpdateChapterUI =
+			UpdateChapterUI(id, url, title, novelID, bookmarked, formatterID, isSaved)
 }

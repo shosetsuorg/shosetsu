@@ -22,10 +22,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import com.squareup.picasso.Picasso
 
@@ -41,7 +41,7 @@ class UpdatedNovelsAdapter(
 
 ) : RecyclerView.Adapter<UpdatedNovelHolder>() {
 	val novelIDs: ArrayList<Int> = updateController.novelIDs
-	val updates: ArrayList<UpdateEntity> = updateController.recyclerArray
+	val updates: ArrayList<UpdateUI> = updateController.recyclerArray
 	val updatesViewModel: IUpdatesViewModel = updateController.updatesViewModel
 
 
@@ -55,7 +55,7 @@ class UpdatedNovelsAdapter(
 	override fun onBindViewHolder(holder: UpdatedNovelHolder, position: Int) {
 		val returnedNovelID = novelIDs[position]
 
-		val subUpdates: ArrayList<UpdateEntity> = ArrayList()
+		val subUpdates: ArrayList<UpdateUI> = ArrayList()
 		val updatersAdapter = UpdatedChaptersAdapter(holder, updatesViewModel)
 
 		updates.filter { it.novelID == returnedNovelID }.forEach { subUpdates.add(it) }

@@ -17,14 +17,10 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.DiffUtil
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
 
@@ -35,26 +31,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
  * @author github.com/doomsdayrs
  */
 class ExtensionsViewModel(
-		val extensionsDao: ExtensionsDao,
 		val formatterUtils: FormatterUtils
 ) : ViewModel(), IExtensionsViewModel {
-	inner class ExtensionsDifCalc(
-			val old: List<ExtensionUI>,
-			val new: List<ExtensionUI>
-	) : DiffUtil.Callback() {
-		override fun getOldListSize() = old.size
-		override fun getNewListSize(): Int = new.size
-
-		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-				old[oldItemPosition] == new[newItemPosition]
-
-		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-				old[oldItemPosition].id == new[newItemPosition].id
-	}
-
-
-	override val daoLiveData: LiveData<List<ExtensionEntity>> =
-			extensionsDao.loadFormatters()
 
 	override fun reloadFormatters() {
 		TODO("Not yet implemented")
@@ -76,19 +54,6 @@ class ExtensionsViewModel(
 		TODO("uninstallExtension")
 	}
 
-	override fun subscribeObserver(owner: LifecycleOwner, observer: Observer<List<ExtensionUI>>) {
-		TODO("Not yet implemented")
-	}
-
-	override suspend fun getLiveData(): List<ExtensionUI> =
-			loadDataSnap().map { it.convertTo() }
-
-	override fun subscribeDao(
-			owner: LifecycleOwner,
-			observer: Observer<List<ExtensionEntity>>
-	) =
-			daoLiveData.observe(owner, observer)
-
-	override fun loadDataSnap(): List<ExtensionEntity> =
-			daoLiveData.value ?: arrayListOf()
+	override val liveData: LiveData<HResult<List<ExtensionUI>>>
+		get() = TODO("Not yet implemented")
 }

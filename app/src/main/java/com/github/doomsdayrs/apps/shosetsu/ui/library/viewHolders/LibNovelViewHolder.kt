@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMA
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toastOnUI
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
@@ -86,7 +86,7 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 
 	init {
 		chip.setOnClickListener {
-			it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text)
+			it.context.toastOnUI(it.context.getString(R.string.chapters_unread_label) + chip.text)
 		}
 		itemView.setOnLongClickListener {
 			launchUI { handleSelection() }

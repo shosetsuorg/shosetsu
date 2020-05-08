@@ -38,21 +38,21 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
 class InfoSettings : SettingsSubController() {
 	override val settings by lazy {
 		arrayListOf(
-				SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+				SettingsItemData(SettingsItemData.SettingsType.INFORMATION,0)
 						.setTitle(R.string.version)
 						.setDescription(BuildConfig.VERSION_NAME),
-				SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+				SettingsItemData(SettingsItemData.SettingsType.INFORMATION,1)
 						.setTitle(R.string.report_bug)
 						.setDescription(R.string.report_bug_link)
 						.setOnClickListener { onClickReportBug() },
-				SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+				SettingsItemData(SettingsItemData.SettingsType.INFORMATION,2)
 						.setTitle(R.string.author)
 						.setDescription(R.string.author_name)
 						.setOnClickListener { onClickAuthor() },
-				SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+				SettingsItemData(SettingsItemData.SettingsType.INFORMATION,3)
 						.setTitle(R.string.disclaimer)
 						.setOnClickListener { onClickDisclaimer() },
-				SettingsItemData(SettingsItemData.SettingsType.INFORMATION)
+				SettingsItemData(SettingsItemData.SettingsType.INFORMATION,4)
 						.setTitle(R.string.license)
 						.setOnClickListener { onClickLicense() }
 		)

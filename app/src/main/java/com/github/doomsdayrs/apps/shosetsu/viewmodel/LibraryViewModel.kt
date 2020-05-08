@@ -17,9 +17,8 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DiffUtil
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
@@ -35,64 +34,37 @@ class LibraryViewModel(
 		val novelsRepository: INovelsRepository,
 		val chaptersRepository: IChaptersRepository
 ) : ILibraryViewModel {
-	class LibraryDiffCallBack(
-			private val oldList: List<Int>,
-			private val newList: List<Int>
-	) : DiffUtil.Callback() {
-		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-				(oldList[oldItemPosition] == newList[newItemPosition])
-
-		override fun getOldListSize() = oldList.size
-
-		override fun getNewListSize() = newList.size
-
-		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-				areItemsTheSame(oldItemPosition, newItemPosition)
-	}
-
 	override var selectedNovels = ArrayList<Int>()
-
-	/**
-	 * Internal cache of what [liveData] returns, for [selectedNovels]
-	 */
-	private val cachedNovel: ArrayList<NovelUI> = novelsRepository.loadData() as ArrayList<NovelUI>
-
-	@Synchronized
-	private fun clearAndAdd(list: List<NovelUI>) {
-		cachedNovel.clear()
-		cachedNovel.addAll(list)
+	override fun selectAll() {
+		TODO("Not yet implemented")
 	}
 
-	override suspend fun selectAll() = cachedNovel
-			.filter { !selectedNovels.contains(it.id) }
-			.forEach { selectedNovels.add(it.id) }
-
-	override suspend fun deselectAll() = selectedNovels.clear()
-
-	override suspend fun removeAllFromLibrary() {
-		novelsRepository.unBookmarkNovels(selectedNovels)
-		selectedNovels.clear()
+	override fun deselectAll() = selectedNovels.clear()
+	override fun removeAllFromLibrary() {
+		TODO("Not yet implemented")
 	}
 
-	override suspend fun loadNovelIDs(): List<Int> = getLiveData().map { it.id }
-
-	override suspend fun loadChaptersUnread(novelID: Int): Int =
-			chaptersRepository.loadChapterUnreadCount(novelID)
-
-	override fun loadNovel(id: Int): NovelUI? = cachedNovel.find { it.id == id }
-	override fun getCachedData(): List<NovelUI> = cachedNovel
-
-	override fun search(search: String): List<NovelUI> =
-			cachedNovel.filter { it.title.contains(search, ignoreCase = true) }
-
-	override fun subscribeObserver(
-			owner: LifecycleOwner,
-			observer: Observer<List<NovelUI>>
-	) = novelsRepository.subscribeRepository(owner, observer)
-
-	override suspend fun getLiveData(): List<NovelUI> {
-		val data = novelsRepository.loadData()
-		clearAndAdd(data)
-		return data
+	override fun loadNovelIDs(): List<Int> {
+		TODO("Not yet implemented")
 	}
+
+	override fun loadChaptersUnread(novelID: Int): Int {
+		TODO("Not yet implemented")
+	}
+
+	override fun loadNovel(id: Int): NovelUI? {
+		TODO("Not yet implemented")
+	}
+
+	override fun getCachedData(): List<NovelUI> {
+		TODO("Not yet implemented")
+	}
+
+	override fun search(search: String): List<NovelUI> {
+		TODO("Not yet implemented")
+	}
+
+	override val liveData: LiveData<HResult<List<NovelUI>>>
+		get() = TODO("Not yet implemented")
+
 }

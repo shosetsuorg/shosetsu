@@ -2,12 +2,16 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import android.util.Log
 import androidx.core.os.bundleOf
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateController
-import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import org.joda.time.DateTime
 import java.util.*
@@ -41,7 +45,7 @@ class UpdatesViewModel(
 		val novelsDao: NovelsDao
 ) : ViewModel(), IUpdatesViewModel {
 
-	override suspend fun createControllers(): ArrayList<UpdateController> {
+	override fun createControllers(): ArrayList<UpdateController> {
 		val updatePages = ArrayList<UpdateController>()
 
 		val days = updatesDao.getTotalDays()
@@ -75,10 +79,15 @@ class UpdatesViewModel(
 		return updatePages
 	}
 
-	override suspend fun getTimeBetweenDates(date: Long, date2: Long) =
-			updatesDao.loadUpdatesBetweenDates(date, date2)
+	override fun getURLImageTitle(novelID: Int): URLImageTitle {
+		TODO("Not yet implemented")
+	}
 
-	override suspend fun getURLImageTitle(novelID: Int): URLImageTitle {
+	override fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus) {
+		TODO("Not yet implemented")
+	}
+
+	override fun getTimeBetweenDates(date: Long, date2: Long): LiveData<HResult<List<UpdateUI>>> {
 		TODO("Not yet implemented")
 	}
 }

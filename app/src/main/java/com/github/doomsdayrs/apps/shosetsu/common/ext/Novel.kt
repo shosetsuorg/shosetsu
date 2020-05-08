@@ -33,7 +33,7 @@ fun Novel.Chapter.entity(novelEntity: NovelEntity) =
 		ChapterEntity(
 				url = this.link,
 				novelID = novelEntity.id,
-				formatter = novelEntity.formatter,
+				formatterID = novelEntity.formatterID,
 				title = this.title,
 				releaseDate = this.release,
 				order = this.order

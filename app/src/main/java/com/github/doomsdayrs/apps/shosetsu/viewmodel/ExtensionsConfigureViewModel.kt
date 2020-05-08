@@ -17,14 +17,13 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
 
 /**
@@ -36,32 +35,19 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureVi
 class ExtensionsConfigureViewModel(
 		private val extensionsDao: ExtensionsDao,
 		private val formatterUtils: FormatterUtils
-)
-	: ViewModel(), IExtensionsConfigureViewModel {
-	override val liveData: LiveData<List<ExtensionEntity>> by lazy { extensionsDao.loadFormatters() }
-
-	override suspend fun getLiveData(): List<ExtensionEntity> = liveData.value ?: arrayListOf()
-
-	override fun disableExtension(
-			extensionEntity: ExtensionEntity,
-			callback: (ExtensionEntity) -> Unit
-	) {
-		TODO("disableExtension")
+) : ViewModel(), IExtensionsConfigureViewModel {
+	override fun disableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit) {
+		TODO("Not yet implemented")
 	}
 
-	override fun enableExtension(
-			extensionEntity: ExtensionEntity,
-			callback: (ExtensionEntity) -> Unit
-	) {
-		TODO("enableExtension")
+	override fun enableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit) {
+		TODO("Not yet implemented")
 	}
 
-	override fun loadFormatterIfEnabled(extensionEntity: ExtensionEntity): Formatter? {
-		TODO("loadFormatterIfEnabled")
+	override fun loadFormatterIfEnabled(extensionEntity: ExtensionUI): Formatter? {
+		TODO("Not yet implemented")
 	}
 
-	override fun subscribeObserver(
-			owner: LifecycleOwner,
-			observer: Observer<List<ExtensionEntity>>
-	) = liveData.observe(owner, observer)
+	override val liveData: LiveData<HResult<List<ExtensionUI>>>
+		get() = TODO("Not yet implemented")
 }

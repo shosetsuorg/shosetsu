@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
@@ -39,12 +38,12 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 			ForeignKey(
 					entity = ExtensionEntity::class,
 					parentColumns = ["id"],
-					childColumns = ["formatter"],
+					childColumns = ["formatterID"],
 					onDelete = ForeignKey.SET_NULL,
 					onUpdate = ForeignKey.CASCADE
 			)
 		],
-		indices = [Index("formatter")]
+		indices = [Index("formatterID")]
 )
 data class NovelEntity(
 		@PrimaryKey
@@ -53,7 +52,7 @@ data class NovelEntity(
 		@NonNull
 		val url: String,
 
-		val formatter: Formatter,
+		val formatterID: Int,
 
 		var bookmarked: Boolean = false,
 
@@ -81,7 +80,7 @@ data class NovelEntity(
 	override fun convertTo(): NovelUI = NovelUI(
 			id,
 			url,
-			formatter,
+			formatterID,
 			bookmarked,
 			readerType,
 			title,

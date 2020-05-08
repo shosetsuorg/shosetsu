@@ -41,7 +41,7 @@ class ChapterReaderViewModel(
 		TODO("Not yet implemented")
 	}
 
-	override val currentChapterID: MutableLiveData<Int> = MutableLiveData<Int>().default(-1)
+	override val currentChapterID: Int = -1
 
 	override var novelID: MutableLiveData<Int> = MutableLiveData<Int>().default(-1)
 
@@ -80,11 +80,11 @@ class ChapterReaderViewModel(
 	}
 
 
-	override fun markAsRead() {
+	override fun bookmark() {
 		TODO("Not yet implemented")
 	}
 
-	override fun bookmark() {
+	override fun updateChapter(chapterReaderUI: ChapterReaderUI) {
 		TODO("Not yet implemented")
 	}
 

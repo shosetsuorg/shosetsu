@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 
@@ -30,18 +29,20 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  */
 data class DownloadUI(
 		val chapterID: Int,
+		val novelID: Int,
 		val chapterURL: String,
 		val chapterName: String,
 		val novelName: String,
-		val formatter: Formatter,
-		var status: Int
+		val formatterID: Int,
+		var status: Int = 0
 ) : Convertible<DownloadEntity> {
 	override fun convertTo() = DownloadEntity(
 			chapterID,
+			novelID,
 			chapterURL,
 			chapterName,
 			novelName,
-			formatter,
+			formatterID,
 			status
 	)
 }

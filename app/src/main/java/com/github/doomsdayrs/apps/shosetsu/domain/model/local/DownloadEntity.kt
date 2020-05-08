@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import java.io.Serializable
@@ -69,16 +68,17 @@ data class DownloadEntity(
 		val chapterName: String,
 		val novelName: String,
 		@NonNull
-		val formatter: Formatter,
+		val formatterID: Int,
 		var status: Int = 0
 ) : Convertible<DownloadUI>, Serializable {
 	override fun convertTo(): DownloadUI =
 			DownloadUI(
 					chapterID,
+					novelID,
 					chapterURL,
 					chapterName,
 					novelName,
-					formatter,
+					formatterID,
 					status
 			)
 }

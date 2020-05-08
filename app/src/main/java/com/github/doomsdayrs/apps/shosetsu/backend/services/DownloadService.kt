@@ -11,7 +11,7 @@ import android.util.Log
 import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_EXECUTE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
@@ -22,6 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTE
 import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.wait
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
@@ -102,7 +103,7 @@ class DownloadService : Service(), KodeinAware {
 		 * Makes a download path for a downloadEntity
 		 */
 		fun makeDownloadPath(downloadEntity: DownloadEntity): String = with(downloadEntity) {
-			"${Utilities.shoDir}/download/${formatter.formatterID}/${novelID}"
+			"${shoDir}/download/${formatterID}/${novelID}"
 		}
 	}
 
@@ -186,7 +187,7 @@ class DownloadService : Service(), KodeinAware {
 						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 
 						val formattedName = (downloadEntity.chapterID)
-						val passage = downloadEntity.formatter.getPassage(downloadEntity.chapterURL)
+						val passage = downloadEntity.formatterID.getPassage(downloadEntity.chapterURL)
 
 						pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
 						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
@@ -215,7 +216,7 @@ class DownloadService : Service(), KodeinAware {
 						pr.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 6, false)
 						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr.build())
 						// Rate limiting
-						Utilities.wait(10)
+						wait(10)
 					} catch (e: Exception) { // Mark download as faulted
 						Log.e(logID(), "A critical error occurred", e)
 						downloadEntity.status = -1

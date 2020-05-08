@@ -6,13 +6,13 @@ import android.widget.CompoundButton
 import android.widget.Toast.LENGTH_LONG
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.activity.NormalFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
@@ -45,32 +45,32 @@ import java.util.*
 class BackupSettings : SettingsSubController() {
 	override val settings by lazy {
 		arrayListOf(
-				SettingsItemData(SettingsType.CHECKBOX)
+				SettingsItemData(SettingsType.CHECKBOX, 0)
 						.setTitle(R.string.backup_chapters_option)
 						.setDescription(R.string.backup_chapters_option_description)
 						.setIsChecked(Settings.backupChapters)
 						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
 							Settings.backupChapters = isChecked
 						}),
-				SettingsItemData(SettingsType.CHECKBOX)
+				SettingsItemData(SettingsType.CHECKBOX, 1)
 						.setTitle((R.string.backup_settings_option))
 						.setDescription(R.string.backup_settings_option_desc)
 						.setIsChecked(Settings.backupSettings)
 						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
 							Settings.backupSettings = isChecked
 						}),
-                SettingsItemData(SettingsType.CHECKBOX)
-                        .setTitle(R.string.backup_quick_option)
-                        .setDescription(R.string.backup_quick_option_desc)
-                        .setIsChecked(Settings.backupQuick)
-                        .setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
-                            Settings.backupQuick = isChecked
-                        }),
-				SettingsItemData(SettingsType.BUTTON)
+				SettingsItemData(SettingsType.CHECKBOX, 2)
+						.setTitle(R.string.backup_quick_option)
+						.setDescription(R.string.backup_quick_option_desc)
+						.setIsChecked(Settings.backupQuick)
+						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+							Settings.backupQuick = isChecked
+						}),
+				SettingsItemData(SettingsType.BUTTON, 3)
 						.setOnClickListenerButton { it.post { BackupProcess().execute() } }
 						.setTitle(R.string.backup_now)
 						.setTextViewText(R.string.restore_now),
-				SettingsItemData(SettingsType.BUTTON)
+				SettingsItemData(SettingsType.BUTTON, 4)
 						.setOnClickListenerButton {
 							it.post { this@BackupSettings.performFileSelection() }
 						}

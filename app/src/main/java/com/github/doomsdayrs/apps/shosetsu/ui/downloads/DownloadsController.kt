@@ -25,9 +25,8 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -56,7 +55,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 	}
 
 	override fun onViewCreated(view: View) {
-		Utilities.setActivityTitle(activity, getString(R.string.downloads))
+		activity?.setActivityTitle(R.string.downloads)
 		createRecycler()
 		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
 	}

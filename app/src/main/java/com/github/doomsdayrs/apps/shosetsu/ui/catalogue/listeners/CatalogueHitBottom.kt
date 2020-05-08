@@ -26,14 +26,14 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
  * @author github.com/doomsdayrs
  */
 class CatalogueHitBottom(private val catalogFragment: CatalogController) : RecyclerView.OnScrollListener() {
-    private var running = false
-    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        if (!catalogFragment.isQuery && !catalogFragment.isInSearch) if (!running) if (!catalogFragment.recyclerView!!.canScrollVertically(1)) {
-            Log.d("CatalogueFragmentLoad", "Getting next page")
-            running = true
-            catalogFragment.currentMaxPage++
-            catalogFragment.executePageLoader()
-        }
-    }
+	private var running = false
+	override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+		if (!catalogFragment.isQuery && !catalogFragment.isInSearch) if (!running) if (!catalogFragment.recyclerView!!.canScrollVertically(1)) {
+			Log.d("CatalogueFragmentLoad", "Getting next page")
+			running = true
+			catalogFragment.currentMaxPage++
+			catalogFragment.viewModel.loadMore()
+		}
+	}
 
 }

@@ -23,10 +23,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedDaysPager
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
@@ -69,7 +68,7 @@ class UpdatesController : ViewedController() {
 	}
 
 	override fun onViewCreated(view: View) {
-		Utilities.setActivityTitle(activity, getString(R.string.updates))
+		activity?.setActivityTitle(R.string.updates)
 		GlobalScope.launch {
 			setViewPager()
 		}

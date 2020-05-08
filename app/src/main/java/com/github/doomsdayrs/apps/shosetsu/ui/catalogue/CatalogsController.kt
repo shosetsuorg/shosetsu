@@ -8,9 +8,9 @@ import android.view.View
 import android.widget.SearchView
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
@@ -71,7 +71,7 @@ class CatalogsController : RecyclerController<CataloguesAdapter, FormatterCard>(
 	}
 
 	override fun onViewCreated(view: View) {
-		Utilities.setActivityTitle(activity, applicationContext!!.getString(R.string.catalogues))
+		activity?.setActivityTitle(R.string.catalogues)
 		recyclerView?.setHasFixedSize(true)
 		adapter = CataloguesAdapter(recyclerArray, router)
 		viewModel.liveData.observe(this, Observer(::handleFormatterRepository))

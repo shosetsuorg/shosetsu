@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.view.viewholders
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
-import com.mikepenz.fastadapter.FastAdapter
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateChapterSubEntity
 
 /*
  * This file is part of shosetsu.
@@ -19,15 +18,21 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
- * Class needs to be overridden by program
+ * 07 / 05 / 2020
  */
-abstract class ExtensionsViewHolder(itemView: View) : FastAdapter.ViewHolder<ExtensionUI>(itemView) {
+data class UpdateChapterUI(
+		val id: Int,
+		val link: String,
+		val title: String,
+		val novelID: Int,
+		var bookmarked: Boolean,
+		val formatterID: Int,
+		val isSaved: Boolean
+) : Convertible<UpdateChapterSubEntity> {
+	override fun convertTo(): UpdateChapterSubEntity =
+			UpdateChapterSubEntity(id, link, title, novelID, bookmarked, formatterID, isSaved)
 }

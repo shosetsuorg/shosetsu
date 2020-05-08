@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 
 /*
@@ -32,7 +31,7 @@ data class NovelUI(
 
 		val novelURL: String,
 
-		val formatter: Formatter,
+		val formatterID: Int,
 
 		var bookmarked: Boolean,
 

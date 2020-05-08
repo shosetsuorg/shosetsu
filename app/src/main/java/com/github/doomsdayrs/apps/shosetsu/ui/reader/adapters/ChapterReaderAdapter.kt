@@ -1,8 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters
 
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
@@ -32,8 +30,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
  * @param chapterReader ChapterReader
  */
 class ChapterReaderAdapter(
-		fm: FragmentManager,
-		l: Lifecycle,
 		val chapterReader: ChapterReader
 ) : RecyclerView.Adapter<NewTextReader>() {
 

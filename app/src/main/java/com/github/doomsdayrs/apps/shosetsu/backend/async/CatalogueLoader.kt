@@ -3,9 +3,9 @@ package com.github.doomsdayrs.apps.shosetsu.backend.async
 import android.util.Log
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities.wait
 import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.wait
 import org.luaj.vm2.LuaError
 
 

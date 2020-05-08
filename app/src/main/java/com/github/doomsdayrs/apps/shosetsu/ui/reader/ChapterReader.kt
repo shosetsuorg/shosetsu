@@ -19,11 +19,14 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
+import com.github.doomsdayrs.apps.shosetsu.backend.openInWebView
+import com.github.doomsdayrs.apps.shosetsu.backend.regret
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READ
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebview
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
+import com.github.doomsdayrs.apps.shosetsu.common.ext.regret
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ChapterViewChange
@@ -108,7 +111,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 
 	override val kodein: Kodein by closestKodein()
 	val viewModel: IChapterReaderViewModel by instance<IChapterReaderViewModel>()
-	private val chapterReaderAdapter: ChapterReaderAdapter = ChapterReaderAdapter(, this)
+	private val chapterReaderAdapter: ChapterReaderAdapter = ChapterReaderAdapter(this)
 
 	val chapters: ArrayList<ChapterReaderUI> = arrayListOf()
 
@@ -368,20 +371,24 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 				true
 			}
 			R.id.browser -> {
-				openInBrowser(this, viewModel.)
+				val url = chapters[viewModel.currentChapterID].link
+				if (url.isNotEmpty())
+					openInBrowser(url)
 				true
 			}
 			R.id.webview -> {
-				activity?.let { if (url.isNotEmpty()) openInWebview(activity!!, url) }
+				val url = chapters[viewModel.currentChapterID].link
+				if (url.isNotEmpty())
+					openInWebView(url)
 				true
 			}
 			R.id.reader_0 -> {
-				Utilities.regret(context!!)
+				regret()
 				//Utilities.unmarkMenuItems(readers, 0, demarkActions[3])
 				true
 			}
 			R.id.reader_1 -> {
-				Utilities.regret(context!!)
+				regret()
 				//Utilities.unmarkMenuItems(readers, 1, demarkActions[3])
 				true
 			}

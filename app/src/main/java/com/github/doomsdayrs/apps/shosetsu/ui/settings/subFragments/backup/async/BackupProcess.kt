@@ -25,7 +25,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings.BACKUP_QUICK
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.BACKUP_SETTINGS
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.C_IN_NOVELS_H
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.C_IN_NOVELS_P
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings.DISABLED_FORMATTERS
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.IS_DOWNLOAD_ON_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.IS_DOWNLOAD_PAUSED
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.NOVEL_CARD_TYPE
@@ -38,17 +37,9 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings.READER_TEXT_INDENT
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.READER_TEXT_SIZE
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.READER_TEXT_SPACING
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.READER_THEME
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.sqLiteDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getInt
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
 import com.github.doomsdayrs.apps.shosetsu.common.ext.serializeToString
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toBoolean
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -79,70 +70,15 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 			val backupJSON = JSONObject()
 
 			run {
-				Log.i("Progress", "Backing up novels")
-				val backupNovels = JSONArray()
-				val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.NOVELS + " where " + Columns.BOOKMARKED + "=1", null)!!
-				if (cursor.count > 0) while (cursor.moveToNext()) { // Gets if it is in library, if not then it skips
-					val bookmarked = (cursor.getInt(cursor.getColumnIndex(Columns.BOOKMARKED.toString()))).toBoolean()
-					Log.i("NovelBack", "Valid?: $bookmarked")
-					if (bookmarked) {
-						val novelURL = DatabaseIdentification.getNovelURLFromNovelID(cursor.getInt(Columns.PARENT_ID))!!
-						val novel = JSONObject()
-						novel[Columns.URL] = novelURL
-						novel[Columns.FORMATTER_ID] = DatabaseIdentification.getFormatterIDFromNovelURL(novelURL)
-						novel[Columns.READING_STATUS] = cursor.getInt(Columns.READING_STATUS)
-						novel[Columns.READER_TYPE] = cursor.getInt(Columns.READER_TYPE)
-						novel[Columns.TITLE] = cursor.getString(Columns.TITLE)
-						novel[Columns.IMAGE_URL] = cursor.getString(Columns.IMAGE_URL)
-						novel[Columns.DESCRIPTION] = cursor.getString(Columns.DESCRIPTION)
-						novel[Columns.GENRES] = cursor.getString(Columns.GENRES)
-						novel[Columns.AUTHORS] = cursor.getString(Columns.AUTHORS)
-						novel[Columns.STATUS] = cursor.getString(Columns.STATUS)
-						novel[Columns.TAGS] = cursor.getString(Columns.TAGS)
-						novel[Columns.ARTISTS] = cursor.getString(Columns.ARTISTS)
-						novel[Columns.LANGUAGE] = cursor.getString(Columns.LANGUAGE)
-						novel[Columns.MAX_CHAPTER_PAGE] = cursor.getInt(Columns.MAX_CHAPTER_PAGE)
-						backupNovels.put(novel)
-					}
-				}
-				backupJSON.put("novels", backupNovels)
-				cursor.close()
 			}
 
 			if (Settings.backupChapters && !Settings.backupQuick)
-				run {
-					Log.i("Progress", "Backing up Chapters")
-					val backupChapters = JSONArray()
-					val cursor = sqLiteDatabase.rawQuery("select * from " + Tables.CHAPTERS, null)!!
-					if (cursor.count > 0) while (cursor.moveToNext()) {
-						val novelID = cursor.getInt(cursor.getColumnIndex(Columns.PARENT_ID.toString()))
-						val b = Database.DatabaseNovels.isNovelBookmarked(novelID)
-						if (b) {
-							val id = cursor.getInt(cursor.getColumnIndex(Columns.ID.toString()))
-							val chapter = JSONObject()
-							chapter["novelURL"] = DatabaseIdentification.getNovelURLFromNovelID(novelID)
-									?: ""
-							chapter[Columns.URL] = DatabaseIdentification.getChapterURLFromChapterID(id)
-							chapter[Columns.TITLE] = cursor.getString(Columns.TITLE)
-							chapter[Columns.RELEASE_DATE] = cursor.getString(Columns.RELEASE_DATE)
-							chapter[Columns.ORDER] = cursor.getInt(Columns.ORDER)
-							chapter[Columns.Y_POSITION] = cursor.getInt(Columns.Y_POSITION)
-							chapter[Columns.READ_CHAPTER] = cursor.getInt(Columns.READ_CHAPTER)
-							chapter[Columns.BOOKMARKED] = cursor.getInt(Columns.BOOKMARKED)
-							backupChapters.put(chapter)
-						}
-					}
-					backupJSON.put("chapters", backupChapters)
-					cursor.close()
-				}
-			else {
-
-			}
+			else { }
 			if (Settings.backupSettings)
 				backupJSON.put("settings", getSettingsInJSON())
 
 			Log.i("Progress", "Writing")
-			val folder = File(Utilities.shoDir + "/backup/")
+			val folder = File(shoDir + "/backup/")
 			if (!folder.exists()) if (!folder.mkdirs()) {
 				throw IOException("Failed to mkdirs")
 			}
@@ -183,8 +119,6 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 		settings[IS_DOWNLOAD_PAUSED] = Settings.isDownloadPaused
 		settings[IS_DOWNLOAD_ON_UPDATE] = Settings.isDownloadOnUpdateEnabled
 
-		settings[DISABLED_FORMATTERS] = Settings.disabledFormatters
-
 		settings[C_IN_NOVELS_P] = Settings.columnsInNovelsViewP
 		settings[C_IN_NOVELS_H] = Settings.columnsInNovelsViewH
 		settings[NOVEL_CARD_TYPE] = Settings.novelCardType
@@ -193,7 +127,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 		settings[BACKUP_SETTINGS] = Settings.backupSettings
 		settings[BACKUP_QUICK] = Settings.backupQuick
 
-		settings["shoDir"] = Utilities.shoDir.serializeToString()
+		settings["shoDir"] = shoDir.serializeToString()
 
 		return settings
 	}

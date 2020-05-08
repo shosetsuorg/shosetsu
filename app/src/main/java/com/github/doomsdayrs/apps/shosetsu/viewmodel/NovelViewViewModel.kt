@@ -1,22 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
-import android.util.Log
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.common.utils.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.common.ext.handle
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
-import java.util.*
-import kotlin.collections.ArrayList
 
 /*
  * This file is part of shosetsu.
@@ -54,12 +43,22 @@ class NovelViewViewModel : ViewModel(), INovelViewViewModel {
 		TODO("Not yet implemented")
 	}
 
+	override fun loadLastRead(): LiveData<HResult<ChapterUI>> {
+		TODO("Not yet implemented")
+	}
+
 	override val liveData: LiveData<HResult<NovelUI>>
 		get() = TODO("Not yet implemented")
 
 	override val chapters: LiveData<HResult<ChapterUI>>
 		get() = TODO("Not yet implemented")
 
+	override var isArrayReversed: Boolean
+		get() = TODO("Not yet implemented")
+		set(value) {}
+
+
+	/*
 	/**
 	 * Sets the novel chapters down
 	 */
@@ -248,4 +247,5 @@ class NovelViewViewModel : ViewModel(), INovelViewViewModel {
 			0
 		} else -2
 	}
+	 */
 }

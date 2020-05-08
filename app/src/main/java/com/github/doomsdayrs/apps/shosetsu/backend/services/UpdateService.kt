@@ -11,15 +11,11 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.getSystemService
+import androidx.core.os.bundleOf
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.async.ChapterLoader
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.chaptersDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.novelsDao
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.updatesDao
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NULLIFIED
@@ -38,7 +34,6 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepos
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
-import com.github.doomsdayrs.apps.shosetsu.variables.obj.FormattersRepository
 import needle.CancelableTask
 import needle.Needle
 import org.kodein.di.Kodein
@@ -183,7 +178,7 @@ class UpdateService : Service(), KodeinAware {
 		Log.d(logID(), SERVICE_NEW)
 		job = when (intent?.getIntExtra(KEY_TARGET, KEY_NOVELS) ?: KEY_NOVELS) {
 			KEY_NOVELS ->
-				UpdateManga()
+				UpdateManga(bundleOf())
 
 			KEY_CATEGORY ->
 				UpdateCategory()
