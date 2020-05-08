@@ -72,7 +72,7 @@ class TextAssetReader(private val bundleI: Bundle) : ViewedController(bundleI) {
 	override fun onViewCreated(view: View) {
 		if (message.isEmpty()) handleB()
 		activity?.setActivityTitle(type.capitalize(Locale.ROOT))
-		view.findViewById<TextView>(R.id.textView).text = message
+		view.findViewById<TextView>(R.id.title).text = message
 	}
 
 }

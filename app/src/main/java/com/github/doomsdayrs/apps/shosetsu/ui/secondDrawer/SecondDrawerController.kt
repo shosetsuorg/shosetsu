@@ -29,6 +29,6 @@ import com.google.android.material.navigation.NavigationView
  * @author github.com/doomsdayrs
  */
 interface SecondDrawerController {
-    fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout)
-    fun handleConfirm(linearLayout: LinearLayout)
+	fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout)
+	fun handleConfirm(linearLayout: LinearLayout)
 }

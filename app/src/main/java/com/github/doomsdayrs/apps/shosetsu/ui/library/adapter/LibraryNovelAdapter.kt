@@ -5,14 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.selectedStrokeWidth
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
-import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
+import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibraryItemViewHolder
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.squareup.picasso.Picasso
@@ -45,56 +48,65 @@ class LibraryNovelAdapter(
 		private val libraryController: LibraryController,
 		@LayoutRes val layout: Int,
 		private val viewModel: ILibraryViewModel = libraryController.viewModel
-) : RecyclerView.Adapter<LibNovelViewHolder>() {
-	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): LibNovelViewHolder {
-		val view = LayoutInflater.from(viewGroup.context).inflate(
-				layout,
-				viewGroup,
-				false
-		)
-		return LibNovelViewHolder(view, libraryController.router)
-	}
+) : RecyclerView.Adapter<LibraryItemViewHolder>() {
+	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): LibraryItemViewHolder =
+			LibraryItemViewHolder(LayoutInflater.from(viewGroup.context).inflate(
+					layout,
+					viewGroup,
+					false
+			))
 
-	override fun onBindViewHolder(libNovelViewHolder: LibNovelViewHolder, i: Int) {
-		novels[i].let { novelUI ->
+	override fun onBindViewHolder(viewHolder: LibraryItemViewHolder, i: Int) {
+		novels[i].let { (id, title, imageURL) ->
 			//Sets values
 			run {
-				if (novelUI.imageURL.isNotEmpty())
-					Picasso.get().load(novelUI.imageURL).into(libNovelViewHolder.imageView)
-				libNovelViewHolder.setLibraryControllerFun(libraryController)
-				libNovelViewHolder.novelCard = novelUI
-				libNovelViewHolder.title.text = novelUI.title
+				if (imageURL.isNotEmpty())
+					Picasso.get().load(imageURL).into(viewHolder.imageView)
+				viewHolder.title.text = title
 			}
-			viewModel.loadChaptersUnread(novelUI.id).observe(libraryController, Observer {
+
+			// Loads Chapters Unread for a specific novel
+			viewModel.loadChaptersUnread(id).observe(libraryController, Observer {
 				when (it) {
-					is HResult.Loading -> Log.d(logID(), "${novelUI.id} unread is loading")
-					is HResult.Empty -> Log.d(logID(), "${novelUI.id} has no data 4 unread")
+					is HResult.Loading -> Log.d(logID(), "Novel $id unread is loading")
+					is HResult.Empty -> Log.d(logID(), "Novel $id has no data 4 unread")
 					is HResult.Error -> {
 						TODO("Logging")
 					}
 					is HResult.Success -> {
 						val count = it.data
-						libNovelViewHolder.itemView.post {
+						viewHolder.itemView.post {
 							if (count != 0) {
-								libNovelViewHolder.chip.visibility = View.VISIBLE
-								libNovelViewHolder.chip.text = count.toString()
-							} else libNovelViewHolder.chip.visibility = View.INVISIBLE
+								viewHolder.chip.visibility = View.VISIBLE
+								viewHolder.chip.text = count.toString()
+							} else viewHolder.chip.visibility = View.INVISIBLE
 						}
 					}
 				}
 			})
-			val selectedList = viewModel.selectedNovels.value ?: listOf()
 
-			libNovelViewHolder.materialCardView.strokeWidth =
-					if (selectedList.contains(novelUI.id))
-						selectedStrokeWidth else 0
+			run {
+				val selectedList = libraryController.selectedNovels
 
-			if (selectedList.isNotEmpty()) {
-				libNovelViewHolder.itemView.setOnClickListener {
-					launchAsync { libNovelViewHolder.handleSelection() }
+				viewHolder.materialCardView.strokeWidth = if (selectedList.contains(id))
+					selectedStrokeWidth else 0
+
+				viewHolder.itemView.setOnLongClickListener {
+					libraryController.viewModel.handleSelect(id)
+					true
 				}
-			} else {
-				libNovelViewHolder.itemView.setOnClickListener(libNovelViewHolder)
+
+				if (selectedList.isNotEmpty()) {
+					viewHolder.itemView.setOnClickListener {
+						libraryController.viewModel.handleSelect(id)
+					}
+				} else {
+					viewHolder.itemView.setOnClickListener {
+						libraryController.router.pushController(NovelController(
+								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to id)
+						).withFadeTransaction())
+					}
+				}
 			}
 		}
 	}

@@ -29,6 +29,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class DownloadItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-	val title: TextView = itemView.findViewById(R.id.recycler_download_card_title)
-	val status: TextView = itemView.findViewById(R.id.recycler_download_card_status)
+	val title: TextView = itemView.findViewById(R.id.title)
+	val status: TextView = itemView.findViewById(R.id.status)
 }

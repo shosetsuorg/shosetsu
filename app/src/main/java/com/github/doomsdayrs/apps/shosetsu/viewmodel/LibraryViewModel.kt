@@ -38,6 +38,21 @@ class LibraryViewModel(
 		val libraryAsCardsUseCase: LibraryAsCardsUseCase
 ) : ILibraryViewModel, ViewModel() {
 	override var selectedNovels = MutableLiveData<List<Int>>()
+	override var visible: MutableLiveData<List<Int>>
+		get() = TODO("Not yet implemented")
+		set(value) {}
+
+	override fun handleSelect(id: Int) {
+		TODO("Not yet implemented")
+	}
+
+	override fun select(id: Int) {
+		TODO("Not yet implemented")
+	}
+
+	override fun deselect(id: Int) {
+		TODO("Not yet implemented")
+	}
 
 	override fun selectAll() {
 		launchAsync {

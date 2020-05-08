@@ -1,10 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
+import androidx.lifecycle.*
 import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.SearchBookMarkedNovelsUseCase
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.URLTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISearchViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -23,26 +28,28 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISearchViewModel
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 01 / 05 / 2020
  */
 class SearchViewModel(
-		val iNovelsRepository: INovelsRepository,
+		val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
 		val iFormatterRepository: IFormatterRepository
-) : ISearchViewModel {
-	override var query: String
-		get() = TODO("Not yet implemented")
-		set(value) {}
+) : ISearchViewModel, ViewModel() {
+	override var query: MutableLiveData<String> = MutableLiveData()
 
-	override fun searchLibrary(query: String): List<NovelUI> {
-		TODO("Not yet implemented")
+	override fun setQuery(query: String) = this.query.postValue(query)
+
+	override fun searchLibrary(): LiveData<HResult<List<IDTitleImageUI>>> {
+		return query.switchMap {
+			liveData(viewModelScope.coroutineContext + Dispatchers.Default) {
+				emit(loading())
+				emitSource(searchBookMarkedNovelsUseCase(it))
+			}
+		}
 	}
 
-	override fun searchFormatter(query: String, formatter: Formatter) {
+	override fun searchFormatter(formatter: Formatter): LiveData<HResult<List<URLTitleImageUI>>> {
 		TODO("Not yet implemented")
 	}
 }

@@ -22,38 +22,29 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-
-
-        <androidx.gridlayout.widget.GridLayout
-            android:id="@+id/gridLayout"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:scrollbars="vertical"
+            app:layout_column="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical"
-                app:layout_column="1"
-                app:layout_row="0" />
-        </androidx.gridlayout.widget.GridLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_row="0"
+            tools:listitem="@layout/recycler_novel_card" />
 
         <TextView
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/no_results_found"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

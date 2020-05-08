@@ -147,7 +147,7 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 	class CatalogueSelectionAdapter(private val migrationController: MigrationController, private val transfereePosition: Int) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
 		class CatalogueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 			val imageView: ImageView = itemView.findViewById(R.id.imageView)
-			val title: TextView = itemView.findViewById(R.id.textView)
+			val title: TextView = itemView.findViewById(R.id.title)
 			var id: Int = -1
 		}
 

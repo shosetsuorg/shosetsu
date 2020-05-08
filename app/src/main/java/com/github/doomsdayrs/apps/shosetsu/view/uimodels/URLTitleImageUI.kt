@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 
 /*
  * This file is part of shosetsu.
@@ -24,10 +24,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
  * shosetsu
  * 08 / 05 / 2020
  */
-data class IDTitleImageUI(
-		val id: Int,
+data class URLTitleImageUI(
+		val url: String,
 		val title: String,
 		val imageURL: String
-) : Convertible<IDTitleImage> {
-	override fun convertTo(): IDTitleImage = IDTitleImage(id, title, imageURL)
+) : Convertible<URLImageTitle> {
+	override fun convertTo(): URLImageTitle = URLImageTitle(url, imageURL, title)
 }

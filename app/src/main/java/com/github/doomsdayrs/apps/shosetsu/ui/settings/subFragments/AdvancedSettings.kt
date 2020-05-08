@@ -15,6 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
@@ -79,16 +80,16 @@ class AdvancedSettings : SettingsSubController() {
 
 	override val settings by lazy {
 		arrayListOf(
-				SettingsItemData(SPINNER)
+				SettingsItemData(SPINNER,1)
 						.setTitle(R.string.theme)
 						.setOnItemSelectedListener(ThemeChange(this)),
-				SettingsItemData(BUTTON)
+				SettingsItemData(BUTTON,2)
 						.setTitle(R.string.remove_novel_cache)
 						.setOnClickListenerButton {
 							try {
 								// TODO purge
 							} catch (e: SQLException) {
-								context?.toastOnUI("SQLITE Error")
+								context?.toast("SQLITE Error")
 								Log.e("AdvancedSettings", "DatabaseError", e)
 							}
 						}

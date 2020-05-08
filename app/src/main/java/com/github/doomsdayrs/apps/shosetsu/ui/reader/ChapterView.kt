@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +14,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
@@ -67,12 +65,12 @@ class ChapterView : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		addBottomListener()
-		chapterReader?.getToolbar()?.let { textView.setOnClickListener(ToolbarHideOnClickListener(it)) }
+		chapterReader?.getToolbar()?.let { title.setOnClickListener(ToolbarHideOnClickListener(it)) }
 
-		textView.setBackgroundColor(getBackgroundColor())
-		textView.setTextColor(getTextColor())
+		title.setBackgroundColor(getBackgroundColor())
+		title.setTextColor(getTextColor())
 
-		textView.textSize = Settings.readerTextSize
+		title.textSize = Settings.readerTextSize
 		next_chapter.setOnClickListener {
 			val next = chapterReader!!.getNextPosition(chapterID)
 			if (chapterReader!!.chapterIDs.isNotEmpty() && chapterReader!!.getViewPager() != null) {
@@ -103,8 +101,8 @@ class ChapterView : Fragment() {
 				intent?.let {
 					when (it.action) {
 						BC_CHAPTER_VIEW_THEME_CHANGE -> {
-							textView?.setBackgroundColor(getBackgroundColor())
-							textView?.setTextColor(getTextColor())
+							title?.setBackgroundColor(getBackgroundColor())
+							title?.setTextColor(getTextColor())
 						}
 						else -> {
 							Log.d(logID(), "Unknown action")
@@ -140,11 +138,11 @@ class ChapterView : Fragment() {
 
 	fun setUpReader() {
 		//scrollView!!.setBackgroundColor(Settings.ReaderTextBackgroundColor)
-		textView!!.setBackgroundColor(getBackgroundColor())
-		textView!!.setTextColor(getTextColor())
+		title!!.setBackgroundColor(getBackgroundColor())
+		title!!.setTextColor(getTextColor())
 
 
-		textView!!.textSize = Settings.readerTextSize
+		title!!.textSize = Settings.readerTextSize
 		if (unformattedText.isNotEmpty()) {
 			val replaceSpacing = StringBuilder("\n")
 			for (x in 0 until Settings.readerParagraphSpacing) replaceSpacing.append("\n")
@@ -160,7 +158,7 @@ class ChapterView : Fragment() {
 						text!!.substring(0, text!!.length - 1).replace("\n", "\\n")
 						+ "\n" + appendID())
 
-			textView!!.text = text
+			title!!.text = text
 			// viewPager2.post(() -> currentReader.setText(text));
 		}
 	}

@@ -56,7 +56,7 @@ class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
 
         layout = inflater.inflate(R.layout.drawer_layout_expandable, viewGroup, false) as LinearLayout
         bar = layout.findViewById(R.id.expandable_layout)
-        barTitle = bar.findViewById(R.id.textView)
+        barTitle = bar.findViewById(R.id.title)
         barTitle.setText(R.string.unknown)
         val image = bar.findViewById<ImageView>(R.id.imageView)
         val expandableLayoutDivider = bar.findViewById<View>(R.id.expand_divider)

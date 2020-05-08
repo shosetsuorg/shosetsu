@@ -3,9 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search.async
 import android.os.AsyncTask
 import android.view.View
 import app.shosetsu.lib.values
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.async.CatalogueLoader
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController.StoredData
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import org.luaj.vm2.LuaError
@@ -51,7 +48,7 @@ class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<S
 					searchViewHolder.formatter.searchFilters.values(),
 					searchViewHolder.query
 			).execute()
-			array = Utilities.convertNovelArrayToString2DArray(a)
+			array = convertNovelArrayToString2DArray(a)
 		} catch (e: LuaError) {
 			e.printStackTrace()
 			return false

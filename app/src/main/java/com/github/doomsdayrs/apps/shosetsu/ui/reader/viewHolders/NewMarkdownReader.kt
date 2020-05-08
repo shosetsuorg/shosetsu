@@ -2,8 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders
 
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import us.feras.mdv.MarkdownView
 
 /*
@@ -28,14 +26,12 @@ import us.feras.mdv.MarkdownView
  *
  * @author github.com/doomsdayrs
  */
-class NewMarkdownReader(itemView: View, chapterView: ChapterView) : NewReader(itemView, chapterView) {
-    private val markdownView: MarkdownView = itemView.findViewById(R.id.markdown_view)
+class NewMarkdownReader(itemView: View) : NewReader(itemView) {
+	private val markdownView: MarkdownView = itemView.findViewById(R.id.markdown_view)
 
-    override fun setText(text: String?) {
-        markdownView.loadMarkdown(text)
-    }
+	override fun setText(text: String?) {
+		markdownView.loadMarkdown(text)
+	}
 
-    override fun bind() {
-        chapterView.chapterReader?.let { markdownView.setOnClickListener(ToolbarHideOnClickListener(it.getToolbar())) }
-    }
+	override fun bind() {}
 }

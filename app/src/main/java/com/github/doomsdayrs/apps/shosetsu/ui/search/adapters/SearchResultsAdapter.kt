@@ -15,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelCard
 import com.squareup.picasso.Picasso
 
 

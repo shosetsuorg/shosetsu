@@ -60,6 +60,7 @@ class LibraryController
 
 	/** Inflater */
 	val inflater: MenuInflater = MenuInflater(applicationContext)
+	val selectedNovels: ArrayList<Int> = arrayListOf()
 
 	init {
 		setHasOptionsMenu(true)
@@ -69,10 +70,11 @@ class LibraryController
 		activity?.setActivityTitle(R.string.my_library)
 		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 
-		/**
-		 * If the selected array changes, applys dif util
-		 */
+		/**If the selected array changes, applys dif util*/
 		viewModel.selectedNovels.observe(this, Observer { selected ->
+			selectedNovels.clear()
+			selectedNovels.addAll(selected)
+
 			val c = object : AutoUtil<List<IDTitleImageUI>>(recyclerArray, recyclerArray) {
 				override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
 						old[oldItemPosition].id == new[newItemPosition].id
@@ -89,12 +91,25 @@ class LibraryController
 			val r = DiffUtil.calculateDiff(c)
 			adapter?.let { r.dispatchUpdatesTo(it) }
 		})
+
+		recyclerView?.layoutManager = if (Settings.novelCardType == 0)
+			GridLayoutManager(
+					applicationContext,
+					applicationContext!!.calculateColumnCount(200f),
+					RecyclerView.VERTICAL,
+					false
+			) else
+			LinearLayoutManager(
+					applicationContext,
+					LinearLayoutManager.VERTICAL,
+					false
+			)
 	}
 
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (viewModel.selectedNovels.value?.size ?: 0 <= 0) {
-			Log.d("LibraryFragment", "Creating default menu")
+			Log.d(logID(), "Creating default menu")
 			inflater.inflate(R.menu.toolbar_library, menu)
 			val searchView =
 					menu.findItem(R.id.library_search).actionView as SearchView?
@@ -107,7 +122,7 @@ class LibraryController
 				} else false
 			}
 		} else {
-			Log.d("LibraryFragment", "Creating selected menu")
+			Log.d(logID(), "Creating selected menu")
 			inflater.inflate(R.menu.toolbar_library_selected, menu)
 		}
 	}
@@ -163,19 +178,6 @@ class LibraryController
 					R.layout.recycler_novel_card
 				else R.layout.recycler_novel_card_compressed
 		)
-
-		recyclerView?.layoutManager = if (Settings.novelCardType == 0)
-			GridLayoutManager(
-					applicationContext,
-					applicationContext!!.calculateColumnCount(200f),
-					RecyclerView.VERTICAL,
-					false
-			) else
-			LinearLayoutManager(
-					applicationContext,
-					LinearLayoutManager.VERTICAL,
-					false
-			)
 	}
 
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
@@ -188,6 +190,4 @@ class LibraryController
 
 	override fun difAreItemsTheSame(oldItem: IDTitleImageUI, newItem: IDTitleImageUI): Boolean =
 			oldItem.id == newItem.id
-
-
 }

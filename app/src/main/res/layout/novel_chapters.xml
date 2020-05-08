@@ -11,7 +11,12 @@
         android:id="@+id/fragment_novel_chapters_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="0dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="200"
+        tools:listitem="@layout/recycler_novel_chapter" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/resume"

@@ -112,7 +112,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		// Settings setup
 		connectivityManager = getSystemService<ConnectivityManager>()!!
 				as ConnectivityManager
-		textView = findViewById(R.id.textView)
+		textView = findViewById(R.id.title)
 		if (Settings.showIntro) {
 			Log.i(logID(), "First time, Launching activity")
 			val i = Intent(this, IntroductionActivity::class.java)

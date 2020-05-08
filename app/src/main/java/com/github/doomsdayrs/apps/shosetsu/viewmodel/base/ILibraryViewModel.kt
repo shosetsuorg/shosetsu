@@ -33,6 +33,13 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
 interface ILibraryViewModel : SubscribeHandleViewModel<List<IDTitleImageUI>> {
 	/** List of selected novels */
 	var selectedNovels: MutableLiveData<List<Int>>
+
+	/** Novels that are currently visible, Good for search */
+	var visible: MutableLiveData<List<Int>>
+
+	fun handleSelect(id: Int)
+	fun select(id: Int)
+	fun deselect(id: Int)
 	fun selectAll()
 	fun deselectAll()
 	fun removeAllFromLibrary()

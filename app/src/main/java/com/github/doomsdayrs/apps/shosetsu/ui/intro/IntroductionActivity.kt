@@ -49,7 +49,7 @@ class IntroductionActivity : IntroActivity() {
                 message = activity?.readAsset("license.txt") ?: ""
             else if (message.isEmpty() && savedInstanceState != null)
                 message = savedInstanceState.getString("message", "")
-            textView.text = message
+            title.text = message
         }
     }
 

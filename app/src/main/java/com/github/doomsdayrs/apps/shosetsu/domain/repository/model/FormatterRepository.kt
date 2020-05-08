@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtensionsDataSource
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDNameURL
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
 
 /*
@@ -31,6 +31,6 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepo
 class FormatterRepository(
 		val iLocalExtensionsDataSource: ILocalExtensionsDataSource
 ) : IFormatterRepository {
-	override suspend fun getCards(): LiveData<HResult<List<IDNameURL>>> =
+	override suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>> =
 			iLocalExtensionsDataSource.loadPoweredExtensionsCards()
 }

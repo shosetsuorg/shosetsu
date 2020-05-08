@@ -30,7 +30,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
         -->
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/title"
             android:padding="1dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

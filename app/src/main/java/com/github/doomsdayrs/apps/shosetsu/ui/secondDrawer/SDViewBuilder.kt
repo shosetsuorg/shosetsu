@@ -70,7 +70,7 @@ open class SDViewBuilder(val viewGroup: ViewGroup, val secondDrawerController: S
     fun spinner(text: String, array: Array<String>, state: Int): SDSpinner {
         val item = inflater.inflate(R.layout.drawer_item_spinner, layout, false) as LinearLayout
         val spinner: SDSpinner = item.findViewById(R.id.spinner)
-        val textView: TextView = item.findViewById(R.id.textView)
+        val textView: TextView = item.findViewById(R.id.title)
         spinner.visibility = VISIBLE
         spinner.adapter = ArrayAdapter(viewGroup.context, android.R.layout.simple_spinner_item, array)
         spinner.setSelection(state)

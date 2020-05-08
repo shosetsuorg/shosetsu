@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDNameURL
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 
 /*
  * This file is part of shosetsu.
@@ -28,5 +28,5 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDNameURL
  * Repository for formatters
  */
 interface IFormatterRepository {
-	suspend fun getCards(): LiveData<HResult<List<IDNameURL>>>
+	suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>>
 }

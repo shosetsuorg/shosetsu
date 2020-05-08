@@ -4,9 +4,8 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.common.SettingsCard
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 
@@ -49,7 +48,7 @@ class SettingsController : ViewedController() {
 	}
 
 	override fun onViewCreated(view: View) {
-		Utilities.setActivityTitle(activity, getString(R.string.settings))
+		activity?.setActivityTitle(R.string.settings)
 		val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
 		recyclerView.setHasFixedSize(true)
 		recyclerView.layoutManager = LinearLayoutManager(view.context)

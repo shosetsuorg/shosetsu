@@ -11,6 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdateController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateChapterUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import org.joda.time.DateTime
@@ -84,6 +85,10 @@ class UpdatesViewModel(
 	}
 
 	override fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus) {
+		TODO("Not yet implemented")
+	}
+
+	override fun getChapter(chapterID: Int): UpdateChapterUI {
 		TODO("Not yet implemented")
 	}
 

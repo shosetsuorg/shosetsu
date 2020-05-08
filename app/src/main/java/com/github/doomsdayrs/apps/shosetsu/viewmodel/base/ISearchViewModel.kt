@@ -1,7 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.URLTitleImageUI
 
 /*
  * This file is part of shosetsu.
@@ -28,7 +32,8 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
  * 01 / 05 / 2020
  */
 interface ISearchViewModel {
-	var query: String
-	fun searchLibrary(query: String): List<NovelUI>
-	fun searchFormatter(query: String, formatter: Formatter)
+	var query: MutableLiveData<String>
+	fun setQuery(query: String)
+	fun searchLibrary(): LiveData<HResult<List<IDTitleImageUI>>>
+	fun searchFormatter(formatter: Formatter): LiveData<HResult<List<URLTitleImageUI>>>
 }

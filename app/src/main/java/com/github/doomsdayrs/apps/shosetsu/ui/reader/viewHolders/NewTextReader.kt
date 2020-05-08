@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.TextView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 
 /*
  * This file is part of shosetsu.

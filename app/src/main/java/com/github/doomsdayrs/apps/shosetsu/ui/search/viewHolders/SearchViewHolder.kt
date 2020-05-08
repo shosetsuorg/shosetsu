@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController.StoredData
 import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.search.async.SearchLoader
 
@@ -40,7 +39,7 @@ class SearchViewHolder(itemView: View, val searchController: SearchController)
 	private var id = -2
 	lateinit var formatter: Formatter
 
-	val textView: TextView = itemView.findViewById(R.id.textView)
+	val textView: TextView = itemView.findViewById(R.id.title)
 	val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
 	val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
 

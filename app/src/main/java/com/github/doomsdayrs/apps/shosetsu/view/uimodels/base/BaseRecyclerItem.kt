@@ -27,8 +27,6 @@ import com.mikepenz.fastadapter.items.AbstractItem
  *
  * @author github.com/doomsdayrs
  */
-abstract class BaseRecyclerUI<VH> :
+abstract class BaseRecyclerItem<VH> :
 		AbstractItem<VH>() where VH : FastAdapter.ViewHolder<*> {
-	override val layoutRes: Int = -1
-	override val type: Int = 1
 }

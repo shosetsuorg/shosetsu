@@ -1,9 +1,13 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 
 /*
  * This file is part of shosetsu.
@@ -22,16 +26,17 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 08 / 05 / 2020
  */
-interface ILocalExtensionsDataSource {
-	suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
-	suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>>
-	suspend fun updateExtension(extensionEntity: ExtensionEntity)
-	suspend fun deleteExtension(extensionEntity: ExtensionEntity)
+class SearchBookMarkedNovelsUseCase(
+		val iNovelsRepository: INovelsRepository
+) : ((String) -> LiveData<HResult<List<IDTitleImageUI>>>) {
+	override fun invoke(p1: String): LiveData<HResult<List<IDTitleImageUI>>> {
+		return liveData {
+			emit(loading())
+			emitSource(iNovelsRepository.searchBookmarked(p1).map { it.mapListTo() })
+		}
+	}
 }

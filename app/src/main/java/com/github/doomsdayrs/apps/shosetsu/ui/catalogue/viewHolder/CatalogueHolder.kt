@@ -38,7 +38,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
  */
 class CatalogueHolder(itemView: View, private val router: Router) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 	val imageView: ImageView = itemView.findViewById(R.id.imageView)
-	val title: TextView = itemView.findViewById(R.id.textView)
+	val title: TextView = itemView.findViewById(R.id.title)
 	lateinit var formatter: Formatter
 
 	init {
