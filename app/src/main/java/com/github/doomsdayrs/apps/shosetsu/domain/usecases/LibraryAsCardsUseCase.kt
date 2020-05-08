@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.*
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 
 /*
@@ -26,17 +26,15 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 
 /**
  * shosetsu
- * 02 / 05 / 2020
- * Returns the formatters present as a list of formatterCards
- * @param formatterRepository Repository of formatters
+ * 08 / 05 / 2020
  */
-class FormatterAsCardsUseCase(
-		val formatterRepository: IFormatterRepository
+class LibraryAsCardsUseCase(
+		val iNovelsRepository: INovelsRepository
 ) : (() -> LiveData<HResult<List<IDTitleImageUI>>>) {
 	override fun invoke(): LiveData<HResult<List<IDTitleImageUI>>> {
 		return liveData {
 			emit(loading())
-			emitSource(formatterRepository.getCards().map { data ->
+			emitSource(iNovelsRepository.suspendedGetLiveBookmarked().map { data ->
 				when (data) {
 					is HResult.Success -> {
 						successResult(data.data.map { IDTitleImageUI(it.id, it.title, it.imageURL) })

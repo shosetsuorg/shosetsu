@@ -15,7 +15,9 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
+import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDNameURL
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
 
@@ -28,6 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.Subscribe
  */
 interface INovelsRepository :
 		SubscribeLiveData<List<NovelEntity>> {
+	suspend fun suspendedGetLiveBookmarked(): LiveData<HResult<List<IDNameURL>>>
 	suspend fun suspendedGetBookmarkedNovels(): HResult<List<NovelEntity>>
 	fun blockingGetBookmarkedNovels(): HResult<List<NovelEntity>>
 	suspend fun updateNovel(novelEntity: NovelEntity)

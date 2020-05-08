@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.AutoUtil
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 
@@ -53,21 +54,19 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	 * @param newList New List
 	 */
 	inner class RecyclerDiffToolCallBack(
-			var newList: List<V> = arrayListOf(),
-			val oldList: List<V> = recyclerArray
-	) : DiffUtil.Callback() {
-		override fun getOldListSize(): Int = oldList.size
-		override fun getNewListSize(): Int = newList.size
+			newList: List<V> = arrayListOf(),
+			oldList: List<V> = recyclerArray
+	) : AutoUtil<List<V>>(newList, oldList) {
 		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
 				this@RecyclerController.difAreContentsTheSame(
-						oldList[oldItemPosition],
-						newList[newItemPosition]
+						old[oldItemPosition],
+						new[newItemPosition]
 				)
 
 		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
 				this@RecyclerController.difAreItemsTheSame(
-						oldList[oldItemPosition],
-						newList[newItemPosition]
+						old[oldItemPosition],
+						new[newItemPosition]
 				)
 	}
 
@@ -135,7 +134,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	 */
 	@CallSuper
 	open fun updateUI(list: List<V>) {
-		diffToolCallBack.newList = list
+		diffToolCallBack.old = list
 		val callback = DiffUtil.calculateDiff(diffToolCallBack)
 		recyclerArray.clear()
 		recyclerArray.addAll(list)

@@ -1,9 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
-
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDNameURL
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
 /*
  * This file is part of shosetsu.
@@ -22,16 +17,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDNameURL
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 08 / 05 / 2020
  */
-interface ILocalExtensionsDataSource {
-	suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
-	suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDNameURL>>>
-	suspend fun updateExtension(extensionEntity: ExtensionEntity)
-	suspend fun deleteExtension(extensionEntity: ExtensionEntity)
-}
+data class IDTitleImageUI(
+		val id: Int,
+		val title: String,
+		val imageURL: String
+)

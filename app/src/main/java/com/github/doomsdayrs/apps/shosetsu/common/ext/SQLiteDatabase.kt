@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
@@ -29,28 +28,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables
  *
  * @author github.com/doomsdayrs
  */
-
-fun SQLiteDatabase.insert(
-		table: Tables,
-		contentValues: ContentValues,
-		nullColumnHack: String? = null
-) =
-		insert(
-				table.toString(),
-				nullColumnHack,
-				contentValues
-		)
-
-fun SQLiteDatabase.update(
-		table: Tables,
-		values: ContentValues,
-		whereClause: String? = null,
-		whereArgs: Array<String>? = null
-) =
-		update(table.toString(), values, whereClause, whereArgs)
-
-fun SQLiteDatabase.delete(table: Tables, whereClause: String, whereArgs: Array<String>) =
-		delete(table.toString(), whereClause, whereArgs)
 
 fun SQLiteDatabase.query(
 		table: Tables,

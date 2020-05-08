@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
@@ -26,7 +26,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
 /**
  * shosetsu
  * 30 / 04 / 2020
+ * ViewModel for [com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController]
+ * [liveData] is a [com.github.doomsdayrs.apps.shosetsu.common.dto.HResult] of [FormatterCard]
+ * [FormatterCard] are representation of the different extensions one can browse
  */
-interface ICatalogsViewModel : SubscribeHandleViewModel<List<FormatterCard>>{
-
-}
+interface ICatalogsViewModel : SubscribeHandleViewModel<List<IDTitleImageUI>>

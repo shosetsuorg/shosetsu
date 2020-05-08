@@ -1,10 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 
 /*
  * This file is part of shosetsu.
@@ -23,23 +23,17 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 08 / 05 / 2020
  */
-interface ILibraryViewModel : SubscribeHandleViewModel<List<IDTitleImageUI>> {
-	/** List of selected novels */
-	var selectedNovels: MutableLiveData<List<Int>>
-	fun selectAll()
-	fun deselectAll()
-	fun removeAllFromLibrary()
-	fun loadChaptersUnread(novelID: Int): LiveData<HResult<Int>>
-
-	/**
-	 * @return new list
-	 */
-	fun search(search: String): List<IDTitleImageUI>
+class UnreadChaptersUseCase(
+		val chaptersRepository: IChaptersRepository
+) : ((Int) -> LiveData<HResult<Int>>) {
+	override fun invoke(int: Int): LiveData<HResult<Int>> {
+		return liveData {
+			emit(loading())
+			emitSource(chaptersRepository.loadChapterUnreadCount(int))
+		}
+	}
 }

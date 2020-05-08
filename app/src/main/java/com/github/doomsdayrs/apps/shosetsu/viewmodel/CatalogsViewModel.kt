@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.FormatterAsCardsUseCase
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
 import kotlinx.coroutines.Dispatchers
 
@@ -28,9 +28,6 @@ import kotlinx.coroutines.Dispatchers
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 30 / 04 / 2020
@@ -38,11 +35,10 @@ import kotlinx.coroutines.Dispatchers
 class CatalogsViewModel(
 		private val formatterAsCardsUseCase: FormatterAsCardsUseCase
 ) : ViewModel(), ICatalogsViewModel {
-	override val liveData: LiveData<HResult<List<FormatterCard>>> by lazy {
+	override val liveData: LiveData<HResult<List<IDTitleImageUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Main) {
 			emit(loading())
 			emitSource(formatterAsCardsUseCase.invoke())
 		}
 	}
 }
-

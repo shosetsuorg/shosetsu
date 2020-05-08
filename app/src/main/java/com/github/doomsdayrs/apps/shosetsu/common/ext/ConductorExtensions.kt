@@ -11,34 +11,34 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
 
 fun Router.popControllerWithTag(tag: String): Boolean {
-    val controller = getControllerWithTag(tag)
-    if (controller != null) {
-        popController(controller)
-        return true
-    }
-    return false
+	val controller = getControllerWithTag(tag)
+	if (controller != null) {
+		popController(controller)
+		return true
+	}
+	return false
 }
 
 fun Controller.requestPermissionsSafe(permissions: Array<String>, requestCode: Int) {
-    activity?.let {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissions.forEach { permission ->
-                if (ContextCompat.checkSelfPermission(it, permission) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(arrayOf(permission), requestCode)
-                }
-            }
-        }
-    } ?: return
+	activity?.let {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			permissions.forEach { permission ->
+				if (ContextCompat.checkSelfPermission(it, permission) != PackageManager.PERMISSION_GRANTED) {
+					requestPermissions(arrayOf(permission), requestCode)
+				}
+			}
+		}
+	} ?: return
 }
 
 fun Controller.withFadeTransaction(): RouterTransaction = RouterTransaction.with(this)
-        .pushChangeHandler(FadeChangeHandler())
-        .popChangeHandler(FadeChangeHandler())
+		.pushChangeHandler(FadeChangeHandler())
+		.popChangeHandler(FadeChangeHandler())
 
 
 val Controller.context: Context?
-    get() = applicationContext
+	get() = applicationContext
 
 fun Controller.getString(@StringRes resId: Int, default: String = "NULL"): String {
-    return resources?.getString(resId) ?: default
+	return resources?.getString(resId) ?: default
 }

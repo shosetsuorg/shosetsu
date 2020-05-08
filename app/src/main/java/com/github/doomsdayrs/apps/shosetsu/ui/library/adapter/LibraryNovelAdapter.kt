@@ -1,4 +1,22 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.library.adapter
+
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.common.consts.selectedStrokeWidth
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
+import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
+import com.squareup.picasso.Picasso
+
 /*
  * This file is part of shosetsu.
  *
@@ -16,22 +34,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.library.adapter
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.backend.selectedStrokeWidth
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.common.ext.runOnMain
-import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
-import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibNovelViewHolder
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
-import com.squareup.picasso.Picasso
-import java.util.*
-
-
 /**
  * shosetsu
  * 23 / 02 / 2020
@@ -39,7 +41,7 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 class LibraryNovelAdapter(
-		private val novels: ArrayList<NovelUI>,
+		private val novels: List<IDTitleImageUI>,
 		private val libraryController: LibraryController,
 		@LayoutRes val layout: Int,
 		private val viewModel: ILibraryViewModel = libraryController.viewModel
@@ -61,25 +63,33 @@ class LibraryNovelAdapter(
 					Picasso.get().load(novelUI.imageURL).into(libNovelViewHolder.imageView)
 				libNovelViewHolder.setLibraryControllerFun(libraryController)
 				libNovelViewHolder.novelCard = novelUI
-				libNovelViewHolder.formatterID = novelUI.formatterID
 				libNovelViewHolder.title.text = novelUI.title
 			}
-			launchAsync {
-				val count = viewModel.loadChaptersUnread(novelUI.id)
-				runOnMain {
-					libNovelViewHolder.itemView.post {
-						if (count != 0) {
-							libNovelViewHolder.chip.visibility = View.VISIBLE
-							libNovelViewHolder.chip.text = count.toString()
-						} else libNovelViewHolder.chip.visibility = View.INVISIBLE
+			viewModel.loadChaptersUnread(novelUI.id).observe(libraryController, Observer {
+				when (it) {
+					is HResult.Loading -> Log.d(logID(), "${novelUI.id} unread is loading")
+					is HResult.Empty -> Log.d(logID(), "${novelUI.id} has no data 4 unread")
+					is HResult.Error -> {
+						TODO("Logging")
+					}
+					is HResult.Success -> {
+						val count = it.data
+						libNovelViewHolder.itemView.post {
+							if (count != 0) {
+								libNovelViewHolder.chip.visibility = View.VISIBLE
+								libNovelViewHolder.chip.text = count.toString()
+							} else libNovelViewHolder.chip.visibility = View.INVISIBLE
+						}
 					}
 				}
-			}
+			})
+			val selectedList = viewModel.selectedNovels.value ?: listOf()
+
 			libNovelViewHolder.materialCardView.strokeWidth =
-					if (viewModel.selectedNovels.contains(novelUI.id))
+					if (selectedList.contains(novelUI.id))
 						selectedStrokeWidth else 0
 
-			if (viewModel.selectedNovels.size > 0) {
+			if (selectedList.isNotEmpty()) {
 				libNovelViewHolder.itemView.setOnClickListener {
 					launchAsync { libNovelViewHolder.handleSelection() }
 				}

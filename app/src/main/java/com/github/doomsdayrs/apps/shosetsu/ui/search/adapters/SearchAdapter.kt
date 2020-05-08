@@ -48,9 +48,7 @@ class SearchAdapter(private val searchController: SearchController) : RecyclerVi
 		return SearchViewHolder(view, searchController)
 	}
 
-	override fun getItemCount(): Int {
-		return views.size
-	}
+	override fun getItemCount(): Int = views.size
 
 	override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
 		holder.query = searchController.query

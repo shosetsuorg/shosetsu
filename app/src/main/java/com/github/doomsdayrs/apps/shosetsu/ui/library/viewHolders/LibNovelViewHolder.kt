@@ -7,15 +7,13 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toastOnUI
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
@@ -51,8 +49,7 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 
 	private lateinit var libraryController: LibraryController
 	lateinit var viewModel: ILibraryViewModel
-	lateinit var novelCard: NovelUI
-	var formatterID: Int = -1
+	lateinit var novelCard: IDTitleImageUI
 
 	fun setLibraryControllerFun(library: LibraryController) {
 		libraryController = library
@@ -77,16 +74,12 @@ class LibNovelViewHolder(itemView: View, val router: Router)
 
 	override fun onClick(v: View) =
 			router.pushController(NovelController(
-					bundleOf(
-							BUNDLE_NOVEL_URL to novelCard.novelURL,
-							BUNDLE_FORMATTER to formatterID,
-							BUNDLE_NOVEL_ID to novelCard.id
-					)
+					bundleOf(BUNDLE_NOVEL_ID to novelCard.id)
 			).withFadeTransaction())
 
 	init {
 		chip.setOnClickListener {
-			it.context.toastOnUI(it.context.getString(R.string.chapters_unread_label) + chip.text)
+			it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text)
 		}
 		itemView.setOnLongClickListener {
 			launchUI { handleSelection() }

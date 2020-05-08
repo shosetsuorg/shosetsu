@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
+import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 
@@ -51,5 +52,5 @@ interface IChaptersRepository {
 	/**
 	 * Loads count of unread chapters
 	 */
-	fun loadChapterUnreadCount(novelID: Int): HResult<Int>
+	fun loadChapterUnreadCount(novelID: Int): LiveData<HResult<Int>>
 }

@@ -36,7 +36,7 @@ val viewModelsModule = Kodein.Module("view_models_module") {
 	bind<IExtensionsConfigureViewModel>() with provider {
 		ExtensionsConfigureViewModel(instance(), instance())
 	}
-	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(instance(), instance()) }
+	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(instance()) }
 	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance(), instance()) }
 	bind<ISearchViewModel>() with provider { SearchViewModel(instance(), instance()) }
 	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(instance(), instance()) }

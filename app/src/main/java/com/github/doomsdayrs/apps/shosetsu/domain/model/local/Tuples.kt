@@ -43,3 +43,14 @@ data class URLImageTitle(
 		var imageURL: String,
 		var title: String
 ) : Serializable
+
+/**
+ * @param id of the target
+ * @param title of the data
+ * @param imageURL of the data
+ */
+data class IDNameURL(
+		val id: Int,
+		val title: String,
+		val imageURL: String
+) : Serializable
