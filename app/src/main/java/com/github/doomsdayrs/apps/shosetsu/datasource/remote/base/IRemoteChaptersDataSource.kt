@@ -28,5 +28,5 @@ interface IRemoteChaptersDataSource {
 	/**
 	 * Loads the chapter passage from network
 	 */
-	fun loadChapterPassageFromOnline(): HResult<String>
+	suspend fun loadChapterPassageFromOnline(): HResult<String>
 }

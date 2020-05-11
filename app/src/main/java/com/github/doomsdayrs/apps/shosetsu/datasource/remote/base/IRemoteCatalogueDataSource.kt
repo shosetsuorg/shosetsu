@@ -26,5 +26,5 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  * 04 / 05 / 2020
  */
 interface IRemoteCatalogueDataSource {
-	fun search(formatter: Formatter, query: String): HResult<Novel.Listing>
+	suspend fun search(formatter: Formatter, query: String, data: Array<Any>): HResult<List<Novel.Listing>>
 }

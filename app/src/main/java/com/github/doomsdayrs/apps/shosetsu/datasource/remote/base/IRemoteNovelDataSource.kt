@@ -24,5 +24,5 @@ import app.shosetsu.lib.Formatter
  * 04 / 05 / 2020
  */
 interface IRemoteNovelDataSource {
-	fun loadNovel(novelURL: String, formatter: Formatter)
+	suspend fun loadNovel(novelURL: String, formatter: Formatter)
 }
