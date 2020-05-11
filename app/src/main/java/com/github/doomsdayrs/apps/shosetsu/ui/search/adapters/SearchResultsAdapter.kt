@@ -1,22 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_URL
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.ResultViewHolder
-import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
-import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
-import com.squareup.picasso.Picasso
-
 
 /*
  * This file is part of shosetsu.
@@ -39,7 +22,8 @@ import com.squareup.picasso.Picasso
  * 20 / 12 / 2019
  *
  * @author github.com/doomsdayrs
- */
+ *//*
+
 class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : RecyclerView.Adapter<ResultViewHolder>() {
 	private var intArray: ArrayList<Int> = arrayListOf(-1)
 	private var novelArray: List<Array<String>> = arrayListOf()
@@ -111,4 +95,4 @@ class SearchResultsAdapter(private val searchViewHolder: SearchViewHolder) : Rec
 			intArray.size
 
 	}
-}
+}*/

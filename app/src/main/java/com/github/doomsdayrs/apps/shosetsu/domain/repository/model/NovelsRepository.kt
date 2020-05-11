@@ -57,7 +57,7 @@ class NovelsRepository(
 		TODO("Not yet implemented")
 	}
 
-	override suspend fun searchBookmarked(string: String): LiveData<HResult<IDTitleImage>> {
+	override suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>> {
 		TODO("Not yet implemented")
 	}
 

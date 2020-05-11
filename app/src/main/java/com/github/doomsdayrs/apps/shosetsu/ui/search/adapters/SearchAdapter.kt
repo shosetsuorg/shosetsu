@@ -1,14 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
-import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
-
 /*
  * This file is part of Shosetsu.
  *
@@ -33,27 +24,29 @@ import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolde
  *
  * @author github.com/doomsdayrs
  */
+/*
 class SearchAdapter(private val searchController: SearchController)
-	: RecyclerView.Adapter<SearchViewHolder>() {
-	private val views: ArrayList<Int> = arrayListOf(-1)
+    : RecyclerView.Adapter<SearchViewHolder>() {
+    private val views: ArrayList<Int> = arrayListOf(-1)
 
-	init {
-		for (formatter: Formatter in FormatterUtils.formatters)
-			views.add(formatter.formatterID)
-	}
+    init {
+        for (formatter: Formatter in FormatterUtils.formatters)
+            views.add(formatter.formatterID)
+    }
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder =
-			SearchViewHolder(LayoutInflater.from(parent.context).inflate(
-					R.layout.recycler_search_row,
-					parent,
-					false
-			), searchController)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder =
+            SearchViewHolder(LayoutInflater.from(parent.context).inflate(
+                    R.layout.recycler_search_row,
+                    parent,
+                    false
+            ), searchController)
 
 
-	override fun getItemCount(): Int = views.size
+    override fun getItemCount(): Int = views.size
 
-	override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-		holder.query = searchController.viewModel.query
-		holder.setId(views[position])
-	}
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+        holder.query = searchController.viewModel.query.value ?: ""
+        holder.setId(views[position])
+    }
 }
+*/

@@ -17,7 +17,10 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalDownloadsDataSource
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
 
 /**
@@ -29,5 +32,36 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepo
 class DownloadsRepository(
 		private val iLocalDownloadsDataSource: ILocalDownloadsDataSource
 ) : IDownloadsRepository {
+	override fun loadDownloads(): LiveData<HResult<DownloadEntity>> {
+		TODO("Not yet implemented")
+	}
+
+	override fun loadFirstDownload(): HResult<DownloadEntity> {
+		TODO("Not yet implemented")
+	}
+
+	override fun loadDownloadCount(): HResult<Int> {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun addDownload(download: DownloadEntity): HResult<Long> {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun suspendedUpdate(download: DownloadEntity) {
+		TODO("Not yet implemented")
+	}
+
+	override fun blockingUpdate(download: DownloadEntity) {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun suspendedDelete(download: DownloadEntity) {
+		TODO("Not yet implemented")
+	}
+
+	override fun resetList() {
+		TODO("Not yet implemented")
+	}
 
 }

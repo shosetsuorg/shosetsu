@@ -7,10 +7,13 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_URL
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 
 /*
  * This file is part of Shosetsu.
@@ -56,14 +59,14 @@ class NovelPagerAdapter(val novelController: NovelController)
 			val controller = when (position) {
 				INFO_CONTROLLER -> {
 					NovelInfoController(bundleOf(
-							NovelController.BUNDLE_ID to novelController.novelID,
-							NovelController.BUNDLE_URL to novelController.novelURL,
-							NovelController.BUNDLE_FORMATTER to novelController.formatter.formatterID
+							BUNDLE_NOVEL_ID to novelController.viewModel.novelID,
+							BUNDLE_URL to novelController.viewModel.novelURL,
+							BUNDLE_FORMATTER to novelController.formatter.formatterID
 					))
 				}
 				CHAPTERS_CONTROLLER -> {
 					NovelChaptersController(bundleOf(
-							NovelController.BUNDLE_ID to novelController.novelID
+							BUNDLE_NOVEL_ID to novelController.novelID
 					))
 				}
 				else -> error("Wrong position $position")

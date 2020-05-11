@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -34,7 +33,7 @@ import kotlinx.coroutines.Dispatchers
  */
 class CatalogsViewModel(
 		private val formatterAsCardsUseCase: FormatterAsCardsUseCase
-) : ViewModel(), ICatalogsViewModel {
+) : ICatalogsViewModel() {
 	override val liveData: LiveData<HResult<List<IDTitleImageUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Main) {
 			emit(loading())

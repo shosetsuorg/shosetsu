@@ -1,7 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
@@ -30,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
  *
  * @author github.com/doomsdayrs
  */
-class NovelViewViewModel : ViewModel(), INovelViewViewModel {
+class NovelViewViewModel : INovelViewViewModel() {
 	override fun downloadNext(count: Int) {
 		TODO("Not yet implemented")
 	}
@@ -56,6 +57,23 @@ class NovelViewViewModel : ViewModel(), INovelViewViewModel {
 	override var isArrayReversed: Boolean
 		get() = TODO("Not yet implemented")
 		set(value) {}
+	override var novelID: MutableLiveData<Int>
+		get() = TODO("Not yet implemented")
+		set(value) {}
+	override var novelURL: MutableLiveData<Int>
+		get() = TODO("Not yet implemented")
+		set(value) {}
+	override var formatter: MutableLiveData<Formatter>
+		get() = TODO("Not yet implemented")
+		set(value) {}
+
+	override fun setNovelURL(novelURL: String) {
+		TODO("Not yet implemented")
+	}
+
+	override fun setNovelID(novelID: Int) {
+		TODO("Not yet implemented")
+	}
 
 
 	/*

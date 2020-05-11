@@ -3,13 +3,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel
 import android.os.Bundle
 import android.view.View
 import androidx.viewpager.widget.ViewPager
-import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
@@ -46,11 +43,6 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 
 	val viewModel: INovelViewViewModel by viewModel()
 
-	val novelID = bundle.getInt(BUNDLE_NOVEL_ID)
-	var novelURL: String = bundle.getString(BUNDLE_NOVEL_URL, "")
-	var formatter: Formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
-
-
 	@Attach(R.id.fragment_novel_tabLayout)
 	var novelTabLayout: TabLayout? = null
 
@@ -59,6 +51,12 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 
 	init {
 		setHasOptionsMenu(true)
+		with(viewModel) {
+			with(bundle) {
+				setNovelID(getInt(BUNDLE_NOVEL_ID))
+				setNovelURL(getString(BUNDLE_NOVEL_URL, ""))
+			}
+		}
 	}
 
 	override fun onRestoreInstanceState(savedInstanceState: Bundle) {

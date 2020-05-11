@@ -5,7 +5,6 @@ import android.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -36,7 +35,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewMode
  */
 class ChapterReaderViewModel(
 		val context: Context
-) : ViewModel(), IChapterReaderViewModel {
+) : IChapterReaderViewModel() {
 	override val liveData: LiveData<HResult<List<ChapterReaderUI>>> by lazy {
 		TODO("Not yet implemented")
 	}

@@ -7,13 +7,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_ACTION
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_URL
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateChapterUI
@@ -55,10 +52,11 @@ fun Activity.openInWebView(url: String) {
 
 fun Activity.search(query: String) {
 	val mainActivity = this as MainActivity
-	val searchFragment = SearchController(bundleOf(
-			BundleKeys.BUNDLE_QUERY to query
-	))
-	mainActivity.transitionView(searchFragment)
+	TODO("Search View")
+	//val searchFragment = SearchController(bundleOf(
+	//		BundleKeys.BUNDLE_QUERY to query
+	//))
+	//mainActivity.transitionView(searchFragment)
 }
 
 /**

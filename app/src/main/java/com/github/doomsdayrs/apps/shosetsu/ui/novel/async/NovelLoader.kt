@@ -5,16 +5,9 @@ import android.os.AsyncTask
 import android.util.Log
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.addToChapters
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.isNotInChapters
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseChapter.updateChapter
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getNovelIDFromNovelURL
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.addNovelToDatabase
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNotInNovels
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.updateNovel
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.UNREAD
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.UNREAD
 
 
 /*
@@ -78,7 +71,7 @@ class NovelLoader(
 
 				// Turns off refresh view
 				novelInfoController.fragmentNovelMainRefresh?.isRefreshing = false
-				novelInfoController.novelController?.novelChaptersController?.let {
+				novelInfoController.novelController?.novelChaptersController.let {
 					it.recyclerArray = novelInfoController.novelPage.chapters as ArrayList<Novel.Chapter>
 					it.setChapters()
 				}

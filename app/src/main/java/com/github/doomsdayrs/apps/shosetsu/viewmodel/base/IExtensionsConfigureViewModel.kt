@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
@@ -28,8 +29,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-interface IExtensionsConfigureViewModel : SubscribeHandleViewModel<List<ExtensionUI>> {
-	fun disableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit)
-	fun enableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit)
-	fun loadFormatterIfEnabled(extensionEntity: ExtensionUI): Formatter?
+abstract class IExtensionsConfigureViewModel : SubscribeHandleViewModel<List<ExtensionUI>>, ViewModel() {
+	abstract fun disableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit)
+	abstract fun enableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit)
+	abstract fun loadFormatterIfEnabled(extensionEntity: ExtensionUI): Formatter?
 }

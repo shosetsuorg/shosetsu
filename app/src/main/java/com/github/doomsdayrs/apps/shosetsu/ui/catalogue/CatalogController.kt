@@ -19,8 +19,6 @@ import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.values
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.calculateColumnCount
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
@@ -99,7 +97,7 @@ class CatalogController(bundle: Bundle)
 	}
 
 	override fun onViewCreated(view: View) {
-		Utilities.setActivityTitle(activity, formatter.name)
+		activity?.setActivityTitle(formatter.name)
 		swipeRefreshLayout?.setOnRefreshListener(CatalogueRefresh(this))
 		if (!dontRefresh) {
 			Log.d("Process", "Loading up latest")

@@ -18,18 +18,9 @@ package com.github.doomsdayrs.apps.shosetsu.common.utils
  */
 import android.app.Activity
 import android.content.Context
-import android.database.SQLException
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.downloadsDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.variables.variables.HandledReturns
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
-import java.io.BufferedReader
-import java.io.FileReader
-import java.io.IOException
 
 /**
  * Shosetsu
@@ -38,7 +29,7 @@ import java.io.IOException
  * @author github.com/doomsdayrs
  * Manages downloading and downloaded chapters
  */
-class DownloadManager() {
+class DownloadManager {
 	/**
 	 * Adds to download list
 	 *
@@ -66,34 +57,6 @@ class DownloadManager() {
 //			return false
 		//	}
 		//	return true
-	}
-
-	/**
-	 * Get saved text
-	 *
-	 * @param path path of saved chapter
-	 * @return Passage of saved chapter
-	 */
-	@JvmStatic
-	fun getChapterText(path: String): HResult<String> {
-		try {
-			BufferedReader(FileReader(path)).use { br ->
-				val sb = StringBuilder()
-				try {
-					var line = br.readLine()
-					while (line != null) {
-						sb.append(line)
-						sb.append(System.lineSeparator())
-						line = br.readLine()
-					}
-				} catch (e: IOException) {
-					throw e
-				}
-				return HandledReturns(true, value = sb.toString())
-			}
-		} catch (e: Exception) {
-			return HandledReturns(false, "Exception Occurred", e)
-		}
 	}
 
 }

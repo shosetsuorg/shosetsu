@@ -1,16 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders
 
-import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
-import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.search.async.SearchLoader
-
 /*
  * This file is part of Shosetsu.
  *
@@ -27,12 +16,14 @@ import com.github.doomsdayrs.apps.shosetsu.ui.search.async.SearchLoader
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */ /**
+ */
+/**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
- */
+ *//*
+
 class SearchViewHolder(itemView: View, val searchController: SearchController)
 	: RecyclerView.ViewHolder(itemView) {
 	var query: String = ""
@@ -100,6 +91,5 @@ class SearchViewHolder(itemView: View, val searchController: SearchController)
 	fun setAdapter() {
 		recyclerView.adapter = searchResultsAdapter
 	}
-
-
 }
+		*/

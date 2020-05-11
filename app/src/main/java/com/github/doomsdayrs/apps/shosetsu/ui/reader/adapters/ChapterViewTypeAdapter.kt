@@ -45,7 +45,7 @@ internal class ChapterViewTypeAdapter(private val chapterReader: ChapterView) : 
             }
             1 -> {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_reader_mark_down, parent, false)
-                newReader = NewMarkdownReader(view, chapterReader)
+	            newReader = NewMarkdownReader(view)
             }
             else -> throw IllegalStateException("Unexpected value: $viewType")
         }

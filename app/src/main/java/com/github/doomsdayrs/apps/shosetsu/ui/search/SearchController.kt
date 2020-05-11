@@ -1,24 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search
 
-import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.widget.SearchView
-import androidx.lifecycle.Observer
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.R.layout.search_activity
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchAdapter
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISearchViewModel
-
 /*
  * This file is part of Shosetsu.
  *
@@ -45,12 +26,14 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISearchViewModel
  * @author github.com/doomsdayrs
  * TODO When opening a novel from here, Prevent reloading of already established DATA
  */
+/*
+
 class SearchController(bundle: Bundle) : RecyclerController<SearchAdapter, Any>() {
 	/** Class that handles querying */
 	inner class InternalQuery
 		: SearchView.OnQueryTextListener {
 		override fun onQueryTextSubmit(query: String): Boolean {
-			viewModel.query.postValue()
+			viewModel.query.postValue(query)
 			return true
 		}
 
@@ -90,3 +73,4 @@ class SearchController(bundle: Bundle) : RecyclerController<SearchAdapter, Any>(
 
 	override fun difAreItemsTheSame(oldItem: Any, newItem: Any): Boolean = true
 }
+*/

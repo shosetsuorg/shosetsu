@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
@@ -27,11 +28,11 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsViewModel : SubscribeHandleViewModel<List<DownloadUI>>{
+abstract class IDownloadsViewModel : SubscribeHandleViewModel<List<DownloadUI>>, ViewModel() {
 	/**
 	 * Toggles paused downloads
 	 *
 	 * @return if paused or not
 	 */
-	fun togglePause(): Boolean
+	abstract fun togglePause(): Boolean
 }

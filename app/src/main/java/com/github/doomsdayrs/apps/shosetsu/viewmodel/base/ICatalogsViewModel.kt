@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
@@ -30,4 +31,4 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * [liveData] is a [com.github.doomsdayrs.apps.shosetsu.common.dto.HResult] of [FormatterCard]
  * [FormatterCard] are representation of the different extensions one can browse
  */
-interface ICatalogsViewModel : SubscribeHandleViewModel<List<IDTitleImageUI>>
+abstract class ICatalogsViewModel : SubscribeHandleViewModel<List<IDTitleImageUI>>, ViewModel()

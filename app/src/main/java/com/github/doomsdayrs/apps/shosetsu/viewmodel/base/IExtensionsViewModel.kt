@@ -27,10 +27,10 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-interface IExtensionsViewModel
+abstract class IExtensionsViewModel
 	: SubscribeHandleViewModel<List<ExtensionUI>> {
-	fun reloadFormatters()
-	fun refreshRepository()
-	fun installExtension(extensionEntity: ExtensionUI)
-	fun uninstallExtension(extensionEntity: ExtensionUI)
+	abstract fun reloadFormatters()
+	abstract fun refreshRepository()
+	abstract fun installExtension(extensionEntity: ExtensionUI)
+	abstract fun uninstallExtension(extensionEntity: ExtensionUI)
 }

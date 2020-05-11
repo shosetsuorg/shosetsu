@@ -5,7 +5,6 @@ import android.os.AsyncTask
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
@@ -22,10 +21,10 @@ class ChapterViewLoader(private val chapterView: ChapterView)
 
 	override fun doInBackground(vararg objects: Any?): Boolean {
 		Log.i("ChapterViewLoader", "doInBackground${chapterView.appendID()}")
-		if (chapterView.chapterReader?.formatter == null) return false
+		if (chapterView.chapterReader.formatter == null) return false
 		try {
 			Utilities.wait(5, TimeUnit.SECONDS)
-			chapterView.unformattedText = chapterView.chapterReader?.formatter!!.getPassage(chapterView.url)
+			chapterView.unformattedText = chapterView.chapterReader.formatter!!.getPassage(chapterView.url)
 			return true
 		} catch (e: Exception) {
 			chapterView.activity?.let {

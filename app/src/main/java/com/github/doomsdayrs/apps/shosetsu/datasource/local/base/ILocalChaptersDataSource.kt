@@ -50,5 +50,5 @@ interface ILocalChaptersDataSource {
 	/**
 	 * Get unread count of chapters
 	 */
-	fun loadUnreadChapterCount(novelID: Int): HResult<Int>
+	fun loadUnreadChapterCount(novelID: Int): LiveData<HResult<Int>>
 }

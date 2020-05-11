@@ -1,12 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search.async
 
-import android.os.AsyncTask
-import android.view.View
-import app.shosetsu.lib.values
-import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchResultsAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.search.viewHolders.SearchViewHolder
-import org.luaj.vm2.LuaError
-
 
 /*
  * This file is part of shosetsu.
@@ -31,6 +24,8 @@ import org.luaj.vm2.LuaError
  *
  * @author github.com/doomsdayrs
  */
+/*
+
 class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<String, Void, Boolean>() {
 	var array: List<Array<String>> = arrayListOf()
 
@@ -74,4 +69,4 @@ class SearchLoader(private val searchViewHolder: SearchViewHolder) : AsyncTask<S
 		}
 	}
 
-}
+}*/

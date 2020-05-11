@@ -14,23 +14,17 @@ import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.bookmarkNovel
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.isNovelBookmarked
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseNovels.unBookmarkNovel
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_FORMATTER
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_ID
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController.Companion.BUNDLE_URL
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toastOnUI
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.async.NovelLoader
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -77,8 +71,8 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 
 	init {
 		setHasOptionsMenu(true)
-		novelID = bundle.getInt(BUNDLE_ID, -1)
-		novelURL = bundle.getString(BUNDLE_URL, "")
+		novelID = bundle.getInt(BUNDLE_NOVEL_ID, -1)
+		novelURL = bundle.getString(BUNDLE_NOVEL_URL, "")
 		formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER, -1))
 	}
 
@@ -195,15 +189,15 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 		}
 
 		fragmentNovelMainRefresh?.setOnRefreshListener {
-				novelController?.let { novelController ->
-					context?.toastOnUI("")
-					NovelLoader(
-							novelController.novelURL,
-							novelController.novelID,
-							novelController.formatter,
-							this,
-							true
-					).execute()
+			novelController?.let { novelController ->
+				context?.toastOnUI("")
+				NovelLoader(
+						novelController.novelURL,
+						novelController.novelID,
+						novelController.formatter,
+						this,
+						true
+				).execute()
 			}
 		}
 	}

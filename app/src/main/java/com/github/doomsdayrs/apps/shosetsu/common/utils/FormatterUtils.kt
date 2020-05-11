@@ -14,7 +14,6 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEn
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.RepositoryDao
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.FormatterCard
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -297,12 +296,5 @@ class FormatterUtils(
 			)
 		}
 		ShosetsuLib.httpClient = okHttpClient
-	}
-
-	fun getAsCards(): ArrayList<FormatterCard> {
-		val catalogueCards = ArrayList<FormatterCard>()
-		for (formatter in formatters) catalogueCards.add(FormatterCard(formatter))
-		catalogueCards.sortedWith(compareBy { it.title })
-		return catalogueCards
 	}
 }

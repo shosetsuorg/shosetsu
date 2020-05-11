@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
@@ -30,8 +29,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
  * shosetsu
  * 01 / 05 / 2020
  */
-class CatalogViewModel()
-	: ViewModel(), ICatalogViewModel {
+class CatalogViewModel
+	: ICatalogViewModel() {
 	inner class PageLoader(
 			val currentMaxPage: Int = 1,
 			val formatter: Formatter,

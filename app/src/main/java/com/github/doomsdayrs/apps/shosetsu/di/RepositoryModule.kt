@@ -1,13 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.DownloadsRepository
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.ExtensionsRepository
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.UpdatesRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.DownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.ExtensionsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.UpdatesRepository
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -41,6 +41,6 @@ import org.kodein.di.generic.singleton
 val repositoryModule = Kodein.Module("repository_module") {
 	bind<IDownloadsRepository>() with singleton { DownloadsRepository(instance()) }
 	bind<IExtensionsRepository>() with singleton { ExtensionsRepository(instance()) }
-	bind<INovelsRepository>() with singleton { NovelsRepository(instance()) }
+	bind<INovelsRepository>() with singleton { NovelsRepository(instance(), instance()) }
 	bind<IUpdatesRepository>() with singleton { UpdatesRepository(instance()) }
 }

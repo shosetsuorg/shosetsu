@@ -18,9 +18,7 @@ import androidx.recyclerview.widget.DiffUtil.Callback
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.openInWebView
-import com.github.doomsdayrs.apps.shosetsu.backend.regret
+import com.github.doomsdayrs.apps.shosetsu.backend.unmarkMenuItems
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READ
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
@@ -29,7 +27,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.common.ext.regret
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ChapterViewChange
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterReaderUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
 import kotlinx.android.synthetic.main.chapter_reader.*
@@ -294,31 +291,31 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 				true
 			}
 			R.id.chapter_view_reader_night -> {
-				Utilities.unmarkMenuItems(themes, 0, demarkActions[4])
+				unmarkMenuItems(themes, 0, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_light -> {
-				Utilities.unmarkMenuItems(themes, 1, demarkActions[4])
+				unmarkMenuItems(themes, 1, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_sepia -> {
-				Utilities.unmarkMenuItems(themes, 2, demarkActions[4])
+				unmarkMenuItems(themes, 2, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_dark -> {
-				Utilities.unmarkMenuItems(themes, 3, demarkActions[4])
+				unmarkMenuItems(themes, 3, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_gray -> {
-				Utilities.unmarkMenuItems(themes, 4, demarkActions[4])
+				unmarkMenuItems(themes, 4, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_custom -> {
-				Utilities.unmarkMenuItems(themes, 5, demarkActions[4])
+				unmarkMenuItems(themes, 5, demarkActions[4])
 				true
 			}
 			R.id.tap_to_scroll -> {
-				Utilities.regret(this)
+				this.regret()
 				// tapToScroll!!.isChecked = Utilities.toggleTapToScroll()
 				true
 			}
@@ -327,47 +324,47 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 				true
 			}
 			R.id.chapter_view_textSize_small -> {
-				Utilities.unmarkMenuItems(indentSpaces, 0, demarkActions[0])
+				unmarkMenuItems(indentSpaces, 0, demarkActions[0])
 				true
 			}
 			R.id.chapter_view_textSize_medium -> {
-				Utilities.unmarkMenuItems(textSizes, 1, demarkActions[0])
+				unmarkMenuItems(textSizes, 1, demarkActions[0])
 				true
 			}
 			R.id.chapter_view_textSize_large -> {
-				Utilities.unmarkMenuItems(textSizes, 2, demarkActions[0])
+				unmarkMenuItems(textSizes, 2, demarkActions[0])
 				true
 			}
 			R.id.chapter_view_paragraphSpace_none -> {
-				Utilities.unmarkMenuItems(paragraphSpaces, 0, demarkActions[1])
+				unmarkMenuItems(paragraphSpaces, 0, demarkActions[1])
 				true
 			}
 			R.id.chapter_view_paragraphSpace_small -> {
-				Utilities.unmarkMenuItems(paragraphSpaces, 1, demarkActions[1])
+				unmarkMenuItems(paragraphSpaces, 1, demarkActions[1])
 				true
 			}
 			R.id.chapter_view_paragraphSpace_medium -> {
-				Utilities.unmarkMenuItems(paragraphSpaces, 2, demarkActions[1])
+				unmarkMenuItems(paragraphSpaces, 2, demarkActions[1])
 				true
 			}
 			R.id.chapter_view_paragraphSpace_large -> {
-				Utilities.unmarkMenuItems(paragraphSpaces, 3, demarkActions[1])
+				unmarkMenuItems(paragraphSpaces, 3, demarkActions[1])
 				true
 			}
 			R.id.chapter_view_indent_none -> {
-				Utilities.unmarkMenuItems(indentSpaces, 0, demarkActions[2])
+				unmarkMenuItems(indentSpaces, 0, demarkActions[2])
 				true
 			}
 			R.id.chapter_view_indent_small -> {
-				Utilities.unmarkMenuItems(indentSpaces, 1, demarkActions[2])
+				unmarkMenuItems(indentSpaces, 1, demarkActions[2])
 				true
 			}
 			R.id.chapter_view_indent_medium -> {
-				Utilities.unmarkMenuItems(indentSpaces, 2, demarkActions[2])
+				unmarkMenuItems(indentSpaces, 2, demarkActions[2])
 				true
 			}
 			R.id.chapter_view_indent_large -> {
-				Utilities.unmarkMenuItems(indentSpaces, 3, demarkActions[2])
+				unmarkMenuItems(indentSpaces, 3, demarkActions[2])
 				true
 			}
 			R.id.browser -> {
@@ -384,12 +381,12 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 			}
 			R.id.reader_0 -> {
 				regret()
-				//Utilities.unmarkMenuItems(readers, 0, demarkActions[3])
+				//unmarkMenuItems(readers, 0, demarkActions[3])
 				true
 			}
 			R.id.reader_1 -> {
 				regret()
-				//Utilities.unmarkMenuItems(readers, 1, demarkActions[3])
+				//unmarkMenuItems(readers, 1, demarkActions[3])
 				true
 			}
 			else -> super.onOptionsItemSelected(item)
@@ -406,7 +403,6 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 		viewpager.registerOnPageChangeCallback(pageChangeCallback)
 		viewpager.currentItem = chapters.indexOfFirst { it.id == viewModel.currentChapterID }
 	}
-
 
 	/**
 	 * What to do when scroll hits bottom
@@ -448,7 +444,6 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 		}
 	}
 
-
 	internal val pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
 			if (Settings.readerMarkingType == Settings.MarkingTypes.ONVIEW.i) {
@@ -460,8 +455,5 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 		}
 
 
-		override fun onPageScrollStateChanged(state: Int) {
-			super.onPageScrollStateChanged(state)
-		}
 	}
 }

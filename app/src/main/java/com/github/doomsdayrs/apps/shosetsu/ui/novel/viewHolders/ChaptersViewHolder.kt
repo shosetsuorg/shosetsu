@@ -1,30 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders
 
-import android.content.res.Resources
-import android.database.SQLException
-import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Utilities
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database.DatabaseIdentification.getChapterIDFromChapterURL
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.google.android.material.card.MaterialCardView
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -49,7 +33,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	var cardView: MaterialCardView = itemView.findViewById(R.id.recycler_novel_chapter_card)
 	var constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraint)
 	var checkBox: CheckBox = itemView.findViewById(R.id.recycler_novel_chapter_selectCheck)
@@ -58,136 +42,13 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), Vi
 	var read: TextView = itemView.findViewById(R.id.recycler_novel_chapter_read)
 	var readTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_read_tag)
 	var downloadTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_download)
-	private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
-
+	var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 	var popupMenu: PopupMenu? = null
-
-	lateinit var chaptersController: NovelChaptersController
-	lateinit var novelChapter: Novel.Chapter
-	var chapterID = -1
-
-	@Throws(MissingResourceException::class)
-	fun addToSelect() {
-		if (!chaptersController.contains(novelChapter))
-			chaptersController.selectedChapters.add(getChapterIDFromChapterURL(novelChapter.link))
-		else removeFromSelect()
-		if ((chaptersController.selectedChapters.isNotEmpty() || chaptersController.selectedChapters.size <= 0) && chaptersController.inflater != null)
-			chaptersController.activity?.invalidateOptionsMenu()
-		chaptersController.updateAdapter()
-	}
-
-	private fun removeFromSelect() {
-		if (chaptersController.contains(novelChapter))
-			for (x in chaptersController.selectedChapters.indices)
-				if (chaptersController.selectedChapters[x] == getChapterIDFromChapterURL(novelChapter.link)) {
-					chaptersController.selectedChapters.removeAt(x)
-					return
-				}
-	}
-
-	override fun onClick(v: View) {
-		try {
-			if (chaptersController.activity != null && chaptersController.novelController != null)
-				openChapter(
-						chaptersController.activity!!,
-						novelChapter,
-						chaptersController.novelController!!.novelID,
-						chaptersController.novelController!!.formatter.formatterID
-				)
-		} catch (e: MissingResourceException) {
-			TODO("Add error handling here")
-		}
-	}
 
 	init {
 		if (popupMenu == null) {
 			popupMenu = PopupMenu(moreOptions.context, moreOptions)
 			popupMenu!!.inflate(R.menu.popup_chapter_menu)
 		}
-		popupMenu!!.setOnMenuItemClickListener { menuItem: MenuItem ->
-			try {
-				when (menuItem.itemId) {
-					R.id.popup_chapter_menu_bookmark -> {
-						if (Utilities.toggleBookmarkChapter(chapterID))
-							title.setTextColor(ContextCompat.getColor(
-									itemView.context,
-									R.color.bookmarked
-							))
-						else {
-							Log.i("SetDefault", ChaptersAdapter.DefaultTextColor.toString())
-							title.setTextColor(ChaptersAdapter.DefaultTextColor)
-						}
-
-						chaptersController.updateAdapter()
-						return@setOnMenuItemClickListener true
-					}
-					R.id.popup_chapter_menu_download -> {
-						if (!Database.DatabaseChapter.isSaved(chapterID)) {
-							val downloadItem = DownloadEntity(
-									chapterID,
-									chaptersController.novelController!!.novelInfoController!!.novelPage.title,
-									novelChapter.title,
-									status = "Pending"
-							)
-							addToDownload(chaptersController.activity, downloadItem)
-						} else if (delete(itemView.context, DownloadEntity(
-										chapterID,
-										chaptersController.novelController!!.novelInfoController!!.novelPage.title,
-										novelChapter.title,
-										status = "Pending"
-								))) {
-							downloadTag.visibility = View.INVISIBLE
-						}
-						chaptersController.updateAdapter()
-						return@setOnMenuItemClickListener true
-					}
-					R.id.popup_chapter_menu_mark_read -> {
-						Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.READ)
-						chaptersController.updateAdapter()
-						return@setOnMenuItemClickListener true
-					}
-					R.id.popup_chapter_menu_mark_unread -> {
-						Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.UNREAD)
-						chaptersController.updateAdapter()
-						return@setOnMenuItemClickListener true
-					}
-					R.id.popup_chapter_menu_mark_reading -> {
-						Database.DatabaseChapter.setChapterStatus(chapterID, ReadingStatus.READING)
-						chaptersController.updateAdapter()
-						return@setOnMenuItemClickListener true
-					}
-					R.id.browser -> {
-						if (chaptersController.activity != null)
-							Utilities.openInBrowser(
-									chaptersController.activity!!,
-									novelChapter.link
-							)
-						return@setOnMenuItemClickListener true
-					}
-					R.id.webview -> {
-						if (chaptersController.activity != null)
-							openInWebView(
-									chaptersController.activity!!,
-									novelChapter.link
-							)
-						return@setOnMenuItemClickListener true
-					}
-					else -> return@setOnMenuItemClickListener false
-				}
-			} catch (e: Resources.NotFoundException) {
-				TODO("Add error handling here")
-			} catch (e: SQLException) {
-				TODO("Add error handling here")
-			} catch (e: MissingResourceException) {
-				TODO("Add error handling here")
-			}
-		}
-		itemView.setOnLongClickListener {
-			addToSelect()
-			true
-		}
-		moreOptions.setOnClickListener { popupMenu?.show() }
-		checkBox.setOnClickListener { addToSelect() }
-
 	}
 }

@@ -18,7 +18,6 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
  */
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
@@ -32,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
  */
 class ExtensionsViewModel(
 		val formatterUtils: FormatterUtils
-) : ViewModel(), IExtensionsViewModel {
+) : IExtensionsViewModel() {
 
 	override fun reloadFormatters() {
 		TODO("Not yet implemented")

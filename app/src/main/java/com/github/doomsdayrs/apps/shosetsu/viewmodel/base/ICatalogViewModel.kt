@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
@@ -28,20 +29,20 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * 01 / 05 / 2020
  * Used for showing the specific listing of a novel
  */
-interface ICatalogViewModel :
-		SubscribeHandleViewModel<List<NovelListingCard>> {
+abstract class ICatalogViewModel :
+		SubscribeHandleViewModel<List<NovelListingCard>>, ViewModel() {
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */
-	var currentMaxPage: Int
+	abstract var currentMaxPage: Int
 
 	/**
 	 * Instructs the view model to load more UwU
 	 */
-	fun loadMore()
+	abstract fun loadMore()
 
 	/**
 	 * Instruction to clear loaded chapters, append more UwU
 	 */
-	fun clearAndLoad()
+	abstract fun clearAndLoad()
 }

@@ -1,6 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
@@ -30,28 +33,35 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-interface INovelViewViewModel
-	: SubscribeHandleViewModel<NovelUI> {
-	val chapters: LiveData<HResult<ChapterUI>>
-	var isArrayReversed: Boolean
+abstract class INovelViewViewModel
+	: SubscribeHandleViewModel<NovelUI>, ViewModel() {
+	abstract val chapters: LiveData<HResult<ChapterUI>>
+	abstract var isArrayReversed: Boolean
+
+	abstract var novelID: MutableLiveData<Int>
+	abstract var novelURL: MutableLiveData<Int>
+	abstract var formatter: MutableLiveData<Formatter>
+
+	abstract fun setNovelURL(novelURL: String)
+	abstract fun setNovelID(novelID: Int)
 
 	/**
 	 * Instruction to download the next [count] chapters
 	 */
-	fun downloadNext(count: Int)
+	abstract fun downloadNext(count: Int)
 
 	/**
 	 * Instruction to download everything
 	 */
-	fun downloadAll()
+	abstract fun downloadAll()
 
 	/**
 	 * Deletes the previous chapter
 	 */
-	fun deletePrevious()
+	abstract fun deletePrevious()
 
 	/**
 	 * Next chapter to read uwu
 	 */
-	fun loadLastRead(): LiveData<HResult<ChapterUI>>
+	abstract fun loadLastRead(): LiveData<HResult<ChapterUI>>
 }

@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 
 /*
@@ -30,5 +32,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRep
 class ExtensionsRepository(
 		val localExtensionsDataSource: ICacheExtensionsDataSource
 ) : IExtensionsRepository {
+	override fun getExtensions(): HResult<List<ExtensionEntity>> {
+		TODO("Not yet implemented")
+	}
+
+	override fun installExtension(extensionEntity: ExtensionEntity) {
+		TODO("Not yet implemented")
+	}
 
 }

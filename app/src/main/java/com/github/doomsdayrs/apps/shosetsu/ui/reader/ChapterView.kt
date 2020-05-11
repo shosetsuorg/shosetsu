@@ -17,7 +17,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_CHAPTER_V
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.listeners.ToolbarHideOnClickListener
 import kotlinx.android.synthetic.main.chapter_view.*
 
 /*
@@ -65,7 +64,7 @@ class ChapterView : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		addBottomListener()
-		chapterReader?.getToolbar()?.let { title.setOnClickListener(ToolbarHideOnClickListener(it)) }
+		chapterReader.getToolbar().let { title.setOnClickListener(ToolbarHideOnClickListener(it)) }
 
 		title.setBackgroundColor(getBackgroundColor())
 		title.setTextColor(getTextColor())
@@ -76,8 +75,8 @@ class ChapterView : Fragment() {
 			if (chapterReader!!.chapterIDs.isNotEmpty() && chapterReader!!.getViewPager() != null) {
 				if (next in chapterReader!!.chapterIDs.indices) {
 					next_chapter.visibility = View.GONE
-					chapterReader!!.getViewPager()?.currentItem = next
-				} else chapterReader?.toast("No more chapters!")
+					chapterReader!!.getViewPager().currentItem = next
+				} else chapterReader.toast("No more chapters!")
 			}
 		}
 		//holder.viewPager2.setUserInputEnabled(false);
@@ -125,7 +124,7 @@ class ChapterView : Fragment() {
 				chapterLoaded = true
 			} else {
 				ErrorAlert(activity!!.parent)
-						.setMessage(r.e?.message)
+						.setMessage(r.e.message)
 						.runOnUI()
 			}
 		} else {

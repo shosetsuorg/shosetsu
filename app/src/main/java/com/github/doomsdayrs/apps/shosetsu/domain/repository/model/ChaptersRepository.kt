@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
+import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalChaptersDataSource
@@ -58,6 +59,6 @@ class ChaptersRepository(
 		localSource.saveChapterPassageToStorage(chapterEntity, passage)
 	}
 
-	override fun loadChapterUnreadCount(novelID: Int): HResult<Int> =
+	override fun loadChapterUnreadCount(novelID: Int): LiveData<HResult<Int>> =
 			localSource.loadUnreadChapterCount(novelID)
 }
