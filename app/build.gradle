@@ -180,6 +180,10 @@ dependencies {
 	// needs the `expandable`, `drag` and `scroll` extension.
 
 
+	// 3. Guava cachce
+	implementation("com.google.guava:guava:29.0-android")
+
+
 	// Kodein
 	implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
 	implementation "org.kodein.di:kodein-di-framework-android-core:$kodein_version"

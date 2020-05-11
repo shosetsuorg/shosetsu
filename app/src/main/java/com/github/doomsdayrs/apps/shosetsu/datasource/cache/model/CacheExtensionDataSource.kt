@@ -4,7 +4,12 @@ import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.get
+import com.github.doomsdayrs.apps.shosetsu.common.ext.set
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
+import java.util.concurrent.TimeUnit.MINUTES
 
 /*
  * This file is part of shosetsu.
@@ -28,15 +33,14 @@ import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtension
  * 04 / 05 / 2020
  */
 class CacheExtensionDataSource : ICacheExtensionsDataSource {
-	/**
-	 * Map of Formatter ID to Formatter
-	 */
-	private val formatters: MutableMap<Int, Formatter> = mutableMapOf()
+	/** Map of Formatter ID to Formatter */
+	private val formatters: Cache<Int, Formatter> = CacheBuilder.newBuilder()
+			.expireAfterAccess(20, MINUTES)
+			.build()
 
 	override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<Formatter> =
 			formatters[formatterID]?.let { successResult(it) } ?: emptyResult()
 
-	override suspend fun putFormatterInMemory(formatter: Formatter) {
-		formatters[formatter.formatterID] = formatter
-	}
+	override suspend fun putFormatterInMemory(formatter: Formatter) =
+			formatters.set(formatter.formatterID, formatter)
 }
