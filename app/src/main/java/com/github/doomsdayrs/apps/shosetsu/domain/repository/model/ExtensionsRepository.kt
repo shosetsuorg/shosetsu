@@ -1,7 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
+import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 
@@ -30,13 +32,22 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRep
  * @author github.com/doomsdayrs
  */
 class ExtensionsRepository(
-		val localExtensionsDataSource: ICacheExtensionsDataSource
+		val memory: ICacheExtensionsDataSource,
+		val database: ILocalExtensionsDataSource
 ) : IExtensionsRepository {
 	override fun getExtensions(): HResult<List<ExtensionEntity>> {
 		TODO("Not yet implemented")
 	}
 
-	override fun installExtension(extensionEntity: ExtensionEntity) {
+	override suspend fun installExtension(extensionEntity: ExtensionEntity) {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter> {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun loadFormatter(formatterID: Int): HResult<Formatter> {
 		TODO("Not yet implemented")
 	}
 

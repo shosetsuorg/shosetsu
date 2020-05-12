@@ -30,4 +30,7 @@ interface ICacheExtensionsDataSource {
 
 	/** Put formatter in memory */
 	suspend fun putFormatterInMemory(formatter: Formatter)
+
+	/** Remove formatter by ID from cache*/
+	suspend fun removeFormatterFromMemory(formatterID: Int)
 }

@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
@@ -34,4 +35,7 @@ interface ILocalExtensionsDataSource {
 	suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>>
 	suspend fun updateExtension(extensionEntity: ExtensionEntity)
 	suspend fun deleteExtension(extensionEntity: ExtensionEntity)
+
+	/** Loads the formatter from file system */
+	suspend fun loadFormatterFromFiles(extensionEntity: ExtensionEntity): HResult<Formatter>
 }

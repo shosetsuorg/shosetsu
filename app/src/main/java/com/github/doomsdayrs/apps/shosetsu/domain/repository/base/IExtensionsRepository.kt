@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
+import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 
@@ -28,5 +29,13 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
  */
 interface IExtensionsRepository {
 	fun getExtensions(): HResult<List<ExtensionEntity>>
-	fun installExtension(extensionEntity: ExtensionEntity)
+	suspend fun installExtension(extensionEntity: ExtensionEntity)
+
+	/**
+	 * Loads the formatter via its extension
+	 */
+	suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter>
+
+	/** Loads the formatter via its ID */
+	suspend fun loadFormatter(formatterID: Int): HResult<Formatter>
 }

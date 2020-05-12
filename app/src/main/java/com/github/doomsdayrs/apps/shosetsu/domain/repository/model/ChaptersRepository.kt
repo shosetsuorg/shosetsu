@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalChaptersDataSource
@@ -36,16 +37,21 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepos
  * @param remoteSource Source from online
  */
 class ChaptersRepository(
-		val memorySource: ICacheChaptersDataSource,
-		val localSource: ILocalChaptersDataSource,
-		val remoteSource: IRemoteChaptersDataSource
+		private val memorySource: ICacheChaptersDataSource,
+		private val localSource: ILocalChaptersDataSource,
+		private val remoteSource: IRemoteChaptersDataSource
 ) : IChaptersRepository {
-
-	override suspend fun loadChapterPassage(chapterEntity: ChapterEntity): HResult<String> =
+	override suspend fun loadChapterPassage(
+			formatter: Formatter,
+			chapterEntity: ChapterEntity
+	): HResult<String> =
 			memorySource.loadChapterFromCache(chapterEntity.id).takeIf { it is HResult.Success }
 					?: localSource.loadChapterPassageFromStorage(chapterEntity)
 							.takeIf { it is HResult.Success }
-					?: remoteSource.loadChapterPassageFromOnline()
+					?: remoteSource.loadChapterPassageFromOnline(
+							formatter,
+							chapterEntity.url
+					)
 
 	override suspend fun saveChapterPassageToMemory(
 			chapterEntity: ChapterEntity,
@@ -59,6 +65,6 @@ class ChaptersRepository(
 		localSource.saveChapterPassageToStorage(chapterEntity, passage)
 	}
 
-	override fun loadChapterUnreadCount(novelID: Int): LiveData<HResult<Int>> =
+	override suspend fun loadChapterUnreadCount(novelID: Int): LiveData<HResult<Int>> =
 			localSource.loadUnreadChapterCount(novelID)
 }

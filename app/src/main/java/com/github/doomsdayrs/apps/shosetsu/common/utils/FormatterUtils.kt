@@ -9,6 +9,7 @@ import app.shosetsu.lib.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.common.ext.getMeta
 import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
@@ -127,25 +128,16 @@ class FormatterUtils(
 		}
 	}
 
-	val okHttpClient by kodein.instance<OkHttpClient>()
-	val formatters = ArrayList<Formatter>()
+	val okHttpClient by instance<OkHttpClient>()
+	val iCacheExtensionsDataSource by instance<ICacheExtensionsDataSource>()
 
-	fun removeByID(formatterID: Int) {
-		formatters.forEachIndexed { index, formatter ->
-			if (formatter.formatterID == formatterID) {
-				formatters.removeAt(index)
-				return
-			}
-		}
-	}
+	suspend fun removeByID(formatterID: Int) =
+			iCacheExtensionsDataSource.removeFormatterFromMemory(formatterID)
 
-	fun addFormatter(formatter: Formatter) {
+	suspend fun addFormatter(formatter: Formatter) {
 		removeByID(formatter.formatterID)
-		formatters.add(formatter)
-		formatters.sortBy { it.name }
+		iCacheExtensionsDataSource.putFormatterInMemory(formatter)
 	}
-
-	fun getByID(ID: Int): Formatter = formatters.firstOrNull { it.formatterID == ID } ?: unknown
 
 	/**
 	 * A quick way to get a response
@@ -169,7 +161,7 @@ class FormatterUtils(
 		return f
 	}
 
-	fun makeFormatterFile(fe: ExtensionEntity): File =
+	override fun makeFormatterFile(fe: ExtensionEntity): File =
 			makeFormatterFile(fe.fileName)
 
 	fun makeFormatterFile(fileName: String): File {
@@ -248,7 +240,7 @@ class FormatterUtils(
 	/**
 	 * Installs the extension in question
 	 */
-	fun installExtension(
+	suspend fun installExtension(
 			extensionEntity: ExtensionEntity,
 			file: File = makeFormatterFile(extensionEntity),
 			repo: RepositoryEntity = repositoryDao.loadRepositoryFromID(
@@ -262,7 +254,7 @@ class FormatterUtils(
 		} ?: false
 	}
 
-	fun deleteFormatter(extensionEntity: ExtensionEntity) {
+	suspend fun deleteFormatter(extensionEntity: ExtensionEntity) {
 		removeByID(extensionEntity.id)
 		makeFormatterFile(extensionEntity).takeIf { it.exists() }?.delete()
 	}
@@ -270,7 +262,7 @@ class FormatterUtils(
 	/**
 	 * Loads the formatters
 	 */
-	override fun initalize() {
+	override suspend fun initalize() {
 		ShosetsuLib.libLoader = libLoader@{ name ->
 			Log.i("LibraryLoaderSync", "Loading:\t$name")
 			val libraryFile = makeLibraryFile(name)
@@ -291,9 +283,7 @@ class FormatterUtils(
 		val fileNames = extensionsDao
 				.loadPoweredFormatterFileNames()
 		fileNames.forEach {
-			formatters.add(
-					LuaFormatter(makeFormatterFile(it))
-			)
+			iCacheExtensionsDataSource.putFormatterInMemory(LuaFormatter(makeFormatterFile(it)))
 		}
 		ShosetsuLib.httpClient = okHttpClient
 	}

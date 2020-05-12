@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDNameImage
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 
 /*
@@ -38,6 +39,9 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 
 	@Query("SELECT * FROM extensions WHERE installed = 1 AND enabled = 1")
 	fun loadPoweredFormatters(): LiveData<List<ExtensionEntity>>
+
+	@Query("SELECT id, name, imageURL FROM extensions WHERE installed = 1 AND enabled = 1")
+	fun loadPoweredFormattersBasic(): LiveData<List<IDNameImage>>
 
 	@Query("SELECT fileName FROM extensions WHERE installed = 1 AND enabled = 1 ORDER BY name ASC")
 	fun loadPoweredFormatterFileNames(): Array<String>

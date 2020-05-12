@@ -61,3 +61,11 @@ data class IDTitleImage(
 ) : Serializable, Convertible<IDTitleImageUI> {
 	override fun convertTo(): IDTitleImageUI = IDTitleImageUI(id, title, imageURL)
 }
+
+data class IDNameImage(
+		val id: Int,
+		val name: String,
+		val imageURL: String
+) : Serializable, Convertible<IDTitleImageUI> {
+	override fun convertTo(): IDTitleImageUI = IDTitleImageUI(id, name, imageURL)
+}

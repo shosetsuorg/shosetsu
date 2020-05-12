@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.common.utils.base
 
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import java.io.File
+
 /*
  * This file is part of shosetsu.
  *
@@ -25,5 +28,6 @@ package com.github.doomsdayrs.apps.shosetsu.common.utils.base
  * @author github.com/doomsdayrs
  */
 interface IFormatterUtils {
-	fun initalize()
+	suspend fun initalize()
+	fun makeFormatterFile(extensionEntity: ExtensionEntity): File
 }
