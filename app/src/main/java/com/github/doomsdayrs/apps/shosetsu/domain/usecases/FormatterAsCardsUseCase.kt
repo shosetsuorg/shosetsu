@@ -35,7 +35,6 @@ class FormatterAsCardsUseCase(
 ) : (() -> LiveData<HResult<List<IDTitleImageUI>>>) {
 	override fun invoke(): LiveData<HResult<List<IDTitleImageUI>>> {
 		return liveData {
-			emit(loading())
 			emitSource(formatterRepository.getCards().map { data ->
 				when (data) {
 					is HResult.Success -> {

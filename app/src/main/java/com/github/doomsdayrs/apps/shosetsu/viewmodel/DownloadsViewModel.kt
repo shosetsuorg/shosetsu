@@ -1,11 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetDownloadsUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -30,14 +34,19 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
  *
  * @author github.com/doomsdayrs
  */
-class DownloadsViewModel(private val downloadsRepository: IDownloadsRepository)
-	: IDownloadsViewModel() {
-	override val liveData: LiveData<HResult<List<DownloadUI>>>
-		get() = TODO("Not yet implemented")
+class DownloadsViewModel(
+		val getDownloadsUseCase: GetDownloadsUseCase
+) : IDownloadsViewModel() {
+
+	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
+		liveData(viewModelScope.coroutineContext + Dispatchers.Default) {
+			emit(loading())
+			emitSource(getDownloadsUseCase())
+		}
+	}
 
 	override fun togglePause(): Boolean {
 		Settings.isDownloadPaused = !Settings.isDownloadPaused
 		return Settings.isDownloadPaused
 	}
-
 }

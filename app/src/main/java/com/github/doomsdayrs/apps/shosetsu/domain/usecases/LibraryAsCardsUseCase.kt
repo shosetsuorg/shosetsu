@@ -33,7 +33,6 @@ class LibraryAsCardsUseCase(
 ) : (() -> LiveData<HResult<List<IDTitleImageUI>>>) {
 	override fun invoke(): LiveData<HResult<List<IDTitleImageUI>>> {
 		return liveData {
-			emit(loading())
 			emitSource(iNovelsRepository.suspendedGetLiveBookmarked().map { data ->
 				when (data) {
 					is HResult.Success -> {

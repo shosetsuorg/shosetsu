@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  */
 interface IDownloadsRepository {
 
-	fun loadDownloads(): LiveData<HResult<DownloadEntity>>
+	fun loadDownloads(): LiveData<HResult<List<DownloadEntity>>>
 
 	/**
 	 * Loads the first download in the list, also starts it
