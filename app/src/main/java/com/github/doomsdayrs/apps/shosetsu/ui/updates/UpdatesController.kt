@@ -33,8 +33,6 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 /**
  * shosetsu
@@ -57,24 +55,20 @@ class UpdatesController : ViewedController() {
 
 	private val updatesViewModel: IUpdatesViewModel by viewModel()
 
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return if (item.itemId == R.id.updater_now) {
-			context?.let { UpdateService.init(it); true } ?: false
-		} else false
-	}
+	override fun onOptionsItemSelected(item: MenuItem): Boolean =
+			if (item.itemId == R.id.updater_now) {
+				context?.let { UpdateService.init(it); true } ?: false
+			} else false
 
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		inflater.inflate(R.menu.toolbar_updater, menu)
-	}
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =
+			inflater.inflate(R.menu.toolbar_updater, menu)
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.updates)
-		GlobalScope.launch {
-			setViewPager()
-		}
+		setViewPager()
 	}
 
-	private suspend fun setViewPager() {
+	private fun setViewPager() {
 		val pagerAdapter = UpdatedDaysPager(
 				this,
 				updatesViewModel.createControllers().toTypedArray()

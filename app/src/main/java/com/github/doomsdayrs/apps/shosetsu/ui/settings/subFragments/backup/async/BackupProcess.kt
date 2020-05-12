@@ -14,7 +14,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.asyn
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 import android.os.AsyncTask
@@ -50,9 +49,7 @@ import java.util.*
 /**
  * shosetsu
  * 16 / 08 / 2019
- *
  * TODO Upgrade to a service
- * @author github.com/doomsdayrs
  */
 @Suppress("unused")
 class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {

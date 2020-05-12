@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.remote.base
 
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -24,5 +26,9 @@ import app.shosetsu.lib.Formatter
  * 04 / 05 / 2020
  */
 interface IRemoteNovelDataSource {
-	suspend fun loadNovel(novelURL: String, formatter: Formatter)
+	suspend fun loadNovel(
+			formatter: Formatter,
+			novelURL: String,
+			loadNovels: Boolean = true
+	): HResult<Novel.Info>
 }

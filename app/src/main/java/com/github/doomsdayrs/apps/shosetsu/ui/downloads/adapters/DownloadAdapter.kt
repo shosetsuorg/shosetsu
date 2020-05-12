@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItem
  *
  * @author github.com/doomsdayrs
  */
-class DownloadAdapter(val downloadsController: DownloadsController)
+class DownloadAdapter(private val downloadsController: DownloadsController)
 	: RecyclerView.Adapter<DownloadItemView>() {
 
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DownloadItemView {
@@ -50,7 +50,8 @@ class DownloadAdapter(val downloadsController: DownloadsController)
 
 	override fun getItemCount(): Int = downloadsController.recyclerArray.size
 
-	override fun getItemId(position: Int): Long = position.toLong()
+	override fun getItemId(position: Int): Long =
+			downloadsController.recyclerArray[position].chapterID.toLong()
 
 	override fun getItemViewType(position: Int): Int = position
 }

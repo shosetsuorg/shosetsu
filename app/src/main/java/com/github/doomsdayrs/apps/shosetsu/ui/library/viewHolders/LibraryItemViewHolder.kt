@@ -5,7 +5,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 
@@ -39,9 +38,4 @@ class LibraryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 	val title: TextView = itemView.findViewById(R.id.title)
 	val chip: Chip = itemView.findViewById(R.id.novel_item_left_to_read)
 
-	init {
-		chip.setOnClickListener {
-			it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text)
-		}
-	}
 }

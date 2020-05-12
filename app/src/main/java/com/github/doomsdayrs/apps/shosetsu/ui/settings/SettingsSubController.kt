@@ -5,7 +5,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -22,20 +21,17 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
  * 29 / 01 / 2020
- *
- * @author github.com/doomsdayrs
  */
 abstract class SettingsSubController : RecyclerController<SettingItemsAdapter, SettingsItemData>() {
 	override val layoutRes: Int = R.layout.settings
 
 	/** Settings to be used*/
-	abstract val settings: ArrayList<SettingsItemData>
+	abstract val settings: List<SettingsItemData>
 
 	override fun onViewCreated(view: View) {
 		adapter = SettingItemsAdapter(settings)

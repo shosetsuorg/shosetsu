@@ -90,6 +90,9 @@ object Settings {
 	const val BACKUP_SETTINGS = "backupSettings"
 	const val BACKUP_QUICK = "backupQuick"
 
+	// Download Options
+	private const val DOWNLOAD_DIRECTORY = "downloadDirectory"
+
 	// READER
 	/**
 	 * How to mark a chapter as reading
@@ -175,6 +178,9 @@ object Settings {
 		get() = settings.getBoolean(FIRST_TIME, true)
 
 	// Download Settings
+	var downloadDirectory: String
+		set(value) = settings.edit { putString(DOWNLOAD_DIRECTORY, value) }
+		get() = settings.getString(DOWNLOAD_DIRECTORY, "/Shosetsu/")!!
 
 	// Formatter Settings
 

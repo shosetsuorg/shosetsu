@@ -33,12 +33,11 @@ import java.io.IOException
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- */ /**
+ */
+
+/**
  * shosetsu
  * 16 / 08 / 2019
- *
- * @author github.com/doomsdayrs
  */
 class RestoreProcess(private val file_path: String, @field:SuppressLint("StaticFieldLeak") private val context: Context) : AsyncTask<Void?, Void?, Boolean>() {
 	@SuppressLint("StaticFieldLeak")

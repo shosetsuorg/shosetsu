@@ -27,13 +27,11 @@ import com.google.android.material.card.MaterialCardView
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
 /**
  * Shosetsu
  * 13 / 07 / 2019
- *
- * @author github.com/doomsdayrs
  */
 class SettingsCardViewHolder(
 		itemView: View,

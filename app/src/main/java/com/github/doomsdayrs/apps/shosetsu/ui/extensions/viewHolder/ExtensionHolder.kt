@@ -40,7 +40,4 @@ class ExtensionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val version: TextView = itemView.findViewById(R.id.version)
     val updatedVersion: TextView = itemView.findViewById(R.id.update_version)
     val button: Button = itemView.findViewById(R.id.button)
-
-    var installed: Boolean = false
-    var update: Boolean = false
 }

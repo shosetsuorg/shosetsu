@@ -1,8 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base
 
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsViewViewModel
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 
 /*
  * This file is part of Shosetsu.
@@ -21,11 +19,11 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsViewViewModel
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 /**
- * Shosetsu
- * 13 / 07 / 2019
+ * shosetsu
+ * 12 / May / 2020
  */
-class ViewSettings : SettingsSubController() {
-	val viewModel: ISettingsViewViewModel by viewModel()
-	override val settings by lazy { viewModel.settings }
+interface SettingsSubViewModel {
+	val settings: ArrayList<SettingsItemData>
 }

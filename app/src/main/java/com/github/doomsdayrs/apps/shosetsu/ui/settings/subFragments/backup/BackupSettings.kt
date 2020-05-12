@@ -2,19 +2,13 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup
 
 import android.app.Activity
 import android.content.Intent
-import android.widget.CompoundButton
-import android.widget.Toast.LENGTH_LONG
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsBackupViewModel
 import com.vincent.filepicker.Constant
-import com.vincent.filepicker.activity.NormalFilePickActivity
+import com.vincent.filepicker.Constant.REQUEST_CODE_PICK_FILE
 import com.vincent.filepicker.filter.entity.NormalFile
 import java.util.*
 
@@ -33,65 +27,19 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * Shosetsu
  * 13 / 07 / 2019
- *
- * @author github.com/doomsdayrs
  */
 class BackupSettings : SettingsSubController() {
-	override val settings by lazy {
-		arrayListOf(
-				SettingsItemData(SettingsType.CHECKBOX, 0)
-						.setTitle(R.string.backup_chapters_option)
-						.setDescription(R.string.backup_chapters_option_description)
-						.setIsChecked(Settings.backupChapters)
-						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
-							Settings.backupChapters = isChecked
-						}),
-				SettingsItemData(SettingsType.CHECKBOX, 1)
-						.setTitle((R.string.backup_settings_option))
-						.setDescription(R.string.backup_settings_option_desc)
-						.setIsChecked(Settings.backupSettings)
-						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
-							Settings.backupSettings = isChecked
-						}),
-				SettingsItemData(SettingsType.CHECKBOX, 2)
-						.setTitle(R.string.backup_quick_option)
-						.setDescription(R.string.backup_quick_option_desc)
-						.setIsChecked(Settings.backupQuick)
-						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
-							Settings.backupQuick = isChecked
-						}),
-				SettingsItemData(SettingsType.BUTTON, 3)
-						.setOnClickListenerButton { it.post { BackupProcess().execute() } }
-						.setTitle(R.string.backup_now)
-						.setTextViewText(R.string.restore_now),
-				SettingsItemData(SettingsType.BUTTON, 4)
-						.setOnClickListenerButton {
-							it.post { this@BackupSettings.performFileSelection() }
-						}
-						.setTitle(R.string.restore_now)
-						.setTextViewText(R.string.restore_now)
-		)
-	}
-
-	@Suppress("unused")
-	private fun performFileSelection() {
-		context?.toast("Please make sure this is on the main storage, " +
-				"SD card storage is not functional yet", duration = LENGTH_LONG)
-		val intent = Intent(context, NormalFilePickActivity::class.java)
-		intent.putExtra(Constant.MAX_NUMBER, 9)
-		intent.putExtra(NormalFilePickActivity.SUFFIX, arrayOf("shoback", "json"))
-		startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE)
-	}
+	val viewModel: ISettingsBackupViewModel by viewModel()
+	override val settings by lazy { viewModel.settings }
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		if (Constant.REQUEST_CODE_PICK_FILE == requestCode && resultCode == Activity.RESULT_OK) {
+		if (REQUEST_CODE_PICK_FILE == requestCode && resultCode == Activity.RESULT_OK) {
 			if (data != null) {
 				val list: ArrayList<NormalFile>? =
 						data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE)

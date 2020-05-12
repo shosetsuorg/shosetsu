@@ -10,7 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteCatalogueDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteNovelDataSource
 import okio.IOException
 import org.luaj.vm2.LuaError
 
@@ -34,21 +34,19 @@ import org.luaj.vm2.LuaError
 
 /**
  * shosetsu
- * 10 / May / 2020
+ * 12 / May / 2020
  */
-class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
-	override suspend fun search(
+class RemoteNovelDataSource : IRemoteNovelDataSource {
+	override suspend fun loadNovel(
 			formatter: Formatter,
-			query: String,
-			data: Array<Any>
-	): HResult<List<Novel.Listing>> {
+			novelURL: String,
+			loadNovels: Boolean
+	): HResult<Novel.Info> {
 		return try {
 			successResult(
-					formatter.search(ArrayList<Any>(arrayListOf(query))
-							.plus(data).toTypedArray()
-					) {
+					formatter.parseNovel(novelURL, loadNovels) {
 						Log.i(logID(), it)
-					}.toList()
+					}
 			)
 		} catch (e: IOException) {
 			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
@@ -59,4 +57,3 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 		}
 	}
 }
-

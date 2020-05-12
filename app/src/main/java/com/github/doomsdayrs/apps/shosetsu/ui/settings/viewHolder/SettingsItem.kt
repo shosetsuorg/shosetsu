@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
 
-
 /*
  * This file is part of Shosetsu.
  *
@@ -24,14 +23,11 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
 /**
  * Shosetsu
  * 13 / 07 / 2019
- *
- * @author github.com/doomsdayrs
- * hXtreme
  */
 @Suppress("unused")
 class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {

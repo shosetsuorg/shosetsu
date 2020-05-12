@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 
@@ -34,7 +35,7 @@ import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
  *
  * @author github.com/doomsdayrs
  */
-class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>)
+class SettingItemsAdapter(private val items: List<SettingsItemData>)
 	: RecyclerView.Adapter<SettingsItem>() {
 	private val views: ArrayList<SettingsItem> = arrayListOf()
 
@@ -69,7 +70,7 @@ class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>)
 				itemDescription.text = data.descriptionText
 
 			when (type) {
-				SettingsItemData.SettingsType.BUTTON -> {
+				BUTTON -> {
 					if (data.textID != -1)
 						button.setText(data.textID)
 					else
@@ -77,17 +78,17 @@ class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>)
 					button.visibility = View.VISIBLE
 					button.setOnClickListener(data.buttonOnClickListener)
 				}
-				SettingsItemData.SettingsType.SPINNER -> {
+				SPINNER -> {
 					spinner.visibility = View.VISIBLE
 					//spinner.setOnClickListener { data.spinnerOnClick }
 					spinner.adapter = data.adapter
 					spinner.setSelection(data.spinnerSelection)
 					spinner.onItemSelectedListener = data.spinnerOnItemSelectedListener
 				}
-				SettingsItemData.SettingsType.INFORMATION -> {
+				INFORMATION -> {
 					itemView.setOnClickListener(data.itemViewOnClick)
 				}
-				SettingsItemData.SettingsType.TEXT -> {
+				TEXT -> {
 					if (data.textID != -1)
 						textView.setText(data.textID)
 					else
@@ -95,24 +96,24 @@ class SettingItemsAdapter(private val items: ArrayList<SettingsItemData>)
 					textView.visibility = View.VISIBLE
 					textView.setOnClickListener(data.textViewOnClickListener)
 				}
-				SettingsItemData.SettingsType.SWITCH -> {
+				SWITCH -> {
 					switchView.visibility = View.VISIBLE
 					switchView.isChecked = data.isChecked
 					switchView.setOnCheckedChangeListener(data.onCheckedListener)
 				}
-				SettingsItemData.SettingsType.NUMBER_PICKER -> {
+				NUMBER_PICKER -> {
 					numberPicker.visibility = View.VISIBLE
 					numberPicker.minValue = data.lowerBound
 					numberPicker.maxValue = data.upperBound
 					numberPicker.value = data.numberPickerValue
 					numberPicker.setOnValueChangedListener(data.numberPickerOnValueChangedListener)
 				}
-				SettingsItemData.SettingsType.CHECKBOX -> {
+				CHECKBOX -> {
 					checkBox.visibility = View.VISIBLE
 					checkBox.isChecked = data.isChecked
 					checkBox.setOnCheckedChangeListener(data.onCheckedListener)
 				}
-				SettingsItemData.SettingsType.COLOR_PICKER -> {
+				COLOR_PICKER -> {
 					colorBox.visibility = View.VISIBLE
 					colorBox.setBackgroundColor(data.itemColor)
 					colorBox.setOnClickListener {

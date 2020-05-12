@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.remote.base
 
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 
 /*
@@ -28,5 +30,7 @@ interface IRemoteChaptersDataSource {
 	/**
 	 * Loads the chapter passage from network
 	 */
-	suspend fun loadChapterPassageFromOnline(): HResult<String>
+	suspend fun loadChapterPassageFromOnline(formatter: Formatter, chapterURL: String): HResult<String>
+
+	suspend fun loadChapters(formatter: Formatter, chapterURL: String): HResult<List<Novel.Chapter>>
 }

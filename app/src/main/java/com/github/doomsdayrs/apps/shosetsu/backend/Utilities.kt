@@ -56,6 +56,7 @@ class SHOWCASE {
  */
 var connectivityManager: ConnectivityManager? = null
 
+
 var shoDir: String = "/Shosetsu/"
 
 

@@ -60,11 +60,12 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 	override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
 		val entity = extensionsController.recyclerArray[position]
 		val id = entity.id
-
+		var installed = false
+		var update = false
 		if (entity.installed && entity.enabled) {
 			holder.button.text = holder.itemView.context.getString(R.string.uninstall)
 			//  holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
-			holder.installed = true
+			installed = true
 
 
 			holder.version.text = entity.installedVersion
@@ -73,7 +74,7 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 							entity.repositoryVersion
 					)) {
 				Log.i(logID(), "$id has an update")
-				holder.update = true
+				update = true
 				// holder.button.setImageResource(R.drawable.ic_update_black_24dp)
 				holder.button.text = holder.itemView.context.getText(R.string.update)
 				holder.updatedVersion.visibility = View.VISIBLE
@@ -92,11 +93,11 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 
 		holder.button.setOnClickListener {
 			try {
-				if (!holder.installed || holder.update) {
+				if (!installed || update) {
 					extensionsController.context?.let { context ->
 						extensionsController.extensionViewModel.installExtension(entity)
-						holder.installed = true
-						holder.update = false
+						installed = true
+						update = false
 						context.toast("Installed ${entity.name}")
 						this@ExtensionsAdapter.notifyItemChanged(position)
 					} ?: Log.e(logID(), "Context is missing to delete")
@@ -105,8 +106,8 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 					extensionsController.context?.let { context ->
 						extensionsController.extensionViewModel.uninstallExtension(entity)
 
-						holder.installed = false
-						holder.update = false
+						installed = false
+						update = false
 						context.toast("Deleted ${entity.name}")
 						this@ExtensionsAdapter.notifyItemChanged(position)
 					} ?: Log.e(logID(), "Context is missing to delete")

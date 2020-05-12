@@ -29,8 +29,6 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 /**
  * Shosetsu
  * 9 / June / 2019
- *
- * @author github.com/doomsdayrs
  */
 class SettingsController : ViewedController() {
 	enum class Types { DOWNLOAD, VIEW, ADVANCED, INFO, BACKUP, READER }

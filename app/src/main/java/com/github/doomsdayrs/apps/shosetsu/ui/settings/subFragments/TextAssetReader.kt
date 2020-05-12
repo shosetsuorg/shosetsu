@@ -28,15 +28,12 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 
 /**
  * Shosetsu
  * 9 / June / 2019
- *
- * @author github.com/doomsdayrs
  */
 class TextAssetReader(private val bundleI: Bundle) : ViewedController(bundleI) {
 	companion object {
