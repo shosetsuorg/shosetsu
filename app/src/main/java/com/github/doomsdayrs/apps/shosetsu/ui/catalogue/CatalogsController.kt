@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSear
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.CatalogsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
 
 /*
  * This file is part of Shosetsu.
@@ -43,9 +43,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.CatalogsViewModel
  */
 //TODO Searching mechanics here
 class CatalogsController : RecyclerController<CataloguesAdapter, IDTitleImageUI>() {
-
-
-	val viewModel: CatalogsViewModel by viewModel()
+	val viewModel: ICatalogsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)

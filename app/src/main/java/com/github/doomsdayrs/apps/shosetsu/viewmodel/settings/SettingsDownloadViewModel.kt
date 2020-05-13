@@ -1,15 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.settings
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
-import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsDownloadViewModel
 
@@ -36,15 +32,13 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsDownloadViewM
  * 12 / May / 2020
  */
 class SettingsDownloadViewModel(
-		val context: Context,
-		val activity: Activity
+		val context: Context
 ) : ISettingsDownloadViewModel() {
 	override val settings: ArrayList<SettingsItemData> by lazy {
 		arrayListOf(
 				SettingsItemData(SettingsItemData.SettingsType.TEXT, 1)
 						.setTitle(R.string.download_directory)
-						.setTextViewText(Settings.downloadDirectory)
-						.setTextOnClickListener { performFileSearch() },
+						.setTextViewText(Settings.downloadDirectory),
 				SettingsItemData(SettingsItemData.SettingsType.SPINNER, 2)
 						.setTitle(R.string.download_speed)
 						.setArrayAdapter(ArrayAdapter(
@@ -63,12 +57,5 @@ class SettingsDownloadViewModel(
 	}
 
 
-	private fun performFileSearch() {
-		context.toast("Please make sure this is on the main storage, " +
-				"SD card storage is not functional yet", duration = Toast.LENGTH_LONG)
-		val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-		i.addCategory(Intent.CATEGORY_DEFAULT)
-		activity.startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)
-	}
 
 }

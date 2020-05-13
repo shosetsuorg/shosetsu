@@ -43,4 +43,7 @@ class CacheExtensionDataSource : ICacheExtensionsDataSource {
 
 	override suspend fun putFormatterInMemory(formatter: Formatter) =
 			formatters.set(formatter.formatterID, formatter)
+
+	override suspend fun removeFormatterFromMemory(formatterID: Int) =
+			formatters.invalidate(formatterID)
 }

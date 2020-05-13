@@ -18,7 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
 import com.google.android.material.card.MaterialCardView
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 
@@ -45,7 +45,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
  */
 class ChaptersAdapter(
 		private val chaptersController: NovelChaptersController,
-		private val viewModel: INovelChaptersViewModel
+		private val viewModel: INovelViewViewModel
 ) : RecyclerView.Adapter<ChaptersViewHolder>(), FastScrollRecyclerView.SectionedAdapter {
 	companion object {
 		var DefaultTextColor = 0

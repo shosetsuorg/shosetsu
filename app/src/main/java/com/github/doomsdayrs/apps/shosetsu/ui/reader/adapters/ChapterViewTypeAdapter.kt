@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewMarkdownReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
@@ -34,33 +35,36 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
  * @author github.com/doomsdayrs
  */
 @Suppress("unused")
-internal class ChapterViewTypeAdapter(private val chapterReader: ChapterView) : RecyclerView.Adapter<NewReader>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewReader {
-        val view: View
-        val newReader: NewReader
-        when (viewType) {
-            0 -> {
-                view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_reader_text_view, parent, false)
-                newReader = NewTextReader(view, chapterReader)
-            }
-            1 -> {
-                view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_reader_mark_down, parent, false)
-	            newReader = NewMarkdownReader(view)
-            }
-            else -> throw IllegalStateException("Unexpected value: $viewType")
-        }
-        return newReader
-    }
+internal class ChapterViewTypeAdapter(private val chapterReader: ChapterReader) : RecyclerView.Adapter<NewReader>() {
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewReader {
+		val view: View
+		val newReader: NewReader
+		launchUI {
 
-    override fun onBindViewHolder(holder: NewReader, position: Int) {
-        Log.i("LoadingReader", position.toString())
-        //newChapterReader.currentView.currentReader = holder;
-        holder.bind()
-        // newChapterReader.currentView.setUpReader();
-    }
+		}
+		when (viewType) {
+			0 -> {
+				view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_reader_text_view, parent, false)
+				newReader = NewTextReader(view)
+			}
+			1 -> {
+				view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_reader_mark_down, parent, false)
+				newReader = NewMarkdownReader(view)
+			}
+			else -> throw IllegalStateException("Unexpected value: $viewType")
+		}
+		return newReader
+	}
 
-    override fun getItemCount(): Int {
-        return 2
-    }
+	override fun onBindViewHolder(holder: NewReader, position: Int) {
+		Log.i("LoadingReader", position.toString())
+		//newChapterReader.currentView.currentReader = holder;
+		holder.bind()
+		// newChapterReader.currentView.setUpReader();
+	}
+
+	override fun getItemCount(): Int {
+		return 2
+	}
 
 }

@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder
 
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -41,7 +40,6 @@ class SettingsCardViewHolder(
 	private val cardView: MaterialCardView = itemView.findViewById(R.id.settings_card)
 
 	fun setType(type: Types) {
-		Log.d("SettingsCardVH", "Type: ${type.name}")
 		cardView.setOnClickListener {
 			router.pushController(
 					when (type) {

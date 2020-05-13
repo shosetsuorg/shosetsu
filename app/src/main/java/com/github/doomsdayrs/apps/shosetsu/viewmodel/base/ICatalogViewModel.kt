@@ -1,7 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
+import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
@@ -30,11 +32,16 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * Used for showing the specific listing of a novel
  */
 abstract class ICatalogViewModel :
-		SubscribeHandleViewModel<List<NovelListingCard>>, ViewModel() {
+		SubscribeHandleViewModel<List<IDTitleImageUI>>, ViewModel() {
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */
-	abstract var currentMaxPage: Int
+	var currentMaxPage: Int = 1
+	abstract val formatter: MutableLiveData<Formatter>
+	abstract val formatterID: MutableLiveData<Int>
+
+	abstract fun setFormatterID(formatterID: Int)
+	abstract fun getFormatterID(): Int
 
 	/**
 	 * Instructs the view model to load more UwU
@@ -42,7 +49,17 @@ abstract class ICatalogViewModel :
 	abstract fun loadMore()
 
 	/**
+	 * Queries a string
+	 */
+	abstract fun loadQuery(query: String)
+
+	/** Queries the current data displayed */
+	abstract fun searchPage(query: String)
+
+	/**
 	 * Instruction to clear loaded chapters, append more UwU
 	 */
 	abstract fun clearAndLoad()
+
+	abstract fun backgroundNovelAdd(novelID: Int)
 }

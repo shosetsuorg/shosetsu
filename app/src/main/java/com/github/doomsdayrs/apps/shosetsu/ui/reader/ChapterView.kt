@@ -1,24 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.common.consts.Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.async.ChapterViewLoader
-import kotlinx.android.synthetic.main.chapter_view.*
-
 /*
  * This file is part of shosetsu.
  *
@@ -42,6 +23,7 @@ import kotlinx.android.synthetic.main.chapter_view.*
  *
  * @author github.com/doomsdayrs
  */
+/*
 class ChapterView : Fragment() {
 
 
@@ -116,11 +98,10 @@ class ChapterView : Fragment() {
 	private fun dataSet() {
 		if (Database.DatabaseChapter.isSaved(chapterID)) {
 			Log.d("ChapterView", "Loading from storage${appendID()}")
-			val r = Database.DatabaseChapter.getSavedNovelPassage(chapterID)
+			val r = g toDatabase.DatabaseChapter.getSavedNovelPassage(chapterID)
 			if (r.succeeded) {
 				unformattedText = r.value!!
 				setUpReader()
-				scrollView.post { scrollView.scrollTo(0, Database.DatabaseChapter.getY(chapterID)) }
 				chapterLoaded = true
 			} else {
 				ErrorAlert(activity!!.parent)
@@ -163,5 +144,6 @@ class ChapterView : Fragment() {
 	}
 
 	private var marked: Boolean = false
-
 }
+
+*/

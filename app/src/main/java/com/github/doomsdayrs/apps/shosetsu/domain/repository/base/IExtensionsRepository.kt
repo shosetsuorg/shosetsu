@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
+import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 
 /*
  * This file is part of shosetsu.
@@ -38,4 +40,6 @@ interface IExtensionsRepository {
 
 	/** Loads the formatter via its ID */
 	suspend fun loadFormatter(formatterID: Int): HResult<Formatter>
+
+	suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>>
 }

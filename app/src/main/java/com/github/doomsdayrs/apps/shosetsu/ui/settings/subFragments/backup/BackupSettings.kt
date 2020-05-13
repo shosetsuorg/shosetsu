@@ -2,13 +2,17 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup
 
 import android.app.Activity
 import android.content.Intent
+import android.view.View
+import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsBackupViewModel
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.Constant.REQUEST_CODE_PICK_FILE
+import com.vincent.filepicker.activity.NormalFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
 import java.util.*
 
@@ -36,6 +40,23 @@ import java.util.*
 class BackupSettings : SettingsSubController() {
 	val viewModel: ISettingsBackupViewModel by viewModel()
 	override val settings by lazy { viewModel.settings }
+
+	override fun onViewCreated(view: View) {
+		settings[findDataByID(4)].setOnClickListenerButton {
+			it.post { performFileSelection() }
+		}
+
+		super.onViewCreated(view)
+	}
+
+	private fun performFileSelection() {
+		context?.toast("Please make sure this is on the main storage, " +
+				"SD card storage is not functional yet", duration = Toast.LENGTH_LONG)
+		val intent = Intent(context, NormalFilePickActivity::class.java)
+		intent.putExtra(Constant.MAX_NUMBER, 9)
+		intent.putExtra(NormalFilePickActivity.SUFFIX, arrayOf("shoback", "json"))
+		activity?.startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE)
+	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)

@@ -1,15 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.settings
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.database.SQLException
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
@@ -38,7 +33,6 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsAdvancedViewM
  * 12 / May / 2020
  */
 class SettingsAdvancedViewModel(
-		val activity: Activity,
 		val context: Context,
 		val resources: Resources = context.resources
 ) : ISettingsAdvancedViewModel() {
@@ -46,32 +40,6 @@ class SettingsAdvancedViewModel(
 		arrayListOf(
 				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER, 1)
 						.setTitle(R.string.theme)
-						.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
-							override fun onNothingSelected(parent: AdapterView<*>?) {
-							}
-
-							override fun onItemSelected(
-									parent: AdapterView<*>?,
-									view: View?,
-									position: Int,
-									id: Long
-							) {
-								if (position in 0..1) {
-									val delegate =
-											(activity as AppCompatActivity).delegate
-									when (position) {
-										0 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
-										1 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-									}
-									val theme = delegate.localNightMode
-									parent?.setSelection(if (
-											theme == AppCompatDelegate.MODE_NIGHT_YES ||
-											theme == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
-											theme == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-									) 1 else 0)
-								}
-							}
-						})
 						.setArrayAdapter(ArrayAdapter(
 								context,
 								android.R.layout.simple_spinner_item,

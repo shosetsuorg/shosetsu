@@ -1,21 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.settings
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
 import android.widget.CompoundButton
-import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.BUTTON
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.CHECKBOX
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsBackupViewModel
-import com.vincent.filepicker.Constant
-import com.vincent.filepicker.activity.NormalFilePickActivity
 
 /*
  * This file is part of Shosetsu.
@@ -40,7 +34,6 @@ import com.vincent.filepicker.activity.NormalFilePickActivity
  * 12 / May / 2020
  */
 class SettingsBackupViewModel(
-		val activity: Activity,
 		val context: Context,
 		val resources: Resources = context.resources
 ) : ISettingsBackupViewModel() {
@@ -72,21 +65,11 @@ class SettingsBackupViewModel(
 						.setTitle(R.string.backup_now)
 						.setTextViewText(R.string.restore_now),
 				SettingsItemData(BUTTON, 4)
-						.setOnClickListenerButton {
-							it.post { performFileSelection() }
-						}
 						.setTitle(R.string.restore_now)
 						.setTextViewText(R.string.restore_now)
 		)
 	}
 
-	private fun performFileSelection() {
-		context.toast("Please make sure this is on the main storage, " +
-				"SD card storage is not functional yet", duration = Toast.LENGTH_LONG)
-		val intent = Intent(context, NormalFilePickActivity::class.java)
-		intent.putExtra(Constant.MAX_NUMBER, 9)
-		intent.putExtra(NormalFilePickActivity.SUFFIX, arrayOf("shoback", "json"))
-		activity.startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE)
-	}
+
 
 }

@@ -48,6 +48,25 @@ class NovelViewViewModel : INovelViewViewModel() {
 		TODO("Not yet implemented")
 	}
 
+	override fun refresh() {
+		TODO("Not yet implemented")
+	}
+
+	override val selectedChapters: MutableLiveData<List<Int>>
+		get() = TODO("Not yet implemented")
+
+	override fun isChapterSelected(chapterUI: ChapterUI): Boolean {
+		TODO("Not yet implemented")
+	}
+
+	override fun addToSelect(chapterUI: ChapterUI) {
+		TODO("Not yet implemented")
+	}
+
+	override fun updateChapter(chapterUI: ChapterUI) {
+		TODO("Not yet implemented")
+	}
+
 	override val liveData: LiveData<HResult<NovelUI>>
 		get() = TODO("Not yet implemented")
 
@@ -60,7 +79,7 @@ class NovelViewViewModel : INovelViewViewModel() {
 	override var novelID: MutableLiveData<Int>
 		get() = TODO("Not yet implemented")
 		set(value) {}
-	override var novelURL: MutableLiveData<Int>
+	override var novelURL: MutableLiveData<String>
 		get() = TODO("Not yet implemented")
 		set(value) {}
 	override var formatter: MutableLiveData<Formatter>
@@ -72,6 +91,10 @@ class NovelViewViewModel : INovelViewViewModel() {
 	}
 
 	override fun setNovelID(novelID: Int) {
+		TODO("Not yet implemented")
+	}
+
+	override fun toggleBookmark() {
 		TODO("Not yet implemented")
 	}
 

@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.content.res.Resources
 import android.view.View
+import android.widget.AdapterView
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
@@ -42,12 +43,38 @@ class AdvancedSettings : SettingsSubController() {
 	@Throws(Resources.NotFoundException::class)
 	override fun onViewCreated(view: View) {
 		val theme = (activity as AppCompatActivity).delegate.localNightMode
-		settings[0].setSpinnerSelection(if (
-				theme == MODE_NIGHT_YES ||
-				theme == MODE_NIGHT_FOLLOW_SYSTEM ||
-				theme == MODE_NIGHT_AUTO_BATTERY)
-			1 else 0)
-		if (BuildConfig.DEBUG)
+		settings[0]
+				.setSpinnerSelection(if (
+						theme == MODE_NIGHT_YES ||
+						theme == MODE_NIGHT_FOLLOW_SYSTEM ||
+						theme == MODE_NIGHT_AUTO_BATTERY)
+					1 else 0)
+				.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+					override fun onNothingSelected(parent: AdapterView<*>?) {
+					}
+
+					override fun onItemSelected(
+							parent: AdapterView<*>?,
+							view: View?,
+							position: Int,
+							id: Long
+					) {
+						if (position in 0..1) {
+							val delegate = (activity as AppCompatActivity).delegate
+							when (position) {
+								0 -> delegate.localNightMode = MODE_NIGHT_NO
+								1 -> delegate.localNightMode = MODE_NIGHT_YES
+							}
+							val theme = delegate.localNightMode
+							parent?.setSelection(if (
+									theme == MODE_NIGHT_YES ||
+									theme == MODE_NIGHT_FOLLOW_SYSTEM ||
+									theme == MODE_NIGHT_AUTO_BATTERY
+							) 1 else 0)
+						}
+					}
+				})
+		if (BuildConfig.DEBUG && findDataByID(9) == -1)
 			settings.add(SettingsItemData(SWITCH, 9)
 					.setTitle("Show Intro")
 					.setIsChecked(Settings.showIntro)

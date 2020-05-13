@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
@@ -45,6 +46,9 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Query("SELECT url,imageURL,title FROM novels WHERE id = :novelID LIMIT 1")
 	fun loadURLImageTitle(novelID: Int): URLImageTitle
+
+	@Query("SELECT id,title,imageURL FROM novels")
+	fun loadIDImageTitle(): LiveData<List<IDTitleImage>>
 
 	@Query("SELECT id FROM novels")
 	fun loadBookmarkedIDs(): List<Int>

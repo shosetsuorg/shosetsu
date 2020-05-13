@@ -39,29 +39,31 @@ abstract class INovelViewViewModel
 	abstract var isArrayReversed: Boolean
 
 	abstract var novelID: MutableLiveData<Int>
-	abstract var novelURL: MutableLiveData<Int>
+	abstract var novelURL: MutableLiveData<String>
 	abstract var formatter: MutableLiveData<Formatter>
 
 	abstract fun setNovelURL(novelURL: String)
 	abstract fun setNovelID(novelID: Int)
 
-	/**
-	 * Instruction to download the next [count] chapters
-	 */
+	abstract fun toggleBookmark()
+
+	/** Instruction to download the next [count] chapters */
 	abstract fun downloadNext(count: Int)
 
-	/**
-	 * Instruction to download everything
-	 */
+	/** Instruction to download everything*/
 	abstract fun downloadAll()
 
-	/**
-	 * Deletes the previous chapter
-	 */
+	/** Deletes the previous chapter */
 	abstract fun deletePrevious()
 
-	/**
-	 * Next chapter to read uwu
-	 */
+	/** Next chapter to read uwu */
 	abstract fun loadLastRead(): LiveData<HResult<ChapterUI>>
+
+	/** Instruction to refresh novel */
+	abstract fun refresh()
+
+	abstract val selectedChapters: MutableLiveData<List<Int>>
+	abstract fun isChapterSelected(chapterUI: ChapterUI): Boolean
+	abstract fun addToSelect(chapterUI: ChapterUI)
+	abstract fun updateChapter(chapterUI: ChapterUI)
 }

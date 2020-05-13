@@ -36,7 +36,7 @@ class DownloadManager {
 	 * @param downloadEntity download item to add
 	 */
 	fun addToDownload(activity: Activity?, downloadEntity: DownloadUI) {
-		downloadsDao.insertDownloadEntity(downloadEntity)
+	//	downloadsDao.insertDownloadEntity(downloadEntity)
 		activity?.let { DownloadService.start(it) }
 	}
 

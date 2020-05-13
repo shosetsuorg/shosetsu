@@ -19,7 +19,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/image"
+                android:id="@+id/imageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
@@ -44,7 +44,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/novel_item_left_to_read"
-                app:layout_constraintStart_toEndOf="@id/image"
+                app:layout_constraintStart_toEndOf="@id/imageView"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.chip.Chip

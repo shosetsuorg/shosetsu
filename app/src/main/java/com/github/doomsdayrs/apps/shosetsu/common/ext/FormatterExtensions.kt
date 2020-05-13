@@ -5,7 +5,7 @@ import android.widget.AdapterView
 import app.shosetsu.lib.*
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings.LISTING_KEY
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDViewBuilder
+import com.github.doomsdayrs.apps.shosetsu.view.builder.SDViewBuilder
 
 /*
  * This file is part of shosetsu.

@@ -29,6 +29,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val imageView: ImageView = itemView.findViewById(R.id.image)
+    val imageView: ImageView = itemView.findViewById(R.id.imageView)
     val textView: TextView = itemView.findViewById(R.id.title)
 }

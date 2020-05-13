@@ -24,9 +24,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
+import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
 import com.github.javiersantos.appupdater.AppUpdater
 import com.github.javiersantos.appupdater.AppUpdaterUtils
 import com.github.javiersantos.appupdater.AppUpdaterUtils.UpdateListener

@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
@@ -28,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * @author github.com/doomsdayrs
  */
 abstract class IExtensionsViewModel
-	: SubscribeHandleViewModel<List<ExtensionUI>> {
+	:ViewModel(), SubscribeHandleViewModel<List<ExtensionUI>> {
 	abstract fun reloadFormatters()
 	abstract fun refreshRepository()
 	abstract fun installExtension(extensionEntity: ExtensionUI)

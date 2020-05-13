@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
@@ -31,4 +32,5 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 interface ILocalNovelsDataSource {
 	/** load list of novels that are to be bookmarked */
 	suspend fun loadBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>>
+	suspend fun loadBookmarkedNovelsCard(): LiveData<HResult<List<IDTitleImage>>>
 }

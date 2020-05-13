@@ -12,7 +12,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.Callback
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -153,11 +152,11 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 				chapters.addAll(hResult.data)
 				dif.dispatchUpdatesTo(chapterReaderAdapter)
 
-				bookmark.setIcon(if (it.data.bookmarked)
-					R.drawable.ic_bookmark_24dp
-				else
-					R.drawable.ic_bookmark_border_24dp
-				)
+				//bookmark.setIcon(if (it.data.bookmarked)
+				//	R.drawable.ic_bookmark_24dp
+				//else
+				//	R.drawable.ic_bookmark_border_24dp
+				//)
 			}
 		}
 	}
@@ -192,6 +191,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 		run {
 			menu.findItem(R.id.chapter_view_bookmark)?.let {
 				bookmark = it
+				/*
 				viewModel.getCurrentChapter().observe(this, Observer {
 					when (it) {
 						is HResult.Loading -> {
@@ -209,7 +209,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 						}
 					}
 				})
-
+*/
 			}
 
 		}
@@ -275,6 +275,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 					throw new RuntimeException("Invalid chapter?!? How are you reading this without the novel loaded in");
 			}
 		}*/
+		return true
 	}
 
 	/**
@@ -412,13 +413,14 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 		val cUI = chapters[viewModel.currentChapterID]
 		if (viewpager.scrollY / total.toFloat() < .99) {
 			// Inital mark of reading
+			/*
 			if (!marked && Settings.readerMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
 				Log.d("ChapterView", "Marking as Reading")
 				cUI.readingReadingStatus = READING
 				viewModel.updateChapter(cUI)
 				marked = !marked
 			}
-
+			*/
 			val y = viewpager!!.scrollY
 			if (y % 5 == 0)
 				if (cUI.readingReadingStatus != READ) {
@@ -453,7 +455,5 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 				viewModel.updateChapter(chapterReaderUI)
 			}
 		}
-
-
 	}
 }

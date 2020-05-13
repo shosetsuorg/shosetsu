@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -41,6 +42,9 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("SELECT * FROM chapters")
 	fun loadChapters(): Array<ChapterEntity>
 
+	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
+	fun loadChapters(novelID: Int): LiveData<List<ChapterEntity>>
+
 	@Query("SELECT * FROM chapters WHERE id = :chapterID LIMIT 1")
 	fun loadChapter(chapterID: Int): ChapterEntity
 
@@ -59,7 +63,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	fun loadChapterUnreadCount(): Int
 
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2 AND novelID = :novelID")
-	fun loadChapterUnreadCount(novelID: Int): Int
+	fun loadChapterUnreadCount(novelID: Int): LiveData<Int>
 
 	@Query("SELECT id FROM chapters WHERE novelID = :novelID AND readingStatus != 2 ORDER BY `order` DESC")
 	fun findLastUnread(novelID: Int): Int

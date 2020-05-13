@@ -6,14 +6,13 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.lib.Formatter
-import com.bluelinelabs.conductor.Router
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.viewHolder.CListingViewHolder
+import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.viewholders.TitleImageViewHolder
 import com.squareup.picasso.Picasso
 
 /*
@@ -40,51 +39,42 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class CatalogueAdapter(
-		private val recycleListingCards: List<NovelListingCard>,
-		private val router: Router,
-		private val formatter: Formatter,
+		private val recycleListingCards: List<IDTitleImageUI>,
+		private val controller: CatalogController,
+		private val formatterID: Int,
 		@LayoutRes val layout: Int
-) : RecyclerView.Adapter<CListingViewHolder>() {
-	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): CListingViewHolder {
-		return CListingViewHolder(LayoutInflater.from(viewGroup.context).inflate(
+) : RecyclerView.Adapter<TitleImageViewHolder>() {
+	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): TitleImageViewHolder {
+		return TitleImageViewHolder(LayoutInflater.from(viewGroup.context).inflate(
 				layout,
 				viewGroup,
 				false
 		))
-    }
+	}
 
-	override fun onBindViewHolder(cCardsViewHolder: CListingViewHolder, i: Int) {
-        val recycleCard = recycleListingCards[i]
-		cCardsViewHolder.title.text = recycleCard.title
-        if (recycleCard.imageURL.isNotEmpty()) {
-	        Picasso.get().load(recycleCard.imageURL).into(cCardsViewHolder.imageView)
-        } else cCardsViewHolder.imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
+	override fun onBindViewHolder(cCardsViewHolder: TitleImageViewHolder, i: Int) {
+		recycleListingCards[i].let { (id, title, image) ->
+			cCardsViewHolder.title.text = title
+			if (image.isNotEmpty()) {
+				Picasso.get().load(image).into(cCardsViewHolder.imageView)
+			} else cCardsViewHolder.imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
-		with(recycleCard) {
 			with(cCardsViewHolder.itemView) {
 				setOnClickListener {
-					router.pushController(NovelController(
+					controller.router.pushController(NovelController(
 							bundleOf(
-									BundleKeys.BUNDLE_NOVEL_URL to novelURL,
-									BundleKeys.BUNDLE_FORMATTER to formatter.formatterID,
-									BundleKeys.BUNDLE_NOVEL_ID to novelID
+									BUNDLE_NOVEL_ID to id,
+									BUNDLE_FORMATTER to formatterID
 							)
 					).withFadeTransaction())
 				}
 				setOnLongClickListener {
-					launchIO {
-						TODO("Add Novel in background")
-					}
+					controller.viewModel.backgroundNovelAdd(id)
 					true
 				}
 			}
 		}
+	}
 
-
-    }
-
-    override fun getItemCount(): Int {
-        return recycleListingCards.size
-    }
-
+	override fun getItemCount(): Int = recycleListingCards.size
 }

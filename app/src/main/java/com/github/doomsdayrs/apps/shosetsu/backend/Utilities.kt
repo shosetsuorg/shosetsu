@@ -6,7 +6,6 @@ import android.net.NetworkCapabilities
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.view.MenuItem
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -117,16 +116,6 @@ val isOnline: Boolean
 			}
 		}
 	}
-
-/**
- * Toggles bookmark
- *
- * @param chapterID id
- * @return true means added, false means removed
- */
-@Throws(MissingResourceException::class)
-@Deprecated("ROOM", level = DeprecationLevel.WARNING)
-fun toggleBookmarkChapter(chapterID: Int): Boolean = throw Exception("STUD")
 
 /**
  * Abstraction for Actions to take after demarking items. To simplify bulky code

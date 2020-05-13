@@ -48,34 +48,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
  */
 abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle)
 	: ViewedController(bundle) {
-	/**
-	 * Call back to update ui of [RecyclerController]
-	 * @param oldList Old list
-	 * @param newList New List
-	 */
-	inner class RecyclerDiffToolCallBack(
-			newList: List<V> = arrayListOf(),
-			oldList: List<V> = recyclerArray
-	) : AutoUtil<List<V>>(newList, oldList) {
-		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-				this@RecyclerController.difAreContentsTheSame(
-						old[oldItemPosition],
-						new[newItemPosition]
-				)
-
-		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-				this@RecyclerController.difAreItemsTheSame(
-						old[oldItemPosition],
-						new[newItemPosition]
-				)
-	}
-
 	constructor() : this(bundleOf())
-
-	/**
-	 *  DiffToolCallback to be used
-	 */
-	private val diffToolCallBack: RecyclerDiffToolCallBack = RecyclerDiffToolCallBack()
 
 	@LayoutRes
 	override val layoutRes: Int = R.layout.recycler_controller
@@ -134,6 +107,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	 */
 	@CallSuper
 	open fun updateUI(list: List<V>) {
+		val diffToolCallBack = RecyclerDiffToolCallBack(list, recyclerArray)
 		diffToolCallBack.old = list
 		val callback = DiffUtil.calculateDiff(diffToolCallBack)
 		recyclerArray.clear()
@@ -145,4 +119,26 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 			oldItem == newItem
 
 	abstract fun difAreItemsTheSame(oldItem: V, newItem: V): Boolean
+
+	/**
+	 * Call back to update ui of [RecyclerController]
+	 * @param oldList Old list
+	 * @param newList New List
+	 */
+	inner class RecyclerDiffToolCallBack(
+			newList: List<V> = arrayListOf(),
+			oldList: List<V> = recyclerArray
+	) : AutoUtil<List<V>>(newList, oldList) {
+		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+				this@RecyclerController.difAreContentsTheSame(
+						old[oldItemPosition],
+						new[newItemPosition]
+				)
+
+		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+				this@RecyclerController.difAreItemsTheSame(
+						old[oldItemPosition],
+						new[newItemPosition]
+				)
+	}
 }

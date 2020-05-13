@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/image"
+            android:id="@+id/imageView"
             android:layout_width="0dp"
             android:layout_height="160dp"
             android:contentDescription="@string/todo"

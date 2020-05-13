@@ -25,5 +25,6 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
  * 12 / May / 2020
  */
 interface SettingsSubViewModel {
+	/** Settings that are uniform */
 	val settings: ArrayList<SettingsItemData>
 }

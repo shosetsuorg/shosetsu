@@ -1,6 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.di.datasource
 
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.*
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.model.*
 import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.singleton
 
 /*
  * This file is part of shosetsu.
@@ -25,12 +30,11 @@ import org.kodein.di.Kodein
  * Should all be singletons
  */
 val localDataSouceModule = Kodein.Module("local_data_source_module") {
-	//bind<ILocalChaptersDataSource>() with singleton { }
-	//bind<ILocalDownloadsDataSource>() with singleton { }
-	//bind<ILocalExtensionsDataSource>() with singleton { }
-	//bind<ILocalExtensionLibraryDataSource>() with singleton { }
-	//bind<ILocalNovelsDataSource>() with singleton { }
-	//bind<ILocalRepositoryDataSource>() with singleton { }
-	//bind<ILocalUpdatesDataSource>() with singleton { }
-	TODO("IMPLEMENTATION")
+	bind<ILocalChaptersDataSource>() with singleton { LocalChaptersDataSource(instance()) }
+	bind<ILocalDownloadsDataSource>() with singleton { LocalDownloadsDataSource(instance()) }
+	bind<ILocalExtensionsDataSource>() with singleton { LocalExtensionsDataSource(instance()) }
+	bind<ILocalExtLibDataSource>() with singleton { LocalExtLibDataSource() }
+	bind<ILocalNovelsDataSource>() with singleton { LocalNovelsDataSource(instance()) }
+	bind<ILocalExtRepoDataSource>() with singleton { LocalExtRepoDataSource(instance()) }
+	bind<ILocalUpdatesDataSource>() with singleton { LocalUpdatesDataSource(instance()) }
 }

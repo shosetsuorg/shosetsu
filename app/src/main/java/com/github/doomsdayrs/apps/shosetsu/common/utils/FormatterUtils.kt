@@ -155,7 +155,7 @@ class FormatterUtils(
 	fun makeLibraryFile(le: ExtensionLibraryEntity): File =
 			makeLibraryFile(le.scriptName)
 
-	fun makeLibraryFile(scriptName: String): File {
+	override fun makeLibraryFile(scriptName: String): File {
 		val f = File("${ap}$sourceFolder$libraryDirectory${scriptName}.lua")
 		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
 		return f
@@ -164,7 +164,7 @@ class FormatterUtils(
 	override fun makeFormatterFile(fe: ExtensionEntity): File =
 			makeFormatterFile(fe.fileName)
 
-	fun makeFormatterFile(fileName: String): File {
+	override fun makeFormatterFile(fileName: String): File {
 		val f = File("${ap}$sourceFolder$scriptDirectory${fileName}.lua")
 		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
 		return f

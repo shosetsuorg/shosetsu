@@ -1,8 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.model
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import java.io.File
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalChaptersDataSource
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ChaptersDao
 
 /*
  * This file is part of Shosetsu.
@@ -29,12 +33,13 @@ import java.io.File
  *
  * @author github.com/doomsdayrs
  */
-class LocalChaptersDataSource {
-	/**
-	 * Get saved text
-	 *
-	 * @param path path of saved chapter
-	 * @return Passage of saved chapter
-	 */
-	fun getChapterText(path: String): HResult<String> = successResult(File(path).readText())
+class LocalChaptersDataSource(
+		val chaptersDao: ChaptersDao
+) : ILocalChaptersDataSource {
+
+	override fun loadChaptersByID(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
+			chaptersDao.loadChapters(novelID).map { successResult(it) }
+
+	override fun loadUnreadChapterCount(novelID: Int): LiveData<HResult<Int>> =
+			chaptersDao.loadChapterUnreadCount(novelID).map { successResult(it) }
 }

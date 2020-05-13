@@ -30,4 +30,6 @@ import java.io.File
 interface IFormatterUtils {
 	suspend fun initalize()
 	fun makeFormatterFile(extensionEntity: ExtensionEntity): File
+	fun makeFormatterFile(fileName: String): File
+	fun makeLibraryFile(fileName: String): File
 }

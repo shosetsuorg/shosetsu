@@ -1,11 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 
 /*
@@ -65,9 +66,28 @@ class CatalogViewModel
 		 */
 	}
 
-	override var currentMaxPage: Int = 1
+	override val formatter: MutableLiveData<Formatter>
+		get() = TODO("Not yet implemented")
+	override val formatterID: MutableLiveData<Int>
+		get() = TODO("Not yet implemented")
+
+	override fun setFormatterID(formatterID: Int) {
+		TODO("Not yet implemented")
+	}
+
+	override fun getFormatterID(): Int {
+		TODO("Not yet implemented")
+	}
 
 	override fun loadMore() {
+		TODO("Not yet implemented")
+	}
+
+	override fun loadQuery(query: String) {
+		TODO("Not yet implemented")
+	}
+
+	override fun searchPage(query: String) {
 		TODO("Not yet implemented")
 	}
 
@@ -75,6 +95,11 @@ class CatalogViewModel
 		TODO("Not yet implemented")
 	}
 
-	override val liveData: LiveData<HResult<List<NovelListingCard>>>
+	override fun backgroundNovelAdd(novelID: Int) {
+		TODO("Not yet implemented")
+	}
+
+	override val liveData: LiveData<HResult<List<IDTitleImageUI>>>
 		get() = TODO("Not yet implemented")
+
 }

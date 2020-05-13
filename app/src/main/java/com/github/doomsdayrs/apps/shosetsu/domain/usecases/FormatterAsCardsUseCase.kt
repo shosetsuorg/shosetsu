@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.*
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IFormatterRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 
 /*
@@ -31,11 +31,11 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
  * @param formatterRepository Repository of formatters
  */
 class FormatterAsCardsUseCase(
-		val formatterRepository: IFormatterRepository
+		val iExtensionsRepository: IExtensionsRepository
 ) : (() -> LiveData<HResult<List<IDTitleImageUI>>>) {
 	override fun invoke(): LiveData<HResult<List<IDTitleImageUI>>> {
 		return liveData {
-			emitSource(formatterRepository.getCards().map { data ->
+			emitSource(iExtensionsRepository.getCards().map { data ->
 				when (data) {
 					is HResult.Success -> {
 						successResult(data.data.map { IDTitleImageUI(it.id, it.title, it.imageURL) })

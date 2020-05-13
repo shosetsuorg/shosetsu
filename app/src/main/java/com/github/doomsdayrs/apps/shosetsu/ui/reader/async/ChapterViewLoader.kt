@@ -1,17 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.async
 
-import android.content.DialogInterface
-import android.os.AsyncTask
-import android.util.Log
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
-import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
-import kotlinx.android.synthetic.main.chapter_view.*
-import java.util.concurrent.TimeUnit
-
-class ChapterViewLoader(private val chapterView: ChapterView)
+/*
+class ChapterViewLoader(private val chapterView: ChapterReader)
 	: AsyncTask<Any?, Void?, Boolean>() {
 
 	override fun onPreExecute() {
@@ -23,7 +13,7 @@ class ChapterViewLoader(private val chapterView: ChapterView)
 		Log.i("ChapterViewLoader", "doInBackground${chapterView.appendID()}")
 		if (chapterView.chapterReader.formatter == null) return false
 		try {
-			Utilities.wait(5, TimeUnit.SECONDS)
+			wait(5, TimeUnit.SECONDS)
 			chapterView.unformattedText = chapterView.chapterReader.formatter!!.getPassage(chapterView.url)
 			return true
 		} catch (e: Exception) {
@@ -46,4 +36,5 @@ class ChapterViewLoader(private val chapterView: ChapterView)
 		}
 	}
 }
+*/
 

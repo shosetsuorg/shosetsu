@@ -3,6 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
@@ -37,12 +39,24 @@ class DownloadSettings : SettingsSubController() {
 	val viewModel: ISettingsDownloadViewModel by viewModel()
 	override val settings by lazy { viewModel.settings }
 
+	override fun onViewCreated(view: View) {
+		settings[0].setTextOnClickListener { performFileSearch() }
+		super.onViewCreated(view)
+	}
+
 	private fun setDownloadDirectory(dir: String) {
 		Settings.downloadDirectory = dir
 		shoDir = dir
 		recyclerView?.post { adapter?.notifyItemChanged(0) }
 	}
 
+	private fun performFileSearch() {
+		context?.toast("Please make sure this is on the main storage, " +
+				"SD card storage is not functional yet", duration = Toast.LENGTH_LONG)
+		val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+		i.addCategory(Intent.CATEGORY_DEFAULT)
+		activity?.startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)
+	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)

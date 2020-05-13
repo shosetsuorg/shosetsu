@@ -26,9 +26,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  * 04 / 05 / 2020
  */
 interface ILocalDownloadsDataSource {
-	fun loadDownloads(): LiveData<HResult<List<DownloadEntity>>>
-	fun updateDownload(downloadEntity: DownloadEntity)
-	fun removeDownload(downloadEntity: DownloadEntity)
-	fun addDownload(downloadEntity: DownloadEntity)
-	fun clearDownloads()
+	suspend fun loadDownloads(): LiveData<HResult<List<DownloadEntity>>>
+	suspend fun loadDownloadCount(): HResult<Int>
+
+	suspend fun loadFirstDownload(): HResult<DownloadEntity>
+	suspend fun insertDownload(downloadEntity: DownloadEntity): Long
+	suspend fun updateDownload(downloadEntity: DownloadEntity)
+	suspend fun deleteDownload(downloadEntity: DownloadEntity)
+	suspend fun clearDownloads()
 }

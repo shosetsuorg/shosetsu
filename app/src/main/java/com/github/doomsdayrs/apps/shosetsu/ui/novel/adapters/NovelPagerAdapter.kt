@@ -7,7 +7,6 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_URL
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
@@ -54,19 +53,19 @@ class NovelPagerAdapter(val novelController: NovelController)
 
 	override fun configureRouter(router: Router, position: Int) {
 		if (!router.hasRootController()) {
-			Log.d("Swap Screen", titles.getItem(position)?:"Unknown")
+			Log.d("Swap Screen", titles.getItem(position) ?: "Unknown")
 
 			val controller = when (position) {
 				INFO_CONTROLLER -> {
 					NovelInfoController(bundleOf(
 							BUNDLE_NOVEL_ID to novelController.viewModel.novelID,
-							BUNDLE_URL to novelController.viewModel.novelURL,
-							BUNDLE_FORMATTER to novelController.formatter.formatterID
+							BUNDLE_URL to novelController.viewModel.novelURL
+							//BUNDLE_FORMATTER to novelController.formatter.formatterID
 					))
 				}
 				CHAPTERS_CONTROLLER -> {
 					NovelChaptersController(bundleOf(
-							BUNDLE_NOVEL_ID to novelController.novelID
+							//	BUNDLE_NOVEL_ID to novelController.novel
 					))
 				}
 				else -> error("Wrong position $position")

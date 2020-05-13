@@ -1,10 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
+import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 
 /*
@@ -51,4 +53,6 @@ class ExtensionsRepository(
 		TODO("Not yet implemented")
 	}
 
+	override suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>> =
+			database.loadPoweredExtensionsCards()
 }

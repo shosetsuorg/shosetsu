@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.FormatterAsCardsUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -30,4 +30,8 @@ import org.kodein.di.generic.provider
  */
 val useCaseModule = Kodein.Module("useCase") {
 	bind<FormatterAsCardsUseCase>() with provider { FormatterAsCardsUseCase(instance()) }
+	bind<GetDownloadsUseCase>() with provider { GetDownloadsUseCase(instance()) }
+	bind<LibraryAsCardsUseCase>() with provider { LibraryAsCardsUseCase(instance()) }
+	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
+	bind<UnreadChaptersUseCase>() with provider { UnreadChaptersUseCase(instance()) }
 }

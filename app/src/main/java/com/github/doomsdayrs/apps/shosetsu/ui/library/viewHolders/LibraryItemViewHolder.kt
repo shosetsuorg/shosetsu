@@ -34,7 +34,7 @@ import com.google.android.material.chip.Chip
  */
 class LibraryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	val materialCardView: MaterialCardView = itemView.findViewById(R.id.novel_item_card)
-	val imageView: ImageView = itemView.findViewById(R.id.image)
+	val imageView: ImageView = itemView.findViewById(R.id.imageView)
 	val title: TextView = itemView.findViewById(R.id.title)
 	val chip: Chip = itemView.findViewById(R.id.novel_item_left_to_read)
 

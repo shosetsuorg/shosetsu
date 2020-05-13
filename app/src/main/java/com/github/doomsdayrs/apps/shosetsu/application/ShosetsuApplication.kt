@@ -11,7 +11,11 @@ import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.di.databaseModule
+import com.github.doomsdayrs.apps.shosetsu.di.*
+import com.github.doomsdayrs.apps.shosetsu.di.datasource.cacheDataSouceModule
+import com.github.doomsdayrs.apps.shosetsu.di.datasource.fileDataSourceModule
+import com.github.doomsdayrs.apps.shosetsu.di.datasource.localDataSouceModule
+import com.github.doomsdayrs.apps.shosetsu.di.datasource.remoteDataSouceModule
 import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.factory.ViewModelFactory
 import org.acra.ACRA
@@ -43,14 +47,11 @@ import org.kodein.di.generic.singleton
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
  * 28 / 01 / 2020
- *
- * @author github.com/doomsdayrs
  */
 @AcraCore(buildConfigClass = BuildConfig::class)
 @AcraDialog(resCommentPrompt = R.string.crashCommentPromt, resText = R.string.crashDialogText, resTheme = R.style.AppTheme_CrashReport)
@@ -98,9 +99,18 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		bind<ShosetsuDatabase>() with singleton {
 			ShosetsuDatabase.getRoomDatabase(applicationContext)
 		}
+		import(cacheDataSouceModule)
+		import(localDataSouceModule)
+		import(remoteDataSouceModule)
+		import(fileDataSourceModule)
+		import(networkModule)
 		import(databaseModule)
-		bind<IFormatterUtils>() with singleton { FormatterUtils(instance(), instance(), instance(), instance()) }
-
+		bind<IFormatterUtils>() with singleton {
+			FormatterUtils(instance(), instance(), instance(), instance())
+		}
+		import(repositoryModule)
+		import(useCaseModule)
+		import(viewModelsModule)
 		import(androidXModule(this@ShosetsuApplication))
 	}
 

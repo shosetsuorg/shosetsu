@@ -1,30 +1,21 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.View.GONE
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.common.utils.DownloadManager
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
-import kotlin.collections.ArrayList
 
 /*
  * This file is part of Shosetsu.
@@ -41,30 +32,24 @@ import kotlin.collections.ArrayList
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 /**
  * Shosetsu
  * 9 / June / 2019
  *
- * @author github.com/doomsdayrs
- *
- *
  * Displays the chapters the novel contains
  * TODO Check filesystem if the chapter is saved, even if not in DB.
- *
  */
 class NovelChaptersController(bundle: Bundle)
 	: RecyclerController<ChaptersAdapter, ChapterUI>(bundle) {
-
-
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
 	@Attach(R.id.resume)
 	var resume: FloatingActionButton? = null
 
-	val viewModel: INovelChaptersViewModel by viewModel()
+	private val novelController: NovelController = parentController as NovelController
+	private val viewModel: INovelViewViewModel = novelController.viewModel
 
 	val inflater: MenuInflater = MenuInflater(context)
 
@@ -72,11 +57,21 @@ class NovelChaptersController(bundle: Bundle)
 
 	init {
 		setHasOptionsMenu(true)
-		viewModel.setNovelID(bundle.getInt(BUNDLE_NOVEL_ID))
+		viewModel.liveData.observe(this, Observer {
+			when (it) {
+				is HResult.Success -> {
+					resume?.visibility = View.GONE
+					activity?.invalidateOptionsMenu()
+				}
+				is HResult.Error -> TODO("Implement Error Handler")
+				is HResult.Empty -> TODO("Implement Empty Handler")
+				is HResult.Loading -> TODO("Implement Loading Handler")
+			}
+		})
 	}
 
 	override fun onViewCreated(view: View) {
-		resume?.visibility = GONE
+		resume?.visibility = View.GONE
 		resume?.setOnClickListener {
 			viewModel.loadLastRead().observe(this, Observer { result ->
 				when (result) {
@@ -84,7 +79,9 @@ class NovelChaptersController(bundle: Bundle)
 					}
 					is HResult.Empty -> {
 					}
-					is HResult.Success -> activity?.openChapter(result.data)
+					is HResult.Success -> {
+						activity?.openChapter(result.data)
+					}
 				}
 			})
 		}
@@ -108,50 +105,48 @@ class NovelChaptersController(bundle: Bundle)
 		)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return when (item.itemId) {
-			R.id.download -> {
-				optionDownload()
-				true
-			}
-			R.id.chapter_select_all -> {
-				optionChapterSelectAll()
-				true
-			}
-			R.id.chapter_download_selected -> {
-				optionChapterDownloadSelected()
-				true
-			}
-			R.id.chapter_delete_selected -> {
-				optionChapterDeleteSelected()
-				true
-			}
-			R.id.chapter_deselect_all -> {
-				optionChapterDeselectAll()
-				true
-			}
-			R.id.chapter_mark_read -> {
-				optionChapterMarkRead()
-				true
-			}
-			R.id.chapter_mark_unread -> {
-				optionChapterMarkUnread()
-				true
-			}
-			R.id.chapter_mark_reading -> {
-				optionChapterMarkReading()
-				true
-			}
-			R.id.chapter_select_between -> {
-				optionChapterSelectBetween()
-				true
-			}
-			R.id.chapter_filter -> {
-				optionChapterFilter()
-				true
-			}
-			else -> false
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+		R.id.download -> {
+			//optionDownload()
+			true
 		}
+		R.id.chapter_select_all -> {
+			//	optionChapterSelectAll()
+			true
+		}
+		R.id.chapter_download_selected -> {
+			//	optionChapterDownloadSelected()
+			true
+		}
+		R.id.chapter_delete_selected -> {
+			//	optionChapterDeleteSelected()
+			true
+		}
+		R.id.chapter_deselect_all -> {
+			//	optionChapterDeselectAll()
+			true
+		}
+		R.id.chapter_mark_read -> {
+			//	optionChapterMarkRead()
+			true
+		}
+		R.id.chapter_mark_unread -> {
+			//	optionChapterMarkUnread()
+			true
+		}
+		R.id.chapter_mark_reading -> {
+			//	optionChapterMarkReading()
+			true
+		}
+		R.id.chapter_select_between -> {
+			//	optionChapterSelectBetween()
+			true
+		}
+		R.id.chapter_filter -> {
+			//	optionChapterFilter()
+			true
+		}
+		else -> false
 	}
 
 	override fun difAreItemsTheSame(oldItem: ChapterUI, newItem: ChapterUI): Boolean =
@@ -159,6 +154,7 @@ class NovelChaptersController(bundle: Bundle)
 
 	// Option menu functions
 
+	/*
 	private fun optionDownload() {
 		val builder = AlertDialog.Builder(activity!!)
 		builder.setTitle(R.string.download)
@@ -231,6 +227,7 @@ class NovelChaptersController(bundle: Bundle)
 				}
 		builder.create().show()
 	}
+
 
 	private fun optionChapterSelectAll() {
 		try {
@@ -348,4 +345,5 @@ class NovelChaptersController(bundle: Bundle)
 		isArrayReversed = !isArrayReversed
 		updateAdapter()
 	}
+	*/
 }

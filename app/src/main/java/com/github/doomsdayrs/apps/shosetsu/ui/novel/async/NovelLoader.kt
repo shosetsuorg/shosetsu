@@ -6,7 +6,7 @@ import android.util.Log
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.UNREAD
-import com.github.doomsdayrs.apps.shosetsu.ui.errorView.ErrorAlert
+import com.github.doomsdayrs.apps.shosetsu.view.ErrorAlert
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
 
 
@@ -33,6 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
  *
  * @author github.com/doomsdayrs
  */
+/*
 class NovelLoader(
 		val novelURL: String,
 		var novelID: Int,
@@ -115,3 +116,4 @@ class NovelLoader(
 		}
 	}
 }
+ */

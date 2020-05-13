@@ -26,9 +26,9 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
  */
 @Suppress("unused")
 class NovelTrackingController : ViewedController() {
-    override val layoutRes: Int
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+	override val layoutRes: Int
+		get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
-    override fun onViewCreated(view: View) =
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	override fun onViewCreated(view: View) =
+			TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 }

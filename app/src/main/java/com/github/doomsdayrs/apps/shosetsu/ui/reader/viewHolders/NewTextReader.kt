@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders
 import android.view.View
 import android.widget.TextView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
 
 /*
  * This file is part of shosetsu.
@@ -27,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterView
  *
  * @author github.com/doomsdayrs
  */
-class NewTextReader(itemView: View, val chapterView: ChapterView) : NewReader(itemView) {
+class NewTextReader(itemView: View) : NewReader(itemView) {
 	private val textView: TextView = itemView.findViewById(R.id.textview)
 
 	override fun setText(text: String?) {
@@ -35,5 +34,6 @@ class NewTextReader(itemView: View, val chapterView: ChapterView) : NewReader(it
 	}
 
 	override fun bind() {
+
 	}
 }

@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.di
 
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.*
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.settings.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -36,8 +37,17 @@ val viewModelsModule = Kodein.Module("view_models_module") {
 	bind<IExtensionsConfigureViewModel>() with provider {
 		ExtensionsConfigureViewModel(instance(), instance())
 	}
-	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(instance()) }
+	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel() }
 	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance(), instance()) }
 	bind<ISearchViewModel>() with provider { SearchViewModel(instance(), instance()) }
 	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(instance(), instance()) }
+
+
+	bind<ISettingsAdvancedViewModel>() with provider { SettingsAdvancedViewModel(instance()) }
+	bind<ISettingsBackupViewModel>() with provider { SettingsBackupViewModel(instance(), instance()) }
+	bind<ISettingsDownloadViewModel>() with provider { SettingsDownloadViewModel(instance()) }
+	bind<ISettingsInfoViewModel>() with provider { SettingsInfoViewModel() }
+	bind<ISettingsReaderViewModel>() with provider { SettingsReaderViewModel(instance()) }
+	bind<ISettingsViewViewModel>() with provider { SettingsViewViewModel(instance()) }
+
 }

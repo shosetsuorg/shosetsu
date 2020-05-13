@@ -1,6 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
+import android.content.Intent
+import android.net.Uri
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsInfoViewModel
 
@@ -28,4 +33,30 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsInfoViewModel
 class InfoSettings : SettingsSubController() {
 	val viewModel: ISettingsInfoViewModel by viewModel()
 	override val settings by lazy { viewModel.settings }
+
+	override fun onViewCreated(view: View) {
+		settings[1].setOnClickListener { onClickReportBug() }
+		settings[2].setOnClickListener { onClickAuthor() }
+		settings[3].setOnClickListener { onClickDisclaimer() }
+		settings[4].setOnClickListener { onClickLicense() }
+
+		super.onViewCreated(view)
+	}
+
+	private fun onClickReportBug() = activity?.startActivity(Intent(
+			Intent.ACTION_VIEW,
+			Uri.parse(activity!!.getString(R.string.report_bug_link))
+	))
+
+	private fun onClickAuthor() = activity?.startActivity(Intent(
+			Intent.ACTION_VIEW,
+			Uri.parse(activity!!.getString(R.string.author_github))
+	))
+
+
+	private fun onClickDisclaimer() =
+			router.pushController(TextAssetReader(TextAssetReader.Target.DISCLAIMER.bundle).withFadeTransaction())
+
+	private fun onClickLicense() =
+			router.pushController(TextAssetReader(TextAssetReader.Target.LICENSE.bundle).withFadeTransaction())
 }

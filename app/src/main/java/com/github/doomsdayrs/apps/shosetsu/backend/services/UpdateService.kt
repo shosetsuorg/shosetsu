@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.services
 
-import android.app.Activity
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.Service
@@ -12,24 +11,17 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
-import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NULLIFIED
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_UPDATE
-import com.github.doomsdayrs.apps.shosetsu.common.ext.entity
 import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.common.utils.DownloadManager
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
@@ -132,7 +124,7 @@ class UpdateService : Service(), KodeinAware {
 	 */
 	//  private lateinit var wakeLock: PowerManager.WakeLock
 
-	internal val notificationManager: NotificationManager by lazy { getSystemService()!! }
+	internal val notificationManager by lazy { getSystemService<NotificationManager>()!! }
 
 	internal val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -203,6 +195,7 @@ class UpdateService : Service(), KodeinAware {
 			val updatedNovels = ArrayList<NovelEntity>()
 			iNovelsRepository.blockingGetBookmarkedNovels().let { novelEntities ->
 				// Main process
+				/*
 				novelEntities.forEachIndexed { index, novelEntity ->
 					val pr = progressNotification
 					pr.setContentTitle(getString(R.string.updating))
@@ -269,14 +262,14 @@ class UpdateService : Service(), KodeinAware {
 								Log.e(logID(), errorString)
 							}
 						}, formatter, novelEntity.url).doInBackground()
-						Utilities.wait(1000)
+						wait(1000)
 					} else {
 						pr.setContentText("Unknown Formatter for ${novelEntity.url}")
 						pr.setProgress(novelEntities.size, index + 1, false)
 						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
 					}
 				}
-
+				*/
 			}
 			// Completion
 			val stringBuilder = StringBuilder()

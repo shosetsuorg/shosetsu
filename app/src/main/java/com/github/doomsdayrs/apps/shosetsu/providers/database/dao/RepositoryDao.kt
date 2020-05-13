@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
@@ -52,7 +53,7 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 	fun loadRepositoryFromID(repositoryID: Int): RepositoryEntity
 
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
-	fun loadRepositories(): Array<RepositoryEntity>
+	fun loadRepositories(): LiveData<List<RepositoryEntity>>
 
 	@Query("SELECT COUNT(*) FROM repositories WHERE url = :url")
 	fun repositoryCountFromURL(url: String): Int

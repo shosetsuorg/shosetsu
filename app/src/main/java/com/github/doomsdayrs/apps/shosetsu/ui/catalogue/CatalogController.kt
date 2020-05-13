@@ -1,38 +1,30 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
-import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.values
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
-import com.github.doomsdayrs.apps.shosetsu.common.ext.*
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.common.ext.calculateColumnCount
+import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CatalogueAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.async.CataloguePageLoader
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBottom
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueRefresh
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDBuilder
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SDViewBuilder
-import com.github.doomsdayrs.apps.shosetsu.ui.secondDrawer.SecondDrawerController
-import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.variables.recycleObjects.NovelListingCard
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 import com.google.android.material.navigation.NavigationView
 
@@ -60,106 +52,43 @@ import com.google.android.material.navigation.NavigationView
  *
  * @author github.com/doomsdayrs
  */
-//TODO fix issue with not loading
 class CatalogController(bundle: Bundle)
-	: RecyclerController<CatalogueAdapter, NovelListingCard>(bundle), SecondDrawerController {
+	: RecyclerController<CatalogueAdapter, IDTitleImageUI>(bundle), SecondDrawerController {
 
 	override val layoutRes: Int = R.layout.catalogue
 
+	/***/
 	@Attach(R.id.swipeRefreshLayout)
 	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
-	private var cataloguePageLoader: CataloguePageLoader? = null
 
+	/***/
 	val viewModel: ICatalogViewModel by viewModel()
 
-	var formatter: Formatter = FormatterUtils.getByID(bundle.getInt(BUNDLE_FORMATTER))
-	var selectedListing: Int = formatter.defaultListing
-	var filterValues: Array<*> = formatter.listings[this.selectedListing].filters.values()
-
-	var currentMaxPage = 1
+	/** If the user is currently searching something up*/
 	var isInSearch = false
-	private var dontRefresh = false
+
+	/** If the user is currently viewing query data*/
 	var isQuery = false
 
 	init {
 		setHasOptionsMenu(true)
-	}
-
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		outState.putInt(BUNDLE_FORMATTER, formatter.formatterID)
-	}
-
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		super.onRestoreInstanceState(savedInstanceState)
-		formatter = FormatterUtils.getByID(savedInstanceState.getInt(BUNDLE_FORMATTER))
+		viewModel.setFormatterID(bundle.getInt(BUNDLE_FORMATTER))
 	}
 
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(formatter.name)
-		swipeRefreshLayout?.setOnRefreshListener(CatalogueRefresh(this))
-		if (!dontRefresh) {
-			Log.d("Process", "Loading up latest")
-			setLibraryCards(recyclerArray)
-			if (recyclerArray.size > 0) {
-				recyclerArray = ArrayList()
-				adapter?.notifyDataSetChanged()
-			}
-			if (!formatter.hasCloudFlare) {
-				viewModel.loadMore()
-			} else {
-				val intent = Intent(activity, WebViewApp::class.java)
-				// TODO Formatter require of base URL
-				intent.putExtra("url", formatter.imageURL)
-				intent.putExtra("action", 1)
-				startActivityForResult(intent, 42)
-			}
-		} else setLibraryCards(recyclerArray)
-	}
-
-	override fun onActivityPaused(activity: Activity) {
-		super.onActivityPaused(activity)
-		Log.d("Pause", "HERE")
-		dontRefresh = true
-		cataloguePageLoader?.cancel(true)
-	}
-
-	override fun onDestroy() {
-		super.onDestroy()
-		dontRefresh = false
-		cataloguePageLoader?.cancel(true)
-	}
-
-	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		if (requestCode == 42) {
-			viewModel.loadMore()
+		activity?.setActivityTitle(viewModel.formatter.value?.name)
+		swipeRefreshLayout?.setOnRefreshListener {
+			viewModel.clearAndLoad()
 		}
-	}
+		setLibraryCards(recyclerArray)
+		if (recyclerArray.isEmpty()) viewModel.loadMore()
 
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		menu.clear()
-		inflater.inflate(R.menu.toolbar_library, menu)
-		val searchView = menu.findItem(R.id.library_search).actionView as SearchView
-		searchView.setOnQueryTextListener(CatalogueSearchQuery(this))
-		searchView.setOnCloseListener {
-			isQuery = false
-			isInSearch = false
-			setLibraryCards(recyclerArray)
-			true
-		}
-	}
+		viewModel.liveData.observe(this, Observer {
+			handleRecyclerUpdate(it)
+		})
 
-	fun setLibraryCards(recycleListingCards: ArrayList<NovelListingCard>) {
 		recyclerView?.setHasFixedSize(false)
-		recyclerView?.adapter = CatalogueAdapter(
-				recycleListingCards,
-				this,
-				formatter,
-				if (Settings.novelCardType == 0)
-					R.layout.recycler_novel_card
-				else R.layout.recycler_novel_card_compressed
-		)
 		recyclerView?.layoutManager =
 				if (Settings.novelCardType == 0)
 					GridLayoutManager(
@@ -177,9 +106,33 @@ class CatalogController(bundle: Bundle)
 		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
 	}
 
-	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-		val builder = SDBuilder(navigationView, drawerLayout, this)
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		menu.clear()
+		inflater.inflate(R.menu.toolbar_library, menu)
+		val searchView = menu.findItem(R.id.library_search).actionView as SearchView
+		searchView.setOnQueryTextListener(CatalogueSearchQuery(this))
+		searchView.setOnCloseListener {
+			isQuery = false
+			isInSearch = false
+			setLibraryCards(recyclerArray)
+			true
+		}
+	}
 
+	fun setLibraryCards(recycleListingCards: ArrayList<IDTitleImageUI>) {
+		recyclerView?.adapter = CatalogueAdapter(
+				recycleListingCards,
+				this,
+				viewModel.getFormatterID(),
+				if (Settings.novelCardType == 0)
+					R.layout.recycler_novel_card
+				else R.layout.recycler_novel_card_compressed
+		)
+	}
+
+	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+		/*
+				val builder = SDBuilder(navigationView, drawerLayout, this)
 		if (formatter.listings.size > 1) {
 			val listingSpinner = builder.spinner(
 					"Listing",
@@ -214,15 +167,16 @@ class CatalogController(bundle: Bundle)
 		}
 
 		navigationView.addView(builder.build())
+		*/
 	}
 
 	override fun handleConfirm(linearLayout: LinearLayout) {
-		filterValues = formatter.listings[this.selectedListing].filters.values()
-		setLibraryCards(arrayListOf())
-		adapter?.notifyDataSetChanged()
-		viewModel.loadMore()
+		//filterValues = formatter.listings[this.selectedListing].filters.values()
+		//setLibraryCards(arrayListOf())
+		//adapter?.notifyDataSetChanged()
+		//viewModel.loadMore()
 	}
 
-	override fun difAreItemsTheSame(oldItem: NovelListingCard, newItem: NovelListingCard): Boolean =
-			oldItem.novelID == newItem.novelID
+	override fun difAreItemsTheSame(oldItem: IDTitleImageUI, newItem: IDTitleImageUI): Boolean =
+			oldItem.id == newItem.id
 }

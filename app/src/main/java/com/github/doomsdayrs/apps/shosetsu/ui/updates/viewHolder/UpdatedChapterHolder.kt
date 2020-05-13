@@ -32,7 +32,7 @@ class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	val moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 	val downloadTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_download)
 	val title: TextView = itemView.findViewById(R.id.title)
-	val image: ImageView = itemView.findViewById(R.id.image)
+	val image: ImageView = itemView.findViewById(R.id.imageView)
 	val popupMenu = PopupMenu(moreOptions.context, moreOptions)
 
 	init { popupMenu.inflate(R.menu.popup_chapter_menu) }

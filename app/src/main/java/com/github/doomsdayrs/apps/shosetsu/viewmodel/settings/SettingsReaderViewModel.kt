@@ -39,7 +39,7 @@ class SettingsReaderViewModel(
 		val context: Context,
 		val resources: Resources = context.resources
 ) : ISettingsReaderViewModel() {
-	override val settings: List<SettingsItemData> by lazy {
+	override val settings: ArrayList<SettingsItemData> by lazy {
 		arrayListOf(
 				SettingsItemData(SPINNER, 0)
 						.setTitle(R.string.spacing)

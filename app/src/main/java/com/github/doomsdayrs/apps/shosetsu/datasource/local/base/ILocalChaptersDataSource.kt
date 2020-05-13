@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -30,22 +29,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  * 04 / 05 / 2020
  */
 interface ILocalChaptersDataSource {
-
-	/**
-	 * Save the chapter passage to storage
-	 */
-	fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
-
-	/**
-	 * Gets chapter passage via it's ID
-	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
-	 */
-	fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String>
-
 	/**
 	 * Get the chapters of a novel
 	 */
-	fun loadChaptersByID(novelID: Int): LiveData<HResult<List<NovelEntity>>>
+	fun loadChaptersByID(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
 
 	/**
 	 * Get unread count of chapters

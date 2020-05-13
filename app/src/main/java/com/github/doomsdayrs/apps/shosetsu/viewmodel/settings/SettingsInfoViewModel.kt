@@ -1,8 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.settings
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -36,10 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsInfoViewModel
  * shosetsu
  * 12 / May / 2020
  */
-class SettingsInfoViewModel(
-		val activity: Activity,
-		val router: Router
-) : ISettingsInfoViewModel() {
+class SettingsInfoViewModel: ISettingsInfoViewModel() {
 	override val settings: ArrayList<SettingsItemData> by lazy {
 		arrayListOf(
 				SettingsItemData(INFORMATION, 0)
@@ -47,34 +41,16 @@ class SettingsInfoViewModel(
 						.setDescription(BuildConfig.VERSION_NAME),
 				SettingsItemData(INFORMATION, 1)
 						.setTitle(R.string.report_bug)
-						.setDescription(R.string.report_bug_link)
-						.setOnClickListener { onClickReportBug() },
+						.setDescription(R.string.report_bug_link),
 				SettingsItemData(INFORMATION, 2)
 						.setTitle(R.string.author)
-						.setDescription(R.string.author_name)
-						.setOnClickListener { onClickAuthor() },
+						.setDescription(R.string.author_name),
 				SettingsItemData(INFORMATION, 3)
-						.setTitle(R.string.disclaimer)
-						.setOnClickListener { onClickDisclaimer() },
+						.setTitle(R.string.disclaimer),
 				SettingsItemData(INFORMATION, 4)
 						.setTitle(R.string.license)
-						.setOnClickListener { onClickLicense() }
 		)
 	}
 
-	private fun onClickReportBug() = activity.startActivity(Intent(
-			Intent.ACTION_VIEW,
-			Uri.parse(activity.getString(R.string.report_bug_link))
-	))
 
-	private fun onClickAuthor() = activity.startActivity(Intent(
-			Intent.ACTION_VIEW,
-			Uri.parse(activity.getString(R.string.author_github))
-	))
-
-	private fun onClickDisclaimer() =
-			router.pushController(TextAssetReader(DISCLAIMER.bundle).withFadeTransaction())
-
-	private fun onClickLicense() =
-			router.pushController(TextAssetReader(LICENSE.bundle).withFadeTransaction())
 }

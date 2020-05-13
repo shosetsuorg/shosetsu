@@ -10,7 +10,6 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_EXECUTE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
@@ -18,20 +17,10 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NU
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_REJECT_RUNNING
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
-import com.github.doomsdayrs.apps.shosetsu.common.ext.forEachTyped
 import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import needle.CancelableTask
 import needle.Needle
-import okio.IOException
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import org.jsoup.Jsoup
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -99,6 +88,7 @@ class RepositoryService : Service(), KodeinAware {
 		}
 
 		fun task(context: Context, progressUpdate: (String) -> Unit) {
+			/*
 			Log.i(logID(), "Starting Update")
 			if (isOnline) {
 				progressUpdate("Online, Loading repositories")
@@ -288,13 +278,14 @@ class RepositoryService : Service(), KodeinAware {
 				progressUpdate("Application is offline, Not updating")
 			}
 			Log.i(logID(), "Completed Update")
+			*/
 		}
 
 	}
 
 	override val kodein: Kodein by closestKodein()
 
-	private val notificationManager: NotificationManager by lazy { getSystemService()!! }
+	private val notificationManager by lazy { getSystemService<NotificationManager>()!! }
 
 	private val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
