@@ -1,6 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.common.ext
+package com.github.doomsdayrs.apps.shosetsu.datasource.remote.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 
 /*
  * This file is part of shosetsu.
@@ -17,37 +19,15 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 20 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 13 / 05 / 2020
  */
-
-fun Array<ExtLibEntity>.containsName(name: String): Int {
-	forEachIndexed { index, it ->
-		if (it.scriptName == name) {
-			return index
-		}
-	}
-	return -1
-}
-
-
-fun List<ExtLibEntity>.containsName(name: String): Int {
-	forEachIndexed { index, it ->
-		if (it.scriptName == name) {
-			return index
-		}
-	}
-	return -1
-}
-
-fun <T> Array<T>.toArrayList(): ArrayList<T> {
-	val arrayList = ArrayList<T>()
-	arrayList.addAll(this)
-	return arrayList
+interface IRemoteExtensionDataSource {
+	suspend fun downloadFormatter(
+			repositoryEntity: RepositoryEntity,
+			extensionEntity: ExtensionEntity
+	): HResult<String>
 }

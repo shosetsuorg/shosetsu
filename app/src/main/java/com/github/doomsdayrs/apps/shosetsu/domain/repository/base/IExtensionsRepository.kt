@@ -34,6 +34,8 @@ interface IExtensionsRepository {
 
 	suspend fun installExtension(extensionEntity: ExtensionEntity)
 
+	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity)
+
 	/**
 	 * Loads the formatter via its extension
 	 */

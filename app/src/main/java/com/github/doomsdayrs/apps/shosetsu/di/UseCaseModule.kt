@@ -36,5 +36,10 @@ val useCaseModule = Kodein.Module("useCase") {
 	bind<UnreadChaptersUseCase>() with provider { UnreadChaptersUseCase(instance()) }
 	bind<GetExtensionsUIUseCase>() with provider { GetExtensionsUIUseCase(instance()) }
 	bind<GetUpdateDaysUseCase>() with provider { GetUpdateDaysUseCase(instance()) }
+	bind<RefreshRepositoryUseCase>() with provider { RefreshRepositoryUseCase(instance()) }
+	bind<ReloadFormattersUseCase>() with provider { ReloadFormattersUseCase() }
+	bind<InitializeExtensionsUseCase>() with provider {
+		InitializeExtensionsUseCase(instance(), instance(), instance())
+	}
 
 }

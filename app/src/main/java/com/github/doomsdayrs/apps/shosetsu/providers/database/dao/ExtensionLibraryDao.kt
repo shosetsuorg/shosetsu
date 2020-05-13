@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
 import androidx.room.*
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
 
 /*
  * This file is part of shosetsu.
@@ -29,15 +29,13 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEn
  * @author github.com/doomsdayrs
  */
 @Dao
-interface ExtensionLibraryDao : BaseDao<ExtensionLibraryEntity> {
-	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ExtensionLibraryEntity::class)
-	fun insertScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
+interface ExtensionLibraryDao : BaseDao<ExtLibEntity> {
+	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ExtLibEntity::class)
+	fun insertScriptLib(extLibEntity: ExtLibEntity)
 
 	@Query("SELECT * FROM libs WHERE repoID = :repositoryID")
-	fun loadLibByRepoID(repositoryID: Int): Array<ExtensionLibraryEntity>
+	fun loadLibByRepoID(repositoryID: Int): List<ExtLibEntity>
 
-	@Update
-	fun updateScriptLib(extensionLibraryEntity: ExtensionLibraryEntity)
 
 	@Query("SELECT COUNT(*) FROM libs WHERE scriptName = :name")
 	fun scriptLibCountFromName(name: String): Int
@@ -46,10 +44,10 @@ interface ExtensionLibraryDao : BaseDao<ExtensionLibraryEntity> {
 	fun doesRepositoryExist(url: String): Boolean = scriptLibCountFromName(url) > 0
 
 	@Transaction
-	fun insertOrUpdateScriptLib(extensionLibraryEntity: ExtensionLibraryEntity) {
-		if (scriptLibCountFromName(extensionLibraryEntity.scriptName) > 0) {
-			updateScriptLib(extensionLibraryEntity)
-		} else insertScriptLib(extensionLibraryEntity)
+	fun insertOrUpdateScriptLib(extLibEntity: ExtLibEntity) {
+		if (scriptLibCountFromName(extLibEntity.scriptName) > 0) {
+			blockingUpdate(extLibEntity)
+		} else insertScriptLib(extLibEntity)
 	}
 
 }

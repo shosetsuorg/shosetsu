@@ -49,4 +49,10 @@ class LocalExtensionsDataSource(
 
 	override suspend fun deleteExtension(extensionEntity: ExtensionEntity) =
 			extensionsDao.suspendedDelete(extensionEntity)
+
+	override suspend fun loadExtension(formatterID: Int): ExtensionEntity =
+			extensionsDao.loadExtension(formatterID)
+
+	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) =
+			extensionsDao.insertOrUpdate(extensionEntity)
 }

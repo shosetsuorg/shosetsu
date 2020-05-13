@@ -33,7 +33,7 @@ val localDataSouceModule = Kodein.Module("local_data_source_module") {
 	bind<ILocalChaptersDataSource>() with singleton { LocalChaptersDataSource(instance()) }
 	bind<ILocalDownloadsDataSource>() with singleton { LocalDownloadsDataSource(instance()) }
 	bind<ILocalExtensionsDataSource>() with singleton { LocalExtensionsDataSource(instance()) }
-	bind<ILocalExtLibDataSource>() with singleton { LocalExtLibDataSource() }
+	bind<ILocalExtLibDataSource>() with singleton { LocalExtLibDataSource(instance()) }
 	bind<ILocalNovelsDataSource>() with singleton { LocalNovelsDataSource(instance()) }
 	bind<ILocalExtRepoDataSource>() with singleton { LocalExtRepoDataSource(instance()) }
 	bind<ILocalUpdatesDataSource>() with singleton { LocalUpdatesDataSource(instance()) }

@@ -1,11 +1,15 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.local.model
+package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtLibDataSource
+import com.github.doomsdayrs.apps.shosetsu.common.ext.quickie
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteExtLibDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionLibraryDao
+import okhttp3.OkHttpClient
 
 /*
  * This file is part of shosetsu.
@@ -26,19 +30,20 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionLibra
 
 /**
  * shosetsu
- * 12 / 05 / 2020
+ * 13 / 05 / 2020
  */
-class LocalExtLibDataSource(
-		val extensionLibraryDao: ExtensionLibraryDao
-) : ILocalExtLibDataSource {
-	override suspend fun updateExtension(extLibEntity: ExtLibEntity) =
-			extensionLibraryDao.suspendedUpdate(extLibEntity)
-
-	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity) =
-			extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity)
-
-	override suspend fun loadExtLibByRepo(
-			repositoryEntity: RepositoryEntity
-	): HResult<List<ExtLibEntity>> =
-			successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id))
+class RemoteExtLibDataSource(
+		val client: OkHttpClient
+) : IRemoteExtLibDataSource {
+	override fun downloadLibrary(
+			repo: RepositoryEntity,
+			extLibEntity: ExtLibEntity
+	): HResult<String> = try {
+		successResult(client.quickie(FormatterUtils.makeLibraryURL(
+				repo,
+				extLibEntity
+		)).body!!.string())
+	} catch (e: Exception) {
+		errorResult(ErrorKeys.ERROR_GENERAL, e.message ?: "Unknown general error")
+	}
 }

@@ -10,8 +10,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.getMeta
 import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionLibraryEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.RepositoryDao
@@ -68,37 +68,41 @@ class FormatterUtils(
 		const val repoFolderStruct = "/src/main/resources/"
 
 		val unknown = object : Formatter {
+			val detail = "Unknown Formatter"
 			override val formatterID: Int = -1
 
 			override val baseURL: String
-				get() = throw Exception("Unknown Formatter")
+				get() = throw Exception(detail)
 			override val hasCloudFlare: Boolean
-				get() = throw Exception("Unknown Formatter")
+				get() = throw Exception(detail)
 			override val hasSearch: Boolean
-				get() = throw Exception("Unknown Formatter")
+				get() = throw Exception(detail)
 			override val imageURL: String
-				get() = throw Exception("Unknown Formatter")
+				get() = throw Exception(detail)
 			override val listings: Array<Formatter.Listing>
-				get() = throw Exception("Unknown Formatter")
+				get() = throw Exception(detail)
 			override val name: String
-				get() = throw Exception("Unknown Formatter")
+				get() = throw Exception(detail)
 			override val searchFilters: Array<Filter<*>>
-				get() = throw Exception("Unknown Formatter")
+				get() = throw Exception(detail)
 			override val settings: Array<Filter<*>>
-				get() = throw Exception("Unknown Formatter")
+				get() = throw Exception(detail)
 
-			override fun getPassage(chapterURL: String): String = throw Exception("Unknown Formatter")
+			override fun freshURL(smallURL: String, type: Int): String =
+					throw Exception(detail)
+
+			override fun getPassage(chapterURL: String): String = throw Exception(detail)
 
 			override fun parseNovel(novelURL: String, loadChapters: Boolean, reporter: (status: String) -> Unit) =
-					throw Exception("Unknown Formatter")
+					throw Exception(detail)
 
 			override fun search(data: Array<*>, reporter: (status: String) -> Unit) =
-					throw Exception("Unknown Formatter")
+					throw Exception(detail)
 
-			override fun updateSetting(id: Int, value: Any?): Unit = throw Exception("Unknown Formatter")
+			override fun updateSetting(id: Int, value: Any?): Unit = throw Exception(detail)
 		}
 
-		fun makeLibraryURL(repo: RepositoryEntity, le: ExtensionLibraryEntity): String =
+		fun makeLibraryURL(repo: RepositoryEntity, le: ExtLibEntity): String =
 				"${repo.url}$repoFolderStruct/lib/${le.scriptName}.lua"
 
 		fun makeFormatterURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
@@ -153,7 +157,7 @@ class FormatterUtils(
 	 */
 	val ap: String = context.filesDir.absolutePath
 
-	fun makeLibraryFile(le: ExtensionLibraryEntity): File =
+	fun makeLibraryFile(le: ExtLibEntity): File =
 			makeLibraryFile(le.scriptName)
 
 	override fun makeLibraryFile(scriptName: String): File {
@@ -220,44 +224,6 @@ class FormatterUtils(
 			fail()
 			false
 		}
-	}
-
-	/**
-	 * Installs the library
-	 */
-	fun downloadLibrary(
-			extensionLibraryEntity: ExtensionLibraryEntity,
-			file: File = makeLibraryFile(extensionLibraryEntity),
-			repo: RepositoryEntity = repositoryDao.loadRepositoryFromID(
-					extensionLibraryEntity.repoID
-			)
-	): Boolean {
-		return quickResponse(makeLibraryURL(repo, extensionLibraryEntity)).body?.let {
-			file.writeText(it.string())
-			true
-		} ?: false
-	}
-
-	/**
-	 * Installs the extension in question
-	 */
-	suspend fun installExtension(
-			extensionEntity: ExtensionEntity,
-			file: File = makeFormatterFile(extensionEntity),
-			repo: RepositoryEntity = repositoryDao.loadRepositoryFromID(
-					extensionEntity.repoID
-			)
-	): Boolean {
-		return quickResponse(makeFormatterURL(repo, extensionEntity)).body?.let {
-			file.writeText(it.string())
-			addFormatter(LuaFormatter(file))
-			true
-		} ?: false
-	}
-
-	suspend fun deleteFormatter(extensionEntity: ExtensionEntity) {
-		removeByID(extensionEntity.id)
-		makeFormatterFile(extensionEntity).takeIf { it.exists() }?.delete()
 	}
 
 	/**

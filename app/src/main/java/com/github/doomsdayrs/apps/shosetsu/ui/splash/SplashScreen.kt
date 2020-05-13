@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.splash
 
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
@@ -11,16 +10,21 @@ import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.connectivityManager
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.initPreferences
-import com.github.doomsdayrs.apps.shosetsu.backend.services.RepositoryService
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.InitializeExtensionsUseCase
 import com.github.doomsdayrs.apps.shosetsu.ui.intro.IntroductionActivity
-import java.io.File
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 
 
 /*
@@ -48,62 +52,31 @@ import java.io.File
  *
  * @author github.com/doomsdayrs
  */
-class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
+class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 	companion object {
 		const val INTRO_CODE = 1944
 	}
 
-	internal class BootSequence(private val splashScreen: SplashScreen) : AsyncTask<Void, String, Void>() {
-		val unknown = ArrayList<File>()
+	override val kodein: Kodein by closestKodein()
+	val useCase by instance<InitializeExtensionsUseCase>()
 
-		override fun onProgressUpdate(vararg values: String?) {
-			splashScreen.textView.post {
-				splashScreen.textView.text = values[0]
-			}
-		}
-
-		override fun doInBackground(vararg params: Void?): Void? {
-			RepositoryService.task(splashScreen) { onProgressUpdate(it) }
-			return null
-		}
-
-		override fun onPostExecute(result: Void?) {
-			val action = {
-				onProgressUpdate("Setting up the application")
-				val intent = Intent(splashScreen, MainActivity::class.java)
-				intent.action = splashScreen.intent.action
-				splashScreen.intent.extras?.let { intent.putExtras(it) }
-				splashScreen.startActivity(intent)
-				onProgressUpdate("Finished! Going to app now~")
-				splashScreen.finish()
-			}
-
-			if (unknown.size > 0) {
-				onProgressUpdate("Uh oh! We got some issues~")
-				//formatterInitPost(unknown, splashScreen, action)
-			} else {
-				action()
-			}
-		}
-	}
+	lateinit var textView: TextView
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		if (requestCode == INTRO_CODE) {
-			BootSequence(this).execute()
+			startBoot()
 
 			// Set so that debug versions are perm show intro
 			if (!BuildConfig.DEBUG) Settings.showIntro = false
 		}
 	}
 
-	lateinit var textView: TextView
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
 		initPreferences(this)
-
+		textView = findViewById(R.id.title)
 		// Sets up DB
 		if (!Database.isInit()) {
 			Database.sqLiteDatabase = DBHelper(this).writableDatabase
@@ -112,13 +85,32 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen) {
 		// Settings setup
 		connectivityManager = getSystemService<ConnectivityManager>()!!
 				as ConnectivityManager
-		textView = findViewById(R.id.title)
 		if (Settings.showIntro) {
 			Log.i(logID(), "First time, Launching activity")
 			val i = Intent(this, IntroductionActivity::class.java)
 			startActivityForResult(i, INTRO_CODE)
 		} else {
-			BootSequence(this).execute()
+			startBoot()
 		}
 	}
+
+	private fun progressUpdate(string: String) = launchUI {
+		textView.post { textView.text = string }
+	}
+
+	private fun startBoot() {
+		launchIO {
+			progressUpdate("Setting up the application")
+			useCase.invoke { progressUpdate(it) }
+			launchUI {
+				val intent = Intent(this@SplashScreen, MainActivity::class.java)
+				intent.action = intent.action
+				intent.extras?.let { intent.putExtras(it) }
+				startActivity(intent)
+				progressUpdate("Finished! Going to app now~")
+				this@SplashScreen.finish()
+			}
+		}
+	}
+
 }

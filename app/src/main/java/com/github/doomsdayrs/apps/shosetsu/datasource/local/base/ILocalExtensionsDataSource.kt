@@ -34,4 +34,6 @@ interface ILocalExtensionsDataSource {
 	suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>>
 	suspend fun updateExtension(extensionEntity: ExtensionEntity)
 	suspend fun deleteExtension(extensionEntity: ExtensionEntity)
+	suspend fun loadExtension(formatterID: Int): ExtensionEntity
+	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity)
 }

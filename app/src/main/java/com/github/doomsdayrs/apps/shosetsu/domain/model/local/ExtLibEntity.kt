@@ -41,7 +41,7 @@ import java.io.Serializable
 			)
 		],
 		indices = [Index("repoID")])
-data class ExtensionLibraryEntity(
+data class ExtLibEntity(
 		@PrimaryKey
 		val scriptName: String,
 		var version: String,

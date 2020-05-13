@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
+import androidx.room.Transaction
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDNameImage
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
@@ -57,5 +58,14 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 
 	@Ignore
 	fun doesExtensionExist(formatterID: Int): Boolean = loadExtensionCountFromID(formatterID) > 0
+
+	@Transaction
+	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) {
+		if (doesExtensionExist(extensionEntity.id)) {
+			blockingUpdate(extensionEntity)
+		} else {
+			insertReplace(extensionEntity)
+		}
+	}
 
 }

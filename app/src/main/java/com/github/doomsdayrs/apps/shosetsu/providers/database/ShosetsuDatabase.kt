@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 		entities = [
 			ExtensionEntity::class,
 			RepositoryEntity::class,
-			ExtensionLibraryEntity::class,
+			ExtLibEntity::class,
 			DownloadEntity::class,
 			UpdateEntity::class,
 			ChapterEntity::class,

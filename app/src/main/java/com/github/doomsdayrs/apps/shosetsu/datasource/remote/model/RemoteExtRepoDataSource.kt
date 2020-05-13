@@ -1,10 +1,14 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
+package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtRepoDataSource
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.quickie
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteExtRepoDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtRepoRepository
+import okhttp3.OkHttpClient
 import org.json.JSONObject
 
 /*
@@ -26,15 +30,23 @@ import org.json.JSONObject
 
 /**
  * shosetsu
- * 12 / 05 / 2020
+ * 13 / 05 / 2020
  */
-class ExtRepoRepository(
-		val databaseSource: ILocalExtRepoDataSource,
-		val remoteSource: IRemoteExtRepoDataSource
-) : IExtRepoRepository {
-	override suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<JSONObject> =
-			remoteSource.downloadRepoData(repositoryEntity)
+class RemoteExtRepoDataSource(
+		val client: OkHttpClient
+) : IRemoteExtRepoDataSource {
+	override suspend fun downloadRepoData(
+			repo: RepositoryEntity
+	): HResult<JSONObject> = try {
+		successResult(
+				JSONObject(
+						client.quickie(
+								"${repo.url}${FormatterUtils.repoFolderStruct}index.json"
+						).body!!.string()
+				)
+		)
+	} catch (e: Exception) {
+		errorResult(ErrorKeys.ERROR_GENERAL, e.message ?: "Unknwon general error")
+	}
 
-	override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
-			databaseSource.loadRepositories()
 }

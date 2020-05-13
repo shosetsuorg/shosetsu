@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 /*
  * This file is part of shosetsu.
@@ -17,37 +18,11 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 20 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 13 / 05 / 2020
  */
 
-fun Array<ExtLibEntity>.containsName(name: String): Int {
-	forEachIndexed { index, it ->
-		if (it.scriptName == name) {
-			return index
-		}
-	}
-	return -1
-}
-
-
-fun List<ExtLibEntity>.containsName(name: String): Int {
-	forEachIndexed { index, it ->
-		if (it.scriptName == name) {
-			return index
-		}
-	}
-	return -1
-}
-
-fun <T> Array<T>.toArrayList(): ArrayList<T> {
-	val arrayList = ArrayList<T>()
-	arrayList.addAll(this)
-	return arrayList
-}
+fun OkHttpClient.quickie(url: String) = newCall(Request.Builder().url(url).build()).execute()

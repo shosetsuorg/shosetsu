@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
-import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
+import org.json.JSONObject
 
 /*
  * This file is part of shosetsu.
@@ -31,4 +31,6 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
  * @author github.com/doomsdayrs
  */
 interface IExtRepoRepository {
+	suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<JSONObject>
+	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
 }

@@ -32,6 +32,12 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.RepositoryDao
 class LocalExtRepoDataSource(
 		val repositoryDao: RepositoryDao
 ) : ILocalExtRepoDataSource {
-	override fun loadRepositories(): LiveData<HResult<List<RepositoryEntity>>> =
-			repositoryDao.loadRepositories().map { successResult(it) }
+	override fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>> =
+			repositoryDao.loadRepositoriesLive().map { successResult(it) }
+
+	override fun loadRepositories(): HResult<List<RepositoryEntity>> =
+			successResult(repositoryDao.loadRepositories())
+
+	override fun loadRepository(repoID: Int): HResult<RepositoryEntity> =
+			successResult(repositoryDao.loadRepositoryFromID(repoID))
 }

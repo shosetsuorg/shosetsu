@@ -53,7 +53,10 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 	fun loadRepositoryFromID(repositoryID: Int): RepositoryEntity
 
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
-	fun loadRepositories(): LiveData<List<RepositoryEntity>>
+	fun loadRepositoriesLive(): LiveData<List<RepositoryEntity>>
+
+	@Query("SELECT * FROM repositories ORDER BY id ASC")
+	fun loadRepositories(): List<RepositoryEntity>
 
 	@Query("SELECT COUNT(*) FROM repositories WHERE url = :url")
 	fun repositoryCountFromURL(url: String): Int

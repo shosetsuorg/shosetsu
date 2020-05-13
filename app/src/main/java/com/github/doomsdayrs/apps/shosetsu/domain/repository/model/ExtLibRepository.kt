@@ -1,6 +1,17 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
+import android.util.Log
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtLibDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtLibDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtLibDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteExtLibDataSource
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtLibRepository
+import org.json.JSONException
+import org.json.JSONObject
 
 /*
  * This file is part of shosetsu.
@@ -23,6 +34,35 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtLibReposit
  * shosetsu
  * 12 / 05 / 2020
  */
-class ExtLibRepository : IExtLibRepository {
+class ExtLibRepository(
+		private val fileSource: IFileExtLibDataSource,
+		private val databaseSource: ILocalExtLibDataSource,
+		private val remoteSource: IRemoteExtLibDataSource,
+		private val cacheSource: ICacheExtLibDataSource
+) : IExtLibRepository {
+	override suspend fun loadExtLibByRepo(
+			repositoryEntity: RepositoryEntity
+	): HResult<List<ExtLibEntity>> =
+			databaseSource.loadExtLibByRepo(repositoryEntity)
 
+	override suspend fun installLibrary(
+			repositoryEntity: RepositoryEntity,
+			extLibEntity: ExtLibEntity
+	) {
+		val result = remoteSource.downloadLibrary(repositoryEntity, extLibEntity)
+		if (result is HResult.Success) {
+			val data = result.data
+
+			val json = JSONObject(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
+			try {
+				extLibEntity.version = json.getString("version")
+
+				databaseSource.updateOrInsert(extLibEntity)
+				cacheSource.setLibrary(extLibEntity.scriptName, data)
+				fileSource.writeExtLib(extLibEntity.scriptName, data)
+			} catch (e: JSONException) {
+				Log.e(logID(), "Unhandled", e)
+			}
+		}
+	}
 }

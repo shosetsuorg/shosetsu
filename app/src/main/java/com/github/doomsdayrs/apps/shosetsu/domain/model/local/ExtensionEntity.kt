@@ -48,16 +48,27 @@ import java.io.Serializable
 )
 
 data class ExtensionEntity(
+		/** Extension ID */
 		@PrimaryKey val id: Int,
+		/** Repository extension belongs too*/
 		val repoID: Int,
+		/** Name of the extension, can be changed */
 		@NonNull var name: String = "",
+		/** FileName of the extension */
 		@NonNull val fileName: String = "",
+		/** Image URL of the extension*/
 		var imageURL: String? = null,
-		var lang: String = "",
+		/** The language of the extension */
+		val lang: String = "",
+		/** If extension is enabled */
 		var enabled: Boolean = false,
+		/** If extension is installed*/
 		var installed: Boolean = false,
+		/** Version currently installed */
 		var installedVersion: String? = null,
+		/** Version in repository*/
 		var repositoryVersion: String = "0.0.0",
+		/** MD5 to check against */
 		var md5: String = ""
 ) : Serializable, Convertible<ExtensionUI> {
 	override fun convertTo(): ExtensionUI =

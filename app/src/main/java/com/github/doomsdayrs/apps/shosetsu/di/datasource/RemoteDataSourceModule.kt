@@ -1,13 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.di.datasource
 
-import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteCatalogueDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteChaptersDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteNovelDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.remote.model.RemoteCatalogueDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.remote.model.RemoteChaptersDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.remote.model.RemoteNovelDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.*
+import com.github.doomsdayrs.apps.shosetsu.datasource.remote.model.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 
 /*
@@ -36,4 +33,7 @@ val remoteDataSouceModule = Kodein.Module("remote_data_source_module") {
 	bind<IRemoteCatalogueDataSource>() with singleton { RemoteCatalogueDataSource() }
 	bind<IRemoteChaptersDataSource>() with singleton { RemoteChaptersDataSource() }
 	bind<IRemoteNovelDataSource>() with singleton { RemoteNovelDataSource() }
+	bind<IRemoteExtensionDataSource>() with singleton { RemoteExtensionDataSource(instance()) }
+	bind<IRemoteExtRepoDataSource>() with singleton { RemoteExtRepoDataSource(instance()) }
+	bind<IRemoteExtLibDataSource>() with singleton { RemoteExtLibDataSource(instance()) }
 }
