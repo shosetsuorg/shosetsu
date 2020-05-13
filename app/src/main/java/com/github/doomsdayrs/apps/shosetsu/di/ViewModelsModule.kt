@@ -31,23 +31,28 @@ import org.kodein.di.generic.provider
  * 01 / 05 / 2020
  */
 val viewModelsModule = Kodein.Module("view_models_module") {
+
+	// Other
+	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance(), instance()) }
+	bind<IDownloadsViewModel>() with provider { DownloadsViewModel(instance()) }
+	bind<ISearchViewModel>() with provider { SearchViewModel(instance(), instance()) }
+	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(instance()) }
+
+	// Catalog(s)
 	bind<ICatalogsViewModel>() with provider { CatalogsViewModel(instance()) }
 	bind<ICatalogViewModel>() with provider { CatalogViewModel() }
-	bind<IDownloadsViewModel>() with provider { DownloadsViewModel(instance()) }
+
+	// Extensions
+	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(instance()) }
 	bind<IExtensionsConfigureViewModel>() with provider {
 		ExtensionsConfigureViewModel(instance(), instance())
 	}
-	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel() }
-	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance(), instance()) }
-	bind<ISearchViewModel>() with provider { SearchViewModel(instance(), instance()) }
-	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(instance(), instance()) }
 
-
+	// Settings
 	bind<ISettingsAdvancedViewModel>() with provider { SettingsAdvancedViewModel(instance()) }
 	bind<ISettingsBackupViewModel>() with provider { SettingsBackupViewModel(instance(), instance()) }
 	bind<ISettingsDownloadViewModel>() with provider { SettingsDownloadViewModel(instance()) }
 	bind<ISettingsInfoViewModel>() with provider { SettingsInfoViewModel() }
 	bind<ISettingsReaderViewModel>() with provider { SettingsReaderViewModel(instance()) }
 	bind<ISettingsViewViewModel>() with provider { SettingsViewViewModel(instance()) }
-
 }

@@ -35,12 +35,12 @@ class LocalExtensionsDataSource(
 		val extensionsDao: ExtensionsDao
 ) : ILocalExtensionsDataSource {
 	override suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
-			extensionsDao.loadFormatters().map {
+			extensionsDao.loadExtensions().map {
 				successResult(it)
 			}
 
 	override suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>> =
-			extensionsDao.loadPoweredFormattersBasic().map { list ->
+			extensionsDao.loadPoweredExtensionsBasic().map { list ->
 				successResult(list.map { IDTitleImage(it.id, it.name, it.imageURL) })
 			}
 

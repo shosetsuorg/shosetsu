@@ -37,7 +37,9 @@ val repositoryModule = Kodein.Module("repository_module") {
 		ChaptersRepository(instance(), instance(), instance(), instance())
 	}
 	bind<IDownloadsRepository>() with singleton { DownloadsRepository(instance()) }
-	bind<IExtensionsRepository>() with singleton { ExtensionsRepository(instance(), instance()) }
+	bind<IExtensionsRepository>() with singleton {
+		ExtensionsRepository(instance(), instance(), instance())
+	}
 	bind<IExtLibRepository>() with singleton { ExtLibRepository() }
 	bind<IExtRepoRepository>() with singleton { ExtRepoRepository() }
 	bind<INovelsRepository>() with singleton { NovelsRepository(instance(), instance()) }

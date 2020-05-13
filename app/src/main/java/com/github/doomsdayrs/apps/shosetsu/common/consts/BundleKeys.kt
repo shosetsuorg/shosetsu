@@ -31,4 +31,5 @@ object BundleKeys {
 	const val BUNDLE_NOVEL_URL = "novelURL"
 	const val BUNDLE_NOVEL_ID = "novelID"
 	const val BUNDLE_QUERY = "query"
+	const val BUNDLE_DATE = "date"
 }

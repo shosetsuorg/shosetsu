@@ -32,6 +32,6 @@ abstract class IExtensionsViewModel
 	:ViewModel(), SubscribeHandleViewModel<List<ExtensionUI>> {
 	abstract fun reloadFormatters()
 	abstract fun refreshRepository()
-	abstract fun installExtension(extensionEntity: ExtensionUI)
-	abstract fun uninstallExtension(extensionEntity: ExtensionUI)
+	abstract fun installExtension(extensionUI: ExtensionUI)
+	abstract fun uninstallExtension(extensionUI: ExtensionUI)
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtensionDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
@@ -34,12 +35,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRep
  * @author github.com/doomsdayrs
  */
 class ExtensionsRepository(
-		val memory: ICacheExtensionsDataSource,
-		val database: ILocalExtensionsDataSource
+		val memorySource: ICacheExtensionsDataSource,
+		val databaseSource: ILocalExtensionsDataSource,
+		val fileSource: IFileExtensionDataSource
 ) : IExtensionsRepository {
-	override fun getExtensions(): HResult<List<ExtensionEntity>> {
-		TODO("Not yet implemented")
-	}
+	override suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
+			databaseSource.loadExtensions()
 
 	override suspend fun installExtension(extensionEntity: ExtensionEntity) {
 		TODO("Not yet implemented")
@@ -54,5 +55,5 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>> =
-			database.loadPoweredExtensionsCards()
+			databaseSource.loadPoweredExtensionsCards()
 }

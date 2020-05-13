@@ -7,7 +7,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
@@ -106,7 +106,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		import(networkModule)
 		import(databaseModule)
 		bind<IFormatterUtils>() with singleton {
-			FormatterUtils(instance(), instance(), instance(), instance())
+			FormatterUtils(instance(), instance(), instance())
 		}
 		import(repositoryModule)
 		import(useCaseModule)

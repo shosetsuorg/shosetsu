@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.view.MenuItem
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 
 /*
  * This file is part of Shosetsu.

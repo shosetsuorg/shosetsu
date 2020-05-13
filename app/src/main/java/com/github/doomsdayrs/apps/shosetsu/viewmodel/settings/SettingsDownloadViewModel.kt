@@ -5,7 +5,7 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsDownloadViewModel
 

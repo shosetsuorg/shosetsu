@@ -24,7 +24,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel

@@ -34,4 +34,7 @@ val useCaseModule = Kodein.Module("useCase") {
 	bind<LibraryAsCardsUseCase>() with provider { LibraryAsCardsUseCase(instance()) }
 	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
 	bind<UnreadChaptersUseCase>() with provider { UnreadChaptersUseCase(instance()) }
+	bind<GetExtensionsUIUseCase>() with provider { GetExtensionsUIUseCase(instance()) }
+	bind<GetUpdateDaysUseCase>() with provider { GetUpdateDaysUseCase(instance()) }
+
 }

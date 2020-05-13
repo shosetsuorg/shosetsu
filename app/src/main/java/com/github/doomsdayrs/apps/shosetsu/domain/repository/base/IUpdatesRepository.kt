@@ -20,7 +20,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 
 
-
 /**
  * shosetsu
  * 25 / 04 / 2020
@@ -30,4 +29,5 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 interface IUpdatesRepository {
 	fun addUpdate(updateEntity: UpdateEntity)
 	fun getUpdates(): LiveData<HResult<List<UpdateEntity>>>
+	suspend fun getUpdateDays(): LiveData<HResult<List<Long>>>
 }

@@ -11,7 +11,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 
 /*
  * This file is part of shosetsu.

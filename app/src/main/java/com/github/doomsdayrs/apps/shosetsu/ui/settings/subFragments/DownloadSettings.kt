@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context

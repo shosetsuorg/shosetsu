@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend
+package com.github.doomsdayrs.apps.shosetsu.common
 
 import android.content.SharedPreferences
 import android.graphics.Color

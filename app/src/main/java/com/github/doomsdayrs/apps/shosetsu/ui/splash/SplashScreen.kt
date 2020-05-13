@@ -11,7 +11,7 @@ import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.connectivityManager
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database

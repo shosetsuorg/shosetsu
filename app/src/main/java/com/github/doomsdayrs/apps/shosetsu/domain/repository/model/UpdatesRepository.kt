@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalUpdatesDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
@@ -41,4 +42,8 @@ class UpdatesRepository(
 		TODO("Not yet implemented")
 	}
 
+	override suspend fun getUpdateDays(): LiveData<HResult<List<Long>>> =
+			liveData {
+				emitSource(iLocalUpdatesDataSource.getUpdateDays())
+			}
 }

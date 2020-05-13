@@ -22,6 +22,7 @@ import okhttp3.Request
 import org.json.JSONException
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.File
@@ -58,8 +59,7 @@ import java.util.*
 class FormatterUtils(
 		val context: Context,
 		val extensionsDao: ExtensionsDao,
-		val repositoryDao: RepositoryDao,
-		override val kodein: Kodein
+		val repositoryDao: RepositoryDao
 ) : IFormatterUtils, KodeinAware {
 	companion object {
 		const val scriptDirectory = "/scripts/"
@@ -128,6 +128,7 @@ class FormatterUtils(
 		}
 	}
 
+	override val kodein: Kodein by kodein(context)
 	val okHttpClient by instance<OkHttpClient>()
 	val iCacheExtensionsDataSource by instance<ICacheExtensionsDataSource>()
 
@@ -204,7 +205,7 @@ class FormatterUtils(
 
 		// Checks MD5 sum
 		val sum = extensionsDao
-				.loadFormatterMD5(meta.getInt("id"))
+				.loadExtensionMD5(meta.getInt("id"))
 
 		require(sum.isNotEmpty())
 
@@ -281,7 +282,7 @@ class FormatterUtils(
 			return@libLoader l.call()
 		}
 		val fileNames = extensionsDao
-				.loadPoweredFormatterFileNames()
+				.loadPoweredExtensionsFileNames()
 		fileNames.forEach {
 			iCacheExtensionsDataSource.putFormatterInMemory(LuaFormatter(makeFormatterFile(it)))
 		}

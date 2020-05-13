@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_DATE
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
@@ -38,7 +39,7 @@ class UpdateController(bundle: Bundle)
 	: RecyclerController<UpdatedNovelsAdapter, UpdateUI>() {
 	val updatesViewModel: IUpdatesViewModel by viewModel()
 
-	var date: Long = bundle.getLong("date")
+	var date: Long = bundle.getLong(BUNDLE_DATE)
 
 	val novelIDs = ArrayList<Int>()
 

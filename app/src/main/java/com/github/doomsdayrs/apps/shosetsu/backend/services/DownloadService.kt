@@ -10,7 +10,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.content.getSystemService
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_EXECUTE

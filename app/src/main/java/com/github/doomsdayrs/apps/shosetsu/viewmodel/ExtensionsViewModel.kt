@@ -19,6 +19,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
 
@@ -29,6 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
  * @author github.com/doomsdayrs
  */
 class ExtensionsViewModel(
+		val getExtensionsUIUseCase: GetExtensionsUIUseCase
 ) : IExtensionsViewModel() {
 
 	override fun reloadFormatters() {
@@ -39,18 +41,17 @@ class ExtensionsViewModel(
 		TODO("Not yet implemented")
 	}
 
-	override fun installExtension(extensionEntity: ExtensionUI) {
-		extensionEntity.installed = true
-		extensionEntity.enabled = true
+	override fun installExtension(extensionUI: ExtensionUI) {
+		extensionUI.installed = true
+		extensionUI.enabled = true
 		TODO("installExtension")
 	}
 
-	override fun uninstallExtension(extensionEntity: ExtensionUI) {
-		extensionEntity.installed = false
-		extensionEntity.enabled = false
+	override fun uninstallExtension(extensionUI: ExtensionUI) {
+		extensionUI.installed = false
+		extensionUI.enabled = false
 		TODO("uninstallExtension")
 	}
 
-	override val liveData: LiveData<HResult<List<ExtensionUI>>>
-		get() = TODO("Not yet implemented")
+	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy { getExtensionsUIUseCase() }
 }

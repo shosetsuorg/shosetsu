@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+
 /*
  * This file is part of shosetsu.
  *
@@ -25,4 +28,5 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
  * 04 / 05 / 2020
  */
 interface ILocalUpdatesDataSource {
+	suspend fun getUpdateDays(): LiveData<HResult<List<Long>>>
 }

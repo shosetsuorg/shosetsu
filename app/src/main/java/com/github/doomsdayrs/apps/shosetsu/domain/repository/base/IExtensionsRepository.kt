@@ -30,7 +30,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
  * @author github.com/doomsdayrs
  */
 interface IExtensionsRepository {
-	fun getExtensions(): HResult<List<ExtensionEntity>>
+	suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>>
+
 	suspend fun installExtension(extensionEntity: ExtensionEntity)
 
 	/**

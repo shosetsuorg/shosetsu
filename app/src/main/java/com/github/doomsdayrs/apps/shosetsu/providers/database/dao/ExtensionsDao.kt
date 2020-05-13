@@ -35,27 +35,27 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 @Dao
 interface ExtensionsDao : BaseDao<ExtensionEntity> {
 	@Query("SELECT * FROM extensions")
-	fun loadFormatters(): LiveData<List<ExtensionEntity>>
+	fun loadExtensions(): LiveData<List<ExtensionEntity>>
 
 	@Query("SELECT * FROM extensions WHERE installed = 1 AND enabled = 1")
-	fun loadPoweredFormatters(): LiveData<List<ExtensionEntity>>
+	fun loadPoweredExtensions(): LiveData<List<ExtensionEntity>>
 
 	@Query("SELECT id, name, imageURL FROM extensions WHERE installed = 1 AND enabled = 1")
-	fun loadPoweredFormattersBasic(): LiveData<List<IDNameImage>>
+	fun loadPoweredExtensionsBasic(): LiveData<List<IDNameImage>>
 
 	@Query("SELECT fileName FROM extensions WHERE installed = 1 AND enabled = 1 ORDER BY name ASC")
-	fun loadPoweredFormatterFileNames(): Array<String>
+	fun loadPoweredExtensionsFileNames(): Array<String>
 
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun loadFormatter(formatterID: Int): ExtensionEntity
+	fun loadExtension(formatterID: Int): ExtensionEntity
 
 	@Query("SELECT md5 FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun loadFormatterMD5(formatterID: Int): String
+	fun loadExtensionMD5(formatterID: Int): String
 
 	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
-	fun formatterCountFromID(formatterID: Int): Int
+	fun loadExtensionCountFromID(formatterID: Int): Int
 
 	@Ignore
-	fun doesFormatterExist(formatterID: Int): Boolean = formatterCountFromID(formatterID) > 0
+	fun doesExtensionExist(formatterID: Int): Boolean = loadExtensionCountFromID(formatterID) > 0
 
 }

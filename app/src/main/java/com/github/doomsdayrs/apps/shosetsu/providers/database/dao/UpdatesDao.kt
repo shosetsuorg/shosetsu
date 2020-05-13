@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 import com.github.doomsdayrs.apps.shosetsu.common.IncorrectDateException
 import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 import org.joda.time.DateTime
 import org.joda.time.Days
 
@@ -44,7 +44,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	@Query("SELECT time FROM updates ORDER BY ROWID DESC LIMIT 1")
 	fun loadLatestDayTime(): Long
 
-	fun getStartingDayTime(): Long =
+	suspend fun getStartingDayTime(): Long =
 			DateTime(loadStartingDayTime()).trimDate().millis
 
 	fun getLatestDayTime(): Long =
@@ -60,7 +60,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	fun loadUpdatesBetweenDates(date1: Long, date2: Long): LiveData<Array<UpdateEntity>>
 
 	@Transaction
-	fun getTotalDays(): Int {
+	suspend fun getTotalDays(): Int {
 		val firstDay = DateTime(getStartingDayTime())
 		val latest = DateTime(getLatestDayTime())
 		return Days.daysBetween(firstDay, latest).days
@@ -78,4 +78,17 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 
 	@Query("DELETE FROM updates WHERE novelID = :novelID")
 	fun deleteUpdateByNovelID(novelID: Int)
+
+	@Transaction
+	fun removeDaysWithoutUpdates(list: ArrayList<Long>): ArrayList<Long> {
+		for (x in list.size - 1 downTo 1) {
+			val updateDate = list[x]
+			val c = loadDayCountBetweenDates(
+					updateDate,
+					updateDate + 86399999
+			)
+			if (c <= 0) list.removeAt(x)
+		}
+		return list
+	}
 }

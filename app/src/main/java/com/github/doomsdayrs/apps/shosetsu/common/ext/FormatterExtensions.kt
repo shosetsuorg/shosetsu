@@ -3,8 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.common.ext
 import android.view.View
 import android.widget.AdapterView
 import app.shosetsu.lib.*
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings
-import com.github.doomsdayrs.apps.shosetsu.backend.Settings.LISTING_KEY
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.LISTING_KEY
 import com.github.doomsdayrs.apps.shosetsu.view.builder.SDViewBuilder
 
 /*
