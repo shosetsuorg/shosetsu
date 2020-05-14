@@ -22,7 +22,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
@@ -93,25 +92,10 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 
 		holder.button.setOnClickListener {
 			try {
-				if (!installed || update) {
-					extensionsController.context?.let { context ->
-						extensionsController.extensionViewModel.installExtension(entity)
-						installed = true
-						update = false
-						context.toast("Installed ${entity.name}")
-						this@ExtensionsAdapter.notifyItemChanged(position)
-					} ?: Log.e(logID(), "Context is missing to delete")
-
-				} else {
-					extensionsController.context?.let { context ->
-						extensionsController.extensionViewModel.uninstallExtension(entity)
-
-						installed = false
-						update = false
-						context.toast("Deleted ${entity.name}")
-						this@ExtensionsAdapter.notifyItemChanged(position)
-					} ?: Log.e(logID(), "Context is missing to delete")
-				}
+				if (!installed || update)
+					extensionsController.extensionViewModel.installExtension(entity)
+				else
+					extensionsController.extensionViewModel.uninstallExtension(entity)
 			} catch (e: Exception) {
 				it.context.toast("Holy shit what happened")
 				Log.e(logID(), "Unhandled exception", e)

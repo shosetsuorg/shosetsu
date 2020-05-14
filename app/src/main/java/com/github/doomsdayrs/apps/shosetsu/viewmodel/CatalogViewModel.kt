@@ -66,18 +66,12 @@ class CatalogViewModel
 		 */
 	}
 
-	override val formatter: MutableLiveData<Formatter>
-		get() = TODO("Not yet implemented")
-	override val formatterID: MutableLiveData<Int>
-		get() = TODO("Not yet implemented")
+	override val formatter: MutableLiveData<Formatter> = MutableLiveData()
+	override val formatterID: MutableLiveData<Int> = MutableLiveData()
 
-	override fun setFormatterID(formatterID: Int) {
-		TODO("Not yet implemented")
-	}
+	override fun setFormatterID(formatterID: Int) = this.formatterID.postValue(formatterID)
 
-	override fun getFormatterID(): Int {
-		TODO("Not yet implemented")
-	}
+	override fun getFormatterID(): Int = formatterID.value!!
 
 	override fun loadMore() {
 		TODO("Not yet implemented")

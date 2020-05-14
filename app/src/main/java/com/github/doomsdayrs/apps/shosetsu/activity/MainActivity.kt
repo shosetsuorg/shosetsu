@@ -18,8 +18,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
 import com.github.doomsdayrs.apps.shosetsu.common.consts.SHOSETSU_UPDATE_URL
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
@@ -35,7 +37,6 @@ import com.github.javiersantos.appupdater.enums.Display
 import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.github.javiersantos.appupdater.objects.Update
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 
 	override val kodein: Kodein by closestKodein()
 
-	private val okHttpClient: OkHttpClient by instance<OkHttpClient>()
+	private val formatterUtils by instance<IFormatterUtils>()
 
 
 	/**
@@ -179,6 +180,9 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 					setSelectedDrawerItem(R.id.nav_library)
 				}
 			}
+		}
+		launchIO {
+			formatterUtils.initalize()
 		}
 	}
 

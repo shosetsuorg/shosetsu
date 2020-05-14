@@ -37,7 +37,7 @@ sealed class HResult<out T : Any> {
 	/** This states that the operation is currently pending */
 	object Loading : HResult<Nothing>()
 
-	/** This states that the operation has returned nothing*/
+	/** This states that the operation has returned nothing */
 	object Empty : HResult<Nothing>()
 
 	/**

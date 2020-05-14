@@ -73,6 +73,7 @@ class ExtensionsRepository(
 						extensionEntity.name = formatter.name
 						extensionEntity.imageURL = formatter.imageURL
 						extensionEntity.installed = true
+						extensionEntity.enabled = true
 						databaseSource.updateExtension(extensionEntity)
 					} catch (e: Exception) {
 						Log.e(logID(), "Failed to parse formatter", e)
@@ -85,7 +86,7 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) =
-		databaseSource.insertOrUpdate(extensionEntity)
+			databaseSource.insertOrUpdate(extensionEntity)
 
 	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter> {
 		val f = fileSource.loadFormatter(extensionEntity.fileName)

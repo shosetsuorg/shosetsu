@@ -1,9 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters
 
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -62,9 +62,9 @@ class CataloguesAdapter(
 			catalogueHolder.itemView.setOnClickListener {
 				Log.d("FormatterSelection", title)
 				if (isOnline) {
-					val bundle = Bundle()
-					bundle.putInt(BUNDLE_FORMATTER, id)
-					val catalogueFragment = CatalogController(bundle)
+					val catalogueFragment = CatalogController(bundleOf(
+							BUNDLE_FORMATTER to id
+					))
 					router.pushController(catalogueFragment.withFadeTransaction())
 					//TODO Router push to catalogue
 				} else it.context.toast(R.string.you_not_online)

@@ -95,7 +95,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 			}
 			is HResult.Success -> updateUI(result.data)
 			is HResult.Error -> {
-				Log.i(logID(), "ERROR OWO ${result.message}")
+				Log.e(logID(), "ERROR OWO ${result.message}")
 			}
 		}
 	}

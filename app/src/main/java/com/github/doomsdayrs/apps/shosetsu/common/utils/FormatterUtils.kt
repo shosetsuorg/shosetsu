@@ -2,10 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.common.utils
 
 import android.content.Context
 import android.util.Log
-import app.shosetsu.lib.Filter
+import app.shosetsu.lib.*
 import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.LuaFormatter
-import app.shosetsu.lib.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.common.ext.getMeta
 import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
@@ -24,7 +22,6 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
-import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.File
 import java.io.FileNotFoundException
 import java.sql.SQLException
@@ -238,10 +235,8 @@ class FormatterUtils(
 				return@libLoader null
 			}
 			Log.d("LibraryLoaderSync", libraryFile.absolutePath)
-			val script = JsePlatform.standardGlobals()
-			script.load(ShosetsuLib())
 			val l = try {
-				script.load(libraryFile.readText())
+				shosetsuGlobals().load(libraryFile.readText())
 			} catch (e: Error) {
 				throw e
 			}

@@ -20,6 +20,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.InstallExtensionUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.RefreshRepositoryUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.ReloadFormattersUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
@@ -34,7 +35,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
 class ExtensionsViewModel(
 		val getExtensionsUIUseCase: GetExtensionsUIUseCase,
 		val refreshRepositoryUseCase: RefreshRepositoryUseCase,
-		val reloadFormattersUseCase: ReloadFormattersUseCase
+		val reloadFormattersUseCase: ReloadFormattersUseCase,
+		val installExtensionUIUseCase: InstallExtensionUIUseCase
 ) : IExtensionsViewModel() {
 
 	override fun reloadFormatters() = reloadFormattersUseCase()
@@ -42,14 +44,10 @@ class ExtensionsViewModel(
 	override fun refreshRepository() = refreshRepositoryUseCase()
 
 	override fun installExtension(extensionUI: ExtensionUI) {
-		extensionUI.installed = true
-		extensionUI.enabled = true
-		TODO("installExtension")
+		installExtensionUIUseCase(extensionUI)
 	}
 
 	override fun uninstallExtension(extensionUI: ExtensionUI) {
-		extensionUI.installed = false
-		extensionUI.enabled = false
 		TODO("uninstallExtension")
 	}
 
