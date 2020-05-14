@@ -29,7 +29,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-abstract class IExtensionsConfigureViewModel : SubscribeHandleViewModel<List<ExtensionUI>>, ViewModel() {
+abstract class IExtensionsConfigureViewModel
+	: SubscribeHandleViewModel<List<ExtensionUI>>, ViewModel() {
 	abstract fun disableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit)
 	abstract fun enableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit)
 	abstract fun loadFormatterIfEnabled(extensionEntity: ExtensionUI): Formatter?

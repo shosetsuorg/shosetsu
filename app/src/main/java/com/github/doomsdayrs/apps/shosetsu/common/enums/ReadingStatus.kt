@@ -15,26 +15,20 @@ package com.github.doomsdayrs.apps.shosetsu.common.enums
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 20 / 06 / 2019
- *
- * @author github.com/doomsdayrs
- */ /**
- * Status of novel/Chapter
+ * Status of a [com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity]
  */
 enum class ReadingStatus(val a: Int, val status: String) {
 	// Novels and chapters
 	UNREAD(0, "Unread"), READING(1, "Reading"), READ(2, "Read"),
 
-	// These two are for novels only
-	ONHOLD(3, "OnHold"), DROPPED(4, "Dropped"),
-
 	UNKNOWN(-1, "Unknown");
 
-	override fun toString(): String {
-		return "" + a
-	}
+	override fun toString(): String = a.toString()
 
 	companion object {
 		fun getStatus(a: Int): ReadingStatus {
@@ -42,8 +36,6 @@ enum class ReadingStatus(val a: Int, val status: String) {
 				0 -> UNREAD
 				1 -> READING
 				2 -> READ
-				3 -> ONHOLD
-				4 -> DROPPED
 				else -> UNKNOWN
 			}
 		}

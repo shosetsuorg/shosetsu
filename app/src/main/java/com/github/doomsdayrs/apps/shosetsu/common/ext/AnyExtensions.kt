@@ -86,4 +86,7 @@ fun launchIO(block: suspend CoroutineScope.() -> Unit) =
 		GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT, block)
 
 fun launchAsync(block: suspend CoroutineScope.() -> Unit) =
-		GlobalScope.launch(Dispatchers.Main, CoroutineStart.UNDISPATCHED, block)
+		GlobalScope.launch(Dispatchers.Default, CoroutineStart.UNDISPATCHED, block)
+
+fun launchFree(block: suspend CoroutineScope.() -> Unit) =
+		GlobalScope.launch(Dispatchers.Unconfined, CoroutineStart.UNDISPATCHED, block)

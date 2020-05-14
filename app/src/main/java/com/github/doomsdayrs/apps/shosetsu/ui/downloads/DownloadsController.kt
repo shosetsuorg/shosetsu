@@ -17,15 +17,14 @@ package com.github.doomsdayrs.apps.shosetsu.ui.downloads
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.content.BroadcastReceiver
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
@@ -42,16 +41,10 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
-	private lateinit var receiver: BroadcastReceiver
 	private val viewModel: IDownloadsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)
-	}
-
-	override fun onDestroy() {
-		super.onDestroy()
-		activity?.unregisterReceiver(receiver)
 	}
 
 	override fun onViewCreated(view: View) {

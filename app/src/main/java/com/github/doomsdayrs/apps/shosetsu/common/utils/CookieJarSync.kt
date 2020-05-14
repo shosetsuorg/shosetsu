@@ -21,6 +21,7 @@ import okhttp3.HttpUrl
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 /**
  * shosetsu
  * 01 / 08 / 2019

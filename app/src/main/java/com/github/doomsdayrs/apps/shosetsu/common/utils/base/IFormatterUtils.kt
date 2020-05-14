@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.common.utils.base
 
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import java.io.File
 
@@ -32,4 +33,6 @@ interface IFormatterUtils {
 	fun makeFormatterFile(extensionEntity: ExtensionEntity): File
 	fun makeFormatterFile(fileName: String): File
 	fun makeLibraryFile(fileName: String): File
+	fun makeLibraryFile(extLibEntity: ExtLibEntity): File
+
 }

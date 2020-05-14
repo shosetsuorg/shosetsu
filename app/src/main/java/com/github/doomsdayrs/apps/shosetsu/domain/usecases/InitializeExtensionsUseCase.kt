@@ -148,7 +148,7 @@ class InitializeExtensionsUseCase(
 					// For each library not present, installs
 					libsNotPresent.forEach {
 						progressUpdate("Updating/Installing ${it.scriptName}")
-						extLibRepo.installLibrary(repo, it)
+						extLibRepo.installExtLibrary(repo, it)
 					}
 				}
 	}

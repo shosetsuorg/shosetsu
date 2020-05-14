@@ -27,3 +27,8 @@ const val SHOSETSU_UPDATE_URL: String =
 		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml"
 
 const val selectedStrokeWidth = 8
+
+const val scriptDirectory = "/scripts/"
+const val libraryDirectory = "/libraries/"
+const val sourceFolder = "/src/"
+const val repoFolderStruct = "/src/main/resources/"

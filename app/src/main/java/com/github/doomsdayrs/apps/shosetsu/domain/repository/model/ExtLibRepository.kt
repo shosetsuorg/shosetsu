@@ -45,7 +45,7 @@ class ExtLibRepository(
 	): HResult<List<ExtLibEntity>> =
 			databaseSource.loadExtLibByRepo(repositoryEntity)
 
-	override suspend fun installLibrary(
+	override suspend fun installExtLibrary(
 			repositoryEntity: RepositoryEntity,
 			extLibEntity: ExtLibEntity
 	) {
@@ -56,7 +56,6 @@ class ExtLibRepository(
 			val json = JSONObject(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
 			try {
 				extLibEntity.version = json.getString("version")
-
 				databaseSource.updateOrInsert(extLibEntity)
 				cacheSource.setLibrary(extLibEntity.scriptName, data)
 				fileSource.writeExtLib(extLibEntity.scriptName, data)
@@ -65,4 +64,11 @@ class ExtLibRepository(
 			}
 		}
 	}
+
+	override fun blockingLoadExtLibrary(name: String): HResult<String> =
+			cacheSource.blockingLoadLibrary(name).takeIf { it is HResult.Success }
+					?: fileSource.blockingLoadLib(name).also {
+						if (it is HResult.Success)
+							cacheSource.blockingSetLibrary(name, it.data)
+					}
 }

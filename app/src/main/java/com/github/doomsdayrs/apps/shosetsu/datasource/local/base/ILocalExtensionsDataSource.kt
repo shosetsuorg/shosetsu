@@ -36,4 +36,6 @@ interface ILocalExtensionsDataSource {
 	suspend fun deleteExtension(extensionEntity: ExtensionEntity)
 	suspend fun loadExtension(formatterID: Int): ExtensionEntity
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity)
+	fun loadPoweredExtensionsFileNames(): HResult<List<String>>
+	fun loadExtensionMD5(extensionID: Int): HResult<String>
 }

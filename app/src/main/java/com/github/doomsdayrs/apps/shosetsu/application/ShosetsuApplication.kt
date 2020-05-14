@@ -106,7 +106,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		import(networkModule)
 		import(databaseModule)
 		bind<IFormatterUtils>() with singleton {
-			FormatterUtils(instance(), instance(), instance())
+			FormatterUtils(instance(), instance())
 		}
 		import(repositoryModule)
 		import(useCaseModule)

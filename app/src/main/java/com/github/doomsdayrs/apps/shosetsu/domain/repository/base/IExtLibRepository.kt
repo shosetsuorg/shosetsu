@@ -28,5 +28,11 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 interface IExtLibRepository {
 	suspend fun loadExtLibByRepo(repositoryEntity: RepositoryEntity): HResult<List<ExtLibEntity>>
 
-	suspend fun installLibrary(repositoryEntity: RepositoryEntity, extLibEntity: ExtLibEntity)
+	suspend fun installExtLibrary(repositoryEntity: RepositoryEntity, extLibEntity: ExtLibEntity)
+
+	/**
+	 * @param name Name of the library requested
+	 * @return [HResult] of [String]
+	 */
+	fun blockingLoadExtLibrary(name: String): HResult<String>
 }

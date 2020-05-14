@@ -1,31 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.common.utils
 
 import android.content.Context
-import android.util.Log
-import app.shosetsu.lib.*
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getMeta
-import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
+import app.shosetsu.lib.ShosetsuLib
+import com.github.doomsdayrs.apps.shosetsu.common.consts.libraryDirectory
+import com.github.doomsdayrs.apps.shosetsu.common.consts.scriptDirectory
+import com.github.doomsdayrs.apps.shosetsu.common.consts.sourceFolder
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.RepositoryDao
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONException
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 import java.io.File
-import java.io.FileNotFoundException
-import java.sql.SQLException
-import java.util.*
 
 
 /*
@@ -43,68 +27,18 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
  * 18 / 01 / 2020
- *
- * @author github.com/doomsdayrs
- * TODO Turn this into a service
+ * [FormatterUtils] provides a class that handles all basic needs for extensions
  */
 class FormatterUtils(
 		val context: Context,
-		val extensionsDao: ExtensionsDao,
-		val repositoryDao: RepositoryDao
-) : IFormatterUtils, KodeinAware {
+		val okHttpClient: OkHttpClient
+) : IFormatterUtils {
 	companion object {
-		const val scriptDirectory = "/scripts/"
-		const val libraryDirectory = "/libraries/"
-		const val sourceFolder = "/src/"
-		const val repoFolderStruct = "/src/main/resources/"
-
-		val unknown = object : Formatter {
-			val detail = "Unknown Formatter"
-			override val formatterID: Int = -1
-
-			override val baseURL: String
-				get() = throw Exception(detail)
-			override val hasCloudFlare: Boolean
-				get() = throw Exception(detail)
-			override val hasSearch: Boolean
-				get() = throw Exception(detail)
-			override val imageURL: String
-				get() = throw Exception(detail)
-			override val listings: Array<Formatter.Listing>
-				get() = throw Exception(detail)
-			override val name: String
-				get() = throw Exception(detail)
-			override val searchFilters: Array<Filter<*>>
-				get() = throw Exception(detail)
-			override val settings: Array<Filter<*>>
-				get() = throw Exception(detail)
-
-			override fun freshURL(smallURL: String, type: Int): String =
-					throw Exception(detail)
-
-			override fun getPassage(chapterURL: String): String = throw Exception(detail)
-
-			override fun parseNovel(novelURL: String, loadChapters: Boolean, reporter: (status: String) -> Unit) =
-					throw Exception(detail)
-
-			override fun search(data: Array<*>, reporter: (status: String) -> Unit) =
-					throw Exception(detail)
-
-			override fun updateSetting(id: Int, value: Any?): Unit = throw Exception(detail)
-		}
-
-		fun makeLibraryURL(repo: RepositoryEntity, le: ExtLibEntity): String =
-				"${repo.url}$repoFolderStruct/lib/${le.scriptName}.lua"
-
-		fun makeFormatterURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
-				"${repo.url}$repoFolderStruct/src/${fe.lang}/${fe.fileName}.lua"
-
 		private fun splitVersion(version: String): Array<String> =
 				version.split(".").toTypedArray()
 
@@ -129,124 +63,30 @@ class FormatterUtils(
 		}
 	}
 
-	override val kodein: Kodein by kodein(context)
-	val okHttpClient by instance<OkHttpClient>()
-	val iCacheExtensionsDataSource by instance<ICacheExtensionsDataSource>()
-
-	suspend fun removeByID(formatterID: Int) =
-			iCacheExtensionsDataSource.removeFormatterFromMemory(formatterID)
-
-	suspend fun addFormatter(formatter: Formatter) {
-		removeByID(formatter.formatterID)
-		iCacheExtensionsDataSource.putFormatterInMemory(formatter)
-	}
-
-	/**
-	 * A quick way to get a response
-	 */
-	fun quickResponse(url: String) = okHttpClient.newCall(Request.Builder()
-			.url(url)
-			.build()
-	).execute()
-
-	/**
-	 * AbsolutePath of application file directory
-	 */
+	/** AbsolutePath of application file directory */
 	val ap: String = context.filesDir.absolutePath
 
-	fun makeLibraryFile(le: ExtLibEntity): File =
-			makeLibraryFile(le.scriptName)
+	override fun makeLibraryFile(extLibEntity: ExtLibEntity): File =
+			makeLibraryFile(extLibEntity.scriptName)
 
-	override fun makeLibraryFile(scriptName: String): File {
-		val f = File("${ap}$sourceFolder$libraryDirectory${scriptName}.lua")
+	override fun makeLibraryFile(fileName: String): File {
+		val f = File("$ap$sourceFolder$libraryDirectory$fileName.lua")
 		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
 		return f
 	}
 
-	override fun makeFormatterFile(fe: ExtensionEntity): File =
-			makeFormatterFile(fe.fileName)
+	override fun makeFormatterFile(extensionEntity: ExtensionEntity): File =
+			makeFormatterFile(extensionEntity.fileName)
 
 	override fun makeFormatterFile(fileName: String): File {
-		val f = File("${ap}$sourceFolder$scriptDirectory${fileName}.lua")
+		val f = File("$ap$sourceFolder$scriptDirectory$fileName.lua")
 		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
 		return f
-	}
-
-	@Throws(FileNotFoundException::class, JSONException::class, SQLException::class)
-	fun trustScript(file: File) {
-		val name = file.nameWithoutExtension
-		val meta = LuaFormatter(file).getMetaData()!!
-		val md5 = file.readText().md5()!!
-		val id = meta.getInt("id")
-		val repo = meta.getJSONObject("repo")
-		GlobalScope.launch {
-			extensionsDao.insertReplace(
-					ExtensionEntity(
-							id = id,
-							repoID = repositoryDao
-									.createIfNotExist(RepositoryEntity(
-											url = repo.getString("URL"),
-											name = repo.getString("name")
-									)),
-							fileName = file.name,
-							installed = true,
-							name = name,
-							enabled = true
-					)
-			)
-		}
-	}
-
-	/**
-	 * Dynamic MD5 checking
-	 */
-	@Throws(JSONException::class, MissingResourceException::class)
-	fun confirm(file: File, pass: () -> Unit, fail: () -> Unit, noMeta: () -> Unit): Boolean {
-		val meta = file.getMeta()
-
-		// Checks MD5 sum
-		val sum = extensionsDao
-				.loadExtensionMD5(meta.getInt("id"))
-
-		require(sum.isNotEmpty())
-
-		val fileSum = file.readText().md5()
-
-		Log.i("FormatterInit", "${file.name}:\tSum required:{$sum}\tSum found:\t{$fileSum}")
-
-		return if (sum == fileSum) {
-			pass()
-			true
-		} else {
-			fail()
-			false
-		}
 	}
 
 	/**
 	 * Loads the formatters
 	 */
 	override suspend fun initalize() {
-		ShosetsuLib.libLoader = libLoader@{ name ->
-			Log.i("LibraryLoaderSync", "Loading:\t$name")
-			val libraryFile = makeLibraryFile(name)
-			if (!libraryFile.exists()) {
-				Log.e("LibraryLoaderSync", "$name does not exist")
-				return@libLoader null
-			}
-			Log.d("LibraryLoaderSync", libraryFile.absolutePath)
-			val l = try {
-				shosetsuGlobals().load(libraryFile.readText())
-			} catch (e: Error) {
-				throw e
-			}
-			return@libLoader l.call()
-		}
-		val fileNames = extensionsDao
-				.loadPoweredExtensionsFileNames()
-		fileNames.forEach {
-			iCacheExtensionsDataSource.putFormatterInMemory(LuaFormatter(makeFormatterFile(it)))
-		}
-		ShosetsuLib.httpClient = okHttpClient
 	}
 }

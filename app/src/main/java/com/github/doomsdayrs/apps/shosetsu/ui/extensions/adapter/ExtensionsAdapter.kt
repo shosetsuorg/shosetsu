@@ -58,6 +58,7 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 
 	override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
 		val entity = extensionsController.recyclerArray[position]
+		Log.i(logID(), entity.toString())
 		val id = entity.id
 		var installed = false
 		var update = false

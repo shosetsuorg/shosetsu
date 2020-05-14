@@ -20,7 +20,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
+import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
@@ -33,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureVi
  */
 class ExtensionsConfigureViewModel(
 		private val extensionsDao: ExtensionsDao,
-		private val formatterUtils: FormatterUtils
+		private val formatterUtils: IFormatterUtils
 ) : IExtensionsConfigureViewModel() {
 	override fun disableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit) {
 		TODO("Not yet implemented")

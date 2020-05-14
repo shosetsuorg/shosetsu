@@ -25,19 +25,5 @@ package com.github.doomsdayrs.apps.shosetsu.common.consts
  * @author github.com/doomsdayrs
  */
 object Broadcasts {
-	/** Tells receiver to update it's recycler view's adapter */
-	const val BC_NOTIFY_DATA_CHANGE: String = "notifyDataChange"
-
-	/** BroadCasted by [com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService]*/
-	const val BC_DOWNLOADS_MARK_ERROR: String = "markError"
-	const val BC_DOWNLOADS_REMOVE: String = "removeItem"
-	const val BC_DOWNLOADS_TOGGLE: String = "toggleStatus"
-	const val BC_DOWNLOADS_RECEIVED_URL: String = "chapterURL"
-
-	const val BC_CHAPTER_ADDED: String = "chapterAdded"
-
-	/** Target is [com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController]*/
-	const val BC_RELOAD_CHAPTERS_FROM_DB: String = "reloadChaptersFromDatabase"
-
 	const val BC_CHAPTER_VIEW_THEME_CHANGE: String = "changeChapterViewTheme"
 }

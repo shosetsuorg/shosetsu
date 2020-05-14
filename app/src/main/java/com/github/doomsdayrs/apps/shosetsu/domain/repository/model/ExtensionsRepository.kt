@@ -99,4 +99,10 @@ class ExtensionsRepository(
 
 	override suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>> =
 			databaseSource.loadPoweredExtensionsCards()
+
+	override fun loadPoweredExtensionsFileNames(): HResult<List<String>> =
+			databaseSource.loadPoweredExtensionsFileNames()
+
+	override fun loadExtensionMD5(extensionID: Int): HResult<String> =
+			databaseSource.loadExtensionMD5(extensionID)
 }

@@ -26,4 +26,5 @@ object ErrorKeys {
 	const val ERROR_GENERAL = 0
 	const val ERROR_LUA = 1
 	const val ERROR_NETWORK = 2
+	const val ERROR_NOT_FOUND = 3
 }

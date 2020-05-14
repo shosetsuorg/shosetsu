@@ -45,4 +45,6 @@ interface IExtensionsRepository {
 	suspend fun loadFormatter(formatterID: Int): HResult<Formatter>
 
 	suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>>
+	fun loadPoweredExtensionsFileNames(): HResult<List<String>>
+	fun loadExtensionMD5(extensionID: Int): HResult<String>
 }

@@ -40,7 +40,7 @@ class ConfigureExtensions : RecyclerController<ConfigExtAdapter, ExtensionUI>() 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.configure_extensions)
 		adapter = ConfigExtAdapter(this)
-		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
+		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
 	}
 
 	override fun difAreItemsTheSame(oldItem: ExtensionUI, newItem: ExtensionUI): Boolean =

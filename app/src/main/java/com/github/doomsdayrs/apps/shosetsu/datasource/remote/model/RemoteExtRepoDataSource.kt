@@ -1,11 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
+import com.github.doomsdayrs.apps.shosetsu.common.consts.repoFolderStruct
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.quickie
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteExtRepoDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
 import okhttp3.OkHttpClient
@@ -41,7 +41,7 @@ class RemoteExtRepoDataSource(
 		successResult(
 				JSONObject(
 						client.quickie(
-								"${repo.url}${FormatterUtils.repoFolderStruct}index.json"
+								"${repo.url}${repoFolderStruct}index.json"
 						).body!!.string()
 				)
 		)

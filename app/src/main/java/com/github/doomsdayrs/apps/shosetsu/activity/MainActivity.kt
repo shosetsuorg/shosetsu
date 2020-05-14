@@ -18,7 +18,6 @@ import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
 import com.github.doomsdayrs.apps.shosetsu.common.consts.SHOSETSU_UPDATE_URL
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
@@ -180,9 +179,6 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 					setSelectedDrawerItem(R.id.nav_library)
 				}
 			}
-		}
-		launchIO {
-			formatterUtils.initalize()
 		}
 	}
 

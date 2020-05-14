@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.file.model
 
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtLibDataSource
@@ -44,7 +46,13 @@ class FileExtLibDataSource(
 	}
 
 	override suspend fun loadExtLib(fileName: String): HResult<String> =
-			successResult(formatterUtils.makeLibraryFile(fileName).readText())
+			blockingLoadLib(fileName)
+
+	override fun blockingLoadLib(fileName: String): HResult<String> =
+			formatterUtils.makeLibraryFile(fileName).takeIf { it.exists() }?.let {
+				successResult(it.readText())
+			} ?: errorResult(ERROR_NOT_FOUND, "$fileName is not found in storage")
+
 
 	override suspend fun deleteExtLib(fileName: String) {
 		formatterUtils.makeLibraryFile(fileName).takeIf { it.exists() }?.delete()

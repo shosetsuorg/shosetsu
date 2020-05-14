@@ -62,7 +62,12 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 	@Transaction
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) {
 		if (doesExtensionExist(extensionEntity.id)) {
-			blockingUpdate(extensionEntity)
+			suspendedUpdate(loadExtension(extensionEntity.id).copy(
+					name = extensionEntity.name,
+					imageURL = extensionEntity.imageURL,
+					repositoryVersion = extensionEntity.repositoryVersion,
+					md5 = extensionEntity.md5
+			))
 		} else {
 			insertReplace(extensionEntity)
 		}
