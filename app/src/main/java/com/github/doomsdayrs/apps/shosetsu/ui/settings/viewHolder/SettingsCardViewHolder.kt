@@ -3,13 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.*
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.BackupSettings
-import com.google.android.material.card.MaterialCardView
 
 /*
  * This file is part of Shosetsu.
@@ -33,33 +27,8 @@ import com.google.android.material.card.MaterialCardView
  * 13 / 07 / 2019
  */
 class SettingsCardViewHolder(
-		itemView: View,
-		private val router: Router
+		itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
-	private val libraryCardTitle: TextView = itemView.findViewById(R.id.recycler_settings_title)
-	private val cardView: MaterialCardView = itemView.findViewById(R.id.settings_card)
-
-	fun setType(type: Types) {
-		cardView.setOnClickListener {
-			router.pushController(
-					when (type) {
-						Types.VIEW -> ViewSettings()
-						Types.INFO -> InfoSettings()
-						Types.ADVANCED -> AdvancedSettings()
-						Types.DOWNLOAD -> DownloadSettings()
-						Types.BACKUP -> BackupSettings()
-						Types.READER -> ReaderSettings()
-					}.withFadeTransaction()
-			)
-		}
-		libraryCardTitle.text = when (type) {
-			Types.DOWNLOAD -> itemView.context.getString(R.string.download)
-			Types.VIEW -> itemView.context.getString(R.string.view)
-			Types.ADVANCED -> itemView.context.getString(R.string.advanced)
-			Types.INFO -> itemView.context.getString(R.string.info)
-			Types.BACKUP -> itemView.context.getString(R.string.backup)
-			Types.READER -> itemView.context.getString(R.string.reader)
-		}
-	}
-
+	val libraryCardTitle: TextView = itemView.findViewById(R.id.recycler_settings_title)
+	val cardView: View = itemView.findViewById(R.id.settings_card)
 }

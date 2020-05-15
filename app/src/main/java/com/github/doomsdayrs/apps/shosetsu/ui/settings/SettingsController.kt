@@ -1,13 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.SettingsCard
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter
-import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
+import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 
 /*
  * This file is part of Shosetsu.
@@ -30,26 +28,29 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
  * Shosetsu
  * 9 / June / 2019
  */
-class SettingsController : ViewedController() {
+class SettingsController : RecyclerController<SettingsAdapter, SettingsCard>() {
 	enum class Types { DOWNLOAD, VIEW, ADVANCED, INFO, BACKUP, READER }
 
-	override val layoutRes: Int = R.layout.settings
-	private val cards by lazy {
-		arrayListOf(
+	init {
+		recyclerArray.clear()
+		recyclerArray.addAll(arrayListOf(
 				SettingsCard(Types.DOWNLOAD),
 				SettingsCard(Types.VIEW),
 				SettingsCard(Types.READER),
 				SettingsCard(Types.ADVANCED),
 				SettingsCard(Types.INFO),
 				SettingsCard(Types.BACKUP)
-		)
+		))
 	}
+
+	override val layoutRes: Int = R.layout.settings
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.settings)
-		val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
-		recyclerView.setHasFixedSize(true)
-		recyclerView.layoutManager = LinearLayoutManager(view.context)
-		recyclerView.adapter = SettingsAdapter(cards, router)
+		recyclerView?.setHasFixedSize(true)
+		adapter = SettingsAdapter(recyclerArray, router)
 	}
+
+	override fun difAreItemsTheSame(oldItem: SettingsCard, newItem: SettingsCard): Boolean =
+			oldItem.id == newItem.id
 }

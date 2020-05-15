@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings
 
 import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
@@ -35,6 +37,10 @@ abstract class SettingsSubController : RecyclerController<SettingItemsAdapter, S
 
 	override fun onViewCreated(view: View) {
 		adapter = SettingItemsAdapter(settings)
+		recyclerView?.addItemDecoration(DividerItemDecoration(
+				recyclerView!!.context,
+				LinearLayoutManager.VERTICAL
+		))
 	}
 
 	override fun difAreItemsTheSame(oldItem: SettingsItemData, newItem: SettingsItemData): Boolean =
