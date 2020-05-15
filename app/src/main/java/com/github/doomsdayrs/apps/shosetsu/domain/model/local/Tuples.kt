@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
 import androidx.room.ColumnInfo
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.URLTitleImageUI
 import java.io.Serializable
@@ -60,6 +61,20 @@ data class IDTitleImage(
 		val imageURL: String
 ) : Serializable, Convertible<IDTitleImageUI> {
 	override fun convertTo(): IDTitleImageUI = IDTitleImageUI(id, title, imageURL)
+}
+
+/**
+ * @param id of the target
+ * @param title of the data
+ * @param imageURL of the data
+ */
+data class IDTitleImageBook(
+		val id: Int,
+		val title: String,
+		val imageURL: String,
+		var bookmarked: Boolean
+) : Serializable, Convertible<IDTitleImageBookUI> {
+	override fun convertTo(): IDTitleImageBookUI = IDTitleImageBookUI(id, title, imageURL, bookmarked)
 }
 
 data class IDNameImage(

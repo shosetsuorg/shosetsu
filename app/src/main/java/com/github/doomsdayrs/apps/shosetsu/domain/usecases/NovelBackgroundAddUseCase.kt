@@ -1,10 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.lib.Novel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -23,23 +22,17 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 15 / 05 / 2020
  */
-interface ILocalChaptersDataSource {
-	/**
-	 * Get the chapters of a novel
-	 */
-	fun loadChaptersByID(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
-
-	/**
-	 * Get unread count of chapters
-	 */
-	fun loadUnreadChapterCount(novelID: Int): LiveData<HResult<Int>>
-
-	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
+class NovelBackgroundAddUseCase(
+		val novelLoadUseCase: NovelLoadUseCase,
+		val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase
+) : ((@ParameterName("novelID") Int) -> LiveData<HResult<*>>) {
+	override fun invoke(novelID: Int): LiveData<HResult<*>> = liveData {
+		emitSource(novelLoadUseCase(novelID, false).map {
+			if (it is HResult.Success) bookMarkNovelIDUseCase(novelID); it
+		})
+	}
 }

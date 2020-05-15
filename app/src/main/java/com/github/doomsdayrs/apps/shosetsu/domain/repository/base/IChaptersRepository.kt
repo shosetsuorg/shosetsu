@@ -2,8 +2,10 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -57,4 +59,10 @@ interface IChaptersRepository {
 	 * Loads count of unread chapters
 	 */
 	suspend fun loadChapterUnreadCount(novelID: Int): LiveData<HResult<Int>>
+
+
+	/**
+	 * Handles chapters for ze novel
+	 */
+	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
 }

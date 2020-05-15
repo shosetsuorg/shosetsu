@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalNovelsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteNovelDataSource
@@ -34,11 +34,11 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
  * @author github.com/doomsdayrs
  */
 class NovelsRepository(
-		val iLocalNovelsDataSource: ILocalNovelsDataSource,
-		val iRemoteNovelDataSource: IRemoteNovelDataSource
+		val database: ILocalNovelsDataSource,
+		val remoteSource: IRemoteNovelDataSource
 ) : INovelsRepository {
 	override suspend fun suspendedGetLiveBookmarked(): LiveData<HResult<List<IDTitleImage>>> =
-			iLocalNovelsDataSource.loadBookmarkedNovelsCard()
+			database.loadBookmarkedNovelsCard()
 
 	override suspend fun suspendedGetBookmarkedNovels(): HResult<List<NovelEntity>> {
 		TODO("Not yet implemented")
@@ -60,15 +60,31 @@ class NovelsRepository(
 		TODO("Not yet implemented")
 	}
 
-	override val daoLiveData: LiveData<List<NovelEntity>>
-		get() = TODO("Not yet implemented")
+	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
+			database.loadNovel(novelID)
 
-	override fun subscribeDao(owner: LifecycleOwner, observer: Observer<List<NovelEntity>>) {
-		TODO("Not yet implemented")
-	}
+	override suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info) =
+			database.updateNovel(
+					novelEntity.copy(
+							title = novelInfo.title,
+							imageURL = novelInfo.imageURL,
+							language = novelInfo.language,
+							status = novelInfo.status,
+							description = novelInfo.description,
+							genres = novelInfo.genres,
+							tags = novelInfo.tags,
+							authors = novelInfo.authors,
+							artists = novelInfo.artists
+					)
+			)
 
-	override fun loadDataSnap(): List<NovelEntity> {
-		TODO("Not yet implemented")
-	}
+	override suspend fun retrieveNovelInfo(
+			formatter: Formatter,
+			novelEntity: NovelEntity,
+			loadChapters: Boolean
+	): HResult<Novel.Info> =
+			remoteSource.loadNovel(formatter, novelEntity.url, false)
 
+	override suspend fun bookmarkNovel(novelID: Int) =
+			database.bookmarkNovel(novelID)
 }

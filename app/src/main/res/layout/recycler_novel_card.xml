@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/novel_item_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -37,6 +38,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:gravity="center_horizontal"
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +53,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="This is a novel"
+            tools:visibility="visible"
+            android:textIsSelectable="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/novel_item_left_to_read"
@@ -59,7 +64,11 @@
             android:layout_height="40dp"
             android:layout_gravity="top"
             android:textAlignment="center"
-            android:visibility="gone" />
+            android:gravity="start"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="30"
+            tools:ignore="RtlCompat" />
 
     </FrameLayout>
 

@@ -38,4 +38,14 @@ class LocalNovelsDataSource(
 
 	override suspend fun loadBookmarkedNovelsCard(): LiveData<HResult<List<IDTitleImage>>> =
 			novelsDao.loadIDImageTitle().map { successResult(it) }
+
+	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
+			successResult(novelsDao.loadNovel(novelID))
+
+	override suspend fun updateNovel(novelEntity: NovelEntity) =
+			novelsDao.suspendedUpdate(novelEntity)
+
+	override suspend fun bookmarkNovel(novelID: Int) =
+			novelsDao.bookmarkNovel(novelID)
+
 }

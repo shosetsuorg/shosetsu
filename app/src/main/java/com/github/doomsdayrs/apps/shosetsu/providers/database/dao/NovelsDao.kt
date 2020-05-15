@@ -63,6 +63,9 @@ interface NovelsDao : BaseDao<NovelEntity> {
 		}
 	}
 
+	@Query("UPDATE novels SET bookmarked = 1 WHERE id = :novelID")
+	fun bookmarkNovel(novelID: Int)
+
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters
 }

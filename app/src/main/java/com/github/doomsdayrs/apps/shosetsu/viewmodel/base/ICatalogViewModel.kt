@@ -1,10 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 
 /*
  * This file is part of shosetsu.
@@ -31,35 +32,55 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * 01 / 05 / 2020
  * Used for showing the specific listing of a novel
  */
-abstract class ICatalogViewModel :
-		SubscribeHandleViewModel<List<IDTitleImageUI>>, ViewModel() {
+abstract class ICatalogViewModel : ViewModel() {
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */
 	var currentMaxPage: Int = 1
-	abstract val formatter: MutableLiveData<Formatter>
-	abstract val formatterID: MutableLiveData<Int>
+	var inQuery: Boolean = false
+	var inSearch: Boolean = false
 
-	abstract fun setFormatterID(formatterID: Int)
-	abstract fun getFormatterID(): Int
+	abstract var displayItems: MutableLiveData<HResult<List<IDTitleImageBookUI>>>
+	abstract val formatter: MutableLiveData<Formatter>
 
 	/**
-	 * Instructs the view model to load more UwU
+	 * Sets the [formatter]
+	 */
+	abstract fun setFormatterID(formatterID: Int)
+
+	/**
+	 * Initializes [displayItems]
+	 */
+	abstract fun loadData()
+
+	/**
+	 * Queries the source and puts the results in [displayItems]
+	 */
+	abstract fun loadQuery(query: String)
+
+	/**
+	 * Load up sequential data
+	 * Action depends on conditions
+	 * If [inQuery] tries to load more for the query
+	 * If [inSearch] it rejects the action
+	 * Else loads more default data
 	 */
 	abstract fun loadMore()
 
 	/**
-	 * Queries a string
+	 * Takes currently viewed data, and returns it to the user
+	 * @param query to compare [displayItems] against
 	 */
-	abstract fun loadQuery(query: String)
-
-	/** Queries the current data displayed */
 	abstract fun searchPage(query: String)
 
 	/**
-	 * Instruction to clear loaded chapters, append more UwU
+	 * Reset [displayItems], and runs [loadData] once again
 	 */
-	abstract fun clearAndLoad()
+	abstract fun resetView()
 
-	abstract fun backgroundNovelAdd(novelID: Int)
+	/**
+	 * Bookmarks and loads the specific novel in the background
+	 * @param novelID ID of novel to load
+	 */
+	abstract fun backgroundNovelAdd(novelID: Int): LiveData<HResult<*>>
 }

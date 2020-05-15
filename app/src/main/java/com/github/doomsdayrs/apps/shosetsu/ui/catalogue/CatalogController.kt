@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.ext.calculateColumnCount
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueHitBo
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CatalogueSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 import com.google.android.material.navigation.NavigationView
 
@@ -52,8 +52,8 @@ import com.google.android.material.navigation.NavigationView
  *
  * @author github.com/doomsdayrs
  */
-class CatalogController(bundle: Bundle)
-	: RecyclerController<CatalogueAdapter, IDTitleImageUI>(bundle), SecondDrawerController {
+class CatalogController(val bundle: Bundle)
+	: RecyclerController<CatalogueAdapter, IDTitleImageBookUI>(bundle), SecondDrawerController {
 
 	override val layoutRes: Int = R.layout.catalogue
 
@@ -73,37 +73,15 @@ class CatalogController(bundle: Bundle)
 
 	init {
 		setHasOptionsMenu(true)
-		viewModel.setFormatterID(bundle.getInt(BUNDLE_FORMATTER))
 	}
 
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(viewModel.formatter.value?.name)
-		swipeRefreshLayout?.setOnRefreshListener {
-			viewModel.clearAndLoad()
-		}
+		viewModel.setFormatterID(bundle.getInt(BundleKeys.BUNDLE_FORMATTER))
+		swipeRefreshLayout?.setOnRefreshListener { viewModel.resetView() }
+		setupObservers()
 		setLibraryCards(recyclerArray)
+		setupRecyclerView()
 		if (recyclerArray.isEmpty()) viewModel.loadMore()
-
-		viewModel.liveData.observe(this, Observer {
-			handleRecyclerUpdate(it)
-		})
-
-		recyclerView?.setHasFixedSize(false)
-		recyclerView?.layoutManager =
-				if (Settings.novelCardType == 0)
-					GridLayoutManager(
-							context,
-							context!!.calculateColumnCount(200f),
-							RecyclerView.VERTICAL,
-							false
-					)
-				else
-					LinearLayoutManager(
-							context,
-							LinearLayoutManager.VERTICAL,
-							false
-					)
-		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -117,17 +95,6 @@ class CatalogController(bundle: Bundle)
 			setLibraryCards(recyclerArray)
 			true
 		}
-	}
-
-	fun setLibraryCards(recycleListingCards: ArrayList<IDTitleImageUI>) {
-		recyclerView?.adapter = CatalogueAdapter(
-				recycleListingCards,
-				this,
-				viewModel.getFormatterID(),
-				if (Settings.novelCardType == 0)
-					R.layout.recycler_novel_card
-				else R.layout.recycler_novel_card_compressed
-		)
 	}
 
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
@@ -177,6 +144,44 @@ class CatalogController(bundle: Bundle)
 		//viewModel.loadMore()
 	}
 
-	override fun difAreItemsTheSame(oldItem: IDTitleImageUI, newItem: IDTitleImageUI): Boolean =
+	override fun difAreItemsTheSame(oldItem: IDTitleImageBookUI, newItem: IDTitleImageBookUI): Boolean =
 			oldItem.id == newItem.id
+
+	private fun setupObservers() {
+		viewModel.displayItems.observe(this, Observer {
+			handleRecyclerUpdate(it)
+		})
+		viewModel.formatter.observe(this, Observer {
+			activity?.setActivityTitle(it.name)
+		})
+	}
+
+	fun setLibraryCards(recycleListingCards: ArrayList<IDTitleImageBookUI>) {
+		recyclerView?.adapter = CatalogueAdapter(
+				recycleListingCards,
+				this,
+				if (Settings.novelCardType == 0)
+					R.layout.recycler_novel_card
+				else R.layout.recycler_novel_card_compressed
+		)
+	}
+
+	private fun setupRecyclerView() {
+		recyclerView?.setHasFixedSize(false)
+		recyclerView?.layoutManager =
+				if (Settings.novelCardType == 0)
+					GridLayoutManager(
+							context,
+							context!!.calculateColumnCount(200f),
+							RecyclerView.VERTICAL,
+							false
+					)
+				else
+					LinearLayoutManager(
+							context,
+							LinearLayoutManager.VERTICAL,
+							false
+					)
+		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
+	}
 }

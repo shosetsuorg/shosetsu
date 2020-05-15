@@ -42,5 +42,12 @@ val useCaseModule = Kodein.Module("useCase") {
 		InitializeExtensionsUseCase(instance(), instance(), instance())
 	}
 	bind<InstallExtensionUIUseCase>() with provider { InstallExtensionUIUseCase(instance()) }
-
+	bind<BookMarkNovelIDUseCase>() with provider { BookMarkNovelIDUseCase(instance()) }
+	bind<GetFormatterUseCase>() with provider { GetFormatterUseCase(instance()) }
+	bind<NovelBackgroundAddUseCase>() with provider {
+		NovelBackgroundAddUseCase(instance(), instance())
+	}
+	bind<NovelLoadUseCase>() with provider {
+		NovelLoadUseCase(instance(), instance(), instance())
+	}
 }

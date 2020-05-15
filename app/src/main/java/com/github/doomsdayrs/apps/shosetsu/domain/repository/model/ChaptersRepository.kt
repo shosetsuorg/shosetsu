@@ -2,12 +2,14 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileChapterDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 
 /*
@@ -74,4 +76,7 @@ class ChaptersRepository(
 
 	override suspend fun loadChapterUnreadCount(novelID: Int): LiveData<HResult<Int>> =
 			localSource.loadUnreadChapterCount(novelID)
+
+	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): Unit =
+			localSource.handleChapters(novelEntity, list)
 }

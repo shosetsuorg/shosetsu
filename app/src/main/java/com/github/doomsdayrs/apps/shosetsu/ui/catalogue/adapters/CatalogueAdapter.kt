@@ -1,17 +1,21 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 import com.github.doomsdayrs.apps.shosetsu.view.viewholders.TitleImageViewHolder
 import com.squareup.picasso.Picasso
 
@@ -39,9 +43,8 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class CatalogueAdapter(
-		private val recycleListingCards: List<IDTitleImageUI>,
+		private val recycleListingCards: List<IDTitleImageBookUI>,
 		private val controller: CatalogController,
-		private val formatterID: Int,
 		@LayoutRes val layout: Int
 ) : RecyclerView.Adapter<TitleImageViewHolder>() {
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): TitleImageViewHolder {
@@ -64,12 +67,12 @@ class CatalogueAdapter(
 					controller.router.pushController(NovelController(
 							bundleOf(
 									BUNDLE_NOVEL_ID to id,
-									BUNDLE_FORMATTER to formatterID
+									BUNDLE_FORMATTER to controller.viewModel.formatter.value!!.formatterID
 							)
 					).withFadeTransaction())
 				}
 				setOnLongClickListener {
-					controller.viewModel.backgroundNovelAdd(id)
+					controller.viewModel.backgroundNovelAdd(id).observe(controller, Observer { })
 					true
 				}
 			}
@@ -77,4 +80,15 @@ class CatalogueAdapter(
 	}
 
 	override fun getItemCount(): Int = recycleListingCards.size
+
+	private fun handleBackgroundAdd(cCardsViewHolder: TitleImageViewHolder, result: HResult<*>) {
+		when (result) {
+			is HResult.Success -> {
+				// TODO bring back novel tinting
+			}
+			is HResult.Error -> Log.e(logID(), "[${result.code}]\t${result.message}")
+			is HResult.Loading -> {
+			}
+		}
+	}
 }

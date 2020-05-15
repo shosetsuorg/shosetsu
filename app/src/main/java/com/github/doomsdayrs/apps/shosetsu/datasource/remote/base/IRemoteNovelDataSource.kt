@@ -29,6 +29,6 @@ interface IRemoteNovelDataSource {
 	suspend fun loadNovel(
 			formatter: Formatter,
 			novelURL: String,
-			loadNovels: Boolean = true
+			loadChapters: Boolean = true
 	): HResult<Novel.Info>
 }

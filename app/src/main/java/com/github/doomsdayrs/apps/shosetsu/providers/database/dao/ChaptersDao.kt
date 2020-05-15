@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.common.ext.entity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BooleanChapterIDTuple
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.CountIDTuple
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 
 /*
@@ -71,6 +74,19 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("UPDATE chapters SET isSaved = 1 AND savePath = :path WHERE id = :id")
 	fun setChapterSavePath(id: Int, path: String)
 
-	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :id")
-	suspend fun removeChapterSavePath(id: Int)
+	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :chapterID")
+	suspend fun removeChapterSavePath(chapterID: Int)
+
+	private fun List<ChapterEntity>.getByURL(chapterURL: String): ChapterEntity? =
+			find { it.url == chapterURL }
+
+	@Transaction
+	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
+		val chapters = loadChapters(novelEntity.id).value ?: arrayListOf()
+		list.forEach {
+			chapters.getByURL(it.link)?.let { ce ->
+				suspendedUpdate(ce.copy(title = it.title, releaseDate = it.release, order = it.order))
+			} ?: insertIgnore(it.entity(novelEntity))
+		}
+	}
 }

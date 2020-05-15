@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 
 /*
  * This file is part of shosetsu.
@@ -19,15 +20,15 @@ import androidx.lifecycle.LiveData
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 30 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 08 / 05 / 2020
  */
-interface SubscribeLiveData<T> {
-	val daoLiveData: LiveData<T>
+data class IDTitleImageBookUI(
+		val id: Int,
+		val title: String,
+		val imageURL: String,
+		var bookmarked: Boolean
+) : Convertible<IDTitleImageBook> {
+	override fun convertTo(): IDTitleImageBook = IDTitleImageBook(id, title, imageURL, bookmarked)
 }

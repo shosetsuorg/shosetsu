@@ -16,10 +16,11 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 import androidx.lifecycle.LiveData
+import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.SubscribeLiveData
 
 
 /**
@@ -28,12 +29,31 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.base.Subscribe
  *
  * @author github.com/doomsdayrs
  */
-interface INovelsRepository :
-		SubscribeLiveData<List<NovelEntity>> {
+interface INovelsRepository {
 	suspend fun suspendedGetLiveBookmarked(): LiveData<HResult<List<IDTitleImage>>>
 	suspend fun suspendedGetBookmarkedNovels(): HResult<List<NovelEntity>>
 	fun blockingGetBookmarkedNovels(): HResult<List<NovelEntity>>
 	suspend fun updateNovel(novelEntity: NovelEntity)
 	suspend fun unBookmarkNovels(selectedNovels: List<Int>)
 	suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>>
+	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
+
+	/**
+	 * Updates a novel entity with new data
+	 */
+	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info)
+
+	/**
+	 * Retrieves NovelInfo
+	 */
+	suspend fun retrieveNovelInfo(
+			formatter: Formatter,
+			novelEntity: NovelEntity,
+			loadChapters: Boolean
+	): HResult<Novel.Info>
+
+	/**
+	 * Bookmark a novel by it's ID
+	 */
+	suspend fun bookmarkNovel(novelID: Int)
 }
