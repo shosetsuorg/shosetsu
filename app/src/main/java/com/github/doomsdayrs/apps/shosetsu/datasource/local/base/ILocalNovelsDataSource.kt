@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
@@ -36,4 +37,5 @@ interface ILocalNovelsDataSource {
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
 	suspend fun updateNovel(novelEntity: NovelEntity)
 	suspend fun bookmarkNovel(novelID: Int)
+	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook
 }

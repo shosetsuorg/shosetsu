@@ -6,6 +6,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalNovelsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 
@@ -47,5 +48,9 @@ class LocalNovelsDataSource(
 
 	override suspend fun bookmarkNovel(novelID: Int) =
 			novelsDao.bookmarkNovel(novelID)
+
+	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook =
+			novelsDao.insertNovelReturnCard(novelEntity)
+
 
 }

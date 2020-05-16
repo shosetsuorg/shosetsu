@@ -7,6 +7,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalNovelsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteNovelDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 
@@ -51,6 +52,9 @@ class NovelsRepository(
 	override suspend fun updateNovel(novelEntity: NovelEntity) {
 		TODO("Not yet implemented")
 	}
+
+	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook =
+			database.insertNovelReturnCard(novelEntity)
 
 	override suspend fun unBookmarkNovels(selectedNovels: List<Int>) {
 		TODO("Not yet implemented")

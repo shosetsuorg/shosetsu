@@ -67,7 +67,7 @@ class CatalogueAdapter(
 					controller.router.pushController(NovelController(
 							bundleOf(
 									BUNDLE_NOVEL_ID to id,
-									BUNDLE_FORMATTER to controller.viewModel.formatter.value!!.formatterID
+									BUNDLE_FORMATTER to controller.viewModel.formatterData.value!!.
 							)
 					).withFadeTransaction())
 				}

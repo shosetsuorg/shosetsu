@@ -20,6 +20,7 @@ import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 
@@ -37,7 +38,7 @@ interface INovelsRepository {
 	suspend fun unBookmarkNovels(selectedNovels: List<Int>)
 	suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>>
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
-
+	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook
 	/**
 	 * Updates a novel entity with new data
 	 */

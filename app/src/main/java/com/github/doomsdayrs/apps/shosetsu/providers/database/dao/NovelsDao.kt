@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
@@ -62,6 +63,20 @@ interface NovelsDao : BaseDao<NovelEntity> {
 			}
 		}
 	}
+
+	@Query("SELECT * FROM novels WHERE _rowid_ = :rowID LIMIT 1")
+	fun loadNovel(rowID: Long): NovelEntity
+
+	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE _rowid_ = :rowID LIMIT 1")
+	fun loadIDTitleImageBook(rowID: Long): IDTitleImageBook
+
+	@Transaction
+	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook =
+			loadIDTitleImageBook(insertIgnore(novelEntity))
+
+	@Transaction
+	suspend fun insertAndReturn(novelEntity: NovelEntity): NovelEntity =
+			loadNovel(insertIgnore(novelEntity))
 
 	@Query("UPDATE novels SET bookmarked = 1 WHERE id = :novelID")
 	fun bookmarkNovel(novelID: Int)

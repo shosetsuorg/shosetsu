@@ -41,10 +41,10 @@ abstract class ICatalogViewModel : ViewModel() {
 	var inSearch: Boolean = false
 
 	abstract var displayItems: MutableLiveData<HResult<List<IDTitleImageBookUI>>>
-	abstract val formatter: MutableLiveData<HResult<Formatter>>
+	abstract val formatterData: MutableLiveData<HResult<Formatter>>
 
 	/**
-	 * Sets the [formatter]
+	 * Sets the [formatterData]
 	 */
 	abstract fun setFormatterID(formatterID: Int)
 

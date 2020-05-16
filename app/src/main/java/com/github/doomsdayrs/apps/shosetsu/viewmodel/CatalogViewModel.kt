@@ -9,6 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadCatalogueData
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.NovelBackgroundAddUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
@@ -37,19 +38,21 @@ import kotlinx.coroutines.Dispatchers
  */
 class CatalogViewModel(
 		private val getFormatterUseCase: GetFormatterUseCase,
-		private var backgroundAddUseCase: NovelBackgroundAddUseCase
+		private val backgroundAddUseCase: NovelBackgroundAddUseCase,
+		private val loadCatalogueData: LoadCatalogueData
 ) : ICatalogViewModel() {
 	val currentList: ArrayList<IDTitleImageBookUI> = arrayListOf()
 	override var displayItems: MutableLiveData<HResult<List<IDTitleImageBookUI>>> = MutableLiveData()
 
-	override val formatter: MutableLiveData<HResult<Formatter>> = MutableLiveData()
+	private lateinit var formatter: Formatter
+	override val formatterData: MutableLiveData<HResult<Formatter>> = MutableLiveData()
 
 	override fun setFormatterID(formatterID: Int) {
-		if (formatter.value == null)
+		if (formatterData.value == null)
 			liveData<Any>(viewModelScope.coroutineContext + Dispatchers.Unconfined) {
 				when (val result = getFormatterUseCase.invoke(formatterID)) {
 					is HResult.Success ->
-						formatter.postValue(result)
+						formatterData.postValue(result)
 					else -> throw Exception("What the fuck")
 				}
 			}
@@ -58,7 +61,7 @@ class CatalogViewModel(
 	override fun loadData() {
 		launchIO {
 			displayItems.postValue(loading())
-
+			loadCatalogueData(formatter, currentMaxPage)
 			displayItems.postValue(successResult(currentList))
 		}
 	}

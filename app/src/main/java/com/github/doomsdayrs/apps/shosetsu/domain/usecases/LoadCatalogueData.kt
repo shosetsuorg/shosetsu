@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.map
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -44,20 +44,27 @@ class LoadCatalogueData(
 	override fun invoke(
 			formatter: Formatter,
 			currentPage: Int
-	): LiveData<HResult<IDTitleImageBookUI>> = liveData {
+	): LiveData<HResult<IDTitleImageBookUI>> = liveData<HResult<IDTitleImageBookUI>> {
 		emit(loading())
-		emitSource(extensionRepository.loadCatalogueData(formatter, 0, currentPage, arrayOf<Any>()).switchMap {
+		emitSource(extensionRepository.loadCatalogueData(
+				formatter,
+				0,
+				currentPage,
+				arrayOf<Any>()
+		).map {
 			when (it) {
 				is HResult.Success -> {
-					novelsRepository.updateNovel(it.data.convertTo(formatter))
-					successResult()
+					successResult(
+							novelsRepository.insertNovelReturnCard(
+									it.data.convertTo(formatter)
+							).convertTo()
+					)
 				}
 				is HResult.Error -> it
 				is HResult.Loading -> it
 				is HResult.Empty -> it
 			}
 		})
-
 	}
 
 	private fun Novel.Listing.convertTo(formatter: Formatter): NovelEntity = NovelEntity(
