@@ -66,12 +66,12 @@ data class NovelEntity(
 
 		var description: String? = null,
 
-		var language: String,
+		var language: String = "",
 
-		var genres: Array<String>,
-		var authors: Array<String>,
-		var artists: Array<String>,
-		var tags: Array<String>,
+		var genres: Array<String> = arrayOf(),
+		var authors: Array<String> = arrayOf(),
+		var artists: Array<String> = arrayOf(),
+		var tags: Array<String> = arrayOf(),
 
 		@NonNull
 		var status: Novel.Status = Novel.Status.UNKNOWN

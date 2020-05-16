@@ -58,5 +58,24 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
 		}
 	}
+
+	override suspend fun loadListing(
+			formatter: Formatter,
+			listing: Int,
+			page: Int,
+			data: Array<Any>
+	): HResult<List<Novel.Listing>> {
+		return try {
+			successResult(
+					formatter.listings[listing].getListing(data, page).toList()
+			)
+		} catch (e: IOException) {
+			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
+		} catch (e: LuaError) {
+			errorResult(ERROR_LUA, e.message ?: "Unknown Lua Error")
+		} catch (e: Exception) {
+			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
+		}
+	}
 }
 

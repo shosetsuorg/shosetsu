@@ -7,9 +7,7 @@ import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.NovelBackgroundAddUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
@@ -41,54 +39,20 @@ class CatalogViewModel(
 		private val getFormatterUseCase: GetFormatterUseCase,
 		private var backgroundAddUseCase: NovelBackgroundAddUseCase
 ) : ICatalogViewModel() {
-	inner class PageLoader(
-			val currentMaxPage: Int = 1,
-			val formatter: Formatter,
-			val filterValues: Array<*>,
-			val selectedListing: Int = formatter.defaultListing,
-			val novelsRepository: NovelsRepository
-	) {
-		/*	suspend fun execute() {
-				try {
-					val loader = CatalogueLoader(formatter, filterValues, selectedListing)
-					val novels =
-							if (v.isNotEmpty())
-								loader.execute(v[0])
-							else loader.execute()
-					it.recyclerArray.addAll(novels.map {
-						with(it) {
-							NovelListingCard(imageURL, title, ID, link)
-						}
-					})
-					Log.d("FragmentRefresh", "Complete")
-					true
-				} catch (e: LuaError) {
-					catalogController.activity?.toast(e.smallMessage())
-					Log.e("CataloguePageLoader", e.message ?: "UNKNOWN ERROR")
-					false
-				} catch (e: Exception) {
-					catalogController.activity?.toast(e.message ?: "UNKNOWN ERROR")
-					false
-				}
-			}
-
-		 */
-	}
-
-
 	val currentList: ArrayList<IDTitleImageBookUI> = arrayListOf()
 	override var displayItems: MutableLiveData<HResult<List<IDTitleImageBookUI>>> = MutableLiveData()
 
-	override val formatter: MutableLiveData<Formatter> = MutableLiveData()
+	override val formatter: MutableLiveData<HResult<Formatter>> = MutableLiveData()
 
 	override fun setFormatterID(formatterID: Int) {
-		liveData<Any>(viewModelScope.coroutineContext + Dispatchers.Unconfined) {
-			when (val result = getFormatterUseCase.invoke(formatterID)) {
-				is HResult.Success ->
-					formatter.postValue(result.data)
-				else -> throw Exception("What the fuck")
+		if (formatter.value == null)
+			liveData<Any>(viewModelScope.coroutineContext + Dispatchers.Unconfined) {
+				when (val result = getFormatterUseCase.invoke(formatterID)) {
+					is HResult.Success ->
+						formatter.postValue(result)
+					else -> throw Exception("What the fuck")
+				}
 			}
-		}
 	}
 
 	override fun loadData() {

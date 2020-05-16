@@ -2,14 +2,17 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtensionDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtRepoDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtensionsDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteCatalogueDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteExtensionDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
@@ -43,8 +46,8 @@ class ExtensionsRepository(
 		private val databaseSource: ILocalExtensionsDataSource,
 		private val fileSource: IFileExtensionDataSource,
 		private val remoteSource: IRemoteExtensionDataSource,
-
-		private val repositorySource: ILocalExtRepoDataSource
+		private val repositorySource: ILocalExtRepoDataSource,
+		private val remoteCatalogueDataSource: IRemoteCatalogueDataSource
 ) : IExtensionsRepository {
 	override suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
 			databaseSource.loadExtensions()
@@ -105,4 +108,13 @@ class ExtensionsRepository(
 
 	override fun loadExtensionMD5(extensionID: Int): HResult<String> =
 			databaseSource.loadExtensionMD5(extensionID)
+
+	override fun loadCatalogueData(
+			formatter: Formatter,
+			listing: Int,
+			page: Int,
+			data: Array<Any>
+	): LiveData<HResult<Novel.Listing>> = liveData {
+		remoteCatalogueDataSource.loadListing(formatter, listing, page, data)
+	}
 }

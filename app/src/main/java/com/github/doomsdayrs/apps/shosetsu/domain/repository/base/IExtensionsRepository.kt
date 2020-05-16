@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
@@ -45,6 +46,15 @@ interface IExtensionsRepository {
 	suspend fun loadFormatter(formatterID: Int): HResult<Formatter>
 
 	suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>>
+
 	fun loadPoweredExtensionsFileNames(): HResult<List<String>>
+
 	fun loadExtensionMD5(extensionID: Int): HResult<String>
+
+	fun loadCatalogueData(
+			formatter: Formatter,
+			listing: Int,
+			page: Int,
+			data: Array<Any>
+	): LiveData<HResult<Novel.Listing>>
 }

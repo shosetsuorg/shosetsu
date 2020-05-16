@@ -31,4 +31,11 @@ interface IRemoteCatalogueDataSource {
 			query: String,
 			data: Array<Any>
 	): HResult<List<Novel.Listing>>
+
+	suspend fun loadListing(
+			formatter: Formatter,
+			listing: Int,
+			page: Int,
+			data: Array<Any>
+	): HResult<List<Novel.Listing>>
 }
