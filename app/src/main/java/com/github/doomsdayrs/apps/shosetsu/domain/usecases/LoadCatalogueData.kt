@@ -1,17 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 
 /*
  * This file is part of shosetsu.
@@ -37,34 +33,29 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 class LoadCatalogueData(
 		val extensionRepository: IExtensionsRepository,
 		val novelsRepository: NovelsRepository
-) : ((
-		@ParameterName("formatter") Formatter,
-		@ParameterName("currentPage") Int
-) -> LiveData<HResult<IDTitleImageBookUI>>) {
-	override fun invoke(
+) {
+	suspend operator fun invoke(
 			formatter: Formatter,
 			currentPage: Int
-	): LiveData<HResult<IDTitleImageBookUI>> = liveData<HResult<IDTitleImageBookUI>> {
-		emit(loading())
-		emitSource(extensionRepository.loadCatalogueData(
+	): HResult<List<String>> {
+		val it = extensionRepository.loadCatalogueData(
 				formatter,
 				0,
 				currentPage,
 				arrayOf<Any>()
-		).map {
-			when (it) {
-				is HResult.Success -> {
-					successResult(
-							novelsRepository.insertNovelReturnCard(
-									it.data.convertTo(formatter)
-							).convertTo()
-					)
+		)
+		return when (it) {
+			is HResult.Success -> {
+				val data = it.data
+				launchIO {
+					data.map { it.convertTo(formatter) }.forEach { novelsRepository.insertNovel(it) }
 				}
-				is HResult.Error -> it
-				is HResult.Loading -> it
-				is HResult.Empty -> it
+				successResult(data.map { it.link })
 			}
-		})
+			is HResult.Loading -> it
+			is HResult.Error -> it
+			is HResult.Empty -> it
+		}
 	}
 
 	private fun Novel.Listing.convertTo(formatter: Formatter): NovelEntity = NovelEntity(

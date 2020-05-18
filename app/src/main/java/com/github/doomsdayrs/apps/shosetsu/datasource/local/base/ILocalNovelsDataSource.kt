@@ -39,4 +39,5 @@ interface ILocalNovelsDataSource {
 	suspend fun updateNovel(novelEntity: NovelEntity)
 	suspend fun bookmarkNovel(novelID: Int)
 	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook
+	suspend fun insertNovel(novelEntity: NovelEntity)
 }

@@ -1,11 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 
 /*
  * This file is part of shosetsu.
@@ -40,8 +38,8 @@ abstract class ICatalogViewModel : ViewModel() {
 	var inQuery: Boolean = false
 	var inSearch: Boolean = false
 
-	abstract val formatterID: MutableLiveData<Int>
-	abstract var displayItems: MutableLiveData<HResult<List<IDTitleImageBookUI>>>
+	abstract val formatterID: LiveData<Int>
+	abstract var displayItems: LiveData<HResult<List<String>>>
 	abstract val formatterData: LiveData<HResult<Formatter>>
 
 	/**

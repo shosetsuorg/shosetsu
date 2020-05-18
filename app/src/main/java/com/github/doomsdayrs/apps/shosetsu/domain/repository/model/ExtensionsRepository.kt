@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
 import app.shosetsu.lib.Novel
@@ -109,12 +108,12 @@ class ExtensionsRepository(
 	override fun loadExtensionMD5(extensionID: Int): HResult<String> =
 			databaseSource.loadExtensionMD5(extensionID)
 
-	override fun loadCatalogueData(
+	override suspend fun loadCatalogueData(
 			formatter: Formatter,
 			listing: Int,
 			page: Int,
 			data: Array<Any>
-	): LiveData<HResult<Novel.Listing>> = liveData {
-		remoteCatalogueDataSource.loadListing(formatter, listing, page, data)
-	}
+	): HResult<List<Novel.Listing>> =
+			remoteCatalogueDataSource.loadListing(formatter, listing, page, data)
+
 }

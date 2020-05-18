@@ -35,7 +35,7 @@ class GetNovelUIUseCase(
 		val loadNovelUseCase: LoadNovelUseCase
 ) : ((@ParameterName("novelID") Int) -> LiveData<HResult<NovelUI>>) {
 	override fun invoke(novelID: Int): LiveData<HResult<NovelUI>> {
-		return liveData {
+		return liveData<HResult<NovelUI>> {
 			emit(loading())
 			emitSource(novelsRepository.loadNovelLive(novelID).map {
 				if (it is HResult.Success) {

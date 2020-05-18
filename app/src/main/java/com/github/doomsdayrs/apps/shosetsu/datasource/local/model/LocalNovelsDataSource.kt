@@ -55,5 +55,7 @@ class LocalNovelsDataSource(
 	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook =
 			novelsDao.insertNovelReturnCard(novelEntity)
 
-
+	override suspend fun insertNovel(novelEntity: NovelEntity) {
+		novelsDao.insertIgnore(novelEntity)
+	}
 }

@@ -56,6 +56,9 @@ class NovelsRepository(
 	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook =
 			database.insertNovelReturnCard(novelEntity)
 
+	override suspend fun insertNovel(novelEntity: NovelEntity) =
+			database.insertNovel(novelEntity)
+
 	override suspend fun unBookmarkNovels(selectedNovels: List<Int>) {
 		TODO("Not yet implemented")
 	}

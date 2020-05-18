@@ -51,10 +51,10 @@ interface IExtensionsRepository {
 
 	fun loadExtensionMD5(extensionID: Int): HResult<String>
 
-	fun loadCatalogueData(
+	suspend fun loadCatalogueData(
 			formatter: Formatter,
 			listing: Int,
 			page: Int,
 			data: Array<Any>
-	): LiveData<HResult<Novel.Listing>>
+	): HResult<List<Novel.Listing>>
 }
