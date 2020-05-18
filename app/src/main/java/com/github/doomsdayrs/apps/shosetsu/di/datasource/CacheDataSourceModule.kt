@@ -34,6 +34,8 @@ import org.kodein.di.generic.singleton
  */
 val cacheDataSouceModule = Kodein.Module("cache_data_source_module") {
 	bind<ICacheChaptersDataSource>() with singleton { CacheChaptersDataSource() }
+
 	bind<ICacheExtensionsDataSource>() with singleton { CacheExtensionDataSource() }
+
 	bind<ICacheExtLibDataSource>() with singleton { CacheExtLibDataSource() }
 }

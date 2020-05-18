@@ -40,8 +40,9 @@ abstract class ICatalogViewModel : ViewModel() {
 	var inQuery: Boolean = false
 	var inSearch: Boolean = false
 
+	abstract val formatterID: MutableLiveData<Int>
 	abstract var displayItems: MutableLiveData<HResult<List<IDTitleImageBookUI>>>
-	abstract val formatterData: MutableLiveData<HResult<Formatter>>
+	abstract val formatterData: LiveData<HResult<Formatter>>
 
 	/**
 	 * Sets the [formatterData]
@@ -51,7 +52,7 @@ abstract class ICatalogViewModel : ViewModel() {
 	/**
 	 * Initializes [displayItems]
 	 */
-	abstract fun loadData()
+	abstract fun loadData(formatter: Formatter)
 
 	/**
 	 * Queries the source and puts the results in [displayItems]
@@ -76,7 +77,7 @@ abstract class ICatalogViewModel : ViewModel() {
 	/**
 	 * Reset [displayItems], and runs [loadData] once again
 	 */
-	abstract fun resetView()
+	abstract fun resetView(formatter: Formatter)
 
 	/**
 	 * Bookmarks and loads the specific novel in the background

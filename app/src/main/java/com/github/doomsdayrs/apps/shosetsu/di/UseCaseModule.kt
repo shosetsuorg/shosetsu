@@ -30,24 +30,42 @@ import org.kodein.di.generic.provider
  */
 val useCaseModule = Kodein.Module("useCase") {
 	bind<FormatterAsCardsUseCase>() with provider { FormatterAsCardsUseCase(instance()) }
+
 	bind<GetDownloadsUseCase>() with provider { GetDownloadsUseCase(instance()) }
+
 	bind<LibraryAsCardsUseCase>() with provider { LibraryAsCardsUseCase(instance()) }
+
 	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
+
 	bind<UnreadChaptersUseCase>() with provider { UnreadChaptersUseCase(instance()) }
+
 	bind<GetExtensionsUIUseCase>() with provider { GetExtensionsUIUseCase(instance()) }
+
 	bind<GetUpdateDaysUseCase>() with provider { GetUpdateDaysUseCase(instance()) }
+
 	bind<RefreshRepositoryUseCase>() with provider { RefreshRepositoryUseCase(instance()) }
+
 	bind<ReloadFormattersUseCase>() with provider { ReloadFormattersUseCase() }
+
 	bind<InitializeExtensionsUseCase>() with provider {
 		InitializeExtensionsUseCase(instance(), instance(), instance())
 	}
+
 	bind<InstallExtensionUIUseCase>() with provider { InstallExtensionUIUseCase(instance()) }
+
 	bind<BookMarkNovelIDUseCase>() with provider { BookMarkNovelIDUseCase(instance()) }
+
 	bind<GetFormatterUseCase>() with provider { GetFormatterUseCase(instance()) }
+
 	bind<NovelBackgroundAddUseCase>() with provider {
 		NovelBackgroundAddUseCase(instance(), instance())
 	}
-	bind<NovelLoadUseCase>() with provider {
-		NovelLoadUseCase(instance(), instance(), instance())
+
+	bind<GetFormatterNameUseCase>() with provider { GetFormatterNameUseCase(instance()) }
+
+	bind<GetNovelUIUseCase>() with provider { GetNovelUIUseCase(instance(), instance()) }
+
+	bind<LoadNovelUseCase>() with provider {
+		LoadNovelUseCase(instance(), instance(), instance())
 	}
 }

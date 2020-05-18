@@ -45,6 +45,9 @@ interface NovelsDao : BaseDao<NovelEntity> {
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	fun loadNovel(novelID: Int): NovelEntity
 
+	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
+	fun loadNovelLive(novelID: Int): LiveData<NovelEntity>
+
 	@Query("SELECT url,imageURL,title FROM novels WHERE id = :novelID LIMIT 1")
 	fun loadURLImageTitle(novelID: Int): URLImageTitle
 

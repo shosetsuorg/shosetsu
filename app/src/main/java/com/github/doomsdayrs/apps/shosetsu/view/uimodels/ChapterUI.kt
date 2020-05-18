@@ -38,5 +38,9 @@ data class ChapterUI(
 		var readingReadingStatus: ReadingStatus,
 		var bookmarked: Boolean,
 		var isSaved: Boolean,
-		var savePath: String
+		var savePath: String,
+		/**
+		 * If this chapter is selected by the UI
+		 */
+		var isSelected: Boolean = false
 )

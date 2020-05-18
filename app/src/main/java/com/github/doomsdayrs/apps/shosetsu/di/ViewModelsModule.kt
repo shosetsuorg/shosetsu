@@ -50,6 +50,10 @@ val viewModelsModule = Kodein.Module("view_models_module") {
 		ExtensionsConfigureViewModel(instance(), instance())
 	}
 
+	// Novel View
+	bind<INovelInfoViewModel>() with provider { NovelInfoViewModel(instance(), instance()) }
+	bind<INovelChaptersViewModel>() with provider { NovelChaptersViewModel() }
+
 	// Settings
 	bind<ISettingsAdvancedViewModel>() with provider { SettingsAdvancedViewModel(instance()) }
 	bind<ISettingsBackupViewModel>() with provider { SettingsBackupViewModel(instance(), instance()) }

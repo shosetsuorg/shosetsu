@@ -16,10 +16,9 @@ import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -55,29 +54,13 @@ import com.squareup.picasso.Picasso
 class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 	override val layoutRes: Int = R.layout.novel_main
 
-	// Var
-	var novelController: NovelController = parentController as NovelController
-	var viewModel: INovelViewViewModel = novelController.viewModel
+	val viewModel: INovelInfoViewModel by viewModel()
 
-	var novelUI: NovelUI? = null
-	var novelID = -1
+	private var novelUI: NovelUI? = null
+	private var formatterName: String = ""
 
 	init {
 		setHasOptionsMenu(true)
-
-		viewModel.liveData.observe(this, Observer {
-			when (it) {
-				is HResult.Success -> {
-					novelUI = it.data
-					activity?.invalidateOptionsMenu()
-				}
-				is HResult.Error -> TODO("Implement Error Handler")
-				is HResult.Empty -> TODO("Implement Empty Handler")
-				is HResult.Loading -> TODO("Implement Loading Handler")
-			}
-		})
-
-		viewModel.novelID.observe(this, Observer { novelID = it })
 	}
 
 	// UI items
@@ -117,26 +100,26 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 	@Attach(id.novel_image_background)
 	var novelImageBackground: ImageView? = null
 
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = novelUI?.let {
 		when (item.itemId) {
 			id.source_migrate -> {
 				parentController?.router?.pushController(MigrationController(bundleOf(Pair(
 						MigrationController.TARGETS_BUNDLE_KEY,
-						arrayOf(novelID).toIntArray()
+						arrayOf(novelUI!!.id).toIntArray()
 				))).withFadeTransaction())
-				return true
+				true
 			}
 			id.webview -> {
-				activity?.openInWebView(viewModel.novelURL.value!!)
-				return true
+				activity?.openInWebView(it.novelURL)
+				true
 			}
 			id.browser -> {
-				activity?.openInBrowser(viewModel.novelURL.value!!)
-				return true
+				activity?.openInBrowser(it.novelURL)
+				true
 			}
+			else -> super.onOptionsItemSelected(item)
 		}
-		return false
-	}
+	} ?: false
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_novel, menu)
@@ -151,7 +134,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 
 		novelAdd?.setOnClickListener {
 			novelAdd?.setImageResource(
-					if (novelUI?.bookmarked == true)
+					if (novelUI?.bookmarked == false)
 						R.drawable.ic_baseline_check_circle_24
 					else R.drawable.ic_add_circle_outline_24dp
 			)
@@ -159,14 +142,44 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 		}
 		fragmentNovelMainRefresh?.setOnRefreshListener { viewModel.refresh() }
 
-		setData()
+		setObserver()
+		setFormatterName()
+		setNovelData()
 	}
 
+	private fun setObserver() {
+		viewModel.liveData.observe(this, Observer {
+			when (it) {
+				is HResult.Success -> {
+					novelUI = it.data
+					activity?.invalidateOptionsMenu()
+					setNovelData()
+				}
+				is HResult.Error -> TODO("Implement Error Handler")
+				is HResult.Empty -> TODO("Implement Empty Handler")
+				is HResult.Loading -> TODO("Implement Loading Handler")
+			}
+		})
+		viewModel.formatterName.observe(this, Observer {
+			when (it) {
+				is HResult.Success -> {
+					formatterName = it.data
+					launchUI {
+						setFormatterName()
+					}
+				}
+				is HResult.Error -> TODO("Implement Error Handler")
+				is HResult.Empty -> TODO("Implement Empty Handler")
+				is HResult.Loading -> TODO("Implement Loading Handler")
+			}
+
+		})
+	}
 
 	/**
 	 * Sets the data of this page
 	 */
-	private fun setData() {
+	private fun setNovelData() {
 		novelUI?.let { novelUI ->
 			activity?.setActivityTitle(novelUI.title)
 			novelTitle?.text = novelUI.title
@@ -205,8 +218,10 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle) {
 				Picasso.get().load(novelUI.imageURL).into(novelImageBackground)
 			}
 			novelAdd?.show()
-			novelFormatter?.text = viewModel.formatter.value?.name
 		}
 	}
 
+	private fun setFormatterName() {
+		novelFormatter?.text = formatterName
+	}
 }

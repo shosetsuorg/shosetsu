@@ -31,9 +31,14 @@ import org.kodein.di.generic.singleton
  */
 val remoteDataSouceModule = Kodein.Module("remote_data_source_module") {
 	bind<IRemoteCatalogueDataSource>() with singleton { RemoteCatalogueDataSource() }
+
 	bind<IRemoteChaptersDataSource>() with singleton { RemoteChaptersDataSource() }
+
 	bind<IRemoteNovelDataSource>() with singleton { RemoteNovelDataSource() }
+
 	bind<IRemoteExtensionDataSource>() with singleton { RemoteExtensionDataSource(instance()) }
+
 	bind<IRemoteExtRepoDataSource>() with singleton { RemoteExtRepoDataSource(instance()) }
+
 	bind<IRemoteExtLibDataSource>() with singleton { RemoteExtLibDataSource(instance()) }
 }

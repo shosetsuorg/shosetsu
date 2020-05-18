@@ -43,6 +43,9 @@ class LocalNovelsDataSource(
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
 			successResult(novelsDao.loadNovel(novelID))
 
+	override suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>> =
+			novelsDao.loadNovelLive(novelID).map { successResult(it) }
+
 	override suspend fun updateNovel(novelEntity: NovelEntity) =
 			novelsDao.suspendedUpdate(novelEntity)
 

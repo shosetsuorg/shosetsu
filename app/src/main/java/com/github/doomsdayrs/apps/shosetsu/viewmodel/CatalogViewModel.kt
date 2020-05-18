@@ -1,8 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
@@ -42,23 +40,22 @@ class CatalogViewModel(
 		private val loadCatalogueData: LoadCatalogueData
 ) : ICatalogViewModel() {
 	val currentList: ArrayList<IDTitleImageBookUI> = arrayListOf()
+	override val formatterID: MutableLiveData<Int> = MutableLiveData()
+
 	override var displayItems: MutableLiveData<HResult<List<IDTitleImageBookUI>>> = MutableLiveData()
-
-	private lateinit var formatter: Formatter
-	override val formatterData: MutableLiveData<HResult<Formatter>> = MutableLiveData()
-
-	override fun setFormatterID(formatterID: Int) {
-		if (formatterData.value == null)
-			liveData<Any>(viewModelScope.coroutineContext + Dispatchers.Unconfined) {
-				when (val result = getFormatterUseCase.invoke(formatterID)) {
-					is HResult.Success ->
-						formatterData.postValue(result)
-					else -> throw Exception("What the fuck")
+	override val formatterData: LiveData<HResult<Formatter>> =
+			liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+				formatterID.switchMap {
+					getFormatterUseCase(it)
 				}
 			}
+
+	override fun setFormatterID(formatterID: Int) {
+		if (formatterData.value !is HResult.Success<Formatter>)
+			this.formatterID.postValue(formatterID)
 	}
 
-	override fun loadData() {
+	override fun loadData(formatter: Formatter) {
 		launchIO {
 			displayItems.postValue(loading())
 			loadCatalogueData(formatter, currentMaxPage)
@@ -84,11 +81,11 @@ class CatalogViewModel(
 		}
 	}
 
-	override fun resetView() {
+	override fun resetView(formatter: Formatter) {
 		launchIO {
 			displayItems.postValue(successResult(arrayListOf()))
 			displayItems.postValue(loading())
-			loadData()
+			loadData(formatter)
 		}
 	}
 

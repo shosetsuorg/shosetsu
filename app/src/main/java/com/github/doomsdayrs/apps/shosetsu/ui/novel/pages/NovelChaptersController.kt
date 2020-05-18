@@ -8,13 +8,12 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /*
@@ -48,26 +47,10 @@ class NovelChaptersController(bundle: Bundle)
 	@Attach(R.id.resume)
 	var resume: FloatingActionButton? = null
 
-	private val novelController: NovelController = parentController as NovelController
-	private val viewModel: INovelViewViewModel = novelController.viewModel
-
-	val inflater: MenuInflater = MenuInflater(context)
-
-	val selectedChapters: ArrayList<Int> = arrayListOf()
+	private val viewModel: INovelChaptersViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)
-		viewModel.liveData.observe(this, Observer {
-			when (it) {
-				is HResult.Success -> {
-					resume?.visibility = View.GONE
-					activity?.invalidateOptionsMenu()
-				}
-				is HResult.Error -> TODO("Implement Error Handler")
-				is HResult.Empty -> TODO("Implement Empty Handler")
-				is HResult.Loading -> TODO("Implement Loading Handler")
-			}
-		})
 	}
 
 	override fun onViewCreated(view: View) {
@@ -85,6 +68,11 @@ class NovelChaptersController(bundle: Bundle)
 				}
 			})
 		}
+		setObserver()
+	}
+
+	private fun setObserver() {
+		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 	}
 
 	/**
@@ -96,7 +84,7 @@ class NovelChaptersController(bundle: Bundle)
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(
-				if (selectedChapters.size <= 0) {
+				if (recyclerArray.none { it.isSelected }) {
 					R.menu.toolbar_chapters
 				} else {
 					R.menu.toolbar_chapters_selected
@@ -153,7 +141,6 @@ class NovelChaptersController(bundle: Bundle)
 			oldItem.id == newItem.id
 
 	// Option menu functions
-
 	/*
 	private fun optionDownload() {
 		val builder = AlertDialog.Builder(activity!!)

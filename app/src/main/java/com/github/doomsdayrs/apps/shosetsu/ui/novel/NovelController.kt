@@ -4,12 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_URL
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -38,10 +34,8 @@ import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
  *
  * @author github.com/doomsdayrs
  */
-class NovelController(bundle: Bundle) : ViewedController(bundle) {
+class NovelController(val bundle: Bundle) : ViewedController(bundle) {
 	override val layoutRes: Int = R.layout.novel
-
-	val viewModel: INovelViewViewModel by viewModel()
 
 	@Attach(R.id.fragment_novel_tabLayout)
 	var novelTabLayout: TabLayout? = null
@@ -49,26 +43,8 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 	@Attach(R.id.fragment_novel_viewpager)
 	var novelViewpager: ViewPager? = null
 
-	init {
-		setHasOptionsMenu(true)
-		with(viewModel) {
-			with(bundle) {
-				setNovelID(getInt(BUNDLE_NOVEL_ID))
-				setNovelURL(getString(BUNDLE_NOVEL_URL, ""))
-			}
-		}
-	}
-
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		super.onRestoreInstanceState(savedInstanceState)
-		setViewPager()
-	}
-
-	override fun onViewCreated(view: View) = setViewPager()
-
-	private fun setViewPager() {
-		val pagerAdapter = NovelPagerAdapter(this)
-		novelViewpager?.adapter = pagerAdapter
+	override fun onViewCreated(view: View) {
+		novelViewpager?.adapter = NovelPagerAdapter(this)
 		novelViewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(novelTabLayout))
 		novelTabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
 			override fun onTabSelected(tab: TabLayout.Tab) {

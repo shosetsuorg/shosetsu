@@ -8,7 +8,6 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_URL
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
@@ -35,12 +34,12 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
  *
  * @author github.com/doomsdayrs
  */
-class NovelPagerAdapter(val novelController: NovelController)
+class NovelPagerAdapter(private val novelController: NovelController)
 	: RouterPagerAdapter(novelController) {
 	companion object {
-		const val INFO_CONTROLLER = 0
-		const val CHAPTERS_CONTROLLER = 1
-		const val TRACK_CONTROLLER = 2
+		private const val INFO_CONTROLLER = 0
+		private const val CHAPTERS_CONTROLLER = 1
+		private const val TRACK_CONTROLLER = 2
 	}
 
 	private val titles by lazy {
@@ -58,14 +57,12 @@ class NovelPagerAdapter(val novelController: NovelController)
 			val controller = when (position) {
 				INFO_CONTROLLER -> {
 					NovelInfoController(bundleOf(
-							BUNDLE_NOVEL_ID to novelController.viewModel.novelID,
-							BUNDLE_URL to novelController.viewModel.novelURL
-							//BUNDLE_FORMATTER to novelController.formatter.formatterID
+							BUNDLE_NOVEL_ID to novelController.bundle.getInt(BUNDLE_NOVEL_ID)
 					))
 				}
 				CHAPTERS_CONTROLLER -> {
 					NovelChaptersController(bundleOf(
-							//	BUNDLE_NOVEL_ID to novelController.novel
+							BUNDLE_NOVEL_ID to novelController.bundle.getInt(BUNDLE_NOVEL_ID)
 					))
 				}
 				else -> error("Wrong position $position")
@@ -74,12 +71,7 @@ class NovelPagerAdapter(val novelController: NovelController)
 		}
 	}
 
-	override fun getCount(): Int {
-		return 2
-	}
+	override fun getCount(): Int = 2
 
-	override fun getPageTitle(position: Int): CharSequence? {
-		return titles.getItem(position)
-	}
-
+	override fun getPageTitle(position: Int): CharSequence? = titles.getItem(position)
 }

@@ -115,9 +115,15 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 		adapter?.let { callback.dispatchUpdatesTo(it) }
 	}
 
+	/**
+	 * If the contents of two items are the same
+	 */
 	open fun difAreContentsTheSame(oldItem: V, newItem: V): Boolean =
 			oldItem == newItem
 
+	/**
+	 * If the identification of two items are the same
+	 */
 	abstract fun difAreItemsTheSame(oldItem: V, newItem: V): Boolean
 
 	/**

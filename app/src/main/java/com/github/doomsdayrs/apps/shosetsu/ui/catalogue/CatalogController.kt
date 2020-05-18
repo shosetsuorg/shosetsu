@@ -54,8 +54,10 @@ import com.google.android.material.navigation.NavigationView
  *
  * @author github.com/doomsdayrs
  */
-class CatalogController(val bundle: Bundle)
-	: RecyclerController<CatalogueAdapter, IDTitleImageBookUI>(bundle), SecondDrawerController {
+class CatalogController(
+		/** data bundle uwu */
+		val bundle: Bundle
+) : RecyclerController<CatalogueAdapter, IDTitleImageBookUI>(bundle), SecondDrawerController {
 
 	override val layoutRes: Int = R.layout.catalogue
 
@@ -80,7 +82,7 @@ class CatalogController(val bundle: Bundle)
 
 	override fun onViewCreated(view: View) {
 		viewModel.setFormatterID(bundle.getInt(BundleKeys.BUNDLE_FORMATTER))
-		swipeRefreshLayout?.setOnRefreshListener { viewModel.resetView() }
+		swipeRefreshLayout?.setOnRefreshListener { viewModel.resetView(formatter) }
 		setupObservers()
 		setLibraryCards(recyclerArray)
 		setupRecyclerView()
@@ -146,8 +148,10 @@ class CatalogController(val bundle: Bundle)
 		//viewModel.loadMore()
 	}
 
-	override fun difAreItemsTheSame(oldItem: IDTitleImageBookUI, newItem: IDTitleImageBookUI): Boolean =
-			oldItem.id == newItem.id
+	override fun difAreItemsTheSame(
+			oldItem: IDTitleImageBookUI,
+			newItem: IDTitleImageBookUI
+	): Boolean = oldItem.id == newItem.id
 
 	private fun setupObservers() {
 		viewModel.displayItems.observe(this, Observer {

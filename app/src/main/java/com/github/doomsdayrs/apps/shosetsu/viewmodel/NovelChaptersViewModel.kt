@@ -1,12 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
 
 /*
  * This file is part of shosetsu.
@@ -27,11 +24,17 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewViewModel
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 17 / 05 / 2020
  */
-class NovelViewViewModel : INovelViewViewModel() {
+class NovelChaptersViewModel : INovelChaptersViewModel() {
+	override var isArrayReversed: Boolean
+		get() = TODO("Not yet implemented")
+		set(value) {}
+
+	override fun setNovelID(novelID: Int) {
+		TODO("Not yet implemented")
+	}
+
 	override fun downloadNext(count: Int) {
 		TODO("Not yet implemented")
 	}
@@ -52,9 +55,6 @@ class NovelViewViewModel : INovelViewViewModel() {
 		TODO("Not yet implemented")
 	}
 
-	override val selectedChapters: MutableLiveData<List<Int>>
-		get() = TODO("Not yet implemented")
-
 	override fun isChapterSelected(chapterUI: ChapterUI): Boolean {
 		TODO("Not yet implemented")
 	}
@@ -67,36 +67,8 @@ class NovelViewViewModel : INovelViewViewModel() {
 		TODO("Not yet implemented")
 	}
 
-	override val liveData: LiveData<HResult<NovelUI>>
+	override val liveData: LiveData<HResult<List<ChapterUI>>>
 		get() = TODO("Not yet implemented")
-
-	override val chapters: LiveData<HResult<ChapterUI>>
-		get() = TODO("Not yet implemented")
-
-	override var isArrayReversed: Boolean
-		get() = TODO("Not yet implemented")
-		set(value) {}
-	override var novelID: MutableLiveData<Int>
-		get() = TODO("Not yet implemented")
-		set(value) {}
-	override var novelURL: MutableLiveData<String>
-		get() = TODO("Not yet implemented")
-		set(value) {}
-	override var formatter: MutableLiveData<Formatter>
-		get() = TODO("Not yet implemented")
-		set(value) {}
-
-	override fun setNovelURL(novelURL: String) {
-		TODO("Not yet implemented")
-	}
-
-	override fun setNovelID(novelID: Int) {
-		TODO("Not yet implemented")
-	}
-
-	override fun toggleBookmark() {
-		TODO("Not yet implemented")
-	}
 
 
 	/*

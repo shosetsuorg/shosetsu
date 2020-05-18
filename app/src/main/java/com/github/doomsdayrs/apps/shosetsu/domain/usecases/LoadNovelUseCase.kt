@@ -29,8 +29,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
 /**
  * shosetsu
  * 15 / 05 / 2020
+ *
+ * takes a novelID & parameters, then loads it's data to storage
  */
-class NovelLoadUseCase(
+class LoadNovelUseCase(
 		private val nR: INovelsRepository,
 		private val eR: IExtensionsRepository,
 		private val cR: IChaptersRepository

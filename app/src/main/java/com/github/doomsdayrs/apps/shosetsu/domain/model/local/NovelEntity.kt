@@ -56,6 +56,9 @@ data class NovelEntity(
 
 		var bookmarked: Boolean = false,
 
+		/** Says if the data is loaded or now, if it is not it needs to be loaded */
+		var loaded: Boolean = false,
+
 		var readerType: Int = -1,
 
 		@NonNull

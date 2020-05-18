@@ -67,12 +67,16 @@ class NovelsRepository(
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
 			database.loadNovel(novelID)
 
+	override suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>> =
+			database.loadNovelLive(novelID)
+
 	override suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info) =
 			database.updateNovel(
 					novelEntity.copy(
 							title = novelInfo.title,
 							imageURL = novelInfo.imageURL,
 							language = novelInfo.language,
+							loaded = true,
 							status = novelInfo.status,
 							description = novelInfo.description,
 							genres = novelInfo.genres,
