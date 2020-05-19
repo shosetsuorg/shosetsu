@@ -99,7 +99,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	abstract override fun onViewCreated(view: View)
 
 	@CallSuper
-	fun showLoading() {
+	open fun showLoading() {
 		Log.i(logID(), "Loading UWU")
 	}
 

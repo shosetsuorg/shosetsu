@@ -61,7 +61,6 @@ class CatalogController(
 
 	override val layoutRes: Int = R.layout.catalogue
 
-	/***/
 	@Attach(R.id.swipeRefreshLayout)
 	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
@@ -158,6 +157,15 @@ class CatalogController(
 		swipeRefreshLayout?.isRefreshing = false
 	}
 
+	override fun showLoading() {
+		super.showLoading()
+		if (recyclerArray.isEmpty() && swipeRefreshLayout?.isRefreshing == false)
+			swipeRefreshLayout?.isRefreshing = true
+		else {
+			//TODO show bottom loader
+		}
+	}
+
 	private fun setupObservers() {
 		viewModel.displayItems.observe(this, Observer {
 			handleRecyclerUpdate(it)
@@ -167,6 +175,8 @@ class CatalogController(
 				is HResult.Success -> {
 					formatter = it.data
 					activity?.setActivityTitle(formatter.name)
+					if (recyclerArray.isEmpty())
+						viewModel.resetView(formatter)
 				}
 				else -> {
 				}

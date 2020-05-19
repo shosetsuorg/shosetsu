@@ -1,13 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.*
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 
 /*
@@ -73,9 +72,32 @@ interface NovelsDao : BaseDao<NovelEntity> {
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE _rowid_ = :rowID LIMIT 1")
 	fun loadIDTitleImageBook(rowID: Long): IDTitleImageBook
 
+
+	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE id = :id LIMIT 1")
+	fun loadIDTitleImageBook(id: Int): IDTitleImageBook
+
+
+	@Query("SELECT COUNT(*),id FROM novels WHERE url = :novelURL")
+	fun loadCountByURL(novelURL: String): CountIDTuple
+
+
+	fun hasNovel(novelURL: String): BooleanChapterIDTuple {
+		val n = loadCountByURL(novelURL)
+		return BooleanChapterIDTuple(n.count > 0, n.id)
+	}
+
 	@Transaction
-	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook =
-			loadIDTitleImageBook(insertIgnore(novelEntity))
+	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook {
+		Log.d(logID(), "insertNovelReturnCard $novelEntity")
+		val has = hasNovel(novelEntity.url)
+		return if (has.boolean) {
+			loadIDTitleImageBook(has.id)
+		} else {
+			val rowID = insertAbort(novelEntity)
+			Log.d(logID(), "insertNovelReturnCard got rowID $rowID")
+			loadIDTitleImageBook(rowID)
+		}
+	}
 
 	@Transaction
 	suspend fun insertAndReturn(novelEntity: NovelEntity): NovelEntity =

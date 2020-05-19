@@ -1,9 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
+import android.util.Log
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
@@ -49,8 +51,11 @@ class LoadCatalogueData(
 				val data = it.data
 				successResult(data.map {
 					it.convertTo(formatter)
-				}.map {
-					novelsRepository.insertNovelReturnCard(it).convertTo()
+				}.map { ne ->
+					Log.d(logID(), "Converting $ne")
+					novelsRepository.insertNovelReturnCard(ne).convertTo().also {
+						Log.d(logID(), "Converted $it")
+					}
 				})
 			}
 			is HResult.Loading -> it

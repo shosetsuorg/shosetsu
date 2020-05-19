@@ -59,9 +59,12 @@ class UpdatesController : ViewedController() {
 	@Attach(R.id.tabLayout)
 	var tabLayout: TabLayout? = null
 
+	/**
+	 * Days that have been processed
+	 */
 	val updateDays: ArrayList<UpdateController> = arrayListOf()
 	private val updatesViewModel: IUpdatesViewModel by viewModel()
-	val pagerAdapter = UpdatedDaysPager(this)
+	private val pagerAdapter = UpdatedDaysPager(this)
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean =
 			if (item.itemId == R.id.updater_now) {

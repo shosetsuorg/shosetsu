@@ -82,7 +82,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Transaction
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
-		val chapters = loadChapters(novelEntity.id).value ?: arrayListOf()
+		val chapters = loadChapters(novelEntity.id!!).value ?: arrayListOf()
 		list.forEach {
 			chapters.getByURL(it.link)?.let { ce ->
 				suspendedUpdate(ce.copy(title = it.title, releaseDate = it.release, order = it.order))

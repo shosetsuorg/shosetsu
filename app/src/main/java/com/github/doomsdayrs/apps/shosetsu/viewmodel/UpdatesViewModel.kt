@@ -38,7 +38,7 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class UpdatesViewModel(
-		val getUpdateDaysUseCase: GetUpdateDaysUseCase
+		private val getUpdateDaysUseCase: GetUpdateDaysUseCase
 ) : IUpdatesViewModel() {
 	override val liveData: LiveData<HResult<List<Long>>> by lazy {
 		liveData(viewModelScope.coroutineContext + Dispatchers.IO) {

@@ -32,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 fun Novel.Chapter.entity(novelEntity: NovelEntity) =
 		ChapterEntity(
 				url = this.link,
-				novelID = novelEntity.id,
+				novelID = novelEntity.id!!,
 				formatterID = novelEntity.formatterID,
 				title = this.title,
 				releaseDate = this.release,
