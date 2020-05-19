@@ -1,17 +1,25 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
-import androidx.lifecycle.*
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadCatalogueData
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.NovelBackgroundAddUseCase
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /*
  * This file is part of shosetsu.
@@ -40,44 +48,44 @@ class CatalogViewModel(
 		private val loadCatalogueData: LoadCatalogueData
 ) : ICatalogViewModel() {
 	private val currentList: ArrayList<String> = arrayListOf()
-	private val items: MutableLiveData<HResult<List<String>>> = MutableLiveData()
+	private val items: MutableLiveData<HResult<List<IDTitleImageBookUI>>> = MutableLiveData()
 
-	override val formatterID: MutableLiveData<Int> = MutableLiveData()
 
-	override var displayItems: LiveData<HResult<List<String>>> =
+	override var displayItems: LiveData<HResult<List<IDTitleImageBookUI>>> =
 			liveData { emitSource(items) }
 
-	override val formatterData: LiveData<HResult<Formatter>> =
-			liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-				formatterID.switchMap {
-					getFormatterUseCase(it)
-				}
-			}
+	override val formatterData: MutableLiveData<HResult<Formatter>> = MutableLiveData(HResult.Loading)
 
 	override fun setFormatterID(fID: Int) {
-		launchAsync {
-			if (formatterData.value !is HResult.Success<Formatter>)
-				formatterID.postValue(fID)
-		}
-	}
-
-	override fun loadData(formatter: Formatter) {
-		launchIO {
-			val i = loadCatalogueData(formatter, currentMaxPage)
-
-			when (i) {
-				is HResult.Success -> {
-					items.postValue()
-				}
-				is HResult.Empty -> {
-				}
-				is HResult.Error -> {
-				}
-				is HResult.Empty -> {
-				}
+		GlobalScope.launch(viewModelScope.coroutineContext + Dispatchers.IO) {
+			if (formatterData.value !is HResult.Success<Formatter>) {
+				Log.d(logID(), "Loading formatter $fID")
+				formatterData.postValue(getFormatterUseCase(fID))
+				loadMore()
 			}
 		}
 	}
+
+	override fun loadData(formatter: Formatter) =
+			GlobalScope.launch(viewModelScope.coroutineContext + Dispatchers.IO) {
+				val values = when (val current = items.value ?: successResult(arrayListOf())) {
+					is HResult.Success -> current.data
+					else -> arrayListOf()
+				}
+				items.postValue(loading())
+
+				when (val i = loadCatalogueData(formatter, currentMaxPage)) {
+					is HResult.Success -> {
+						items.postValue(successResult(values + i.data))
+					}
+					is HResult.Empty -> {
+					}
+					is HResult.Error -> {
+					}
+					is HResult.Empty -> {
+					}
+				}
+			}
 
 	override fun loadQuery(query: String) {
 	}
@@ -96,9 +104,10 @@ class CatalogViewModel(
 
 	override fun resetView(formatter: Formatter) {
 		items.postValue(successResult(arrayListOf()))
-		items.postValue(loading())
 		loadData(formatter)
 	}
 
-	override fun backgroundNovelAdd(novelID: Int) = backgroundAddUseCase(novelID)
+	override fun backgroundNovelAdd(novelID: Int) {
+		launchUI { backgroundAddUseCase(novelID) }
+	}
 }

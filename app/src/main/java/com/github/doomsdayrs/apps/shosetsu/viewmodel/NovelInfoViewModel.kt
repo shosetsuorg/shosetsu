@@ -7,6 +7,7 @@ import androidx.lifecycle.switchMap
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.BookMarkNovelIDUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterNameUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetNovelUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
 
@@ -35,10 +36,12 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
  */
 class NovelInfoViewModel(
 		private val getFormatterNameUseCase: GetFormatterNameUseCase,
-		private val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase
+		private val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase,
+		private val loadNovelUIUseCase: GetNovelUIUseCase
 ) : INovelInfoViewModel() {
-	override val liveData: LiveData<HResult<NovelUI>>
-		get() = TODO("Not yet implemented")
+	override val liveData: LiveData<HResult<NovelUI>> = liveData {
+		novelID.switchMap { loadNovelUIUseCase(it) }
+	}
 
 	override var novelID: MutableLiveData<Int> = MutableLiveData()
 
@@ -46,7 +49,11 @@ class NovelInfoViewModel(
 		novelID.switchMap { getFormatterNameUseCase(it) }
 	}
 
-	override fun setNovelID(novelID: Int) = this.novelID.postValue(novelID)
+	override fun setNovelID(novelID: Int) {
+		if (liveData.value !is HResult.Success) {
+			this.novelID.postValue(novelID)
+		}
+	}
 
 	override fun toggleBookmark() {
 		novelID.value?.let { bookMarkNovelIDUseCase(it) }

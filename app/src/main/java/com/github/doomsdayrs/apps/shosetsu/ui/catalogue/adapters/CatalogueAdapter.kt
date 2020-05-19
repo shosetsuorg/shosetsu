@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
@@ -72,7 +71,7 @@ class CatalogueAdapter(
 					).withFadeTransaction())
 				}
 				setOnLongClickListener {
-					controller.viewModel.backgroundNovelAdd(id).observe(controller, Observer { })
+					controller.viewModel.backgroundNovelAdd(id)
 					true
 				}
 			}

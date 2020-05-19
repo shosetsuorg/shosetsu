@@ -2,6 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import android.util.Base64
 import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -78,6 +80,35 @@ inline fun <reified T : Any> T.wait(time: Int, unit: TimeUnit = TimeUnit.MILLISE
 		} catch (e: InterruptedException) {
 			Log.e(logID(), "Failed to wait", e)
 		}
+
+
+fun ViewModel.launchUI(block: suspend CoroutineScope.() -> Unit) =
+		GlobalScope.launch(
+				viewModelScope.coroutineContext + Dispatchers.Main,
+				CoroutineStart.DEFAULT,
+				block
+		)
+
+fun ViewModel.launchIO(block: suspend CoroutineScope.() -> Unit) =
+		GlobalScope.launch(
+				viewModelScope.coroutineContext + Dispatchers.IO,
+				CoroutineStart.DEFAULT,
+				block
+		)
+
+fun ViewModel.launchAsync(block: suspend CoroutineScope.() -> Unit) =
+		GlobalScope.launch(
+				viewModelScope.coroutineContext + Dispatchers.Default,
+				CoroutineStart.UNDISPATCHED,
+				block
+		)
+
+fun ViewModel.launchFree(block: suspend CoroutineScope.() -> Unit) =
+		GlobalScope.launch(
+				viewModelScope.coroutineContext + Dispatchers.Unconfined,
+				CoroutineStart.UNDISPATCHED,
+				block
+		)
 
 fun launchUI(block: suspend CoroutineScope.() -> Unit) =
 		GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT, block)

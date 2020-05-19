@@ -1,7 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
@@ -27,10 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRep
  * shosetsu
  * 15 / 05 / 2020
  */
-class GetFormatterUseCase(
-		private val extensionsRepository: IExtensionsRepository
-) : (@kotlin.ParameterName("formatterID") (Int) -> LiveData<HResult<Formatter>>) {
-	override fun invoke(formatterID: Int): LiveData<HResult<Formatter>> = liveData {
-		extensionsRepository.loadFormatter(formatterID)
-	}
+class GetFormatterUseCase(private val extensionsRepository: IExtensionsRepository) {
+	suspend operator fun invoke(formatterID: Int): HResult<Formatter> =
+			extensionsRepository.loadFormatter(formatterID)
 }

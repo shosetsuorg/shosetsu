@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
+import kotlinx.coroutines.Job
 
 /*
  * This file is part of shosetsu.
@@ -38,8 +40,7 @@ abstract class ICatalogViewModel : ViewModel() {
 	var inQuery: Boolean = false
 	var inSearch: Boolean = false
 
-	abstract val formatterID: LiveData<Int>
-	abstract var displayItems: LiveData<HResult<List<String>>>
+	abstract var displayItems: LiveData<HResult<List<IDTitleImageBookUI>>>
 	abstract val formatterData: LiveData<HResult<Formatter>>
 
 	/**
@@ -50,7 +51,7 @@ abstract class ICatalogViewModel : ViewModel() {
 	/**
 	 * Initializes [displayItems]
 	 */
-	abstract fun loadData(formatter: Formatter)
+	abstract fun loadData(formatter: Formatter): Job
 
 	/**
 	 * Queries the source and puts the results in [displayItems]
@@ -81,5 +82,5 @@ abstract class ICatalogViewModel : ViewModel() {
 	 * Bookmarks and loads the specific novel in the background
 	 * @param novelID ID of novel to load
 	 */
-	abstract fun backgroundNovelAdd(novelID: Int): LiveData<HResult<*>>
+	abstract fun backgroundNovelAdd(novelID: Int)
 }

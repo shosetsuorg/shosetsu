@@ -90,17 +90,18 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	/** @param result [HResult], if [HResult.Success] then updates UI */
 	fun handleRecyclerUpdate(result: HResult<List<V>>) {
 		when (result) {
-			is HResult.Loading -> {
-				Log.i(logID(), "Loading UWU")
-			}
+			is HResult.Loading -> showLoading()
 			is HResult.Success -> updateUI(result.data)
-			is HResult.Error -> {
-				Log.e(logID(), "ERROR OWO ${result.message}")
-			}
+			is HResult.Error -> showError(result)
 		}
 	}
 
 	abstract override fun onViewCreated(view: View)
+
+	@CallSuper
+	fun showLoading() {
+		Log.i(logID(), "Loading UWU")
+	}
 
 	/**
 	 * Updates the UI with a new list

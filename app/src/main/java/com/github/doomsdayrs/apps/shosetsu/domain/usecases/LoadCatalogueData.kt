@@ -4,10 +4,10 @@ import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
 
 /*
  * This file is part of shosetsu.
@@ -32,12 +32,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.model.NovelsReposit
  */
 class LoadCatalogueData(
 		val extensionRepository: IExtensionsRepository,
-		val novelsRepository: NovelsRepository
+		val novelsRepository: INovelsRepository
 ) {
 	suspend operator fun invoke(
 			formatter: Formatter,
 			currentPage: Int
-	): HResult<List<String>> {
+	): HResult<List<IDTitleImageBookUI>> {
 		val it = extensionRepository.loadCatalogueData(
 				formatter,
 				0,
@@ -47,10 +47,11 @@ class LoadCatalogueData(
 		return when (it) {
 			is HResult.Success -> {
 				val data = it.data
-				launchIO {
-					data.map { it.convertTo(formatter) }.forEach { novelsRepository.insertNovel(it) }
-				}
-				successResult(data.map { it.link })
+				successResult(data.map {
+					it.convertTo(formatter)
+				}.map {
+					novelsRepository.insertNovelReturnCard(it).convertTo()
+				})
 			}
 			is HResult.Loading -> it
 			is HResult.Error -> it

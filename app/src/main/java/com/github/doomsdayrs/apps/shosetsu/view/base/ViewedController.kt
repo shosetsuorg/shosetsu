@@ -9,6 +9,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.Nullable
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -121,11 +122,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	 */
 	abstract fun onViewCreated(view: View)
 
-	fun showLoading() {
-		TODO("Loader")
-	}
-
-	fun showError(message: String) {
-		TODO("Error")
+	fun showError(e: HResult.Error) {
+		Log.e(logID(), "[${e.code}]\t${e.message}")
 	}
 }

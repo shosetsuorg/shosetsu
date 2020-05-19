@@ -153,6 +153,11 @@ class CatalogController(
 			newItem: IDTitleImageBookUI
 	): Boolean = oldItem.id == newItem.id
 
+	override fun updateUI(list: List<IDTitleImageBookUI>) {
+		super.updateUI(list)
+		swipeRefreshLayout?.isRefreshing = false
+	}
+
 	private fun setupObservers() {
 		viewModel.displayItems.observe(this, Observer {
 			handleRecyclerUpdate(it)
@@ -162,7 +167,6 @@ class CatalogController(
 				is HResult.Success -> {
 					formatter = it.data
 					activity?.setActivityTitle(formatter.name)
-					if (recyclerArray.isEmpty()) viewModel.loadMore()
 				}
 				else -> {
 				}
@@ -171,7 +175,7 @@ class CatalogController(
 	}
 
 	fun setLibraryCards(recycleListingCards: ArrayList<IDTitleImageBookUI>) {
-		recyclerView?.adapter = CatalogueAdapter(
+		adapter = CatalogueAdapter(
 				recycleListingCards,
 				this,
 				if (Settings.novelCardType == 0)

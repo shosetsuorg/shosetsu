@@ -79,4 +79,7 @@ class ChaptersRepository(
 
 	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): Unit =
 			localSource.handleChapters(novelEntity, list)
+
+	override suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
+			localSource.loadChaptersByID(novelID)
 }
