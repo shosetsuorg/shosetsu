@@ -67,7 +67,7 @@ class NovelInfoController(
 
 	// UI items
 	@Attach(R.id.fragment_novel_main_refresh)
-	var fragmentNovelMainRefresh: SwipeRefreshLayout? = null
+	var refreshLayout: SwipeRefreshLayout? = null
 
 	@Attach(id.novel_add)
 	var novelAdd: FloatingActionButton? = null
@@ -140,9 +140,9 @@ class NovelInfoController(
 						R.drawable.ic_baseline_check_circle_24
 					else R.drawable.ic_add_circle_outline_24dp
 			)
-			viewModel.toggleBookmark()
+			viewModel.toggleBookmark(novelUI!!)
 		}
-		fragmentNovelMainRefresh?.setOnRefreshListener { viewModel.refresh() }
+		refreshLayout?.setOnRefreshListener { viewModel.refresh() }
 		viewModel.setNovelID(bundle.getInt(BUNDLE_NOVEL_ID))
 		setObserver()
 		setFormatterName()
@@ -154,12 +154,19 @@ class NovelInfoController(
 			when (it) {
 				is HResult.Success -> {
 					novelUI = it.data
+					refreshLayout?.isRefreshing = false
 					activity?.invalidateOptionsMenu()
 					setNovelData()
 				}
-				is HResult.Error -> TODO("Implement Error Handler")
-				is HResult.Empty -> TODO("Implement Empty Handler")
-				is HResult.Loading -> TODO("Implement Loading Handler")
+				is HResult.Error -> {
+
+				}
+				is HResult.Empty -> {
+
+				}
+				is HResult.Loading -> {
+					refreshLayout?.isRefreshing = true
+				}
 			}
 		})
 		viewModel.formatterName.observe(this, Observer {
@@ -170,9 +177,21 @@ class NovelInfoController(
 						setFormatterName()
 					}
 				}
-				is HResult.Error -> TODO("Implement Error Handler")
-				is HResult.Empty -> TODO("Implement Empty Handler")
-				is HResult.Loading -> TODO("Implement Loading Handler")
+				is HResult.Error -> {
+					launchUI {
+						setFormatterName("Error on loading")
+					}
+				}
+				is HResult.Empty -> {
+					launchUI {
+						setFormatterName("UNKNOWN")
+					}
+				}
+				is HResult.Loading -> {
+					launchUI {
+						setFormatterName("Loading")
+					}
+				}
 			}
 
 		})
@@ -223,7 +242,7 @@ class NovelInfoController(
 		}
 	}
 
-	private fun setFormatterName() {
-		novelFormatter?.text = formatterName
+	private fun setFormatterName(text: String = formatterName) {
+		novelFormatter?.text = text
 	}
 }

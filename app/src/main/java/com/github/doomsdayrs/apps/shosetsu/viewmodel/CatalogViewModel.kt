@@ -44,9 +44,7 @@ class CatalogViewModel(
 		private val backgroundAddUseCase: NovelBackgroundAddUseCase,
 		private val loadCatalogueData: LoadCatalogueData
 ) : ICatalogViewModel() {
-	private val currentList: ArrayList<String> = arrayListOf()
 	private val items: MutableLiveData<HResult<List<IDTitleImageBookUI>>> = MutableLiveData()
-
 
 	override var displayItems: LiveData<HResult<List<IDTitleImageBookUI>>> =
 			liveData { emitSource(items) }
@@ -58,7 +56,6 @@ class CatalogViewModel(
 			if (formatterData.value !is HResult.Success<Formatter>) {
 				Log.d(logID(), "Loading formatter $fID")
 				formatterData.postValue(getFormatterUseCase(fID))
-				loadMore()
 			}
 		}
 	}
@@ -87,9 +84,10 @@ class CatalogViewModel(
 	override fun loadQuery(query: String) {
 	}
 
-	override fun loadMore() {
+	override fun loadMore(formatter: Formatter) {
 		launchIO {
-
+			currentMaxPage++
+			loadData(formatter)
 		}
 	}
 

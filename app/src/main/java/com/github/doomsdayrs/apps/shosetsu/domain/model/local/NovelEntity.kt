@@ -97,20 +97,21 @@ data class NovelEntity(
 		var status: Novel.Status = Novel.Status.UNKNOWN
 ) : Convertible<NovelUI> {
 	override fun convertTo(): NovelUI = NovelUI(
-			id,
-			url,
-			formatterID,
-			bookmarked,
-			readerType,
-			title,
-			imageURL,
-			description,
-			language,
-			genres,
-			authors,
-			artists,
-			tags,
-			status
+			id = id!!,
+			novelURL = url,
+			formatterID = formatterID,
+			bookmarked = bookmarked,
+			readerType = readerType,
+			title = title,
+			imageURL = imageURL,
+			description = description,
+			loaded = loaded,
+			language = language,
+			genres = genres,
+			authors = authors,
+			artists = artists,
+			tags = tags,
+			status = status
 	)
 
 	override fun equals(other: Any?): Boolean {
@@ -147,7 +148,7 @@ data class NovelEntity(
 		result = 31 * result + readerType
 		result = 31 * result + title.hashCode()
 		result = 31 * result + imageURL.hashCode()
-		result = 31 * result + (description?.hashCode() ?: 0)
+		result = 31 * result + description.hashCode()
 		result = 31 * result + language.hashCode()
 		result = 31 * result + genres.contentHashCode()
 		result = 31 * result + authors.contentHashCode()

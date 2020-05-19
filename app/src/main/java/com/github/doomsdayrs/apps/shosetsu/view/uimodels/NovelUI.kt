@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -27,7 +29,7 @@ import app.shosetsu.lib.Novel
  * @author github.com/doomsdayrs
  */
 data class NovelUI(
-		val id: Int?,
+		val id: Int,
 
 		val novelURL: String,
 
@@ -42,7 +44,7 @@ data class NovelUI(
 		var imageURL: String,
 
 		var description: String,
-
+		var loaded: Boolean,
 		var language: String,
 
 		var genres: Array<String>,
@@ -51,7 +53,25 @@ data class NovelUI(
 		var tags: Array<String>,
 
 		var status: Novel.Status
-) {
+) : Convertible<NovelEntity> {
+	override fun convertTo(): NovelEntity = NovelEntity(
+			id = id,
+			url = novelURL,
+			formatterID = formatterID,
+			bookmarked = bookmarked,
+			loaded = loaded,
+			readerType = readerType,
+			title = title,
+			imageURL = imageURL,
+			description = description,
+			language = language,
+			genres = genres,
+			authors = authors,
+			artists = artists,
+			tags = tags,
+			status = status
+	)
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
@@ -66,6 +86,7 @@ data class NovelUI(
 		if (title != other.title) return false
 		if (imageURL != other.imageURL) return false
 		if (description != other.description) return false
+		if (loaded != other.loaded) return false
 		if (language != other.language) return false
 		if (!genres.contentEquals(other.genres)) return false
 		if (!authors.contentEquals(other.authors)) return false
@@ -85,6 +106,7 @@ data class NovelUI(
 		result = 31 * result + title.hashCode()
 		result = 31 * result + imageURL.hashCode()
 		result = 31 * result + description.hashCode()
+		result = 31 * result + loaded.hashCode()
 		result = 31 * result + language.hashCode()
 		result = 31 * result + genres.contentHashCode()
 		result = 31 * result + authors.contentHashCode()

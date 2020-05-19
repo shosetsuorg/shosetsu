@@ -1,8 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 
 /*
@@ -27,12 +24,11 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  * 15 / 05 / 2020
  */
 class NovelBackgroundAddUseCase(
-		val loadNovelUseCase: LoadNovelUseCase,
-		val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase
-) : ((@ParameterName("novelID") Int) -> LiveData<HResult<*>>) {
-	override fun invoke(novelID: Int): LiveData<HResult<*>> = liveData {
-		emitSource(loadNovelUseCase(novelID, false).map {
-			if (it is HResult.Success) bookMarkNovelIDUseCase(novelID); it
-		})
-	}
+		private val loadNovelUseCase: LoadNovelUseCase,
+		private val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase
+) {
+	suspend operator fun invoke(novelID: Int): HResult<*> =
+			loadNovelUseCase(novelID, false).also {
+				if (it is HResult.Success) bookMarkNovelIDUseCase(novelID)
+			}
 }

@@ -95,11 +95,12 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 				.filter { it.visibility == KVisibility.PUBLIC }
 				.filterIsInstance<KMutableProperty<*>>()
 				.forEach { field ->
-					Log.d(logID(), "Processing Attach Target\t${field.name}")
-					val a = field.findAnnotation<Attach>()!!
-					Log.d(logID(), "\tApplying ${a.id} to ${field.name}")
-					field.setter.call(this, view.findViewById(a.id))
-					attachedFields.add(field)
+					//Log.d(logID(), "Processing Attach Target\t${field.name}")
+					field.findAnnotation<Attach>()?.let {
+						//Log.d(logID(), "\tApplying ${a.id} to ${field.name}")
+						field.setter.call(this, view.findViewById(it.id))
+						attachedFields.add(field)
+					} ?: Log.e(logID(), "Failed to find annotation on field")
 				}
 		return view
 	}

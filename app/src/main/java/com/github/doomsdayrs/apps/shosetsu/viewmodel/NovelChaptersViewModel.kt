@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetChapterUIsUseCase
@@ -77,7 +76,7 @@ class NovelChaptersViewModel(
 	}
 
 	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {
-		liveData<HResult<List<ChapterUI>>> { novelID.switchMap { getChapterUIsUseCase(it) } }
+		novelID.switchMap { getChapterUIsUseCase(it) }
 	}
 
 	/*

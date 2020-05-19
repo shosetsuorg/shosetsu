@@ -1,8 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import android.util.Log
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 
 /*
@@ -27,9 +26,11 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
  * 15 / 05 / 2020
  */
 class BookMarkNovelIDUseCase(
-		val novelRepository: INovelsRepository
-) : (((@ParameterName("novelID") Int) -> LiveData<HResult<*>>)) {
-	override fun invoke(novelID: Int): LiveData<HResult<*>> = liveData {
-		novelRepository.bookmarkNovel(novelID)
+		private val novelRepository: INovelsRepository
+) {
+	suspend operator fun invoke(novelID: Int) {
+		Log.d(logID(), "Bookmarking $novelID")
+		return novelRepository.bookmarkNovel(novelID)
 	}
+
 }

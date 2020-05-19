@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
@@ -39,11 +40,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  * Displays the chapters the novel contains
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
-class NovelChaptersController(bundle: Bundle)
+class NovelChaptersController(val bundle: Bundle)
 	: RecyclerController<ChaptersAdapter, ChapterUI>(bundle) {
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
+	/** This button allows the user to quickly snap into what they were last reading */
 	@Attach(R.id.resume)
 	var resume: FloatingActionButton? = null
 
@@ -68,6 +70,7 @@ class NovelChaptersController(bundle: Bundle)
 				}
 			})
 		}
+		viewModel.setNovelID(bundle.getInt(BUNDLE_NOVEL_ID))
 		setObserver()
 	}
 

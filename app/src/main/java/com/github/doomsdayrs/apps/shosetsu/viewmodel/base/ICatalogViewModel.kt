@@ -65,7 +65,7 @@ abstract class ICatalogViewModel : ViewModel() {
 	 * If [inSearch] it rejects the action
 	 * Else loads more default data
 	 */
-	abstract fun loadMore()
+	abstract fun loadMore(formatter: Formatter)
 
 	/**
 	 * Takes currently viewed data, and returns it to the user

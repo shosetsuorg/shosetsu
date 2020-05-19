@@ -52,7 +52,7 @@ val viewModelsModule = Kodein.Module("view_models_module") {
 
 	// Novel View
 	bind<INovelInfoViewModel>() with provider {
-		NovelInfoViewModel(instance(), instance(), instance())
+		NovelInfoViewModel(instance(), instance(), instance(), instance())
 	}
 	bind<INovelChaptersViewModel>() with provider { NovelChaptersViewModel(instance()) }
 

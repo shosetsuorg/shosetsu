@@ -1,10 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
@@ -36,34 +35,31 @@ class LoadNovelUseCase(
 		private val nR: INovelsRepository,
 		private val eR: IExtensionsRepository,
 		private val cR: IChaptersRepository
-) : ((
-		@ParameterName(name = "novelID") Int,
-		@ParameterName(name = "loadChapters") Boolean
-) -> LiveData<HResult<*>>) {
-	override fun invoke(novelID: Int, loadChapters: Boolean): LiveData<HResult<*>> = liveData {
-		when (val nResult = nR.loadNovel(novelID)) {
-			is HResult.Success -> {
-				val novel = nResult.data
-				when (val fR = eR.loadFormatter(novel.formatterID)) {
-					is HResult.Success -> {
-						val ext = fR.data
-						when (val pR = nR.retrieveNovelInfo(ext, novel, loadChapters)) {
-							is HResult.Success -> {
-								val page = pR.data
-								nR.updateNovelData(novel, page)
-								if (loadChapters)
-									cR.handleChapters(novel, page.chapters)
+) {
+	suspend operator fun invoke(novelID: Int, loadChapters: Boolean): HResult<Boolean> =
+			when (val nResult = nR.loadNovel(novelID)) {
+				is HResult.Success -> {
+					val novel = nResult.data
+					when (val fR = eR.loadFormatter(novel.formatterID)) {
+						is HResult.Success -> {
+							val ext = fR.data
+							when (val pR = nR.retrieveNovelInfo(ext, novel, loadChapters)) {
+								is HResult.Success -> {
+									val page = pR.data
+									nR.updateNovelData(novel, page)
+									if (loadChapters)
+										cR.handleChapters(novel, page.chapters)
+									successResult(true)
+								}
+								is HResult.Error -> pR
+								else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
 							}
-							is HResult.Error -> pR
-							else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
 						}
+						is HResult.Error -> fR
+						else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
 					}
-					is HResult.Error -> fR
-					else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
 				}
+				is HResult.Error -> nResult
+				else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
 			}
-			is HResult.Error -> nResult
-			else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
-		}
-	}
 }

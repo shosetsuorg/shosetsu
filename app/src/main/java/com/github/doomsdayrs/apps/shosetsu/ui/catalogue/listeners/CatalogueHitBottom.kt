@@ -33,7 +33,7 @@ class CatalogueHitBottom(private val catalogFragment: CatalogController) : Recyc
 				if (!catalogFragment.recyclerView!!.canScrollVertically(1)) {
 					Log.d("CatalogueFragmentLoad", "Getting next page")
 					running = true
-					catalogFragment.viewModel.loadMore()
+					catalogFragment.viewModel.loadMore(catalogFragment.formatter)
 				}
 	}
 

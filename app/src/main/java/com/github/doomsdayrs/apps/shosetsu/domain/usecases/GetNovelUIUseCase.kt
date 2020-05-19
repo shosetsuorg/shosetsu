@@ -31,19 +31,12 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
  * 18 / 05 / 2020
  */
 class GetNovelUIUseCase(
-		val novelsRepository: INovelsRepository,
-		val loadNovelUseCase: LoadNovelUseCase
+		val novelsRepository: INovelsRepository
 ) : ((@ParameterName("novelID") Int) -> LiveData<HResult<NovelUI>>) {
 	override fun invoke(novelID: Int): LiveData<HResult<NovelUI>> {
 		return liveData<HResult<NovelUI>> {
 			emit(loading())
-			emitSource(novelsRepository.loadNovelLive(novelID).map {
-				if (it is HResult.Success) {
-					if (!it.data.loaded)
-						loadNovelUseCase(novelID, true)
-				}
-				it.mapTo()
-			})
+			emitSource(novelsRepository.loadNovelLive(novelID).map { it.mapTo() })
 		}
 	}
 }

@@ -1,11 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.ext.entity
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BooleanChapterIDTuple
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.CountIDTuple
@@ -82,6 +84,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Transaction
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
+		Log.d(logID(), "Handling chapters for $novelEntity")
 		val chapters = loadChapters(novelEntity.id!!).value ?: arrayListOf()
 		list.forEach {
 			chapters.getByURL(it.link)?.let { ce ->
