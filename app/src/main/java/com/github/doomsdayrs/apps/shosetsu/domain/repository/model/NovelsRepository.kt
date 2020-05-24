@@ -94,7 +94,7 @@ class NovelsRepository(
 			novelEntity: NovelEntity,
 			loadChapters: Boolean
 	): HResult<Novel.Info> =
-			remoteSource.loadNovel(formatter, novelEntity.url, false)
+			remoteSource.loadNovel(formatter, novelEntity.url, loadChapters)
 
 	override suspend fun bookmarkNovel(novelID: Int) =
 			database.bookmarkNovel(novelID)

@@ -47,13 +47,13 @@ class ChaptersRepository(
 ) : IChaptersRepository {
 	suspend fun handleReturn(chapterEntity: ChapterEntity, value: HResult<String>) {
 		if (value is HResult.Success)
-			memorySource.saveChapterInCache(chapterEntity.id, value.data)
+			memorySource.saveChapterInCache(chapterEntity.id!!, value.data)
 	}
 
 	override suspend fun loadChapterPassage(
 			formatter: Formatter,
 			chapterEntity: ChapterEntity
-	): HResult<String> = memorySource.loadChapterFromCache(chapterEntity.id)
+	): HResult<String> = memorySource.loadChapterFromCache(chapterEntity.id!!)
 			.takeIf { it is HResult.Success }
 			?: fileSource.loadChapterPassageFromStorage(chapterEntity)
 					.takeIf { it is HResult.Success }?.also { handleReturn(chapterEntity, it) }
@@ -65,7 +65,7 @@ class ChaptersRepository(
 	override suspend fun saveChapterPassageToMemory(
 			chapterEntity: ChapterEntity,
 			passage: String
-	): Unit = memorySource.saveChapterInCache(chapterEntity.id, passage)
+	): Unit = memorySource.saveChapterInCache(chapterEntity.id!!, passage)
 
 	override suspend fun saveChapterPassageToStorage(
 			chapterEntity: ChapterEntity,

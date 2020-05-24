@@ -52,6 +52,9 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 		indices = [Index("novelID"), Index("url", unique = true), Index("formatterID")]
 )
 data class ChapterEntity(
+		@PrimaryKey(autoGenerate = true)
+		var id: Int? = null,
+
 		@NonNull
 		val url: String,
 
@@ -78,12 +81,11 @@ data class ChapterEntity(
 
 		var savePath: String = ""
 ) : Convertible<ChapterUI> {
-	@PrimaryKey(autoGenerate = true)
-	var id: Int = -1
+
 
 	override fun convertTo(): ChapterUI =
 			ChapterUI(
-					id,
+					id!!,
 					novelID,
 					url,
 					formatterID,

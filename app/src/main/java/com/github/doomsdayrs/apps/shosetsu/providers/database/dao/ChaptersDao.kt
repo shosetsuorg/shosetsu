@@ -86,10 +86,16 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
 		Log.d(logID(), "Handling chapters for $novelEntity")
 		val chapters = loadChapters(novelEntity.id!!).value ?: arrayListOf()
-		list.forEach {
-			chapters.getByURL(it.link)?.let { ce ->
-				suspendedUpdate(ce.copy(title = it.title, releaseDate = it.release, order = it.order))
-			} ?: insertIgnore(it.entity(novelEntity))
+		Log.d(logID(), "Chapters to handle: ${list.size}")
+		list.forEach { novelChapter ->
+			Log.d(logID(), "Processing ${novelChapter.link}")
+			chapters.getByURL(novelChapter.link)?.let { ce ->
+				suspendedUpdate(ce.copy(
+						title = novelChapter.title,
+						releaseDate = novelChapter.release,
+						order = novelChapter.order
+				))
+			} ?: insertAbort(novelChapter.entity(novelEntity))
 		}
 	}
 }

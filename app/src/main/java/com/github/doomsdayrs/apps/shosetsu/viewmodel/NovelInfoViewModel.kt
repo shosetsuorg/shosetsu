@@ -55,6 +55,8 @@ class NovelInfoViewModel(
 
 	private val novelID by lazy { MutableLiveData<Int>() }
 
+	private var novelIDValue: Int = -1
+
 	override val formatterName: LiveData<HResult<String>> by lazy {
 		novelID.switchMap {
 			liveData<HResult<String>>(viewModelScope.coroutineContext + Dispatchers.IO) {
@@ -66,6 +68,7 @@ class NovelInfoViewModel(
 	override fun setNovelID(novelID: Int) {
 		if (liveData.value !is HResult.Success) {
 			this.novelID.postValue(novelID)
+			novelIDValue = novelID
 		}
 	}
 
@@ -74,13 +77,14 @@ class NovelInfoViewModel(
 	}
 
 	override fun refresh() {
-		val v = liveData.value
-		if (v is HResult.Success)
-			if (!v.data.loaded) {
-				Log.d(logID(), "Novel is not loaded, loading")
-				launchIO {
-					loadNovelUseCase(v.data.id!!, true)
-				}
-			}
+		launchIO {
+			loadNovelUseCase(novelIDValue, true)
+		}
+	}
+
+
+	override fun onCleared() {
+		Log.d(logID(), "Cleared")
+		super.onCleared()
 	}
 }

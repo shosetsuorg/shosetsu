@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.Nullable
+import androidx.appcompat.app.AppCompatActivity
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -81,6 +83,27 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 		}
 		Log.d(logID(), "Destroyed:\t$s")
 		attachedFields = ArrayList()
+	}
+
+	@CallSuper
+	override fun onDestroy() {
+		Log.d(logID(), "Destroying Controller")
+		launchAsync {
+			(activity as AppCompatActivity).viewModelStore.clear()
+		}
+		super.onDestroy()
+	}
+
+	@CallSuper
+	override fun onDetach(view: View) {
+		Log.d(logID(), "Detaching View")
+		super.onDetach(view)
+	}
+
+	@CallSuper
+	override fun onAttach(view: View) {
+		Log.d(logID(), "Attaching View")
+		super.onAttach(view)
 	}
 
 	/**

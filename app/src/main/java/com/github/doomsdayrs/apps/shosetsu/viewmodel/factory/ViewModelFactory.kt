@@ -1,9 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.factory
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.doomsdayrs.apps.shosetsu.application.ShosetsuApplication
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.TT
@@ -35,6 +37,8 @@ import org.kodein.di.direct
  */
 class ViewModelFactory(context: Context) : ViewModelProvider.Factory, KodeinAware {
 	override val kodein: Kodein = (context as ShosetsuApplication).kodein
-	override fun <T : ViewModel> create(modelClass: Class<T>): T =
-			kodein.direct.Instance(TT(modelClass))
+	override fun <T : ViewModel> create(modelClass: Class<T>): T {
+		Log.d(logID(), "Creating instance of ${modelClass.name}")
+		return kodein.direct.Instance(TT(modelClass))
+	}
 }

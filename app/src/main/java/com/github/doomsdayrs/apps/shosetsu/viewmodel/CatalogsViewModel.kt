@@ -1,10 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.FormatterAsCardsUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
@@ -39,5 +41,10 @@ class CatalogsViewModel(
 			emit(loading())
 			emitSource(formatterAsCardsUseCase())
 		}
+	}
+
+	override fun onCleared() {
+		Log.d(logID(), "Cleared")
+		super.onCleared()
 	}
 }

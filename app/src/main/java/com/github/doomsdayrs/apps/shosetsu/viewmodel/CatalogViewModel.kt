@@ -105,4 +105,10 @@ class CatalogViewModel(
 	override fun backgroundNovelAdd(novelID: Int) {
 		launchUI { backgroundAddUseCase(novelID) }
 	}
+
+
+	override fun onCleared() {
+		Log.d(logID(), "Cleared")
+		super.onCleared()
+	}
 }

@@ -21,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.factory.ViewModelFactory
 import org.kodein.di.KodeinAware
 import org.kodein.di.direct
 import org.kodein.di.generic.instance
@@ -41,6 +40,6 @@ inline fun <reified VM : ViewModel, T> T.viewModel()
 		lazy(LazyThreadSafetyMode.NONE) {
 			ViewModelProvider(
 					this.activity as AppCompatActivity,
-					direct.instance<ViewModelFactory>()
+					direct.instance()
 			)[VM::class.java]
 		}
