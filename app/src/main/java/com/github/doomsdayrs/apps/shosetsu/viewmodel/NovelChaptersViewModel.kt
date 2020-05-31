@@ -1,8 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetChapterUIsUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
@@ -32,16 +30,18 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewMode
 class NovelChaptersViewModel(
 		private val getChapterUIsUseCase: GetChapterUIsUseCase
 ) : INovelChaptersViewModel() {
-	private val novelID: MutableLiveData<Int> = MutableLiveData()
+	private var nID: Int = -1
+	private var selectedChapters = arrayListOf<Int>()
+
+	override fun setNovelID(novelID: Int) {
+		if (nID == -1)
+			nID = novelID
+	}
 
 	override var isArrayReversed: Boolean
 		get() = TODO("Not yet implemented")
 		set(value) {}
 
-	override fun setNovelID(nID: Int) {
-		if (liveData.value !is HResult.Success)
-			novelID.postValue(nID)
-	}
 
 	override fun downloadNext(count: Int) {
 		TODO("Not yet implemented")
@@ -64,19 +64,20 @@ class NovelChaptersViewModel(
 	}
 
 	override fun isChapterSelected(chapterUI: ChapterUI): Boolean {
-		TODO("Not yet implemented")
+		return selectedChapters.contains(chapterUI.id)
 	}
 
 	override fun addToSelect(chapterUI: ChapterUI) {
-		TODO("Not yet implemented")
+		if (!isChapterSelected(chapterUI)) selectedChapters.add(chapterUI.id)
 	}
+
 
 	override fun updateChapter(chapterUI: ChapterUI) {
 		TODO("Not yet implemented")
 	}
 
 	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {
-		novelID.switchMap { getChapterUIsUseCase(it) }
+		getChapterUIsUseCase(nID)
 	}
 
 	/*

@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import android.os.Bundle
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 
 /*
  * This file is part of shosetsu.
@@ -17,26 +18,11 @@ import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 31 / 05 / 2020
  */
-data class ChapterUI(
-		val id: Int,
-		val novelID: Int,
-		val link: String,
-		val formatterID: Int,
-		var title: String,
-		var releaseDate: String,
-		var order: Double,
-		var readingPosition: Int,
-		var readingReadingStatus: ReadingStatus,
-		var bookmarked: Boolean,
-		var isSaved: Boolean,
-		var savePath: String
-)
+
+fun Bundle.getNovelID(): Int = getInt(BUNDLE_NOVEL_ID)

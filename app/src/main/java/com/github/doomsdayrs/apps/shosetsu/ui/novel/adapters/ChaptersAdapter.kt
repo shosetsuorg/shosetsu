@@ -92,7 +92,9 @@ class ChaptersAdapter(
 		chaptersViewHolder.checkBox.isChecked = isSelected
 
 		chaptersViewHolder.checkBox.visibility =
-				(if (chaptersController.recyclerArray.any { it.isSelected }) View.VISIBLE else View.GONE)
+				if (chaptersController.recyclerArray.any { viewModel.isChapterSelected(it) })
+					View.VISIBLE
+				else View.GONE
 
 		if (chapterUI.isSaved) {
 			chaptersViewHolder.downloadTag.visibility = View.VISIBLE
@@ -154,7 +156,7 @@ class ChaptersAdapter(
 
 			}
 		}
-		if (chaptersController.recyclerArray.none { it.isSelected })
+		if (chaptersController.recyclerArray.none { viewModel.isChapterSelected(it) })
 			chaptersViewHolder.itemView.setOnClickListener {
 				chaptersController.activity?.openChapter(chapterUI)
 			}
