@@ -4,12 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.google.android.material.tabs.TabLayout
-        android:elevation="1dp"
         android:id="@+id/fragment_novel_tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,15 +16,18 @@
         app:tabGravity="fill"
         app:tabMode="fixed" />
 
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/fragment_novel_viewpager"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_novel_tabLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_novel_tabLayout">
 
-
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/fragment_novel_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

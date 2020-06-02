@@ -9,6 +9,7 @@ import com.bluelinelabs.conductor.support.RouterPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getNovelID
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
@@ -57,12 +58,12 @@ class NovelPagerAdapter(private val novelController: NovelController)
 			val controller = when (position) {
 				INFO_CONTROLLER -> {
 					NovelInfoController(bundleOf(
-							BUNDLE_NOVEL_ID to novelController.bundle.getInt(BUNDLE_NOVEL_ID)
+							BUNDLE_NOVEL_ID to novelController.bundle.getNovelID()
 					))
 				}
 				CHAPTERS_CONTROLLER -> {
 					NovelChaptersController(bundleOf(
-							BUNDLE_NOVEL_ID to novelController.bundle.getInt(BUNDLE_NOVEL_ID)
+							BUNDLE_NOVEL_ID to novelController.bundle.getNovelID()
 					))
 				}
 				else -> error("Wrong position $position")

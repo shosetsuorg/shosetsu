@@ -38,7 +38,7 @@ class LoadNovelUseCase(
 		private val eR: IExtensionsRepository,
 		private val cR: IChaptersRepository
 ) {
-	suspend operator fun invoke(novelID: Int, loadChapters: Boolean): HResult<Boolean> =
+	suspend operator fun invoke(novelID: Int, loadChapters: Boolean): HResult<*> =
 			when (val nResult = nR.loadNovel(novelID)) {
 				is HResult.Success -> {
 					val novel = nResult.data

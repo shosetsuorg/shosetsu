@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
@@ -66,9 +65,6 @@ class NovelInfoController(
 	}
 
 	// UI items
-	@Attach(R.id.fragment_novel_main_refresh)
-	var refreshLayout: SwipeRefreshLayout? = null
-
 	@Attach(id.novel_add)
 	var novelAdd: FloatingActionButton? = null
 
@@ -142,7 +138,6 @@ class NovelInfoController(
 			)
 			viewModel.toggleBookmark(novelUI!!)
 		}
-		refreshLayout?.setOnRefreshListener { viewModel.refresh() }
 		viewModel.setNovelID(bundle.getInt(BUNDLE_NOVEL_ID))
 		setObserver()
 		setFormatterName()
@@ -154,7 +149,6 @@ class NovelInfoController(
 			when (it) {
 				is HResult.Success -> {
 					novelUI = it.data
-					refreshLayout?.isRefreshing = false
 					activity?.invalidateOptionsMenu()
 					setNovelData()
 				}
@@ -165,7 +159,6 @@ class NovelInfoController(
 
 				}
 				is HResult.Loading -> {
-					refreshLayout?.isRefreshing = true
 				}
 			}
 		})

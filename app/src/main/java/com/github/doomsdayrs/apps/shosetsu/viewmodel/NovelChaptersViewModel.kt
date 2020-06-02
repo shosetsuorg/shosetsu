@@ -59,9 +59,6 @@ class NovelChaptersViewModel(
 		TODO("Not yet implemented")
 	}
 
-	override fun refresh() {
-		TODO("Not yet implemented")
-	}
 
 	override fun isChapterSelected(chapterUI: ChapterUI): Boolean {
 		return selectedChapters.contains(chapterUI.id)
@@ -70,7 +67,6 @@ class NovelChaptersViewModel(
 	override fun addToSelect(chapterUI: ChapterUI) {
 		if (!isChapterSelected(chapterUI)) selectedChapters.add(chapterUI.id)
 	}
-
 
 	override fun updateChapter(chapterUI: ChapterUI) {
 		TODO("Not yet implemented")

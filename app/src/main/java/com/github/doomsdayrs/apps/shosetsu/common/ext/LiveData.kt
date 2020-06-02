@@ -1,10 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import androidx.lifecycle.Observer
 
 /*
  * This file is part of shosetsu.
@@ -23,21 +21,11 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 06 / 2020
  */
-abstract class INovelInfoViewModel
-	: SubscribeHandleViewModel<NovelUI>, ViewModel() {
-	/** Name of the formatter */
-	abstract val formatterName: LiveData<HResult<String>>
 
-	/** Set's the value to be loaded */
-	abstract fun setNovelID(novelID: Int)
-
-	/** Toggles the bookmark of this ui */
-	abstract fun toggleBookmark(novelUI: NovelUI)
-}
+/** See [LiveData.observe] for understanding, this just inlines it */
+inline fun <T> LiveData<T>.observe(owner: LifecycleOwner, crossinline observer: (T) -> Unit): Unit =
+		observe(owner, Observer { observer(it) })

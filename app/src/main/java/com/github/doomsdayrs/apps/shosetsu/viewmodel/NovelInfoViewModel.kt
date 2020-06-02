@@ -76,13 +76,6 @@ class NovelInfoViewModel(
 		launchIO { bookMarkNovelIDUseCase(novelUI.id) }
 	}
 
-	override fun refresh() {
-		launchIO {
-			loadNovelUseCase(novelIDValue, true)
-		}
-	}
-
-
 	override fun onCleared() {
 		Log.d(logID(), "Cleared")
 		super.onCleared()

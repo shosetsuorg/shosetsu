@@ -79,17 +79,22 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :chapterID")
 	suspend fun removeChapterSavePath(chapterID: Int)
 
-	private fun List<ChapterEntity>.getByURL(chapterURL: String): ChapterEntity? =
-			find { it.url == chapterURL }
+	private fun List<ChapterEntity>.getByURL(chapter: Novel.Chapter): ChapterEntity? =
+			find { it.url == chapter.link }?.also {
+				Log.d(logID(), "Found ${chapter.link} | ${it.url}")
+			}
 
 	@Transaction
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
 		Log.d(logID(), "Handling chapters for $novelEntity")
-		val chapters = loadChapters(novelEntity.id!!).value ?: arrayListOf()
+		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!).value
+				?: arrayListOf()
 		Log.d(logID(), "Chapters to handle: ${list.size}")
-		list.forEach { novelChapter ->
+		Log.d(logID(), "Chapters in data  : ${list.size}")
+
+		list.forEach { novelChapter: Novel.Chapter ->
 			Log.d(logID(), "Processing ${novelChapter.link}")
-			chapters.getByURL(novelChapter.link)?.let { ce ->
+			databaseChapters.getByURL(novelChapter)?.let { ce: ChapterEntity ->
 				suspendedUpdate(ce.copy(
 						title = novelChapter.title,
 						releaseDate = novelChapter.release,
