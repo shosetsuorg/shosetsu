@@ -40,7 +40,7 @@ class LocalChaptersDataSource(
 ) : ILocalChaptersDataSource {
 
 	override fun loadChaptersByID(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
-			chaptersDao.loadChapters(novelID).map { successResult(it) }
+			chaptersDao.loadLiveChapters(novelID).map { successResult(it) }
 
 	override fun loadUnreadChapterCount(novelID: Int): LiveData<HResult<Int>> =
 			chaptersDao.loadChapterUnreadCount(novelID).map { successResult(it) }

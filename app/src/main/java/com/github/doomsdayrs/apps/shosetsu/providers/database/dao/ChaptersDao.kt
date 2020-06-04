@@ -45,10 +45,13 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 			loadChapter(insertReplace(chapterEntity))
 
 	@Query("SELECT * FROM chapters")
-	fun loadChapters(): Array<ChapterEntity>
+	fun loadAllChapters(): Array<ChapterEntity>
 
 	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
-	fun loadChapters(novelID: Int): LiveData<List<ChapterEntity>>
+	fun loadLiveChapters(novelID: Int): LiveData<List<ChapterEntity>>
+
+	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
+	suspend fun loadChapters(novelID: Int): List<ChapterEntity>
 
 	@Query("SELECT * FROM chapters WHERE id = :chapterID LIMIT 1")
 	fun loadChapter(chapterID: Int): ChapterEntity
@@ -79,28 +82,33 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :chapterID")
 	suspend fun removeChapterSavePath(chapterID: Int)
 
-	private fun List<ChapterEntity>.getByURL(chapter: Novel.Chapter): ChapterEntity? =
-			find { it.url == chapter.link }?.also {
-				Log.d(logID(), "Found ${chapter.link} | ${it.url}")
-			}
+
+	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) {
+		Log.d(logID(), "Chapter\t${novelChapter.link}\t\t\twas not found, inserting")
+		insertAbort(novelChapter.entity(novelEntity))
+	}
+
+	private suspend fun handleUpdate(chapterEntity: ChapterEntity, novelChapter: Novel.Chapter) {
+		Log.d(logID(), "Chapter\t${chapterEntity.url}\t\t\twas found, updating")
+		suspendedUpdate(chapterEntity.copy(
+				title = novelChapter.title,
+				releaseDate = novelChapter.release,
+				order = novelChapter.order
+		))
+	}
 
 	@Transaction
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
-		Log.d(logID(), "Handling chapters for $novelEntity")
-		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!).value
-				?: arrayListOf()
-		Log.d(logID(), "Chapters to handle: ${list.size}")
-		Log.d(logID(), "Chapters in data  : ${list.size}")
+		Log.d(logID(), "Handling Chapters : ${novelEntity.url} ${novelEntity.id}")
+		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!)
+		Log.d(logID(), "Chapters received : ${list.size}")
+		Log.d(logID(), "Chapters in data  : ${databaseChapters.size}")
 
 		list.forEach { novelChapter: Novel.Chapter ->
 			Log.d(logID(), "Processing ${novelChapter.link}")
-			databaseChapters.getByURL(novelChapter)?.let { ce: ChapterEntity ->
-				suspendedUpdate(ce.copy(
-						title = novelChapter.title,
-						releaseDate = novelChapter.release,
-						order = novelChapter.order
-				))
-			} ?: insertAbort(novelChapter.entity(novelEntity))
+			databaseChapters.find { it.url == novelChapter.link }?.let {
+				handleUpdate(it, novelChapter)
+			} ?: handleAbortInsert(novelChapter, novelEntity)
 		}
 	}
 }
