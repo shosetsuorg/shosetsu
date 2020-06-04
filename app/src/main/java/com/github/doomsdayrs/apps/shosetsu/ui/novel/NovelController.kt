@@ -16,7 +16,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 
-
 /*
  * This file is part of Shosetsu.
  *
@@ -32,8 +31,8 @@ import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
 /**
  * Shosetsu
  * 9 / June / 2019
