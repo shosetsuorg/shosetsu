@@ -16,6 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
@@ -150,6 +151,9 @@ class NovelInfoController(
 				is HResult.Success -> {
 					novelUI = it.data
 					activity?.invalidateOptionsMenu()
+					if (!novelUI!!.loaded) {
+						(parentController as NovelController).refresh()
+					}
 					setNovelData()
 				}
 				is HResult.Error -> {

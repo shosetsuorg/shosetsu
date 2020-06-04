@@ -52,7 +52,24 @@ class NovelController(val bundle: Bundle) : ViewedController(bundle) {
 	@Attach(R.id.swipeRefreshLayout)
 	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
-	private val viewModel: INovelViewModel by viewModel()
+	/**
+	 * View model of the major novel
+	 */
+	val viewModel: INovelViewModel by viewModel()
+
+	/**
+	 * Refreshes the novel
+	 */
+	fun refresh() {
+		viewModel.refresh().observe(this) {
+			when (it) {
+				is HResult.Loading -> swipeRefreshLayout?.isRefreshing = true
+				is HResult.Success -> swipeRefreshLayout?.isRefreshing = false
+				is HResult.Error -> swipeRefreshLayout?.isRefreshing = false
+				is HResult.Empty -> swipeRefreshLayout?.isRefreshing = false
+			}
+		}
+	}
 
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(bundle.getNovelID())
@@ -70,15 +87,6 @@ class NovelController(val bundle: Bundle) : ViewedController(bundle) {
 
 		novelTabLayout?.post { novelTabLayout?.setupWithViewPager(novelViewpager) }
 
-		swipeRefreshLayout?.setOnRefreshListener {
-			viewModel.refresh().observe(this) {
-				when (it) {
-					is HResult.Loading -> swipeRefreshLayout?.isRefreshing = true
-					is HResult.Success -> swipeRefreshLayout?.isRefreshing = false
-					is HResult.Error -> swipeRefreshLayout?.isRefreshing = false
-					is HResult.Empty -> swipeRefreshLayout?.isRefreshing = false
-				}
-			}
-		}
+		swipeRefreshLayout?.setOnRefreshListener { refresh() }
 	}
 }
