@@ -6,8 +6,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -16,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
+import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
@@ -46,7 +45,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
 class NovelChaptersController(val bundle: Bundle)
-	: RecyclerController<ChaptersAdapter, ChapterUI>(bundle) {
+	: RecyclerController<ChaptersAdapter, ChapterUI>(bundle), FABView {
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
@@ -92,7 +91,7 @@ class NovelChaptersController(val bundle: Bundle)
 	override fun updateUI(list: List<ChapterUI>) {
 		super.updateUI(list)
 		Log.d(logID(), "Updating ui with list size of ${list.size}")
-		resume?.visibility = if (list.isNotEmpty()) VISIBLE else INVISIBLE
+		if (list.isNotEmpty()) resume?.show() else resume?.hide()
 	}
 
 	/**
@@ -159,6 +158,14 @@ class NovelChaptersController(val bundle: Bundle)
 
 	override fun difAreItemsTheSame(oldItem: ChapterUI, newItem: ChapterUI): Boolean =
 			oldItem.id == newItem.id
+
+	override fun hideFAB() {
+		if (recyclerArray.isNotEmpty()) resume?.hide()
+	}
+
+	override fun showFAB() {
+		if (recyclerArray.isNotEmpty()) resume?.show()
+	}
 
 	// Option menu functions
 	/*

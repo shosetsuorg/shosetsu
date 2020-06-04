@@ -72,8 +72,10 @@ class NovelController(val bundle: Bundle) : ViewedController(bundle) {
 
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(bundle.getNovelID())
-		novelViewpager?.adapter = NovelPagerAdapter(this)
+		val adapter = NovelPagerAdapter(this)
+		novelViewpager?.adapter = adapter
 		novelViewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(novelTabLayout))
+		novelViewpager?.addOnPageChangeListener(adapter)
 
 		novelTabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
 			override fun onTabSelected(tab: TabLayout.Tab) {

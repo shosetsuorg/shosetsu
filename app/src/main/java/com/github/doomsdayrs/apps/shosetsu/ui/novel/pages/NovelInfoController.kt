@@ -17,12 +17,14 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
+import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 /*
@@ -40,20 +42,17 @@ import com.squareup.picasso.Picasso
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
 /**
  * Shosetsu
  * 9 / June / 2019
  *
- * @author github.com/doomsdayrs
- *
- *
  * The page you see when you select a novel
- *
  */
 class NovelInfoController(
-		val bundle: Bundle) : ViewedController(bundle) {
+		private val bundle: Bundle
+) : ViewedController(bundle), FABView {
 	override val layoutRes: Int = R.layout.novel_main
 
 	val viewModel: INovelInfoViewModel by viewModel()
@@ -74,9 +73,6 @@ class NovelInfoController(
 
 	@Attach(id.novel_author)
 	var novelAuthor: TextView? = null
-
-	@Attach(id.novel_status)
-	var novelStatus: TextView? = null
 
 	@Attach(id.novel_description)
 	var novelDescription: TextView? = null
@@ -151,16 +147,13 @@ class NovelInfoController(
 				is HResult.Success -> {
 					novelUI = it.data
 					activity?.invalidateOptionsMenu()
-					if (!novelUI!!.loaded) {
-						(parentController as NovelController).refresh()
-					}
-					setNovelData()
+					// If the data is not present, loads it
+					if (!novelUI!!.loaded) (parentController as NovelController).refresh()
+					else setNovelData()
 				}
 				is HResult.Error -> {
-
 				}
 				is HResult.Empty -> {
-
 				}
 				is HResult.Loading -> {
 				}
@@ -199,47 +192,66 @@ class NovelInfoController(
 	 */
 	private fun setNovelData() {
 		novelUI?.let { novelUI ->
+			// Handle title
 			activity?.setActivityTitle(novelUI.title)
 			novelTitle?.text = novelUI.title
 
+			// Handle authors
 			if (novelUI.authors.isNotEmpty())
 				novelAuthor?.text = novelUI.authors.contentToString()
 
+			// Handle description
 			novelDescription?.text = novelUI.description
 
+			// Handle artists
 			if (novelUI.artists.isNotEmpty())
 				novelArtists?.text = novelUI.artists.contentToString()
 
-			novelStatus?.text = novelUI.status.title
+			// Handles the status of the novel
 			when (novelUI.status) {
-				Novel.Status.PAUSED -> {
-					novelPublish?.setText(R.string.paused)
-				}
-				Novel.Status.COMPLETED -> {
-					novelPublish?.setText(R.string.completed)
-				}
-				Novel.Status.PUBLISHING -> {
-					novelPublish?.setText(R.string.publishing)
-				}
+				Novel.Status.PAUSED -> novelPublish?.setText(R.string.paused)
+				Novel.Status.COMPLETED -> novelPublish?.setText(R.string.completed)
+				Novel.Status.PUBLISHING -> novelPublish?.setText(R.string.publishing)
 				else -> novelPublish?.setText(R.string.unknown)
 			}
-			if (context != null) {
-				for (string in novelUI.genres) {
-					val chip = Chip(novelGenres!!.context)
-					chip.text = string
-					novelGenres?.addView(chip)
-				}
-			} else novelGenres?.visibility = View.GONE
 
-			if (novelUI.imageURL.isNotEmpty()) {
-				Picasso.get().load(novelUI.imageURL).into(novelImage)
-				Picasso.get().load(novelUI.imageURL).into(novelImageBackground)
+			// Inserts the chips for genres
+			for (string in novelUI.genres) {
+				val chip = Chip(novelGenres!!.context)
+				chip.text = string
+				novelGenres?.addView(chip)
 			}
+
+			// Loads the image
+			if (novelUI.imageURL.isNotEmpty()) {
+				Picasso.get().load(novelUI.imageURL).into(novelImage, object : Callback {
+					override fun onSuccess() {
+						Picasso.get().load(novelUI.imageURL).into(novelImageBackground)
+					}
+
+					override fun onError(e: Exception?) {
+					}
+				})
+			}
+
+			// Show the option to add the novel
 			novelAdd?.show()
 		}
 	}
 
 	private fun setFormatterName(text: String = formatterName) {
 		novelFormatter?.text = text
+	}
+
+	override fun hideFAB() {
+		novelUI?.let {
+			novelAdd?.hide()
+		}
+	}
+
+	override fun showFAB() {
+		novelUI?.let {
+			novelAdd?.show()
+		}
 	}
 }

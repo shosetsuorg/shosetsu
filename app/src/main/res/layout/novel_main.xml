@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -44,7 +45,8 @@
             android:background="@android:color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/title_tag"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Isekai something" />
 
         <TextView
             android:id="@+id/novel_formatter"
@@ -54,6 +56,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
+            android:text="boxnovel"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView5"
@@ -70,7 +73,8 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textView6"
-            app:layout_constraintTop_toBottomOf="@+id/novel_formatter" />
+            app:layout_constraintTop_toBottomOf="@+id/novel_formatter"
+            tools:text="A, B, C" />
 
 
         <TextView
@@ -83,7 +87,8 @@
             android:background="@android:color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/novel_genres" />
+            app:layout_constraintTop_toBottomOf="@+id/novel_genres"
+            tools:text="A\nB\nC\nD\nE\nF" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/novel_add"
@@ -103,6 +108,7 @@
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/novel_genres"
+            android:background="@android:color/transparent"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="16dp"
@@ -127,20 +133,8 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView7"
-            app:layout_constraintTop_toBottomOf="@+id/novel_author" />
-
-        <TextView
-            android:id="@+id/novel_status"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView8"
-            app:layout_constraintTop_toBottomOf="@+id/novel_artists" />
+            app:layout_constraintTop_toBottomOf="@+id/novel_author"
+            tools:text="C, D, E" />
 
         <TextView
             android:id="@+id/novel_publish"
@@ -153,7 +147,8 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView11"
-            app:layout_constraintTop_toBottomOf="@+id/novel_status" />
+            app:layout_constraintTop_toBottomOf="@+id/novel_artists"
+            tools:text="Unknown" />
 
         <TextView
             android:id="@+id/title_tag"
@@ -209,19 +204,6 @@
             app:layout_constraintTop_toBottomOf="@+id/novel_author" />
 
         <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:color/transparent"
-            android:text="@string/reading_status"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/novel_image"
-            app:layout_constraintTop_toBottomOf="@+id/novel_artists" />
-
-        <TextView
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
@@ -232,7 +214,7 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/novel_image"
-            app:layout_constraintTop_toBottomOf="@+id/novel_status" />
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
