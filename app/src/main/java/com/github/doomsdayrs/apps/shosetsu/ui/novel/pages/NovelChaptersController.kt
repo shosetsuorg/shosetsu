@@ -6,6 +6,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -90,6 +92,7 @@ class NovelChaptersController(val bundle: Bundle)
 	override fun updateUI(list: List<ChapterUI>) {
 		super.updateUI(list)
 		Log.d(logID(), "Updating ui with list size of ${list.size}")
+		resume?.visibility = if (list.isNotEmpty()) VISIBLE else INVISIBLE
 	}
 
 	/**
