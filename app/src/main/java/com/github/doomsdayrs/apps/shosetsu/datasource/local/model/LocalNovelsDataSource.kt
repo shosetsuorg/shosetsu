@@ -40,7 +40,7 @@ class LocalNovelsDataSource(
 			novelsDao.loadBookmarkedNovels().map { successResult(it) }
 
 	override suspend fun loadBookmarkedNovelsCard(): LiveData<HResult<List<IDTitleImage>>> =
-			novelsDao.loadIDImageTitle().map { successResult(it) }
+			novelsDao.loadBookmarkedIDImageTitle().map { successResult(it) }
 
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
 			successResult(novelsDao.loadNovel(novelID))
@@ -51,8 +51,8 @@ class LocalNovelsDataSource(
 	override suspend fun updateNovel(novelEntity: NovelEntity) =
 			novelsDao.suspendedUpdate(novelEntity)
 
-	override suspend fun bookmarkNovel(novelID: Int) =
-			novelsDao.bookmarkNovel(novelID)
+	override suspend fun setNovelBookmark(novelID: Int, bookmark: Int) =
+			novelsDao.setNovelBookmark(novelID,bookmark)
 
 	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook {
 		Log.d(logID(), "insertNovelReturnCard $novelEntity")

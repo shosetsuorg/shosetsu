@@ -29,6 +29,6 @@ class NovelBackgroundAddUseCase(
 ) {
 	suspend operator fun invoke(novelID: Int): HResult<*> =
 			loadNovelUseCase(novelID, false).also {
-				if (it is HResult.Success) bookMarkNovelIDUseCase(novelID)
+				if (it is HResult.Success) bookMarkNovelIDUseCase(novelID, true)
 			}
 }

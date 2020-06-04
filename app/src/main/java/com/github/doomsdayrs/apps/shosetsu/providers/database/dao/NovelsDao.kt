@@ -53,6 +53,9 @@ interface NovelsDao : BaseDao<NovelEntity> {
 	@Query("SELECT id,title,imageURL FROM novels")
 	fun loadIDImageTitle(): LiveData<List<IDTitleImage>>
 
+	@Query("SELECT id,title,imageURL FROM novels WHERE bookmarked = 1")
+	fun loadBookmarkedIDImageTitle(): LiveData<List<IDTitleImage>>
+
 	@Query("SELECT id FROM novels")
 	fun loadBookmarkedIDs(): List<Int>
 
@@ -103,8 +106,8 @@ interface NovelsDao : BaseDao<NovelEntity> {
 	suspend fun insertAndReturn(novelEntity: NovelEntity): NovelEntity =
 			loadNovel(insertIgnore(novelEntity))
 
-	@Query("UPDATE novels SET bookmarked = 1 WHERE id = :novelID")
-	fun bookmarkNovel(novelID: Int)
+	@Query("UPDATE novels SET bookmarked = :bookmarked WHERE id = :novelID")
+	fun setNovelBookmark(novelID: Int, bookmarked: Int)
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters

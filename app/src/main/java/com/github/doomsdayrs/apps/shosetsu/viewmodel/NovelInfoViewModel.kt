@@ -73,7 +73,7 @@ class NovelInfoViewModel(
 	}
 
 	override fun toggleBookmark(novelUI: NovelUI) {
-		launchIO { bookMarkNovelIDUseCase(novelUI.id) }
+		launchIO { bookMarkNovelIDUseCase(novelUI.id, !novelUI.bookmarked) }
 	}
 
 	override fun onCleared() {

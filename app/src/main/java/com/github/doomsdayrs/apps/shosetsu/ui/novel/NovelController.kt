@@ -12,6 +12,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -51,6 +52,9 @@ class NovelController(val bundle: Bundle) : ViewedController(bundle) {
 	@Attach(R.id.swipeRefreshLayout)
 	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
+	@Attach(R.id.fab)
+	var fab: FloatingActionButton? = null
+
 	/**
 	 * View model of the major novel
 	 */
@@ -75,7 +79,9 @@ class NovelController(val bundle: Bundle) : ViewedController(bundle) {
 		val adapter = NovelPagerAdapter(this)
 		novelViewpager?.adapter = adapter
 		novelViewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(novelTabLayout))
-		novelViewpager?.addOnPageChangeListener(adapter)
+		fab?.let {
+			novelViewpager?.addOnPageChangeListener(adapter.PageController(it))
+		}
 
 		novelTabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
 			override fun onTabSelected(tab: TabLayout.Tab) {

@@ -1,5 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.view.base
 
+import android.util.Log
+import androidx.annotation.CallSuper
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 /*
  * This file is part of shosetsu.
  *
@@ -27,10 +32,30 @@ interface FABView {
 	/**
 	 * Hide the FAB
 	 */
-	fun hideFAB()
+	fun hideFAB(fab: FloatingActionButton) {
+		Log.d(logID(), "Hiding FAB")
+		fab.hide()
+	}
 
 	/**
 	 * Show the FAB
 	 */
-	fun showFAB()
+	fun showFAB(fab: FloatingActionButton) {
+		Log.d(logID(), "Showing FAB")
+		fab.show()
+	}
+
+	@CallSuper
+	fun resetFAB(fab: FloatingActionButton) {
+		Log.d(logID(), "Resetting FAB listeners")
+		fab.setOnClickListener(null)
+		manipulateFAB(fab)
+	}
+
+	fun manipulateFAB(fab: FloatingActionButton) {}
+
+	/**
+	 * Set the icon of the FAB, between the hide and show
+	 */
+	fun setFABIcon(fab: FloatingActionButton)
 }

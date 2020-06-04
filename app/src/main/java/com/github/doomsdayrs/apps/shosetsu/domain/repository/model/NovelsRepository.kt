@@ -96,6 +96,6 @@ class NovelsRepository(
 	): HResult<Novel.Info> =
 			remoteSource.loadNovel(formatter, novelEntity.url, loadChapters)
 
-	override suspend fun bookmarkNovel(novelID: Int) =
-			database.bookmarkNovel(novelID)
+	override suspend fun setNovelBookmark(novelID: Int, bookmarked: Int) =
+			database.setNovelBookmark(novelID, bookmarked)
 }

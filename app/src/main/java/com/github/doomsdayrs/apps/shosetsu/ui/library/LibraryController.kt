@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -68,10 +67,37 @@ class LibraryController
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.my_library)
-		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
+		setupRecycler()
+		setObservers()
+	}
+
+	private fun setupRecycler() {
+		recyclerView?.setHasFixedSize(false)
+		recyclerView?.layoutManager = if (Settings.novelCardType == 0)
+			GridLayoutManager(
+					applicationContext,
+					applicationContext!!.calculateColumnCount(200f),
+					RecyclerView.VERTICAL,
+					false
+			) else
+			LinearLayoutManager(
+					applicationContext,
+					LinearLayoutManager.VERTICAL,
+					false
+			)
+		adapter = LibraryNovelAdapter(
+				this,
+				if (Settings.novelCardType == 0)
+					R.layout.recycler_novel_card
+				else R.layout.recycler_novel_card_compressed
+		)
+	}
+
+	private fun setObservers() {
+		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 
 		/**If the selected array changes, applys dif util*/
-		viewModel.selectedNovels.observe(this, Observer { selected ->
+		viewModel.selectedNovels.observe(this) { selected ->
 			selectedNovels.clear()
 			selectedNovels.addAll(selected)
 
@@ -90,20 +116,7 @@ class LibraryController
 			}
 			val r = DiffUtil.calculateDiff(c)
 			adapter?.let { r.dispatchUpdatesTo(it) }
-		})
-
-		recyclerView?.layoutManager = if (Settings.novelCardType == 0)
-			GridLayoutManager(
-					applicationContext,
-					applicationContext!!.calculateColumnCount(200f),
-					RecyclerView.VERTICAL,
-					false
-			) else
-			LinearLayoutManager(
-					applicationContext,
-					LinearLayoutManager.VERTICAL,
-					false
-			)
+		}
 	}
 
 	/***/
@@ -117,7 +130,7 @@ class LibraryController
 			searchView?.setOnCloseListener {
 				val v = viewModel.liveData.value
 				return@setOnCloseListener if (v is HResult.Success) {
-					setLibraryCards(v.data)
+					adapter?.novels = v.data
 					true
 				} else false
 			}
@@ -166,18 +179,10 @@ class LibraryController
 		return false
 	}
 
-	/**
-	 * Sets the cards to display
-	 */
-	fun setLibraryCards(novelCards: List<IDTitleImageUI>) {
-		recyclerView?.setHasFixedSize(false)
-		adapter = LibraryNovelAdapter(
-				novelCards,
-				this,
-				if (Settings.novelCardType == 0)
-					R.layout.recycler_novel_card
-				else R.layout.recycler_novel_card_compressed
-		)
+
+	override fun updateUI(list: List<IDTitleImageUI>) {
+		Log.d(logID(), "Received ${list.size} bookmarked novels")
+		super.updateUI(list)
 	}
 
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {

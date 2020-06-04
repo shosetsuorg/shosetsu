@@ -46,10 +46,10 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class LibraryNovelAdapter(
-		private val novels: List<IDTitleImageUI>,
 		private val libraryController: LibraryController,
 		@LayoutRes val layout: Int,
-		private val viewModel: ILibraryViewModel = libraryController.viewModel
+		private val viewModel: ILibraryViewModel = libraryController.viewModel,
+		var novels: List<IDTitleImageUI> = arrayListOf()
 ) : RecyclerView.Adapter<LibraryItemViewHolder>() {
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): LibraryItemViewHolder =
 			LibraryItemViewHolder(LayoutInflater.from(viewGroup.context).inflate(

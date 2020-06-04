@@ -13,6 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.getNovelID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -49,11 +50,8 @@ class NovelChaptersController(val bundle: Bundle)
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
-	/** This button allows the user to quickly snap into what they were last reading */
-	@Attach(R.id.resume)
-	var resume: FloatingActionButton? = null
-
 	private val viewModel: INovelChaptersViewModel by viewModel()
+	private var resume: FloatingActionButton? = null
 
 	init {
 		setHasOptionsMenu(true)
@@ -61,20 +59,7 @@ class NovelChaptersController(val bundle: Bundle)
 
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(bundle.getNovelID())
-		resume?.visibility = View.GONE
-		resume?.setOnClickListener {
-			viewModel.loadLastRead().observe(this, Observer { result ->
-				when (result) {
-					is HResult.Error -> {
-					}
-					is HResult.Empty -> {
-					}
-					is HResult.Success -> {
-						activity?.openChapter(result.data)
-					}
-				}
-			})
-		}
+		resume = (parentController as NovelController).fab
 		adapter = ChaptersAdapter(this, viewModel)
 		setObserver()
 	}
@@ -159,12 +144,33 @@ class NovelChaptersController(val bundle: Bundle)
 	override fun difAreItemsTheSame(oldItem: ChapterUI, newItem: ChapterUI): Boolean =
 			oldItem.id == newItem.id
 
-	override fun hideFAB() {
-		if (recyclerArray.isNotEmpty()) resume?.hide()
+	override fun hideFAB(fab: FloatingActionButton) {
+		if (recyclerArray.isNotEmpty()) super.hideFAB(fab)
 	}
 
-	override fun showFAB() {
-		if (recyclerArray.isNotEmpty()) resume?.show()
+	override fun showFAB(fab: FloatingActionButton) {
+		if (recyclerArray.isNotEmpty()) super.showFAB(fab)
+	}
+
+	override fun setFABIcon(fab: FloatingActionButton) {
+		fab.setImageResource(R.drawable.ic_play_arrow_24dp)
+	}
+
+	override fun manipulateFAB(fab: FloatingActionButton) {
+		fab.setOnClickListener {
+			viewModel.loadLastRead().observe(this, Observer { result ->
+				when (result) {
+					is HResult.Error -> {
+					}
+					is HResult.Empty -> {
+					}
+					is HResult.Success -> {
+						activity?.openChapter(result.data)
+					}
+				}
+			})
+		}
+
 	}
 
 	// Option menu functions

@@ -60,5 +60,5 @@ interface INovelsRepository {
 	/**
 	 * Bookmark a novel by it's ID
 	 */
-	suspend fun bookmarkNovel(novelID: Int)
+	suspend fun setNovelBookmark(novelID: Int, bookmark: Int)
 }

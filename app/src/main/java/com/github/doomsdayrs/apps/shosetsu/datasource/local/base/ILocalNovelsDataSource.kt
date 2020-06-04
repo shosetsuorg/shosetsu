@@ -37,7 +37,7 @@ interface ILocalNovelsDataSource {
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
 	suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>>
 	suspend fun updateNovel(novelEntity: NovelEntity)
-	suspend fun bookmarkNovel(novelID: Int)
+	suspend fun setNovelBookmark(novelID: Int, bookmark: Int)
 	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook
 	suspend fun insertNovel(novelEntity: NovelEntity)
 }

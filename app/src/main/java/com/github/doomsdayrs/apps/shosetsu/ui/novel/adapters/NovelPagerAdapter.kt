@@ -17,6 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
 import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /*
  * This file is part of Shosetsu.
@@ -40,7 +41,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
  * 9 / June / 2019
  */
 class NovelPagerAdapter(private val novelController: NovelController)
-	: RouterPagerAdapter(novelController), ViewPager.OnPageChangeListener {
+	: RouterPagerAdapter(novelController) {
 	companion object {
 		private const val INFO_CONTROLLER = 0
 		private const val CHAPTERS_CONTROLLER = 1
@@ -64,7 +65,6 @@ class NovelPagerAdapter(private val novelController: NovelController)
 			))
 	)
 
-	private var currentPosition = 0
 
 	override fun configureRouter(router: Router, position: Int) {
 		if (!router.hasRootController()) {
@@ -76,26 +76,36 @@ class NovelPagerAdapter(private val novelController: NovelController)
 
 	override fun getPageTitle(position: Int): CharSequence? = titles.getItem(position)
 
-	override fun onPageScrollStateChanged(state: Int) {
-	}
+	inner class PageController(
+			private val fab: FloatingActionButton
+	) : ViewPager.OnPageChangeListener {
+		private var currentPosition = 0
 
-	override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-	}
+		override fun onPageScrollStateChanged(state: Int) {
+		}
 
-	override fun onPageSelected(position: Int) {
-		if (currentPosition != position) {
-			Log.d(logID(), "Current position is $currentPosition")
-			Log.d(logID(), "TheNext position is $currentPosition")
+		override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+		}
 
-			val currentController = controllers[currentPosition]
-			if (currentController is FABView)
-				currentController.hideFAB()
+		override fun onPageSelected(position: Int) {
+			if (currentPosition != position) {
+				Log.d(logID(), "Current position is $currentPosition")
+				Log.d(logID(), "TheNext position is $position")
 
-			val newController = controllers[position]
-			if (newController is FABView)
-				newController.showFAB()
+				val currentController = controllers[currentPosition]
+				if (currentController is FABView) {
+					currentController.hideFAB(fab)
+					currentController.resetFAB(fab)
+				}
 
-			currentPosition = position
+				val newController = controllers[position]
+				if (newController is FABView) {
+					newController.setFABIcon(fab)
+					newController.manipulateFAB(fab)
+					newController.showFAB(fab)
+				}
+				currentPosition = position
+			}
 		}
 	}
 }

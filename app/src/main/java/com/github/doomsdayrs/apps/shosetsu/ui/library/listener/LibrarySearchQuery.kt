@@ -35,7 +35,8 @@ class LibrarySearchQuery(private val libraryController: LibraryController)
 	override fun onQueryTextChange(newText: String): Boolean {
 		Log.d(logID(), "Query:\t[$newText]")
 		val novelUIs = libraryController.viewModel.search(newText)
-		libraryController.updateUI(novelUIs.map { it })
+		libraryController.adapter?.novels = (novelUIs.map { it })
+		libraryController
 		return novelUIs.isNotEmpty()
 	}
 }

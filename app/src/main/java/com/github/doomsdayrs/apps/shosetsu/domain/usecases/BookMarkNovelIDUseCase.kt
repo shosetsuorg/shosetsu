@@ -28,9 +28,9 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
 class BookMarkNovelIDUseCase(
 		private val novelRepository: INovelsRepository
 ) {
-	suspend operator fun invoke(novelID: Int) {
+	suspend operator fun invoke(novelID: Int, bookmark: Boolean) {
 		Log.d(logID(), "Bookmarking $novelID")
-		return novelRepository.bookmarkNovel(novelID)
+		return novelRepository.setNovelBookmark(novelID, if (bookmark) 1 else 0)
 	}
 
 }

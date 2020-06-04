@@ -90,22 +90,6 @@
             app:layout_constraintTop_toBottomOf="@+id/novel_genres"
             tools:text="A\nB\nC\nD\nE\nF" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/novel_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            app:layout_constraintBottom_toTopOf="@+id/novel_genres"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/novel_publish"
-            app:maxImageSize="32dp"
-            app:srcCompat="@drawable/ic_add_circle_outline_24dp" />
-
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/novel_genres"
             android:background="@android:color/transparent"

@@ -37,8 +37,8 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class LibraryViewModel(
-		val unreadChaptersUseCase: UnreadChaptersUseCase,
-		val libraryAsCardsUseCase: LibraryAsCardsUseCase
+		private val unreadChaptersUseCase: UnreadChaptersUseCase,
+		private val libraryAsCardsUseCase: LibraryAsCardsUseCase
 ) : ILibraryViewModel() {
 	override var selectedNovels = MutableLiveData<List<Int>>()
 	override var visible: MutableLiveData<List<Int>>

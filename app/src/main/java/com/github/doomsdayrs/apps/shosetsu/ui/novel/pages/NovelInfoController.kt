@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -65,8 +66,7 @@ class NovelInfoController(
 	}
 
 	// UI items
-	@Attach(id.novel_add)
-	var novelAdd: FloatingActionButton? = null
+	var fab: FloatingActionButton? = null
 
 	@Attach(id.novel_title)
 	var novelTitle: TextView? = null
@@ -122,19 +122,7 @@ class NovelInfoController(
 	}
 
 	override fun onViewCreated(view: View) {
-		novelAdd?.hide()
-
-		if (novelUI?.bookmarked == true)
-			novelAdd?.setImageResource(R.drawable.ic_baseline_check_circle_24)
-
-		novelAdd?.setOnClickListener {
-			novelAdd?.setImageResource(
-					if (novelUI?.bookmarked == false)
-						R.drawable.ic_baseline_check_circle_24
-					else R.drawable.ic_add_circle_outline_24dp
-			)
-			viewModel.toggleBookmark(novelUI!!)
-		}
+		fab = (parentController as NovelController).fab
 		viewModel.setNovelID(bundle.getInt(BUNDLE_NOVEL_ID))
 		setObserver()
 		setFormatterName()
@@ -187,6 +175,14 @@ class NovelInfoController(
 		})
 	}
 
+	override fun manipulateFAB(fab: FloatingActionButton) {
+		fab.setOnClickListener {
+			Log.d(logID(), "Toggling Bookmark")
+			viewModel.toggleBookmark(novelUI!!)
+			setFABIcon(fab!!)
+		}
+	}
+
 	/**
 	 * Sets the data of this page
 	 */
@@ -233,9 +229,12 @@ class NovelInfoController(
 					}
 				})
 			}
-
+			fab?.let {
+				hideFAB(it)
+				setFABIcon(it)
+				showFAB(it)
+			}
 			// Show the option to add the novel
-			novelAdd?.show()
 		}
 	}
 
@@ -243,15 +242,11 @@ class NovelInfoController(
 		novelFormatter?.text = text
 	}
 
-	override fun hideFAB() {
-		novelUI?.let {
-			novelAdd?.hide()
-		}
-	}
-
-	override fun showFAB() {
-		novelUI?.let {
-			novelAdd?.show()
-		}
+	override fun setFABIcon(fab: FloatingActionButton) {
+		fab.setImageResource(
+				if (novelUI?.bookmarked == true)
+					R.drawable.ic_baseline_check_circle_24
+				else R.drawable.ic_add_circle_outline_24dp
+		)
 	}
 }
