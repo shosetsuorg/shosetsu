@@ -52,7 +52,7 @@ class LocalNovelsDataSource(
 			novelsDao.suspendedUpdate(novelEntity)
 
 	override suspend fun setNovelBookmark(novelID: Int, bookmark: Int) =
-			novelsDao.setNovelBookmark(novelID,bookmark)
+			novelsDao.setNovelBookmark(novelID, bookmark)
 
 	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook {
 		Log.d(logID(), "insertNovelReturnCard $novelEntity")

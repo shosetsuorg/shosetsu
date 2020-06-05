@@ -1,8 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
+import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 
 /*
@@ -27,9 +27,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepos
  * 08 / 05 / 2020
  */
 class UnreadChaptersUseCase(
-		val chaptersRepository: IChaptersRepository
-) : ((Int) -> LiveData<HResult<Int>>) {
-	override fun invoke(int: Int): LiveData<HResult<Int>> {
-		return liveData { emitSource(chaptersRepository.loadChapterUnreadCount(int)) }
+		private val chaptersRepository: IChaptersRepository
+) {
+	suspend operator fun invoke(novelID: Int): HResult<Int> {
+		Log.d(logID(), "Getting unread count for $novelID")
+		return chaptersRepository.loadChapterUnreadCount(novelID)
 	}
 }

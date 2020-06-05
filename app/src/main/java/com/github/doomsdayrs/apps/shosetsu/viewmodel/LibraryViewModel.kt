@@ -17,6 +17,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
@@ -24,7 +25,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LibraryAsCardsUseCase
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadLibraryUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UnreadChaptersUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
@@ -38,7 +40,7 @@ import kotlinx.coroutines.Dispatchers
  */
 class LibraryViewModel(
 		private val unreadChaptersUseCase: UnreadChaptersUseCase,
-		private val libraryAsCardsUseCase: LibraryAsCardsUseCase
+		private val libraryAsCardsUseCase: LoadLibraryUseCase
 ) : ILibraryViewModel() {
 	override var selectedNovels = MutableLiveData<List<Int>>()
 	override var visible: MutableLiveData<List<Int>>
@@ -74,9 +76,10 @@ class LibraryViewModel(
 	}
 
 	override fun loadChaptersUnread(novelID: Int): LiveData<HResult<Int>> {
-		return liveData(context = viewModelScope.coroutineContext + Dispatchers.Main) {
+		Log.d(logID(), "$novelID is requesting its chapters")
+		return liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
 			emit(loading())
-			emitSource(unreadChaptersUseCase(novelID))
+			emit(unreadChaptersUseCase(novelID))
 		}
 	}
 

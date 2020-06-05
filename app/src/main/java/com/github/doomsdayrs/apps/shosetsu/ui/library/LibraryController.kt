@@ -182,6 +182,7 @@ class LibraryController
 
 	override fun updateUI(list: List<IDTitleImageUI>) {
 		Log.d(logID(), "Received ${list.size} bookmarked novels")
+		adapter?.novels = list
 		super.updateUI(list)
 	}
 

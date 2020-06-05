@@ -58,7 +58,7 @@ interface IChaptersRepository {
 	/**
 	 * Loads count of unread chapters
 	 */
-	suspend fun loadChapterUnreadCount(novelID: Int): LiveData<HResult<Int>>
+	suspend fun loadChapterUnreadCount(novelID: Int): HResult<Int>
 
 
 	/**

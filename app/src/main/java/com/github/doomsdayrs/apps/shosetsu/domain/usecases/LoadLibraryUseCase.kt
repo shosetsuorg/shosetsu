@@ -28,16 +28,20 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
  * shosetsu
  * 08 / 05 / 2020
  */
-class LibraryAsCardsUseCase(
-		val iNovelsRepository: INovelsRepository
+class LoadLibraryUseCase(
+		private val iNovelsRepository: INovelsRepository
 ) : (() -> LiveData<HResult<List<IDTitleImageUI>>>) {
 	override fun invoke(): LiveData<HResult<List<IDTitleImageUI>>> {
 		return liveData {
 			emitSource(iNovelsRepository.suspendedGetLiveBookmarked().map { data ->
 				when (data) {
-					is HResult.Success -> {
-						successResult(data.data.map { IDTitleImageUI(it.id, it.title, it.imageURL) })
-					}
+					is HResult.Success -> successResult(data.data.map {
+						IDTitleImageUI(
+								it.id,
+								it.title,
+								it.imageURL
+						)
+					})
 					is HResult.Loading -> loading()
 					is HResult.Error -> errorResult(data.code, data.message)
 					is HResult.Empty -> emptyResult()

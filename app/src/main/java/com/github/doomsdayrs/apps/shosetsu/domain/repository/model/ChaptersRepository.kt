@@ -74,7 +74,7 @@ class ChaptersRepository(
 		fileSource.saveChapterPassageToStorage(chapterEntity, passage)
 	}
 
-	override suspend fun loadChapterUnreadCount(novelID: Int): LiveData<HResult<Int>> =
+	override suspend fun loadChapterUnreadCount(novelID: Int): HResult<Int> =
 			localSource.loadUnreadChapterCount(novelID)
 
 	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): Unit =

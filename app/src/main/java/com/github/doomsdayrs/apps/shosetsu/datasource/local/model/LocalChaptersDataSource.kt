@@ -42,8 +42,8 @@ class LocalChaptersDataSource(
 	override fun loadChaptersByID(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
 			chaptersDao.loadLiveChapters(novelID).map { successResult(it) }
 
-	override fun loadUnreadChapterCount(novelID: Int): LiveData<HResult<Int>> =
-			chaptersDao.loadChapterUnreadCount(novelID).map { successResult(it) }
+	override fun loadUnreadChapterCount(novelID: Int): HResult<Int> =
+			successResult(chaptersDao.loadChapterUnreadCount(novelID))
 
 	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) =
 			chaptersDao.handleChapters(novelEntity, list)
