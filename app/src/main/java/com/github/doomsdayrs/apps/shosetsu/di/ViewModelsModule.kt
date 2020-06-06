@@ -33,7 +33,7 @@ import org.kodein.di.generic.provider
 val viewModelsModule = Kodein.Module("view_models_module") {
 
 	// Other
-	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance(), instance()) }
+	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance()) }
 	bind<IDownloadsViewModel>() with provider { DownloadsViewModel(instance()) }
 	bind<ISearchViewModel>() with provider { SearchViewModel(instance(), instance()) }
 	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(instance()) }
@@ -55,7 +55,7 @@ val viewModelsModule = Kodein.Module("view_models_module") {
 	bind<INovelInfoViewModel>() with provider {
 		NovelInfoViewModel(instance(), instance(), instance(), instance())
 	}
-	bind<INovelChaptersViewModel>() with provider { NovelChaptersViewModel(instance()) }
+	bind<INovelChaptersViewModel>() with provider { NovelChaptersViewModel(instance(), instance()) }
 
 	// Settings
 	bind<ISettingsAdvancedViewModel>() with provider { SettingsAdvancedViewModel(instance()) }

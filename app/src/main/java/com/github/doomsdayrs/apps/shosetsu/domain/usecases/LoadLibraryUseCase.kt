@@ -5,7 +5,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 
 /*
  * This file is part of shosetsu.
@@ -30,18 +30,12 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
  */
 class LoadLibraryUseCase(
 		private val iNovelsRepository: INovelsRepository
-) : (() -> LiveData<HResult<List<IDTitleImageUI>>>) {
-	override fun invoke(): LiveData<HResult<List<IDTitleImageUI>>> {
+) : (() -> LiveData<HResult<List<BookmarkedNovelUI>>>) {
+	override fun invoke(): LiveData<HResult<List<BookmarkedNovelUI>>> {
 		return liveData {
 			emitSource(iNovelsRepository.suspendedGetLiveBookmarked().map { data ->
 				when (data) {
-					is HResult.Success -> successResult(data.data.map {
-						IDTitleImageUI(
-								it.id,
-								it.title,
-								it.imageURL
-						)
-					})
+					is HResult.Success -> data.mapListTo()
 					is HResult.Loading -> loading()
 					is HResult.Error -> errorResult(data.code, data.message)
 					is HResult.Empty -> emptyResult()

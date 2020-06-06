@@ -37,5 +37,4 @@ class LibraryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 	val imageView: ImageView = itemView.findViewById(R.id.imageView)
 	val title: TextView = itemView.findViewById(R.id.title)
 	val chip: Chip = itemView.findViewById(R.id.novel_item_left_to_read)
-	var unreadCount = 0
 }

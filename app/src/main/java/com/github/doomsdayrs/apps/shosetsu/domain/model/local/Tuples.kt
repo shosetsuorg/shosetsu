@@ -33,8 +33,14 @@ import java.io.Serializable
  */
 
 data class CountIDTuple(
-		@ColumnInfo(name = "COUNT(*)") val count: Int,
-		@ColumnInfo(name = "id") val id: Int
+		@ColumnInfo(name = "id") val id: Int,
+		@ColumnInfo(name = "COUNT(*)") val count: Int
+) : Serializable
+
+
+data class CountNovelIDTuple(
+		@ColumnInfo(name = "novelID") val id: Int,
+		@ColumnInfo(name = "COUNT(*)") val count: Int
 ) : Serializable
 
 data class BooleanChapterIDTuple(

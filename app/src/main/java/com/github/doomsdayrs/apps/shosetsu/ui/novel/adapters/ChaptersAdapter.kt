@@ -105,7 +105,7 @@ class ChaptersAdapter(
 					.title = "Download"
 			chaptersViewHolder.downloadTag.visibility = View.INVISIBLE
 		}
-		when (chapterUI.readingReadingStatus) {
+		when (chapterUI.readingStatus) {
 			ReadingStatus.READING -> {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 					chaptersViewHolder.constraintLayout.foreground = ColorDrawable()
@@ -202,18 +202,15 @@ class ChaptersAdapter(
 					return@setOnMenuItemClickListener true
 				}
 				R.id.popup_chapter_menu_mark_read -> {
-					chapterUI.readingReadingStatus = ReadingStatus.READ
-					viewModel.updateChapter(chapterUI)
+					viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.READ)
 					return@setOnMenuItemClickListener true
 				}
 				R.id.popup_chapter_menu_mark_unread -> {
-					chapterUI.readingReadingStatus = ReadingStatus.UNREAD
-					viewModel.updateChapter(chapterUI)
+					viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.UNREAD)
 					return@setOnMenuItemClickListener true
 				}
 				R.id.popup_chapter_menu_mark_reading -> {
-					chapterUI.readingReadingStatus = ReadingStatus.READING
-					viewModel.updateChapter(chapterUI)
+					viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.READING)
 					return@setOnMenuItemClickListener true
 				}
 				R.id.browser -> {

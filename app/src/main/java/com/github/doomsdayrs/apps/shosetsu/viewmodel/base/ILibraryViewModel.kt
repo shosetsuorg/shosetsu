@@ -1,10 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
@@ -31,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-abstract class ILibraryViewModel : SubscribeHandleViewModel<List<IDTitleImageUI>>, ViewModel() {
+abstract class ILibraryViewModel : SubscribeHandleViewModel<List<BookmarkedNovelUI>>, ViewModel() {
 	/** List of selected novels */
 	abstract var selectedNovels: MutableLiveData<List<Int>>
 
@@ -44,10 +42,9 @@ abstract class ILibraryViewModel : SubscribeHandleViewModel<List<IDTitleImageUI>
 	abstract fun selectAll()
 	abstract fun deselectAll()
 	abstract fun removeAllFromLibrary()
-	abstract fun loadChaptersUnread(novelID: Int): LiveData<HResult<Int>>
 
 	/**
 	 * @return new list
 	 */
-	abstract fun search(search: String): List<IDTitleImageUI>
+	abstract fun search(search: String): List<BookmarkedNovelUI>
 }

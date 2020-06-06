@@ -1,10 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 
 /*
  * This file is part of shosetsu.
@@ -23,20 +20,23 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 06 / 06 / 2020
+ *
+ * For displaying novels in library owo
+ *
+ * @param id of the novel
+ * @param title of the novel
+ * @param imageURL of the novel
+ * @param unread chapters of this novel
  */
-interface ILocalChaptersDataSource {
-	/**
-	 * Get the chapters of a novel
-	 */
-	fun loadChaptersByID(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
-
-	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
-
-	suspend fun updateChapter(chapterEntity: ChapterEntity)
+data class BookmarkedNovelEntity(
+		val id: Int,
+		val title: String,
+		val imageURL: String,
+		val unread: Int
+) : Convertible<BookmarkedNovelUI> {
+	override fun convertTo(): BookmarkedNovelUI =
+			BookmarkedNovelUI(id, title, imageURL, unread)
 }

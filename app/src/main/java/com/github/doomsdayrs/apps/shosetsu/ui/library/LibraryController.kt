@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.navigation.NavigationView
 
@@ -53,7 +53,7 @@ import com.google.android.material.navigation.NavigationView
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: RecyclerController<LibraryNovelAdapter, IDTitleImageUI>(), SecondDrawerController {
+	: RecyclerController<LibraryNovelAdapter, BookmarkedNovelUI>(), SecondDrawerController {
 	/***/
 	val viewModel: ILibraryViewModel by viewModel()
 
@@ -101,7 +101,7 @@ class LibraryController
 			selectedNovels.clear()
 			selectedNovels.addAll(selected)
 
-			val c = object : AutoUtil<List<IDTitleImageUI>>(recyclerArray, recyclerArray) {
+			val c = object : AutoUtil<List<BookmarkedNovelUI>>(recyclerArray, recyclerArray) {
 				override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
 						old[oldItemPosition].id == new[newItemPosition].id
 
@@ -180,7 +180,7 @@ class LibraryController
 	}
 
 
-	override fun updateUI(list: List<IDTitleImageUI>) {
+	override fun updateUI(list: List<BookmarkedNovelUI>) {
 		Log.d(logID(), "Received ${list.size} bookmarked novels")
 		adapter?.novels = list
 		super.updateUI(list)
@@ -194,6 +194,6 @@ class LibraryController
 		// TODO
 	}
 
-	override fun difAreItemsTheSame(oldItem: IDTitleImageUI, newItem: IDTitleImageUI): Boolean =
+	override fun difAreItemsTheSame(oldItem: BookmarkedNovelUI, newItem: BookmarkedNovelUI): Boolean =
 			oldItem.id == newItem.id
 }

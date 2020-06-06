@@ -56,12 +56,6 @@ interface IChaptersRepository {
 	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
 
 	/**
-	 * Loads count of unread chapters
-	 */
-	suspend fun loadChapterUnreadCount(novelID: Int): HResult<Int>
-
-
-	/**
 	 * Handles chapters for ze novel
 	 */
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
@@ -70,4 +64,6 @@ interface IChaptersRepository {
 	 * Loads chapters for a chapter list
 	 */
 	suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
+
+	suspend fun updateChapter(chapterEntity: ChapterEntity)
 }

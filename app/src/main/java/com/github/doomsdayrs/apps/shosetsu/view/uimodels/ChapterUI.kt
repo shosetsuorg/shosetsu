@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 
 /*
  * This file is part of shosetsu.
@@ -35,8 +37,24 @@ data class ChapterUI(
 		var releaseDate: String,
 		var order: Double,
 		var readingPosition: Int,
-		var readingReadingStatus: ReadingStatus,
+		var readingStatus: ReadingStatus,
 		var bookmarked: Boolean,
 		var isSaved: Boolean,
 		var savePath: String
-)
+) : Convertible<ChapterEntity> {
+	override fun convertTo(): ChapterEntity =
+			ChapterEntity(
+					id,
+					link,
+					novelID,
+					formatterID,
+					title,
+					releaseDate,
+					order,
+					readingPosition,
+					readingStatus,
+					bookmarked,
+					isSaved,
+					savePath
+			)
+}

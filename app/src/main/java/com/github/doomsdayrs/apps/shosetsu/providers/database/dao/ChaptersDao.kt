@@ -70,9 +70,6 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
 	fun loadChapterUnreadCount(): Int
 
-	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2 AND novelID = :novelID")
-	fun loadChapterUnreadCount(novelID: Int): Int
-
 	@Query("SELECT id FROM chapters WHERE novelID = :novelID AND readingStatus != 2 ORDER BY `order` DESC")
 	fun findLastUnread(novelID: Int): Int
 

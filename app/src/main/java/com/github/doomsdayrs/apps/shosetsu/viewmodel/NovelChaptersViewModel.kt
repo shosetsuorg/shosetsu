@@ -2,7 +2,10 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetChapterUIsUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
 
@@ -28,7 +31,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewMode
  * 17 / 05 / 2020
  */
 class NovelChaptersViewModel(
-		private val getChapterUIsUseCase: GetChapterUIsUseCase
+		private val getChapterUIsUseCase: GetChapterUIsUseCase,
+		private val updateChapterUseCase: UpdateChapterUseCase
 ) : INovelChaptersViewModel() {
 	private var nID: Int = -1
 	private var selectedChapters = arrayListOf<Int>()
@@ -68,8 +72,20 @@ class NovelChaptersViewModel(
 		if (!isChapterSelected(chapterUI)) selectedChapters.add(chapterUI.id)
 	}
 
-	override fun updateChapter(chapterUI: ChapterUI) {
-		TODO("Not yet implemented")
+	override fun updateChapter(
+			chapterUI: ChapterUI,
+			readingPosition: Int,
+			readingStatus: ReadingStatus,
+			bookmarked: Boolean
+	) {
+		launchIO {
+			updateChapterUseCase(
+					chapterUI.copy(
+							readingPosition = readingPosition,
+							readingStatus = readingStatus,
+							bookmarked = bookmarked
+					))
+		}
 	}
 
 	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {

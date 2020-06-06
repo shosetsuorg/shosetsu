@@ -7,7 +7,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalNovelsDataSource
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BookmarkedNovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
@@ -34,13 +34,14 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
  * 12 / 05 / 2020
  */
 class LocalNovelsDataSource(
-		val novelsDao: NovelsDao
+		private val novelsDao: NovelsDao
 ) : ILocalNovelsDataSource {
 	override suspend fun loadBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>> =
 			novelsDao.loadBookmarkedNovels().map { successResult(it) }
 
-	override suspend fun loadBookmarkedNovelsCard(): LiveData<HResult<List<IDTitleImage>>> =
-			novelsDao.loadBookmarkedIDImageTitle().map { successResult(it) }
+	override suspend fun loadBookmarkedNovelsAndCount()
+			: LiveData<HResult<List<BookmarkedNovelEntity>>> =
+			novelsDao.loadBookmarkedNovelsCount().map { successResult(it) }
 
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
 			successResult(novelsDao.loadNovel(novelID))

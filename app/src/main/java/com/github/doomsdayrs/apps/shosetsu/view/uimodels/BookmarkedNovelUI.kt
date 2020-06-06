@@ -1,9 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BookmarkedNovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -24,13 +22,21 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepos
 
 /**
  * shosetsu
- * 08 / 05 / 2020
+ * 06 / 06 / 2020
+ *
+ * For displaying novels in library (UI) owo
+ *
+ * @param id of the novel
+ * @param title of the novel
+ * @param imageURL of the novel
+ * @param unread chapters of this novel
  */
-class UnreadChaptersUseCase(
-		private val chaptersRepository: IChaptersRepository
-) {
-	suspend operator fun invoke(novelID: Int): HResult<Int> {
-		Log.d(logID(), "Getting unread count for $novelID")
-		return chaptersRepository.loadChapterUnreadCount(novelID)
-	}
+data class BookmarkedNovelUI(
+		val id: Int,
+		val title: String,
+		val imageURL: String,
+		val unread: Int
+) : Convertible<BookmarkedNovelEntity> {
+	override fun convertTo(): BookmarkedNovelEntity =
+			BookmarkedNovelEntity(id, title, imageURL, unread)
 }
