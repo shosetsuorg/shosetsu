@@ -8,6 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ChaptersDao
 
 /*
@@ -36,15 +37,21 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ChaptersDao
  * @author github.com/doomsdayrs
  */
 class LocalChaptersDataSource(
-		val chaptersDao: ChaptersDao
+		private val chaptersDao: ChaptersDao
 ) : ILocalChaptersDataSource {
 
-	override fun loadChaptersByID(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
+	override fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
 			chaptersDao.loadLiveChapters(novelID).map { successResult(it) }
+
+	override fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>> =
+			chaptersDao.loadLiveReaderChapters(novelID).map { successResult(it) }
 
 	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) =
 			chaptersDao.handleChapters(novelEntity, list)
 
 	override suspend fun updateChapter(chapterEntity: ChapterEntity) =
 			chaptersDao.suspendedUpdate(chapterEntity)
+
+	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity) =
+			chaptersDao.updateReaderChapter(readerChapterEntity)
 }

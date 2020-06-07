@@ -32,7 +32,7 @@ import org.kodein.di.generic.singleton
  * 04 / 05 / 2020
  * These modules handle cached data that is in memory
  */
-val cacheDataSouceModule = Kodein.Module("cache_data_source_module") {
+val cacheDataSouceModule: Kodein.Module = Kodein.Module("cache_data_source_module") {
 	bind<ICacheChaptersDataSource>() with singleton { CacheChaptersDataSource() }
 
 	bind<ICacheExtensionsDataSource>() with singleton { CacheExtensionDataSource() }

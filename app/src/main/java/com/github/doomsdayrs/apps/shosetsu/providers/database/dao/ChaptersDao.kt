@@ -8,10 +8,7 @@ import androidx.room.Transaction
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.ext.entity
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BooleanChapterIDTuple
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.CountIDTuple
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.*
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 
 /*
@@ -53,6 +50,9 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
 	suspend fun loadChapters(novelID: Int): List<ChapterEntity>
 
+	@Query("SELECT id, url, title, readingPosition, readingStatus, bookmarked FROM chapters WHERE novelID = :novelID")
+	fun loadLiveReaderChapters(novelID: Int): LiveData<List<ReaderChapterEntity>>
+
 	@Query("SELECT * FROM chapters WHERE id = :chapterID LIMIT 1")
 	fun loadChapter(chapterID: Int): ChapterEntity
 
@@ -62,13 +62,21 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("SELECT COUNT(*),id FROM chapters WHERE url = :chapterURL")
 	fun loadChapterCount(chapterURL: String): CountIDTuple
 
+	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
+	fun loadChapterUnreadCount(): Int
+
+	@Transaction
+	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity) =
+			loadChapter(readerChapterEntity.id).copy(
+					readingPosition = readerChapterEntity.readingPosition,
+					readingStatus = readerChapterEntity.readingStatus,
+					bookmarked = readerChapterEntity.bookmarked
+			).let { suspendedUpdate(it) }
+
 	fun hasChapter(chapterURL: String): BooleanChapterIDTuple {
 		val c = loadChapterCount(chapterURL)
 		return BooleanChapterIDTuple(c.count > 0, c.id)
 	}
-
-	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
-	fun loadChapterUnreadCount(): Int
 
 	@Query("SELECT id FROM chapters WHERE novelID = :novelID AND readingStatus != 2 ORDER BY `order` DESC")
 	fun findLastUnread(novelID: Int): Int
@@ -78,21 +86,6 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :chapterID")
 	suspend fun removeChapterSavePath(chapterID: Int)
-
-
-	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) {
-		Log.d(logID(), "Chapter\t${novelChapter.link}\t\t\twas not found, inserting")
-		insertAbort(novelChapter.entity(novelEntity))
-	}
-
-	private suspend fun handleUpdate(chapterEntity: ChapterEntity, novelChapter: Novel.Chapter) {
-		Log.d(logID(), "Chapter\t${chapterEntity.url}\t\t\twas found, updating")
-		suspendedUpdate(chapterEntity.copy(
-				title = novelChapter.title,
-				releaseDate = novelChapter.release,
-				order = novelChapter.order
-		))
-	}
 
 	@Transaction
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
@@ -107,5 +100,19 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 				handleUpdate(it, novelChapter)
 			} ?: handleAbortInsert(novelChapter, novelEntity)
 		}
+	}
+
+	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) {
+		Log.d(logID(), "Chapter\t${novelChapter.link}\t\t\twas not found, inserting")
+		insertAbort(novelChapter.entity(novelEntity))
+	}
+
+	private suspend fun handleUpdate(chapterEntity: ChapterEntity, novelChapter: Novel.Chapter) {
+		Log.d(logID(), "Chapter\t${chapterEntity.url}\t\t\twas found, updating")
+		suspendedUpdate(chapterEntity.copy(
+				title = novelChapter.title,
+				releaseDate = novelChapter.release,
+				order = novelChapter.order
+		))
 	}
 }

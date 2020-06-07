@@ -30,7 +30,7 @@ import org.kodein.di.generic.provider
  * shosetsu
  * 01 / 05 / 2020
  */
-val viewModelsModule = Kodein.Module("view_models_module") {
+val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 
 	// Other
 	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance()) }
@@ -56,6 +56,11 @@ val viewModelsModule = Kodein.Module("view_models_module") {
 		NovelInfoViewModel(instance(), instance(), instance(), instance())
 	}
 	bind<INovelChaptersViewModel>() with provider { NovelChaptersViewModel(instance(), instance()) }
+
+	// Chapter
+	bind<IChapterReaderViewModel>() with provider {
+		ChapterReaderViewModel(instance(), instance())
+	}
 
 	// Settings
 	bind<ISettingsAdvancedViewModel>() with provider { SettingsAdvancedViewModel(instance()) }

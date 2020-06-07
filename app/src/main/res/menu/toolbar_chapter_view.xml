@@ -143,4 +143,9 @@
         android:title="@string/bookmark"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/change_theme"
+        android:icon="@drawable/ic_baseline_color_lens_24"
+        android:title="@string/reader_theme"
+        app:showAsAction="ifRoom"/>
 </menu>

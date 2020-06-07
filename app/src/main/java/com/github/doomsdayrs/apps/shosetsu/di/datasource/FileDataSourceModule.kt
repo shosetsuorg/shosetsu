@@ -32,7 +32,7 @@ import org.kodein.di.generic.singleton
  * shosetsu
  * 12 / 05 / 2020
  */
-val fileDataSourceModule = Kodein.Module("file_data_source") {
+val fileDataSourceModule: Kodein.Module = Kodein.Module("file_data_source") {
 	bind<IFileExtensionDataSource>() with singleton {
 		FileExtensionDataSource(instance())
 	}

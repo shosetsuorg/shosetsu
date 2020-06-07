@@ -32,7 +32,7 @@ import org.kodein.di.generic.singleton
  * @author github.com/doomsdayrs
  */
 
-val repositoryModule = Kodein.Module("repository_module") {
+val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 	bind<IChaptersRepository>() with singleton {
 		ChaptersRepository(instance(), instance(), instance(), instance())
 	}

@@ -6,27 +6,28 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.Callback
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.backend.unmarkMenuItems
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.MarkingTypes
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READ
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
-import com.github.doomsdayrs.apps.shosetsu.common.ext.regret
+import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterReaderUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
 import kotlinx.android.synthetic.main.chapter_reader.*
 import org.kodein.di.Kodein
@@ -56,28 +57,29 @@ import org.kodein.di.generic.instance
  *
  * @author github.com/doomsdayrs
  */
-class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
+class ChapterReader
+	: AppCompatActivity(R.layout.chapter_reader), KodeinAware, LifecycleEventObserver {
 	private class RecyclerViewDiffer(
-			val old: List<ChapterReaderUI>,
-			val new: List<ChapterReaderUI>
+			val old: List<ReaderChapterUI>,
+			val aNew: List<ReaderChapterUI>
 	) : Callback() {
 		override fun getOldListSize(): Int = old.size
 
-		override fun getNewListSize(): Int = new.size
+		override fun getNewListSize(): Int = aNew.size
 
 		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-				old[oldItemPosition].id == new[newItemPosition].id
+				old[oldItemPosition].id == aNew[newItemPosition].id
 
 		override fun areContentsTheSame(
 				oldItemPosition: Int,
 				newItemPosition: Int
 		): Boolean {
-			val o: ChapterReaderUI = old[oldItemPosition]
-			val n = new[newItemPosition]
+			val o: ReaderChapterUI = old[oldItemPosition]
+			val n = aNew[newItemPosition]
 			if (o.id != n.id) return false
 			if (o.link != n.link) return false
 			if (o.title != n.title) return false
-			if (o.readingReadingStatus != n.readingReadingStatus) return false
+			if (o.readingStatus != n.readingStatus) return false
 			if (o.bookmarked != n.bookmarked) return false
 			return true
 		}
@@ -106,58 +108,26 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 	private var tapToScroll: MenuItem? = null
 
 	override val kodein: Kodein by closestKodein()
-	val viewModel: IChapterReaderViewModel by instance<IChapterReaderViewModel>()
+	internal val viewModel by instance<IChapterReaderViewModel>()
 	private val chapterReaderAdapter: ChapterReaderAdapter = ChapterReaderAdapter(this)
 
-	val chapters: ArrayList<ChapterReaderUI> = arrayListOf()
+	/**
+	 * Chapters to display owo
+	 */
+	val chapters: ArrayList<ReaderChapterUI> = arrayListOf()
 
 	public override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setSupportActionBar(toolbar as Toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		if (savedInstanceState == null) {
-			TODO("LOAD DATA TO VIEW MODEL")
+			Log.d(logID(), "SaveState is null")
+			viewModel.setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
+			setObservers()
 		} else {
-		}
-		setupViewPager()
-		viewpager.setOnClickListener {
-			toolbar?.let {
-				@Suppress("CheckedExceptionsKotlin")
-				val animator: Animation = AnimationUtils.loadAnimation(
-						this,
-						if (it.visibility == VISIBLE)
-							R.anim.slide_down
-						else R.anim.slide_up
-				)
-				it.startAnimation(animator)
-				it.visibility = if (it.visibility == VISIBLE) GONE else VISIBLE
-			}
-		}
-	}
-
-	fun handleChapterReaderUIChange(hResult: HResult<List<ChapterReaderUI>>) {
-		when (hResult) {
-			is HResult.Loading -> {
-			}
-			is HResult.Empty -> {
-			}
-			is HResult.Error -> {
-			}
-			is HResult.Success -> {
-				val dif = DiffUtil.calculateDiff(RecyclerViewDiffer(
-						chapters,
-						hResult.data
-				))
-				chapters.clear()
-				chapters.addAll(hResult.data)
-				dif.dispatchUpdatesTo(chapterReaderAdapter)
-
-				//bookmark.setIcon(if (it.data.bookmarked)
-				//	R.drawable.ic_bookmark_24dp
-				//else
-				//	R.drawable.ic_bookmark_border_24dp
-				//)
-			}
+			Log.d(logID(), "SaveState is not null")
+			setObservers()
+			setupViewPager()
 		}
 	}
 
@@ -285,7 +255,7 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 	 * @return true if processed
 	 */
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		Log.d("item", item.toString())
+		Log.d(logID(), "Selected item: $item")
 		return when (item.itemId) {
 			android.R.id.home -> {
 				finish()
@@ -395,14 +365,61 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 	}
 
 	override fun onDestroy() {
+		Log.d(logID(), "Destroying")
 		super.onDestroy()
 		viewpager.unregisterOnPageChangeCallback(pageChangeCallback)
 	}
 
+	private fun setObservers() {
+		viewModel.liveData.observe(this) {
+			when (it) {
+				is HResult.Loading -> {
+					Log.d(logID(), "Loading")
+				}
+				is HResult.Empty -> {
+				}
+				is HResult.Error -> {
+				}
+				is HResult.Success -> {
+					Log.d(logID(), "Loading complete, now displaying")
+
+					val currentSize = chapters.size
+					val dif = DiffUtil.calculateDiff(RecyclerViewDiffer(
+							chapters,
+							it.data
+					))
+					chapters.clear()
+					chapters.addAll(it.data)
+					if (currentSize == 0) setupViewPager()
+					dif.dispatchUpdatesTo(chapterReaderAdapter)
+					//bookmark.setIcon(if (it.data.bookmarked)
+					//	R.drawable.ic_bookmark_24dp
+					//else
+					//	R.drawable.ic_bookmark_border_24dp
+					//)
+				}
+			}
+		}
+	}
+
 	private fun setupViewPager() {
+		Log.d(logID(), "Setting up ViewPager")
 		viewpager.adapter = chapterReaderAdapter
 		viewpager.registerOnPageChangeCallback(pageChangeCallback)
 		viewpager.currentItem = chapters.indexOfFirst { it.id == viewModel.currentChapterID }
+		viewpager.setOnClickListener {
+			toolbar?.let {
+				@Suppress("CheckedExceptionsKotlin")
+				val animator: Animation = AnimationUtils.loadAnimation(
+						this,
+						if (it.visibility == View.VISIBLE)
+							R.anim.slide_down
+						else R.anim.slide_up
+				)
+				it.startAnimation(animator)
+				it.visibility = if (it.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+			}
+		}
 	}
 
 	/**
@@ -423,12 +440,12 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 			*/
 			val y = viewpager!!.scrollY
 			if (y % 5 == 0)
-				if (cUI.readingReadingStatus != READ) {
+				if (cUI.readingStatus != READ) {
 					cUI.readingPosition = y
 				}
 		} else {
 			Log.i("Scroll", "Marking chapter as READ${viewModel.appendID(cUI)}")
-			cUI.readingReadingStatus = READING
+			cUI.readingStatus = READING
 			viewModel.updateChapter(cUI)
 		}
 	}
@@ -446,14 +463,20 @@ class ChapterReader : AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 		}
 	}
 
-	internal val pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
+	private val pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
-			if (Settings.readerMarkingType == Settings.MarkingTypes.ONVIEW.i) {
-				Log.d("ChapterReader", "Marking as Reading")
-				val chapterReaderUI = chapters[viewModel.currentChapterID]
-				chapterReaderUI.readingReadingStatus = READING
+			Log.d(logID(), "Page changed to $position ${chapters[position].link}")
+			val chapterReaderUI = chapters[position]
+			if (Settings.readerMarkingType == MarkingTypes.ONVIEW.i) {
+				Log.d("ChapterReader", "Marking as reading by marking type")
+				chapterReaderUI.readingStatus = READING
 				viewModel.updateChapter(chapterReaderUI)
 			}
+			supportActionBar?.title = chapterReaderUI.title
 		}
+	}
+
+	override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+		Log.d(logID(), "State changed")
 	}
 }

@@ -7,9 +7,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_ACTION
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_URL
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
@@ -44,10 +47,12 @@ fun Activity.openInBrowser(url: Uri) = startActivity(Intent(Intent.ACTION_VIEW, 
 fun Activity.openInBrowser(url: String) = openInBrowser(Uri.parse(url))
 
 fun Activity.openInWebView(url: String) {
-	val intent = Intent(this, WebViewApp::class.java)
-	intent.putExtra(BUNDLE_URL, url)
-	intent.putExtra(BUNDLE_ACTION, WebViewApp.Actions.VIEW.action)
-	startActivity(intent)
+	startActivity(Intent(this, WebViewApp::class.java) {
+		bundleOf(
+				BundleKeys.BUNDLE_URL to url,
+				BundleKeys.BUNDLE_ACTION to WebViewApp.Actions.VIEW.action
+		)
+	})
 }
 
 fun Activity.search(query: String) {
@@ -87,11 +92,13 @@ fun Activity.openChapter(cUI: UpdateChapterUI) = openChapter(cUI.id, cUI.novelID
 fun Activity.openChapter(cUI: ChapterUI) = openChapter(cUI.id, cUI.novelID, cUI.formatterID)
 
 fun Activity.openChapter(chapterID: Int, novelID: Int, formatterID: Int) {
-	val intent = Intent(this, ChapterReader::class.java)
-	intent.putExtra("chapterID", chapterID)
-	intent.putExtra("novelID", novelID)
-	intent.putExtra("formatter", formatterID)
-	startActivity(intent)
+	startActivity(Intent(this, ChapterReader::class.java) {
+		bundleOf(
+				BUNDLE_CHAPTER_ID to chapterID,
+				BUNDLE_NOVEL_ID to novelID,
+				BUNDLE_FORMATTER to formatterID
+		)
+	})
 }
 
 fun Activity.readAsset(name: String): String {

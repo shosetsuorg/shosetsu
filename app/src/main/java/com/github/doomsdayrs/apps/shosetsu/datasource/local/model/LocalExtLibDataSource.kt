@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionLibra
  * 12 / 05 / 2020
  */
 class LocalExtLibDataSource(
-		val extensionLibraryDao: ExtensionLibraryDao
+	private 	val extensionLibraryDao: ExtensionLibraryDao
 ) : ILocalExtLibDataSource {
 	override suspend fun updateExtension(extLibEntity: ExtLibEntity) =
 			extensionLibraryDao.suspendedUpdate(extLibEntity)

@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterReaderUI
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
@@ -28,9 +29,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * shosetsu
  * 06 / 05 / 2020
  */
-abstract class IChapterReaderViewModel : SubscribeHandleViewModel<List<ChapterReaderUI>>, ViewModel() {
+abstract class IChapterReaderViewModel : SubscribeHandleViewModel<List<ReaderChapterUI>>, ViewModel() {
 
-	abstract var novelID: MutableLiveData<Int>
 	abstract val backgroundColor: MutableLiveData<Int>
 	abstract val textColor: MutableLiveData<Int>
 	abstract val currentChapterID: Int
@@ -39,7 +39,12 @@ abstract class IChapterReaderViewModel : SubscribeHandleViewModel<List<ChapterRe
 	abstract fun setNovelID(novelID: Int)
 
 	abstract fun getChapterPassage(): LiveData<HResult<String>>
-	abstract fun appendID(chapterReaderUI: ChapterReaderUI): String
+	abstract fun appendID(readerChapterUI: ReaderChapterUI): String
 	abstract fun bookmark()
-	abstract fun updateChapter(chapterReaderUI: ChapterReaderUI)
+	abstract fun updateChapter(
+			readerChapterUI: ReaderChapterUI,
+			readingPosition: Int = readerChapterUI.readingPosition,
+			readingStatus: ReadingStatus = readerChapterUI.readingStatus,
+			bookmarked: Boolean = readerChapterUI.bookmarked
+	)
 }

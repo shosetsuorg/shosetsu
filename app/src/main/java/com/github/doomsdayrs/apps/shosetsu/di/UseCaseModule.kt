@@ -28,7 +28,7 @@ import org.kodein.di.generic.provider
  * shosetsu
  * 01 / 05 / 2020
  */
-val useCaseModule = Kodein.Module("useCase") {
+val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<FormatterAsCardsUseCase>() with provider { FormatterAsCardsUseCase(instance()) }
 
 	bind<GetDownloadsUseCase>() with provider { GetDownloadsUseCase(instance()) }
@@ -75,4 +75,8 @@ val useCaseModule = Kodein.Module("useCase") {
 	bind<GetChapterUIsUseCase>() with provider { GetChapterUIsUseCase(instance()) }
 
 	bind<UpdateChapterUseCase>() with provider { UpdateChapterUseCase(instance()) }
+
+	bind<UpdateReaderChapterUseCase>() with provider { UpdateReaderChapterUseCase(instance()) }
+	bind<LoadReaderChaptersUseCase>() with provider { LoadReaderChaptersUseCase(instance()) }
+
 }

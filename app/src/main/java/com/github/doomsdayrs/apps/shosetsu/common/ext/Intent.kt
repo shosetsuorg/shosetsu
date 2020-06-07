@@ -1,8 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterReaderSubEntity
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 
 /*
  * This file is part of shosetsu.
@@ -23,20 +23,9 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterReaderSubEn
 
 /**
  * shosetsu
- * 06 / 05 / 2020
+ * 07 / 06 / 2020
  */
-data class ChapterReaderUI(
-		val id: Int,
-		val link: String,
-		var title: String,
-		var readingPosition: Int,
-		var readingReadingStatus: ReadingStatus,
-		var bookmarked: Boolean,
-		var isSaved: Boolean,
-		var savePath: String
-) : Convertible<ChapterReaderSubEntity> {
-	override fun convertTo(): ChapterReaderSubEntity {
-		TODO("Not yet implemented")
-	}
 
-}
+@Suppress("FunctionName")
+inline fun Intent(packageContext: Context, cls: Class<*>, bundle: () -> Bundle): Intent =
+		Intent(packageContext, cls).also { it.putExtras(bundle()) }

@@ -1,7 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters
 
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
 
@@ -30,16 +34,22 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
  * @param chapterReader ChapterReader
  */
 class ChapterReaderAdapter(
-		val chapterReader: ChapterReader
+		private val chapterReader: ChapterReader
 ) : RecyclerView.Adapter<NewTextReader>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewTextReader {
-		TODO("Not yet implemented")
+		Log.d(logID(), "Creating new view holder")
+		return NewTextReader(LayoutInflater.from(parent.context).inflate(
+				R.layout.chapter_reader_text_view,
+				parent,
+				false
+		))
 	}
 
 	override fun getItemCount(): Int = chapterReader.chapters.size
 
 	override fun onBindViewHolder(holder: NewTextReader, position: Int) {
-
+		val chapter = chapterReader.chapters[position]
+		Log.d(logID(), "Binding $position ${chapter.link}")
 	}
 }

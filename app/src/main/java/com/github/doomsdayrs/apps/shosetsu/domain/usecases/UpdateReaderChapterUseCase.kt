@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.common.consts
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.
@@ -17,20 +20,14 @@ package com.github.doomsdayrs.apps.shosetsu.common.consts
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 01 / 05 / 2020
+ * 07 / 06 / 2020
  */
-object BundleKeys {
-	const val BUNDLE_URL = "url"
-	const val BUNDLE_ACTION = "action"
-	const val BUNDLE_FORMATTER = "formatter"
-	const val BUNDLE_NOVEL_URL = "novelURL"
-	const val BUNDLE_NOVEL_ID = "novelID"
-	const val BUNDLE_CHAPTER_ID = "chapterID"
-	const val BUNDLE_QUERY = "query"
-	const val BUNDLE_DATE = "date"
+class UpdateReaderChapterUseCase(
+		private val chapterRepository: IChaptersRepository
+) {
+	suspend fun invoke(chapter: ReaderChapterUI) {
+		chapterRepository.updateReaderChapter(chapter.convertTo())
+	}
 }

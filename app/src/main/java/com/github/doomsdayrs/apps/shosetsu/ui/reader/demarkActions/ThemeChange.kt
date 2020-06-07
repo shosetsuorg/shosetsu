@@ -31,12 +31,12 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
  * @author github.com/doomsdayrs
  */
 
-class ThemeChange(private val chapterView: ChapterReader) : DeMarkAction {
+class ThemeChange(private val viewChapterReader: ChapterReader) : DeMarkAction {
 	override fun action(spared: Int) {
 		Settings.readerTheme = spared
 		val intent = Intent()
 		intent.action = Broadcasts.BC_CHAPTER_VIEW_THEME_CHANGE
-		chapterView.sendBroadcast(intent)
+		viewChapterReader.sendBroadcast(intent)
 	}
 
 }

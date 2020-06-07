@@ -28,6 +28,6 @@ import org.kodein.di.generic.singleton
  * shosetsu
  * 01 / 05 / 2020
  */
-val networkModule = Kodein.Module("network_module") {
+val networkModule: Kodein.Module = Kodein.Module("network_module") {
 	bind<OkHttpClient>() with singleton { createOkHttpClient() }
 }

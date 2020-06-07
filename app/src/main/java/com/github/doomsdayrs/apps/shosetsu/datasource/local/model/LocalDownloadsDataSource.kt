@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
  * 12 / 05 / 2020
  */
 class LocalDownloadsDataSource(
-		val downloadsDao: DownloadsDao
+	private 	val downloadsDao: DownloadsDao
 ) : ILocalDownloadsDataSource {
 	override suspend fun loadDownloads(): LiveData<HResult<List<DownloadEntity>>> =
 			downloadsDao.loadDownloadItems().map { successResult(it) }

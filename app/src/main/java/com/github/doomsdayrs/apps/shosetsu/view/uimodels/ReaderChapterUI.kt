@@ -1,9 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.model.local
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
-import androidx.annotation.NonNull
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterReaderUI
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntity
 
 /*
  * This file is part of shosetsu.
@@ -26,33 +25,20 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterReaderUI
  * shosetsu
  * 06 / 05 / 2020
  */
-data class ChapterReaderSubEntity(
+data class ReaderChapterUI(
 		val id: Int,
-		@NonNull
-		val url: String,
-
-		@NonNull
-		var title: String,
-
-		var readingPosition: Int = 0,
-
-		var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
-
-		var bookmarked: Boolean = false,
-
-		var isSaved: Boolean = false,
-
-		var savePath: String = ""
-) : Convertible<ChapterReaderUI> {
-	override fun convertTo(): ChapterReaderUI = ChapterReaderUI(
+		val link: String,
+		val title: String,
+		var readingPosition: Int,
+		var readingStatus: ReadingStatus,
+		var bookmarked: Boolean
+) : Convertible<ReaderChapterEntity> {
+	override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
 			id,
-			url,
+			link,
 			title,
 			readingPosition,
 			readingStatus,
-			bookmarked,
-			isSaved,
-			savePath
+			bookmarked
 	)
-
 }

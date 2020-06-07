@@ -34,7 +34,7 @@ import java.util.*
  * 12 / 05 / 2020
  */
 class LocalUpdatesDataSource(
-		val updatesDao: UpdatesDao
+		private val updatesDao: UpdatesDao
 ) : ILocalUpdatesDataSource {
 	override suspend fun getUpdateDays(): LiveData<HResult<List<Long>>> {
 		return liveData {

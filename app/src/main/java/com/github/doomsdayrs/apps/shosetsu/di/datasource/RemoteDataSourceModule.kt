@@ -29,7 +29,7 @@ import org.kodein.di.generic.singleton
  * 01 / 05 / 2020
  * These modules load chapters from online
  */
-val remoteDataSouceModule = Kodein.Module("remote_data_source_module") {
+val remoteDataSouceModule: Kodein.Module = Kodein.Module("remote_data_source_module") {
 	bind<IRemoteCatalogueDataSource>() with singleton { RemoteCatalogueDataSource() }
 
 	bind<IRemoteChaptersDataSource>() with singleton { RemoteChaptersDataSource() }

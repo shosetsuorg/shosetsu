@@ -8,8 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.default
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterReaderUI
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadReaderChaptersUseCase
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
 
 /*
@@ -34,15 +36,15 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewMode
  * 06 / 05 / 2020
  */
 class ChapterReaderViewModel(
-		val context: Context
+		private val context: Context,
+		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase
 ) : IChapterReaderViewModel() {
-	override val liveData: LiveData<HResult<List<ChapterReaderUI>>> by lazy {
-		TODO("Not yet implemented")
+	override val liveData: LiveData<HResult<List<ReaderChapterUI>>> by lazy {
+		loadReaderChaptersUseCase(nID)
 	}
 
-	override val currentChapterID: Int = -1
-
-	override var novelID: MutableLiveData<Int> = MutableLiveData<Int>().default(-1)
+	override var currentChapterID: Int = -1
+	private var nID = -1
 
 	override val backgroundColor: MutableLiveData<Int> = MutableLiveData<Int>().default(
 			when (Settings.readerTheme) {
@@ -67,14 +69,15 @@ class ChapterReaderViewModel(
 	)
 
 	override fun setNovelID(novelID: Int) {
-		this.novelID = MutableLiveData(novelID)
+		if (nID == -1)
+			nID = novelID
 	}
 
 	override fun getChapterPassage(): LiveData<HResult<String>> {
 		TODO("Not yet implemented")
 	}
 
-	override fun appendID(chapterReaderUI: ChapterReaderUI): String {
+	override fun appendID(readerChapterUI: ReaderChapterUI): String {
 		TODO("Not yet implemented")
 	}
 
@@ -83,8 +86,12 @@ class ChapterReaderViewModel(
 		TODO("Not yet implemented")
 	}
 
-	override fun updateChapter(chapterReaderUI: ChapterReaderUI) {
-		TODO("Not yet implemented")
-	}
+	override fun updateChapter(
+			readerChapterUI: ReaderChapterUI,
+			readingPosition: Int,
+			readingStatus: ReadingStatus,
+			bookmarked: Boolean
+	) {
 
+	}
 }

@@ -6,6 +6,7 @@ import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntity
 
 /*
  * This file is part of shosetsu.
@@ -66,4 +67,8 @@ interface IChaptersRepository {
 	suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
 
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
+
+	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
+
+	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 }

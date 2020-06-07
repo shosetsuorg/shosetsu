@@ -10,6 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalChaptersD
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 
 /*
@@ -36,16 +37,17 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepos
  * shosetsu
  * 02 / 05 / 2020
  * @param memorySource Source from memory
- * @param localSource Source from storage
+ * @param dbSource Source from db
  * @param remoteSource Source from online
+ * @param fileSource Source from storage
  */
 class ChaptersRepository(
 		private val memorySource: ICacheChaptersDataSource,
-		private val localSource: ILocalChaptersDataSource,
+		private val dbSource: ILocalChaptersDataSource,
 		private val fileSource: IFileChapterDataSource,
 		private val remoteSource: IRemoteChaptersDataSource
 ) : IChaptersRepository {
-	suspend fun handleReturn(chapterEntity: ChapterEntity, value: HResult<String>) {
+	private suspend fun handleReturn(chapterEntity: ChapterEntity, value: HResult<String>) {
 		if (value is HResult.Success)
 			memorySource.saveChapterInCache(chapterEntity.id!!, value.data)
 	}
@@ -74,13 +76,19 @@ class ChaptersRepository(
 		fileSource.saveChapterPassageToStorage(chapterEntity, passage)
 	}
 
-
 	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): Unit =
-			localSource.handleChapters(novelEntity, list)
+			dbSource.handleChapters(novelEntity, list)
 
 	override suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
-			localSource.loadChaptersByID(novelID)
+			dbSource.loadChapters(novelID)
 
 	override suspend fun updateChapter(chapterEntity: ChapterEntity) =
-			localSource.updateChapter(chapterEntity)
+			dbSource.updateChapter(chapterEntity)
+
+	override suspend fun loadReaderChapters(
+			novelID: Int
+	): LiveData<HResult<List<ReaderChapterEntity>>> = dbSource.loadReaderChapters(novelID)
+
+	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity) =
+			dbSource.updateReaderChapter(readerChapterEntity)
 }

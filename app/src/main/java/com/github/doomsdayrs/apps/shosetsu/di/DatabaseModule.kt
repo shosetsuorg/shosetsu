@@ -32,7 +32,7 @@ import org.kodein.di.generic.singleton
  * @author github.com/doomsdayrs
  */
 
-val databaseModule = Kodein.Module("database_module") {
+val databaseModule: Kodein.Module = Kodein.Module("database_module") {
 	bind<ChaptersDao>() with singleton { instance<ShosetsuDatabase>().chaptersDao() }
 	bind<NovelsDao>() with singleton { instance<ShosetsuDatabase>().novelsDao() }
 	bind<DownloadsDao>() with singleton { instance<ShosetsuDatabase>().downloadsDao() }
