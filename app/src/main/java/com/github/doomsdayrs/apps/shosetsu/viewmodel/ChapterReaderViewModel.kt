@@ -5,14 +5,18 @@ import android.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.default
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadChapterPassageUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadReaderChaptersUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -37,7 +41,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewMode
  */
 class ChapterReaderViewModel(
 		private val context: Context,
-		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase
+		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
+		private val loadChapterPassageUseCase: LoadChapterPassageUseCase
 ) : IChapterReaderViewModel() {
 	override val liveData: LiveData<HResult<List<ReaderChapterUI>>> by lazy {
 		loadReaderChaptersUseCase(nID)
@@ -73,8 +78,10 @@ class ChapterReaderViewModel(
 			nID = novelID
 	}
 
-	override fun getChapterPassage(): LiveData<HResult<String>> {
-		TODO("Not yet implemented")
+	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<String>> {
+		return liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+			emitSource(loadChapterPassageUseCase(readerChapterUI))
+		}
 	}
 
 	override fun appendID(readerChapterUI: ReaderChapterUI): String {

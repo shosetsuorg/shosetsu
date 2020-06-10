@@ -43,6 +43,9 @@ class LocalChaptersDataSource(
 	override fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
 			chaptersDao.loadLiveChapters(novelID).map { successResult(it) }
 
+	override fun loadChapter(chapterID: Int): HResult<ChapterEntity> =
+			successResult(chaptersDao.loadChapter(chapterID))
+
 	override fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>> =
 			chaptersDao.loadLiveReaderChapters(novelID).map { successResult(it) }
 

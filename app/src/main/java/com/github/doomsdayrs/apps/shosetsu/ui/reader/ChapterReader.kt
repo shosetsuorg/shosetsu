@@ -117,18 +117,13 @@ class ChapterReader
 	val chapters: ArrayList<ReaderChapterUI> = arrayListOf()
 
 	public override fun onCreate(savedInstanceState: Bundle?) {
+		Log.d(logID(), "On Create")
 		super.onCreate(savedInstanceState)
 		setSupportActionBar(toolbar as Toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		if (savedInstanceState == null) {
-			Log.d(logID(), "SaveState is null")
-			viewModel.setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
-			setObservers()
-		} else {
-			Log.d(logID(), "SaveState is not null")
-			setObservers()
-			setupViewPager()
-		}
+		viewModel.setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
+		setObservers()
+		setupViewPager()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {

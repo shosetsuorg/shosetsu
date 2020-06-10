@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.observe
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
 
@@ -37,6 +39,13 @@ class ChapterReaderAdapter(
 		private val chapterReader: ChapterReader
 ) : RecyclerView.Adapter<NewTextReader>() {
 
+	private fun chapters() = chapterReader.chapters
+
+	override fun onViewDetachedFromWindow(holder: NewTextReader) {
+		Log.d(logID(), "Detaching ${holder.chapterID}")
+		super.onViewDetachedFromWindow(holder)
+	}
+
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewTextReader {
 		Log.d(logID(), "Creating new view holder")
 		return NewTextReader(LayoutInflater.from(parent.context).inflate(
@@ -46,10 +55,29 @@ class ChapterReaderAdapter(
 		))
 	}
 
-	override fun getItemCount(): Int = chapterReader.chapters.size
+	override fun getItemCount(): Int = chapters().size
 
 	override fun onBindViewHolder(holder: NewTextReader, position: Int) {
-		val chapter = chapterReader.chapters[position]
+		val chapter = chapters()[position]
 		Log.d(logID(), "Binding $position ${chapter.link}")
+		holder.chapterID = chapter.id
+		chapterReader.viewModel.getChapterPassage(chapter).observe(chapterReader) {
+			when (it) {
+				is HResult.Loading -> {
+					holder.showProgress()
+				}
+				is HResult.Empty -> {
+				}
+				is HResult.Error -> {
+					holder.setError(it.message, "Retry") {
+						TODO("Figure out how to restart the liveData")
+					}
+				}
+				is HResult.Success -> {
+					holder.hideProgress()
+					holder.setText(it.data)
+				}
+			}
+		}
 	}
 }

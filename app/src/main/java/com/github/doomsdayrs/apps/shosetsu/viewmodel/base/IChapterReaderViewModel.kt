@@ -38,7 +38,7 @@ abstract class IChapterReaderViewModel : SubscribeHandleViewModel<List<ReaderCha
 	/** Set the novelID */
 	abstract fun setNovelID(novelID: Int)
 
-	abstract fun getChapterPassage(): LiveData<HResult<String>>
+	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<String>>
 	abstract fun appendID(readerChapterUI: ReaderChapterUI): String
 	abstract fun bookmark()
 	abstract fun updateChapter(

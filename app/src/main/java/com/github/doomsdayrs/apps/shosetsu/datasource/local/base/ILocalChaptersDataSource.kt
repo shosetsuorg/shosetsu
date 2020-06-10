@@ -37,6 +37,8 @@ interface ILocalChaptersDataSource {
 	 */
 	fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
 
+	fun loadChapter(chapterID: Int): HResult<ChapterEntity>
+
 	fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
 
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)

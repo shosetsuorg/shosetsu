@@ -85,6 +85,9 @@ class ChaptersRepository(
 	override suspend fun updateChapter(chapterEntity: ChapterEntity) =
 			dbSource.updateChapter(chapterEntity)
 
+	override suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity> =
+			dbSource.loadChapter(chapterID)
+
 	override suspend fun loadReaderChapters(
 			novelID: Int
 	): LiveData<HResult<List<ReaderChapterEntity>>> = dbSource.loadReaderChapters(novelID)

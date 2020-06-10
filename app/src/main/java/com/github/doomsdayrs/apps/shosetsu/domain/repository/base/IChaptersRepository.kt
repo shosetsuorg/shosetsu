@@ -66,6 +66,8 @@ interface IChaptersRepository {
 	 */
 	suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
 
+	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
+
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
 	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
