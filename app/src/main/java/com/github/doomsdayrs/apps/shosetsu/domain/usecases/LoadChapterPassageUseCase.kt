@@ -1,11 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
+import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
@@ -34,18 +33,18 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 class LoadChapterPassageUseCase(
 		private val iChaptersRepository: IChaptersRepository,
 		private val iExtensionsRepository: IExtensionsRepository
-) : ((@kotlin.ParameterName("chapter") ReaderChapterUI) -> LiveData<HResult<String>>) {
-	override fun invoke(chapter: ReaderChapterUI): LiveData<HResult<String>> {
-		return liveData<HResult<String>> {
-			emit(loading())
-			val chapterResult = iChaptersRepository.loadChapter(chapter.id)
-			if (chapterResult is HResult.Success) {
-				val chapterEntity = chapterResult.data
-				val formatterResult = iExtensionsRepository.loadFormatter(chapterEntity.formatterID)
-				if (formatterResult is HResult.Success) {
-					emit(iChaptersRepository.loadChapterPassage(formatterResult.data, chapterEntity))
-				} else emit(errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found"))
-			} else emit(errorResult(ErrorKeys.ERROR_NOT_FOUND, "Chapter not found"))
-		}
+) {
+	suspend operator fun invoke(chapter: ReaderChapterUI): HResult<String> {
+		Log.d(logID(), "Emitting loading")
+		Log.d(logID(), "Getting chapter entity #${chapter.id}}")
+		val chapterResult = iChaptersRepository.loadChapter(chapter.id)
+		return if (chapterResult is HResult.Success) {
+			Log.d(logID(), "Success")
+			val chapterEntity = chapterResult.data
+			val formatterResult = iExtensionsRepository.loadFormatter(chapterEntity.formatterID)
+			if (formatterResult is HResult.Success) {
+				iChaptersRepository.loadChapterPassage(formatterResult.data, chapterEntity)
+			} else errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
+		} else errorResult(ErrorKeys.ERROR_NOT_FOUND, "Chapter not found")
 	}
 }

@@ -64,16 +64,20 @@ class ChapterReaderAdapter(
 		chapterReader.viewModel.getChapterPassage(chapter).observe(chapterReader) {
 			when (it) {
 				is HResult.Loading -> {
+					Log.d(logID(), "Showing loading")
 					holder.showProgress()
 				}
 				is HResult.Empty -> {
+					Log.d(logID(), "Empty result")
 				}
 				is HResult.Error -> {
+					Log.d(logID(), "Showing error")
 					holder.setError(it.message, "Retry") {
 						TODO("Figure out how to restart the liveData")
 					}
 				}
 				is HResult.Success -> {
+					Log.d(logID(), "Successfully loaded :D")
 					holder.hideProgress()
 					holder.setText(it.data)
 				}

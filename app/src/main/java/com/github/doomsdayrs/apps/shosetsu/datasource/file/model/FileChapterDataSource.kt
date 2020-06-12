@@ -1,11 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.file.model
 
 import android.content.Context
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileChapterDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import java.io.File
+import java.io.FileNotFoundException
 
 /*
  * This file is part of shosetsu.
@@ -40,5 +44,11 @@ class FileChapterDataSource(val context: Context) : IFileChapterDataSource {
 			File(makePath(chapterEntity)).writeText(passage)
 
 	override fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String> =
-			successResult(File(makePath(chapterEntity)).readText())
+			try {
+				successResult(File(makePath(chapterEntity)).readText())
+			} catch (e: FileNotFoundException) {
+				errorResult(ERROR_NOT_FOUND, e.message ?: "UNKNOWN MESSAGE")
+			} catch (e: Exception) {
+				errorResult(ERROR_GENERAL, e.message ?: "UNKNOWN MESSAGE")
+			}
 }
