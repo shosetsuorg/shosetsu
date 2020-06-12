@@ -33,14 +33,14 @@ abstract class IChapterReaderViewModel : SubscribeHandleViewModel<List<ReaderCha
 
 	abstract val backgroundColor: MutableLiveData<Int>
 	abstract val textColor: MutableLiveData<Int>
-	abstract val currentChapterID: Int
+	abstract var currentChapterID: Int
 
 	/** Set the novelID */
 	abstract fun setNovelID(novelID: Int)
 
 	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<String>>
 	abstract fun appendID(readerChapterUI: ReaderChapterUI): String
-	abstract fun bookmark()
+	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)
 	abstract fun updateChapter(
 			readerChapterUI: ReaderChapterUI,
 			readingPosition: Int = readerChapterUI.readingPosition,

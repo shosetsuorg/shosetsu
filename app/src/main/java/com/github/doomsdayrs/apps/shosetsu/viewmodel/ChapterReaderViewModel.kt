@@ -17,6 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadChapterPassageUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadReaderChaptersUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateReaderChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
 
@@ -44,7 +45,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewMode
 class ChapterReaderViewModel(
 		private val context: Context,
 		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
-		private val loadChapterPassageUseCase: LoadChapterPassageUseCase
+		private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
+		private val updateReaderChapterUseCase: UpdateReaderChapterUseCase
 ) : IChapterReaderViewModel() {
 	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
 
@@ -102,13 +104,11 @@ class ChapterReaderViewModel(
 		return data
 	}
 
-	override fun appendID(readerChapterUI: ReaderChapterUI): String {
-		TODO("Not yet implemented")
-	}
+	override fun appendID(readerChapterUI: ReaderChapterUI): String =
+			"${readerChapterUI.id}|${readerChapterUI.link}"
 
-
-	override fun bookmark() {
-		TODO("Not yet implemented")
+	override fun toggleBookmark(readerChapterUI: ReaderChapterUI) {
+		updateChapter(readerChapterUI, bookmarked = !readerChapterUI.bookmarked)
 	}
 
 	override fun updateChapter(
@@ -117,6 +117,12 @@ class ChapterReaderViewModel(
 			readingStatus: ReadingStatus,
 			bookmarked: Boolean
 	) {
-
+		launchIO {
+			updateReaderChapterUseCase(readerChapterUI.copy(
+					readingPosition = readingPosition,
+					readingStatus = readingStatus,
+					bookmarked = bookmarked
+			))
+		}
 	}
 }

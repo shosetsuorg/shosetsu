@@ -20,6 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.unmarkMenuItems
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.MarkingTypes
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READ
@@ -122,6 +123,8 @@ class ChapterReader
 		setSupportActionBar(toolbar as Toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		viewModel.setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
+		viewModel.currentChapterID = intent.getIntExtra(BUNDLE_CHAPTER_ID, -1)
+
 		setObservers()
 		setupViewPager()
 	}
@@ -286,7 +289,7 @@ class ChapterReader
 				true
 			}
 			R.id.chapter_view_bookmark -> {
-				this.viewModel.bookmark()
+				this.viewModel.toggleBookmark(chapters.find { it.id == viewModel.currentChapterID }!!)
 				true
 			}
 			R.id.chapter_view_textSize_small -> {
@@ -392,6 +395,7 @@ class ChapterReader
 					//else
 					//	R.drawable.ic_bookmark_border_24dp
 					//)
+					addBottomListener()
 				}
 			}
 		}
@@ -422,7 +426,7 @@ class ChapterReader
 	 */
 	private fun scrollHitBottom() {
 		val total = viewpager.getChildAt(0).height - viewpager.height
-		val cUI = chapters[viewModel.currentChapterID]
+		val cUI = chapters.find { it.id == viewModel.currentChapterID }!!
 		if (viewpager.scrollY / total.toFloat() < .99) {
 			// Inital mark of reading
 			/*
@@ -439,22 +443,30 @@ class ChapterReader
 					cUI.readingPosition = y
 				}
 		} else {
-			Log.i("Scroll", "Marking chapter as READ${viewModel.appendID(cUI)}")
+			Log.i("Scroll", "Marking chapter as READ ${viewModel.appendID(cUI)}")
 			cUI.readingStatus = READING
 			viewModel.updateChapter(cUI)
 		}
 	}
 
+	private var currentListener: () -> Unit = {}
+
 	/**
 	 * Sets up the hitting bottom listener
 	 */
 	private fun addBottomListener() {
+		if (chapters.isEmpty()) return
+		if (chapterReaderAdapter.textReaders.isEmpty()) return
+
+		val view: View = chapterReaderAdapter.textReaders[chapters.indexOfFirst { it.id == viewModel.currentChapterID }].textView
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			viewpager.setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
+			view.setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
 				scrollHitBottom()
 			}
 		} else {
-			viewpager.viewTreeObserver.addOnScrollChangedListener { scrollHitBottom() }
+			currentListener = { scrollHitBottom() }
+			view.viewTreeObserver.addOnScrollChangedListener(currentListener)
 		}
 	}
 
@@ -462,12 +474,19 @@ class ChapterReader
 		override fun onPageSelected(position: Int) {
 			Log.d(logID(), "Page changed to $position ${chapters[position].link}")
 			val chapterReaderUI = chapters[position]
+			viewModel.currentChapterID = chapterReaderUI.id
 			if (Settings.readerMarkingType == MarkingTypes.ONVIEW.i) {
 				Log.d("ChapterReader", "Marking as reading by marking type")
 				chapterReaderUI.readingStatus = READING
 				viewModel.updateChapter(chapterReaderUI)
 			}
+			val view: View = chapterReaderAdapter.textReaders[chapters.indexOfFirst { it.id == viewModel.currentChapterID }].textView
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				view.setOnScrollChangeListener(null)
+			} else view.viewTreeObserver.removeOnScrollChangedListener(currentListener)
 			supportActionBar?.title = chapterReaderUI.title
+
+			addBottomListener()
 		}
 	}
 

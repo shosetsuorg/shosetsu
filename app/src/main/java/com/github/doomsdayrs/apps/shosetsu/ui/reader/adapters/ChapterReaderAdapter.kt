@@ -38,7 +38,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
 class ChapterReaderAdapter(
 		private val chapterReader: ChapterReader
 ) : RecyclerView.Adapter<NewTextReader>() {
-
+	var textReaders = ArrayList<NewTextReader>()
 	private fun chapters() = chapterReader.chapters
 
 	override fun onViewDetachedFromWindow(holder: NewTextReader) {
@@ -48,11 +48,13 @@ class ChapterReaderAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewTextReader {
 		Log.d(logID(), "Creating new view holder")
-		return NewTextReader(LayoutInflater.from(parent.context).inflate(
+		val r = NewTextReader(LayoutInflater.from(parent.context).inflate(
 				R.layout.chapter_reader_text_view,
 				parent,
 				false
 		))
+		textReaders.add(r)
+		return r
 	}
 
 	override fun getItemCount(): Int = chapters().size

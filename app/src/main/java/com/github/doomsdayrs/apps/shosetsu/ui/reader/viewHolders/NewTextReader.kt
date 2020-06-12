@@ -34,7 +34,7 @@ class NewTextReader(itemView: View) : NewReader(itemView) {
 	/**
 	 * Main way of reading in this view
 	 */
-	private val textView: TextView = itemView.findViewById(R.id.textView)
+	val textView: TextView = itemView.findViewById(R.id.textView)
 
 	val middleBox: View = itemView.findViewById(R.id.reader_middle_box)
 
