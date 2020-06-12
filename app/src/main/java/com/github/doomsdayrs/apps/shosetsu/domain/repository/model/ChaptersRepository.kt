@@ -62,7 +62,7 @@ class ChaptersRepository(
 			?: remoteSource.loadChapterPassage(
 					formatter,
 					chapterEntity.url
-			)
+			).also { if (it is HResult.Success) handleReturn(chapterEntity, it) }
 
 	override suspend fun saveChapterPassageToMemory(
 			chapterEntity: ChapterEntity,
