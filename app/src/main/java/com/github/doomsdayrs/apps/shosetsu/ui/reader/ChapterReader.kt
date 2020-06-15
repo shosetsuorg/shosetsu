@@ -28,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
 import kotlinx.android.synthetic.main.chapter_reader.*
@@ -407,27 +408,18 @@ class ChapterReader
 		viewpager.registerOnPageChangeCallback(pageChangeCallback)
 		viewpager.currentItem = chapters.indexOfFirst { it.id == viewModel.currentChapterID }
 		viewpager.setOnClickListener {
-			toolbar?.let {
-				@Suppress("CheckedExceptionsKotlin")
-				val animator: Animation = AnimationUtils.loadAnimation(
-						this,
-						if (it.visibility == View.VISIBLE)
-							R.anim.slide_down
-						else R.anim.slide_up
-				)
-				it.startAnimation(animator)
-				it.visibility = if (it.visibility == View.VISIBLE) View.GONE else View.VISIBLE
-			}
+
 		}
 	}
 
 	/**
 	 * What to do when scroll hits bottom
 	 */
-	private fun scrollHitBottom() {
-		val total = viewpager.getChildAt(0).height - viewpager.height
+	private fun scrollHitBottom(reader: NewTextReader) {
+		val view = reader.scrollView
+		val total = view.getChildAt(0).height - view.height
 		val cUI = chapters.find { it.id == viewModel.currentChapterID }!!
-		if (viewpager.scrollY / total.toFloat() < .99) {
+		if (view.scrollY / total.toFloat() < .99) {
 			// Inital mark of reading
 			/*
 			if (!marked && Settings.readerMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
@@ -437,7 +429,7 @@ class ChapterReader
 				marked = !marked
 			}
 			*/
-			val y = viewpager!!.scrollY
+			val y = view.scrollY
 			if (y % 5 == 0)
 				if (cUI.readingStatus != READ) {
 					cUI.readingPosition = y
@@ -458,14 +450,20 @@ class ChapterReader
 		if (chapters.isEmpty()) return
 		if (chapterReaderAdapter.textReaders.isEmpty()) return
 
-		val view: View = chapterReaderAdapter.textReaders[chapters.indexOfFirst { it.id == viewModel.currentChapterID }].textView
+		val index = chapters.indexOfFirst { it.id == viewModel.currentChapterID }
 
+		if (index == -1) return
+
+		val reader: NewTextReader = chapterReaderAdapter.textReaders[index]
+		val view = reader.textView
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			view.setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
-				scrollHitBottom()
+				scrollHitBottom(reader)
 			}
 		} else {
-			currentListener = { scrollHitBottom() }
+			currentListener = {
+				scrollHitBottom(reader)
+			}
 			view.viewTreeObserver.addOnScrollChangedListener(currentListener)
 		}
 	}
@@ -480,13 +478,45 @@ class ChapterReader
 				chapterReaderUI.readingStatus = READING
 				viewModel.updateChapter(chapterReaderUI)
 			}
-			val view: View = chapterReaderAdapter.textReaders[chapters.indexOfFirst { it.id == viewModel.currentChapterID }].textView
+			val index = chapters.indexOfFirst { it.id == viewModel.currentChapterID }
+			if (index == -1) return
+			val view: View = this@ChapterReader.chapterReaderAdapter.textReaders[index].textView
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				view.setOnScrollChangeListener(null)
 			} else view.viewTreeObserver.removeOnScrollChangedListener(currentListener)
 			supportActionBar?.title = chapterReaderUI.title
 
 			addBottomListener()
+
+			view.setOnClickListener {
+				toolbar?.let {
+					@Suppress("CheckedExceptionsKotlin")
+					val animator: Animation = AnimationUtils.loadAnimation(
+							this@ChapterReader,
+							if (it.visibility == View.VISIBLE) {
+								Log.d(logID(), "Sliding up")
+								R.anim.slide_up
+							} else {
+								R.anim.slide_down
+							}
+					)
+					animator.duration = 500
+					it.startAnimation(animator)
+					it.visibility = if (it.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
+				}
+				chapter_reader_bottom?.let {
+					@Suppress("CheckedExceptionsKotlin")
+					val animator: Animation = AnimationUtils.loadAnimation(
+							this@ChapterReader,
+							if (it.visibility == View.VISIBLE)
+								R.anim.slide_down
+							else R.anim.slide_up
+					)
+					animator.duration = 500
+					it.startAnimation(animator)
+					it.visibility = if (it.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
+				}
+			}
 		}
 	}
 

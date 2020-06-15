@@ -6,6 +6,7 @@ import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -35,6 +36,7 @@ class NewTextReader(itemView: View) : NewReader(itemView) {
 	 * Main way of reading in this view
 	 */
 	val textView: TextView = itemView.findViewById(R.id.textView)
+	val scrollView: NestedScrollView = itemView.findViewById(R.id.scrollView)
 
 	val middleBox: View = itemView.findViewById(R.id.reader_middle_box)
 
