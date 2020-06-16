@@ -31,7 +31,7 @@ import androidx.core.content.edit
 object Settings {
 	enum class MarkingTypes(val i: Int) {
 		ONVIEW(0),
-		ONSCROLL(1)
+		ONSCROLL(1);
 	}
 
 	enum class TextSizes(val i: Float) {
@@ -97,11 +97,17 @@ object Settings {
 	/**
 	 * How to mark a chapter as reading
 	 */
-	var readerMarkingType: Int
+	var readerMarkingType: MarkingTypes
 		set(value) {
-			readerSettings.edit { putInt(READER_MARKING_TYPE, value) }
+			readerSettings.edit { putInt(READER_MARKING_TYPE, value.i) }
 		}
-		get() = readerSettings.getInt(READER_MARKING_TYPE, MarkingTypes.ONVIEW.i)
+		get() = readerSettings.getInt(READER_MARKING_TYPE, MarkingTypes.ONVIEW.i).let {
+			when (it) {
+				0 -> MarkingTypes.ONVIEW
+				1 -> MarkingTypes.ONSCROLL
+				else -> MarkingTypes.ONSCROLL
+			}
+		}
 
 	var readerTextSize: Float
 		set(value) = readerSettings.edit { putFloat(READER_TEXT_SIZE, value) }

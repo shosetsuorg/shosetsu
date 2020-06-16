@@ -64,7 +64,7 @@ class SettingsViewViewModel(
 								android.R.layout.simple_spinner_item,
 								resources.getStringArray(R.array.marking_names)
 						))
-						.setSpinnerSelection(Settings.readerMarkingType),
+						.setSpinnerSelection(Settings.readerMarkingType.i),
 				SettingsItem.SettingsItemData(NUMBER_PICKER, 1)
 						.setTitle(R.string.columns_of_novel_listing_p)
 						.setDescription((R.string.columns_zero_automatic))
@@ -120,6 +120,6 @@ class SettingsViewViewModel(
 	}
 
 	fun setReaderMarkingType(markingType: Settings.MarkingTypes) {
-		Settings.readerMarkingType = markingType.i
+		Settings.readerMarkingType = markingType
 	}
 }

@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Lifecycle
@@ -125,7 +126,6 @@ class ChapterReader
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		viewModel.setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
 		viewModel.currentChapterID = intent.getIntExtra(BUNDLE_CHAPTER_ID, -1)
-
 		setObservers()
 		setupViewPager()
 	}
@@ -290,7 +290,7 @@ class ChapterReader
 				true
 			}
 			R.id.chapter_view_bookmark -> {
-				this.viewModel.toggleBookmark(chapters.find { it.id == viewModel.currentChapterID }!!)
+				this.viewModel.toggleBookmark(getCurrentChapter()!!)
 				true
 			}
 			R.id.chapter_view_textSize_small -> {
@@ -389,27 +389,36 @@ class ChapterReader
 					))
 					chapters.clear()
 					chapters.addAll(it.data)
-					if (currentSize == 0) setupViewPager()
+					if (currentSize == 0) {
+						getCurrentChapter()?.let {
+							supportActionBar?.title = it.title
+						}
+						setupViewPager()
+					}
 					dif.dispatchUpdatesTo(chapterReaderAdapter)
 					//bookmark.setIcon(if (it.data.bookmarked)
 					//	R.drawable.ic_bookmark_24dp
 					//else
 					//	R.drawable.ic_bookmark_border_24dp
 					//)
-					addBottomListener()
 				}
 			}
 		}
+	}
+
+	private fun getCurrentChapter() = chapters.find {
+		it.id == viewModel.currentChapterID
+	}
+
+	private fun getCurrentChapterIndex() = chapters.indexOfFirst {
+		it.id == viewModel.currentChapterID
 	}
 
 	private fun setupViewPager() {
 		Log.d(logID(), "Setting up ViewPager")
 		viewpager.adapter = chapterReaderAdapter
 		viewpager.registerOnPageChangeCallback(pageChangeCallback)
-		viewpager.currentItem = chapters.indexOfFirst { it.id == viewModel.currentChapterID }
-		viewpager.setOnClickListener {
-
-		}
+		viewpager.currentItem = getCurrentChapterIndex()
 	}
 
 	/**
@@ -418,26 +427,20 @@ class ChapterReader
 	private fun scrollHitBottom(reader: NewTextReader) {
 		val view = reader.scrollView
 		val total = view.getChildAt(0).height - view.height
-		val cUI = chapters.find { it.id == viewModel.currentChapterID }!!
-		if (view.scrollY / total.toFloat() < .99) {
-			// Inital mark of reading
-			/*
-			if (!marked && Settings.readerMarkingType == Settings.MarkingTypes.ONSCROLL.i) {
-				Log.d("ChapterView", "Marking as Reading")
-				cUI.readingReadingStatus = READING
-				viewModel.updateChapter(cUI)
-				marked = !marked
+		val cUI = getCurrentChapter()!!
+		val yPosition = view.scrollY
+		if (yPosition / total.toFloat() < .99) {
+			if (yPosition % 5 == 0) {
+				Log.i(logID(), "Scrolling")
+				// Mark as reading if on scroll
+				if (Settings.readerMarkingType == MarkingTypes.ONSCROLL)
+					cUI.readingStatus = READING
+				viewModel.updateChapter(cUI, readingPosition = yPosition)
 			}
-			*/
-			val y = view.scrollY
-			if (y % 5 == 0)
-				if (cUI.readingStatus != READ) {
-					cUI.readingPosition = y
-				}
 		} else {
-			Log.i("Scroll", "Marking chapter as READ ${viewModel.appendID(cUI)}")
-			cUI.readingStatus = READING
-			viewModel.updateChapter(cUI)
+			Log.i(logID(), "Hit the bottom")
+			// Hit bottom
+			viewModel.updateChapter(cUI, readingStatus = READ)
 		}
 	}
 
@@ -446,16 +449,15 @@ class ChapterReader
 	/**
 	 * Sets up the hitting bottom listener
 	 */
-	private fun addBottomListener() {
+	internal fun addBottomListener(view: TextView) {
 		if (chapters.isEmpty()) return
 		if (chapterReaderAdapter.textReaders.isEmpty()) return
 
-		val index = chapters.indexOfFirst { it.id == viewModel.currentChapterID }
+		val index = getCurrentChapterIndex()
 
 		if (index == -1) return
 
 		val reader: NewTextReader = chapterReaderAdapter.textReaders[index]
-		val view = reader.textView
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			view.setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
 				scrollHitBottom(reader)
@@ -473,20 +475,25 @@ class ChapterReader
 			Log.d(logID(), "Page changed to $position ${chapters[position].link}")
 			val chapterReaderUI = chapters[position]
 			viewModel.currentChapterID = chapterReaderUI.id
-			if (Settings.readerMarkingType == MarkingTypes.ONVIEW.i) {
+			val index = getCurrentChapterIndex()
+
+			// Makes sure the index is valid
+			if (index == -1 || index > this@ChapterReader.chapterReaderAdapter.textReaders.size) return
+
+			// Mark read if set to onview
+			if (Settings.readerMarkingType == MarkingTypes.ONVIEW) {
 				Log.d("ChapterReader", "Marking as reading by marking type")
 				chapterReaderUI.readingStatus = READING
 				viewModel.updateChapter(chapterReaderUI)
 			}
-			val index = chapters.indexOfFirst { it.id == viewModel.currentChapterID }
-			if (index == -1) return
-			val view: View = this@ChapterReader.chapterReaderAdapter.textReaders[index].textView
+
+			val view: TextView = this@ChapterReader.chapterReaderAdapter.textReaders[index].textView
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				view.setOnScrollChangeListener(null)
 			} else view.viewTreeObserver.removeOnScrollChangedListener(currentListener)
 			supportActionBar?.title = chapterReaderUI.title
 
-			addBottomListener()
+			addBottomListener(view)
 
 			view.setOnClickListener {
 				toolbar?.let {
