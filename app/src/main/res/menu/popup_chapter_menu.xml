@@ -3,23 +3,23 @@
 
     <item
         android:id="@+id/popup_chapter_menu_bookmark"
-        android:title="@string/bookmark" />
+        android:title="@string/toggle_bookmark" />
+
+    <item
+        android:id="@+id/set_read"
+        android:title="@string/mark_read" />
+
+    <item
+        android:id="@+id/set_unread"
+        android:title="@string/mark_unread" />
+
+    <item
+        android:id="@+id/set_reading"
+        android:title="@string/mark_reading" />
+
     <item
         android:id="@+id/popup_chapter_menu_download"
         android:title="@string/download" />
-    <item android:title="@string/mark_as">
-        <menu>
-            <item
-                android:id="@+id/popup_chapter_menu_mark_read"
-                android:title="@string/read" />
-            <item
-                android:id="@+id/popup_chapter_menu_mark_unread"
-                android:title="@string/unread" />
-            <item
-                android:id="@+id/popup_chapter_menu_mark_reading"
-                android:title="@string/reading" />
-        </menu>
-    </item>
 
     <item android:title="@string/open_in">
         <menu>

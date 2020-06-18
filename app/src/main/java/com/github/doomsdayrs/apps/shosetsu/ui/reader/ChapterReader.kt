@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.util.set
+import androidx.core.view.postDelayed
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -21,10 +22,8 @@ import androidx.recyclerview.widget.DiffUtil.Callback
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.unmarkMenuItems
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.MarkingTypes
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.TextSizes
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -34,9 +33,9 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.observe
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.chapter_reader.*
@@ -90,18 +89,9 @@ class ChapterReader
 			if (o.id != n.id) return false
 			if (o.link != n.link) return false
 			if (o.title != n.title) return false
-			if (o.bookmarked != n.bookmarked) return false
 			return true
 		}
 	}
-
-	private val demarkActions = arrayOf(
-			TextSizeChange(this),
-			ParaSpacingChange(this),
-			IndentChange(this),
-			ReaderChange(this),
-			ThemeChange(this)
-	)
 
 	// Order of values. Night, Light, Sepia
 	private lateinit var themes: Array<MenuItem>
@@ -123,6 +113,12 @@ class ChapterReader
 			}
 
 			supportActionBar?.title = chapterReaderUI.title
+
+			bookmark.setImageResource(
+					if (chapterReaderUI.bookmarked)
+						R.drawable.ic_bookmark_24dp
+					else R.drawable.ic_bookmark_border_24dp
+			)
 		}
 	}
 
@@ -137,11 +133,13 @@ class ChapterReader
 		super.onCreate(savedInstanceState)
 		setSupportActionBar(toolbar as Toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+		slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
+
 		viewModel.apply {
 			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
 			currentChapterID = intent.getIntExtra(BUNDLE_CHAPTER_ID, -1)
 		}
-		slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
+
 		setObservers()
 		setupViewPager()
 		setupBottomMenu()
@@ -198,7 +196,25 @@ class ChapterReader
 		it.id == viewModel.currentChapterID
 	}
 
+	private fun setBookmarkIcon(readerChapterUI: ReaderChapterUI) {
+		bookmark.setImageResource(
+				if (readerChapterUI.bookmarked)
+					R.drawable.ic_bookmark_24dp
+				else R.drawable.ic_bookmark_border_24dp
+		)
+	}
+
 	private fun setupBottomMenu() {
+		bookmark.apply {
+			setOnClickListener {
+				getCurrentChapter()?.apply {
+					bookmarked = !bookmarked
+					viewModel.updateChapter(this)
+					setBookmarkIcon(this)
+				}
+			}
+		}
+
 		text_size_bar?.apply {
 			setCustomSectionTextArray { _, array ->
 				array.apply {
@@ -215,6 +231,28 @@ class ChapterReader
 						progressFloat: Float,
 						fromUser: Boolean
 				) {
+					if (fromUser) {
+						val size = when (progress) {
+							0 -> Settings.TextSizes.SMALL
+							1 -> Settings.TextSizes.MEDIUM
+							2 -> Settings.TextSizes.LARGE
+							else -> Settings.TextSizes.MEDIUM
+						}
+						Log.i(logID(), "TextSize changed to ${size.name}")
+						Settings.readerTextSize = size.i
+						// Sets current view
+						chapterReaderAdapter.textReaders.find {
+							it.chapterID == viewModel.currentChapterID
+						}?.let {
+							it.textView.textSize = size.i
+						}
+						// Sets other views down
+						chapterReaderAdapter.textReaders.filter {
+							it.chapterID != viewModel.currentChapterID
+						}.forEach {
+							it.textView.textSize = size.i
+						}
+					}
 				}
 
 				override fun getProgressOnActionUp(
@@ -230,12 +268,115 @@ class ChapterReader
 						progressFloat: Float,
 						fromUser: Boolean
 				) {
-					Settings.readerTextSize = when (progress) {
-						0 -> TextSizes.SMALL.i
-						1 -> TextSizes.MEDIUM.i
-						2 -> TextSizes.LARGE.i
-						else -> TextSizes.MEDIUM.i
+
+				}
+
+			}
+		}
+
+		para_space_bar?.apply {
+			setCustomSectionTextArray { _, array ->
+				array.apply {
+					clear()
+					this[0] = getString(R.string.none)
+					this[1] = getString(R.string.small)
+					this[2] = getString(R.string.medium)
+					this[3] = getString(R.string.large)
+				}
+			}
+			onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListener {
+				override fun onProgressChanged(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean
+				) {
+					if (fromUser) {
+						Log.i(logID(), "ParaSpace changed to $progress")
+						Settings.readerParagraphSpacing = progress
+						// Sets current view
+						chapterReaderAdapter.textReaders.find {
+							it.chapterID == viewModel.currentChapterID
+						}?.let {
+							it.bind()
+						}
+						// Sets other views down
+						chapterReaderAdapter.textReaders.filter {
+							it.chapterID != viewModel.currentChapterID
+						}.forEach {
+							it.bind()
+						}
 					}
+				}
+
+				override fun getProgressOnActionUp(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float
+				) {
+				}
+
+				override fun getProgressOnFinally(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean
+				) {
+
+				}
+
+			}
+		}
+
+		para_indent_bar?.apply {
+			setCustomSectionTextArray { _, array ->
+				array.apply {
+					clear()
+					this[0] = getString(R.string.none)
+					this[1] = getString(R.string.small)
+					this[2] = getString(R.string.medium)
+					this[3] = getString(R.string.large)
+				}
+			}
+			onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListener {
+				override fun onProgressChanged(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean
+				) {
+					if (fromUser) {
+						Log.i(logID(), "IndentSize changed to $progress")
+						Settings.readerIndentSize = progress
+						// Sets current view
+						chapterReaderAdapter.textReaders.find {
+							it.chapterID == viewModel.currentChapterID
+						}?.let {
+							it.bind()
+						}
+						// Sets other views down
+						chapterReaderAdapter.textReaders.filter {
+							it.chapterID != viewModel.currentChapterID
+						}.forEach {
+							it.bind()
+						}
+					}
+				}
+
+				override fun getProgressOnActionUp(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float
+				) {
+				}
+
+				override fun getProgressOnFinally(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean
+				) {
+
 				}
 
 			}
@@ -257,12 +398,47 @@ class ChapterReader
 
 	fun animateBottom() {
 		chapter_reader_bottom?.apply {
-			@Suppress("CheckedExceptionsKotlin")
 			post {
 				slidingUpPanelLayout.apply {
-					panelState = if (panelState == PanelState.HIDDEN) PanelState.COLLAPSED else PanelState.HIDDEN
+					val currentState = panelState!!
+					Log.d(logID(), "Changing panelState from ${currentState.name} | $panelHeight")
+					val state = when (currentState) {
+						PanelState.HIDDEN -> {
+							Log.d(logID(), "Hidden, making collapsed")
+							PanelState.COLLAPSED
+						}
+						PanelState.ANCHORED -> {
+							Log.d(logID(), "ANCHORED, making collapsed")
+							PanelState.COLLAPSED
+						}
+						PanelState.COLLAPSED -> {
+							Log.d(logID(), "COLLAPSED, making hidden")
+							PanelState.HIDDEN
+						}
+						PanelState.DRAGGING -> {
+							Log.d(logID(), "Dragging, making hidden")
+							PanelState.HIDDEN
+						}
+						PanelState.EXPANDED -> {
+							Log.d(logID(), "Expanded, making hidden")
+							PanelState.HIDDEN
+						}
+					}
+					panelState = state
+					postDelayed(400) { fixHeight() }
 				}
 			}
+		}
+	}
+
+	private fun fixHeight(): SlidingUpPanelLayout = slidingUpPanelLayout.apply {
+		val state = panelState
+		Log.d(logID(), "PanelState is now ${state.name}")
+		when (state) {
+			PanelState.HIDDEN -> panelHeight = 0
+			PanelState.COLLAPSED -> panelHeight = 238
+			PanelState.DRAGGING -> postDelayed(100) { fixHeight() }
+			else -> Log.d(logID(), "Unknown state: $state")
 		}
 	}
 
@@ -330,27 +506,21 @@ class ChapterReader
 				true
 			}
 			R.id.chapter_view_reader_night -> {
-				unmarkMenuItems(themes, 0, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_light -> {
-				unmarkMenuItems(themes, 1, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_sepia -> {
-				unmarkMenuItems(themes, 2, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_dark -> {
-				unmarkMenuItems(themes, 3, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_gray -> {
-				unmarkMenuItems(themes, 4, demarkActions[4])
 				true
 			}
 			R.id.chapter_view_reader_custom -> {
-				unmarkMenuItems(themes, 5, demarkActions[4])
 				true
 			}
 			R.id.browser -> {

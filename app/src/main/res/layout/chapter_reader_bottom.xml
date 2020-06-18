@@ -23,37 +23,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/menu_drawer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/appCompatImageButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/theme_select"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
+                    android:src="@drawable/ic_baseline_color_lens_24" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/bookmark"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
+                    android:src="@drawable/ic_bookmark_border_24dp" />
+
+            </LinearLayout>
+
             <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/appCompatImageButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:scaleX="1.5"
                 android:scaleY="1.5"
-                android:src="@drawable/ic_baseline_color_lens_24" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:scaleX="1.5"
-                android:scaleY="1.5"
-                android:src="@drawable/ic_bookmark_border_24dp" />
-
-        </LinearLayout>
+                android:src="@android:drawable/ic_secure"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/menu_drawer"
@@ -93,9 +119,9 @@
                     app:bsb_min="0"
                     app:bsb_progress="1"
                     app:bsb_section_count="2"
+                    app:bsb_section_text_position="below_section_mark"
                     app:bsb_seek_step_section="true"
                     app:bsb_show_section_mark="true"
-                    app:bsb_section_text_position="below_section_mark"
                     app:bsb_touch_to_seek="true" />
 
                 <View
@@ -120,14 +146,21 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <SeekBar
+                <com.xw.repo.BubbleSeekBar
                     android:id="@+id/para_space_bar"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:max="3"
-                    android:progress="1" />
+                    app:bsb_hide_bubble="true"
+                    app:bsb_is_float_type="false"
+                    app:bsb_max="3"
+                    app:bsb_min="0"
+                    app:bsb_progress="1"
+                    app:bsb_section_count="3"
+                    app:bsb_section_text_position="below_section_mark"
+                    app:bsb_seek_step_section="true"
+                    app:bsb_show_section_mark="true"
+                    app:bsb_touch_to_seek="true" />
 
                 <View
                     android:layout_width="match_parent"
@@ -151,14 +184,21 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <SeekBar
-                    android:id="@+id/para_space_indent"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                <com.xw.repo.BubbleSeekBar
+                    android:id="@+id/para_indent_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:max="3"
-                    android:progress="1" />
+                    app:bsb_hide_bubble="true"
+                    app:bsb_is_float_type="false"
+                    app:bsb_max="3"
+                    app:bsb_min="0"
+                    app:bsb_progress="1"
+                    app:bsb_section_count="3"
+                    app:bsb_section_text_position="below_section_mark"
+                    app:bsb_seek_step_section="true"
+                    app:bsb_show_section_mark="true"
+                    app:bsb_touch_to_seek="true" />
 
                 <View
                     android:layout_width="match_parent"

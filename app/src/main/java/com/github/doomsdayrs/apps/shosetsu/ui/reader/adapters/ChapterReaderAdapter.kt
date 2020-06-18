@@ -91,13 +91,12 @@ class ChapterReaderAdapter(
 				is HResult.Success -> {
 					Log.d(logID(), "Successfully loaded :D")
 					holder.hideProgress()
-					var unformattedText = it.data
-					val replaceSpacing = StringBuilder("\n")
-					for (x in 0 until Settings.readerParagraphSpacing)
-						replaceSpacing.append("\n")
-					for (x in 0 until Settings.ReaderIndentSize)
-						replaceSpacing.append("\t")
-					holder.setText(unformattedText.replace("\n".toRegex(), replaceSpacing.toString()))
+					holder.setText(it.data)
+					holder.bind()
+					holder.textView.post {
+						Log.d(logID(),"Reading position ${chapter.readingPosition}")
+						holder.scrollView.scrollTo(0, chapter.readingPosition)
+					}
 				}
 			}
 		}

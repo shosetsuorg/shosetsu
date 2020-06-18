@@ -113,23 +113,23 @@ class UpdatedChaptersAdapter(
 								}
 							}
 						}
-						notifyDataSetChanged()
+						notifyItemChanged(i)
 						return@setOnMenuItemClickListener true
 					}
-					R.id.popup_chapter_menu_mark_read -> {
+					R.id.set_read -> {
 						viewModel
 						viewModel.updateChapter(updateUI, ReadingStatus.READ)
-						notifyDataSetChanged()
+						notifyItemChanged(i)
 						return@setOnMenuItemClickListener true
 					}
-					R.id.popup_chapter_menu_mark_unread -> {
+					R.id.set_unread -> {
 						viewModel.updateChapter(updateUI, ReadingStatus.UNREAD)
-						notifyDataSetChanged()
+						notifyItemChanged(i)
 						return@setOnMenuItemClickListener true
 					}
-					R.id.popup_chapter_menu_mark_reading -> {
+					R.id.set_reading -> {
 						viewModel.updateChapter(updateUI, ReadingStatus.READING)
-						notifyDataSetChanged()
+						notifyItemChanged(i)
 						return@setOnMenuItemClickListener true
 					}
 					R.id.browser -> {

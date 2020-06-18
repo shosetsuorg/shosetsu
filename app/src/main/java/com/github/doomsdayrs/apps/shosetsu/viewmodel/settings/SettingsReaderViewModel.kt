@@ -110,12 +110,12 @@ class SettingsReaderViewModel(
 								android.R.layout.simple_spinner_item,
 								resources.getStringArray(R.array.sizes_with_none)
 						))
-						.setSpinnerSelection(Settings.ReaderIndentSize)
+						.setSpinnerSelection(Settings.readerIndentSize)
 						.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
 							override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
 								Log.d("IndentSizeSelection", i.toString())
 								if (i in 0..3) {
-									Settings.ReaderIndentSize = i
+									Settings.readerIndentSize = i
 									adapterView.setSelection(i)
 								}
 							}

@@ -8,6 +8,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 
 /*
  * This file is part of shosetsu.
@@ -38,16 +39,16 @@ class NewTextReader(itemView: View) : NewReader(itemView) {
 	val textView: TextView = itemView.findViewById(R.id.textView)
 	val scrollView: NestedScrollView = itemView.findViewById(R.id.scrollView)
 
-	val middleBox: View = itemView.findViewById(R.id.reader_middle_box)
-
-	val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+	private val middleBox: View = itemView.findViewById(R.id.reader_middle_box)
+	private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
 
 	// These handle the error view
-	val errorView: View = itemView.findViewById(R.id.error_view)
-	val errorMessage: TextView = itemView.findViewById(R.id.error_message)
-	val errorButton: Button = itemView.findViewById(R.id.error_button)
+	private val errorView: View = itemView.findViewById(R.id.error_view)
+	private val errorMessage: TextView = itemView.findViewById(R.id.error_message)
+	private val errorButton: Button = itemView.findViewById(R.id.error_button)
 
 	var chapterID: Int = -1
+	private var unformattedText = ""
 
 	fun showProgress() {
 		middleBox.visibility = VISIBLE
@@ -72,11 +73,18 @@ class NewTextReader(itemView: View) : NewReader(itemView) {
 		}
 	}
 
+
 	override fun setText(text: String?) {
-		textView.text = text
+		unformattedText = text ?: "UNKNOWN"
 	}
 
 	override fun bind() {
+		val replaceSpacing = StringBuilder("\n")
+		for (x in 0 until Settings.readerParagraphSpacing)
+			replaceSpacing.append("\n")
+		for (x in 0 until Settings.readerIndentSize)
+			replaceSpacing.append("\t")
 
+		textView.text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
 	}
 }

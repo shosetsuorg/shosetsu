@@ -107,7 +107,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 
 		settings[READER_TEXT_SIZE] = Settings.readerTextSize
 		settings[READER_TEXT_SPACING] = Settings.readerParagraphSpacing
-		settings[READER_TEXT_INDENT] = Settings.ReaderIndentSize
+		settings[READER_TEXT_INDENT] = Settings.readerIndentSize
 
 		settings[READER_IS_TAP_TO_SCROLL] = Settings.isTapToScroll
 		settings[READER_IS_INVERTED_SWIPE] = Settings.isInvertedSwipe

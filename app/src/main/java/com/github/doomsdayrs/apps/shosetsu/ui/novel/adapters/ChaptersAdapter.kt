@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -47,11 +46,6 @@ class ChaptersAdapter(
 		private val chaptersController: NovelChaptersController,
 		private val viewModel: INovelChaptersViewModel
 ) : RecyclerView.Adapter<ChaptersViewHolder>(), FastScrollRecyclerView.SectionedAdapter {
-	companion object {
-		var DefaultTextColor = 0
-		private var set = false
-	}
-
 	init {
 		setHasStableIds(true)
 	}
@@ -62,13 +56,7 @@ class ChaptersAdapter(
 				viewGroup,
 				false
 		)
-		val chaptersViewHolder = ChaptersViewHolder(view)
-		if (!set) {
-			DefaultTextColor = chaptersViewHolder.title.currentTextColor
-			Log.i("TextDefaultColor", DefaultTextColor.toString())
-			set = !set
-		}
-		return chaptersViewHolder
+		return ChaptersViewHolder(view)
 	}
 
 	override fun onBindViewHolder(chaptersViewHolder: ChaptersViewHolder, i: Int) {
@@ -80,11 +68,6 @@ class ChaptersAdapter(
 					chaptersViewHolder.itemView.context,
 					R.color.bookmarked
 			))
-			chaptersViewHolder.popupMenu?.menu?.findItem(R.id.popup_chapter_menu_bookmark)
-					?.title = "UnBookmark"
-		} else {
-			chaptersViewHolder.popupMenu?.menu?.findItem(R.id.popup_chapter_menu_bookmark)
-					?.title = "Bookmark"
 		}
 
 		val isSelected = viewModel.isChapterSelected(chapterUI)
@@ -105,6 +88,7 @@ class ChaptersAdapter(
 					.title = "Download"
 			chaptersViewHolder.downloadTag.visibility = View.INVISIBLE
 		}
+
 		when (chapterUI.readingStatus) {
 			ReadingStatus.READING -> {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -156,6 +140,7 @@ class ChaptersAdapter(
 
 			}
 		}
+
 		if (chaptersController.recyclerArray.none { viewModel.isChapterSelected(it) })
 			chaptersViewHolder.itemView.setOnClickListener {
 				chaptersController.activity?.openChapter(chapterUI)
@@ -165,17 +150,7 @@ class ChaptersAdapter(
 		chaptersViewHolder.popupMenu!!.setOnMenuItemClickListener { menuItem: MenuItem ->
 			when (menuItem.itemId) {
 				R.id.popup_chapter_menu_bookmark -> {
-					chapterUI.bookmarked = !chapterUI.bookmarked
-					if (chapterUI.bookmarked)
-						chaptersViewHolder.title.setTextColor(ContextCompat.getColor(
-								chaptersViewHolder.itemView.context,
-								R.color.bookmarked
-						))
-					else {
-						Log.i("SetDefault", DefaultTextColor.toString())
-						chaptersViewHolder.title.setTextColor(DefaultTextColor)
-					}
-					viewModel.updateChapter(chapterUI)
+					viewModel.updateChapter(chapterUI, bookmarked = !chapterUI.bookmarked)
 					return@setOnMenuItemClickListener true
 				}
 				R.id.popup_chapter_menu_download -> {
@@ -201,15 +176,15 @@ class ChaptersAdapter(
 					TODO("Fix popup menu download for chapter")
 					return@setOnMenuItemClickListener true
 				}
-				R.id.popup_chapter_menu_mark_read -> {
+				R.id.set_read -> {
 					viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.READ)
 					return@setOnMenuItemClickListener true
 				}
-				R.id.popup_chapter_menu_mark_unread -> {
+				R.id.set_unread -> {
 					viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.UNREAD)
 					return@setOnMenuItemClickListener true
 				}
-				R.id.popup_chapter_menu_mark_reading -> {
+				R.id.set_reading -> {
 					viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.READING)
 					return@setOnMenuItemClickListener true
 				}

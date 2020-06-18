@@ -88,7 +88,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/novel_genres"
-            tools:text="A\nB\nC\nD\nE\nF" />
+            tools:text="A\nB\nC\nD\nE\nF"
+            android:textIsSelectable="true" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/novel_genres"

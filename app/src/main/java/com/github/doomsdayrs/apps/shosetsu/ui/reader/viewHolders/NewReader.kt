@@ -28,6 +28,13 @@ import androidx.recyclerview.widget.RecyclerView
 abstract class NewReader internal constructor(
 		itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
+	/**
+	 * Sets the unformatted text
+	 */
 	abstract fun setText(text: String?)
+
+	/**
+	 * Holder binds the text to the view, with formatting
+	 */
 	abstract fun bind()
 }

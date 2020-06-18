@@ -257,6 +257,10 @@
 
     <string name="regret">This feature have not been reintroduced yet due to time constraints :(</string>
     <string name="installing">Installing</string>
+    <string name="toggle_bookmark">Toggle bookmark</string>
+    <string name="mark_read">Mark read</string>
+    <string name="mark_unread">Mark unread</string>
+    <string name="mark_reading">Mark reading</string>
 
     <array name="application_themes">
         <item>@string/light</item>

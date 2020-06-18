@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 import needle.CancelableTask
-import needle.Needle
+import needle.Needle.onBackgroundThread
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -49,14 +49,12 @@ import java.security.InvalidKeyException
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
  * 07 / 02 / 2020
  *
- * @author github.com/doomsdayrs
  * <p>
  *     Handles update requests for the entire application
  * </p>
@@ -167,29 +165,30 @@ class UpdateService : Service(), KodeinAware {
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		Log.d(logID(), SERVICE_CANCEL_PREVIOUS)
 		job?.cancel()
+
 		Log.d(logID(), SERVICE_NEW)
 		job = when (intent?.getIntExtra(KEY_TARGET, KEY_NOVELS) ?: KEY_NOVELS) {
 			KEY_NOVELS ->
-				UpdateManga(bundleOf())
+				UpdateNovels(bundleOf())
 
 			KEY_CATEGORY ->
-				UpdateCategory()
+				UpdateNovelCategory()
 
 			else -> throw InvalidKeyException("How did you reach this point")
 		}
-		job?.let { Needle.onBackgroundThread().execute(it) }
-				?: Log.e(logID(), SERVICE_NULLIFIED)
+
+		job?.let { onBackgroundThread().execute(it) } ?: Log.e(logID(), SERVICE_NULLIFIED)
 		return super.onStartCommand(intent, flags, startId)
 	}
 
-	internal class UpdateCategory : CancelableTask() {
+	internal class UpdateNovelCategory : CancelableTask() {
 		override fun doWork() {
 			TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 		}
 
 	}
 
-	inner class UpdateManga(val bundle: Bundle)
+	inner class UpdateNovels(val bundle: Bundle)
 		: CancelableTask() {
 		override fun doWork() {
 			val updatedNovels = ArrayList<NovelEntity>()
@@ -271,6 +270,7 @@ class UpdateService : Service(), KodeinAware {
 				}
 				*/
 			}
+
 			// Completion
 			val stringBuilder = StringBuilder()
 			val pr = progressNotification
