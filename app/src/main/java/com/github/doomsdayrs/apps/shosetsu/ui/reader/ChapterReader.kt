@@ -1,38 +1,46 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.util.set
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.Callback
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.unmarkMenuItems
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.MarkingTypes
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.TextSizes
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READ
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
-import com.github.doomsdayrs.apps.shosetsu.common.ext.*
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.observe
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
+import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.demarkActions.*
-import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
+import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.chapter_reader.*
+import kotlinx.android.synthetic.main.chapter_reader_bottom.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -82,7 +90,6 @@ class ChapterReader
 			if (o.id != n.id) return false
 			if (o.link != n.link) return false
 			if (o.title != n.title) return false
-			if (o.readingStatus != n.readingStatus) return false
 			if (o.bookmarked != n.bookmarked) return false
 			return true
 		}
@@ -99,20 +106,25 @@ class ChapterReader
 	// Order of values. Night, Light, Sepia
 	private lateinit var themes: Array<MenuItem>
 
-	// Order of values. Small,Medium,Large
-	private lateinit var textSizes: Array<MenuItem>
-
-	// Order of values. Non,Small,Medium,Large
-	private lateinit var paragraphSpaces: Array<MenuItem>
-
-	// Order of values. Non,Small,Medium,Large
-	private lateinit var indentSpaces: Array<MenuItem>
-	private lateinit var bookmark: MenuItem
-	private var tapToScroll: MenuItem? = null
-
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel by instance<IChapterReaderViewModel>()
 	private val chapterReaderAdapter: ChapterReaderAdapter = ChapterReaderAdapter(this)
+	private val pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
+		override fun onPageSelected(position: Int) {
+			Log.d(logID(), "Page changed to $position ${chapters[position].link}")
+			val chapterReaderUI = chapters[position]
+			viewModel.currentChapterID = chapterReaderUI.id
+
+			// Mark read if set to onview
+			if (Settings.readerMarkingType == MarkingTypes.ONVIEW) {
+				Log.d("ChapterReader", "Marking as reading by marking type")
+				chapterReaderUI.readingStatus = READING
+				viewModel.updateChapter(chapterReaderUI)
+			}
+
+			supportActionBar?.title = chapterReaderUI.title
+		}
+	}
 
 	/**
 	 * Chapters to display owo
@@ -121,246 +133,18 @@ class ChapterReader
 
 	public override fun onCreate(savedInstanceState: Bundle?) {
 		Log.d(logID(), "On Create")
+		window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE
 		super.onCreate(savedInstanceState)
 		setSupportActionBar(toolbar as Toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		viewModel.setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
-		viewModel.currentChapterID = intent.getIntExtra(BUNDLE_CHAPTER_ID, -1)
+		viewModel.apply {
+			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
+			currentChapterID = intent.getIntExtra(BUNDLE_CHAPTER_ID, -1)
+		}
+		slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
 		setObservers()
 		setupViewPager()
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		menuInflater.inflate(R.menu.toolbar_chapter_view, menu)
-		// Night mode
-		run {
-			themes = arrayOf(
-					menu.findItem(R.id.chapter_view_reader_night),
-					menu.findItem(R.id.chapter_view_reader_light),
-					menu.findItem(R.id.chapter_view_reader_sepia),
-					menu.findItem(R.id.chapter_view_reader_dark),
-					menu.findItem(R.id.chapter_view_reader_gray),
-					menu.findItem(R.id.chapter_view_reader_custom)
-
-			)
-			when (Settings.readerTheme) {
-				0 -> themes[0].setChecked(true)
-				1 -> themes[1].setChecked(true)
-				2 -> themes[2].setChecked(true)
-				3 -> themes[3].setChecked(true)
-				4 -> themes[4].setChecked(true)
-				5 -> themes[5].setChecked(true)
-				else -> {
-					Settings.readerTheme = 1
-					themes[1].setChecked(true)
-				}
-			}
-		}
-		//  Bookmark
-		run {
-			menu.findItem(R.id.chapter_view_bookmark)?.let {
-				bookmark = it
-				/*
-				viewModel.getCurrentChapter().observe(this, Observer {
-					when (it) {
-						is HResult.Loading -> {
-						}
-						is HResult.Empty -> {
-						}
-						is HResult.Error -> {
-						}
-						is HResult.Success -> {
-							bookmark.setIcon(if (it.data.bookmarked)
-								R.drawable.ic_bookmark_24dp
-							else
-								R.drawable.ic_bookmark_border_24dp
-							)
-						}
-					}
-				})
-*/
-			}
-
-		}
-		// Tap To Scroll
-		run {
-			tapToScroll = menu.findItem(R.id.tap_to_scroll)
-			tapToScroll?.setChecked(Settings.isTapToScroll)
-		}
-		// Text size
-		run {
-			textSizes = arrayOf(
-					menu.findItem(R.id.chapter_view_textSize_small),
-					menu.findItem(R.id.chapter_view_textSize_medium),
-					menu.findItem(R.id.chapter_view_textSize_large)
-			)
-			when (Settings.readerTextSize) {
-				Settings.TextSizes.SMALL.i -> textSizes[0].setChecked(true)
-				Settings.TextSizes.MEDIUM.i -> textSizes[1].setChecked(true)
-				Settings.TextSizes.LARGE.i -> textSizes[2].setChecked(true)
-				else -> {
-					Settings.readerTextSize = Settings.TextSizes.SMALL.i
-					textSizes[0].setChecked(true)
-				}
-			}
-		}
-		// Paragraph Space
-		run {
-			paragraphSpaces = arrayOf(
-					menu.findItem(R.id.chapter_view_paragraphSpace_none),
-					menu.findItem(R.id.chapter_view_paragraphSpace_small),
-					menu.findItem(R.id.chapter_view_paragraphSpace_medium),
-					menu.findItem(R.id.chapter_view_paragraphSpace_large)
-			)
-			paragraphSpaces[Settings.readerParagraphSpacing].setChecked(true)
-		}
-		// Indent Space
-		run {
-			indentSpaces = arrayOf(
-					menu.findItem(R.id.chapter_view_indent_none),
-					menu.findItem(R.id.chapter_view_indent_small),
-					menu.findItem(R.id.chapter_view_indent_medium),
-					menu.findItem(R.id.chapter_view_indent_large)
-			)
-			indentSpaces[Settings.ReaderIndentSize].setChecked(true)
-		}
-		/* Reader
-		{
-
-			readers[0] = menu.findItem(R.id.reader_0);
-			readers[1] = menu.findItem(R.id.reader_1);
-			readerType = getReaderType(novelID);
-
-			switch (readerType) {
-				case 1:
-					demarkMenuItems(readers, 1, null);
-					break;
-				case 0:
-				case -1:
-					demarkMenuItems(readers, 0, null);
-					break;
-				case -2:
-				default:
-					throw new RuntimeException("Invalid chapter?!? How are you reading this without the novel loaded in");
-			}
-		}*/
-		return true
-	}
-
-	/**
-	 * What to do when an menu item is selected
-	 *
-	 * @param item item selected
-	 * @return true if processed
-	 */
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		Log.d(logID(), "Selected item: $item")
-		return when (item.itemId) {
-			android.R.id.home -> {
-				finish()
-				true
-			}
-			R.id.chapter_view_reader_night -> {
-				unmarkMenuItems(themes, 0, demarkActions[4])
-				true
-			}
-			R.id.chapter_view_reader_light -> {
-				unmarkMenuItems(themes, 1, demarkActions[4])
-				true
-			}
-			R.id.chapter_view_reader_sepia -> {
-				unmarkMenuItems(themes, 2, demarkActions[4])
-				true
-			}
-			R.id.chapter_view_reader_dark -> {
-				unmarkMenuItems(themes, 3, demarkActions[4])
-				true
-			}
-			R.id.chapter_view_reader_gray -> {
-				unmarkMenuItems(themes, 4, demarkActions[4])
-				true
-			}
-			R.id.chapter_view_reader_custom -> {
-				unmarkMenuItems(themes, 5, demarkActions[4])
-				true
-			}
-			R.id.tap_to_scroll -> {
-				this.regret()
-				// tapToScroll!!.isChecked = Utilities.toggleTapToScroll()
-				true
-			}
-			R.id.chapter_view_bookmark -> {
-				this.viewModel.toggleBookmark(getCurrentChapter()!!)
-				true
-			}
-			R.id.chapter_view_textSize_small -> {
-				unmarkMenuItems(indentSpaces, 0, demarkActions[0])
-				true
-			}
-			R.id.chapter_view_textSize_medium -> {
-				unmarkMenuItems(textSizes, 1, demarkActions[0])
-				true
-			}
-			R.id.chapter_view_textSize_large -> {
-				unmarkMenuItems(textSizes, 2, demarkActions[0])
-				true
-			}
-			R.id.chapter_view_paragraphSpace_none -> {
-				unmarkMenuItems(paragraphSpaces, 0, demarkActions[1])
-				true
-			}
-			R.id.chapter_view_paragraphSpace_small -> {
-				unmarkMenuItems(paragraphSpaces, 1, demarkActions[1])
-				true
-			}
-			R.id.chapter_view_paragraphSpace_medium -> {
-				unmarkMenuItems(paragraphSpaces, 2, demarkActions[1])
-				true
-			}
-			R.id.chapter_view_paragraphSpace_large -> {
-				unmarkMenuItems(paragraphSpaces, 3, demarkActions[1])
-				true
-			}
-			R.id.chapter_view_indent_none -> {
-				unmarkMenuItems(indentSpaces, 0, demarkActions[2])
-				true
-			}
-			R.id.chapter_view_indent_small -> {
-				unmarkMenuItems(indentSpaces, 1, demarkActions[2])
-				true
-			}
-			R.id.chapter_view_indent_medium -> {
-				unmarkMenuItems(indentSpaces, 2, demarkActions[2])
-				true
-			}
-			R.id.chapter_view_indent_large -> {
-				unmarkMenuItems(indentSpaces, 3, demarkActions[2])
-				true
-			}
-			R.id.browser -> {
-				val url = chapters[viewModel.currentChapterID].link
-				if (url.isNotEmpty())
-					openInBrowser(url)
-				true
-			}
-			R.id.webview -> {
-				val url = chapters[viewModel.currentChapterID].link
-				if (url.isNotEmpty())
-					openInWebView(url)
-				true
-			}
-			R.id.reader_0 -> {
-				regret()
-				//unmarkMenuItems(readers, 0, demarkActions[3])
-				true
-			}
-			R.id.reader_1 -> {
-				regret()
-				//unmarkMenuItems(readers, 1, demarkActions[3])
-				true
-			}
-			else -> super.onOptionsItemSelected(item)
-		}
+		setupBottomMenu()
 	}
 
 	override fun onDestroy() {
@@ -414,120 +198,174 @@ class ChapterReader
 		it.id == viewModel.currentChapterID
 	}
 
+	private fun setupBottomMenu() {
+		text_size_bar?.apply {
+			setCustomSectionTextArray { _, array ->
+				array.apply {
+					clear()
+					this[0] = getString(R.string.small)
+					this[1] = getString(R.string.medium)
+					this[2] = getString(R.string.large)
+				}
+			}
+			onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListener {
+				override fun onProgressChanged(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean
+				) {
+				}
+
+				override fun getProgressOnActionUp(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float
+				) {
+				}
+
+				override fun getProgressOnFinally(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean
+				) {
+					Settings.readerTextSize = when (progress) {
+						0 -> TextSizes.SMALL.i
+						1 -> TextSizes.MEDIUM.i
+						2 -> TextSizes.LARGE.i
+						else -> TextSizes.MEDIUM.i
+					}
+				}
+
+			}
+		}
+	}
+
 	private fun setupViewPager() {
 		Log.d(logID(), "Setting up ViewPager")
-		viewpager.adapter = chapterReaderAdapter
-		viewpager.registerOnPageChangeCallback(pageChangeCallback)
-		viewpager.currentItem = getCurrentChapterIndex()
-	}
-
-	/**
-	 * What to do when scroll hits bottom
-	 */
-	private fun scrollHitBottom(reader: NewTextReader) {
-		val view = reader.scrollView
-		val total = view.getChildAt(0).height - view.height
-		val cUI = getCurrentChapter()!!
-		val yPosition = view.scrollY
-		if (yPosition / total.toFloat() < .99) {
-			if (yPosition % 5 == 0) {
-				Log.i(logID(), "Scrolling")
-				// Mark as reading if on scroll
-				if (Settings.readerMarkingType == MarkingTypes.ONSCROLL)
-					cUI.readingStatus = READING
-				viewModel.updateChapter(cUI, readingPosition = yPosition)
-			}
-		} else {
-			Log.i(logID(), "Hit the bottom")
-			// Hit bottom
-			viewModel.updateChapter(cUI, readingStatus = READ)
+		viewpager.apply {
+			adapter = chapterReaderAdapter
+			registerOnPageChangeCallback(pageChangeCallback)
+			currentItem = getCurrentChapterIndex()
+			addItemDecoration(DividerItemDecoration(
+					viewpager.context,
+					viewpager.orientation
+			))
 		}
 	}
 
-	private var currentListener: () -> Unit = {}
-
-	/**
-	 * Sets up the hitting bottom listener
-	 */
-	internal fun addBottomListener(view: TextView) {
-		if (chapters.isEmpty()) return
-		if (chapterReaderAdapter.textReaders.isEmpty()) return
-
-		val index = getCurrentChapterIndex()
-
-		if (index == -1) return
-
-		val reader: NewTextReader = chapterReaderAdapter.textReaders[index]
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			view.setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
-				scrollHitBottom(reader)
-			}
-		} else {
-			currentListener = {
-				scrollHitBottom(reader)
-			}
-			view.viewTreeObserver.addOnScrollChangedListener(currentListener)
-		}
-	}
-
-	private val pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
-		override fun onPageSelected(position: Int) {
-			Log.d(logID(), "Page changed to $position ${chapters[position].link}")
-			val chapterReaderUI = chapters[position]
-			viewModel.currentChapterID = chapterReaderUI.id
-			val index = getCurrentChapterIndex()
-
-			// Makes sure the index is valid
-			if (index == -1 || index > this@ChapterReader.chapterReaderAdapter.textReaders.size) return
-
-			// Mark read if set to onview
-			if (Settings.readerMarkingType == MarkingTypes.ONVIEW) {
-				Log.d("ChapterReader", "Marking as reading by marking type")
-				chapterReaderUI.readingStatus = READING
-				viewModel.updateChapter(chapterReaderUI)
-			}
-
-			val view: TextView = this@ChapterReader.chapterReaderAdapter.textReaders[index].textView
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				view.setOnScrollChangeListener(null)
-			} else view.viewTreeObserver.removeOnScrollChangedListener(currentListener)
-			supportActionBar?.title = chapterReaderUI.title
-
-			addBottomListener(view)
-
-			view.setOnClickListener {
-				toolbar?.let {
-					@Suppress("CheckedExceptionsKotlin")
-					val animator: Animation = AnimationUtils.loadAnimation(
-							this@ChapterReader,
-							if (it.visibility == View.VISIBLE) {
-								Log.d(logID(), "Sliding up")
-								R.anim.slide_up
-							} else {
-								R.anim.slide_down
-							}
-					)
-					animator.duration = 500
-					it.startAnimation(animator)
-					it.visibility = if (it.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
-				}
-				chapter_reader_bottom?.let {
-					@Suppress("CheckedExceptionsKotlin")
-					val animator: Animation = AnimationUtils.loadAnimation(
-							this@ChapterReader,
-							if (it.visibility == View.VISIBLE)
-								R.anim.slide_down
-							else R.anim.slide_up
-					)
-					animator.duration = 500
-					it.startAnimation(animator)
-					it.visibility = if (it.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
+	fun animateBottom() {
+		chapter_reader_bottom?.apply {
+			@Suppress("CheckedExceptionsKotlin")
+			post {
+				slidingUpPanelLayout.apply {
+					panelState = if (panelState == PanelState.HIDDEN) PanelState.COLLAPSED else PanelState.HIDDEN
 				}
 			}
 		}
+	}
+
+	fun animateToolbar() {
+		toolbar?.let {
+			@Suppress("CheckedExceptionsKotlin")
+			val animator: Animation = AnimationUtils.loadAnimation(
+					it.context,
+					if (it.visibility == VISIBLE)
+						R.anim.slide_up
+					else R.anim.slide_down
+			)
+			it.startAnimation(animator)
+			it.post {
+				it.visibility = if (it.visibility == VISIBLE) GONE else VISIBLE
+			}
+		}
+
 	}
 
 	override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
 		Log.d(logID(), "State changed")
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		menuInflater.inflate(R.menu.toolbar_chapter_view, menu)
+		// Night mode
+		run {
+			themes = arrayOf(
+					menu.findItem(R.id.chapter_view_reader_night),
+					menu.findItem(R.id.chapter_view_reader_light),
+					menu.findItem(R.id.chapter_view_reader_sepia),
+					menu.findItem(R.id.chapter_view_reader_dark),
+					menu.findItem(R.id.chapter_view_reader_gray),
+					menu.findItem(R.id.chapter_view_reader_custom)
+
+			)
+			when (Settings.readerTheme) {
+				0 -> themes[0].setChecked(true)
+				1 -> themes[1].setChecked(true)
+				2 -> themes[2].setChecked(true)
+				3 -> themes[3].setChecked(true)
+				4 -> themes[4].setChecked(true)
+				5 -> themes[5].setChecked(true)
+				else -> {
+					Settings.readerTheme = 1
+					themes[1].setChecked(true)
+				}
+			}
+		}
+		return true
+	}
+
+	/**
+	 * What to do when an menu item is selected
+	 *
+	 * @param item item selected
+	 * @return true if processed
+	 */
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		Log.d(logID(), "Selected item: $item")
+		return when (item.itemId) {
+			android.R.id.home -> {
+				finish()
+				true
+			}
+			R.id.chapter_view_reader_night -> {
+				unmarkMenuItems(themes, 0, demarkActions[4])
+				true
+			}
+			R.id.chapter_view_reader_light -> {
+				unmarkMenuItems(themes, 1, demarkActions[4])
+				true
+			}
+			R.id.chapter_view_reader_sepia -> {
+				unmarkMenuItems(themes, 2, demarkActions[4])
+				true
+			}
+			R.id.chapter_view_reader_dark -> {
+				unmarkMenuItems(themes, 3, demarkActions[4])
+				true
+			}
+			R.id.chapter_view_reader_gray -> {
+				unmarkMenuItems(themes, 4, demarkActions[4])
+				true
+			}
+			R.id.chapter_view_reader_custom -> {
+				unmarkMenuItems(themes, 5, demarkActions[4])
+				true
+			}
+			R.id.browser -> {
+				val url = chapters[viewModel.currentChapterID].link
+				if (url.isNotEmpty())
+					openInBrowser(url)
+				true
+			}
+			R.id.webview -> {
+				val url = chapters[viewModel.currentChapterID].link
+				if (url.isNotEmpty())
+					openInWebView(url)
+				true
+			}
+			else -> super.onOptionsItemSelected(item)
+		}
 	}
 }

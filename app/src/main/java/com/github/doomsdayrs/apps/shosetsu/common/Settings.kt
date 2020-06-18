@@ -55,40 +55,40 @@ object Settings {
 
 
 	// Constant keys
-	const val LISTING_KEY = "listing"
+	private const val LISTING_KEY = "listing"
 	private const val FIRST_TIME = "first_time"
 
 
 	// How things look in Reader
-	const val READER_THEME = "readerTheme"
-	const val READER_TEXT_C_COLOR = "readerCustomTextColor"
-	const val READER_BACK_C_COLOR = "readerCustomBackColor"
+	private const val READER_THEME = "readerTheme"
+	private const val READER_TEXT_C_COLOR = "readerCustomTextColor"
+	private const val READER_BACK_C_COLOR = "readerCustomBackColor"
 
-	const val READER_TEXT_SIZE = "readerTextSize"
-	const val READER_TEXT_SPACING = "readerParagraphSpacing"
-	const val READER_TEXT_INDENT = "readerIndentSize"
+	private const val READER_TEXT_SIZE = "readerTextSize"
+	private const val READER_TEXT_SPACING = "readerParagraphSpacing"
+	private const val READER_TEXT_INDENT = "readerIndentSize"
 
 	//- How things act in Reader
-	const val READER_IS_TAP_TO_SCROLL = "tapToScroll"
-	const val READER_IS_INVERTED_SWIPE = "invertedSwipe"
-	const val READER_MARKING_TYPE = "readerMarkingType"
+	private const val READER_IS_TAP_TO_SCROLL = "tapToScroll"
+	private const val READER_IS_INVERTED_SWIPE = "invertedSwipe"
+	private const val READER_MARKING_TYPE = "readerMarkingType"
 
 	// Download options
-	const val IS_DOWNLOAD_PAUSED = "isDownloadPaused"
-	const val IS_DOWNLOAD_ON_UPDATE = "isDownloadOnUpdate"
+	private const val IS_DOWNLOAD_PAUSED = "isDownloadPaused"
+	private const val IS_DOWNLOAD_ON_UPDATE = "isDownloadOnUpdate"
 
-	const val DISABLED_FORMATTERS = "disabledFormatters"
-	const val DELETE_READ_CHAPTER = "deleteReadChapter"
+	private const val DISABLED_FORMATTERS = "disabledFormatters"
+	private const val DELETE_READ_CHAPTER = "deleteReadChapter"
 
 	// View options
-	const val C_IN_NOVELS_P = "columnsInNovelsViewP"
-	const val C_IN_NOVELS_H = "columnsInNovelsViewH"
-	const val NOVEL_CARD_TYPE = "novelCardType"
+	private const val C_IN_NOVELS_P = "columnsInNovelsViewP"
+	private const val C_IN_NOVELS_H = "columnsInNovelsViewH"
+	private const val NOVEL_CARD_TYPE = "novelCardType"
 
 	// Backup Options
-	const val BACKUP_CHAPTERS = "backupChapters"
-	const val BACKUP_SETTINGS = "backupSettings"
-	const val BACKUP_QUICK = "backupQuick"
+	private const val BACKUP_CHAPTERS = "backupChapters"
+	private const val BACKUP_SETTINGS = "backupSettings"
+	private const val BACKUP_QUICK = "backupQuick"
 
 	// Download Options
 	private const val DOWNLOAD_DIRECTORY = "downloadDirectory"

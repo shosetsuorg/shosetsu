@@ -29,7 +29,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * shosetsu
  * 06 / 05 / 2020
  */
-abstract class IChapterReaderViewModel : SubscribeHandleViewModel<List<ReaderChapterUI>>, ViewModel() {
+abstract class IChapterReaderViewModel
+	: SubscribeHandleViewModel<List<ReaderChapterUI>>, ViewModel() {
 
 	abstract val backgroundColor: MutableLiveData<Int>
 	abstract val textColor: MutableLiveData<Int>

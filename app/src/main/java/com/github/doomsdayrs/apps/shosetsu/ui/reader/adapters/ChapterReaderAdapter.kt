@@ -1,15 +1,20 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters
 
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.observe
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.
@@ -39,6 +44,11 @@ class ChapterReaderAdapter(
 		private val chapterReader: ChapterReader
 ) : RecyclerView.Adapter<NewTextReader>() {
 	var textReaders = ArrayList<NewTextReader>()
+
+	init {
+		setHasStableIds(true)
+	}
+
 	private fun chapters() = chapterReader.chapters
 
 	override fun onViewDetachedFromWindow(holder: NewTextReader) {
@@ -81,9 +91,74 @@ class ChapterReaderAdapter(
 				is HResult.Success -> {
 					Log.d(logID(), "Successfully loaded :D")
 					holder.hideProgress()
-					holder.setText(it.data)
+					var unformattedText = it.data
+					val replaceSpacing = StringBuilder("\n")
+					for (x in 0 until Settings.readerParagraphSpacing)
+						replaceSpacing.append("\n")
+					for (x in 0 until Settings.ReaderIndentSize)
+						replaceSpacing.append("\t")
+					holder.setText(unformattedText.replace("\n".toRegex(), replaceSpacing.toString()))
 				}
 			}
+		}
+
+
+		holder.textView.apply {
+			textSize = Settings.readerTextSize
+
+			setOnClickListener {
+				chapterReader.animateToolbar()
+				chapterReader.animateBottom()
+			}
+		}
+
+		// Sets the scroll listener
+		holder.scrollView.apply {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
+					Log.d(logID(), "Scrolled")
+					scrollHitBottom(holder, chapter)
+				}
+			} else {
+				viewTreeObserver.addOnScrollChangedListener {
+					Log.d(logID(), "Scrolled")
+					scrollHitBottom(holder, chapter)
+				}
+			}
+		}
+	}
+
+	override fun onViewAttachedToWindow(holder: NewTextReader) {
+		super.onViewAttachedToWindow(holder)
+		Log.i(logID(), "Attaching ${holder.chapterID}")
+	}
+
+	override fun onViewRecycled(holder: NewTextReader) {
+		super.onViewRecycled(holder)
+		Log.i(logID(), "Recycling ${holder.chapterID}")
+	}
+
+	override fun getItemId(position: Int): Long = chapterReader.chapters[position].id.toLong()
+
+	/**
+	 * What to do when scroll hits bottom
+	 */
+	private fun scrollHitBottom(reader: NewTextReader, cUI: ReaderChapterUI) {
+		val view = reader.scrollView
+		val total = view.getChildAt(0).height - view.height
+		val yPosition = view.scrollY
+		if (yPosition / total.toFloat() < .99) {
+			if (yPosition % 5 == 0) {
+				Log.i(logID(), "Scrolling")
+				// Mark as reading if on scroll
+				if (Settings.readerMarkingType == Settings.MarkingTypes.ONSCROLL)
+					cUI.readingStatus = ReadingStatus.READING
+				chapterReader.viewModel.updateChapter(cUI, readingPosition = yPosition)
+			}
+		} else {
+			Log.i(logID(), "Hit the bottom")
+			// Hit bottom
+			chapterReader.viewModel.updateChapter(cUI, readingStatus = ReadingStatus.READ)
 		}
 	}
 }

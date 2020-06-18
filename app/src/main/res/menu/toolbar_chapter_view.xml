@@ -5,12 +5,6 @@
 
     <group>
         <item
-            android:id="@+id/tap_to_scroll"
-            android:checkable="true"
-            android:title="@string/tap_to_scroll"
-            app:showAsAction="never" />
-
-        <item
             android:title="@string/reader_theme"
             app:showAsAction="never">
             <menu>
@@ -40,86 +34,6 @@
                     android:title="@string/custom"/>
             </menu>
         </item>
-        <item
-            android:title="@string/text_size"
-            app:showAsAction="never">
-            <menu>
-                <item
-                    android:id="@+id/chapter_view_textSize_small"
-                    android:checkable="true"
-                    android:title="@string/small" />
-                <item
-                    android:id="@+id/chapter_view_textSize_medium"
-                    android:checkable="true"
-                    android:title="@string/medium" />
-                <item
-                    android:id="@+id/chapter_view_textSize_large"
-                    android:checkable="true"
-                    android:title="@string/large" />
-            </menu>
-        </item>
-        <item
-            android:title="@string/spacing"
-            app:showAsAction="never">
-            <menu>
-                <item
-                    android:id="@+id/chapter_view_paragraphSpace_none"
-                    android:checkable="true"
-                    android:title="@string/no_change" />
-                <item
-                    android:id="@+id/chapter_view_paragraphSpace_small"
-                    android:checkable="true"
-                    android:title="@string/small" />
-                <item
-                    android:id="@+id/chapter_view_paragraphSpace_medium"
-                    android:checkable="true"
-                    android:title="@string/medium" />
-                <item
-                    android:id="@+id/chapter_view_paragraphSpace_large"
-                    android:checkable="true"
-                    android:title="@string/large" />
-            </menu>
-        </item>
-
-        <item
-            android:title="@string/indent_size"
-            app:showAsAction="never">
-            <menu>
-                <item
-                    android:id="@+id/chapter_view_indent_none"
-                    android:checkable="true"
-                    android:title="@string/no_change" />
-                <item
-                    android:id="@+id/chapter_view_indent_small"
-                    android:checkable="true"
-                    android:title="@string/small" />
-                <item
-                    android:id="@+id/chapter_view_indent_medium"
-                    android:checkable="true"
-                    android:title="@string/medium" />
-                <item
-                    android:id="@+id/chapter_view_indent_large"
-                    android:checkable="true"
-                    android:title="@string/large" />
-            </menu>
-        </item>
-
-        <item
-            android:title="@string/reader"
-            app:showAsAction="never">
-            <menu>
-                <item
-                    android:id="@+id/reader_0"
-                    android:checkable="true"
-                    android:title="@string/default_reader" />
-
-                <item
-                    android:id="@+id/reader_1"
-                    android:checkable="true"
-                    android:title="@string/markdown_reader" />
-
-            </menu>
-        </item>
     </group>
 
     <item android:title="@string/open_in">
@@ -135,17 +49,4 @@
                 android:title="@string/browser" />
         </menu>
     </item>
-
-
-    <item
-        android:id="@+id/chapter_view_bookmark"
-        android:icon="@drawable/ic_bookmark_border_24dp"
-        android:title="@string/bookmark"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/change_theme"
-        android:icon="@drawable/ic_baseline_color_lens_24"
-        android:title="@string/reader_theme"
-        app:showAsAction="ifRoom"/>
 </menu>

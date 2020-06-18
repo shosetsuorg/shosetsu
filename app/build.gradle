@@ -163,6 +163,12 @@ dependencies {
 	// Color Picker
 	implementation "com.github.skydoves:colorpickerview:2.1.6"
 
+	// Slide view for reader
+	implementation 'com.github.hannesa2:AndroidSlidingUpPanel:4.2.0'
+
+	// Seek bar
+	implementation 'com.xw.repo:bubbleseekbar:3.20'
+
 	// Room
 	def room_version = "2.2.5"
 	implementation "androidx.room:room-runtime:$room_version"

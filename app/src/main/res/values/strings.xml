@@ -16,8 +16,8 @@
     <!-- Reader Settings -->
     <string name="reader_theme">Reader Theme</string>
     <string name="text_size">Text size</string>
-    <string name="spacing">Paragraph spacing</string>
-    <string name="indent_size">Paragraph indent</string>
+    <string name="paragraph_spacing">Paragraph spacing</string>
+    <string name="paragraph_indent">Paragraph indent</string>
 
     <string name="novel_title">Novel Title:</string>
     <string name="novel_author">Novel Author(s):</string>

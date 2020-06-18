@@ -44,7 +44,7 @@
     <string name="enabled">有効化</string>
     <string name="filter">正解</string>
     <string name="header_text">携帯電話で小説を読む！</string>
-    <string name="indent_size">段落インデント</string>
+    <string name="paragraph_indent">段落インデント</string>
     <string name="install">取り付ける</string>
     <string name="large">大きい</string>
     <string name="library_updates">図書館の更新</string>
@@ -100,7 +100,7 @@
     <string name="small">小さい</string>
     <string name="site">ウェブサイト</string>
     <string name="starting">起動</string>
-    <string name="spacing">段落間隔</string>
+    <string name="paragraph_spacing">段落間隔</string>
     <string name="sus_scripts">疑わしいスクリプト</string>
     <string name="sus_script_title">疑わしいスクリプト</string>
     <string name="temp_all">一時すべて</string>

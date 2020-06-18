@@ -41,7 +41,7 @@
     <string name="filter">正确</string>
     <string name="header_text">可以在电话上看小说</string>
     <string name="install">安装</string>
-    <string name="indent_size">段落缩进</string>
+    <string name="paragraph_indent">段落缩进</string>
     <string name="library_updates">图书馆更新</string>
     <string name="large">大</string>
     <string name="light">亮</string>
@@ -98,7 +98,7 @@
     <string name="site">网站</string>
     <string name="settings">设定</string>
     <string name="small">小</string>
-    <string name="spacing">段落间距</string>
+    <string name="paragraph_spacing">段落间距</string>
     <string name="starting">开始</string>
     <string name="sus_script_title">可疑脚本</string>
     <string name="tap_to_scroll">点击滚动</string>

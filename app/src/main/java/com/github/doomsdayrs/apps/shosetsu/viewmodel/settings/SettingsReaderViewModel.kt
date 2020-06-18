@@ -42,7 +42,7 @@ class SettingsReaderViewModel(
 	override val settings: ArrayList<SettingsItemData> by lazy {
 		arrayListOf(
 				SettingsItemData(SPINNER, 0)
-						.setTitle(R.string.spacing)
+						.setTitle(R.string.paragraph_spacing)
 						.setSpinnerSelection(Settings.readerParagraphSpacing)
 						.setArrayAdapter(ArrayAdapter(
 								context,
@@ -104,7 +104,7 @@ class SettingsReaderViewModel(
 						}),
 
 				SettingsItemData(SPINNER, 1)
-						.setTitle(R.string.indent_size)
+						.setTitle(R.string.paragraph_indent)
 						.setArrayAdapter(ArrayAdapter(
 								context,
 								android.R.layout.simple_spinner_item,
