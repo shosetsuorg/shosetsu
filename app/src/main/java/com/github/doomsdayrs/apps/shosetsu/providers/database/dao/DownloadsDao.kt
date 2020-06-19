@@ -36,15 +36,15 @@ interface DownloadsDao : BaseDao<DownloadEntity> {
 	/**
 	 * Loads the first download
 	 */
-	@Query("SELECT * FROM downloads WHERE status !=-1 AND status !=1 LIMIT 1")
-	suspend fun loadFirstDownload(): DownloadEntity
+	@Query("SELECT * FROM downloads WHERE status = 0 LIMIT 1")
+	suspend fun loadFirstDownload(): DownloadEntity?
 
 	/**
 	 * Loads the first download, and also sets it as downloading
 	 */
 	@Transaction
 	suspend fun loadAndStartFirstDownload(): DownloadEntity {
-		val d = loadFirstDownload()
+		val d = loadFirstDownload()!!
 		d.status = 1
 		blockingUpdate(d)
 		return d
@@ -62,7 +62,7 @@ interface DownloadsDao : BaseDao<DownloadEntity> {
 	fun loadDownloadItems(): LiveData<List<DownloadEntity>>
 
 	@Query("SELECT * FROM downloads WHERE chapterID = :chapterID LIMIT 1")
-	fun loadDownload(chapterID: Int): LiveData<DownloadEntity>
+	suspend fun loadDownload(chapterID: Int): DownloadEntity
 
 	@Query("DELETE FROM downloads")
 	suspend fun clearData()

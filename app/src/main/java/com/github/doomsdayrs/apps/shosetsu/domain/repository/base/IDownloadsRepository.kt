@@ -29,7 +29,11 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  */
 interface IDownloadsRepository {
 
-	suspend fun loadDownloads(): LiveData<HResult<List<DownloadEntity>>>
+	/**
+	 * Gets a live view of the downloads
+	 */
+	fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>>
+
 
 	/**
 	 * Loads the first download in the list, also starts it
@@ -42,6 +46,11 @@ interface IDownloadsRepository {
 	suspend fun loadDownloadCount(): HResult<Int>
 
 	/**
+	 * Gets a download entity by its ID
+	 */
+	suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity>
+
+	/**
 	 * Adds a new download to the repository
 	 */
 	suspend fun addDownload(download: DownloadEntity): HResult<Long>
@@ -49,12 +58,7 @@ interface IDownloadsRepository {
 	/**
 	 * Updates a download in repository
 	 */
-	suspend fun suspendedUpdate(download: DownloadEntity)
-
-	/**
-	 * [suspendedUpdate] but blocks the thread
-	 */
-	fun blockingUpdate(download: DownloadEntity)
+	suspend fun update(download: DownloadEntity)
 
 	/**
 	 * Removes a download from the repository

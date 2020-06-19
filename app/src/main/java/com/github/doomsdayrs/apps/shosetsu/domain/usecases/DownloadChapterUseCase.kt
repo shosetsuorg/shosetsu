@@ -1,5 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 
 /*
@@ -25,9 +29,22 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
  * Downloads a specific chapter
  */
 class DownloadChapterUseCase(
-
-) : ((ChapterUI) -> Unit) {
-	override fun invoke(p1: ChapterUI) {
-		TODO("Not yet implemented")
+		private val novelRepo: INovelsRepository,
+		private val downloadsRepository: IDownloadsRepository
+) {
+	suspend operator fun invoke(chapterUI: ChapterUI) {
+		novelRepo.loadNovel(chapterUI.novelID).let {
+			if (it is HResult.Success) {
+				val novel = it.data
+				downloadsRepository.addDownload(DownloadEntity(
+						chapterUI.id,
+						chapterUI.novelID,
+						chapterUI.link,
+						chapterUI.title,
+						novel.title,
+						chapterUI.formatterID
+				))
+			}
+		}
 	}
 }

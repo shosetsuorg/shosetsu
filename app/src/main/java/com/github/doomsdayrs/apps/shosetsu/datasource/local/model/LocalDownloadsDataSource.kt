@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalDownloadsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
@@ -30,16 +31,16 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
  * 12 / 05 / 2020
  */
 class LocalDownloadsDataSource(
-	private 	val downloadsDao: DownloadsDao
+		private val downloadsDao: DownloadsDao
 ) : ILocalDownloadsDataSource {
-	override suspend fun loadDownloads(): LiveData<HResult<List<DownloadEntity>>> =
+	override fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>> =
 			downloadsDao.loadDownloadItems().map { successResult(it) }
 
 	override suspend fun loadDownloadCount(): HResult<Int> =
 			successResult(downloadsDao.loadDownloadCount())
 
 	override suspend fun loadFirstDownload(): HResult<DownloadEntity> =
-			successResult(downloadsDao.loadFirstDownload())
+			downloadsDao.loadFirstDownload()?.let { successResult(it) } ?: emptyResult()
 
 	override suspend fun insertDownload(downloadEntity: DownloadEntity): Long =
 			downloadsDao.insertIgnore(downloadEntity)
@@ -51,4 +52,7 @@ class LocalDownloadsDataSource(
 			downloadsDao.suspendedDelete(downloadEntity)
 
 	override suspend fun clearDownloads() = downloadsDao.clearData()
+
+	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> =
+			successResult(downloadsDao.loadDownload(chapterID))
 }

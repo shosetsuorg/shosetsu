@@ -154,26 +154,9 @@ class ChaptersAdapter(
 					return@setOnMenuItemClickListener true
 				}
 				R.id.popup_chapter_menu_download -> {
-					/*
-					if (!Database.DatabaseChapter.isSaved(chapterID)) {
-						val downloadItem = DownloadEntity(
-								chapterID,
-								chaptersController.novelController!!.novelInfoController!!.novelPage.title,
-								novelChapter.title,
-								status = "Pending"
-						)
-						addToDownload(chaptersController.activity, downloadItem)
-					} else if (delete(itemView.context, DownloadEntity(
-									chapterID,
-									chaptersController.novelController!!.novelInfoController!!.novelPage.title,
-									novelChapter.title,
-									status = "Pending"
-							))) {
-						downloadTag.visibility = View.INVISIBLE
+					if (!chapterUI.isSaved) {
+						viewModel.download(chapterUI)
 					}
-					chaptersController.updateAdapter()
-					*/
-					TODO("Fix popup menu download for chapter")
 					return@setOnMenuItemClickListener true
 				}
 				R.id.set_read -> {

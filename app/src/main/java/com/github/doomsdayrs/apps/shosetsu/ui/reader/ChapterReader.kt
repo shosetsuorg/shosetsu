@@ -14,9 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.util.set
 import androidx.core.view.postDelayed
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.Callback
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -68,7 +65,7 @@ import org.kodein.di.generic.instance
  * @author github.com/doomsdayrs
  */
 class ChapterReader
-	: AppCompatActivity(R.layout.chapter_reader), KodeinAware, LifecycleEventObserver {
+	: AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 	private class RecyclerViewDiffer(
 			val old: List<ReaderChapterUI>,
 			val aNew: List<ReaderChapterUI>
@@ -457,10 +454,6 @@ class ChapterReader
 			}
 		}
 
-	}
-
-	override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-		Log.d(logID(), "State changed")
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {

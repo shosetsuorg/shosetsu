@@ -39,8 +39,7 @@ data class ChapterUI(
 		var readingPosition: Int,
 		var readingStatus: ReadingStatus,
 		var bookmarked: Boolean,
-		var isSaved: Boolean,
-		var savePath: String
+		var isSaved: Boolean
 ) : Convertible<ChapterEntity> {
 	override fun convertTo(): ChapterEntity =
 			ChapterEntity(
@@ -54,7 +53,6 @@ data class ChapterUI(
 					readingPosition,
 					readingStatus,
 					bookmarked,
-					isSaved,
-					savePath
+					isSaved
 			)
 }

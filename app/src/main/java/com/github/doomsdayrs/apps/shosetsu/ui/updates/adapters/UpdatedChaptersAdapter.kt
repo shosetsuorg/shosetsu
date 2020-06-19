@@ -21,7 +21,6 @@ import android.app.Activity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -29,7 +28,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
-import com.github.doomsdayrs.apps.shosetsu.common.utils.DownloadManager
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
@@ -47,7 +45,6 @@ class UpdatedChaptersAdapter(
 		val viewModel: IUpdatesViewModel
 ) : RecyclerView.Adapter<UpdatedChapterHolder>() {
 	var size = if (updatedNovelHolder.updates.size > 20) 5 else updatedNovelHolder.updates.size
-	val downloadManager: DownloadManager = TODO("IMPLEMENT")
 
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): UpdatedChapterHolder {
 		val view = LayoutInflater.from(viewGroup.context).inflate(
@@ -55,13 +52,7 @@ class UpdatedChaptersAdapter(
 				viewGroup,
 				false
 		)
-		val updatedChapterHolder = UpdatedChapterHolder(view)
-		if (!set) {
-			DefaultTextColor = updatedChapterHolder.title.currentTextColor
-			Log.i("TextDefaultColor", DefaultTextColor.toString())
-			set = !set
-		}
-		return updatedChapterHolder
+		return UpdatedChapterHolder(view)
 	}
 
 	override fun onBindViewHolder(updatedChapterHolder: UpdatedChapterHolder, i: Int) {
@@ -88,11 +79,7 @@ class UpdatedChaptersAdapter(
 						chapterUI.bookmarked = !chapterUI.bookmarked
 						if (chapterUI.bookmarked)
 							title.setTextColor(itemView.resources.getColor(R.color.bookmarked))
-						else {
-							Log.i("SetDefault", DefaultTextColor.toString())
-							title.setTextColor(DefaultTextColor)
-						}
-						notifyDataSetChanged()
+						notifyItemChanged(i)
 						return@setOnMenuItemClickListener true
 					}
 					R.id.popup_chapter_menu_download -> {
@@ -101,16 +88,9 @@ class UpdatedChaptersAdapter(
 								val downloadItem: DownloadUI = with(chapterUI) {
 									DownloadUI(id, novelID, link, title, "TODO", formatterID)
 								}
-								downloadManager.addToDownload(updatedNovelHolder.activity, downloadItem)
+								//downloadManager.addToDownload(updatedNovelHolder.activity, downloadItem)
 							} else {
-								if (downloadManager.delete(
-												itemView.context,
-												with(chapterUI) {
-													DownloadUI(id, novelID, link, title, "TODO", formatterID)
-												}
-										)) {
-									downloadTag.visibility = View.INVISIBLE
-								}
+								//
 							}
 						}
 						notifyItemChanged(i)
@@ -148,10 +128,5 @@ class UpdatedChaptersAdapter(
 	}
 
 	override fun getItemCount(): Int = size
-
-	companion object {
-		var DefaultTextColor = 0
-		private var set = false
-	}
 
 }

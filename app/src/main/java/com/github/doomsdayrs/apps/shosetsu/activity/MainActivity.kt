@@ -15,7 +15,7 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.attachRouter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
-import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
+import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
 import com.github.doomsdayrs.apps.shosetsu.common.consts.SHOSETSU_UPDATE_URL
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity(), Supporter, KodeinAware {
 		})
 
 		syncActivityViewWithController(router.backstack.lastOrNull()?.controller)
-		DownloadService.start(this)
+		DownloadWorker.start(this)
 		when (intent.action) {
 			Intent.ACTION_USER_BACKGROUND -> {
 				Log.i("MainActivity", "Updating novels")

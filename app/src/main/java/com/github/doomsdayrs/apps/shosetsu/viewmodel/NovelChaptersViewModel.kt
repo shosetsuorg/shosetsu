@@ -1,9 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DownloadChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetChapterUIsUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
@@ -32,7 +35,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewMode
  */
 class NovelChaptersViewModel(
 		private val getChapterUIsUseCase: GetChapterUIsUseCase,
-		private val updateChapterUseCase: UpdateChapterUseCase
+		private val updateChapterUseCase: UpdateChapterUseCase,
+		private val downloadChapterUseCase: DownloadChapterUseCase
 ) : INovelChaptersViewModel() {
 	private var nID: Int = -1
 	private var selectedChapters = arrayListOf<Int>()
@@ -40,6 +44,13 @@ class NovelChaptersViewModel(
 	override fun setNovelID(novelID: Int) {
 		if (nID == -1)
 			nID = novelID
+	}
+
+	override fun download(chapterUI: ChapterUI) {
+		launchIO {
+			Log.i(logID(),"Downloading ${chapterUI.id}")
+			downloadChapterUseCase(chapterUI)
+		}
 	}
 
 	override var isArrayReversed: Boolean

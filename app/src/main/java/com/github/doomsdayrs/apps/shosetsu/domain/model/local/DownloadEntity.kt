@@ -69,6 +69,15 @@ data class DownloadEntity(
 		val novelName: String,
 		@NonNull
 		val formatterID: Int,
+		/**
+		 * -1 for error
+		 *
+		 * 0 for pending
+		 *
+		 * 1 for active
+		 *
+		 * 2 for downloading
+		 */
 		var status: Int = 0
 ) : Convertible<DownloadUI>, Serializable {
 	override fun convertTo(): DownloadUI =

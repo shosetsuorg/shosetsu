@@ -35,7 +35,6 @@ class LoadChapterPassageUseCase(
 		private val iExtensionsRepository: IExtensionsRepository
 ) {
 	suspend operator fun invoke(chapter: ReaderChapterUI): HResult<String> {
-		Log.d(logID(), "Emitting loading")
 		Log.d(logID(), "Getting chapter entity #${chapter.id}}")
 		val chapterResult = iChaptersRepository.loadChapter(chapter.id)
 		return if (chapterResult is HResult.Success) {

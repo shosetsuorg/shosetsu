@@ -23,7 +23,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadService
+import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
@@ -78,7 +78,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 				item.setIcon(R.drawable.ic_play_circle_filled_24dp)
 			else {
 				item.setIcon(R.drawable.ic_pause_circle_outline_24dp)
-				DownloadService.start(activity!!)
+				DownloadWorker.start(activity!!)
 			}
 			return true
 		}

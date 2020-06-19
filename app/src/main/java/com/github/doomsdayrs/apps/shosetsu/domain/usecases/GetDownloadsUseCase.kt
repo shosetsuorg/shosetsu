@@ -34,6 +34,6 @@ class GetDownloadsUseCase(
 		private val iDownloadsRepository: IDownloadsRepository
 ) : (() -> LiveData<HResult<List<DownloadUI>>>) {
 	override fun invoke(): LiveData<HResult<List<DownloadUI>>> {
-		return liveData { emitSource(iDownloadsRepository.loadDownloads().map { it.mapListTo() }) }
+		return liveData { emitSource(iDownloadsRepository.loadLiveDownloads().map { it.mapListTo() }) }
 	}
 }

@@ -79,6 +79,7 @@ data class ChapterEntity(
 
 		var isSaved: Boolean = false,
 
+		@Deprecated("No longer needed, save path is loaded via IDs")
 		var savePath: String = ""
 ) : Convertible<ChapterUI> {
 
@@ -95,7 +96,6 @@ data class ChapterEntity(
 					readingPosition,
 					readingStatus,
 					bookmarked,
-					isSaved,
-					savePath
+					isSaved
 			)
 }

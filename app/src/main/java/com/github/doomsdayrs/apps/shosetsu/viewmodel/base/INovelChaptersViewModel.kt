@@ -37,6 +37,9 @@ abstract class INovelChaptersViewModel
 
 	abstract fun setNovelID(novelID: Int)
 
+	/** Instruction to download a specific chapter */
+	abstract fun download(chapterUI: ChapterUI)
+
 	/** Instruction to download the next [count] chapters */
 	abstract fun downloadNext(count: Int)
 

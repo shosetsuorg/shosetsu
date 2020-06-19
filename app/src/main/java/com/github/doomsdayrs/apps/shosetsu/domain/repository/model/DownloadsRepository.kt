@@ -20,7 +20,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalDownloadsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
@@ -34,8 +33,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepo
 class DownloadsRepository(
 		private val iLocalDownloadsDataSource: ILocalDownloadsDataSource
 ) : IDownloadsRepository {
-	override suspend fun loadDownloads(): LiveData<HResult<List<DownloadEntity>>> =
-			iLocalDownloadsDataSource.loadDownloads()
+	override fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>> =
+			iLocalDownloadsDataSource.loadLiveDownloads()
 
 	override suspend fun loadFirstDownload(): HResult<DownloadEntity> =
 			iLocalDownloadsDataSource.loadFirstDownload()
@@ -43,15 +42,14 @@ class DownloadsRepository(
 	override suspend fun loadDownloadCount(): HResult<Int> =
 			iLocalDownloadsDataSource.loadDownloadCount()
 
+	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> =
+			iLocalDownloadsDataSource.loadDownload(chapterID)
+
 	override suspend fun addDownload(download: DownloadEntity): HResult<Long> =
 			successResult(iLocalDownloadsDataSource.insertDownload(download))
 
-	override suspend fun suspendedUpdate(download: DownloadEntity) =
+	override suspend fun update(download: DownloadEntity) =
 			iLocalDownloadsDataSource.updateDownload(download)
-
-	override fun blockingUpdate(download: DownloadEntity) {
-		launchAsync { iLocalDownloadsDataSource.updateDownload(download) }
-	}
 
 	override suspend fun suspendedDelete(download: DownloadEntity) =
 			iLocalDownloadsDataSource.deleteDownload(download)

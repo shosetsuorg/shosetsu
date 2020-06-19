@@ -74,6 +74,7 @@ class ChaptersRepository(
 			passage: String
 	): Unit = saveChapterPassageToMemory(chapterEntity, passage).also {
 		fileSource.saveChapterPassageToStorage(chapterEntity, passage)
+		dbSource.updateChapter(chapterEntity.copy(isSaved = true))
 	}
 
 	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): Unit =
