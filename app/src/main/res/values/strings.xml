@@ -261,6 +261,9 @@
     <string name="mark_read">Mark read</string>
     <string name="mark_unread">Mark unread</string>
     <string name="mark_reading">Mark reading</string>
+    <string name="delete">Delete</string>
+    <string name="pause">Pause</string>
+    <string name="start">Start</string>
 
     <array name="application_themes">
         <item>@string/light</item>

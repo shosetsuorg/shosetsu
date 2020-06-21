@@ -76,7 +76,7 @@ data class DownloadEntity(
 		 *
 		 * 1 for active
 		 *
-		 * 2 for downloading
+		 * 2 for paused
 		 */
 		var status: Int = 0
 ) : Convertible<DownloadUI>, Serializable {

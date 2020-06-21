@@ -67,13 +67,14 @@ class DownloadWorker(
 		 * @param context the application context.
 		 * @return true if the service is running, false otherwise.
 		 */
-		private fun isRunning(context: Context): Boolean {
-			return try {
-				WorkManager.getInstance(context).getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID)
-						.get()[0].state == WorkInfo.State.RUNNING
-			} catch (e: Exception) {
-				false
-			}
+		private fun isRunning(
+				context: Context,
+				workerManager: WorkManager = WorkManager.getInstance(context)
+		): Boolean = try {
+			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID)
+					.get()[0].state == WorkInfo.State.RUNNING
+		} catch (e: Exception) {
+			false
 		}
 
 		/**
@@ -82,24 +83,24 @@ class DownloadWorker(
 		 *
 		 * @param context the application context.
 		 */
-		fun start(context: Context) {
-			if (!isRunning(context)) {
-				WorkManager.getInstance(context).enqueueUniqueWork(
-						DOWNLOAD_WORK_ID,
-						ExistingWorkPolicy.REPLACE,
-						OneTimeWorkRequestBuilder<DownloadWorker>().build()
-				)
-			} else Log.d(logID(), SERVICE_REJECT_RUNNING)
-		}
+		fun start(context: Context,
+		          workerManager: WorkManager = WorkManager.getInstance(context)
+		): Any = if (!isRunning(context, workerManager)) {
+			workerManager.enqueueUniqueWork(
+					DOWNLOAD_WORK_ID,
+					ExistingWorkPolicy.REPLACE,
+					OneTimeWorkRequestBuilder<DownloadWorker>().build()
+			)
+		} else Log.d(logID(), SERVICE_REJECT_RUNNING)
 
 		/**
 		 * Stops the service.
 		 *
 		 * @param context the application context.
 		 */
-		fun stop(context: Context) {
-			WorkManager.getInstance(context).cancelUniqueWork(DOWNLOAD_WORK_ID)
-		}
+		fun stop(context: Context,
+		         workerManager: WorkManager = WorkManager.getInstance(context)
+		): Any = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
 
 		/**
 		 * Makes a download path for a downloadEntity
@@ -198,6 +199,9 @@ class DownloadWorker(
 
 						when (downloadResult) {
 							is HResult.Success -> {
+								downloadEntity.status = 2
+								downloadsRepo.update(downloadEntity)
+								downloadsRepo.delete(downloadEntity)
 								notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr
 										.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
 										.build()

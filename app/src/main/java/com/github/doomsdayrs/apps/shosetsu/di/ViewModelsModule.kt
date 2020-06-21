@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.di
 
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.*
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.settings.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -31,10 +30,16 @@ import org.kodein.di.generic.provider
  * 01 / 05 / 2020
  */
 val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
+	// Main
+	bind<IMainViewModel>() with provider { MainViewModel(instance(), instance()) }
+
+	// Library
+	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance()) }
 
 	// Other
-	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance()) }
-	bind<IDownloadsViewModel>() with provider { DownloadsViewModel(instance()) }
+	bind<IDownloadsViewModel>() with provider {
+		DownloadsViewModel(instance(), instance(), instance(), instance())
+	}
 	bind<ISearchViewModel>() with provider { SearchViewModel(instance(), instance()) }
 	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(instance()) }
 
@@ -56,19 +61,11 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 		NovelInfoViewModel(instance(), instance(), instance(), instance())
 	}
 	bind<INovelChaptersViewModel>() with provider {
-		NovelChaptersViewModel(instance(), instance(),instance())
+		NovelChaptersViewModel(instance(), instance(), instance())
 	}
 
 	// Chapter
 	bind<IChapterReaderViewModel>() with provider {
 		ChapterReaderViewModel(instance(), instance(), instance(), instance())
 	}
-
-	// Settings
-	bind<ISettingsAdvancedViewModel>() with provider { SettingsAdvancedViewModel(instance()) }
-	bind<ISettingsBackupViewModel>() with provider { SettingsBackupViewModel(instance(), instance()) }
-	bind<ISettingsDownloadViewModel>() with provider { SettingsDownloadViewModel(instance()) }
-	bind<ISettingsInfoViewModel>() with provider { SettingsInfoViewModel() }
-	bind<ISettingsReaderViewModel>() with provider { SettingsReaderViewModel(instance()) }
-	bind<ISettingsViewViewModel>() with provider { SettingsViewViewModel(instance()) }
 }

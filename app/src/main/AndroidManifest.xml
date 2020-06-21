@@ -65,7 +65,7 @@
             android:theme="@style/Theme.Intro" />
 
         <service
-            android:name=".backend.services.UpdateService"
+            android:name=".backend.services.UpdateWorker"
             android:exported="false" />
         <service
             android:name=".backend.services.RepositoryService"

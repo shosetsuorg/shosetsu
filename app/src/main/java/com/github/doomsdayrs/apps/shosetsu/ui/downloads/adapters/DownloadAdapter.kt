@@ -17,10 +17,12 @@ package com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItemView
 
@@ -42,16 +44,42 @@ class DownloadAdapter(private val downloadsController: DownloadsController)
 		return DownloadItemView(view)
 	}
 
-	override fun onBindViewHolder(downloadItemView: DownloadItemView, i: Int) =
-			with(downloadsController.recyclerArray[i]) {
-				downloadItemView.title.text = chapterURL
-				downloadItemView.status.text = status.toString()
+	override fun onBindViewHolder(downloadItemView: DownloadItemView, i: Int) {
+		downloadsController.recyclerArray[i].let { downloadUI ->
+			downloadItemView.apply {
+				Log.d(logID(), "DownloadUI NName ${downloadUI.novelName}")
+				Log.d(logID(), "DownloadUI CName ${downloadUI.chapterName}")
+
+				novelTitle.text = downloadUI.novelName
+				chapterTitle.text = downloadUI.chapterName
+				status.text = downloadUI.status.toString()
+				popupMenu?.setOnMenuItemClickListener {
+					when (it.itemId) {
+						R.id.delete -> {
+							downloadsController.viewModel.delete(downloadUI)
+							true
+						}
+						R.id.pause -> {
+							downloadsController.viewModel.pause(downloadUI)
+							true
+						}
+						R.id.start -> {
+							downloadsController.viewModel.start(downloadUI)
+							true
+						}
+						else -> {
+							false
+						}
+					}
+				}
+				moreOptions.setOnClickListener { popupMenu?.show() }
+
 			}
+		}
+	}
 
 	override fun getItemCount(): Int = downloadsController.recyclerArray.size
 
 	override fun getItemId(position: Int): Long =
 			downloadsController.recyclerArray[position].chapterID.toLong()
-
-	override fun getItemViewType(position: Int): Int = position
 }

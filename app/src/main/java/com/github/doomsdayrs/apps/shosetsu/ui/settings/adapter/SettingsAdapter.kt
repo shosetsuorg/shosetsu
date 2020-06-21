@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.SettingsCard
+import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.BackupSettings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsCardViewHolder
@@ -55,31 +56,34 @@ class SettingsAdapter(
 				cardView.setOnClickListener {
 					router.pushController(
 							when (type) {
-								Types.VIEW -> ViewSettings()
-								Types.INFO -> InfoSettings()
-								Types.ADVANCED -> AdvancedSettings()
-								Types.DOWNLOAD -> DownloadSettings()
-								Types.BACKUP -> BackupSettings()
-								Types.READER -> ReaderSettings()
+								VIEW -> ViewSettings()
+								INFO -> InfoSettings()
+								ADVANCED -> AdvancedSettings()
+								DOWNLOAD -> DownloadSettings()
+								BACKUP -> BackupSettings()
+								READER -> ReaderSettings()
+								UPDATE -> UpdateSettings()
 							}.withFadeTransaction()
 					)
 				}
 				libraryCardTitle.text = when (type) {
-					Types.DOWNLOAD -> itemView.context.getString(R.string.download)
-					Types.VIEW -> itemView.context.getString(R.string.view)
-					Types.ADVANCED -> itemView.context.getString(R.string.advanced)
-					Types.INFO -> itemView.context.getString(R.string.info)
-					Types.BACKUP -> itemView.context.getString(R.string.backup)
-					Types.READER -> itemView.context.getString(R.string.reader)
+					DOWNLOAD -> itemView.getString(R.string.download)
+					VIEW -> itemView.getString(R.string.view)
+					ADVANCED -> itemView.getString(R.string.advanced)
+					INFO -> itemView.getString(R.string.info)
+					BACKUP -> itemView.getString(R.string.backup)
+					READER -> itemView.getString(R.string.reader)
+					UPDATE -> itemView.getString(R.string.update)
 				}
 				libraryCardTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
 						when (type) {
-							Types.READER -> R.drawable.ic_book_24dp
-							Types.DOWNLOAD -> R.drawable.ic_file_download
-							Types.BACKUP -> R.drawable.ic_stat_name
-							Types.VIEW -> R.drawable.ic_view_module
-							Types.ADVANCED -> R.drawable.ic_settings
-							Types.INFO -> R.drawable.ic_info_outline_24dp
+							READER -> R.drawable.ic_book_24dp
+							DOWNLOAD -> R.drawable.ic_file_download
+							BACKUP -> R.drawable.ic_system_update_alt_24dp
+							VIEW -> R.drawable.ic_view_module
+							ADVANCED -> R.drawable.ic_settings
+							INFO -> R.drawable.ic_info_outline_24dp
+							UPDATE -> R.drawable.ic_update_24dp
 						},
 						0,
 						0,

@@ -6,6 +6,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
@@ -38,29 +39,35 @@ class LoadNovelUseCase(
 		private val eR: IExtensionsRepository,
 		private val cR: IChaptersRepository
 ) {
+	private suspend fun main(novel: NovelEntity, loadChapters: Boolean) =
+			when (val fR = eR.loadFormatter(novel.formatterID)) {
+				is HResult.Success -> {
+					val ext = fR.data
+					when (val pR = nR.retrieveNovelInfo(ext, novel, loadChapters)) {
+						is HResult.Success -> {
+							val page = pR.data
+							Log.d(logID(), "Loaded novel info $page")
+							nR.updateNovelData(novel, page)
+							if (loadChapters)
+								cR.handleChapters(novel, page.chapters)
+							successResult(true)
+						}
+						is HResult.Error -> pR
+						else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
+					}
+				}
+				is HResult.Error -> fR
+				else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
+			}
+
+	suspend operator fun invoke(novel: NovelEntity, loadChapters: Boolean): HResult<*> =
+			main(novel, loadChapters)
+
 	suspend operator fun invoke(novelID: Int, loadChapters: Boolean): HResult<*> =
 			when (val nResult = nR.loadNovel(novelID)) {
 				is HResult.Success -> {
 					val novel = nResult.data
-					when (val fR = eR.loadFormatter(novel.formatterID)) {
-						is HResult.Success -> {
-							val ext = fR.data
-							when (val pR = nR.retrieveNovelInfo(ext, novel, loadChapters)) {
-								is HResult.Success -> {
-									val page = pR.data
-									Log.d(logID(), "Loaded novel info $page")
-									nR.updateNovelData(novel, page)
-									if (loadChapters)
-										cR.handleChapters(novel, page.chapters)
-									successResult(true)
-								}
-								is HResult.Error -> pR
-								else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
-							}
-						}
-						is HResult.Error -> fR
-						else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
-					}
+					main(novel, loadChapters)
 				}
 				is HResult.Error -> nResult
 				else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")

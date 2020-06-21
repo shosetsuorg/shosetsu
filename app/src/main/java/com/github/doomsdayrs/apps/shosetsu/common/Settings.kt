@@ -75,10 +75,13 @@ object Settings {
 
 	// Download options
 	const val IS_DOWNLOAD_PAUSED = "isDownloadPaused"
-	const val IS_DOWNLOAD_ON_UPDATE = "isDownloadOnUpdate"
 
 	private const val DISABLED_FORMATTERS = "disabledFormatters"
 	private const val DELETE_READ_CHAPTER = "deleteReadChapter"
+
+	// Update options
+	const val IS_DOWNLOAD_ON_UPDATE = "isDownloadOnUpdate"
+	const val ONLY_UPDATE_ONGOING = "onlyUpdateOngoing"
 
 	// View options
 	const val C_IN_NOVELS_P = "columnsInNovelsViewP"
@@ -150,16 +153,6 @@ object Settings {
 		get() = readerSettings.getInt(DELETE_READ_CHAPTER, -1)
 
 	// View Settings
-	/**
-	 * If download manager is paused
-	 */
-	var isDownloadPaused: Boolean
-		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_PAUSED, value) }
-		get() = settings.getBoolean(IS_DOWNLOAD_PAUSED, false)
-
-	var isDownloadOnUpdateEnabled: Boolean
-		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_ON_UPDATE, value) }
-		get() = settings.getBoolean(IS_DOWNLOAD_ON_UPDATE, false)
 
 	var readerIndentSize
 		set(value) = settings.edit { putInt(READER_TEXT_INDENT, value) }
@@ -178,6 +171,16 @@ object Settings {
 		get() = settings.getInt(NOVEL_CARD_TYPE, 0)
 
 
+	// Update Settings
+
+	var downloadOnUpdate: Boolean
+		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_ON_UPDATE, value) }
+		get() = settings.getBoolean(IS_DOWNLOAD_ON_UPDATE, false)
+
+	var onlyUpdateOngoing: Boolean
+		set(value) = settings.edit { putBoolean(ONLY_UPDATE_ONGOING, value) }
+		get() = settings.getBoolean(ONLY_UPDATE_ONGOING, false)
+
 	// Advanced Settings
 	var showIntro: Boolean
 		set(value) = settings.edit { putBoolean(FIRST_TIME, value) }
@@ -187,6 +190,13 @@ object Settings {
 	var downloadDirectory: String
 		set(value) = settings.edit { putString(DOWNLOAD_DIRECTORY, value) }
 		get() = settings.getString(DOWNLOAD_DIRECTORY, "/Shosetsu/")!!
+
+	/**
+	 * If download manager is paused
+	 */
+	var isDownloadPaused: Boolean
+		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_PAUSED, value) }
+		get() = settings.getBoolean(IS_DOWNLOAD_PAUSED, false)
 
 	// Formatter Settings
 

@@ -18,6 +18,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders
  */
 
 import android.view.View
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -29,6 +31,16 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class DownloadItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-	val title: TextView = itemView.findViewById(R.id.title)
+	val novelTitle: TextView = itemView.findViewById(R.id.novel_title)
+	val chapterTitle: TextView = itemView.findViewById(R.id.chapter_title)
 	val status: TextView = itemView.findViewById(R.id.status)
+	var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+	var popupMenu: PopupMenu? = null
+
+	init {
+		if (popupMenu == null) {
+			popupMenu = PopupMenu(moreOptions.context, moreOptions)
+			popupMenu!!.inflate(R.menu.popup_download_menu)
+		}
+	}
 }

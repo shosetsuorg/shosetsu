@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateService
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
@@ -144,7 +144,7 @@ class LibraryController
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.updater_now -> {
-				UpdateService.init(
+				UpdateWorker.init(
 						applicationContext!!,
 						recyclerArray.map { it.id } as ArrayList<Int>
 				)

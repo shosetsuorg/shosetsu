@@ -37,18 +37,14 @@ import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
  */
 class SettingItemsAdapter(private val items: List<SettingsItemData>)
 	: RecyclerView.Adapter<SettingsItem>() {
-	private val views: ArrayList<SettingsItem> = arrayListOf()
 
 	@Suppress("KDocMissingDocumentation")
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsItem {
-		val view = LayoutInflater.from(parent.context).inflate(
+		return SettingsItem(LayoutInflater.from(parent.context).inflate(
 				R.layout.settings_item,
 				parent,
 				false
-		)
-		val i = SettingsItem(view)
-		views.add(i)
-		return i
+		))
 	}
 
 	@Suppress("KDocMissingDocumentation")
@@ -81,7 +77,7 @@ class SettingItemsAdapter(private val items: List<SettingsItemData>)
 				SPINNER -> {
 					spinner.visibility = View.VISIBLE
 					//spinner.setOnClickListener { data.spinnerOnClick }
-					spinner.adapter = data.adapter
+					spinner.adapter = data.arrayAdapter!!
 					spinner.setSelection(data.spinnerSelection)
 					spinner.onItemSelectedListener = data.spinnerOnItemSelectedListener
 				}

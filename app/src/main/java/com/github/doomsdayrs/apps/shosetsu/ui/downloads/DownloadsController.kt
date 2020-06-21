@@ -17,6 +17,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.downloads
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -25,6 +26,7 @@ import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
@@ -41,7 +43,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
-	private val viewModel: IDownloadsViewModel by viewModel()
+	val viewModel: IDownloadsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)
@@ -83,6 +85,14 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 			return true
 		}
 		return false
+	}
+
+	override fun updateUI(list: List<DownloadUI>) {
+		Log.d(logID(), "New list ${list.size}")
+		Log.d(logID(), "Old list ${recyclerArray.size}")
+		recyclerArray.clear()
+		recyclerArray.addAll(list)
+		recyclerView?.adapter?.notifyDataSetChanged()
 	}
 
 	override fun difAreItemsTheSame(oldItem: DownloadUI, newItem: DownloadUI): Boolean =

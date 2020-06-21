@@ -111,9 +111,9 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 		val diffToolCallBack = RecyclerDiffToolCallBack(list, recyclerArray)
 		diffToolCallBack.old = list
 		val callback = DiffUtil.calculateDiff(diffToolCallBack)
+		adapter?.let { callback.dispatchUpdatesTo(it) }
 		recyclerArray.clear()
 		recyclerArray.addAll(list)
-		adapter?.let { callback.dispatchUpdatesTo(it) }
 	}
 
 	/**

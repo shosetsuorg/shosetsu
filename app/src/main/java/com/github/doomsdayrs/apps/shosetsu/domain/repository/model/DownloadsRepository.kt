@@ -51,7 +51,7 @@ class DownloadsRepository(
 	override suspend fun update(download: DownloadEntity) =
 			iLocalDownloadsDataSource.updateDownload(download)
 
-	override suspend fun suspendedDelete(download: DownloadEntity) =
+	override suspend fun delete(download: DownloadEntity) =
 			iLocalDownloadsDataSource.deleteDownload(download)
 
 	override suspend fun resetList() =

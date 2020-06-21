@@ -1,8 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
-
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+package com.github.doomsdayrs.apps.shosetsu.common.utils
 
 /*
  * This file is part of shosetsu.
@@ -21,21 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 20 / 06 / 2020
  */
-abstract class IDownloadsViewModel : SubscribeHandleViewModel<List<DownloadUI>>, ViewModel() {
-	/**
-	 * Toggles paused downloads
-	 *
-	 * @return if paused or not
-	 */
-	abstract fun togglePause(): Boolean
-	abstract fun delete(downloadUI: DownloadUI)
-	abstract fun pause(downloadUI: DownloadUI)
-	abstract fun start(downloadUI: DownloadUI)
-}

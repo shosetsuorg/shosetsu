@@ -3,11 +3,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsInfoViewModel
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 
 /*
  * This file is part of Shosetsu.
@@ -31,8 +31,23 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsInfoViewModel
  * 9 / June / 2019
  */
 class InfoSettings : SettingsSubController() {
-	val viewModel: ISettingsInfoViewModel by viewModel()
-	override val settings by lazy { viewModel.settings }
+	override val settings: List<SettingsItem.SettingsItemData> by lazy {
+		listOf(
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 0)
+						.setTitle(R.string.version)
+						.setDescription(BuildConfig.VERSION_NAME),
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 1)
+						.setTitle(R.string.report_bug)
+						.setDescription(R.string.report_bug_link),
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 2)
+						.setTitle(R.string.author)
+						.setDescription(R.string.author_name),
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 3)
+						.setTitle(R.string.disclaimer),
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 4)
+						.setTitle(R.string.license)
+		)
+	}
 
 	override fun onViewCreated(view: View) {
 		settings[1].setOnClickListener { onClickReportBug() }

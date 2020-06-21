@@ -63,7 +63,7 @@ interface IDownloadsRepository {
 	/**
 	 * Removes a download from the repository
 	 */
-	suspend fun suspendedDelete(download: DownloadEntity)
+	suspend fun delete(download: DownloadEntity)
 
 	/**
 	 * Orders database to set all values back to pending

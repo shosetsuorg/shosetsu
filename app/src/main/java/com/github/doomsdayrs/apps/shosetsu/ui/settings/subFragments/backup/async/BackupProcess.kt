@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.Settings.BACKUP_QUICK
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.BACKUP_SETTINGS
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.C_IN_NOVELS_H
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.C_IN_NOVELS_P
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.IS_DOWNLOAD_ON_UPDATE
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.ONLY_UPDATE_ONGOING
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.IS_DOWNLOAD_PAUSED
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.NOVEL_CARD_TYPE
 import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_BACK_C_COLOR
@@ -114,7 +114,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 		settings[READER_MARKING_TYPE] = Settings.readerMarkingType
 
 		settings[IS_DOWNLOAD_PAUSED] = Settings.isDownloadPaused
-		settings[IS_DOWNLOAD_ON_UPDATE] = Settings.isDownloadOnUpdateEnabled
+		settings[ONLY_UPDATE_ONGOING] = Settings.downloadOnUpdate
 
 		settings[C_IN_NOVELS_P] = Settings.columnsInNovelsViewP
 		settings[C_IN_NOVELS_H] = Settings.columnsInNovelsViewH

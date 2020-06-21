@@ -84,4 +84,11 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 
 	bind<DownloadChapterUseCase>() with provider { DownloadChapterUseCase(instance(), instance()) }
+
+	bind<StartDownloadWorkerUseCase>() with provider { StartDownloadWorkerUseCase(instance()) }
+
+	bind<LoadAppUpdateUseCase>() with provider { LoadAppUpdateUseCase(instance()) }
+	bind<UpdateDownloadUseCase>() with provider { UpdateDownloadUseCase(instance()) }
+	bind<DeleteDownloadUseCase>() with provider { DeleteDownloadUseCase(instance()) }
+
 }

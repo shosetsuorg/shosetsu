@@ -2,37 +2,30 @@ package com.github.doomsdayrs.apps.shosetsu.backend.services
 
 import android.app.Notification
 import android.app.NotificationManager
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
-import android.util.Log
 import androidx.core.content.getSystemService
-import androidx.core.os.bundleOf
+import androidx.work.CoroutineWorker
+import androidx.work.WorkerParameters
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_CANCEL_PREVIOUS
-import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NEW
-import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_NULLIFIED
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_UPDATE
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.isServiceRunning
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
-import needle.CancelableTask
-import needle.Needle.onBackgroundThread
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import java.security.InvalidKeyException
 
 /*
  * This file is part of shosetsu.
@@ -59,7 +52,10 @@ import java.security.InvalidKeyException
  *     Handles update requests for the entire application
  * </p>
  */
-class UpdateService : Service(), KodeinAware {
+class UpdateWorker(
+		appContext: Context,
+		params: WorkerParameters
+) : CoroutineWorker(appContext, params), KodeinAware {
 	companion object {
 		const val KEY_TARGET = "Target"
 		const val KEY_CHAPTERS = "Novels"
@@ -83,7 +79,7 @@ class UpdateService : Service(), KodeinAware {
 		 * @return true if the service is running, false otherwise.
 		 */
 		private fun isRunning(context: Context): Boolean {
-			return context.isServiceRunning(UpdateService::class.java)
+			return context.isServiceRunning(UpdateWorker::class.java)
 		}
 
 		/**
@@ -96,7 +92,7 @@ class UpdateService : Service(), KodeinAware {
 		fun start(context: Context, category: Int, novelIDs: ArrayList<Int>) {
 			if (!isRunning(context)) {
 				context.toast(R.string.library_update)
-				val intent = Intent(context, UpdateService::class.java)
+				val intent = Intent(context, UpdateWorker::class.java)
 				intent.putExtra(KEY_TARGET, category)
 				intent.putIntegerArrayListExtra(KEY_CHAPTERS, novelIDs)
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -113,7 +109,7 @@ class UpdateService : Service(), KodeinAware {
 		 * @param context the application context.
 		 */
 		fun stop(context: Context) {
-			context.stopService(Intent(context, UpdateService::class.java))
+			context.stopService(Intent(context, UpdateWorker::class.java))
 		}
 	}
 
@@ -122,75 +118,45 @@ class UpdateService : Service(), KodeinAware {
 	 */
 	//  private lateinit var wakeLock: PowerManager.WakeLock
 
-	internal val notificationManager by lazy { getSystemService<NotificationManager>()!! }
+	internal val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
 
 	internal val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			Notification.Builder(this, CHANNEL_UPDATE)
+			Notification.Builder(appContext, CHANNEL_UPDATE)
 		} else {
 			// Suppressed due to lower API
 			@Suppress("DEPRECATION")
-			Notification.Builder(this)
+			Notification.Builder(appContext)
 		}
 				.setSmallIcon(R.drawable.ic_system_update_alt_24dp)
 				.setContentText("Update in progress")
 				.setOnlyAlertOnce(true)
 	}
 
-	override val kodein: Kodein by closestKodein()
+	override val kodein: Kodein by closestKodein(appContext)
 	internal val iChaptersRepository by instance<IChaptersRepository>()
 	internal val iNovelsRepository by instance<INovelsRepository>()
 	internal val iUpdatesRepository by instance<IUpdatesRepository>()
+	internal val loadNovelUseCase by instance<LoadNovelUseCase>()
 
-	private var job: CancelableTask? = null
-
-	override fun onCreate() {
-		super.onCreate()
-		startForeground(ID_CHAPTER_UPDATE, progressNotification.build())
-		//   wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LibraryUpdateService:WakeLock")
-		//       wakeLock.acquire(60 * 60 * 1000L /*10 minutes*/)
-	}
-
-	override fun onDestroy() {
-		job?.cancel()
-		//     if (wakeLock.isHeld) wakeLock.release()
-		super.onDestroy()
-	}
-
-	override fun onBind(intent: Intent?): IBinder? {
-		return null
-	}
-
-	@Throws(InvalidKeyException::class)
-	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-		Log.d(logID(), SERVICE_CANCEL_PREVIOUS)
-		job?.cancel()
-
-		Log.d(logID(), SERVICE_NEW)
-		job = when (intent?.getIntExtra(KEY_TARGET, KEY_NOVELS) ?: KEY_NOVELS) {
-			KEY_NOVELS ->
-				UpdateNovels(bundleOf())
-
-			KEY_CATEGORY ->
-				UpdateNovelCategory()
-
-			else -> throw InvalidKeyException("How did you reach this point")
+	override suspend fun doWork(): Result {
+		iNovelsRepository.suspendedGetBookmarkedNovels().let { hNovels ->
+			when (hNovels) {
+				is HResult.Success -> {
+					val novels = hNovels.data
+					novels.forEach { loadNovelUseCase(it, true) }
+				}
+				else -> {
+					return Result.failure()
+				}
+			}
 		}
-
-		job?.let { onBackgroundThread().execute(it) } ?: Log.e(logID(), SERVICE_NULLIFIED)
-		return super.onStartCommand(intent, flags, startId)
+		return Result.success()
 	}
 
-	internal class UpdateNovelCategory : CancelableTask() {
-		override fun doWork() {
-			TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-		}
 
-	}
-
-	inner class UpdateNovels(val bundle: Bundle)
-		: CancelableTask() {
-		override fun doWork() {
+	inner class UpdateNovels(val bundle: Bundle) {
+		fun doWork() {
 			val updatedNovels = ArrayList<NovelEntity>()
 			iNovelsRepository.blockingGetBookmarkedNovels().let { novelEntities ->
 				// Main process
@@ -276,20 +242,19 @@ class UpdateService : Service(), KodeinAware {
 			val pr = progressNotification
 			when {
 				updatedNovels.size > 0 -> {
-					pr.setContentTitle(getString(R.string.update_complete))
+					//	pr.setContentTitle(getString(R.string.update_complete))
 					for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
 					pr.style = Notification.BigTextStyle()
 				}
 				else -> {
-					pr.setContentTitle(getString(R.string.update_complete))
-					stringBuilder.append(getString(R.string.update_not_found))
+					//		pr.setContentTitle(getString(R.string.update_complete))
+					//		stringBuilder.append(getString(R.string.update_not_found))
 				}
 			}
 			pr.setContentText(stringBuilder.toString())
 			pr.setProgress(0, 0, false)
 			pr.setOngoing(false)
 			notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-			stop(this@UpdateService)
 		}
 
 	}

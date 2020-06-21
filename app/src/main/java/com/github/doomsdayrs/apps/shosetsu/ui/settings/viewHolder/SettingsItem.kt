@@ -77,7 +77,7 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 		var colorPreferenceName = ""
 
 		// Spinner
-		private var spinnerOnClick: (View) -> Unit
+		var spinnerOnClick: (View) -> Unit
 		var spinnerOnItemSelectedListener: AdapterView.OnItemSelectedListener =
 				object : AdapterView.OnItemSelectedListener {
 					override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -91,7 +91,7 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 					) {
 					}
 				}
-		lateinit var adapter: ArrayAdapter<*>
+		var arrayAdapter: ArrayAdapter<*>? = null
 		var spinnerSelection: Int = -1
 
 		// Switch
@@ -157,7 +157,7 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 		}
 
 		fun setArrayAdapter(ad: ArrayAdapter<*>): SettingsItemData {
-			adapter = ad
+			arrayAdapter = ad
 			return this
 		}
 

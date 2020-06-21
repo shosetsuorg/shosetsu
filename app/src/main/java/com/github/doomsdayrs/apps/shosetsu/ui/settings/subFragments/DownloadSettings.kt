@@ -4,15 +4,17 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import android.widget.Toast
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsDownloadViewModel
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 
 /*
  * This file is part of Shosetsu.
@@ -36,8 +38,27 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISettingsDownloadViewM
  * 13 / 07 / 2019
  */
 class DownloadSettings : SettingsSubController() {
-	val viewModel: ISettingsDownloadViewModel by viewModel()
-	override val settings by lazy { viewModel.settings }
+	override val settings by lazy {
+		arrayListOf(
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.TEXT, 1)
+						.setTitle(R.string.download_directory)
+						.setTextViewText(Settings.downloadDirectory),
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SPINNER, 2)
+						.setTitle(R.string.download_speed)
+						.setArrayAdapter(ArrayAdapter(
+								context!!,
+								android.R.layout.simple_spinner_item,
+								arrayListOf("String")
+						)),
+				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.SWITCH, 3)
+						.setTitle(R.string.download_chapter_updates)
+						.setIsChecked(Settings.downloadOnUpdate)
+						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+							Log.d("Download on update", p1.toString())
+							Settings.downloadOnUpdate = !Settings.downloadOnUpdate
+						})
+		)
+	}
 
 	override fun onViewCreated(view: View) {
 		settings[0].setTextOnClickListener { performFileSearch() }

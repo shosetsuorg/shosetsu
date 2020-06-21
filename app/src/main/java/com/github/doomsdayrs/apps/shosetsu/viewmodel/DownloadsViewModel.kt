@@ -6,7 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DeleteDownloadUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetDownloadsUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateDownloadUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,11 +39,14 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class DownloadsViewModel(
-		val getDownloadsUseCase: GetDownloadsUseCase
+		private val getDownloadsUseCase: GetDownloadsUseCase,
+		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
+		private val updateDownloadUseCase: UpdateDownloadUseCase,
+		private val deleteDownloadUseCase: DeleteDownloadUseCase
 ) : IDownloadsViewModel() {
 
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
-		liveData(viewModelScope.coroutineContext + Dispatchers.Default) {
+		liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
 			emit(loading())
 			emitSource(getDownloadsUseCase())
 		}
@@ -47,6 +54,20 @@ class DownloadsViewModel(
 
 	override fun togglePause(): Boolean {
 		Settings.isDownloadPaused = !Settings.isDownloadPaused
+		if (Settings.isDownloadPaused)
+			startDownloadWorkerUseCase()
 		return Settings.isDownloadPaused
+	}
+
+	override fun delete(downloadUI: DownloadUI) {
+		launchIO { deleteDownloadUseCase(downloadUI) }
+	}
+
+	override fun pause(downloadUI: DownloadUI) {
+		launchIO { updateDownloadUseCase(downloadUI.copy(status = 2)) }
+	}
+
+	override fun start(downloadUI: DownloadUI) {
+		launchIO { updateDownloadUseCase(downloadUI.copy(status = 0)) }
 	}
 }
