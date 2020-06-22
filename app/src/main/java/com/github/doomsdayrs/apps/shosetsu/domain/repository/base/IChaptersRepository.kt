@@ -61,6 +61,11 @@ interface IChaptersRepository {
 	 */
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
 
+	suspend fun handleChaptersReturn(
+			novelEntity: NovelEntity,
+			list: List<Novel.Chapter>
+	) : HResult<List<ChapterEntity>>
+
 	/**
 	 * Loads chapters for a chapter list
 	 */

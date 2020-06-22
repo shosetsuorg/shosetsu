@@ -52,6 +52,12 @@ class LocalChaptersDataSource(
 	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) =
 			chaptersDao.handleChapters(novelEntity, list)
 
+	override suspend fun handleChapterReturn(
+			novelEntity: NovelEntity,
+			list: List<Novel.Chapter>
+	): HResult<List<ChapterEntity>> =
+			chaptersDao.handleChaptersReturnNew(novelEntity, list)
+
 	override suspend fun updateChapter(chapterEntity: ChapterEntity) =
 			chaptersDao.suspendedUpdate(chapterEntity)
 

@@ -50,7 +50,7 @@ interface INovelsRepository {
 	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info)
 
 	/**
-	 * Retrieves NovelInfo
+	 * Retrieves NovelInfo from it's source
 	 */
 	suspend fun retrieveNovelInfo(
 			formatter: Formatter,

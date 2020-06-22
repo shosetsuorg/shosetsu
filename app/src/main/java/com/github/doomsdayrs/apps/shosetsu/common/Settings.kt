@@ -82,6 +82,7 @@ object Settings {
 	// Update options
 	const val IS_DOWNLOAD_ON_UPDATE = "isDownloadOnUpdate"
 	const val ONLY_UPDATE_ONGOING = "onlyUpdateOngoing"
+	const val UPDATE_CYCLE = "updateCycle"
 
 	// View options
 	const val C_IN_NOVELS_P = "columnsInNovelsViewP"
@@ -172,6 +173,13 @@ object Settings {
 
 
 	// Update Settings
+
+	/**
+	 * How many hours between each update check
+	 */
+	var updateCycle: Int
+		set(value) = settings.edit { putInt(UPDATE_CYCLE, value) }
+		get() = settings.getInt(UPDATE_CYCLE, 1)
 
 	var downloadOnUpdate: Boolean
 		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_ON_UPDATE, value) }

@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 
 /*
  * This file is part of shosetsu.
@@ -29,4 +30,5 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  */
 interface ILocalUpdatesDataSource {
 	suspend fun getUpdateDays(): LiveData<HResult<List<Long>>>
+	suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long>
 }

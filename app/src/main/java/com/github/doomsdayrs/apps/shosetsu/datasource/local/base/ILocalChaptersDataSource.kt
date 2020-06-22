@@ -43,6 +43,11 @@ interface ILocalChaptersDataSource {
 
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
 
+	suspend fun handleChapterReturn(
+			novelEntity: NovelEntity,
+			list: List<Novel.Chapter>
+	): HResult<List<ChapterEntity>>
+
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)

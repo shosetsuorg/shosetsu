@@ -68,7 +68,7 @@ class UpdatesController : ViewedController() {
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean =
 			if (item.itemId == R.id.updater_now) {
-				context?.let { UpdateWorker.init(it); true } ?: false
+				context?.let { UpdateWorker.start(it); true } ?: false
 			} else false
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =

@@ -6,6 +6,10 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.entity
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.*
@@ -102,10 +106,45 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 		}
 	}
 
-	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) {
-		Log.d(logID(), "Chapter\t${novelChapter.link}\t\t\twas not found, inserting")
-		insertAbort(novelChapter.entity(novelEntity))
+	@Transaction
+	suspend fun handleChaptersReturnNew(
+			novelEntity: NovelEntity,
+			list: List<Novel.Chapter>
+	): HResult<List<ChapterEntity>> {
+		val newChapters = ArrayList<ChapterEntity>()
+		Log.d(logID(), "Handling Chapters : ${novelEntity.url} ${novelEntity.id}")
+		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!)
+		Log.d(logID(), "Chapters received : ${list.size}")
+		Log.d(logID(), "Chapters in data  : ${databaseChapters.size}")
+
+		list.forEach { novelChapter: Novel.Chapter ->
+			Log.d(logID(), "Processing ${novelChapter.link}")
+			databaseChapters.find { it.url == novelChapter.link }?.let {
+				handleUpdate(it, novelChapter)
+			} ?: insertReturn(novelEntity, novelChapter).let {
+				if (it is HResult.Success)
+					newChapters.add(it.data)
+			}
+		}
+		return successResult(newChapters)
 	}
+
+	private suspend fun insertReturn(
+			novelEntity: NovelEntity,
+			novelChapter: Novel.Chapter
+	): HResult<ChapterEntity> {
+		try {
+			val row = handleAbortInsert(novelChapter, novelEntity)
+			if (row < 0) return errorResult(ERROR_GENERAL, "Aborted")
+			val c = loadChapter(row)
+			return successResult(c)
+		} catch (e: Exception) {
+			return errorResult(ERROR_GENERAL, "Unprecedented error")
+		}
+	}
+
+	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) =
+			insertAbort(novelChapter.entity(novelEntity))
 
 	private suspend fun handleUpdate(chapterEntity: ChapterEntity, novelChapter: Novel.Chapter) {
 		Log.d(logID(), "Chapter\t${chapterEntity.url}\t\t\twas found, updating")

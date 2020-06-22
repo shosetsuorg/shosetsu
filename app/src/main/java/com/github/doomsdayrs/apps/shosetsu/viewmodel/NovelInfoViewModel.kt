@@ -9,7 +9,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.BookMarkNovelIDUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterNameUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetNovelUIUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,8 +39,7 @@ import kotlinx.coroutines.Dispatchers
 class NovelInfoViewModel(
 		private val getFormatterNameUseCase: GetFormatterNameUseCase,
 		private val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase,
-		private val loadNovelUIUseCase: GetNovelUIUseCase,
-		private val loadNovelUseCase: LoadNovelUseCase
+		private val loadNovelUIUseCase: GetNovelUIUseCase
 
 ) : INovelInfoViewModel() {
 	override val liveData: LiveData<HResult<NovelUI>> by lazy {

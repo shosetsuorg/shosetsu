@@ -17,7 +17,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.downloads
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -26,7 +25,6 @@ import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
@@ -88,11 +86,11 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 	}
 
 	override fun updateUI(list: List<DownloadUI>) {
-		Log.d(logID(), "New list ${list.size}")
-		Log.d(logID(), "Old list ${recyclerArray.size}")
-		recyclerArray.clear()
-		recyclerArray.addAll(list)
-		recyclerView?.adapter?.notifyDataSetChanged()
+		if (list.size < recyclerArray.size) {
+			recyclerArray.clear()
+			recyclerArray.addAll(list)
+			recyclerView?.adapter?.notifyDataSetChanged()
+		} else super.updateUI(list)
 	}
 
 	override fun difAreItemsTheSame(oldItem: DownloadUI, newItem: DownloadUI): Boolean =

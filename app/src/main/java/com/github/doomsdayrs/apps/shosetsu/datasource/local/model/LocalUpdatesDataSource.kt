@@ -8,6 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalUpdatesDataSource
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 import org.joda.time.DateTime
 import java.util.*
@@ -65,4 +66,7 @@ class LocalUpdatesDataSource(
 			successResult(updatePages)
 		}
 	}
+
+	override suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long> =
+			updatesDao.insertAllIgnore(list)
 }

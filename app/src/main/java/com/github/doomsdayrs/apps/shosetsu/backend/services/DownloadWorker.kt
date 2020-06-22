@@ -86,10 +86,19 @@ class DownloadWorker(
 		fun start(context: Context,
 		          workerManager: WorkManager = WorkManager.getInstance(context)
 		): Any = if (!isRunning(context, workerManager)) {
+			val constraints = Constraints.Builder()
+
+			constraints.setRequiresStorageNotLow(true)
+
+
+			val request = OneTimeWorkRequestBuilder<DownloadWorker>()
+					.setConstraints(constraints.build())
+					.build()
+
 			workerManager.enqueueUniqueWork(
 					DOWNLOAD_WORK_ID,
 					ExistingWorkPolicy.REPLACE,
-					OneTimeWorkRequestBuilder<DownloadWorker>().build()
+					request
 			)
 		} else Log.d(logID(), SERVICE_REJECT_RUNNING)
 

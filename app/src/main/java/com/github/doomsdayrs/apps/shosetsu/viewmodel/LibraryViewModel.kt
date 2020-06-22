@@ -38,7 +38,7 @@ import kotlinx.coroutines.Dispatchers
 class LibraryViewModel(
 		private val libraryAsCardsUseCase: LoadLibraryUseCase
 ) : ILibraryViewModel() {
-	override var selectedNovels = MutableLiveData<List<Int>>()
+	override var selectedNovels: MutableLiveData<List<Int>> = MutableLiveData<List<Int>>()
 	override var visible: MutableLiveData<List<Int>>
 		get() = TODO("Not yet implemented")
 		set(value) {}

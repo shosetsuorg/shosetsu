@@ -181,12 +181,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		when (intent.action) {
 			Intent.ACTION_USER_BACKGROUND -> {
 				Log.i("MainActivity", "Updating novels")
-				UpdateWorker.init(this)
-				//TODO push to updates
+				UpdateWorker.start(this)
 			}
 			Intent.ACTION_BOOT_COMPLETED -> {
 				Log.i("MainActivity", "Bootup")
-				if (isOnline) UpdateWorker.init(this)
+				if (isOnline) UpdateWorker.start(this)
 			}
 			else -> {
 				if (!router.hasRootController()) {

@@ -144,9 +144,8 @@ class LibraryController
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.updater_now -> {
-				UpdateWorker.init(
-						applicationContext!!,
-						recyclerArray.map { it.id } as ArrayList<Int>
+				UpdateWorker.start(
+						applicationContext!!
 				)
 				return true
 			}

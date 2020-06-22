@@ -1,15 +1,17 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
 
 /*
  * This file is part of shosetsu.
@@ -37,7 +39,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
 class LoadNovelUseCase(
 		private val nR: INovelsRepository,
 		private val eR: IExtensionsRepository,
-		private val cR: IChaptersRepository
+		private val cR: IChaptersRepository,
+		private val uR: IUpdatesRepository
 ) {
 	private suspend fun main(novel: NovelEntity, loadChapters: Boolean) =
 			when (val fR = eR.loadFormatter(novel.formatterID)) {
@@ -46,18 +49,32 @@ class LoadNovelUseCase(
 					when (val pR = nR.retrieveNovelInfo(ext, novel, loadChapters)) {
 						is HResult.Success -> {
 							val page = pR.data
+							val currentStatus = novel.loaded
 							Log.d(logID(), "Loaded novel info $page")
 							nR.updateNovelData(novel, page)
 							if (loadChapters)
-								cR.handleChapters(novel, page.chapters)
+								if (!currentStatus)
+									cR.handleChapters(novel, page.chapters)
+								else cR.handleChaptersReturn(novel, page.chapters).let { cLR ->
+									when (cLR) {
+										is HResult.Success -> {
+											uR.addUpdates(cLR.data.map {
+												UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
+											})
+											successResult("Complete~")
+										}
+										is HResult.Error -> cLR
+										else -> errorResult(ERROR_GENERAL, "Unknown failure")
+									}
+								}
 							successResult(true)
 						}
 						is HResult.Error -> pR
-						else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
+						else -> errorResult(ERROR_GENERAL, "Unknown failure")
 					}
 				}
 				is HResult.Error -> fR
-				else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
+				else -> errorResult(ERROR_GENERAL, "Unknown failure")
 			}
 
 	suspend operator fun invoke(novel: NovelEntity, loadChapters: Boolean): HResult<*> =
@@ -70,6 +87,6 @@ class LoadNovelUseCase(
 					main(novel, loadChapters)
 				}
 				is HResult.Error -> nResult
-				else -> errorResult(ErrorKeys.ERROR_GENERAL, "Unknown failure")
+				else -> errorResult(ERROR_GENERAL, "Unknown failure")
 			}
 }

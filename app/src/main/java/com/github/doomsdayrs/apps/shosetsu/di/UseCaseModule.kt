@@ -65,7 +65,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<GetNovelUIUseCase>() with provider { GetNovelUIUseCase(instance()) }
 
 	bind<LoadNovelUseCase>() with provider {
-		LoadNovelUseCase(instance(), instance(), instance())
+		LoadNovelUseCase(instance(), instance(), instance(), instance())
 	}
 
 	bind<LoadCatalogueData>() with provider {
