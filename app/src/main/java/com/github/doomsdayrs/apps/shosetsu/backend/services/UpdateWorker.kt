@@ -3,15 +3,21 @@ package com.github.doomsdayrs.apps.shosetsu.backend.services
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
+import androidx.work.NetworkType.METERED
+import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.updateOnLowBattery
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.updateOnLowStorage
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.updateOnlyIdle
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_UPDATE
@@ -25,7 +31,9 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.HOURS
+import java.util.concurrent.TimeUnit.MINUTES
+import androidx.work.PeriodicWorkRequestBuilder as PWRB
 
 /*
  * This file is part of shosetsu.
@@ -88,28 +96,32 @@ class UpdateWorker(
 		 */
 		fun start(context: Context,
 		          workerManager: WorkManager = WorkManager.getInstance(context)
-		): Any = if (!isRunning(context, workerManager)) {
-			val constraints = Constraints.Builder()
-
-			constraints.setRequiredNetworkType(NetworkType.UNMETERED)
-			constraints.setRequiresStorageNotLow(true)
-			constraints.setRequiresBatteryNotLow(true)
-
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				constraints.setRequiresDeviceIdle(false)
-			}
-
-			val request = PeriodicWorkRequestBuilder<DownloadWorker>(
-					Settings.updateCycle.toLong(), TimeUnit.HOURS,
-					15, TimeUnit.MINUTES
-			).setConstraints(constraints.build()).build()
-
-			WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+		) {
+			Log.i(logID(), LogConstants.SERVICE_NEW)
+			workerManager.enqueueUniquePeriodicWork(
 					UPDATE_WORK_ID,
 					REPLACE,
-					request
+					PWRB<DownloadWorker>(
+							Settings.updateCycle.toLong(),
+							HOURS,
+							15,
+							MINUTES
+					).setConstraints(
+							Constraints.Builder().apply {
+								setRequiredNetworkType(
+										if (Settings.updateOnMetered) {
+											METERED
+										} else UNMETERED
+								)
+								setRequiresStorageNotLow(!updateOnLowStorage)
+								setRequiresBatteryNotLow(!updateOnLowBattery)
+								if (SDK_INT >= VERSION_CODES.M)
+									setRequiresDeviceIdle(updateOnlyIdle)
+							}.build()
+					)
+							.build()
 			)
-		} else Log.d(logID(), LogConstants.SERVICE_REJECT_RUNNING)
+		}
 
 		/**
 		 * Stops the service.
@@ -124,12 +136,12 @@ class UpdateWorker(
 	/**
 	 * Wake lock that will be held until the service is destroyed.
 	 */
-	//  private lateinit var wakeLock: PowerManager.WakeLock
+//  private lateinit var wakeLock: PowerManager.WakeLock
 
 	internal val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
 
 	internal val progressNotification by lazy {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		if (SDK_INT >= VERSION_CODES.O) {
 			Notification.Builder(appContext, CHANNEL_UPDATE)
 		} else {
 			// Suppressed due to lower API
@@ -146,7 +158,7 @@ class UpdateWorker(
 	internal val loadNovelUseCase by instance<LoadNovelUseCase>()
 
 	override suspend fun doWork(): Result {
-		Log.d(logID(), "Starting Update cycle")
+		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
 		val pr = progressNotification
 		pr.setContentTitle(applicationContext.getString(R.string.update))
 		pr.setOngoing(true)

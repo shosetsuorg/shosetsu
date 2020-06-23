@@ -3,15 +3,21 @@ package com.github.doomsdayrs.apps.shosetsu.backend.services
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.work.*
+import androidx.work.NetworkType.METERED
+import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants.SERVICE_REJECT_RUNNING
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.downloadOnLowBattery
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.downloadOnLowStorage
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.downloadOnMetered
+import com.github.doomsdayrs.apps.shosetsu.common.Settings.downloadOnlyIdle
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.common.consts.WorkerTags.DOWNLOAD_WORK_ID
@@ -85,22 +91,25 @@ class DownloadWorker(
 		 */
 		fun start(context: Context,
 		          workerManager: WorkManager = WorkManager.getInstance(context)
-		): Any = if (!isRunning(context, workerManager)) {
-			val constraints = Constraints.Builder()
-
-			constraints.setRequiresStorageNotLow(true)
-
-
-			val request = OneTimeWorkRequestBuilder<DownloadWorker>()
-					.setConstraints(constraints.build())
-					.build()
-
+		) {
 			workerManager.enqueueUniqueWork(
 					DOWNLOAD_WORK_ID,
 					ExistingWorkPolicy.REPLACE,
-					request
+					OneTimeWorkRequestBuilder<DownloadWorker>()
+							.setConstraints(Constraints.Builder().apply {
+								setRequiredNetworkType(
+										if (downloadOnMetered) {
+											METERED
+										} else UNMETERED
+								)
+								setRequiresStorageNotLow(!downloadOnLowStorage)
+								setRequiresBatteryNotLow(!downloadOnLowBattery)
+								if (SDK_INT >= VERSION_CODES.M)
+									setRequiresDeviceIdle(downloadOnlyIdle)
+							}.build())
+							.build()
 			)
-		} else Log.d(logID(), SERVICE_REJECT_RUNNING)
+		}
 
 		/**
 		 * Stops the service.
@@ -124,7 +133,7 @@ class DownloadWorker(
 	}
 
 	private val progressNotification by lazy {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		if (SDK_INT >= VERSION_CODES.O) {
 			Notification.Builder(applicationContext, CHANNEL_DOWNLOAD)
 		} else {
 			// Suppressed due to lower API

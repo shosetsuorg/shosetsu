@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.common
 import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.core.content.edit
+import com.github.doomsdayrs.apps.shosetsu.common.consts.settings.*
 
 /*
  * This file is part of Shosetsu.
@@ -53,49 +54,6 @@ object Settings {
 	lateinit var readerSettings: SharedPreferences
 	lateinit var formatterSettings: SharedPreferences
 
-
-	// Constant keys
-	const val LISTING_KEY = "listing"
-	private const val FIRST_TIME = "first_time"
-
-
-	// How things look in Reader
-	const val READER_THEME = "readerTheme"
-	const val READER_TEXT_C_COLOR = "readerCustomTextColor"
-	const val READER_BACK_C_COLOR = "readerCustomBackColor"
-
-	const val READER_TEXT_SIZE = "readerTextSize"
-	const val READER_TEXT_SPACING = "readerParagraphSpacing"
-	const val READER_TEXT_INDENT = "readerIndentSize"
-
-	//- How things act in Reader
-	const val READER_IS_TAP_TO_SCROLL = "tapToScroll"
-	const val READER_IS_INVERTED_SWIPE = "invertedSwipe"
-	const val READER_MARKING_TYPE = "readerMarkingType"
-
-	// Download options
-	const val IS_DOWNLOAD_PAUSED = "isDownloadPaused"
-
-	private const val DISABLED_FORMATTERS = "disabledFormatters"
-	private const val DELETE_READ_CHAPTER = "deleteReadChapter"
-
-	// Update options
-	const val IS_DOWNLOAD_ON_UPDATE = "isDownloadOnUpdate"
-	const val ONLY_UPDATE_ONGOING = "onlyUpdateOngoing"
-	const val UPDATE_CYCLE = "updateCycle"
-
-	// View options
-	const val C_IN_NOVELS_P = "columnsInNovelsViewP"
-	const val C_IN_NOVELS_H = "columnsInNovelsViewH"
-	const val NOVEL_CARD_TYPE = "novelCardType"
-
-	// Backup Options
-	const val BACKUP_CHAPTERS = "backupChapters"
-	const val BACKUP_SETTINGS = "backupSettings"
-	const val BACKUP_QUICK = "backupQuick"
-
-	// Download Options
-	private const val DOWNLOAD_DIRECTORY = "downloadDirectory"
 
 	// READER
 	/**
@@ -181,6 +139,23 @@ object Settings {
 		set(value) = settings.edit { putInt(UPDATE_CYCLE, value) }
 		get() = settings.getInt(UPDATE_CYCLE, 1)
 
+	var updateOnLowBattery: Boolean
+		set(value) = settings.edit { putBoolean(UPDATE_LOW_BATTERY, value) }
+		get() = settings.getBoolean(UPDATE_LOW_BATTERY, false)
+
+	var updateOnLowStorage: Boolean
+		set(value) = settings.edit { putBoolean(UPDATE_LOW_STORAGE, value) }
+		get() = settings.getBoolean(UPDATE_LOW_STORAGE, false)
+
+	var updateOnMetered: Boolean
+		set(value) = settings.edit { putBoolean(UPDATE_METERED, value) }
+		get() = settings.getBoolean(UPDATE_METERED, false)
+
+	var updateOnlyIdle: Boolean
+		set(value) = settings.edit { putBoolean(UPDATE_IDLE, value) }
+		get() = settings.getBoolean(UPDATE_IDLE, false)
+
+
 	var downloadOnUpdate: Boolean
 		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_ON_UPDATE, value) }
 		get() = settings.getBoolean(IS_DOWNLOAD_ON_UPDATE, false)
@@ -195,13 +170,28 @@ object Settings {
 		get() = settings.getBoolean(FIRST_TIME, true)
 
 	// Download Settings
+
 	var downloadDirectory: String
 		set(value) = settings.edit { putString(DOWNLOAD_DIRECTORY, value) }
 		get() = settings.getString(DOWNLOAD_DIRECTORY, "/Shosetsu/")!!
 
-	/**
-	 * If download manager is paused
-	 */
+	var downloadOnLowBattery: Boolean
+		set(value) = settings.edit { putBoolean(DOWNLOAD_LOW_BATTERY, value) }
+		get() = settings.getBoolean(DOWNLOAD_LOW_BATTERY, false)
+
+	var downloadOnLowStorage: Boolean
+		set(value) = settings.edit { putBoolean(DOWNLOAD_LOW_STORAGE, value) }
+		get() = settings.getBoolean(DOWNLOAD_LOW_STORAGE, false)
+
+	var downloadOnMetered: Boolean
+		set(value) = settings.edit { putBoolean(DOWNLOAD_METERED, value) }
+		get() = settings.getBoolean(DOWNLOAD_METERED, false)
+
+	var downloadOnlyIdle: Boolean
+		set(value) = settings.edit { putBoolean(DOWNLOAD_IDLE, value) }
+		get() = settings.getBoolean(DOWNLOAD_IDLE, false)
+
+	/** If download manager is paused */
 	var isDownloadPaused: Boolean
 		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_PAUSED, value) }
 		get() = settings.getBoolean(IS_DOWNLOAD_PAUSED, false)
