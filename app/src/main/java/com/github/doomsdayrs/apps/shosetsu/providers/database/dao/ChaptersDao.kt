@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
@@ -11,7 +10,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.entity
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.*
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 
@@ -93,13 +91,8 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Transaction
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
-		Log.d(logID(), "Handling Chapters : ${novelEntity.url} ${novelEntity.id}")
 		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!)
-		Log.d(logID(), "Chapters received : ${list.size}")
-		Log.d(logID(), "Chapters in data  : ${databaseChapters.size}")
-
 		list.forEach { novelChapter: Novel.Chapter ->
-			Log.d(logID(), "Processing ${novelChapter.link}")
 			databaseChapters.find { it.url == novelChapter.link }?.let {
 				handleUpdate(it, novelChapter)
 			} ?: handleAbortInsert(novelChapter, novelEntity)
@@ -112,13 +105,8 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 			list: List<Novel.Chapter>
 	): HResult<List<ChapterEntity>> {
 		val newChapters = ArrayList<ChapterEntity>()
-		Log.d(logID(), "Handling Chapters : ${novelEntity.url} ${novelEntity.id}")
 		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!)
-		Log.d(logID(), "Chapters received : ${list.size}")
-		Log.d(logID(), "Chapters in data  : ${databaseChapters.size}")
-
 		list.forEach { novelChapter: Novel.Chapter ->
-			Log.d(logID(), "Processing ${novelChapter.link}")
 			databaseChapters.find { it.url == novelChapter.link }?.let {
 				handleUpdate(it, novelChapter)
 			} ?: insertReturn(novelEntity, novelChapter).let {
@@ -147,7 +135,6 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 			insertAbort(novelChapter.entity(novelEntity))
 
 	private suspend fun handleUpdate(chapterEntity: ChapterEntity, novelChapter: Novel.Chapter) {
-		Log.d(logID(), "Chapter\t${chapterEntity.url}\t\t\twas found, updating")
 		suspendedUpdate(chapterEntity.copy(
 				title = novelChapter.title,
 				releaseDate = novelChapter.release,

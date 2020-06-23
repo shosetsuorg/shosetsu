@@ -39,16 +39,11 @@ class NovelsRepository(
 		val database: ILocalNovelsDataSource,
 		val remoteSource: IRemoteNovelDataSource
 ) : INovelsRepository {
-	override suspend fun suspendedGetLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>> =
-			database.loadBookmarkedNovelsAndCount()
+	override suspend fun getLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>> =
+			database.loadLiveBookmarkedNovelsAndCount()
 
-	override suspend fun suspendedGetBookmarkedNovels(): HResult<List<NovelEntity>> {
-		TODO("Not yet implemented")
-	}
-
-	override fun blockingGetBookmarkedNovels(): HResult<List<NovelEntity>> {
-		TODO("Not yet implemented")
-	}
+	override suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>> =
+			database.loadBookmarkedNovels()
 
 	override suspend fun updateNovel(novelEntity: NovelEntity) {
 		TODO("Not yet implemented")

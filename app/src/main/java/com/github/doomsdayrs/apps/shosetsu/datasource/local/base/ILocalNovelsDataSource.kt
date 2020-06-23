@@ -32,10 +32,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  */
 interface ILocalNovelsDataSource {
 	/** load list of novels that are to be bookmarked */
-	suspend fun loadBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>>
+	suspend fun loadLiveBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>>
+
+	suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>>
 
 	/** Loads the bookmarked novels along with an unread count */
-	suspend fun loadBookmarkedNovelsAndCount(): LiveData<HResult<List<BookmarkedNovelEntity>>>
+	suspend fun loadLiveBookmarkedNovelsAndCount(): LiveData<HResult<List<BookmarkedNovelEntity>>>
 
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
 	suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>>

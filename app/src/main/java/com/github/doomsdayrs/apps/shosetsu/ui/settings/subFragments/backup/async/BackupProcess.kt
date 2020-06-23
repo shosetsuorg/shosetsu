@@ -18,26 +18,10 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.asyn
 
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.BACKUP_CHAPTERS
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.BACKUP_QUICK
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.BACKUP_SETTINGS
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.C_IN_NOVELS_H
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.C_IN_NOVELS_P
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.ONLY_UPDATE_ONGOING
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.IS_DOWNLOAD_PAUSED
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.NOVEL_CARD_TYPE
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_BACK_C_COLOR
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_IS_INVERTED_SWIPE
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_IS_TAP_TO_SCROLL
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_MARKING_TYPE
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_TEXT_C_COLOR
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_TEXT_INDENT
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_TEXT_SIZE
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_TEXT_SPACING
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.READER_THEME
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.consts.settings.*
 import com.github.doomsdayrs.apps.shosetsu.common.ext.serializeToString
 import org.json.JSONException
 import org.json.JSONObject
@@ -70,7 +54,8 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 			}
 
 			if (Settings.backupChapters && !Settings.backupQuick)
-			else { }
+			else {
+			}
 			if (Settings.backupSettings)
 				backupJSON.put("settings", getSettingsInJSON())
 

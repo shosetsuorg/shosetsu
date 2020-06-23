@@ -40,8 +40,8 @@ inline fun settingsItemData(
 inline fun SettingsItemData.title(value: SettingsItemData.() -> Any): Unit =
 		value().let {
 			when (it) {
-				is String -> textText = it
-				is Int -> textID = it
+				is String -> titleText = it
+				is Int -> titleID = it
 				else -> throw IllegalArgumentException("Input must be either an int or string")
 			}
 		}
@@ -50,8 +50,8 @@ inline fun SettingsItemData.title(value: SettingsItemData.() -> Any): Unit =
 inline fun SettingsItemData.description(value: SettingsItemData.() -> Any): Unit =
 		value().let {
 			when (it) {
-				is String -> textText = it
-				is Int -> textID = it
+				is String -> descText = it
+				is Int -> descID = it
 				else -> throw IllegalArgumentException("Input must be either an int or string")
 			}
 		}
@@ -70,4 +70,9 @@ inline fun SettingsItemData.onSpinnerItemSelected(crossinline value: (
 			value(parent, view, position, id)
 		}
 	}
+}
+
+@SettingsItemDSL
+inline fun SettingsItemData.requiredVersion(value: SettingsItemData.() -> Int) {
+	minVersionCode = value()
 }

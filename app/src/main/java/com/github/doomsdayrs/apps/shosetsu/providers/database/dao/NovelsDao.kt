@@ -40,7 +40,10 @@ interface NovelsDao : BaseDao<NovelEntity> {
 	fun loadNovels(): LiveData<List<NovelEntity>>
 
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
-	fun loadBookmarkedNovels(): LiveData<List<NovelEntity>>
+	fun loadBookmarkedNovels(): List<NovelEntity>
+
+	@Query("SELECT * FROM novels WHERE bookmarked = 1")
+	fun loadListBookmarkedNovels(): LiveData<List<NovelEntity>>
 
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	fun loadNovel(novelID: Int): NovelEntity

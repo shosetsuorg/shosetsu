@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartUpdateWorkerUseCase
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IMainViewModel
 
 /*
@@ -27,7 +28,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IMainViewModel
  */
 class MainViewModel(
 		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
-		private val loadAppUpdateUseCase: LoadAppUpdateUseCase
+		private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
+		private val updateWorkerUseCase: StartUpdateWorkerUseCase
 ) : IMainViewModel() {
 
 	override fun startDownloadWorker() {
@@ -35,7 +37,7 @@ class MainViewModel(
 	}
 
 	override fun startUpdateWorker() {
-
+		updateWorkerUseCase()
 	}
 
 	override fun startUpdateCheck() {

@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder
 
 import android.graphics.Color
+import android.os.Build
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -57,11 +58,14 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 			CHECKBOX
 		}
 
+		/** Min version required for this setting to be visible */
+		var minVersionCode: Int = Build.VERSION_CODES.Q
+
 		var titleID: Int = -1
 		var titleText: String = ""
 
 		var descID: Int = -1
-		var descriptionText: String = ""
+		var descText: String = ""
 
 		var textID: Int = -1
 		var textText: String = ""
@@ -130,7 +134,7 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 		}
 
 		fun setDescription(desc: String): SettingsItemData {
-			descriptionText = desc
+			descText = desc
 			return this
 		}
 

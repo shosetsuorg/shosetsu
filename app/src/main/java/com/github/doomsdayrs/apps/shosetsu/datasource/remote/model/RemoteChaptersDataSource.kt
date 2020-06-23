@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
-import android.util.Log
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA
@@ -8,7 +7,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteChaptersDataSource
 import okio.IOException
 import org.luaj.vm2.LuaError
@@ -40,10 +38,7 @@ class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 			chapterURL: String
 	): HResult<String> =
 			try {
-				Log.d(logID(), "Attempting to load $chapterURL")
-				val s = formatter.getPassage(chapterURL)
-				Log.d(logID(), "Loaded $chapterURL")
-				successResult(s)
+				successResult(formatter.getPassage(chapterURL))
 			} catch (e: IOException) {
 				errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
 			} catch (e: LuaError) {

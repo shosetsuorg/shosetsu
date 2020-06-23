@@ -36,10 +36,13 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.NovelsDao
 class LocalNovelsDataSource(
 		private val novelsDao: NovelsDao
 ) : ILocalNovelsDataSource {
-	override suspend fun loadBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>> =
-			novelsDao.loadBookmarkedNovels().map { successResult(it) }
+	override suspend fun loadLiveBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>> =
+			novelsDao.loadListBookmarkedNovels().map { successResult(it) }
 
-	override suspend fun loadBookmarkedNovelsAndCount()
+	override suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>> =
+			successResult(novelsDao.loadBookmarkedNovels())
+
+	override suspend fun loadLiveBookmarkedNovelsAndCount()
 			: LiveData<HResult<List<BookmarkedNovelEntity>>> =
 			novelsDao.loadBookmarkedNovelsCount().map { successResult(it) }
 

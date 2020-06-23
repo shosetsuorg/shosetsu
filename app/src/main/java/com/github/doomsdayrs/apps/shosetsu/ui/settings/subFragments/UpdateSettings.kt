@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
+import android.os.Build.VERSION_CODES
 import android.widget.CompoundButton.OnCheckedChangeListener
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.requiredVersion
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.settingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.title
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
@@ -47,6 +49,35 @@ class UpdateSettings : SettingsSubController() {
 					isChecked = Settings.onlyUpdateOngoing
 					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
 						Settings.onlyUpdateOngoing = isChecked
+					}
+				},
+				settingsItemData(2, SWITCH) {
+					title { "Allow updating on metered connection" }
+					isChecked = Settings.updateOnMetered
+					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
+						Settings.updateOnMetered = isChecked
+					}
+				},
+				settingsItemData(3, SWITCH) {
+					title { "Update on low battery" }
+					isChecked = Settings.updateOnLowBattery
+					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
+						Settings.updateOnLowBattery = isChecked
+					}
+				},
+				settingsItemData(4, SWITCH) {
+					title { "Update on low storage" }
+					isChecked = Settings.updateOnLowStorage
+					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
+						Settings.updateOnLowStorage = isChecked
+					}
+				},
+				settingsItemData(5, SWITCH) {
+					title { "Update only when idle" }
+					requiredVersion { VERSION_CODES.M }
+					isChecked = Settings.updateOnlyIdle
+					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
+						Settings.updateOnlyIdle = isChecked
 					}
 				}
 		)

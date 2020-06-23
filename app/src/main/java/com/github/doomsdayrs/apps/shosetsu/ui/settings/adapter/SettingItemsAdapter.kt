@@ -63,7 +63,7 @@ class SettingItemsAdapter(private val items: List<SettingsItemData>)
 			if (data.descID != -1)
 				itemDescription.setText(data.descID)
 			else
-				itemDescription.text = data.descriptionText
+				itemDescription.text = data.descText
 
 			when (type) {
 				BUTTON -> {

@@ -5,12 +5,11 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
-import android.os.Bundle
 import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
-import androidx.work.NetworkType.METERED
+import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -24,7 +23,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.WorkerTags.UPDATE_WORK_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
 import org.kodein.di.Kodein
@@ -32,7 +30,6 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit.HOURS
-import java.util.concurrent.TimeUnit.MINUTES
 import androidx.work.PeriodicWorkRequestBuilder as PWRB
 
 /*
@@ -101,16 +98,14 @@ class UpdateWorker(
 			workerManager.enqueueUniquePeriodicWork(
 					UPDATE_WORK_ID,
 					REPLACE,
-					PWRB<DownloadWorker>(
+					PWRB<UpdateWorker>(
 							Settings.updateCycle.toLong(),
-							HOURS,
-							15,
-							MINUTES
+							HOURS
 					).setConstraints(
 							Constraints.Builder().apply {
 								setRequiredNetworkType(
 										if (Settings.updateOnMetered) {
-											METERED
+											CONNECTED
 										} else UNMETERED
 								)
 								setRequiresStorageNotLow(!updateOnLowStorage)
@@ -121,6 +116,9 @@ class UpdateWorker(
 					)
 							.build()
 			)
+			workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).get()[0].let {
+				Log.d(logID(), "State ${it.state}")
+			}
 		}
 
 		/**
@@ -133,14 +131,9 @@ class UpdateWorker(
 		): Any = workerManager.cancelUniqueWork(UPDATE_WORK_ID)
 	}
 
-	/**
-	 * Wake lock that will be held until the service is destroyed.
-	 */
-//  private lateinit var wakeLock: PowerManager.WakeLock
+	private val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
 
-	internal val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
-
-	internal val progressNotification by lazy {
+	private val progressNotification by lazy {
 		if (SDK_INT >= VERSION_CODES.O) {
 			Notification.Builder(appContext, CHANNEL_UPDATE)
 		} else {
@@ -154,8 +147,8 @@ class UpdateWorker(
 	}
 
 	override val kodein: Kodein by closestKodein(appContext)
-	internal val iNovelsRepository by instance<INovelsRepository>()
-	internal val loadNovelUseCase by instance<LoadNovelUseCase>()
+	private val iNovelsRepository by instance<INovelsRepository>()
+	private val loadNovelUseCase by instance<LoadNovelUseCase>()
 
 	override suspend fun doWork(): Result {
 		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
@@ -164,7 +157,7 @@ class UpdateWorker(
 		pr.setOngoing(true)
 		notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
 
-		iNovelsRepository.suspendedGetBookmarkedNovels().let { hNovels ->
+		iNovelsRepository.getBookmarkedNovels().let { hNovels ->
 			when (hNovels) {
 				is HResult.Success -> {
 					val novels = hNovels.data.let {
@@ -185,6 +178,7 @@ class UpdateWorker(
 					pr.setContentTitle(applicationContext.getString(R.string.update))
 					pr.setContentText(applicationContext.getString(R.string.update_complete))
 					pr.setOngoing(false)
+					pr.setProgress(0, 0, false)
 					notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
 
 				}
@@ -195,111 +189,4 @@ class UpdateWorker(
 		}
 		return Result.success()
 	}
-
-
-	inner class UpdateNovels(val bundle: Bundle) {
-		fun doWork() {
-			val updatedNovels = ArrayList<NovelEntity>()
-			iNovelsRepository.blockingGetBookmarkedNovels().let { novelEntities ->
-				// Main process
-				/*
-				novelEntities.forEachIndexed { index, novelEntity ->
-					val pr = progressNotification
-					pr.setContentTitle(getString(R.string.updating))
-					pr.setOngoing(true)
-
-					val formatter = novelEntity.formatter
-
-					if (formatter != FormatterUtils.unknown) {
-						// Updates notification
-						pr.setContentText(novelEntity.title)
-						pr.setProgress(novelEntities.size, index + 1, false)
-						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-
-						// Runs process
-						ChapterLoader(object : ChapterLoader.ChapterLoaderAction {
-							override fun onPreExecute() {
-							}
-
-							override fun onPostExecute(
-									result: Boolean,
-									finalChapters: ArrayList<Novel.Chapter>
-							) {
-							}
-
-							override fun onJustBeforePost(finalChapters: ArrayList<Novel.Chapter>) {
-								for ((index, chapter) in finalChapters.withIndex()) {
-									val tuple = iChaptersRepository.hasChapter(chapter.link) // One
-									val chapterEntity: ChapterEntity
-									if (!tuple.boolean) {
-										Log.i(logID(), "add #$index\t: ${chapter.link} ")
-										chapterEntity =
-												iChaptersRepository.insertAndReturnChapterEntity( // two
-														chapter.entity(novelEntity)
-												)
-
-										iUpdatesRepository.insertUpdate(UpdateEntity( // three
-												chapterEntity.id,
-												novelEntity.id,
-												System.currentTimeMillis()
-										))
-
-										if (!updatedNovels.contains(novelEntity))
-											updatedNovels.add(novelEntity)
-									} else {
-										chapterEntity = iChaptersRepository.loadChapter(tuple.id)
-										chapterEntity.title = chapter.title
-										chapterEntity.order = chapter.order
-										chapterEntity.releaseDate = chapter.release
-										iChaptersRepository.updateChapter(chapterEntity)
-									}
-
-									if (Settings.isDownloadOnUpdateEnabled)
-										DownloadManager.addToDownload(
-												applicationContext as Activity,
-												chapterEntity.toDownload()
-										)
-								}
-							}
-
-							override fun onIncrementingProgress(page: Int, max: Int) {
-							}
-
-							override fun errorReceived(errorString: String) {
-								Log.e(logID(), errorString)
-							}
-						}, formatter, novelEntity.url).doInBackground()
-						wait(1000)
-					} else {
-						pr.setContentText("Unknown Formatter for ${novelEntity.url}")
-						pr.setProgress(novelEntities.size, index + 1, false)
-						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-					}
-				}
-				*/
-			}
-
-			// Completion
-			val stringBuilder = StringBuilder()
-			val pr = progressNotification
-			when {
-				updatedNovels.size > 0 -> {
-					//	pr.setContentTitle(getString(R.string.update_complete))
-					for (novelCard in updatedNovels) stringBuilder.append(novelCard.title).append("\n")
-					pr.style = Notification.BigTextStyle()
-				}
-				else -> {
-					//		pr.setContentTitle(getString(R.string.update_complete))
-					//		stringBuilder.append(getString(R.string.update_not_found))
-				}
-			}
-			pr.setContentText(stringBuilder.toString())
-			pr.setProgress(0, 0, false)
-			pr.setOngoing(false)
-			notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-		}
-
-	}
-
-
 }

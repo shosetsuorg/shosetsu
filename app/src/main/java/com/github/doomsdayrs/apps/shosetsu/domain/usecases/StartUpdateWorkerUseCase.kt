@@ -1,5 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
+import android.content.Context
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
+
 /*
  * This file is part of shosetsu.
  *
@@ -19,12 +22,12 @@ package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 /**
  * shosetsu
- * 14 / 05 / 2020
- * This class will instruct the program to do a manual update
+ * 23 / 06 / 2020
  */
-class UpdateLibraryUseCase(
+class StartUpdateWorkerUseCase(
+		private val context: Context
 ) : (() -> Unit) {
 	override fun invoke() {
-		TODO("Not yet implemented")
+		UpdateWorker.start(context)
 	}
 }

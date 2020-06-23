@@ -4,8 +4,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
+import org.kodein.di.generic.instance as i
 
 /*
  * This file is part of shosetsu.
@@ -31,41 +31,33 @@ import org.kodein.di.generic.provider
  */
 val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	// Main
-	bind<IMainViewModel>() with provider { MainViewModel(instance(), instance()) }
+	bind<IMainViewModel>() with provider {
+		MainViewModel(i(), i(), i())
+	}
 
 	// Library
-	bind<ILibraryViewModel>() with provider { LibraryViewModel(instance()) }
+	bind<ILibraryViewModel>() with provider { LibraryViewModel(i()) }
 
 	// Other
 	bind<IDownloadsViewModel>() with provider {
-		DownloadsViewModel(instance(), instance(), instance(), instance())
+		DownloadsViewModel(i(), i(), i(), i())
 	}
-	bind<ISearchViewModel>() with provider { SearchViewModel(instance(), instance()) }
-	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(instance()) }
+	bind<ISearchViewModel>() with provider { SearchViewModel(i(), i()) }
+	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i()) }
 
 	// Catalog(s)
-	bind<ICatalogsViewModel>() with provider { CatalogsViewModel(instance()) }
-	bind<ICatalogViewModel>() with provider { CatalogViewModel(instance(), instance(), instance()) }
+	bind<ICatalogsViewModel>() with provider { CatalogsViewModel(i()) }
+	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i()) }
 
 	// Extensions
-	bind<IExtensionsViewModel>() with provider {
-		ExtensionsViewModel(instance(), instance(), instance(), instance())
-	}
-	bind<IExtensionsConfigureViewModel>() with provider {
-		ExtensionsConfigureViewModel(instance(), instance())
-	}
+	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i()) }
+	bind<IExtensionsConfigureViewModel>() with provider { ExtensionsConfigureViewModel(i(), i()) }
 
 	// Novel View
-	bind<INovelViewModel>() with provider { NovelViewModel(instance()) }
-	bind<INovelInfoViewModel>() with provider {
-		NovelInfoViewModel(instance(), instance(), instance())
-	}
-	bind<INovelChaptersViewModel>() with provider {
-		NovelChaptersViewModel(instance(), instance(), instance())
-	}
+	bind<INovelViewModel>() with provider { NovelViewModel(i()) }
+	bind<INovelInfoViewModel>() with provider { NovelInfoViewModel(i(), i(), i()) }
+	bind<INovelChaptersViewModel>() with provider { NovelChaptersViewModel(i(), i(), i()) }
 
 	// Chapter
-	bind<IChapterReaderViewModel>() with provider {
-		ChapterReaderViewModel(instance(), instance(), instance(), instance())
-	}
+	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i()) }
 }

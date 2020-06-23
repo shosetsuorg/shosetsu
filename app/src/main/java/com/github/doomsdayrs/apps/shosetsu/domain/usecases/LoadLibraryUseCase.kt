@@ -33,7 +33,7 @@ class LoadLibraryUseCase(
 ) : (() -> LiveData<HResult<List<BookmarkedNovelUI>>>) {
 	override fun invoke(): LiveData<HResult<List<BookmarkedNovelUI>>> {
 		return liveData {
-			emitSource(iNovelsRepository.suspendedGetLiveBookmarked().map { data ->
+			emitSource(iNovelsRepository.getLiveBookmarked().map { data ->
 				when (data) {
 					is HResult.Success -> data.mapListTo()
 					is HResult.Loading -> loading()

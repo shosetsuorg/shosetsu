@@ -32,9 +32,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  * @author github.com/doomsdayrs
  */
 interface INovelsRepository {
-	suspend fun suspendedGetLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>>
-	suspend fun suspendedGetBookmarkedNovels(): HResult<List<NovelEntity>>
-	fun blockingGetBookmarkedNovels(): HResult<List<NovelEntity>>
+	suspend fun getLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>>
+	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
 	suspend fun updateNovel(novelEntity: NovelEntity)
 	suspend fun unBookmarkNovels(selectedNovels: List<Int>)
 	suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>>

@@ -8,7 +8,7 @@ import android.os.Build.VERSION_CODES
 import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.work.*
-import androidx.work.NetworkType.METERED
+import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -99,7 +99,7 @@ class DownloadWorker(
 							.setConstraints(Constraints.Builder().apply {
 								setRequiredNetworkType(
 										if (downloadOnMetered) {
-											METERED
+											CONNECTED
 										} else UNMETERED
 								)
 								setRequiresStorageNotLow(!downloadOnLowStorage)
