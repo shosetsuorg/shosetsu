@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings
 
 import android.view.View
 import android.widget.AdapterView
+import android.widget.CompoundButton
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
 
@@ -69,6 +70,16 @@ inline fun SettingsItemData.onSpinnerItemSelected(crossinline value: (
 		override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 			value(parent, view, position, id)
 		}
+	}
+}
+
+@SettingsItemDSL
+inline fun SettingsItemData.setOnCheckedListener(crossinline action: SettingsItemData.(
+		@ParameterName("buttonView") CompoundButton?,
+		@ParameterName("isChecked") Boolean
+) -> Unit) {
+	onCheckedListener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+		action(buttonView, isChecked)
 	}
 }
 

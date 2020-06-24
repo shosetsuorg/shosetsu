@@ -47,21 +47,21 @@ class BackupSettings : SettingsSubController() {
 						.setTitle(R.string.backup_chapters_option)
 						.setDescription(R.string.backup_chapters_option_description)
 						.setIsChecked(Settings.backupChapters)
-						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+						.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
 							Settings.backupChapters = isChecked
 						}),
 				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.CHECKBOX, 1)
 						.setTitle((R.string.backup_settings_option))
 						.setDescription(R.string.backup_settings_option_desc)
 						.setIsChecked(Settings.backupSettings)
-						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+						.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
 							Settings.backupSettings = isChecked
 						}),
 				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.CHECKBOX, 2)
 						.setTitle(R.string.backup_quick_option)
 						.setDescription(R.string.backup_quick_option_desc)
 						.setIsChecked(Settings.backupQuick)
-						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+						.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
 							Settings.backupQuick = isChecked
 						}),
 				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.BUTTON, 3)

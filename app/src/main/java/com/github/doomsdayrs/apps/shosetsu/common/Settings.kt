@@ -111,6 +111,10 @@ object Settings {
 		set(value) = readerSettings.edit { putInt(DELETE_READ_CHAPTER, value) }
 		get() = readerSettings.getInt(DELETE_READ_CHAPTER, -1)
 
+	var resumeOpenFirstUnread: Boolean
+		set(value) = readerSettings.edit { putBoolean(READER_RESUME_FIRST_UNREAD, value) }
+		get() = readerSettings.getBoolean(READER_RESUME_FIRST_UNREAD, false)
+
 	// View Settings
 
 	var readerIndentSize

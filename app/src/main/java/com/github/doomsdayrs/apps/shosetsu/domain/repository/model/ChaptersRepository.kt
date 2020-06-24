@@ -101,4 +101,5 @@ class ChaptersRepository(
 
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity) =
 			dbSource.updateReaderChapter(readerChapterEntity)
+
 }

@@ -14,10 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.requiredVersion
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.settingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.title
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
 import java.util.*
@@ -59,28 +56,28 @@ class DownloadSettings : SettingsSubController() {
 				SettingsItemData(SWITCH, 3)
 						.setTitle(R.string.download_chapter_updates)
 						.setIsChecked(Settings.downloadOnUpdate)
-						.setOnCheckedListner(OnCheckedChangeListener { _, p1 ->
+						.setOnCheckedListener(OnCheckedChangeListener { _, p1 ->
 							Log.d("Download on update", p1.toString())
 							Settings.downloadOnUpdate = !Settings.downloadOnUpdate
 						}),
 				settingsItemData(2, SWITCH) {
 					title { "Allow downloading on metered connection" }
 					isChecked = Settings.downloadOnMetered
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
+					setOnCheckedListener { _, isChecked ->
 						Settings.downloadOnMetered = isChecked
 					}
 				},
 				settingsItemData(3, SWITCH) {
 					title { "Download on low battery" }
 					isChecked = Settings.downloadOnLowBattery
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
+					setOnCheckedListener { _, isChecked ->
 						Settings.downloadOnLowBattery = isChecked
 					}
 				},
 				settingsItemData(4, SWITCH) {
 					title { "Download on low storage" }
 					isChecked = Settings.downloadOnLowStorage
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
+					setOnCheckedListener { _, isChecked ->
 						Settings.downloadOnLowStorage = isChecked
 					}
 				},
@@ -88,7 +85,7 @@ class DownloadSettings : SettingsSubController() {
 					title { "Download only when idle" }
 					requiredVersion { Build.VERSION_CODES.M }
 					isChecked = Settings.downloadOnlyIdle
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
+					setOnCheckedListener { _, isChecked ->
 						Settings.downloadOnlyIdle = isChecked
 					}
 				}

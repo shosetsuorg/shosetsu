@@ -36,10 +36,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntit
  */
 interface IChaptersRepository {
 	/**
-	 * Loads the chapter
-	 * First checks if it is in cache
-	 * Then checks the file system
-	 * Then loads the chapter from the internet
+	 * Loads a [ChapterEntity]s text
+	 * First checks memory
+	 * Then checks storage
+	 * Then checks network
 	 */
 	suspend fun loadChapterPassage(
 			formatter: Formatter,
@@ -47,12 +47,12 @@ interface IChaptersRepository {
 	): HResult<String>
 
 	/**
-	 * Save the chapter to memory
+	 * Save the [ChapterEntity] [passage] to memory
 	 */
 	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, passage: String)
 
 	/**
-	 * Save the chapter to storage
+	 * Save the [ChapterEntity] [passage] to storage
 	 */
 	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
 
@@ -61,21 +61,36 @@ interface IChaptersRepository {
 	 */
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
 
+	/**
+	 * Handles chapters return, but returns the chapters that are new
+	 */
 	suspend fun handleChaptersReturn(
 			novelEntity: NovelEntity,
 			list: List<Novel.Chapter>
-	) : HResult<List<ChapterEntity>>
+	): HResult<List<ChapterEntity>>
 
 	/**
-	 * Loads chapters for a chapter list
+	 * Loads [ChapterEntity]s matching [novelID]
 	 */
 	suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
 
+	/**
+	 * Loads a [ChapterEntity] by its [chapterID]
+	 */
 	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
 
+	/**
+	 * Update [chapterEntity] in database
+	 */
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
+	/**
+	 * Loads [ReaderChapterEntity]s by it's [novelID]
+	 */
 	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
 
+	/**
+	 * Update [readerChapterEntity] in database
+	 */
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 }

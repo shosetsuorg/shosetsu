@@ -9,10 +9,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getNovelID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
@@ -158,14 +155,21 @@ class NovelChaptersController(val bundle: Bundle)
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
 		fab.setOnClickListener {
-			viewModel.loadLastRead().observe(this, Observer { result ->
+			viewModel.openLastRead(recyclerArray).observe(this, Observer { result ->
 				when (result) {
 					is HResult.Error -> {
+						Log.e(logID(), "Loading last read hit an error")
 					}
 					is HResult.Empty -> {
+						context?.toast("You already read all the chapters")
 					}
 					is HResult.Success -> {
-						activity?.openChapter(result.data)
+						val chapterIndex = result.data
+						Log.d(logID(), "Got a value of $chapterIndex")
+						if (chapterIndex != -1) {
+							recyclerView?.scrollToPosition(chapterIndex)
+							activity?.openChapter(recyclerArray[chapterIndex])
+						}
 					}
 				}
 			})

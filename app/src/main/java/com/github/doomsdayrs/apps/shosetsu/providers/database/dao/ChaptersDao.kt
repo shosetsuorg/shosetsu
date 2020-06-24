@@ -39,9 +39,8 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
  */
 @Dao
 interface ChaptersDao : BaseDao<ChapterEntity> {
-	@Transaction
-	suspend fun insertAndReturnChapterEntity(chapterEntity: ChapterEntity): ChapterEntity =
-			loadChapter(insertReplace(chapterEntity))
+
+	//# Queries
 
 	@Query("SELECT * FROM chapters")
 	fun loadAllChapters(): Array<ChapterEntity>
@@ -55,6 +54,9 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("SELECT id, url, title, readingPosition, readingStatus, bookmarked FROM chapters WHERE novelID = :novelID")
 	fun loadLiveReaderChapters(novelID: Int): LiveData<List<ReaderChapterEntity>>
 
+
+	//## Single result queries
+
 	@Query("SELECT * FROM chapters WHERE id = :chapterID LIMIT 1")
 	fun loadChapter(chapterID: Int): ChapterEntity
 
@@ -67,6 +69,16 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
 	fun loadChapterUnreadCount(): Int
 
+	//## Manipulation queries
+
+	@Query("UPDATE chapters SET isSaved = 1 AND savePath = :path WHERE id = :id")
+	fun setChapterSavePath(id: Int, path: String)
+
+	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :chapterID")
+	suspend fun removeChapterSavePath(chapterID: Int)
+
+	//# Transactions
+
 	@Transaction
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity) =
 			loadChapter(readerChapterEntity.id).copy(
@@ -74,20 +86,6 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 					readingStatus = readerChapterEntity.readingStatus,
 					bookmarked = readerChapterEntity.bookmarked
 			).let { suspendedUpdate(it) }
-
-	fun hasChapter(chapterURL: String): BooleanChapterIDTuple {
-		val c = loadChapterCount(chapterURL)
-		return BooleanChapterIDTuple(c.count > 0, c.id)
-	}
-
-	@Query("SELECT id FROM chapters WHERE novelID = :novelID AND readingStatus != 2 ORDER BY `order` DESC")
-	fun findLastUnread(novelID: Int): Int
-
-	@Query("UPDATE chapters SET isSaved = 1 AND savePath = :path WHERE id = :id")
-	fun setChapterSavePath(id: Int, path: String)
-
-	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :chapterID")
-	suspend fun removeChapterSavePath(chapterID: Int)
 
 	@Transaction
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
@@ -117,6 +115,11 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 		return successResult(newChapters)
 	}
 
+	@Transaction
+	suspend fun insertAndReturnChapterEntity(chapterEntity: ChapterEntity): ChapterEntity =
+			loadChapter(insertReplace(chapterEntity))
+
+
 	private suspend fun insertReturn(
 			novelEntity: NovelEntity,
 			novelChapter: Novel.Chapter
@@ -140,5 +143,11 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 				releaseDate = novelChapter.release,
 				order = novelChapter.order
 		))
+	}
+
+
+	private fun hasChapter(chapterURL: String): BooleanChapterIDTuple {
+		val c = loadChapterCount(chapterURL)
+		return BooleanChapterIDTuple(c.count > 0, c.id)
 	}
 }

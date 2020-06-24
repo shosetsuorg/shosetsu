@@ -2,7 +2,13 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
@@ -11,6 +17,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetChapterUIsUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -48,7 +55,7 @@ class NovelChaptersViewModel(
 
 	override fun download(chapterUI: ChapterUI) {
 		launchIO {
-			Log.i(logID(),"Downloading ${chapterUI.id}")
+			Log.i(logID(), "Downloading ${chapterUI.id}")
 			downloadChapterUseCase(chapterUI)
 		}
 	}
@@ -70,9 +77,15 @@ class NovelChaptersViewModel(
 		TODO("Not yet implemented")
 	}
 
-	override fun loadLastRead(): LiveData<HResult<ChapterUI>> {
-		TODO("Not yet implemented")
-	}
+	override fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>> =
+			liveData<HResult<Int>>(viewModelScope.coroutineContext + Dispatchers.IO) {
+				emit(loading())
+				val array = array.sortedBy { it.order }
+				val r = if (!Settings.resumeOpenFirstUnread)
+					array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
+				else array.indexOfFirst { it.readingStatus == ReadingStatus.UNREAD }
+				emit(if (r == -1) emptyResult() else successResult(r))
+			}
 
 
 	override fun isChapterSelected(chapterUI: ChapterUI): Boolean {

@@ -41,6 +41,9 @@ const val READER_IS_TAP_TO_SCROLL = "tapToScroll"
 const val READER_IS_INVERTED_SWIPE = "invertedSwipe"
 const val READER_MARKING_TYPE = "readerMarkingType"
 
+//- Some things
+const val READER_RESUME_FIRST_UNREAD = "readerResumeFirstUnread"
+
 // Download options
 const val IS_DOWNLOAD_PAUSED = "isDownloadPaused"
 

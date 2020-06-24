@@ -1,15 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.onSpinnerItemSelected
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.settingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.title
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
 import java.util.*
@@ -37,6 +35,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
+@SuppressLint("LogConditional")
 class ReaderSettings : SettingsSubController() {
 	override val settings: ArrayList<SettingsItemData> by lazy {
 		arrayListOf(
@@ -130,17 +129,25 @@ class ReaderSettings : SettingsSubController() {
 				SettingsItemData(SWITCH, 1)
 						.setTitle(R.string.inverted_swipe)
 						.setIsChecked(Settings.isInvertedSwipe)
-						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, _ ->
+						.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, _ ->
 							toggleInvertedSwipe()
 						}),
 
 				SettingsItemData(SWITCH, 1)
 						.setTitle(R.string.tap_to_scroll)
 						.setIsChecked(Settings.isTapToScroll)
-						.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, p1 ->
+						.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, p1 ->
 							Log.d("Tap to scroll", p1.toString())
 							toggleTapToScroll()
-						})
+						}),
+				settingsItemData(4, SWITCH) {
+					title { "Resume first unread" }
+					description { "Instead of resuming the first chapter that is not read(can be reading), the app will open the first unread chapter" }
+					isChecked = Settings.resumeOpenFirstUnread
+					setOnCheckedListener { _, isChecked ->
+						Settings.resumeOpenFirstUnread = isChecked
+					}
+				}
 		)
 	}
 

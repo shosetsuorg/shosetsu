@@ -50,7 +50,7 @@ abstract class INovelChaptersViewModel
 	abstract fun deletePrevious()
 
 	/** Next chapter to read uwu */
-	abstract fun loadLastRead(): LiveData<HResult<ChapterUI>>
+	abstract fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>>
 
 	abstract fun isChapterSelected(chapterUI: ChapterUI): Boolean
 	abstract fun addToSelect(chapterUI: ChapterUI)

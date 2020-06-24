@@ -190,7 +190,7 @@ class SettingsItem(val view: View) : RecyclerView.ViewHolder(view) {
 			return this
 		}
 
-		fun setOnCheckedListner(onCheckedChangeListener: CompoundButton.OnCheckedChangeListener)
+		fun setOnCheckedListener(onCheckedChangeListener: CompoundButton.OnCheckedChangeListener)
 				: SettingsItemData {
 			onCheckedListener = onCheckedChangeListener
 			return this

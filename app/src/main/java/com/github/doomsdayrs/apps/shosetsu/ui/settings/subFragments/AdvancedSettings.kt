@@ -13,7 +13,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.onSpinnerItemSelected
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.settingsItemData
@@ -95,7 +94,7 @@ class AdvancedSettings : SettingsSubController() {
 			settings.add(SettingsItemData(SWITCH, 9)
 					.setTitle("Show Intro")
 					.setIsChecked(Settings.showIntro)
-					.setOnCheckedListner(CompoundButton.OnCheckedChangeListener { _, isChecked ->
+					.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
 						Settings.showIntro = isChecked
 					})
 			)
