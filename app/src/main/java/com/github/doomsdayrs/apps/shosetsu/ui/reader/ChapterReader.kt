@@ -212,6 +212,32 @@ class ChapterReader
 			}
 		}
 
+		slidingUpPanelLayout.addPanelSlideListener(object : SlidingUpPanelLayout.PanelSlideListener {
+			override fun onPanelSlide(panel: View?, slideOffset: Float) {
+				drawer_toggle.setImageResource(R.drawable.ic_baseline_drag_handle_24)
+			}
+
+			override fun onPanelStateChanged(panel: View?, previousState: PanelState?, newState: PanelState?) {
+				when {
+					previousState == PanelState.DRAGGING && newState == PanelState.COLLAPSED -> {
+						drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_less_24)
+					}
+					previousState == PanelState.DRAGGING && newState == PanelState.EXPANDED -> {
+						drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_more_24)
+					}
+				}
+			}
+		})
+
+		drawer_toggle.apply {
+			setOnClickListener {
+				slidingUpPanelLayout.panelState = when (slidingUpPanelLayout.panelState) {
+					PanelState.EXPANDED -> PanelState.COLLAPSED
+					else -> PanelState.EXPANDED
+				}
+			}
+		}
+
 		text_size_bar?.apply {
 			setCustomSectionTextArray { _, array ->
 				array.apply {
@@ -378,6 +404,7 @@ class ChapterReader
 
 			}
 		}
+
 	}
 
 	private fun setupViewPager() {
