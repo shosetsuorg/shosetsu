@@ -1,15 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
-import com.skydoves.colorpickerview.ColorPickerDialog
-import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 
 
 /*
@@ -51,83 +47,6 @@ class SettingItemsAdapter(private val items: List<SettingsItemData>)
 	override fun getItemCount(): Int = items.size
 
 	@Suppress("KDocMissingDocumentation")
-	override fun onBindViewHolder(holder: SettingsItem, position: Int) {
-		val data = items[position]
-		with(holder) {
-			type = data.type
-			if (data.titleID != -1)
-				itemTitle.setText(data.titleID)
-			else
-				itemTitle.text = data.titleText
-
-			if (data.descID != -1)
-				itemDescription.setText(data.descID)
-			else
-				itemDescription.text = data.descText
-
-			when (type) {
-				BUTTON -> {
-					if (data.textID != -1)
-						button.setText(data.textID)
-					else
-						button.text = data.textText
-					button.visibility = View.VISIBLE
-					button.setOnClickListener(data.buttonOnClickListener)
-				}
-				SPINNER -> {
-					spinner.visibility = View.VISIBLE
-					//spinner.setOnClickListener { data.spinnerOnClick }
-					spinner.adapter = data.arrayAdapter!!
-					spinner.setSelection(data.spinnerSelection)
-					spinner.onItemSelectedListener = data.spinnerOnItemSelectedListener
-				}
-				INFORMATION -> {
-					itemView.setOnClickListener(data.itemViewOnClick)
-				}
-				TEXT -> {
-					if (data.textID != -1)
-						textView.setText(data.textID)
-					else
-						textView.text = data.textText
-					textView.visibility = View.VISIBLE
-					textView.setOnClickListener(data.textViewOnClickListener)
-				}
-				SWITCH -> {
-					switchView.visibility = View.VISIBLE
-					switchView.isChecked = data.isChecked
-					switchView.setOnCheckedChangeListener(data.onCheckedListener)
-				}
-				NUMBER_PICKER -> {
-					numberPicker.visibility = View.VISIBLE
-					numberPicker.minValue = data.lowerBound
-					numberPicker.maxValue = data.upperBound
-					numberPicker.value = data.numberPickerValue
-					numberPicker.setOnValueChangedListener(data.numberPickerOnValueChangedListener)
-				}
-				CHECKBOX -> {
-					checkBox.visibility = View.VISIBLE
-					checkBox.isChecked = data.isChecked
-					checkBox.setOnCheckedChangeListener(data.onCheckedListener)
-				}
-				COLOR_PICKER -> {
-					colorBox.visibility = View.VISIBLE
-					colorBox.setBackgroundColor(data.itemColor)
-					colorBox.setOnClickListener {
-						ColorPickerDialog.Builder(view.context)
-								.setTitle("ColorPicker Dialog")
-								.setPreferenceName(data.colorPreferenceName)
-								.setPositiveButton(
-										view.context.getString(R.string.confirm),
-										ColorEnvelopeListener { envelope, _ ->
-											data.colorFunction(envelope.color)
-											colorBox.setBackgroundColor(envelope.color)
-										}
-								)
-								.setNegativeButton(view.context.getString(android.R.string.cancel))
-								{ dialogInterface, _ -> dialogInterface.dismiss() }.show()
-					}
-				}
-			}
-		}
-	}
+	override fun onBindViewHolder(holder: SettingsItem, position: Int): Unit =
+			items[position].setupView(holder)
 }

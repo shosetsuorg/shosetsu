@@ -5,7 +5,6 @@ import android.database.SQLException
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
@@ -13,12 +12,9 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.onSpinnerItemSelected
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.settingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.title
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SpinnerSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
 
 
 /*
@@ -45,7 +41,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
 class AdvancedSettings : SettingsSubController() {
 	override val settings: ArrayList<SettingsItemData> by lazy {
 		arrayListOf(
-				settingsItemData(1, SPINNER) {
+				spinnerSettingData(1) {
 					title { R.string.theme }
 					arrayAdapter = ArrayAdapter(
 							context!!,
@@ -68,38 +64,35 @@ class AdvancedSettings : SettingsSubController() {
 						}
 					}
 				},
-				SettingsItemData(BUTTON, 2)
-						.setTitle(R.string.remove_novel_cache)
-						.setOnClickListenerButton {
-							try {
-								// TODO purge
-							} catch (e: SQLException) {
-								context!!.toast("SQLITE Error")
-								Log.e("AdvancedSettings", "DatabaseError", e)
-							}
+				buttonSettingData(2) {
+					title { R.string.remove_novel_cache }
+					onButtonClicked {
+						try {
+							// TODO purge
+						} catch (e: SQLException) {
+							context!!.toast("SQLITE Error")
+							Log.e("AdvancedSettings", "DatabaseError", e)
 						}
+					}
+				}
+
 		)
 	}
 
 	@Throws(Resources.NotFoundException::class)
 	override fun onViewCreated(view: View) {
 		val theme = (activity as AppCompatActivity).delegate.localNightMode
-		settings[0].setSpinnerSelection(if (
+		(settings[0] as SpinnerSettingData).spinnerSelection = (if (
 				theme == MODE_NIGHT_YES ||
 				theme == MODE_NIGHT_FOLLOW_SYSTEM ||
 				theme == MODE_NIGHT_AUTO_BATTERY)
 			1 else 0)
 
 		if (BuildConfig.DEBUG && findDataByID(9) == -1)
-			settings.add(SettingsItemData(SWITCH, 9)
-					.setTitle("Show Intro")
-					.setIsChecked(Settings.showIntro)
-					.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, isChecked ->
-						Settings.showIntro = isChecked
-					})
-			)
+			settings.add(switchSettingData(9) {
+				title { "Show Intro" }
+				checker { Settings::showIntro }
+			})
 		super.onViewCreated(view)
 	}
-
-
 }

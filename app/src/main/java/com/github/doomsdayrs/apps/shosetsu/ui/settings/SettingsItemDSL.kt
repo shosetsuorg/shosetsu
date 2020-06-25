@@ -3,8 +3,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CompoundButton
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.CheckableSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TextRequiringSettingData
+import kotlin.reflect.KMutableProperty0
 
 /*
  * This file is part of shosetsu.
@@ -30,12 +33,62 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
 @DslMarker
 annotation class SettingsItemDSL
 
+// - Builders
+
 @SettingsItemDSL
-inline fun settingsItemData(
+inline fun buttonSettingData(
 		id: Int,
-		type: SettingsType,
-		action: SettingsItemData.() -> Unit
-): SettingsItemData = SettingsItemData(type, id).also(action)
+		action: ButtonSettingData.() -> Unit
+): SettingsItemData = ButtonSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun checkBoxSettingData(
+		id: Int,
+		action: CheckBoxSettingData.() -> Unit
+): SettingsItemData = CheckBoxSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun colorPickerSettingData(
+		id: Int,
+		action: ColorPickerSettingData.() -> Unit
+): SettingsItemData = ColorPickerSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun infoSettingData(
+		id: Int,
+		action: InfoSettingData.() -> Unit
+): SettingsItemData = InfoSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun numberPickerSettingData(
+		id: Int,
+		action: NumberPickerSettingData.() -> Unit
+): SettingsItemData = NumberPickerSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun seekBarSettingData(
+		id: Int,
+		action: SeekBarSettingData.() -> Unit
+): SettingsItemData = SeekBarSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun spinnerSettingData(
+		id: Int,
+		action: SpinnerSettingData.() -> Unit
+): SettingsItemData = SpinnerSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun switchSettingData(
+		id: Int,
+		action: SwitchSettingData.() -> Unit
+): SettingsItemData = SwitchSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun textSettingData(
+		id: Int,
+		action: TextSettingData.() -> Unit
+): SettingsItemData = TextSettingData(id).also(action)
+// - Functions
 
 @SettingsItemDSL
 inline fun SettingsItemData.title(value: SettingsItemData.() -> Any): Unit =
@@ -58,7 +111,24 @@ inline fun SettingsItemData.description(value: SettingsItemData.() -> Any): Unit
 		}
 
 @SettingsItemDSL
-inline fun SettingsItemData.onSpinnerItemSelected(crossinline value: (
+inline fun TextRequiringSettingData.text(value: TextRequiringSettingData.() -> Any): Unit =
+		value().let {
+			when (it) {
+				is String -> textText = it
+				is Int -> textID = it
+				else -> throw IllegalArgumentException("Input must be either an int or string")
+			}
+		}
+
+@SettingsItemDSL
+inline fun TextRequiringSettingData.onClicked(crossinline action: TextRequiringSettingData.(
+		@ParameterName("view") View
+) -> Unit) {
+	textViewOnClickListener = { action(it) }
+}
+
+@SettingsItemDSL
+inline fun SpinnerSettingData.onSpinnerItemSelected(crossinline value: (
 		AdapterView<*>?,
 		View?,
 		@ParameterName("position") Int,
@@ -73,8 +143,27 @@ inline fun SettingsItemData.onSpinnerItemSelected(crossinline value: (
 	}
 }
 
+
 @SettingsItemDSL
-inline fun SettingsItemData.setOnCheckedListener(crossinline action: SettingsItemData.(
+inline fun ButtonSettingData.onButtonClicked(crossinline action: ButtonSettingData.(
+		@ParameterName("view") View
+) -> Unit) {
+	buttonOnClickListener = { action(it) }
+}
+
+@SettingsItemDSL
+inline fun CheckableSettingData.checker(
+		crossinline action: CheckableSettingData.() -> KMutableProperty0<Boolean>
+) {
+	val property = action()
+	isChecked = property.get()
+	onChecked { _: CompoundButton?, isChecked: Boolean ->
+		property.set(isChecked)
+	}
+}
+
+@SettingsItemDSL
+inline fun CheckableSettingData.onChecked(crossinline action: CheckableSettingData.(
 		@ParameterName("buttonView") CompoundButton?,
 		@ParameterName("isChecked") Boolean
 ) -> Unit) {
