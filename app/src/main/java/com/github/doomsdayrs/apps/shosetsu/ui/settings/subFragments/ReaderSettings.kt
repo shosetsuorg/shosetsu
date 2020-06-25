@@ -3,13 +3,12 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.CompoundButton
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.*
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
 import java.util.*
 
 /*
@@ -39,23 +38,16 @@ import java.util.*
 class ReaderSettings : SettingsSubController() {
 	override val settings: ArrayList<SettingsItemData> by lazy {
 		arrayListOf(
-				settingsItemData(0, SPINNER) {
+				spinnerSettingData(0) {
 					title { R.string.paragraph_spacing }
-					spinnerSelection = Settings.readerParagraphSpacing
 					arrayAdapter = ArrayAdapter(
 							context!!,
 							android.R.layout.simple_spinner_item,
 							resources!!.getStringArray(R.array.sizes_with_none)
 					)
-					onSpinnerItemSelected { adapterView, view, position, id ->
-						Log.d("SpaceSelection", position.toString())
-						if (position in 0..3) {
-							Settings.readerParagraphSpacing = position
-							adapterView?.setSelection(position)
-						}
-					}
+					spinnerField { Settings::readerParagraphSpacing }
 				},
-				settingsItemData(1, SPINNER) {
+				spinnerSettingData(1) {
 					title { R.string.text_size }
 					spinnerSelection = when (Settings.readerTextSize.toInt()) {
 						14 -> 0
@@ -83,83 +75,50 @@ class ReaderSettings : SettingsSubController() {
 						}
 					}
 				},
-				settingsItemData(2, SPINNER) {
+				spinnerSettingData(2) {
 					title { R.string.paragraph_indent }
-					spinnerSelection = Settings.readerIndentSize
+					spinnerField { Settings::readerIndentSize }
 					arrayAdapter = ArrayAdapter(
 							context!!,
 							android.R.layout.simple_spinner_item,
 							resources!!.getStringArray(R.array.sizes_with_none)
 					)
-					onSpinnerItemSelected { adapterView, view, i, id ->
-						Log.d("IndentSizeSelection", i.toString())
-						if (i in 0..3) {
-							Settings.readerIndentSize = i
-							adapterView?.setSelection(i)
-						}
-					}
 				},
-				settingsItemData(3, SPINNER) {
+				spinnerSettingData(3) {
 					title { R.string.reader_theme }
-					spinnerSelection = Settings.readerTheme
+					spinnerField { Settings::readerTheme }
 					arrayAdapter = ArrayAdapter(
 							context!!,
 							android.R.layout.simple_spinner_item,
 							resources!!.getStringArray(R.array.reader_themes)
 					)
-					onSpinnerItemSelected { adapterView, view, position, id ->
-						Log.d("NightMode", view.toString())
-						Settings.readerTheme = position
-					}
 				},
-				SettingsItemData(COLOR_PICKER, 1)
-						.setTitle(R.string.text_custom_color)
-						.setDescription(R.string.custom_theme_warn)
-						.setPickerColor(Settings.readerCustomBackColor)
-						.setColorPreference("text")
-						.setOnColorChosen { Settings.readerCustomBackColor = it },
-
-				SettingsItemData(COLOR_PICKER, 1)
-						.setTitle(R.string.text_custom_background_color)
-						.setColorPreference("back")
-						.setDescription(R.string.custom_theme_warn)
-						.setPickerColor(Settings.readerCustomTextColor)
-						.setOnColorChosen { Settings.readerCustomTextColor = it },
-
-				SettingsItemData(SWITCH, 1)
-						.setTitle(R.string.inverted_swipe)
-						.setIsChecked(Settings.isInvertedSwipe)
-						.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, _ ->
-							toggleInvertedSwipe()
-						}),
-
-				SettingsItemData(SWITCH, 1)
-						.setTitle(R.string.tap_to_scroll)
-						.setIsChecked(Settings.isTapToScroll)
-						.setOnCheckedListener(CompoundButton.OnCheckedChangeListener { _, p1 ->
-							Log.d("Tap to scroll", p1.toString())
-							toggleTapToScroll()
-						}),
-				settingsItemData(4, SWITCH) {
+				colorPickerSettingData(1) {
+					title { R.string.text_custom_color }
+					colorName { "Text" }
+					description { R.string.custom_theme_warn }
+					colorValue { Settings::readerCustomBackColor }
+				},
+				colorPickerSettingData(1) {
+					title { R.string.text_custom_background_color }
+					colorName { "back" }
+					description { R.string.custom_theme_warn }
+					colorValue { Settings::readerCustomTextColor }
+				},
+				switchSettingData(1) {
+					title { R.string.inverted_swipe }
+					checker { Settings::isInvertedSwipe }
+				},
+				switchSettingData(1) {
+					title { R.string.tap_to_scroll }
+					checker { Settings::isTapToScroll }
+				},
+				switchSettingData(4) {
 					title { "Resume first unread" }
 					description { "Instead of resuming the first chapter that is not read(can be reading), the app will open the first unread chapter" }
-					isChecked = Settings.resumeOpenFirstUnread
-					setOnCheckedListener { _, isChecked ->
-						Settings.resumeOpenFirstUnread = isChecked
-					}
+					checker { Settings::resumeOpenFirstUnread }
 				}
 		)
 	}
 
-	private fun toggleTapToScroll(): Boolean {
-		val b = Settings.isTapToScroll
-		Settings.isTapToScroll = !b
-		return !b
-	}
-
-	private fun toggleInvertedSwipe(): Boolean {
-		val b = Settings.isInvertedSwipe
-		Settings.isInvertedSwipe = !b
-		return !b
-	}
 }

@@ -5,10 +5,9 @@ import android.widget.ArrayAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.*
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.SPINNER
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
 
 /*
  * This file is part of Shosetsu.
@@ -34,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.S
 class ViewSettings : SettingsSubController() {
 	override val settings: List<SettingsItemData> by lazy {
 		listOf(
-				settingsItemData(0, SPINNER) {
+				spinnerSettingData(0) {
 					title { R.string.marking_mode }
 					onSpinnerItemSelected { adapterView, view, position, id ->
 						when (position) {
@@ -50,45 +49,27 @@ class ViewSettings : SettingsSubController() {
 							resources!!.getStringArray(R.array.marking_names)
 					)
 				},
-				SettingsItemData(SettingsType.NUMBER_PICKER, 1)
-						.setTitle(R.string.columns_of_novel_listing_p)
-						.setDescription((R.string.columns_zero_automatic))
-						.setNumberValue(Settings.columnsInNovelsViewP.let {
-							if (it == -1) 0 else it
-						})
-						.setNumberLowerBound(0)
-						.setNumberUpperBound(10)
-						.setNumberPickerOnValueChangedListener { _, _, newVal ->
-							when (newVal) {
-								0 -> Settings.columnsInNovelsViewP = -1
-								else -> Settings.columnsInNovelsViewP = newVal
-							}
-						},
-				SettingsItemData(SettingsType.NUMBER_PICKER, 2)
-						.setTitle(R.string.columns_of_novel_listing_h)
-						.setDescription(R.string.columns_zero_automatic)
-						.setNumberValue(Settings.columnsInNovelsViewH.let {
-							if (it == -1) 0 else it
-						})
-						.setNumberLowerBound(0)
-						.setNumberUpperBound(10)
-						.setNumberPickerOnValueChangedListener { _, _, newVal ->
-							when (newVal) {
-								0 -> Settings.columnsInNovelsViewH = -1
-								else -> Settings.columnsInNovelsViewH = newVal
-							}
-						},
-				settingsItemData(3, SPINNER) {
+				numberPickerSettingData(1) {
+					title { R.string.columns_of_novel_listing_p }
+					description { (R.string.columns_zero_automatic) }
+					numberValue { Settings::columnsInNovelsViewP }
+					range { 0 to 10 }
+				},
+				numberPickerSettingData(2) {
+					title { R.string.columns_of_novel_listing_h }
+					description { (R.string.columns_zero_automatic) }
+					numberValue { Settings::columnsInNovelsViewH }
+					range { 0 to 10 }
+				},
+				spinnerSettingData(3) {
 					title { R.string.novel_card_type_selector_title }
 					description { R.string.novel_card_type_selector_desc }
+					spinnerField { Settings::novelCardType }
 					arrayAdapter = ArrayAdapter(
 							context!!,
 							android.R.layout.simple_spinner_item,
 							resources!!.getStringArray(R.array.novel_card_types)
 					)
-					onSpinnerItemSelected { _, _, position, _ ->
-						Settings.novelCardType = position
-					}
 				}
 		)
 	}

@@ -45,6 +45,7 @@ class SpinnerSettingData(id: Int) : SettingsItemData(id) {
 	var arrayAdapter: ArrayAdapter<*>? = null
 	var spinnerSelection: Int = -1
 	override fun setupView(settingsItem: SettingsItem) {
+		super.setupView(settingsItem)
 		with(settingsItem) {
 			spinner.visibility = View.VISIBLE
 			//spinner.setOnClickListener { data.spinnerOnClick }

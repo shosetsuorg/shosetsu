@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
 
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.CheckableSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TogglableStateSettingData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 
 /*
@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * shosetsu
  * 25 / 06 / 2020
  */
-class SwitchSettingData(id: Int) : CheckableSettingData(id) {
+class SwitchSettingData(id: Int) : TogglableStateSettingData(id) {
 	override fun setupView(settingsItem: SettingsItem) {
 		super.setupView(settingsItem)
 		with(settingsItem) {

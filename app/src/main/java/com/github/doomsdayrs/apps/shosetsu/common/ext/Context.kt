@@ -100,6 +100,6 @@ fun Context.calculateColumnCount(columnWidthDp: Float): Int { // For example col
 	val displayMetrics = resources.displayMetrics
 	val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
 
-	return if (c == -1) (screenWidthDp / columnWidthDp + 0.5).toInt()
+	return if (c <= 0) (screenWidthDp / columnWidthDp + 0.5).toInt()
 	else (screenWidthDp / (screenWidthDp / c) + 0.5).toInt()
 }

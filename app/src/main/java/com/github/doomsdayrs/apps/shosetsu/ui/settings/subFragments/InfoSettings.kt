@@ -2,12 +2,15 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.content.Intent
 import android.net.Uri
-import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.description
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.infoSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.onClick
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.title
 
 /*
  * This file is part of Shosetsu.
@@ -31,31 +34,32 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * 9 / June / 2019
  */
 class InfoSettings : SettingsSubController() {
-	override val settings: List<SettingsItem.SettingsItemData> by lazy {
+	override val settings: List<SettingsItemData> by lazy {
 		listOf(
-				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 0)
-						.setTitle(R.string.version)
-						.setDescription(BuildConfig.VERSION_NAME),
-				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 1)
-						.setTitle(R.string.report_bug)
-						.setDescription(R.string.report_bug_link),
-				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 2)
-						.setTitle(R.string.author)
-						.setDescription(R.string.author_name),
-				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 3)
-						.setTitle(R.string.disclaimer),
-				SettingsItem.SettingsItemData(SettingsItem.SettingsItemData.SettingsType.INFORMATION, 4)
-						.setTitle(R.string.license)
+				infoSettingData(0) {
+					title { R.string.version }
+					description { BuildConfig.VERSION_NAME }
+				},
+				infoSettingData(1) {
+					title { (R.string.report_bug) }
+					description { R.string.report_bug_link }
+					onClick { onClickReportBug() }
+				},
+				infoSettingData(2) {
+					title { R.string.author }
+					description { R.string.author_name }
+					onClick { onClickAuthor() }
+				},
+				infoSettingData(3) {
+					title { R.string.disclaimer }
+					onClick { onClickDisclaimer() }
+
+				},
+				infoSettingData(4) {
+					title { R.string.license }
+					onClick { onClickLicense() }
+				}
 		)
-	}
-
-	override fun onViewCreated(view: View) {
-		settings[1].setOnClickListener { onClickReportBug() }
-		settings[2].setOnClickListener { onClickAuthor() }
-		settings[3].setOnClickListener { onClickDisclaimer() }
-		settings[4].setOnClickListener { onClickLicense() }
-
-		super.onViewCreated(view)
 	}
 
 	private fun onClickReportBug() = activity?.startActivity(Intent(
@@ -67,7 +71,6 @@ class InfoSettings : SettingsSubController() {
 			Intent.ACTION_VIEW,
 			Uri.parse(activity!!.getString(R.string.author_github))
 	))
-
 
 	private fun onClickDisclaimer() =
 			router.pushController(TextAssetReader(TextAssetReader.Target.DISCLAIMER.bundle).withFadeTransaction())

@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
@@ -14,9 +12,9 @@ import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.*
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
 import java.util.*
 
 /*
@@ -43,59 +41,42 @@ import java.util.*
 class DownloadSettings : SettingsSubController() {
 	override val settings: ArrayList<SettingsItemData> by lazy {
 		arrayListOf(
-				SettingsItemData(TEXT, 1)
-						.setTitle(R.string.download_directory)
-						.setTextViewText(Settings.downloadDirectory),
-				SettingsItemData(SPINNER, 2)
-						.setTitle(R.string.download_speed)
-						.setArrayAdapter(ArrayAdapter(
-								context!!,
-								android.R.layout.simple_spinner_item,
-								arrayListOf("String")
-						)),
-				SettingsItemData(SWITCH, 3)
-						.setTitle(R.string.download_chapter_updates)
-						.setIsChecked(Settings.downloadOnUpdate)
-						.setOnCheckedListener(OnCheckedChangeListener { _, p1 ->
-							Log.d("Download on update", p1.toString())
-							Settings.downloadOnUpdate = !Settings.downloadOnUpdate
-						}),
-				settingsItemData(2, SWITCH) {
+				textSettingData(1) {
+					title { R.string.download_directory }
+					text { Settings.downloadDirectory }
+					onClicked { performFileSearch() }
+				},
+				spinnerSettingData(2) {
+					title { R.string.download_speed }
+					arrayAdapter = (ArrayAdapter(
+							context!!,
+							android.R.layout.simple_spinner_item,
+							arrayListOf("String")
+					))
+				},
+				switchSettingData(3) {
+					title { R.string.download_chapter_updates }
+					checker { Settings::downloadOnUpdate }
+				},
+				switchSettingData(2) {
 					title { "Allow downloading on metered connection" }
-					isChecked = Settings.downloadOnMetered
-					setOnCheckedListener { _, isChecked ->
-						Settings.downloadOnMetered = isChecked
-					}
+					checker { Settings::downloadOnMetered }
 				},
-				settingsItemData(3, SWITCH) {
+				switchSettingData(3) {
 					title { "Download on low battery" }
-					isChecked = Settings.downloadOnLowBattery
-					setOnCheckedListener { _, isChecked ->
-						Settings.downloadOnLowBattery = isChecked
-					}
+					checker { Settings::downloadOnLowBattery }
 				},
-				settingsItemData(4, SWITCH) {
+				switchSettingData(4) {
 					title { "Download on low storage" }
-					isChecked = Settings.downloadOnLowStorage
-					setOnCheckedListener { _, isChecked ->
-						Settings.downloadOnLowStorage = isChecked
-					}
+					checker { Settings::downloadOnLowStorage }
 				},
-				settingsItemData(5, SWITCH) {
+				switchSettingData(5) {
 					title { "Download only when idle" }
 					requiredVersion { Build.VERSION_CODES.M }
-					isChecked = Settings.downloadOnlyIdle
-					setOnCheckedListener { _, isChecked ->
-						Settings.downloadOnlyIdle = isChecked
-					}
+					checker { Settings::downloadOnlyIdle }
 				}
 
 		)
-	}
-
-	override fun onViewCreated(view: View) {
-		settings[0].setTextOnClickListener { performFileSearch() }
-		super.onViewCreated(view)
 	}
 
 	private fun setDownloadDirectory(dir: String) {

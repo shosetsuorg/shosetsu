@@ -127,7 +127,7 @@ object Settings {
 
 	var columnsInNovelsViewH
 		set(value) = settings.edit { putInt(C_IN_NOVELS_H, value) }
-		get() = settings.getInt(C_IN_NOVELS_H, -1)
+		get() = settings.getInt(C_IN_NOVELS_H, 0)
 
 	var novelCardType
 		set(value) = settings.edit { putInt(NOVEL_CARD_TYPE, value) }

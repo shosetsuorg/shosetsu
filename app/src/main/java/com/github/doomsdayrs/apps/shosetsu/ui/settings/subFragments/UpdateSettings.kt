@@ -1,14 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.os.Build.VERSION_CODES
-import android.widget.CompoundButton.OnCheckedChangeListener
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.requiredVersion
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.settingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.title
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData.SettingsType.SWITCH
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.checker
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.requiredVersion
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.switchSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.title
 
 /*
  * This file is part of shosetsu.
@@ -36,49 +35,31 @@ class UpdateSettings : SettingsSubController() {
 		listOf(
 				// Update frequency
 				// Download on update
-				settingsItemData(0, SWITCH) {
+				switchSettingData(0) {
 					title { "Download on update" }
-					isChecked = Settings.downloadOnUpdate
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
-						Settings.downloadOnUpdate = isChecked
-					}
+					checker { Settings::downloadOnUpdate }
 				},
 				// Update only ongoing
-				settingsItemData(1, SWITCH) {
+				switchSettingData(1) {
 					title { "Only update ongoing" }
-					isChecked = Settings.onlyUpdateOngoing
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
-						Settings.onlyUpdateOngoing = isChecked
-					}
+					checker { Settings::onlyUpdateOngoing }
 				},
-				settingsItemData(2, SWITCH) {
+				switchSettingData(2) {
 					title { "Allow updating on metered connection" }
-					isChecked = Settings.updateOnMetered
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
-						Settings.updateOnMetered = isChecked
-					}
+					checker { Settings::updateOnMetered }
 				},
-				settingsItemData(3, SWITCH) {
+				switchSettingData(3) {
 					title { "Update on low battery" }
-					isChecked = Settings.updateOnLowBattery
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
-						Settings.updateOnLowBattery = isChecked
-					}
+					checker { Settings::updateOnLowBattery }
 				},
-				settingsItemData(4, SWITCH) {
+				switchSettingData(4) {
 					title { "Update on low storage" }
-					isChecked = Settings.updateOnLowStorage
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
-						Settings.updateOnLowStorage = isChecked
-					}
+					checker { Settings::updateOnLowStorage }
 				},
-				settingsItemData(5, SWITCH) {
+				switchSettingData(5) {
 					title { "Update only when idle" }
 					requiredVersion { VERSION_CODES.M }
-					isChecked = Settings.updateOnlyIdle
-					onCheckedListener = OnCheckedChangeListener { _, isChecked ->
-						Settings.updateOnlyIdle = isChecked
-					}
+					checker { Settings::updateOnlyIdle }
 				}
 		)
 	}

@@ -1,8 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 
-import android.view.View
+import android.widget.CompoundButton
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TogglableStateSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import kotlin.reflect.KMutableProperty0
 
 /*
  * This file is part of shosetsu.
@@ -25,13 +25,24 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * shosetsu
  * 25 / 06 / 2020
  */
-class CheckBoxSettingData(id: Int) : TogglableStateSettingData(id) {
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
-		with(settingsItem) {
-			checkBox.visibility = View.VISIBLE
-			checkBox.isChecked = isChecked
-			checkBox.setOnCheckedChangeListener(onCheckedListener)
-		}
+
+@SettingsItemDSL
+inline fun TogglableStateSettingData.checker(
+		crossinline action: TogglableStateSettingData.() -> KMutableProperty0<Boolean>
+) {
+	val property = action()
+	isChecked = property.get()
+	onChecked { _: CompoundButton?, isChecked: Boolean ->
+		property.set(isChecked)
+	}
+}
+
+@SettingsItemDSL
+inline fun TogglableStateSettingData.onChecked(crossinline action: TogglableStateSettingData.(
+		@ParameterName("buttonView") CompoundButton?,
+		@ParameterName("isChecked") Boolean
+) -> Unit) {
+	onCheckedListener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+		action(buttonView, isChecked)
 	}
 }

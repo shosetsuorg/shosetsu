@@ -5,8 +5,8 @@ import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
-import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
+import com.skydoves.colorpickerview.ColorPickerDialog.Builder as CPDB
 
 /*
  * This file is part of shosetsu.
@@ -33,12 +33,14 @@ class ColorPickerSettingData(id: Int) : SettingsItemData(id) {
 	var colorFunction: (color: Int) -> Unit = {}
 	var itemColor: Int = Color.WHITE
 	var colorPreferenceName = ""
+
 	override fun setupView(settingsItem: SettingsItem) {
+		super.setupView(settingsItem)
 		with(settingsItem) {
 			colorBox.visibility = View.VISIBLE
 			colorBox.setBackgroundColor(itemColor)
 			colorBox.setOnClickListener {
-				ColorPickerDialog.Builder(view.context)
+				CPDB(view.context)
 						.setTitle("ColorPicker Dialog")
 						.setPreferenceName(colorPreferenceName)
 						.setPositiveButton(

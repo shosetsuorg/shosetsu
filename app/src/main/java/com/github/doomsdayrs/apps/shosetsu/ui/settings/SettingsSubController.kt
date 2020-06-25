@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingItemsAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 
 /*

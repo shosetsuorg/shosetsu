@@ -12,9 +12,10 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SpinnerSettingData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
 
 
 /*
@@ -45,7 +46,7 @@ class AdvancedSettings : SettingsSubController() {
 					title { R.string.theme }
 					arrayAdapter = ArrayAdapter(
 							context!!,
-							android.R.layout.simple_spinner_item,
+							android.R.layout.simple_spinner_dropdown_item,
 							resources!!.getStringArray(R.array.application_themes)
 					)
 					onSpinnerItemSelected { adapterView, _, position, _ ->

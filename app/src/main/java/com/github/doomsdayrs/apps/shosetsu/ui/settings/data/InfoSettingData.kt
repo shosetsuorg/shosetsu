@@ -28,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 class InfoSettingData(id: Int) : SettingsItemData(id) {
 	var itemViewOnClick: (View) -> Unit = {}
 	override fun setupView(settingsItem: SettingsItem) {
+		super.setupView(settingsItem)
 		with(settingsItem) {
 			itemView.setOnClickListener(itemViewOnClick)
 		}

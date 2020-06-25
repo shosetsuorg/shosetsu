@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TogglableStateSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.ButtonSettingData
 
 /*
  * This file is part of shosetsu.
@@ -25,13 +24,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * shosetsu
  * 25 / 06 / 2020
  */
-class CheckBoxSettingData(id: Int) : TogglableStateSettingData(id) {
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
-		with(settingsItem) {
-			checkBox.visibility = View.VISIBLE
-			checkBox.isChecked = isChecked
-			checkBox.setOnCheckedChangeListener(onCheckedListener)
-		}
-	}
+@SettingsItemDSL
+inline fun ButtonSettingData.onButtonClicked(crossinline action: ButtonSettingData.(
+		@ParameterName("view") View
+) -> Unit) {
+	buttonOnClickListener = { action(it) }
 }

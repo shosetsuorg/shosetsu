@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 
-import android.widget.CompoundButton
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TextRequiringSettingData
 
 /*
  * This file is part of shosetsu.
@@ -23,8 +24,20 @@ import android.widget.CompoundButton
  * shosetsu
  * 25 / 06 / 2020
  */
-abstract class CheckableSettingData(id: Int) : SettingsItemData(id) {
-	var isChecked: Boolean = false
-	var onCheckedListener: CompoundButton.OnCheckedChangeListener =
-			CompoundButton.OnCheckedChangeListener { _, _ -> }
+
+@SettingsItemDSL
+inline fun TextRequiringSettingData.text(value: TextRequiringSettingData.() -> Any): Unit =
+		value().let {
+			when (it) {
+				is String -> textText = it
+				is Int -> textID = it
+				else -> throw IllegalArgumentException("Input must be either an int or string")
+			}
+		}
+
+@SettingsItemDSL
+inline fun TextRequiringSettingData.onClicked(crossinline action: TextRequiringSettingData.(
+		@ParameterName("view") View
+) -> Unit) {
+	textViewOnClickListener = { action(it) }
 }
