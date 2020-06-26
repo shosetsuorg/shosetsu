@@ -33,6 +33,16 @@ class UpdateSettings : SettingsSubController() {
 		seekBarSettingData(6) {
 			title { "Update frequency" }
 			range { 0F to 6F }
+			progressValue = when (Settings.updateCycle) {
+				1 -> 0F
+				2 -> 1F
+				4 -> 2F
+				6 -> 3F
+				12 -> 4F
+				24 -> 5F
+				168 -> 6F
+				else -> 0F
+			}
 			array.apply {
 				put(0, "1 Hour")
 				put(1, "2 Hours")
@@ -41,6 +51,19 @@ class UpdateSettings : SettingsSubController() {
 				put(4, "12 Hours")
 				put(5, "Daily")
 				put(6, "Weekly")
+			}
+			onProgressChanged { _, progress, _, fromUser ->
+				if (fromUser)
+					Settings.updateCycle = when (progress) {
+						0 -> 1
+						1 -> 2
+						2 -> 4
+						3 -> 6
+						4 -> 12
+						5 -> 24
+						6 -> 168
+						else -> 1
+					}
 			}
 			showSectionMark = true
 			showSectionText = true

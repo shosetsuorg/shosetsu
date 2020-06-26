@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SeekBarSettingData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
+import com.xw.repo.BubbleSeekBar
 
 /*
  * This file is part of shosetsu.
@@ -38,6 +39,7 @@ inline fun SettingsListBuilder.seekBarSettingData(
 		action: SeekBarSettingData.() -> Unit
 ): Unit = this.let { list.add(SeekBarSettingData(id).also(action)) }
 
+
 @SettingsItemDSL
 inline fun SeekBarSettingData.range(
 		crossinline value: SeekBarSettingData.() -> Pair<
@@ -45,6 +47,42 @@ inline fun SeekBarSettingData.range(
 				@ParameterName("upperBound") Float
 				>
 ) = value().let {
-	min = it.first
-	max = it.second
+	minValue = it.first
+	maxValue = it.second
+}
+
+@SettingsItemDSL
+inline fun SeekBarSettingData.onProgressChanged(
+		crossinline value: SeekBarSettingData.(
+				@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+				@ParameterName("progress") Int,
+				@ParameterName("progressFloat") Float,
+				@ParameterName("fromUser") Boolean
+		) -> Unit
+) {
+	ProgressChanged = { p1, p2, p3, p4 -> value(p1, p2, p3, p4) }
+}
+
+@SettingsItemDSL
+inline fun SeekBarSettingData.onProgressActionUp(
+		crossinline value: SeekBarSettingData.(
+				@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+				@ParameterName("progress") Int,
+				@ParameterName("progressFloat") Float
+		) -> Unit
+) {
+	OnProgressActionUp = { p1, p2, p3 -> value(p1, p2, p3) }
+}
+
+
+@SettingsItemDSL
+inline fun SeekBarSettingData.onProgressFinally(
+		crossinline value: SeekBarSettingData.(
+				@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+				@ParameterName("progress") Int,
+				@ParameterName("progressFloat") Float,
+				@ParameterName("fromUser") Boolean
+		) -> Unit
+) {
+	ProgressOnFinally = { p1, p2, p3, p4 -> value(p1, p2, p3, p4) }
 }

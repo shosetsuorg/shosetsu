@@ -29,9 +29,9 @@ import com.xw.repo.BubbleSeekBar.OnProgressChangedListener
  * 25 / 06 / 2020
  */
 class SeekBarSettingData(id: Int) : SettingsItemData(id) {
-	var min: Float = 0F
-	var max: Float = 10F
-	var progress: Float = 5F
+	var minValue: Float = 0F
+	var maxValue: Float = 10F
+	var progressValue: Float = 5F
 
 	var sectionC: Int = 2
 
@@ -84,9 +84,9 @@ class SeekBarSettingData(id: Int) : SettingsItemData(id) {
 			seekbar.visibility = View.VISIBLE
 
 			seekbar.configBuilder.apply {
-				min(min)
-				max(max)
-				progress(progress)
+				min(minValue)
+				max(maxValue)
+				progress(progressValue)
 				sectionCount(sectionC)
 				if (showSectionMark)
 					showSectionText()
