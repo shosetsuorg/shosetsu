@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.AdapterView
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SpinnerSettingData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
 import kotlin.reflect.KMutableProperty0
 
 /*
@@ -32,6 +33,13 @@ inline fun spinnerSettingData(
 		id: Int,
 		action: SpinnerSettingData.() -> Unit
 ): SettingsItemData = SpinnerSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun SettingsListBuilder.spinnerSettingData(
+		id: Int,
+		action: SpinnerSettingData.() -> Unit
+): Unit = this.let { list.add(SpinnerSettingData(id).also(action)) }
+
 
 @SettingsItemDSL
 inline fun SpinnerSettingData.onSpinnerItemSelected(crossinline value: (

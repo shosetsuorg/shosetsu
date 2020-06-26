@@ -7,7 +7,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
@@ -39,38 +40,32 @@ import java.util.*
  * 13 / 07 / 2019
  */
 class BackupSettings : SettingsSubController() {
-	override val settings by lazy {
-		arrayListOf(
-				checkBoxSettingData(0) {
-					title { R.string.backup_chapters_option }
-					description { R.string.backup_chapters_option_description }
-					checker { Settings::backupChapters }
-				},
-
-				checkBoxSettingData(1) {
-					title { R.string.backup_settings_option }
-					description { R.string.backup_settings_option_desc }
-					checker { Settings::backupSettings }
-				},
-
-				checkBoxSettingData(2) {
-					title { R.string.backup_quick_option }
-					description { R.string.backup_quick_option_desc }
-					checker { Settings::backupQuick }
-				},
-
-				buttonSettingData(3) {
-					title { R.string.backup_now }
-					text { R.string.restore_now }
-					onButtonClicked { it.post { BackupProcess().execute() } }
-				},
-
-				buttonSettingData(4) {
-					title { R.string.restore_now }
-					text { R.string.restore_now }
-					onButtonClicked { it.post { performFileSelection() } }
-				}
-		)
+	override val settings: ArrayList<SettingsItemData> by settingsList {
+		checkBoxSettingData(0) {
+			title { R.string.backup_chapters_option }
+			description { R.string.backup_chapters_option_description }
+			checker { Settings::backupChapters }
+		}
+		checkBoxSettingData(1) {
+			title { R.string.backup_settings_option }
+			description { R.string.backup_settings_option_desc }
+			checker { Settings::backupSettings }
+		}
+		checkBoxSettingData(2) {
+			title { R.string.backup_quick_option }
+			description { R.string.backup_quick_option_desc }
+			checker { Settings::backupQuick }
+		}
+		buttonSettingData(3) {
+			title { R.string.backup_now }
+			text { R.string.restore_now }
+			onButtonClicked { it.post { BackupProcess().execute() } }
+		}
+		buttonSettingData(4) {
+			title { R.string.restore_now }
+			text { R.string.restore_now }
+			onButtonClicked { it.post { performFileSelection() } }
+		}
 	}
 
 	private fun performFileSelection() {

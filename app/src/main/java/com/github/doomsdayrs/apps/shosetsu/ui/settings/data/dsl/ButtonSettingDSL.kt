@@ -2,6 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.ButtonSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
 
 /*
  * This file is part of shosetsu.
@@ -24,6 +26,19 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.ButtonSettingData
  * shosetsu
  * 25 / 06 / 2020
  */
+
+@SettingsItemDSL
+inline fun buttonSettingData(
+		id: Int,
+		action: ButtonSettingData.() -> Unit
+): SettingsItemData = ButtonSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun SettingsListBuilder.buttonSettingData(
+		id: Int,
+		action: ButtonSettingData.() -> Unit
+): Unit = this.let { list.add(ButtonSettingData(id).also(action)) }
+
 @SettingsItemDSL
 inline fun ButtonSettingData.onButtonClicked(crossinline action: ButtonSettingData.(
 		@ParameterName("view") View

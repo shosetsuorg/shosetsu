@@ -1,7 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
 
+import android.util.SparseArray
+import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.xw.repo.BubbleSeekBar
+import com.xw.repo.BubbleSeekBar.OnProgressChangedListener
 
 /*
  * This file is part of shosetsu.
@@ -25,9 +29,111 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * 25 / 06 / 2020
  */
 class SeekBarSettingData(id: Int) : SettingsItemData(id) {
-	override fun setupView(settingsItem: SettingsItem) {
-		with(settingsItem) {
+	var min: Float = 0F
+	var max: Float = 10F
+	var progress: Float = 5F
 
+	var sectionC: Int = 2
+
+	var showSectionText: Boolean = false
+
+	var showThumbText: Boolean = false
+
+	var showSectionMark: Boolean = false
+
+	var seekBySection: Boolean = false
+
+	var seekByStepSection: Boolean = false
+
+	var autoAdjustSectionMark: Boolean = false
+
+	var touchToSeek: Boolean = false
+
+	var hideBubble: Boolean = false
+
+	var sectionTextP = BubbleSeekBar.TextPosition.BELOW_SECTION_MARK
+
+	var array: SparseArray<String> = SparseArray()
+
+	var ProgressChanged: (
+			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+			@ParameterName("progress") Int,
+			@ParameterName("progressFloat") Float,
+			@ParameterName("fromUser") Boolean
+	) -> Unit =
+			{ _, _, _, _ -> }
+
+	var OnProgressActionUp: (
+			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+			@ParameterName("progress") Int,
+			@ParameterName("progressFloat") Float
+	) -> Unit =
+			{ _, _, _ -> }
+
+	var ProgressOnFinally: (
+			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+			@ParameterName("progress") Int,
+			@ParameterName("progressFloat") Float,
+			@ParameterName("fromUser") Boolean
+	) -> Unit =
+			{ _, _, _, _ -> }
+
+	override fun setupView(settingsItem: SettingsItem) {
+		super.setupView(settingsItem)
+		with(settingsItem) {
+			seekbar.visibility = View.VISIBLE
+
+			seekbar.configBuilder.apply {
+				min(min)
+				max(max)
+				progress(progress)
+				sectionCount(sectionC)
+				if (showSectionMark)
+					showSectionText()
+				if (showThumbText)
+					showThumbText()
+				if (showSectionText)
+					showSectionText()
+				if (seekBySection)
+					seekBySection()
+				if (autoAdjustSectionMark)
+					autoAdjustSectionMark()
+				if (seekByStepSection)
+					seekStepSection()
+				if (hideBubble)
+					hideBubble()
+				sectionTextPosition(sectionTextP)
+				if (touchToSeek)
+					touchToSeek()
+			}.build()
+			seekbar.setCustomSectionTextArray { _, _ -> array }
+			seekbar.onProgressChangedListener = object : OnProgressChangedListener {
+				override fun onProgressChanged(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean
+				) {
+					ProgressChanged(bubbleSeekBar, progress, progressFloat, fromUser)
+				}
+
+				override fun getProgressOnActionUp(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float
+				) {
+					OnProgressActionUp(bubbleSeekBar, progress, progressFloat)
+				}
+
+				override fun getProgressOnFinally(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean
+				) {
+					ProgressOnFinally(bubbleSeekBar, progress, progressFloat, fromUser)
+				}
+			}
 		}
 	}
 }

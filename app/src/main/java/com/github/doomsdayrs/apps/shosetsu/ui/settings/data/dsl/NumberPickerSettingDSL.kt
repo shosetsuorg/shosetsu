@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 import android.widget.NumberPicker
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.NumberPickerSettingData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
 import kotlin.reflect.KMutableProperty0
 
 /*
@@ -32,6 +33,13 @@ inline fun numberPickerSettingData(
 		id: Int,
 		action: NumberPickerSettingData.() -> Unit
 ): SettingsItemData = NumberPickerSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun SettingsListBuilder.numberPickerSettingData(
+		id: Int,
+		action: NumberPickerSettingData.() -> Unit
+): Unit = this.let { list.add(NumberPickerSettingData(id).also(action)) }
+
 
 @SettingsItemDSL
 inline fun NumberPickerSettingData.range(

@@ -1,7 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.CheckBoxSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SeekBarSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SwitchSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.TextSettingData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
 
 /*
  * This file is part of shosetsu.
@@ -29,11 +33,6 @@ annotation class SettingsItemDSL
 
 // - Builders
 
-@SettingsItemDSL
-inline fun buttonSettingData(
-		id: Int,
-		action: ButtonSettingData.() -> Unit
-): SettingsItemData = ButtonSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun checkBoxSettingData(
@@ -41,11 +40,6 @@ inline fun checkBoxSettingData(
 		action: CheckBoxSettingData.() -> Unit
 ): SettingsItemData = CheckBoxSettingData(id).also(action)
 
-@SettingsItemDSL
-inline fun seekBarSettingData(
-		id: Int,
-		action: SeekBarSettingData.() -> Unit
-): SettingsItemData = SeekBarSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun switchSettingData(
@@ -58,6 +52,7 @@ inline fun textSettingData(
 		id: Int,
 		action: TextSettingData.() -> Unit
 ): SettingsItemData = TextSettingData(id).also(action)
+
 // - Functions
 
 @SettingsItemDSL
@@ -84,3 +79,30 @@ inline fun SettingsItemData.description(value: SettingsItemData.() -> Any): Unit
 inline fun SettingsItemData.requiredVersion(value: SettingsItemData.() -> Int) {
 	minVersionCode = value()
 }
+
+
+// - Settings list dsl
+
+inline fun settingsList(crossinline listBuilder: SettingsListBuilder.() -> Unit): Lazy<ArrayList<SettingsItemData>> =
+		lazy {
+			SettingsListBuilder().also(listBuilder).list
+		}
+
+@SettingsItemDSL
+inline fun SettingsListBuilder.checkBoxSettingData(
+		id: Int,
+		action: CheckBoxSettingData.() -> Unit
+): Unit = this.let { list.add(CheckBoxSettingData(id).also(action)) }
+
+
+@SettingsItemDSL
+inline fun SettingsListBuilder.switchSettingData(
+		id: Int,
+		action: SwitchSettingData.() -> Unit
+): Unit = this.let { list.add(SwitchSettingData(id).also(action)) }
+
+@SettingsItemDSL
+inline fun SettingsListBuilder.textSettingData(
+		id: Int,
+		action: TextSettingData.() -> Unit
+): Unit = this.let { list.add(TextSettingData(id).also(action)) }

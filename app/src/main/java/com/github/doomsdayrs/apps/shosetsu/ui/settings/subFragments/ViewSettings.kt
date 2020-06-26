@@ -31,47 +31,45 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
  * 13 / 07 / 2019
  */
 class ViewSettings : SettingsSubController() {
-	override val settings: List<SettingsItemData> by lazy {
-		listOf(
-				spinnerSettingData(0) {
-					title { R.string.marking_mode }
-					onSpinnerItemSelected { adapterView, view, position, id ->
-						when (position) {
-							0 -> setReaderMarkingType(Settings.MarkingTypes.ONVIEW)
-							1 -> setReaderMarkingType(Settings.MarkingTypes.ONSCROLL)
-							else -> Log.e("MarkingMode", "UnknownType")
-						}
-					}
-					spinnerSelection = Settings.readerMarkingType.i
-					arrayAdapter = ArrayAdapter(
-							context!!,
-							android.R.layout.simple_spinner_item,
-							resources!!.getStringArray(R.array.marking_names)
-					)
-				},
-				numberPickerSettingData(1) {
-					title { R.string.columns_of_novel_listing_p }
-					description { (R.string.columns_zero_automatic) }
-					numberValue { Settings::columnsInNovelsViewP }
-					range { 0 to 10 }
-				},
-				numberPickerSettingData(2) {
-					title { R.string.columns_of_novel_listing_h }
-					description { (R.string.columns_zero_automatic) }
-					numberValue { Settings::columnsInNovelsViewH }
-					range { 0 to 10 }
-				},
-				spinnerSettingData(3) {
-					title { R.string.novel_card_type_selector_title }
-					description { R.string.novel_card_type_selector_desc }
-					spinnerField { Settings::novelCardType }
-					arrayAdapter = ArrayAdapter(
-							context!!,
-							android.R.layout.simple_spinner_item,
-							resources!!.getStringArray(R.array.novel_card_types)
-					)
+	override val settings: List<SettingsItemData> by settingsList {
+		spinnerSettingData(0) {
+			title { R.string.marking_mode }
+			onSpinnerItemSelected { _, _, position, _ ->
+				when (position) {
+					0 -> setReaderMarkingType(Settings.MarkingTypes.ONVIEW)
+					1 -> setReaderMarkingType(Settings.MarkingTypes.ONSCROLL)
+					else -> Log.e("MarkingMode", "UnknownType")
 				}
-		)
+			}
+			spinnerSelection = Settings.readerMarkingType.i
+			arrayAdapter = ArrayAdapter(
+					context!!,
+					android.R.layout.simple_spinner_item,
+					resources!!.getStringArray(R.array.marking_names)
+			)
+		}
+		numberPickerSettingData(1) {
+			title { R.string.columns_of_novel_listing_p }
+			description { (R.string.columns_zero_automatic) }
+			numberValue { Settings::columnsInNovelsViewP }
+			range { 0 to 10 }
+		}
+		numberPickerSettingData(2) {
+			title { R.string.columns_of_novel_listing_h }
+			description { (R.string.columns_zero_automatic) }
+			numberValue { Settings::columnsInNovelsViewH }
+			range { 0 to 10 }
+		}
+		spinnerSettingData(3) {
+			title { R.string.novel_card_type_selector_title }
+			description { R.string.novel_card_type_selector_desc }
+			spinnerField { Settings::novelCardType }
+			arrayAdapter = ArrayAdapter(
+					context!!,
+					android.R.layout.simple_spinner_item,
+					resources!!.getStringArray(R.array.novel_card_types)
+			)
+		}
 	}
 
 	fun setReaderMarkingType(markingType: Settings.MarkingTypes) {

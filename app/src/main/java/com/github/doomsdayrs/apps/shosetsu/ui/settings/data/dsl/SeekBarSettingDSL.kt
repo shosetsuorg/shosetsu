@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.InfoSettingData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SeekBarSettingData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
 
@@ -23,22 +23,28 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBui
 
 /**
  * shosetsu
- * 25 / 06 / 2020
+ * 26 / 06 / 2020
  */
 
 @SettingsItemDSL
-inline fun infoSettingData(
+inline fun seekBarSettingData(
 		id: Int,
-		action: InfoSettingData.() -> Unit
-): SettingsItemData = InfoSettingData(id).also(action)
+		action: SeekBarSettingData.() -> Unit
+): SettingsItemData = SeekBarSettingData(id).also(action)
 
 @SettingsItemDSL
-inline fun SettingsListBuilder.infoSettingData(
+inline fun SettingsListBuilder.seekBarSettingData(
 		id: Int,
-		action: InfoSettingData.() -> Unit
-): Unit = this.let { list.add(InfoSettingData(id).also(action)) }
+		action: SeekBarSettingData.() -> Unit
+): Unit = this.let { list.add(SeekBarSettingData(id).also(action)) }
 
 @SettingsItemDSL
-inline fun InfoSettingData.onClick(crossinline action: InfoSettingData.() -> Unit) {
-	itemViewOnClick = { action() }
+inline fun SeekBarSettingData.range(
+		crossinline value: SeekBarSettingData.() -> Pair<
+				@ParameterName("lowerBound") Float,
+				@ParameterName("upperBound") Float
+				>
+) = value().let {
+	min = it.first
+	max = it.second
 }

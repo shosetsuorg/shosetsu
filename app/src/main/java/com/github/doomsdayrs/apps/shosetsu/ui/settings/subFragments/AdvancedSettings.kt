@@ -40,45 +40,43 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
  * 13 / 07 / 2019
  */
 class AdvancedSettings : SettingsSubController() {
-	override val settings: ArrayList<SettingsItemData> by lazy {
-		arrayListOf(
-				spinnerSettingData(1) {
-					title { R.string.theme }
-					arrayAdapter = ArrayAdapter(
-							context!!,
-							android.R.layout.simple_spinner_dropdown_item,
-							resources!!.getStringArray(R.array.application_themes)
-					)
-					onSpinnerItemSelected { adapterView, _, position, _ ->
-						if (position in 0..1) {
-							val delegate = (activity as AppCompatActivity).delegate
-							when (position) {
-								0 -> delegate.localNightMode = MODE_NIGHT_NO
-								1 -> delegate.localNightMode = MODE_NIGHT_YES
-							}
-							val theme = delegate.localNightMode
-							adapterView?.setSelection(if (
-									theme == MODE_NIGHT_YES ||
-									theme == MODE_NIGHT_FOLLOW_SYSTEM ||
-									theme == MODE_NIGHT_AUTO_BATTERY
-							) 1 else 0)
-						}
+	override val settings: ArrayList<SettingsItemData> by settingsList {
+		spinnerSettingData(1) {
+			title { R.string.theme }
+			arrayAdapter = ArrayAdapter(
+					context!!,
+					android.R.layout.simple_spinner_dropdown_item,
+					resources!!.getStringArray(R.array.application_themes)
+			)
+			onSpinnerItemSelected { adapterView, _, position, _ ->
+				if (position in 0..1) {
+					val delegate = (activity as AppCompatActivity).delegate
+					when (position) {
+						0 -> delegate.localNightMode = MODE_NIGHT_NO
+						1 -> delegate.localNightMode = MODE_NIGHT_YES
 					}
-				},
-				buttonSettingData(2) {
-					title { R.string.remove_novel_cache }
-					onButtonClicked {
-						try {
-							// TODO purge
-						} catch (e: SQLException) {
-							context!!.toast("SQLITE Error")
-							Log.e("AdvancedSettings", "DatabaseError", e)
-						}
-					}
+					val theme = delegate.localNightMode
+					adapterView?.setSelection(if (
+							theme == MODE_NIGHT_YES ||
+							theme == MODE_NIGHT_FOLLOW_SYSTEM ||
+							theme == MODE_NIGHT_AUTO_BATTERY
+					) 1 else 0)
 				}
-
-		)
+			}
+		}
+		buttonSettingData(2) {
+			title { R.string.remove_novel_cache }
+			onButtonClicked {
+				try {
+					// TODO purge
+				} catch (e: SQLException) {
+					context!!.toast("SQLITE Error")
+					Log.e("AdvancedSettings", "DatabaseError", e)
+				}
+			}
+		}
 	}
+
 
 	@Throws(Resources.NotFoundException::class)
 	override fun onViewCreated(view: View) {

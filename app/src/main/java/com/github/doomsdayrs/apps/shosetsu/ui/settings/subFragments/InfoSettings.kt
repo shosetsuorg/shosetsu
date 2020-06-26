@@ -7,10 +7,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.description
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.infoSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.onClick
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.title
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
 
 /*
  * This file is part of Shosetsu.
@@ -34,33 +31,32 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.title
  * 9 / June / 2019
  */
 class InfoSettings : SettingsSubController() {
-	override val settings: List<SettingsItemData> by lazy {
-		listOf(
-				infoSettingData(0) {
-					title { R.string.version }
-					description { BuildConfig.VERSION_NAME }
-				},
-				infoSettingData(1) {
-					title { (R.string.report_bug) }
-					description { R.string.report_bug_link }
-					onClick { onClickReportBug() }
-				},
-				infoSettingData(2) {
-					title { R.string.author }
-					description { R.string.author_name }
-					onClick { onClickAuthor() }
-				},
-				infoSettingData(3) {
-					title { R.string.disclaimer }
-					onClick { onClickDisclaimer() }
+	override val settings: List<SettingsItemData> by settingsList {
+		infoSettingData(0) {
+			title { R.string.version }
+			description { BuildConfig.VERSION_NAME }
+		}
+		infoSettingData(1) {
+			title { (R.string.report_bug) }
+			description { R.string.report_bug_link }
+			onClick { onClickReportBug() }
+		}
+		infoSettingData(2) {
+			title { R.string.author }
+			description { R.string.author_name }
+			onClick { onClickAuthor() }
+		}
+		infoSettingData(3) {
+			title { R.string.disclaimer }
+			onClick { onClickDisclaimer() }
 
-				},
-				infoSettingData(4) {
-					title { R.string.license }
-					onClick { onClickLicense() }
-				}
-		)
+		}
+		infoSettingData(4) {
+			title { R.string.license }
+			onClick { onClickLicense() }
+		}
 	}
+
 
 	private fun onClickReportBug() = activity?.startActivity(Intent(
 			Intent.ACTION_VIEW,

@@ -39,45 +39,43 @@ import java.util.*
  * 13 / 07 / 2019
  */
 class DownloadSettings : SettingsSubController() {
-	override val settings: ArrayList<SettingsItemData> by lazy {
-		arrayListOf(
-				textSettingData(1) {
-					title { R.string.download_directory }
-					text { Settings.downloadDirectory }
-					onClicked { performFileSearch() }
-				},
-				spinnerSettingData(2) {
-					title { R.string.download_speed }
-					arrayAdapter = (ArrayAdapter(
-							context!!,
-							android.R.layout.simple_spinner_item,
-							arrayListOf("String")
-					))
-				},
-				switchSettingData(3) {
-					title { R.string.download_chapter_updates }
-					checker { Settings::downloadOnUpdate }
-				},
-				switchSettingData(2) {
-					title { "Allow downloading on metered connection" }
-					checker { Settings::downloadOnMetered }
-				},
-				switchSettingData(3) {
-					title { "Download on low battery" }
-					checker { Settings::downloadOnLowBattery }
-				},
-				switchSettingData(4) {
-					title { "Download on low storage" }
-					checker { Settings::downloadOnLowStorage }
-				},
-				switchSettingData(5) {
-					title { "Download only when idle" }
-					requiredVersion { Build.VERSION_CODES.M }
-					checker { Settings::downloadOnlyIdle }
-				}
-
-		)
+	override val settings: ArrayList<SettingsItemData> by settingsList {
+		textSettingData(1) {
+			title { R.string.download_directory }
+			text { Settings.downloadDirectory }
+			onClicked { performFileSearch() }
+		}
+		spinnerSettingData(2) {
+			title { R.string.download_speed }
+			arrayAdapter = (ArrayAdapter(
+					context!!,
+					android.R.layout.simple_spinner_item,
+					arrayListOf("String")
+			))
+		}
+		switchSettingData(3) {
+			title { R.string.download_chapter_updates }
+			checker { Settings::downloadOnUpdate }
+		}
+		switchSettingData(2) {
+			title { "Allow downloading on metered connection" }
+			checker { Settings::downloadOnMetered }
+		}
+		switchSettingData(3) {
+			title { "Download on low battery" }
+			checker { Settings::downloadOnLowBattery }
+		}
+		switchSettingData(4) {
+			title { "Download on low storage" }
+			checker { Settings::downloadOnLowStorage }
+		}
+		switchSettingData(5) {
+			title { "Download only when idle" }
+			requiredVersion { Build.VERSION_CODES.M }
+			checker { Settings::downloadOnlyIdle }
+		}
 	}
+
 
 	private fun setDownloadDirectory(dir: String) {
 		Settings.downloadDirectory = dir

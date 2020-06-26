@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
 
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.ColorPickerSettingData
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
 import kotlin.reflect.KMutableProperty0
 
 /*
@@ -30,6 +31,12 @@ inline fun colorPickerSettingData(
 		id: Int,
 		action: ColorPickerSettingData.() -> Unit
 ): SettingsItemData = ColorPickerSettingData(id).also(action)
+
+@SettingsItemDSL
+inline fun SettingsListBuilder.colorPickerSettingData(
+		id: Int,
+		action: ColorPickerSettingData.() -> Unit
+): Unit = this.let { list.add(ColorPickerSettingData(id).also(action)) }
 
 @SettingsItemDSL
 inline fun ColorPickerSettingData.onColorPicked(crossinline action: ColorPickerSettingData.(

@@ -4,10 +4,7 @@ import android.os.Build.VERSION_CODES
 import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.checker
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.requiredVersion
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.switchSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.title
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
 
 /*
  * This file is part of shosetsu.
@@ -31,37 +28,56 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.title
  * 20 / 06 / 2020
  */
 class UpdateSettings : SettingsSubController() {
-	override val settings: List<SettingsItemData> by lazy {
-		listOf(
-				// Update frequency
-				// Download on update
-				switchSettingData(0) {
-					title { "Download on update" }
-					checker { Settings::downloadOnUpdate }
-				},
-				// Update only ongoing
-				switchSettingData(1) {
-					title { "Only update ongoing" }
-					checker { Settings::onlyUpdateOngoing }
-				},
-				switchSettingData(2) {
-					title { "Allow updating on metered connection" }
-					checker { Settings::updateOnMetered }
-				},
-				switchSettingData(3) {
-					title { "Update on low battery" }
-					checker { Settings::updateOnLowBattery }
-				},
-				switchSettingData(4) {
-					title { "Update on low storage" }
-					checker { Settings::updateOnLowStorage }
-				},
-				switchSettingData(5) {
-					title { "Update only when idle" }
-					requiredVersion { VERSION_CODES.M }
-					checker { Settings::updateOnlyIdle }
-				}
-		)
-	}
+	override val settings: List<SettingsItemData> by settingsList {
+		// Update frequency
+		seekBarSettingData(6) {
+			title { "Update frequency" }
+			range { 0F to 6F }
+			array.apply {
+				put(0, "1 Hour")
+				put(1, "2 Hours")
+				put(2, "4 Hours")
+				put(3, "6 Hours")
+				put(4, "12 Hours")
+				put(5, "Daily")
+				put(6, "Weekly")
+			}
+			showSectionMark = true
+			showSectionText = true
 
+			seekBySection = true
+			seekByStepSection = true
+			autoAdjustSectionMark = true
+			touchToSeek = true
+			hideBubble = true
+			sectionC = 6
+		}
+		// Download on update
+		switchSettingData(0) {
+			title { "Download on update" }
+			checker { Settings::downloadOnUpdate }
+		}
+		// Update only ongoing
+		switchSettingData(1) {
+			title { "Only update ongoing" }
+			checker { Settings::onlyUpdateOngoing }
+		}
+		switchSettingData(2) {
+			title { "Allow updating on metered connection" }
+			checker { Settings::updateOnMetered }
+		}
+		switchSettingData(3) {
+			title { "Update on low battery" }
+			checker { Settings::updateOnLowBattery }
+		}
+		switchSettingData(4) {
+			title { "Update on low storage" }
+			checker { Settings::updateOnLowStorage }
+		}
+		switchSettingData(5) {
+			title { "Update only when idle" }
+			requiredVersion { VERSION_CODES.M }
+			checker { Settings::updateOnlyIdle }
+		}
+	}
 }
