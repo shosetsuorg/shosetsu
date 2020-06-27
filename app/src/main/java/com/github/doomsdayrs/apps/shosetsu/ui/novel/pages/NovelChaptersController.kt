@@ -2,16 +2,15 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.lifecycle.Observer
+import androidx.recyclerview.selection.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder
 import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
@@ -51,6 +50,23 @@ class NovelChaptersController(
 	private val viewModel: INovelChaptersViewModel by viewModel()
 	private var resume: FloatingActionButton? = null
 
+	/**
+	 *
+	 */
+	var trackerSize: Int = 0
+	val tracker: SelectionTracker<Long> by lazy<SelectionTracker<Long>> {
+		SelectionTracker.Builder<Long>(
+				"chapterSelection",
+				recyclerView!!,
+				StableIdKeyProvider(recyclerView!!),
+				ChapterDetailsLookup(),
+				StorageStrategy.createLongStorage()
+		).withSelectionPredicate(
+				SelectionPredicates.createSelectAnything()
+		).build()
+	}
+
+
 	init {
 		setHasOptionsMenu(true)
 	}
@@ -59,11 +75,25 @@ class NovelChaptersController(
 		viewModel.setNovelID(bundle.getNovelID())
 		resume = (parentController as NovelController).fab
 		adapter = ChaptersAdapter(this, viewModel)
+	}
+
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
+		val v = super.onCreateView(inflater, container, savedViewState)
 		setObserver()
+		return v
 	}
 
 	private fun setObserver() {
 		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
+		tracker.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
+			override fun onSelectionChanged() {
+				super.onSelectionChanged()
+				val size = tracker.selection.size()
+				if (size <= 0 || size == 1)
+					this@NovelChaptersController.activity?.invalidateOptionsMenu()
+				trackerSize = tracker.selection.size()
+			}
+		})
 	}
 
 	override fun updateUI(list: List<ChapterUI>) {
@@ -71,6 +101,7 @@ class NovelChaptersController(
 		Log.d(logID(), "Updating ui with list size of ${list.size}")
 		if (list.isNotEmpty()) resume?.show() else resume?.hide()
 	}
+
 
 	/**
 	 * Creates the option menu (on the top toolbar)
@@ -81,7 +112,7 @@ class NovelChaptersController(
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(
-				if (recyclerArray.none { viewModel.isChapterSelected(it) }) {
+				if (trackerSize <= 0) {
 					R.menu.toolbar_chapters
 				} else {
 					R.menu.toolbar_chapters_selected
@@ -171,6 +202,19 @@ class NovelChaptersController(
 				}
 			})
 		}
+	}
+
+	inner class ChapterDetailsLookup : ItemDetailsLookup<Long>() {
+		/**
+		 * Returns the details of an item
+		 */
+		override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
+			recyclerView?.findChildViewUnder(e.x, e.y)?.let {
+				(recyclerView?.getChildViewHolder(it) as ChaptersViewHolder).getItemDetails()
+			}
+			return null
+		}
+
 	}
 
 	// Option menu functions

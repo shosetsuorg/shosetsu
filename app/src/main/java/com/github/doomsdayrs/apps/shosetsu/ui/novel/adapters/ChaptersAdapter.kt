@@ -2,9 +2,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.selectedStrokeWidth
@@ -59,7 +61,9 @@ class ChaptersAdapter(
 	}
 
 	override fun onBindViewHolder(chaptersViewHolder: ChaptersViewHolder, i: Int) {
+		val selectionTracker = chaptersController.tracker!!
 		val chapterUI = chaptersController.recyclerArray[i]
+
 		chaptersViewHolder.title.text = chapterUI.title
 
 		if (chapterUI.bookmarked) {
@@ -69,14 +73,10 @@ class ChaptersAdapter(
 			))
 		}
 
-		val isSelected = viewModel.isChapterSelected(chapterUI)
+		val isSelected = selectionTracker.isSelected(chapterUI.id.toLong())
 		chaptersViewHolder.cardView.strokeWidth = if (isSelected) selectedStrokeWidth else 0
 		chaptersViewHolder.checkBox.isChecked = isSelected
 
-		chaptersViewHolder.checkBox.visibility =
-				if (chaptersController.recyclerArray.any { viewModel.isChapterSelected(it) })
-					View.VISIBLE
-				else View.GONE
 
 		if (chapterUI.isSaved) {
 			chaptersViewHolder.downloadTag.visibility = View.VISIBLE
@@ -140,11 +140,9 @@ class ChaptersAdapter(
 			}
 		}
 
-		if (chaptersController.recyclerArray.none { viewModel.isChapterSelected(it) })
-			chaptersViewHolder.itemView.setOnClickListener {
-				chaptersController.activity?.openChapter(chapterUI)
-			}
-		else chaptersViewHolder.itemView.setOnClickListener { viewModel.addToSelect(chapterUI) }
+		chaptersViewHolder.itemView.setOnClickListener {
+			chaptersController.activity?.openChapter(chapterUI)
+		}
 
 		chaptersViewHolder.popupMenu!!.setOnMenuItemClickListener { menuItem: MenuItem ->
 			when (menuItem.itemId) {
@@ -183,13 +181,7 @@ class ChaptersAdapter(
 				else -> return@setOnMenuItemClickListener false
 			}
 		}
-		chaptersViewHolder.itemView.setOnLongClickListener {
-			viewModel.addToSelect(chapterUI)
-			true
-		}
 		chaptersViewHolder.moreOptions.setOnClickListener { chaptersViewHolder.popupMenu?.show() }
-		chaptersViewHolder.checkBox.setOnClickListener { viewModel.addToSelect(chapterUI) }
-
 	}
 
 	override fun getItemCount(): Int = chaptersController.recyclerArray.size
@@ -201,16 +193,4 @@ class ChaptersAdapter(
 			chaptersController.recyclerArray[position].id.toLong()
 
 	override fun getItemViewType(position: Int): Int = position
-
-	class ChapterDetailsLookup(
-			private val recyclerView: RecyclerView
-	) : ItemDetailsLookup<Long>() {
-		override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
-			recyclerView.findChildViewUnder(e.x, e.y)?.let {
-				(recyclerView.getChildViewHolder(it) as ChaptersViewHolder).getItemDetails()
-			}
-			return null
-		}
-
-	}
 }

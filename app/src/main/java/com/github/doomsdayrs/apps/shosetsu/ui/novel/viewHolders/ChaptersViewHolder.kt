@@ -53,6 +53,9 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		}
 	}
 
+	/**
+	 * Gives item data
+	 */
 	fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
 			object : ItemDetailsLookup.ItemDetails<Long>() {
 				override fun getPosition(): Int = adapterPosition

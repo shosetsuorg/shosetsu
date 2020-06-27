@@ -48,7 +48,6 @@ class NovelChaptersViewModel(
 		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase
 ) : INovelChaptersViewModel() {
 	private var nID: Int = -1
-	private var selectedChapters = arrayListOf<Int>()
 
 	override fun setNovelID(novelID: Int) {
 		if (nID == -1)
@@ -90,13 +89,6 @@ class NovelChaptersViewModel(
 			}
 
 
-	override fun isChapterSelected(chapterUI: ChapterUI): Boolean {
-		return selectedChapters.contains(chapterUI.id)
-	}
-
-	override fun addToSelect(chapterUI: ChapterUI) {
-		if (!isChapterSelected(chapterUI)) selectedChapters.add(chapterUI.id)
-	}
 
 	override fun updateChapter(
 			chapterUI: ChapterUI,
