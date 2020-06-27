@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
 
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase

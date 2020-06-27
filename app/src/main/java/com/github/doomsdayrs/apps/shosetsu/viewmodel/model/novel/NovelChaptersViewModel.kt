@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -110,6 +110,10 @@ class NovelChaptersViewModel(
 							bookmarked = bookmarked
 					))
 		}
+	}
+
+	override fun delete(chapterUI: ChapterUI) {
+		TODO("Not yet implemented")
 	}
 
 	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {

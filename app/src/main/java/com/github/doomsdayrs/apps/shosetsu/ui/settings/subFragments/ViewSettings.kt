@@ -44,7 +44,7 @@ class ViewSettings : SettingsSubController() {
 			spinnerSelection = Settings.readerMarkingType.i
 			arrayAdapter = ArrayAdapter(
 					context!!,
-					android.R.layout.simple_spinner_item,
+					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.marking_names)
 			)
 		}
@@ -66,13 +66,13 @@ class ViewSettings : SettingsSubController() {
 			spinnerField { Settings::novelCardType }
 			arrayAdapter = ArrayAdapter(
 					context!!,
-					android.R.layout.simple_spinner_item,
+					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.novel_card_types)
 			)
 		}
 	}
 
-	fun setReaderMarkingType(markingType: Settings.MarkingTypes) {
+	private fun setReaderMarkingType(markingType: Settings.MarkingTypes) {
 		Settings.readerMarkingType = markingType
 	}
 }

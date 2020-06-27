@@ -1,7 +1,14 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.*
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.*
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension.ExtensionsConfigureViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension.ExtensionsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel.NovelChaptersViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel.NovelInfoViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel.NovelViewModel
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.provider

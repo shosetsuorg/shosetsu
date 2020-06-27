@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog
 
 import android.util.Log
 import androidx.lifecycle.LiveData

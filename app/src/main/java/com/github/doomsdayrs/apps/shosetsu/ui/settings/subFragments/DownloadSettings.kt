@@ -49,7 +49,7 @@ class DownloadSettings : SettingsSubController() {
 			title { R.string.download_speed }
 			arrayAdapter = (ArrayAdapter(
 					context!!,
-					android.R.layout.simple_spinner_item,
+					android.R.layout.simple_spinner_dropdown_item,
 					arrayListOf("String")
 			))
 		}

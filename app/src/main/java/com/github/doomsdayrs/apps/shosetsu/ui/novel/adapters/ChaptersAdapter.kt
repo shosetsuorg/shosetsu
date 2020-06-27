@@ -156,6 +156,8 @@ class ChaptersAdapter(
 				R.id.popup_chapter_menu_download -> {
 					if (!chapterUI.isSaved) {
 						viewModel.download(chapterUI)
+					} else {
+						viewModel.delete(chapterUI)
 					}
 					return@setOnMenuItemClickListener true
 				}

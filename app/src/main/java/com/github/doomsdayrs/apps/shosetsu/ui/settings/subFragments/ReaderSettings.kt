@@ -41,7 +41,7 @@ class ReaderSettings : SettingsSubController() {
 			title { R.string.paragraph_spacing }
 			arrayAdapter = ArrayAdapter(
 					context!!,
-					android.R.layout.simple_spinner_item,
+					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.sizes_with_none)
 			)
 			spinnerField { Settings::readerParagraphSpacing }
@@ -56,7 +56,7 @@ class ReaderSettings : SettingsSubController() {
 			}
 			arrayAdapter = ArrayAdapter(
 					context!!,
-					android.R.layout.simple_spinner_item,
+					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.sizes_no_none)
 			)
 			onSpinnerItemSelected { adapterView, _, i, _ ->
@@ -79,7 +79,7 @@ class ReaderSettings : SettingsSubController() {
 			spinnerField { Settings::readerIndentSize }
 			arrayAdapter = ArrayAdapter(
 					context!!,
-					android.R.layout.simple_spinner_item,
+					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.sizes_with_none)
 			)
 		}
@@ -88,7 +88,7 @@ class ReaderSettings : SettingsSubController() {
 			spinnerField { Settings::readerTheme }
 			arrayAdapter = ArrayAdapter(
 					context!!,
-					android.R.layout.simple_spinner_item,
+					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.reader_themes)
 			)
 		}

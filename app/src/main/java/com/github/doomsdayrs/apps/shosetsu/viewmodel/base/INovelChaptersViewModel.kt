@@ -60,4 +60,9 @@ abstract class INovelChaptersViewModel
 			readingStatus: ReadingStatus = chapterUI.readingStatus,
 			bookmarked: Boolean = chapterUI.bookmarked
 	)
+
+	/**
+	 * Deletes a chapter
+	 */
+	abstract fun delete(chapterUI: ChapterUI)
 }

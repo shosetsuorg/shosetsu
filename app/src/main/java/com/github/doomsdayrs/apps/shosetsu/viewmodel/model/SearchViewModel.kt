@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
 
 import androidx.lifecycle.*
 import app.shosetsu.lib.Formatter
