@@ -26,8 +26,13 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker
  */
 class StartDownloadWorkerUseCase(
 		private val context: Context
-) : (() -> Unit) {
-	override fun invoke() {
-		DownloadWorker.start(context)
+) {
+	/**
+	 * Starts the download worker
+	 * @param override if true then will override the current download loop
+	 */
+	operator fun invoke(override: Boolean = false) {
+		if (!DownloadWorker.isRunning(context) || override)
+			DownloadWorker.start(context)
 	}
 }

@@ -44,13 +44,13 @@ class FileChapterDataSource(val context: Context) : IFileChapterDataSource {
 	fun makePath(ce: ChapterEntity): String =
 			"$ap/download/${ce.formatterID}/${ce.novelID}/${ce.id}.txt"
 
-	override fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String): Unit =
+	override suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String): Unit =
 			File(makePath(chapterEntity)).also {
 				Log.d(logID(), "Saving chapter to ${it.absolutePath}")
 				it.createNewFile()
 			}.writeText(passage)
 
-	override fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String> =
+	override suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String> =
 			try {
 				successResult(File(makePath(chapterEntity)).readText())
 			} catch (e: FileNotFoundException) {
@@ -58,4 +58,8 @@ class FileChapterDataSource(val context: Context) : IFileChapterDataSource {
 			} catch (e: Exception) {
 				errorResult(ERROR_GENERAL, e.message ?: "UNKNOWN MESSAGE")
 			}
+
+	override suspend fun deleteChapter(chapterEntity: ChapterEntity) {
+		File(makePath(chapterEntity)).takeIf { it.exists() }?.delete()
+	}
 }

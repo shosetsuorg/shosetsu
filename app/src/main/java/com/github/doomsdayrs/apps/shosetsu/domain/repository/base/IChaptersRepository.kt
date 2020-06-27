@@ -93,4 +93,9 @@ interface IChaptersRepository {
 	 * Update [readerChapterEntity] in database
 	 */
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
+
+	/**
+	 * Delete the chapter passage from storage
+	 */
+	suspend fun deleteChapterPassage(chapterEntity: ChapterEntity)
 }

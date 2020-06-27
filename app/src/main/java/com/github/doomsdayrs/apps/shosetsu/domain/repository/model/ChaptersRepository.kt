@@ -99,7 +99,14 @@ class ChaptersRepository(
 			novelID: Int
 	): LiveData<HResult<List<ReaderChapterEntity>>> = dbSource.loadReaderChapters(novelID)
 
-	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity) =
+	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
 			dbSource.updateReaderChapter(readerChapterEntity)
+
+	override suspend fun deleteChapterPassage(chapterEntity: ChapterEntity) {
+		dbSource.updateChapter(chapterEntity.copy(
+				isSaved = false
+		))
+		fileSource.deleteChapter(chapterEntity)
+	}
 
 }

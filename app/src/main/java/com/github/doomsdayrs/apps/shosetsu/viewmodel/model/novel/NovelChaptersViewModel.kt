@@ -12,7 +12,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DownloadChapterUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DeleteChapterPassageUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DownloadChapterPassageUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetChapterUIsUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
@@ -43,7 +44,8 @@ import kotlinx.coroutines.Dispatchers
 class NovelChaptersViewModel(
 		private val getChapterUIsUseCase: GetChapterUIsUseCase,
 		private val updateChapterUseCase: UpdateChapterUseCase,
-		private val downloadChapterUseCase: DownloadChapterUseCase
+		private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,
+		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase
 ) : INovelChaptersViewModel() {
 	private var nID: Int = -1
 	private var selectedChapters = arrayListOf<Int>()
@@ -56,7 +58,7 @@ class NovelChaptersViewModel(
 	override fun download(chapterUI: ChapterUI) {
 		launchIO {
 			Log.i(logID(), "Downloading ${chapterUI.id}")
-			downloadChapterUseCase(chapterUI)
+			downloadChapterPassageUseCase(chapterUI)
 		}
 	}
 
@@ -113,7 +115,9 @@ class NovelChaptersViewModel(
 	}
 
 	override fun delete(chapterUI: ChapterUI) {
-		TODO("Not yet implemented")
+		launchIO {
+			deleteChapterPassageUseCase(chapterUI)
+		}
 	}
 
 	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {

@@ -73,7 +73,7 @@ class DownloadWorker(
 		 * @param context the application context.
 		 * @return true if the service is running, false otherwise.
 		 */
-		private fun isRunning(
+		fun isRunning(
 				context: Context,
 				workerManager: WorkManager = WorkManager.getInstance(context)
 		): Boolean = try {

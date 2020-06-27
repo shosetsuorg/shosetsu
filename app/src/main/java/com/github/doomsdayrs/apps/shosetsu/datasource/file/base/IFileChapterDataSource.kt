@@ -28,11 +28,13 @@ interface IFileChapterDataSource {
 	/**
 	 * Save the chapter passage to storage
 	 */
-	fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
+	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
 
 	/**
 	 * Gets chapter passage via it's ID
 	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
-	fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String>
+	suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String>
+
+	suspend fun deleteChapter(chapterEntity: ChapterEntity)
 }

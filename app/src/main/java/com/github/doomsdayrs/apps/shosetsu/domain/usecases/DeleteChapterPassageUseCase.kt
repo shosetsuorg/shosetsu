@@ -1,9 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 
 /*
@@ -25,26 +22,12 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 
 /**
  * shosetsu
- * 14 / 05 / 2020
- * Downloads a specific chapter
+ * 26 / 06 / 2020
  */
-class DownloadChapterUseCase(
-		private val novelRepo: INovelsRepository,
-		private val downloadsRepository: IDownloadsRepository
+class DeleteChapterPassageUseCase(
+		private val iChaptersRepository: IChaptersRepository
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
-		novelRepo.loadNovel(chapterUI.novelID).let {
-			if (it is HResult.Success) {
-				val novel = it.data
-				downloadsRepository.addDownload(DownloadEntity(
-						chapterUI.id,
-						chapterUI.novelID,
-						chapterUI.link,
-						chapterUI.title,
-						novel.title,
-						chapterUI.formatterID
-				))
-			}
-		}
+		iChaptersRepository.deleteChapterPassage(chapterUI.convertTo())
 	}
 }
