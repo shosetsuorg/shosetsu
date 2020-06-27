@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.card.MaterialCardView
@@ -51,4 +52,10 @@ class ChaptersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 			popupMenu!!.inflate(R.menu.popup_chapter_menu)
 		}
 	}
+
+	fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
+			object : ItemDetailsLookup.ItemDetails<Long>() {
+				override fun getPosition(): Int = adapterPosition
+				override fun getSelectionKey(): Long? = itemId
+			}
 }

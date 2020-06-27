@@ -2,11 +2,9 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.selectedStrokeWidth
@@ -49,6 +47,7 @@ class ChaptersAdapter(
 	init {
 		setHasStableIds(true)
 	}
+
 
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ChaptersViewHolder {
 		val view = LayoutInflater.from(viewGroup.context).inflate(
@@ -198,7 +197,20 @@ class ChaptersAdapter(
 	override fun getSectionName(position: Int) =
 			"C. ${chaptersController.recyclerArray[position].order}"
 
-	override fun getItemId(position: Int): Long = position.toLong()
+	override fun getItemId(position: Int): Long =
+			chaptersController.recyclerArray[position].id.toLong()
 
 	override fun getItemViewType(position: Int): Int = position
+
+	class ChapterDetailsLookup(
+			private val recyclerView: RecyclerView
+	) : ItemDetailsLookup<Long>() {
+		override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
+			recyclerView.findChildViewUnder(e.x, e.y)?.let {
+				(recyclerView.getChildViewHolder(it) as ChaptersViewHolder).getItemDetails()
+			}
+			return null
+		}
+
+	}
 }
