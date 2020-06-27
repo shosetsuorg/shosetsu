@@ -42,8 +42,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  * Displays the chapters the novel contains
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
-class NovelChaptersController(val bundle: Bundle)
-	: RecyclerController<ChaptersAdapter, ChapterUI>(bundle), FABView {
+class NovelChaptersController(
+		private val bundle: Bundle
+) : RecyclerController<ChaptersAdapter, ChapterUI>(bundle), FABView {
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
@@ -63,11 +64,6 @@ class NovelChaptersController(val bundle: Bundle)
 
 	private fun setObserver() {
 		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
-	}
-
-	override fun showLoading() {
-		super.showLoading()
-		Log.d(logID(), "[2]")
 	}
 
 	override fun updateUI(list: List<ChapterUI>) {
@@ -94,6 +90,7 @@ class NovelChaptersController(val bundle: Bundle)
 		)
 	}
 
+	@Suppress("KDocMissingDocumentation")
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.download -> {
 			//optionDownload()
@@ -174,7 +171,6 @@ class NovelChaptersController(val bundle: Bundle)
 				}
 			})
 		}
-
 	}
 
 	// Option menu functions

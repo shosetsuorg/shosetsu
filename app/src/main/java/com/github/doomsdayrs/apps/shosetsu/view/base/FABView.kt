@@ -45,6 +45,9 @@ interface FABView {
 		fab.show()
 	}
 
+	/**
+	 * Reset the fab to its original state
+	 */
 	@CallSuper
 	fun resetFAB(fab: FloatingActionButton) {
 		Log.d(logID(), "Resetting FAB listeners")
@@ -52,6 +55,9 @@ interface FABView {
 		manipulateFAB(fab)
 	}
 
+	/**
+	 * Change FAB for your use case
+	 */
 	fun manipulateFAB(fab: FloatingActionButton) {}
 
 	/**
