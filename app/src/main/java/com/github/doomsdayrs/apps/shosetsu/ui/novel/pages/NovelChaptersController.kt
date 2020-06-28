@@ -112,7 +112,7 @@ class NovelChaptersController(
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(
-				if (trackerSize <= 0) {
+				if (!tracker.hasSelection()) {
 					R.menu.toolbar_chapters
 				} else {
 					R.menu.toolbar_chapters_selected

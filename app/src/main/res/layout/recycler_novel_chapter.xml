@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recycler_novel_chapter_card"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recycler_novel_chapter_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:strokeColor="@color/selected_blue"
-    app:cardCornerRadius="10dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="8dp">
+    app:cardCornerRadius="0dp"
+    app:strokeColor="@color/selected_blue">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint"
