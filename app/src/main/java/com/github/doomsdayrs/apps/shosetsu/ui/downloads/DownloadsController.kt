@@ -49,14 +49,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.downloads)
-		createRecycler()
 		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
-	}
-
-	private fun createRecycler() {
-		recyclerView?.setHasFixedSize(false)
-		adapter = DownloadAdapter(this)
-		adapter?.setHasStableIds(true)
 	}
 
 	/**
@@ -95,4 +88,10 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
 	override fun difAreItemsTheSame(oldItem: DownloadUI, newItem: DownloadUI): Boolean =
 			oldItem.chapterID == newItem.chapterID
+
+	override fun setupRecyclerView() {
+		recyclerView?.setHasFixedSize(false)
+	}
+
+	override fun createRecyclerAdapter(): DownloadAdapter = DownloadAdapter(this)
 }

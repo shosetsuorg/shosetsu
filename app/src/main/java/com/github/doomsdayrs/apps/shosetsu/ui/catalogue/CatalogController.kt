@@ -73,6 +73,23 @@ class CatalogController(
 	/** If the user is currently viewing query data*/
 	var isQuery = false
 
+
+	override fun createLayoutManager(): RecyclerView.LayoutManager {
+		return 	if (Settings.novelCardType == 0)
+			GridLayoutManager(
+					context,
+					context!!.calculateColumnCount(200f),
+					RecyclerView.VERTICAL,
+					false
+			)
+		else
+			LinearLayoutManager(
+					context,
+					LinearLayoutManager.VERTICAL,
+					false
+			)
+	}
+
 	lateinit var formatter: Formatter
 
 	init {
@@ -83,9 +100,22 @@ class CatalogController(
 		viewModel.setFormatterID(bundle.getInt(BundleKeys.BUNDLE_FORMATTER))
 		swipeRefreshLayout?.setOnRefreshListener { viewModel.resetView(formatter) }
 		setupObservers()
-		setLibraryCards(recyclerArray)
 		setupRecyclerView()
 	}
+
+	override fun setupRecyclerView() {
+		super.setupRecyclerView()
+		recyclerView?.setHasFixedSize(false)
+		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
+	}
+
+	override fun createRecyclerAdapter(): CatalogueAdapter = CatalogueAdapter(
+			recyclerArray,
+			this,
+			if (Settings.novelCardType == 0)
+				R.layout.recycler_novel_card
+			else R.layout.recycler_novel_card_compressed
+	)
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
@@ -95,7 +125,6 @@ class CatalogController(
 		searchView.setOnCloseListener {
 			isQuery = false
 			isInSearch = false
-			setLibraryCards(recyclerArray)
 			true
 		}
 	}
@@ -184,32 +213,4 @@ class CatalogController(
 		})
 	}
 
-	fun setLibraryCards(recycleListingCards: ArrayList<IDTitleImageBookUI>) {
-		adapter = CatalogueAdapter(
-				recycleListingCards,
-				this,
-				if (Settings.novelCardType == 0)
-					R.layout.recycler_novel_card
-				else R.layout.recycler_novel_card_compressed
-		)
-	}
-
-	private fun setupRecyclerView() {
-		recyclerView?.setHasFixedSize(false)
-		recyclerView?.layoutManager =
-				if (Settings.novelCardType == 0)
-					GridLayoutManager(
-							context,
-							context!!.calculateColumnCount(200f),
-							RecyclerView.VERTICAL,
-							false
-					)
-				else
-					LinearLayoutManager(
-							context,
-							LinearLayoutManager.VERTICAL,
-							false
-					)
-		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
-	}
 }

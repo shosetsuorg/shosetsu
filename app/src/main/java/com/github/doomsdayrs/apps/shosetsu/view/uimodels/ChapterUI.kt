@@ -1,8 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChapterUIViewHolder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
 
 /*
  * This file is part of shosetsu.
@@ -40,7 +44,7 @@ data class ChapterUI(
 		var readingStatus: ReadingStatus,
 		var bookmarked: Boolean,
 		var isSaved: Boolean
-) : Convertible<ChapterEntity> {
+) : BaseRecyclerItem<ChapterUIViewHolder>(), Convertible<ChapterEntity> {
 	override fun convertTo(): ChapterEntity =
 			ChapterEntity(
 					id,
@@ -55,4 +59,12 @@ data class ChapterUI(
 					bookmarked,
 					isSaved
 			)
+
+	override val layoutRes: Int
+		get() = R.layout.recycler_novel_chapter
+
+	override val type: Int
+		get() = -1
+
+	override fun getViewHolder(v: View): ChapterUIViewHolder = ChapterUIViewHolder(v)
 }

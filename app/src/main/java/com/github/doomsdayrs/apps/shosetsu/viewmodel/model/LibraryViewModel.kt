@@ -38,7 +38,6 @@ import kotlinx.coroutines.Dispatchers
 class LibraryViewModel(
 		private val libraryAsCardsUseCase: LoadLibraryUseCase
 ) : ILibraryViewModel() {
-	override var selectedNovels: MutableLiveData<List<Int>> = MutableLiveData<List<Int>>()
 	override var visible: MutableLiveData<List<Int>>
 		get() = TODO("Not yet implemented")
 		set(value) {}
@@ -57,15 +56,12 @@ class LibraryViewModel(
 
 	override fun selectAll() {
 		launchAsync {
-			val v = liveData.value
-			val r = (selectedNovels.value ?: listOf()) as ArrayList
-			if (v is HResult.Success)
-				v.data.forEach { r.add(it.id) }
-			selectedNovels.postValue(r)
 		}
 	}
 
-	override fun deselectAll() = selectedNovels.postValue(listOf())
+	override fun deselectAll() {
+
+	}
 
 	override fun removeAllFromLibrary() {
 		TODO("Not yet implemented")

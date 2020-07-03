@@ -2,20 +2,23 @@ package com.github.doomsdayrs.apps.shosetsu.ui.novel.pages
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.lifecycle.Observer
-import androidx.recyclerview.selection.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChaptersViewHolder
 import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.select.getSelectExtension
 
 /*
  * This file is part of Shosetsu.
@@ -43,29 +46,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  */
 class NovelChaptersController(
 		private val bundle: Bundle
-) : RecyclerController<ChaptersAdapter, ChapterUI>(bundle), FABView {
+) : FastAdapterRecyclerController<ChapterUI>(bundle), FABView {
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
 	private val viewModel: INovelChaptersViewModel by viewModel()
 	private var resume: FloatingActionButton? = null
 
-	/**
-	 *
-	 */
-	var trackerSize: Int = 0
-	val tracker: SelectionTracker<Long> by lazy<SelectionTracker<Long>> {
-		SelectionTracker.Builder<Long>(
-				"chapterSelection",
-				recyclerView!!,
-				StableIdKeyProvider(recyclerView!!),
-				ChapterDetailsLookup(),
-				StorageStrategy.createLongStorage()
-		).withSelectionPredicate(
-				SelectionPredicates.createSelectAnything()
-		).build()
-	}
 
+	override val fastAdapter: FastAdapter<ChapterUI> by lazy {
+		val adapter = ChaptersAdapter(viewModel)
+		adapter.addAdapter(0, itemAdapter)
+		adapter
+	}
 
 	init {
 		setHasOptionsMenu(true)
@@ -74,32 +67,69 @@ class NovelChaptersController(
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(bundle.getNovelID())
 		resume = (parentController as NovelController).fab
-		adapter = ChaptersAdapter(this, viewModel)
 	}
 
-	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
-		val v = super.onCreateView(inflater, container, savedViewState)
+	override fun setupRecyclerView() {
+		recyclerView?.setHasFixedSize(false)
+		super.setupRecyclerView()
+		fastAdapter.getSelectExtension().apply {
+			isSelectable = true
+			multiSelect = true
+			selectOnLongClick = true
+		}
+		fastAdapter.onClickListener = { view, adapter, item, position ->
+			activity?.openChapter(item)
+			false
+		}
 		setObserver()
-		return v
 	}
 
 	private fun setObserver() {
 		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
-		tracker.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
-			override fun onSelectionChanged() {
-				super.onSelectionChanged()
-				val size = tracker.selection.size()
-				if (size <= 0 || size == 1)
-					this@NovelChaptersController.activity?.invalidateOptionsMenu()
-				trackerSize = tracker.selection.size()
-			}
-		})
 	}
 
-	override fun updateUI(list: List<ChapterUI>) {
-		super.updateUI(list)
+	override fun updateFastAdapterUI(list: List<ChapterUI>) {
 		Log.d(logID(), "Updating ui with list size of ${list.size}")
 		if (list.isNotEmpty()) resume?.show() else resume?.hide()
+		super.updateFastAdapterUI(list)
+	}
+
+	override fun difAreItemsTheSame(oldItem: ChapterUI, newItem: ChapterUI): Boolean =
+			oldItem.id == newItem.id
+
+	override fun hideFAB(fab: FloatingActionButton) {
+		if (recyclerArray.isNotEmpty()) super.hideFAB(fab)
+	}
+
+	override fun showFAB(fab: FloatingActionButton) {
+		if (recyclerArray.isNotEmpty()) super.showFAB(fab)
+	}
+
+	override fun setFABIcon(fab: FloatingActionButton) {
+		fab.setImageResource(R.drawable.ic_play_arrow_24dp)
+	}
+
+	override fun manipulateFAB(fab: FloatingActionButton) {
+		fab.setOnClickListener {
+			viewModel.openLastRead(recyclerArray).observe(this, Observer { result ->
+				when (result) {
+					is HResult.Error -> {
+						Log.e(logID(), "Loading last read hit an error")
+					}
+					is HResult.Empty -> {
+						context?.toast("You already read all the chapters")
+					}
+					is HResult.Success -> {
+						val chapterIndex = result.data
+						Log.d(logID(), "Got a value of $chapterIndex")
+						if (chapterIndex != -1) {
+							recyclerView?.scrollToPosition(chapterIndex)
+							activity?.openChapter(recyclerArray[chapterIndex])
+						}
+					}
+				}
+			})
+		}
 	}
 
 
@@ -112,7 +142,7 @@ class NovelChaptersController(
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(
-				if (!tracker.hasSelection()) {
+				if (fastAdapter.getSelectExtension().selectedItems.isEmpty()) {
 					R.menu.toolbar_chapters
 				} else {
 					R.menu.toolbar_chapters_selected
@@ -164,57 +194,6 @@ class NovelChaptersController(
 			true
 		}
 		else -> false
-	}
-
-	override fun difAreItemsTheSame(oldItem: ChapterUI, newItem: ChapterUI): Boolean =
-			oldItem.id == newItem.id
-
-	override fun hideFAB(fab: FloatingActionButton) {
-		if (recyclerArray.isNotEmpty()) super.hideFAB(fab)
-	}
-
-	override fun showFAB(fab: FloatingActionButton) {
-		if (recyclerArray.isNotEmpty()) super.showFAB(fab)
-	}
-
-	override fun setFABIcon(fab: FloatingActionButton) {
-		fab.setImageResource(R.drawable.ic_play_arrow_24dp)
-	}
-
-	override fun manipulateFAB(fab: FloatingActionButton) {
-		fab.setOnClickListener {
-			viewModel.openLastRead(recyclerArray).observe(this, Observer { result ->
-				when (result) {
-					is HResult.Error -> {
-						Log.e(logID(), "Loading last read hit an error")
-					}
-					is HResult.Empty -> {
-						context?.toast("You already read all the chapters")
-					}
-					is HResult.Success -> {
-						val chapterIndex = result.data
-						Log.d(logID(), "Got a value of $chapterIndex")
-						if (chapterIndex != -1) {
-							recyclerView?.scrollToPosition(chapterIndex)
-							activity?.openChapter(recyclerArray[chapterIndex])
-						}
-					}
-				}
-			})
-		}
-	}
-
-	inner class ChapterDetailsLookup : ItemDetailsLookup<Long>() {
-		/**
-		 * Returns the details of an item
-		 */
-		override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
-			recyclerView?.findChildViewUnder(e.x, e.y)?.let {
-				(recyclerView?.getChildViewHolder(it) as ChaptersViewHolder).getItemDetails()
-			}
-			return null
-		}
-
 	}
 
 	// Option menu functions

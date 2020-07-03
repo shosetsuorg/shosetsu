@@ -35,6 +35,10 @@ import com.github.doomsdayrs.apps.shosetsu.ui.downloads.viewHolders.DownloadItem
 class DownloadAdapter(private val downloadsController: DownloadsController)
 	: RecyclerView.Adapter<DownloadItemView>() {
 
+	init {
+		setHasStableIds(true)
+	}
+
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): DownloadItemView {
 		val view = LayoutInflater.from(viewGroup.context).inflate(
 				R.layout.recycler_download_card,

@@ -36,8 +36,6 @@ abstract class SettingsSubController : RecyclerController<SettingItemsAdapter, S
 	abstract val settings: List<SettingsItemData>
 
 	override fun onViewCreated(view: View) {
-		adapter = SettingItemsAdapter(settings)
-		recyclerView?.addItemDecoration(Divider(recyclerView!!.context, VERTICAL))
 	}
 
 	override fun difAreItemsTheSame(oldItem: SettingsItemData, newItem: SettingsItemData): Boolean =
@@ -50,4 +48,11 @@ abstract class SettingsSubController : RecyclerController<SettingItemsAdapter, S
 				return index
 		return -1
 	}
+
+	override fun setupRecyclerView() {
+		super.setupRecyclerView()
+		recyclerView?.addItemDecoration(Divider(recyclerView!!.context, VERTICAL))
+	}
+
+	override fun createRecyclerAdapter(): SettingItemsAdapter = SettingItemsAdapter(settings)
 }

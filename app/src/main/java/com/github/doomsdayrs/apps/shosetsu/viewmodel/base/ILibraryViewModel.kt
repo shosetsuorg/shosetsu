@@ -30,8 +30,6 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * @author github.com/doomsdayrs
  */
 abstract class ILibraryViewModel : SubscribeHandleViewModel<List<BookmarkedNovelUI>>, ViewModel() {
-	/** List of selected novels */
-	abstract var selectedNovels: MutableLiveData<List<Int>>
 
 	/** Novels that are currently visible, Good for search */
 	abstract var visible: MutableLiveData<List<Int>>

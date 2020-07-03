@@ -30,13 +30,14 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
  */
 class LibrarySearchQuery(private val libraryController: LibraryController)
 	: SearchView.OnQueryTextListener {
-	override fun onQueryTextSubmit(query: String): Boolean = true
+	override fun onQueryTextSubmit(query: String): Boolean {
+		libraryController.itemAdapter.filter(query)
+		return true
+	}
 
 	override fun onQueryTextChange(newText: String): Boolean {
 		Log.d(logID(), "Query:\t[$newText]")
-		val novelUIs = libraryController.viewModel.search(newText)
-		libraryController.adapter?.novels = (novelUIs.map { it })
-		libraryController
-		return novelUIs.isNotEmpty()
+		libraryController.itemAdapter.filter(newText)
+		return true
 	}
 }

@@ -49,7 +49,6 @@ class CatalogueSearchQuery(private val catalogFragment: CatalogController)
 				}
 			}
 		}
-		catalogFragment.setLibraryCards(recycleCards)
 		return recycleCards.size != 0
 	}
 

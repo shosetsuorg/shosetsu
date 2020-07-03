@@ -50,7 +50,6 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.extensions)
-		adapter = ExtensionsAdapter(this)
 		extensionViewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 	}
 
@@ -70,4 +69,9 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 
 	override fun difAreItemsTheSame(oldItem: ExtensionUI, newItem: ExtensionUI): Boolean =
 			oldItem.id == newItem.id
+
+	override fun setupRecyclerView() {
+	}
+
+	override fun createRecyclerAdapter(): ExtensionsAdapter = ExtensionsAdapter(this)
 }

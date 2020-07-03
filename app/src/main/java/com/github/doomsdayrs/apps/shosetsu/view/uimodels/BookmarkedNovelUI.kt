@@ -1,7 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.Settings
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BookmarkedNovelEntity
+import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibraryItemViewHolder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
 
 /*
  * This file is part of shosetsu.
@@ -36,7 +41,15 @@ data class BookmarkedNovelUI(
 		val title: String,
 		val imageURL: String,
 		val unread: Int
-) : Convertible<BookmarkedNovelEntity> {
+) : BaseRecyclerItem<LibraryItemViewHolder>(), Convertible<BookmarkedNovelEntity> {
 	override fun convertTo(): BookmarkedNovelEntity =
 			BookmarkedNovelEntity(id, title, imageURL, unread)
+
+	override val layoutRes: Int = if (Settings.novelCardType == 0)
+		R.layout.recycler_novel_card
+	else R.layout.recycler_novel_card_compressed
+
+	override val type: Int = Settings.novelCardType
+
+	override fun getViewHolder(v: View): LibraryItemViewHolder = LibraryItemViewHolder(v)
 }

@@ -72,7 +72,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	/**
 	 * Recycler array
 	 */
-	var recyclerArray: ArrayList<V> = arrayListOf()
+	open var recyclerArray: ArrayList<V> = arrayListOf()
 
 	override fun onCreateView(
 			inflater: LayoutInflater,
@@ -81,14 +81,13 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	): View {
 		val view = createViewInstance(inflater, container)
 		recyclerView = view.findViewById(resourceID)!!
-		recyclerView!!.layoutManager = LinearLayoutManager(context)
 		onViewCreated(view)
-		recyclerView?.adapter = adapter
+		setupRecyclerView()
 		return view
 	}
 
 	/** @param result [HResult], if [HResult.Success] then updates UI */
-	fun handleRecyclerUpdate(result: HResult<List<V>>) {
+	open fun handleRecyclerUpdate(result: HResult<List<V>>) {
 		when (result) {
 			is HResult.Loading -> showLoading()
 			is HResult.Success -> updateUI(result.data)
@@ -98,10 +97,31 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 
 	abstract override fun onViewCreated(view: View)
 
+	/**
+	 * Allows manipulation of the recyclerview
+	 */
 	@CallSuper
+	open fun setupRecyclerView() {
+		Log.d(logID(), "Setup of recyclerView")
+		recyclerView!!.layoutManager = createLayoutManager()
+		recyclerView?.adapter = createRecyclerAdapter()
+	}
+
+	/**
+	 * What is the layout manager
+	 */
+	open fun createLayoutManager(): RecyclerView.LayoutManager = LinearLayoutManager(context)
+
+
+	/**
+	 * Creates the adapter for the recycler view to use
+	 */
+	abstract fun createRecyclerAdapter(): T
+
 	/**
 	 * The data for this view is loading
 	 */
+	@CallSuper
 	open fun showLoading() {
 		Log.i(logID(), "Loading UWU")
 	}
@@ -112,7 +132,6 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	@CallSuper
 	open fun updateUI(list: List<V>) {
 		val diffToolCallBack = RecyclerDiffToolCallBack(list, recyclerArray)
-		diffToolCallBack.old = list
 		val callback = DiffUtil.calculateDiff(diffToolCallBack)
 		adapter?.let { callback.dispatchUpdatesTo(it) }
 		recyclerArray.clear()

@@ -43,15 +43,7 @@ class UpdateController(bundle: Bundle)
 
 	val novelIDs = ArrayList<Int>()
 
-	override fun onViewCreated(view: View) {
-		adapter = UpdatedNovelsAdapter(this, activity!!)
-		recyclerView?.post { adapter?.notifyDataSetChanged() }
-				?: Log.e(logID(), "Recyclerview is null")
-		updatesViewModel.getTimeBetweenDates(
-				date,
-				date + 86399999
-		).observe(this@UpdateController, Observer { handleRecyclerUpdate(it) })
-	}
+	override fun onViewCreated(view: View) {}
 
 	override fun updateUI(list: List<UpdateUI>) {
 		super.updateUI(list)
@@ -63,4 +55,16 @@ class UpdateController(bundle: Bundle)
 
 	override fun difAreItemsTheSame(oldItem: UpdateUI, newItem: UpdateUI): Boolean =
 			oldItem.chapterID == newItem.chapterID
+
+	override fun setupRecyclerView() {
+		recyclerView?.post { adapter?.notifyDataSetChanged() }
+				?: Log.e(logID(), "Recyclerview is null")
+		updatesViewModel.getTimeBetweenDates(
+				date,
+				date + 86399999
+		).observe(this@UpdateController, Observer { handleRecyclerUpdate(it) })
+	}
+
+	override fun createRecyclerAdapter(): UpdatedNovelsAdapter =
+			UpdatedNovelsAdapter(this, activity!!)
 }

@@ -57,10 +57,15 @@ class SettingsController : RecyclerController<SettingsAdapter, SettingsCard>() {
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.settings)
-		recyclerView?.setHasFixedSize(true)
-		adapter = SettingsAdapter(recyclerArray, router)
 	}
 
 	override fun difAreItemsTheSame(oldItem: SettingsCard, newItem: SettingsCard): Boolean =
 			oldItem.id == newItem.id
+
+	override fun setupRecyclerView() {
+		recyclerView?.setHasFixedSize(true)
+	}
+
+	override fun createRecyclerAdapter(): SettingsAdapter =
+			SettingsAdapter(recyclerArray, router)
 }

@@ -68,11 +68,16 @@ class CatalogsController : RecyclerController<CataloguesAdapter, IDTitleImageUI>
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.catalogues)
-		recyclerView?.setHasFixedSize(true)
-		adapter = CataloguesAdapter(recyclerArray, router)
 		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
 	}
 
 	override fun difAreItemsTheSame(oldItem: IDTitleImageUI, newItem: IDTitleImageUI): Boolean =
 			oldItem.id == newItem.id
+
+	override fun setupRecyclerView() {
+		super.setupRecyclerView()
+		recyclerView?.setHasFixedSize(true)
+	}
+
+	override fun createRecyclerAdapter(): CataloguesAdapter = CataloguesAdapter(recyclerArray, router)
 }
