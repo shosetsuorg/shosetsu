@@ -26,8 +26,8 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.navigation.NavigationView
-import com.mikepenz.fastadapter.ISelectionListener
 import com.mikepenz.fastadapter.select.getSelectExtension
+import com.mikepenz.fastadapter.select.selectExtension
 
 /*
  * This file is part of Shosetsu.
@@ -87,25 +87,49 @@ class LibraryController
 	override fun setupRecyclerView() {
 		recyclerView?.setHasFixedSize(false)
 		super.setupRecyclerView()
+		setObservers()
+	}
+
+	override fun setupFastAdapter() {
+		fastAdapter.selectExtension {
+			isSelectable = true
+			multiSelect = true
+			selectOnLongClick = true
+			setSelectionListener { item, _ ->
+				// Recreates the item view
+				fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
+
+				// Swaps the options menu on top
+				val size = selectedItems.size
+				if (size == 0 || size == 1) activity?.invalidateOptionsMenu()
+			}
+		}
+		itemAdapter.itemFilter.filterPredicate = { item, constraint ->
+			item.title.contains(constraint.toString(), ignoreCase = true)
+		}
+		fastAdapter.onPreClickListener = FastAdapterClick@{ view, adapter, item, position ->
+			// Handles one click select when in selection mode
+			fastAdapter.selectExtension {
+				if (selectedItems.isNotEmpty()) {
+					if (!item.isSelected)
+						select(
+								item = item,
+								considerSelectableFlag = true
+						)
+					else
+						deselect(position)
+					return@FastAdapterClick true
+				}
+			}
+			false
+		}
+
 		fastAdapter.onClickListener = { view, adapter, item, type ->
 			router.pushController(NovelController(
 					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
 			).withFadeTransaction())
 			true
 		}
-		fastAdapter.getSelectExtension().apply {
-			isSelectable = true
-			multiSelect = true
-			selectOnLongClick = true
-			selectionListener = object : ISelectionListener<BookmarkedNovelUI> {
-				override fun onSelectionChanged(item: BookmarkedNovelUI, selected: Boolean) {
-				}
-			}
-		}
-		itemAdapter.itemFilter.filterPredicate = { item, constraint ->
-			item.title.contains(constraint.toString(), ignoreCase = true)
-		}
-		setObservers()
 	}
 
 	private fun setObservers() {
@@ -130,7 +154,7 @@ class LibraryController
 
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		if (true) {
+		if (fastAdapter.getSelectExtension().selectedItems.isEmpty()) {
 			Log.d(logID(), "Creating default menu")
 			inflater.inflate(R.menu.toolbar_library, menu)
 			val searchView =
@@ -156,16 +180,11 @@ class LibraryController
 				return true
 			}
 			R.id.chapter_select_all -> {
-				launchAsync { viewModel.selectAll() }
+				fastAdapter.getSelectExtension().select()
 				return true
 			}
 			R.id.chapter_deselect_all -> {
-				launchAsync {
-					viewModel.deselectAll()
-					launchUI {
-						activity?.invalidateOptionsMenu()
-					}
-				}
+				fastAdapter.getSelectExtension().deselect()
 				return true
 			}
 			R.id.remove_from_library -> {

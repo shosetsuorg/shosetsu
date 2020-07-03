@@ -49,6 +49,16 @@ abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
 		get() = ArrayList(itemAdapter.itemList.items)
 		set(value) {}
 
+	override fun setupRecyclerView() {
+		super.setupRecyclerView()
+		setupFastAdapter()
+	}
+
+	/**
+	 * Allows child classes to manipulate the fast adapter
+	 */
+	open fun setupFastAdapter() {}
+
 	override fun handleRecyclerUpdate(result: HResult<List<ITEM>>) {
 		when (result) {
 			is HResult.Loading -> showLoading()

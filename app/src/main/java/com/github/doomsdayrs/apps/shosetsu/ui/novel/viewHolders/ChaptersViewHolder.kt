@@ -99,8 +99,7 @@ class ChapterUIViewHolder(itemView: View) : FastAdapter.ViewHolder<ChapterUI>(it
 			))
 		}
 
-		val isSelected = false
-		cardView.strokeWidth = if (isSelected) selectedStrokeWidth else 0
+		cardView.strokeWidth = if (chapterUI.isSelected) selectedStrokeWidth else 0
 
 
 		if (chapterUI.isSaved) {

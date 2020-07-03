@@ -23,7 +23,6 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadLibraryUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
@@ -41,27 +40,6 @@ class LibraryViewModel(
 	override var visible: MutableLiveData<List<Int>>
 		get() = TODO("Not yet implemented")
 		set(value) {}
-
-	override fun handleSelect(id: Int) {
-		TODO("Not yet implemented")
-	}
-
-	override fun select(id: Int) {
-		TODO("Not yet implemented")
-	}
-
-	override fun deselect(id: Int) {
-		TODO("Not yet implemented")
-	}
-
-	override fun selectAll() {
-		launchAsync {
-		}
-	}
-
-	override fun deselectAll() {
-
-	}
 
 	override fun removeAllFromLibrary() {
 		TODO("Not yet implemented")

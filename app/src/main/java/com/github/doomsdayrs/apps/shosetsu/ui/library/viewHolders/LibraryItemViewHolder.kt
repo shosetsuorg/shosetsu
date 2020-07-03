@@ -59,9 +59,8 @@ class LibraryItemViewHolder(itemView: View) : FastAdapter.ViewHolder<BookmarkedN
 			// Loads Chapters Unread for a specific novel
 
 			run {
-				materialCardView.strokeWidth = if (false)
+				materialCardView.strokeWidth = if (item.isSelected)
 					selectedStrokeWidth else 0
-
 			}
 
 			chip.setOnClickListener {

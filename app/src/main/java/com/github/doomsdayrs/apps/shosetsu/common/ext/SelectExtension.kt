@@ -1,9 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import com.mikepenz.fastadapter.GenericItem
+import com.mikepenz.fastadapter.ISelectionListener
+import com.mikepenz.fastadapter.select.SelectExtension
 
 /*
  * This file is part of shosetsu.
@@ -22,22 +21,20 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 03 / 07 / 2020
  */
-abstract class ILibraryViewModel : SubscribeHandleViewModel<List<BookmarkedNovelUI>>, ViewModel() {
 
-	/** Novels that are currently visible, Good for search */
-	abstract var visible: MutableLiveData<List<Int>>
-
-	abstract fun removeAllFromLibrary()
-
-	/**
-	 * @return new list
-	 */
-	abstract fun search(search: String): List<BookmarkedNovelUI>
+inline fun <reified T : GenericItem> SelectExtension<T>.setSelectionListener(
+		crossinline onSelect: (
+				@ParameterName("item") T,
+				@ParameterName("selected") Boolean
+		) -> Unit
+) {
+	selectionListener = object : ISelectionListener<T> {
+		override fun onSelectionChanged(item: T, selected: Boolean) {
+			onSelect(item, selected)
+		}
+	}
 }
