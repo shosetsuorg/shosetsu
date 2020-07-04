@@ -33,18 +33,11 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  */
 abstract class INovelChaptersViewModel
 	: SubscribeHandleViewModel<List<ChapterUI>>, ViewModel() {
-	abstract var isArrayReversed: Boolean
 
 	abstract fun setNovelID(novelID: Int)
 
 	/** Instruction to download a specific chapter */
-	abstract fun download(chapterUI: ChapterUI)
-
-	/** Instruction to download the next [count] chapters */
-	abstract fun downloadNext(count: Int)
-
-	/** Instruction to download everything*/
-	abstract fun downloadAll()
+	abstract fun download(vararg chapterUI: ChapterUI)
 
 	/** Deletes the previous chapter */
 	abstract fun deletePrevious()
@@ -59,8 +52,10 @@ abstract class INovelChaptersViewModel
 			bookmarked: Boolean = chapterUI.bookmarked
 	)
 
+	abstract fun markAllAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus)
+
 	/**
 	 * Deletes a chapter
 	 */
-	abstract fun delete(chapterUI: ChapterUI)
+	abstract fun delete(vararg chapterUI: ChapterUI)
 }

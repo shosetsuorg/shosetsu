@@ -45,11 +45,6 @@
                 android:id="@+id/chapter_mark_unread"
                 android:title="@string/unread"
                 app:showAsAction="never" />
-            <item
-                android:id="@+id/chapter_mark_reading"
-                android:title="@string/reading"
-                app:showAsAction="never" />
-
         </menu>
     </item>
 </menu>

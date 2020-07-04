@@ -1,12 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.view.base
 
 import android.os.Bundle
-import androidx.annotation.CallSuper
+import android.util.Log
 import androidx.core.os.bundleOf
-import androidx.recyclerview.widget.DiffUtil
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.items.AbstractItem
 
 /*
@@ -40,6 +40,10 @@ abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
 	 */
 	open val itemAdapter: ItemAdapter<ITEM> by lazy { ItemAdapter<ITEM>() }
 
+	override var adapter: FastAdapter<ITEM>?
+		get() = fastAdapter
+		set(value) {}
+
 	/**
 	 * This is the adapter
 	 */
@@ -59,24 +63,16 @@ abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
 	 */
 	open fun setupFastAdapter() {}
 
-	override fun handleRecyclerUpdate(result: HResult<List<ITEM>>) {
-		when (result) {
-			is HResult.Loading -> showLoading()
-			is HResult.Success -> updateFastAdapterUI(result.data)
-			is HResult.Error -> showError(result)
+	override fun updateUI(newList: List<ITEM>) {
+		val r = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
+		itemAdapter.apply {
+			if (adapterItems.isNotEmpty()) {
+				Log.d(logID(), "Clearing list")
+				itemList.items.clear()
+			}
+			itemList.items.addAll(newList)
 		}
-	}
-
-	/**
-	 * This replaces [updateUI]
-	 */
-	@CallSuper
-	open fun updateFastAdapterUI(list: List<ITEM>) {
-		val diffToolCallBack = RecyclerDiffToolCallBack(list, itemAdapter.itemList.items)
-		val callback = DiffUtil.calculateDiff(diffToolCallBack)
-		callback.dispatchUpdatesTo(fastAdapter)
-		itemAdapter.clear()
-		itemAdapter.add(list)
+		r.dispatchUpdatesTo(fastAdapter)
 	}
 
 	override fun createRecyclerAdapter(): FastAdapter<ITEM> = fastAdapter

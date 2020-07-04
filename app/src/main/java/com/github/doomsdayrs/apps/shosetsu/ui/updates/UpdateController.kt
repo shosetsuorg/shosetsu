@@ -17,11 +17,9 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates
  */
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_DATE
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -57,8 +55,7 @@ class UpdateController(bundle: Bundle)
 			oldItem.chapterID == newItem.chapterID
 
 	override fun setupRecyclerView() {
-		recyclerView?.post { adapter?.notifyDataSetChanged() }
-				?: Log.e(logID(), "Recyclerview is null")
+		super.setupRecyclerView()
 		updatesViewModel.getTimeBetweenDates(
 				date,
 				date + 86399999

@@ -141,8 +141,10 @@ class LibraryController
 		super.updateUI(list)
 	}
 
-	override fun difAreItemsTheSame(oldItem: BookmarkedNovelUI, newItem: BookmarkedNovelUI): Boolean =
-			oldItem.id == newItem.id
+	override fun difAreItemsTheSame(
+			oldItem: BookmarkedNovelUI,
+			newItem: BookmarkedNovelUI
+	): Boolean = oldItem.id == newItem.id
 
 	override fun handleConfirm(linearLayout: LinearLayout) {
 		// TODO
@@ -151,6 +153,9 @@ class LibraryController
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
 		// TODO
 	}
+
+
+	// - Option Menu
 
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

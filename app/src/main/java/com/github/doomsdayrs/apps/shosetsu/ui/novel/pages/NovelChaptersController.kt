@@ -9,6 +9,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
@@ -19,6 +20,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewMode
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.select.getSelectExtension
+import com.mikepenz.fastadapter.select.selectExtension
 
 /*
  * This file is part of Shosetsu.
@@ -72,26 +74,54 @@ class NovelChaptersController(
 	override fun setupRecyclerView() {
 		recyclerView?.setHasFixedSize(false)
 		super.setupRecyclerView()
-		fastAdapter.getSelectExtension().apply {
+		setObserver()
+	}
+
+	override fun setupFastAdapter() {
+		fastAdapter.selectExtension {
 			isSelectable = true
 			multiSelect = true
 			selectOnLongClick = true
+			setSelectionListener { item, _ ->
+				// Recreates the item view
+				fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
+
+				// Swaps the options menu on top
+				val size = selectedItems.size
+				if (size == 0 || size == 1) activity?.invalidateOptionsMenu()
+			}
 		}
+		fastAdapter.onPreClickListener = FastAdapterClick@{ view, adapter, item, position ->
+			// Handles one click select when in selection mode
+			fastAdapter.selectExtension {
+				if (selectedItems.isNotEmpty()) {
+					if (!item.isSelected)
+						select(
+								item = item,
+								considerSelectableFlag = true
+						)
+					else
+						deselect(position)
+					return@FastAdapterClick true
+				}
+			}
+			false
+		}
+
 		fastAdapter.onClickListener = { view, adapter, item, position ->
 			activity?.openChapter(item)
 			false
 		}
-		setObserver()
 	}
 
 	private fun setObserver() {
 		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 	}
 
-	override fun updateFastAdapterUI(list: List<ChapterUI>) {
-		Log.d(logID(), "Updating ui with list size of ${list.size}")
+	override fun updateUI(list: List<ChapterUI>) {
+		Log.d(logID(), "Received chapter count of ${list.size}")
 		if (list.isNotEmpty()) resume?.show() else resume?.hide()
-		super.updateFastAdapterUI(list)
+		super.updateUI(list)
 	}
 
 	override fun difAreItemsTheSame(oldItem: ChapterUI, newItem: ChapterUI): Boolean =
@@ -154,43 +184,56 @@ class NovelChaptersController(
 	@Suppress("KDocMissingDocumentation")
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.download -> {
-			//optionDownload()
+			//  optionDownload()
 			true
 		}
 		R.id.chapter_select_all -> {
-			//	optionChapterSelectAll()
+			fastAdapter.getSelectExtension().select()
 			true
 		}
 		R.id.chapter_download_selected -> {
-			//	optionChapterDownloadSelected()
+			viewModel.download(*fastAdapter.getSelectExtension().selectedItems.toTypedArray())
 			true
 		}
 		R.id.chapter_delete_selected -> {
-			//	optionChapterDeleteSelected()
+			viewModel.delete(*fastAdapter.getSelectExtension().selectedItems.toTypedArray())
 			true
 		}
 		R.id.chapter_deselect_all -> {
-			//	optionChapterDeselectAll()
+			fastAdapter.getSelectExtension().deselect()
 			true
 		}
 		R.id.chapter_mark_read -> {
-			//	optionChapterMarkRead()
+			viewModel.markAllAs(
+					*fastAdapter.getSelectExtension().selectedItems.toTypedArray(),
+					readingStatus = ReadingStatus.READ
+			)
 			true
 		}
 		R.id.chapter_mark_unread -> {
-			//	optionChapterMarkUnread()
-			true
-		}
-		R.id.chapter_mark_reading -> {
-			//	optionChapterMarkReading()
+			viewModel.markAllAs(
+					*fastAdapter.getSelectExtension().selectedItems.toTypedArray(),
+					readingStatus = ReadingStatus.UNREAD
+			)
 			true
 		}
 		R.id.chapter_select_between -> {
-			//	optionChapterSelectBetween()
+			launchAsync {
+				fastAdapter.selectExtension {
+					val selectedItems = selectedItems.toList().sortedBy { it.order }
+					val adapterList = itemAdapter.adapterItems
+
+					select(adapterList.subList(
+							adapterList.indexOfFirst { it.id == selectedItems.first().id },
+							adapterList.indexOfFirst { it.id == selectedItems.last().id }
+					).map { fastAdapter.getPosition(it) })
+				}
+			}
 			true
 		}
 		R.id.chapter_filter -> {
-			//	optionChapterFilter()
+			itemAdapter.itemList.items.reverse()
+			fastAdapter.notifyAdapterDataSetChanged()
 			true
 		}
 		else -> false

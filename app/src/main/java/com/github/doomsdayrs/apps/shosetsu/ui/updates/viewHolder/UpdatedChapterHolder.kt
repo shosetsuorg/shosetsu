@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	val moreOptions: ImageView = itemView.findViewById(R.id.more_options)
-	val downloadTag: TextView = itemView.findViewById(R.id.recycler_novel_chapter_download)
+	val downloadTag: TextView = itemView.findViewById(R.id.download_status)
 	val title: TextView = itemView.findViewById(R.id.title)
 	val image: ImageView = itemView.findViewById(R.id.imageView)
 	val popupMenu = PopupMenu(moreOptions.context, moreOptions)
