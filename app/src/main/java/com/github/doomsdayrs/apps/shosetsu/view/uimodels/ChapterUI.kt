@@ -66,5 +66,9 @@ data class ChapterUI(
 	override val type: Int
 		get() = -1
 
+	override var identifier: Long
+		get() = id.toLong()
+		set(value) {}
+
 	override fun getViewHolder(v: View): ChapterUIViewHolder = ChapterUIViewHolder(v)
 }

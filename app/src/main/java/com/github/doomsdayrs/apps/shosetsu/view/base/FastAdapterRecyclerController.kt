@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.view.base
 
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
@@ -64,15 +62,7 @@ abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
 	open fun setupFastAdapter() {}
 
 	override fun updateUI(newList: List<ITEM>) {
-		val r = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
-		itemAdapter.apply {
-			if (adapterItems.isNotEmpty()) {
-				Log.d(logID(), "Clearing list")
-				itemList.items.clear()
-			}
-			itemList.items.addAll(newList)
-		}
-		r.dispatchUpdatesTo(fastAdapter)
+		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}
 
 	override fun createRecyclerAdapter(): FastAdapter<ITEM> = fastAdapter

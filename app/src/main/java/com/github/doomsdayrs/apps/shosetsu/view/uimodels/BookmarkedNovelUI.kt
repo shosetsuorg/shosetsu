@@ -42,6 +42,11 @@ data class BookmarkedNovelUI(
 		val imageURL: String,
 		val unread: Int
 ) : BaseRecyclerItem<LibraryItemViewHolder>(), Convertible<BookmarkedNovelEntity> {
+
+	override var identifier: Long
+		get() = id.toLong()
+		set(value) {}
+
 	override fun convertTo(): BookmarkedNovelEntity =
 			BookmarkedNovelEntity(id, title, imageURL, unread)
 
