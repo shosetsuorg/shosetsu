@@ -5,7 +5,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.CatalogUI
 
 /*
  * This file is part of shosetsu.
@@ -30,15 +30,15 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
  * Returns the formatters present as a list of formatterCards
  * @param formatterRepository Repository of formatters
  */
-class FormatterAsCardsUseCase(
-		val iExtensionsRepository: IExtensionsRepository
-) : (() -> LiveData<HResult<List<IDTitleImageUI>>>) {
-	override fun invoke(): LiveData<HResult<List<IDTitleImageUI>>> {
+class GetCatalogsUseCase(
+		private val iExtensionsRepository: IExtensionsRepository
+) : (() -> LiveData<HResult<List<CatalogUI>>>) {
+	override fun invoke(): LiveData<HResult<List<CatalogUI>>> {
 		return liveData {
 			emitSource(iExtensionsRepository.getCards().map { data ->
 				when (data) {
 					is HResult.Success -> {
-						successResult(data.data.map { IDTitleImageUI(it.id, it.title, it.imageURL) })
+						successResult(data.data.map { CatalogUI(it.id.toLong(), it.title, it.imageURL) })
 					}
 					is HResult.Loading -> loading()
 					is HResult.Error -> errorResult(data.code, data.message)

@@ -1,8 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
-
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.CatalogUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.base
 
 /*
  * This file is part of shosetsu.
@@ -21,14 +17,10 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 30 / 04 / 2020
- * ViewModel for [com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController]
- * [liveData] is a [com.github.doomsdayrs.apps.shosetsu.common.dto.HResult] of [FormatterCard]
- * [FormatterCard] are representation of the different extensions one can browse
+ * 04 / 07 / 2020
  */
-abstract class ICatalogsViewModel : SubscribeHandleViewModel<List<CatalogUI>>, ViewModel()
+interface GetTitle {
+	fun getDataTitle(): String
+}

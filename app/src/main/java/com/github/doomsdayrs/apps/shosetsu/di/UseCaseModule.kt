@@ -29,7 +29,7 @@ import org.kodein.di.generic.provider
  * 01 / 05 / 2020
  */
 val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
-	bind<FormatterAsCardsUseCase>() with provider { FormatterAsCardsUseCase(instance()) }
+	bind<GetCatalogsUseCase>() with provider { GetCatalogsUseCase(instance()) }
 
 	bind<GetDownloadsUseCase>() with provider { GetDownloadsUseCase(instance()) }
 

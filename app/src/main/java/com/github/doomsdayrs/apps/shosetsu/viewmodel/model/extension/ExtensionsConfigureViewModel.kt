@@ -18,11 +18,8 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension
  */
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
 
 /**
@@ -32,21 +29,11 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureVi
  * @author github.com/doomsdayrs
  */
 class ExtensionsConfigureViewModel(
-		private val extensionsDao: ExtensionsDao,
-		private val formatterUtils: IFormatterUtils
 ) : IExtensionsConfigureViewModel() {
-	override fun disableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit) {
-		TODO("Not yet implemented")
-	}
-
-	override fun enableExtension(extensionEntity: ExtensionUI, callback: (ExtensionUI) -> Unit) {
-		TODO("Not yet implemented")
-	}
-
-	override fun loadFormatterIfEnabled(extensionEntity: ExtensionUI): Formatter? {
-		TODO("Not yet implemented")
-	}
-
-	override val liveData: LiveData<HResult<List<ExtensionUI>>>
+	override val liveData: LiveData<HResult<List<ExtensionConfigUI>>>
 		get() = TODO("Not yet implemented")
+
+	override fun updateExtensionConfig(extensionConfigUI: ExtensionConfigUI, enabled: Boolean) {
+		TODO("Not yet implemented")
+	}
 }

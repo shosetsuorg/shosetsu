@@ -91,9 +91,10 @@ class ExtensionsRepository(
 			databaseSource.insertOrUpdate(extensionEntity)
 
 	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter> {
-		val f = fileSource.loadFormatter(extensionEntity.fileName)
-		if (f is HResult.Success) memorySource.putFormatterInMemory(f.data)
-		return f
+		return memorySource.loadFormatterFromMemory(extensionEntity.id).takeIf { it is HResult.Success }
+				?: fileSource.loadFormatter(extensionEntity.fileName).takeIf { it is HResult.Success }
+						?.also { if (it is HResult.Success) memorySource.putFormatterInMemory(it.data) }
+				?: HResult.Empty
 	}
 
 	override suspend fun loadFormatter(formatterID: Int): HResult<Formatter> =

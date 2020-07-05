@@ -1,20 +1,21 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue
 
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
-import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.adapters.CataloguesAdapter
+import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
+import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.CatalogUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
 
 /*
@@ -42,8 +43,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
  * @author github.com/doomsdayrs
  */
 //TODO Searching mechanics here
-class CatalogsController : RecyclerController<CataloguesAdapter, IDTitleImageUI>() {
-	val viewModel: ICatalogsViewModel by viewModel()
+class CatalogsController : FastAdapterRecyclerController<CatalogUI>() {
+	private val viewModel: ICatalogsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)
@@ -51,8 +52,8 @@ class CatalogsController : RecyclerController<CataloguesAdapter, IDTitleImageUI>
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_catalogues, menu)
-		val searchView = menu.findItem(R.id.catalogues_search).actionView as SearchView
-		searchView.setOnQueryTextListener(CataloguesSearchQuery(activity))
+		(menu.findItem(R.id.catalogues_search).actionView as SearchView)
+				.setOnQueryTextListener(CataloguesSearchQuery(activity))
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -71,13 +72,21 @@ class CatalogsController : RecyclerController<CataloguesAdapter, IDTitleImageUI>
 		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
 	}
 
-	override fun difAreItemsTheSame(oldItem: IDTitleImageUI, newItem: IDTitleImageUI): Boolean =
-			oldItem.id == newItem.id
-
-	override fun setupRecyclerView() {
-		super.setupRecyclerView()
-		recyclerView?.setHasFixedSize(true)
+	override fun setupFastAdapter() {
+		fastAdapter.onClickListener = { v, a, i, p ->
+			Log.d("FormatterSelection", i.title)
+			if (isOnline) {
+				val catalogueFragment = CatalogController(bundleOf(
+						BundleKeys.BUNDLE_FORMATTER to i.identifier
+				))
+				router.pushController(catalogueFragment.withFadeTransaction())
+			} else context?.toast(R.string.you_not_online)
+			true
+		}
 	}
 
-	override fun createRecyclerAdapter(): CataloguesAdapter = CataloguesAdapter(recyclerArray, router)
+	override fun setupRecyclerView() {
+		recyclerView?.setHasFixedSize(true)
+		super.setupRecyclerView()
+	}
 }

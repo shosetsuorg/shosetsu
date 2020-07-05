@@ -59,7 +59,7 @@ class ConfigExtAdapter(private val configureExtensions: ConfigureExtensions)
 		with(configureExtensions.recyclerArray[position]) {
 			val name: String = name
 			val image: String = imageURL ?: ""
-			val enabled = enabled
+			val enabled = isExtEnabled
 			val fom: Formatter? = configureExtensions.viewModel.loadFormatterIfEnabled(this)
 
 			if (image.isNotEmpty())

@@ -65,5 +65,8 @@ abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
 		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}
 
+	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =
+			difAreContentsTheSame(oldItem, newItem)
+
 	override fun createRecyclerAdapter(): FastAdapter<ITEM> = fastAdapter
 }

@@ -1,7 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
+import com.mikepenz.fastadapter.FastAdapter
 
 /*
  * This file is part of shosetsu.
@@ -24,19 +28,19 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
  * shosetsu
  * 24 / 04 / 2020
  */
-data class ExtensionUI(
+data class ExtensionConfigUI(
 		val id: Int,
 		val repoID: Int,
-		var name: String,
+		val name: String,
 		val fileName: String,
-		var imageURL: String?,
-		var lang: String,
-		var enabled: Boolean,
-		var installed: Boolean,
-		var installedVersion: String?,
-		var repositoryVersion: String,
-		var md5: String
-) : Convertible<ExtensionEntity> {
+		val imageURL: String?,
+		val lang: String,
+		var isExtEnabled: Boolean, // The only thing that can be changed >^<)
+		val installed: Boolean,
+		val installedVersion: String?,
+		val repositoryVersion: String,
+		val md5: String
+) : BaseRecyclerItem<ExtensionConfigUI.ViewHolder>(), Convertible<ExtensionEntity> {
 	override fun convertTo() = ExtensionEntity(
 			id,
 			repoID,
@@ -44,10 +48,28 @@ data class ExtensionUI(
 			fileName,
 			imageURL,
 			lang,
-			enabled,
+			isExtEnabled,
 			installed,
 			installedVersion,
 			repositoryVersion,
 			md5
 	)
+
+	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<ExtensionConfigUI>(itemView) {
+		override fun bindView(item: ExtensionConfigUI, payloads: List<Any>) {
+			TODO("Not yet implemented")
+		}
+
+		override fun unbindView(item: ExtensionConfigUI) {
+			TODO("Not yet implemented")
+		}
+
+	}
+
+	override val layoutRes: Int
+		get() = R.layout.alert_extensions_configure_card
+	override val type: Int
+		get() = -1
+
+	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 }

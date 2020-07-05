@@ -5,8 +5,8 @@ import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
-import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
 
@@ -34,8 +34,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureVi
  *
  * @author github.com/doomsdayrs
  */
-class ConfigureExtensions : RecyclerController<ConfigExtAdapter, ExtensionUI>() {
-	val viewModel: IExtensionsConfigureViewModel by viewModel()
+class ConfigureExtensions : FastAdapterRecyclerController<ExtensionConfigUI>() {
+	private val viewModel: IExtensionsConfigureViewModel by viewModel()
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.configure_extensions)
@@ -44,8 +44,4 @@ class ConfigureExtensions : RecyclerController<ConfigExtAdapter, ExtensionUI>() 
 
 	override fun difAreItemsTheSame(oldItem: ExtensionUI, newItem: ExtensionUI): Boolean =
 			oldItem.id == newItem.id
-
-	override fun setupRecyclerView() {}
-
-	override fun createRecyclerAdapter(): ConfigExtAdapter = ConfigExtAdapter(this)
 }
