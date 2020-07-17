@@ -22,5 +22,8 @@ package com.github.doomsdayrs.apps.shosetsu.view.uimodels.base
  * 04 / 07 / 2020
  */
 interface GetTitle {
+	/**
+	 * Get the title of this data
+	 */
 	fun getDataTitle(): String
 }

@@ -91,7 +91,7 @@ class NovelChaptersController(
 				if (size == 0 || size == 1) activity?.invalidateOptionsMenu()
 			}
 		}
-		fastAdapter.onPreClickListener = FastAdapterClick@{ view, adapter, item, position ->
+		fastAdapter.setOnPreClickListener FastAdapterClick@{ view, adapter, item, position ->
 			// Handles one click select when in selection mode
 			fastAdapter.selectExtension {
 				if (selectedItems.isNotEmpty()) {
@@ -108,7 +108,7 @@ class NovelChaptersController(
 			false
 		}
 
-		fastAdapter.onClickListener = { view, adapter, item, position ->
+		fastAdapter.setOnClickListener { view, adapter, item, position ->
 			activity?.openChapter(item)
 			false
 		}

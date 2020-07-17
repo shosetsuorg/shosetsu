@@ -107,7 +107,7 @@ class LibraryController
 		itemAdapter.itemFilter.filterPredicate = { item, constraint ->
 			item.title.contains(constraint.toString(), ignoreCase = true)
 		}
-		fastAdapter.onPreClickListener = FastAdapterClick@{ view, adapter, item, position ->
+		fastAdapter.setOnPreClickListener FastAdapterClick@{ view, adapter, item, position ->
 			// Handles one click select when in selection mode
 			fastAdapter.selectExtension {
 				if (selectedItems.isNotEmpty()) {
@@ -124,9 +124,9 @@ class LibraryController
 			false
 		}
 
-		fastAdapter.onClickListener = { view, adapter, item, type ->
+		fastAdapter.setOnClickListener { _, _, (id), _ ->
 			router.pushController(NovelController(
-					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
+					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to id)
 			).withFadeTransaction())
 			true
 		}

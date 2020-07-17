@@ -264,6 +264,12 @@
     <string name="delete">Delete</string>
     <string name="pause">Pause</string>
     <string name="start">Start</string>
+    <string name="extension_language_desc">Language of this extension</string>
+    <string name="extension_id_desc">Identification number of this extension</string>
+    <string name="extension_filename_desc">File name of this extension</string>
+    <string name="extension_name_desc">Title of this extension</string>
+    <string name="extension_image_desc">Image of this extension</string>
+    <string name="extension_settings_desc">Settings of this extension</string>
 
     <array name="application_themes">
         <item>@string/light</item>

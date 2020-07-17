@@ -31,7 +31,7 @@ import com.squareup.picasso.Picasso
  * shosetsu
  * 12 / 05 / 2020
  */
-class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<ITEM>(itemView)
+open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<ITEM>(itemView)
 		where ITEM : GenericItem,
 		      ITEM : GetImageURL,
 		      ITEM : GetTitle {

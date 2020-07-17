@@ -4,8 +4,11 @@ import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI.ViewHolder
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
-import com.mikepenz.fastadapter.FastAdapter
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.GetImageURL
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.GetTitle
+import com.github.doomsdayrs.apps.shosetsu.view.viewholders.TitleImageFViewHolder
 
 /*
  * This file is part of shosetsu.
@@ -33,15 +36,35 @@ data class ExtensionConfigUI(
 		val repoID: Int,
 		val name: String,
 		val fileName: String,
-		val imageURL: String?,
+		val imageURL: String,
 		val lang: String,
 		var isExtEnabled: Boolean, // The only thing that can be changed >^<)
 		val installed: Boolean,
 		val installedVersion: String?,
 		val repositoryVersion: String,
 		val md5: String
-) : BaseRecyclerItem<ExtensionConfigUI.ViewHolder>(), Convertible<ExtensionEntity> {
-	override fun convertTo() = ExtensionEntity(
+) :
+		BaseRecyclerItem<ViewHolder>(),
+		Convertible<ExtensionEntity>,
+		GetImageURL,
+		GetTitle {
+	override fun getDataTitle(): String = name
+
+	override fun getDataImageURL(): String = imageURL
+
+	override val layoutRes: Int
+		get() = R.layout.extension_config_choice_item_card
+
+	override val type: Int
+		get() = -1
+
+	override var identifier: Long
+		get() = id.toLong()
+		set(value) {}
+
+	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+
+	override fun convertTo(): ExtensionEntity = ExtensionEntity(
 			id,
 			repoID,
 			name,
@@ -55,21 +78,5 @@ data class ExtensionConfigUI(
 			md5
 	)
 
-	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<ExtensionConfigUI>(itemView) {
-		override fun bindView(item: ExtensionConfigUI, payloads: List<Any>) {
-			TODO("Not yet implemented")
-		}
-
-		override fun unbindView(item: ExtensionConfigUI) {
-			TODO("Not yet implemented")
-		}
-
-	}
-
-	override val layoutRes: Int
-		get() = R.layout.alert_extensions_configure_card
-	override val type: Int
-		get() = -1
-
-	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+	class ViewHolder(itemView: View) : TitleImageFViewHolder<ExtensionConfigUI>(itemView)
 }

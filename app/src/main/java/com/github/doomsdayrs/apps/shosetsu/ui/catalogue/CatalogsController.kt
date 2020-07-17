@@ -73,7 +73,7 @@ class CatalogsController : FastAdapterRecyclerController<CatalogUI>() {
 	}
 
 	override fun setupFastAdapter() {
-		fastAdapter.onClickListener = { v, a, i, p ->
+		fastAdapter.setOnClickListener { v, a, i, p ->
 			Log.d("FormatterSelection", i.title)
 			if (isOnline) {
 				val catalogueFragment = CatalogController(bundleOf(

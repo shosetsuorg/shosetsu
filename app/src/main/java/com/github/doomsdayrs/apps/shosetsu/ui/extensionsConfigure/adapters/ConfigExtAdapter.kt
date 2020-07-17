@@ -15,21 +15,11 @@ package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.context
-import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
-import com.github.doomsdayrs.apps.shosetsu.common.ext.setDefaultListing
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
-import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.viewHolders.ConfigExtView
-import com.squareup.picasso.Picasso
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
+import com.mikepenz.fastadapter.FastAdapter
 
 
 /**
@@ -38,52 +28,23 @@ import com.squareup.picasso.Picasso
  *
  * @author github.com/doomsdayrs
  */
-class ConfigExtAdapter(private val configureExtensions: ConfigureExtensions)
-	: RecyclerView.Adapter<ConfigExtView>() {
+class ConfigExtAdapter(private val viewModel: IExtensionsConfigureViewModel)
+	: FastAdapter<ExtensionConfigUI>() {
 	init {
 		setHasStableIds(true)
 	}
 
-	override fun getItemId(position: Int) = position.toLong()
+	override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+		super.onBindViewHolder(viewHolder, position)
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConfigExtView =
-			ConfigExtView(LayoutInflater.from(parent.context).inflate(
-					R.layout.alert_extensions_configure_card,
-					parent,
-					false
-			))
-
-	override fun getItemCount(): Int = configureExtensions.recyclerArray.size
-
-	override fun onBindViewHolder(holder: ConfigExtView, position: Int) {
-		with(configureExtensions.recyclerArray[position]) {
-			val name: String = name
-			val image: String = imageURL ?: ""
-			val enabled = isExtEnabled
-			val fom: Formatter? = configureExtensions.viewModel.loadFormatterIfEnabled(this)
-
-			if (image.isNotEmpty())
-				Picasso.get().load(image).into(holder.imageView)
-
-			holder.title.text = name
-			holder.switch.isChecked = enabled
+		val holder = viewHolder as ExtensionConfigUI.ViewHolder
+		val data = getItem(position)!!
+		with(data) {
+			val fom: Formatter? = null
+			/*
 			holder.switch.setOnCheckedChangeListener { _, isChecked ->
-				if (isChecked) {
-					configureExtensions.viewModel.disableExtension(this) {
-						if (it.enabled) {
-							holder.switch.setText(R.string.enabled)
-						} else {
-							configureExtensions.context?.toast("Failed to disable")
-						}
-					}
-				} else {
-					configureExtensions.viewModel.enableExtension(this) {
-						if (it.enabled) {
-							holder.switch.setText(R.string.disabled)
-						} else {
-							configureExtensions.context?.toast("Failed to enable")
-						}
-					}
+				launchIO {
+					configureExtensions.viewModel.updateExtensionConfig(data, !isChecked)
 				}
 			}
 
@@ -121,8 +82,7 @@ class ConfigExtAdapter(private val configureExtensions: ConfigureExtensions)
 					}
 				}
 			}
+			*/
 		}
 	}
-
-
 }

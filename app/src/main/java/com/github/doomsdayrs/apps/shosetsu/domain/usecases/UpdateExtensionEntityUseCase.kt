@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 
 /*
  * This file is part of shosetsu.
@@ -21,17 +20,13 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 14 / 07 / 2020
  */
-abstract class IExtensionsConfigureViewModel
-	: SubscribeHandleViewModel<List<ExtensionConfigUI>>, ViewModel() {
-	/**
-	 * Update the entity
-	 */
-	abstract suspend fun updateExtensionConfig(extensionConfigUI: ExtensionConfigUI, enabled: Boolean)
+class UpdateExtensionEntityUseCase(
+		private val extensionRepository: IExtensionsRepository
+) {
+	suspend operator fun invoke(extensionUI: ExtensionEntity) =
+			extensionRepository.updateExtension(extensionUI)
 }

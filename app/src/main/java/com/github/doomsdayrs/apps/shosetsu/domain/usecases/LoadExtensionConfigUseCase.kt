@@ -46,7 +46,7 @@ class LoadExtensionConfigUseCase(
 												it.repoID,
 												it.name,
 												it.fileName,
-												it.imageURL,
+												it.imageURL ?: "",
 												it.lang,
 												it.enabled,
 												it.installed,

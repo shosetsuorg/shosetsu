@@ -18,7 +18,12 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension
  */
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateExtensionEntityUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
 
@@ -29,11 +34,42 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureVi
  * @author github.com/doomsdayrs
  */
 class ExtensionsConfigureViewModel(
+		private val getExtensionsUIUseCase: GetExtensionsUIUseCase,
+		private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase
 ) : IExtensionsConfigureViewModel() {
-	override val liveData: LiveData<HResult<List<ExtensionConfigUI>>>
-		get() = TODO("Not yet implemented")
-
-	override fun updateExtensionConfig(extensionConfigUI: ExtensionConfigUI, enabled: Boolean) {
-		TODO("Not yet implemented")
+	override val liveData: LiveData<HResult<List<ExtensionConfigUI>>> by lazy {
+		liveData<HResult<List<ExtensionConfigUI>>> {
+			emitSource(
+					getExtensionsUIUseCase().map { hR ->
+						when (hR) {
+							is HResult.Success -> successResult(hR.data.map {
+								ExtensionConfigUI(
+										it.id,
+										it.repoID,
+										it.name,
+										it.fileName,
+										it.imageURL ?: "",
+										it.lang,
+										it.enabled,
+										it.installed,
+										it.installedVersion,
+										it.repositoryVersion,
+										it.md5
+								)
+							})
+							is HResult.Empty -> hR
+							is HResult.Loading -> hR
+							is HResult.Error -> hR
+						}
+					}
+			)
+		}
 	}
+
+	override suspend fun updateExtensionConfig(
+			extensionConfigUI: ExtensionConfigUI,
+			enabled: Boolean
+	) =
+			updateExtensionEntityUseCase(extensionConfigUI.convertTo())
 }
+

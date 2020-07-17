@@ -87,8 +87,11 @@ class ExtensionsRepository(
 			}
 	}
 
-	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) =
+	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): Unit =
 			databaseSource.insertOrUpdate(extensionEntity)
+
+	override suspend fun updateExtension(extensionEntity: ExtensionEntity): Unit =
+			databaseSource.updateExtension(extensionEntity)
 
 	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter> {
 		return memorySource.loadFormatterFromMemory(extensionEntity.id).takeIf { it is HResult.Success }
