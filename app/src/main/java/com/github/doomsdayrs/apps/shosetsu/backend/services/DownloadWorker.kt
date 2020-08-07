@@ -13,17 +13,16 @@ import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.downloadOnLowBattery
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.downloadOnLowStorage
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.downloadOnMetered
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.downloadOnlyIdle
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import com.github.doomsdayrs.apps.shosetsu.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
@@ -35,6 +34,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import java.io.File
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult.Error as HError
 
 /*
  * This file is part of shosetsu.
@@ -51,7 +51,6 @@ import java.io.File
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -66,6 +65,17 @@ class DownloadWorker(
 ) : CoroutineWorker(appContext, params), KodeinAware {
 	companion object {
 		private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 3
+
+		/**
+		 * Makes a download path for a downloadEntity
+		 */
+		fun makeDownloadPath(downloadEntity: DownloadEntity): String = with(downloadEntity) {
+			"${shoDir}/download/${formatterID}/${novelID}"
+		}
+	}
+
+	class DownloadWorkerManager(override val kodein: Kodein) : KodeinAware {
+		private val settings by instance<ShosetsuSettings>()
 
 		/**
 		 * Returns the status of the service.
@@ -98,14 +108,14 @@ class DownloadWorker(
 					OneTimeWorkRequestBuilder<DownloadWorker>()
 							.setConstraints(Constraints.Builder().apply {
 								setRequiredNetworkType(
-										if (downloadOnMetered) {
+										if (settings.downloadOnMetered) {
 											CONNECTED
 										} else UNMETERED
 								)
-								setRequiresStorageNotLow(!downloadOnLowStorage)
-								setRequiresBatteryNotLow(!downloadOnLowBattery)
+								setRequiresStorageNotLow(!settings.downloadOnLowStorage)
+								setRequiresBatteryNotLow(!settings.downloadOnLowBattery)
 								if (SDK_INT >= VERSION_CODES.M)
-									setRequiresDeviceIdle(downloadOnlyIdle)
+									setRequiresDeviceIdle(settings.downloadOnlyIdle)
 							}.build())
 							.build()
 			)
@@ -119,13 +129,6 @@ class DownloadWorker(
 		fun stop(context: Context,
 		         workerManager: WorkManager = WorkManager.getInstance(context)
 		): Any = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
-
-		/**
-		 * Makes a download path for a downloadEntity
-		 */
-		fun makeDownloadPath(downloadEntity: DownloadEntity): String = with(downloadEntity) {
-			"${shoDir}/download/${formatterID}/${novelID}"
-		}
 	}
 
 	private val notificationManager by lazy {
@@ -148,48 +151,55 @@ class DownloadWorker(
 
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
-	private val chaptersRepo by instance<IChaptersRepository>()
-	private val extensionsRepo by instance<IExtensionsRepository>()
+	private val chapRepo by instance<IChaptersRepository>()
+	private val extRepo by instance<IExtensionsRepository>()
+	private val settings by instance<ShosetsuSettings>()
 
 	private suspend fun getDownloadCount(): Int =
 			downloadsRepo.loadDownloadCount().let { if (it is HResult.Success) it.data else -1 }
 
-	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> {
-		chaptersRepo.loadChapter(downloadEntity.chapterID).let { cR: HResult<ChapterEntity> ->
-			if (cR is HResult.Success) {
-				val chapterEntity = cR.data
-				extensionsRepo.loadFormatter(chapterEntity.formatterID).let { fR: HResult<Formatter> ->
-					if (fR is HResult.Success) {
-						val formatterEntity = fR.data
-						chaptersRepo.loadChapterPassage(formatterEntity, chapterEntity).let {
-							return when (it) {
+	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> =
+			chapRepo.loadChapter(downloadEntity.chapterID).let { cR: HResult<ChapterEntity> ->
+				when (cR) {
+					is HResult.Success -> {
+						val chapterEntity = cR.data
+						extRepo.loadFormatter(chapterEntity.formatterID).let { fR: HResult<Formatter> ->
+							when (fR) {
 								is HResult.Success -> {
-									chaptersRepo.saveChapterPassageToStorage(chapterEntity, it.data)
-									successResult("")
+									val formatterEntity = fR.data
+									chapRepo.loadChapterPassage(formatterEntity, chapterEntity).let {
+										when (it) {
+											is HResult.Success -> {
+												chapRepo.saveChapterPassageToStorage(chapterEntity, it.data)
+												successResult("Chapter Loaded")
+											}
+											else -> it
+										}
+									}
 								}
-								else -> it
+								else -> HError(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
 							}
 						}
 					}
+					else -> HError(ErrorKeys.ERROR_NOT_FOUND, "Chapter Entity not found")
 				}
 			}
-		}
-		return HResult.Empty
-	}
 
 	override suspend fun doWork(): Result {
 		Log.i(logID(), "Starting loop")
-		if (Settings.isDownloadPaused)
+		if (settings.isDownloadPaused)
 			Log.i(logID(), "Loop Paused")
 		else {
-			while (getDownloadCount() >= 1 && !Settings.isDownloadPaused) {
+			val pr = progressNotification
+
+			while (getDownloadCount() >= 1 && !settings.isDownloadPaused) {
+				Log.d(logID(), "Loop")
 				downloadsRepo.loadFirstDownload().let {
 					if (it is HResult.Success) {
 						val downloadEntity: DownloadEntity = it.data
 						downloadEntity.status = 1
 						downloadsRepo.update(downloadEntity)
 
-						val pr = progressNotification
 
 						notificationManager.notify(ID_CHAPTER_DOWNLOAD,
 								pr.setOngoing(true)
@@ -225,17 +235,32 @@ class DownloadWorker(
 										.build()
 								)
 							}
-							else -> {
-								TODO("Handle download oddities")
+							is HError -> {
+								downloadEntity.status = -1
+								downloadsRepo.update(downloadEntity)
+								notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr
+										.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
+										.build()
+								)
+
+								launchUI {
+									toast { downloadResult.message }
+								}
+							}
+							is HResult.Empty -> {
+								launchUI {
+									toast { "Empty Error" }
+								}
+							}
+							is HResult.Loading -> {
+								Exception("Should not be loading")
 							}
 						}
-
-
 					}
 				}
 			}
 			notificationManager.notify(ID_CHAPTER_DOWNLOAD,
-					progressNotification.setOngoing(false).setProgress(
+					pr.setOngoing(false).setProgress(
 							0,
 							0,
 							false

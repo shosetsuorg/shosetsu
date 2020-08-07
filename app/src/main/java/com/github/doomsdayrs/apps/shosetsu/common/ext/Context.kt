@@ -11,7 +11,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 
 /*
  * This file is part of shosetsu.
@@ -92,10 +92,12 @@ fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {
 fun Context.regret() = toast(R.string.regret, duration = LENGTH_LONG)
 
 
-fun Context.calculateColumnCount(columnWidthDp: Float): Int { // For example columnWidthdp=180
+@Deprecated("Move to [Settings]")
+fun Context.calculateColumnCount(columnWidthDp: Float, settings: ShosetsuSettings): Int {
+// For example columnWidthdp=180
 	val c = if (resources.configuration.orientation == 1)
-		Settings.columnsInNovelsViewP
-	else Settings.columnsInNovelsViewH
+		settings.columnsInNovelsViewP
+	else settings.columnsInNovelsViewH
 
 	val displayMetrics = resources.displayMetrics
 	val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density

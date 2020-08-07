@@ -1,8 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl
 
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.ColorPickerSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.ColorPickerSettingData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsListBuilder
 import kotlin.reflect.KMutableProperty0
 
 /*

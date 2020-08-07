@@ -1,8 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import android.widget.CompoundButton
 
 /*
  * This file is part of shosetsu.
@@ -25,13 +23,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * shosetsu
  * 25 / 06 / 2020
  */
-class InfoSettingData(id: Int) : SettingsItemData(id) {
-	var itemViewOnClick: (View) -> Unit = {}
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
-		with(settingsItem) {
-			itemView.setOnClickListener(itemViewOnClick)
-		}
-	}
-
+abstract class ToggleableStateSettingData(id: Int) : RightSettingsItemData(id) {
+	var isChecked: Boolean = false
+	var onCheckedListener: CompoundButton.OnCheckedChangeListener =
+			CompoundButton.OnCheckedChangeListener { _, _ -> }
 }

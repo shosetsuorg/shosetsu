@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
@@ -43,7 +43,8 @@ class NovelChaptersViewModel(
 		private val getChapterUIsUseCase: GetChapterUIsUseCase,
 		private val updateChapterUseCase: UpdateChapterUseCase,
 		private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,
-		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase
+		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
+		private val settings: ShosetsuSettings
 ) : INovelChaptersViewModel() {
 	private var nID: Int = -1
 
@@ -68,7 +69,7 @@ class NovelChaptersViewModel(
 			liveData<HResult<Int>>(viewModelScope.coroutineContext + Dispatchers.IO) {
 				emit(loading())
 				val array = array.sortedBy { it.order }
-				val r = if (!Settings.resumeOpenFirstUnread)
+				val r = if (!settings.resumeOpenFirstUnread)
 					array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
 				else array.indexOfFirst { it.readingStatus == ReadingStatus.UNREAD }
 				emit(if (r == -1) emptyResult() else successResult(r))

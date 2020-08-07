@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.common.consts
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl
 
 import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.TextRequiringSettingData
 
 /*
  * This file is part of shosetsu.
@@ -19,24 +20,24 @@ import android.view.View
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 25 / 06 / 2020
  */
 
-const val SHOSETSU_UPDATE_URL: String =
-		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml"
+@SettingsItemDSL
+inline fun TextRequiringSettingData.text(value: TextRequiringSettingData.() -> Any): Unit =
+		value().let {
+			when (it) {
+				is String -> textText = it
+				is Int -> textID = it
+				else -> throw IllegalArgumentException("Input must be either an int or string")
+			}
+		}
 
-const val selectedStrokeWidth = 8
-
-const val scriptDirectory = "/scripts/"
-const val libraryDirectory = "/libraries/"
-const val sourceFolder = "/src/"
-const val repoFolderStruct = "/src/main/resources/"
-
-/** @see View.VISIBLE */
-const val VISIBLE = View.VISIBLE
-
-/** @see View.GONE */
-const val GONE = View.GONE
+@SettingsItemDSL
+inline fun TextRequiringSettingData.onClicked(crossinline action: TextRequiringSettingData.(
+		@ParameterName("view") View
+) -> Unit) {
+	textViewOnClickListener = { action(it) }
+}

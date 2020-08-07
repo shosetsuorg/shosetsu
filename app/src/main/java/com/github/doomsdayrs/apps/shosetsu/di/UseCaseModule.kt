@@ -33,7 +33,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<GetDownloadsUseCase>() with provider { GetDownloadsUseCase(instance()) }
 
-	bind<LoadLibraryUseCase>() with provider { LoadLibraryUseCase(instance()) }
+	bind<LoadLibraryUseCase>() with provider { LoadLibraryUseCase(instance(), instance()) }
 
 	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
 
@@ -88,12 +88,18 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 	bind<DeleteChapterPassageUseCase>() with provider { DeleteChapterPassageUseCase(instance()) }
 
-	bind<StartDownloadWorkerUseCase>() with provider { StartDownloadWorkerUseCase(instance()) }
-	bind<StartUpdateWorkerUseCase>() with provider { StartUpdateWorkerUseCase(instance()) }
+	bind<StartDownloadWorkerUseCase>() with provider {
+		StartDownloadWorkerUseCase(instance(), instance())
+	}
+	bind<StartUpdateWorkerUseCase>() with provider {
+		StartUpdateWorkerUseCase(instance(), instance())
+	}
 
 	bind<LoadAppUpdateUseCase>() with provider { LoadAppUpdateUseCase(instance()) }
 	bind<UpdateDownloadUseCase>() with provider { UpdateDownloadUseCase(instance()) }
 	bind<DeleteDownloadUseCase>() with provider { DeleteDownloadUseCase(instance()) }
 
 	bind<UpdateExtensionEntityUseCase>() with provider { UpdateExtensionEntityUseCase(instance()) }
+
+	bind<UpdateBookmarkedNovelUIUseCase>() with provider { UpdateBookmarkedNovelUIUseCase(instance()) }
 }

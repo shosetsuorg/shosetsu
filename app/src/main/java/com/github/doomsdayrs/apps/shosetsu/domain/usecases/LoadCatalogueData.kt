@@ -44,7 +44,7 @@ class LoadCatalogueData(
 				formatter,
 				0,
 				currentPage,
-				arrayOf<Any>()
+				mapOf()
 		)
 		return when (it) {
 			is HResult.Success -> {

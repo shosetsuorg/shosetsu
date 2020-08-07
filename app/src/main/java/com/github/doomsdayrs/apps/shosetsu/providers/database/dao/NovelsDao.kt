@@ -24,7 +24,6 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -57,7 +56,7 @@ interface NovelsDao : BaseDao<NovelEntity> {
 	@Query("SELECT id,title,imageURL FROM novels")
 	fun loadIDImageTitle(): LiveData<List<IDTitleImage>>
 
-	@Query("SELECT novels.id, novels.title, novels.imageURL,  ( " +
+	@Query("SELECT novels.id, novels.title, novels.imageURL, novels.bookmarked,  ( " +
 			"SELECT count(*) FROM chapters WHERE novelID = novels.id AND readingStatus != 2 " +
 			") as unread FROM novels WHERE novels.bookmarked = 1")
 	fun loadBookmarkedNovelsCount(): LiveData<List<BookmarkedNovelEntity>>
@@ -113,7 +112,16 @@ interface NovelsDao : BaseDao<NovelEntity> {
 			loadNovel(insertIgnore(novelEntity))
 
 	@Query("UPDATE novels SET bookmarked = :bookmarked WHERE id = :novelID")
-	fun setNovelBookmark(novelID: Int, bookmarked: Int)
+	suspend fun setNovelBookmark(novelID: Int, bookmarked: Int)
+
+	@Transaction
+	suspend fun updateBookmarked(list: List<BookmarkedNovelEntity>) {
+		list.forEach { bookMarked ->
+			blockingUpdate(loadNovel(bookMarked.id).copy(
+					bookmarked = bookMarked.bookmarked
+			))
+		}
+	}
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters

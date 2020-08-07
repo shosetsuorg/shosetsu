@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.ArrayAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
+import org.kodein.di.generic.instance
 import java.util.*
 
 /*
@@ -36,6 +37,8 @@ import java.util.*
  */
 @SuppressLint("LogConditional")
 class ReaderSettings : SettingsSubController() {
+	val S: ShosetsuSettings by instance()
+
 	override val settings: ArrayList<SettingsItemData> by settingsList {
 		spinnerSettingData(0) {
 			title { R.string.paragraph_spacing }
@@ -44,11 +47,11 @@ class ReaderSettings : SettingsSubController() {
 					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.sizes_with_none)
 			)
-			spinnerField { Settings::readerParagraphSpacing }
+			spinnerField { S::readerParagraphSpacing }
 		}
 		spinnerSettingData(1) {
 			title { R.string.text_size }
-			spinnerSelection = when (Settings.readerTextSize.toInt()) {
+			spinnerSelection = when (S.readerTextSize.toInt()) {
 				14 -> 0
 				17 -> 1
 				20 -> 2
@@ -69,14 +72,14 @@ class ReaderSettings : SettingsSubController() {
 						1 -> size = 17
 						2 -> size = 20
 					}
-					Settings.readerTextSize = (size.toFloat())
+					S.readerTextSize = (size.toFloat())
 					adapterView?.setSelection(i)
 				}
 			}
 		}
 		spinnerSettingData(2) {
 			title { R.string.paragraph_indent }
-			spinnerField { Settings::readerIndentSize }
+			spinnerField { S::readerIndentSize }
 			arrayAdapter = ArrayAdapter(
 					context!!,
 					android.R.layout.simple_spinner_dropdown_item,
@@ -85,7 +88,7 @@ class ReaderSettings : SettingsSubController() {
 		}
 		spinnerSettingData(3) {
 			title { R.string.reader_theme }
-			spinnerField { Settings::readerTheme }
+			spinnerField { S::readerTheme }
 			arrayAdapter = ArrayAdapter(
 					context!!,
 					android.R.layout.simple_spinner_dropdown_item,
@@ -96,26 +99,26 @@ class ReaderSettings : SettingsSubController() {
 			title { R.string.text_custom_color }
 			colorName { "Text" }
 			description { R.string.custom_theme_warn }
-			colorValue { Settings::readerCustomBackColor }
+			colorValue { S::readerCustomBackColor }
 		}
 		colorPickerSettingData(1) {
 			title { R.string.text_custom_background_color }
 			colorName { "back" }
 			description { R.string.custom_theme_warn }
-			colorValue { Settings::readerCustomTextColor }
+			colorValue { S::readerCustomTextColor }
 		}
 		switchSettingData(1) {
 			title { R.string.inverted_swipe }
-			checker { Settings::isInvertedSwipe }
+			checker { S::isInvertedSwipe }
 		}
 		switchSettingData(1) {
 			title { R.string.tap_to_scroll }
-			checker { Settings::isTapToScroll }
+			checker { S::isTapToScroll }
 		}
 		switchSettingData(4) {
 			title { "Resume first unread" }
 			description { "Instead of resuming the first chapter that is not read(can be reading), the app will open the first unread chapter" }
-			checker { Settings::resumeOpenFirstUnread }
+			checker { S::resumeOpenFirstUnread }
 		}
 	}
 }

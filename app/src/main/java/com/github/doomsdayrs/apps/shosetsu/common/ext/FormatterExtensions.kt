@@ -1,11 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.common.ext
 
+import android.content.Context
 import android.view.View
 import android.widget.AdapterView
-import app.shosetsu.lib.*
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.consts.settings.LISTING_KEY
+import android.widget.ArrayAdapter
+import app.shosetsu.lib.Filter
+import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.view.builder.SDViewBuilder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
 
 /*
  * This file is part of shosetsu.
@@ -32,29 +36,111 @@ import com.github.doomsdayrs.apps.shosetsu.view.builder.SDViewBuilder
  * @author github.com/doomsdayrs
  */
 
-val Formatter.defaultListing: Int
-	get() = Settings.formatterSettings.getInt("$formatterID:$LISTING_KEY", 0)
-
-
-fun Formatter.setDefaultListing(int: Int): Boolean = when {
-	int >= listings.size || int < 0 -> false
-	else -> {
-		Settings.formatterSettings.edit().putInt("$formatterID:$LISTING_KEY", int).apply()
-		true
+fun Array<Filter<*>>.toSettingItems(
+		formatter: Formatter,
+		context: Context,
+		setting: ShosetsuSettings
+): List<SettingsItemData> {
+	val settings = ArrayList<SettingsItemData>()
+	forEach { filter ->
+		when (filter) {
+			is Filter.Checkbox -> {
+				settings.add(
+						checkBoxSettingData(filter.id) {
+							title { filter.name }
+							isChecked = setting.getFormSetting(formatter, filter.id) ?: filter.state
+							onChecked { _, isChecked ->
+								setting.setFormSetting(formatter, filter.id, isChecked)
+							}
+						}
+				)
+			}
+			is Filter.Dropdown -> {
+				settings.add(
+						spinnerSettingData(filter.id) {
+							title { filter.name }
+							arrayAdapter = ArrayAdapter<String>(
+									context,
+									android.R.layout.simple_list_item_1,
+									filter.choices
+							)
+							spinnerValue {
+								setting.getFormSetting(formatter, filter.id) ?: filter.state
+							}
+							onSpinnerItemSelected { _, _, position, _ ->
+								setting.setFormSetting(formatter, filter.id, position)
+							}
+						}
+				)
+			}
+			is Filter.Group<*, *> -> {
+			}
+			is Filter.Header -> {
+			}
+			is Filter.List -> {
+				settings.addAll(
+						filter.filters.toSettingItems(formatter, context, setting)
+				)
+			}
+			is Filter.RadioGroup -> {
+				settings.add(
+						spinnerSettingData(filter.id) {
+							title { filter.name }
+							arrayAdapter = ArrayAdapter<String>(
+									context,
+									android.R.layout.simple_list_item_1,
+									filter.choices
+							)
+							spinnerValue {
+								setting.getFormSetting(formatter, filter.id) ?: filter.state
+							}
+							onSpinnerItemSelected { _, _, position, _ ->
+								setting.setFormSetting(formatter, filter.id, position)
+							}
+						}
+				)
+			}
+			is Filter.Separator -> {
+			}
+			is Filter.Switch -> {
+				settings.add(
+						switchSettingData(filter.id) {
+							title { filter.name }
+							isChecked = setting.getFormSetting(formatter, filter.id) ?: filter.state
+							onChecked { _, isChecked ->
+								setting.setFormSetting(formatter, filter.id, isChecked)
+							}
+						}
+				)
+			}
+			is Filter.Text -> {
+				settings.add(
+						textInputSettingData(filter.id) {
+							title { filter.name }
+							initialText = setting.getFormSetting(formatter, filter.id)
+									?: filter.state
+							doAfterTextChanged {
+								setting.setFormSetting(formatter, filter.id, it.toString())
+							}
+						}
+				)
+			}
+			is Filter.TriState -> {
+			}
+		}
 	}
+	return settings
 }
-
-fun Formatter.getListing(): Formatter.Listing = listings[defaultListing]
 
 fun Filter<*>.build(builder: SDViewBuilder) {
 	when (this) {
-		is TextFilter -> builder.editText(name).also {
+		is Filter.Text -> builder.editText(name).also {
 			it.onFocusChangeListener = View.OnFocusChangeListener { _, _ -> state = it.getValue() }
 		}
-		is SwitchFilter -> builder.switch(name, state).also {
+		is Filter.Switch -> builder.switch(name, state).also {
 			it.setOnCheckedChangeListener { _, v -> state = v }
 		}
-		is DropdownFilter -> builder.spinner(name, choices, state).also {
+		is Filter.Dropdown -> builder.spinner(name, choices, state).also {
 			it.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 				override fun onNothingSelected(_p: AdapterView<*>?) {}
 				override fun onItemSelected(_p: AdapterView<*>?, _v: View?, pos: Int, id: Long) {
@@ -62,7 +148,7 @@ fun Filter<*>.build(builder: SDViewBuilder) {
 				}
 			}
 		}
-		is RadioGroupFilter -> builder.radioGroup(name, choices, state).also {
+		is Filter.RadioGroup -> builder.radioGroup(name, choices, state).also {
 			it.setOnCheckedChangeListener { _, i -> state = i }
 		}
 	}

@@ -1,8 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
-
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TextRequiringSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base
 
 /*
  * This file is part of shosetsu.
@@ -25,16 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * shosetsu
  * 25 / 06 / 2020
  */
-class TextSettingData(id: Int) : TextRequiringSettingData(id) {
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
-		with(settingsItem) {
-			if (textID != -1)
-				textView.setText(textID)
-			else
-				textView.text = textText
-			textView.visibility = View.VISIBLE
-			textView.setOnClickListener(textViewOnClickListener)
-		}
-	}
+class SettingsListBuilder {
+	/** List of settings */
+	val list: ArrayList<SettingsItemData> = arrayListOf()
 }

@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
 import android.util.Log
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.LuaFormatter.Companion.FILTER_POSITION_QUERY
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA
@@ -40,13 +41,11 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	override suspend fun search(
 			formatter: Formatter,
 			query: String,
-			data: Array<Any>
+			data: Map<Int, Any>
 	): HResult<List<Novel.Listing>> {
 		return try {
 			successResult(
-					formatter.search(ArrayList<Any>(arrayListOf(query))
-							.plus(data).toTypedArray()
-					) {
+					formatter.search(HashMap(data).apply { this[FILTER_POSITION_QUERY] = query }) {
 						Log.i(logID(), it)
 					}.toList()
 			)
@@ -63,7 +62,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			formatter: Formatter,
 			listing: Int,
 			page: Int,
-			data: Array<Any>
+			data: Map<Int, Any>
 	): HResult<List<Novel.Listing>> {
 		return try {
 			successResult(

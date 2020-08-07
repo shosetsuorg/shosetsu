@@ -1,12 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.async
 
-import android.util.Log
 import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.common.ext.defaultListing
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.wait
-import org.luaj.vm2.LuaError
 
 
 /*
@@ -38,14 +32,7 @@ open class CatalogueLoader(
 		val filters: Array<*>,
 		val query: String? = null
 ) {
-	private var listing = formatter.defaultListing
-
-	constructor(formatter: Formatter, filters: Array<*>, selectedListing: Int)
-			: this(formatter, filters) {
-		if (listing != selectedListing)
-			listing = selectedListing
-	}
-
+	/*
 	/**
 	 * Loads up the category
 	 *
@@ -69,4 +56,6 @@ open class CatalogueLoader(
 			formatter.search((listOf(query) + filters).toTypedArray())
 			{ Log.i("Formatter", "${formatter.name}\t$it") }
 	}
+
+	 */
 }

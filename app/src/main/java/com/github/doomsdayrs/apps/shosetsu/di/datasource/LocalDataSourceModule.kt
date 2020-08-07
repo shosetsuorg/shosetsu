@@ -31,6 +31,7 @@ import org.kodein.di.generic.singleton
  */
 val localDataSouceModule: Kodein.Module = Kodein.Module("local_data_source_module") {
 
+
 	bind<ILocalChaptersDataSource>() with singleton { LocalChaptersDataSource(instance()) }
 	bind<ILocalDownloadsDataSource>() with singleton { LocalDownloadsDataSource(instance()) }
 

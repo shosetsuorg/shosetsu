@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtensionDataSource
@@ -97,7 +99,7 @@ class ExtensionsRepository(
 		return memorySource.loadFormatterFromMemory(extensionEntity.id).takeIf { it is HResult.Success }
 				?: fileSource.loadFormatter(extensionEntity.fileName).takeIf { it is HResult.Success }
 						?.also { if (it is HResult.Success) memorySource.putFormatterInMemory(it.data) }
-				?: HResult.Empty
+				?: errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
 	}
 
 	override suspend fun loadFormatter(formatterID: Int): HResult<Formatter> =
@@ -116,7 +118,7 @@ class ExtensionsRepository(
 			formatter: Formatter,
 			listing: Int,
 			page: Int,
-			data: Array<Any>
+			data: Map<Int, Any>
 	): HResult<List<Novel.Listing>> =
 			remoteCatalogueDataSource.loadListing(formatter, listing, page, data)
 

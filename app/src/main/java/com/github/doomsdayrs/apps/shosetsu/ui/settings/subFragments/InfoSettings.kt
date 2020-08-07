@@ -6,8 +6,8 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
 
 /*
  * This file is part of Shosetsu.

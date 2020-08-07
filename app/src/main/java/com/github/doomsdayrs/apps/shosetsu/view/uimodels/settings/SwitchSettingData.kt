@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.common.consts
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
 import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.ToggleableStateSettingData
 
 /*
  * This file is part of shosetsu.
@@ -19,24 +20,24 @@ import android.view.View
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 25 / 06 / 2020
  */
+class SwitchSettingData(id: Int) : ToggleableStateSettingData(id) {
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
+		with(settingsItem) {
+			switchView.visibility = View.VISIBLE
+			switchView.isChecked = isChecked
+			switchView.setOnCheckedChangeListener(onCheckedListener)
+		}
+	}
 
-const val SHOSETSU_UPDATE_URL: String =
-		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml"
-
-const val selectedStrokeWidth = 8
-
-const val scriptDirectory = "/scripts/"
-const val libraryDirectory = "/libraries/"
-const val sourceFolder = "/src/"
-const val repoFolderStruct = "/src/main/resources/"
-
-/** @see View.VISIBLE */
-const val VISIBLE = View.VISIBLE
-
-/** @see View.GONE */
-const val GONE = View.GONE
+	override fun unbindView(settingsItem: ViewHolder) {
+		super.unbindView(settingsItem)
+		with(settingsItem) {
+			switchView.setOnCheckedChangeListener(null)
+		}
+	}
+}

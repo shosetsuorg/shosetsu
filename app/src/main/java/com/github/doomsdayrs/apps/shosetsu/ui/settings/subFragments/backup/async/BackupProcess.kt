@@ -20,9 +20,6 @@ import android.os.AsyncTask
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.consts.settings.*
-import com.github.doomsdayrs.apps.shosetsu.common.ext.serializeToString
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -53,11 +50,11 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 			run {
 			}
 
-			if (Settings.backupChapters && !Settings.backupQuick)
-			else {
-			}
-			if (Settings.backupSettings)
-				backupJSON.put("settings", getSettingsInJSON())
+			//		if (Settings.backupChapters && !Settings.backupQuick)
+			//		else {
+//			}
+//			if (Settings.backupSettings)
+//				backupJSON.put("settings", getSettingsInJSON())
 
 			Log.i("Progress", "Writing")
 			val folder = File(shoDir + "/backup/")
@@ -86,7 +83,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 	@Throws(JSONException::class, IOException::class)
 	fun getSettingsInJSON(): JSONObject {
 		val settings = JSONObject()
-		settings[READER_THEME] = Settings.readerTheme
+/*		settings[READER_THEME] = Settings.readerTheme
 		settings[READER_TEXT_C_COLOR] = Settings.readerCustomTextColor
 		settings[READER_BACK_C_COLOR] = Settings.readerCustomBackColor
 
@@ -110,7 +107,7 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 		settings[BACKUP_QUICK] = Settings.backupQuick
 
 		settings["shoDir"] = shoDir.serializeToString()
-
+*/
 		return settings
 	}
 }

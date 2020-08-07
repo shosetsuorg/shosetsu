@@ -1,7 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TextRequiringSettingData
+import com.github.doomsdayrs.apps.shosetsu.common.consts.VISIBLE
 
 /*
  * This file is part of shosetsu.
@@ -22,22 +21,11 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TextRequiringSe
 
 /**
  * shosetsu
- * 25 / 06 / 2020
+ * 21 / 07 / 2020
  */
-
-@SettingsItemDSL
-inline fun TextRequiringSettingData.text(value: TextRequiringSettingData.() -> Any): Unit =
-		value().let {
-			when (it) {
-				is String -> textText = it
-				is Int -> textID = it
-				else -> throw IllegalArgumentException("Input must be either an int or string")
-			}
-		}
-
-@SettingsItemDSL
-inline fun TextRequiringSettingData.onClicked(crossinline action: TextRequiringSettingData.(
-		@ParameterName("view") View
-) -> Unit) {
-	textViewOnClickListener = { action(it) }
+open class BottomSettingsItemData(id: Int) : SettingsItemData(id) {
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
+		settingsItem.bottomField.visibility = VISIBLE
+	}
 }

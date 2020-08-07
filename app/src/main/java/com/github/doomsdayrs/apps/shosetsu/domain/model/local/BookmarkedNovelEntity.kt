@@ -29,14 +29,16 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
  * @param id of the novel
  * @param title of the novel
  * @param imageURL of the novel
+ * @param bookmarked if this novel is bookmarked or not
  * @param unread chapters of this novel
  */
 data class BookmarkedNovelEntity(
 		val id: Int,
 		val title: String,
 		val imageURL: String,
+		var bookmarked: Boolean,
 		val unread: Int
 ) : Convertible<BookmarkedNovelUI> {
 	override fun convertTo(): BookmarkedNovelUI =
-			BookmarkedNovelUI(id, title, imageURL, unread)
+			BookmarkedNovelUI(id, title, imageURL, bookmarked, unread)
 }

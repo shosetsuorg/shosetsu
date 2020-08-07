@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.MarkingTypes
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
@@ -103,7 +103,7 @@ class ChapterReaderAdapter(
 
 
 		holder.textView.apply {
-			textSize = Settings.readerTextSize
+			textSize = chapterReader.settings.readerTextSize
 
 			setOnClickListener {
 				chapterReader.animateToolbar()
@@ -150,7 +150,7 @@ class ChapterReaderAdapter(
 			if (yPosition % 5 == 0) {
 				Log.i(logID(), "Scrolling")
 				// Mark as reading if on scroll
-				if (Settings.readerMarkingType == Settings.MarkingTypes.ONSCROLL)
+				if (chapterReader.settings.readerMarkingType == MarkingTypes.ONSCROLL)
 					cUI.readingStatus = ReadingStatus.READING
 				chapterReader.viewModel.updateChapter(cUI, readingPosition = yPosition)
 			}

@@ -44,9 +44,14 @@ sealed class HResult<out T : Any> {
 	 * This states that the operation has failed
 	 * @param code ERROR code
 	 * @param message ERROR message
+	 * @param error ERROR Cause
 	 */
 	@Suppress("MemberVisibilityCanBePrivate")
-	class Error(val code: Int, val message: String) : HResult<Nothing>()
+	class Error(
+			val code: Int,
+			val message: String,
+			val error: kotlin.Exception? = null
+	) : HResult<Nothing>()
 }
 
 /** This is a quick way to toss a success */
@@ -59,7 +64,8 @@ fun loading(): HResult.Loading = HResult.Loading
 fun emptyResult(): HResult.Empty = HResult.Empty
 
 /** This is an easy way to create an error*/
-fun errorResult(code: Int, message: String): HResult.Error = HResult.Error(code, message)
+fun errorResult(code: Int, message: String, error: Exception? = null): HResult.Error =
+		HResult.Error(code, message, error)
 
 /**
  * Converts shit
@@ -67,7 +73,7 @@ fun errorResult(code: Int, message: String): HResult.Error = HResult.Error(code,
 inline fun <reified O : Any, reified I : Convertible<O>> HResult<List<I>>.mapListTo()
 		: HResult<List<O>> {
 	return when (this) {
-		is HResult.Success -> successResult(this.data.map { it.convertTo() })
+		is HResult.Success -> successResult(this.data.mapTo())
 		is HResult.Empty -> this
 		is HResult.Loading -> this
 		is HResult.Error -> this
@@ -90,3 +96,6 @@ inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
 		is HResult.Error -> this
 	}
 }
+
+inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo() =
+		this.map { it.convertTo() }

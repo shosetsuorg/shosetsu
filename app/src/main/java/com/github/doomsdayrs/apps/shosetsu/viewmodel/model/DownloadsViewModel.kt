@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
@@ -42,9 +42,9 @@ class DownloadsViewModel(
 		private val getDownloadsUseCase: GetDownloadsUseCase,
 		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 		private val updateDownloadUseCase: UpdateDownloadUseCase,
-		private val deleteDownloadUseCase: DeleteDownloadUseCase
+		private val deleteDownloadUseCase: DeleteDownloadUseCase,
+		private val settings: ShosetsuSettings
 ) : IDownloadsViewModel() {
-
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
 			emit(loading())
@@ -53,10 +53,10 @@ class DownloadsViewModel(
 	}
 
 	override fun togglePause(): Boolean {
-		Settings.isDownloadPaused = !Settings.isDownloadPaused
-		if (Settings.isDownloadPaused)
+		settings.isDownloadPaused = !settings.isDownloadPaused
+		if (settings.isDownloadPaused)
 			startDownloadWorkerUseCase()
-		return Settings.isDownloadPaused
+		return settings.isDownloadPaused
 	}
 
 	override fun delete(downloadUI: DownloadUI) {

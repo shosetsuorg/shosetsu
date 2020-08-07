@@ -1,10 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.RightSettingsItemData
 
 /*
  * This file is part of shosetsu.
@@ -27,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * shosetsu
  * 25 / 06 / 2020
  */
-class SpinnerSettingData(id: Int) : SettingsItemData(id) {
+class SpinnerSettingData(id: Int) : RightSettingsItemData(id) {
 	var spinnerOnClick: (View) -> Unit = {}
 	var spinnerOnItemSelectedListener: AdapterView.OnItemSelectedListener =
 			object : AdapterView.OnItemSelectedListener {
@@ -44,8 +43,8 @@ class SpinnerSettingData(id: Int) : SettingsItemData(id) {
 			}
 	var arrayAdapter: ArrayAdapter<*>? = null
 	var spinnerSelection: Int = -1
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
 		with(settingsItem) {
 			spinner.visibility = View.VISIBLE
 			//spinner.setOnClickListener { data.spinnerOnClick }
@@ -55,4 +54,10 @@ class SpinnerSettingData(id: Int) : SettingsItemData(id) {
 		}
 	}
 
+	override fun unbindView(settingsItem: ViewHolder) {
+		super.unbindView(settingsItem)
+		with(settingsItem) {
+			spinner.onItemSelectedListener = null
+		}
+	}
 }

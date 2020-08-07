@@ -1,8 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base
 
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TogglableStateSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 
 /*
  * This file is part of shosetsu.
@@ -25,13 +23,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * shosetsu
  * 25 / 06 / 2020
  */
-class SwitchSettingData(id: Int) : TogglableStateSettingData(id) {
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
-		with(settingsItem) {
-			switchView.visibility = View.VISIBLE
-			switchView.isChecked = isChecked
-			switchView.setOnCheckedChangeListener(onCheckedListener)
-		}
-	}
+abstract class TextRequiringSettingData(id: Int) : RightSettingsItemData(id) {
+	var textID: Int = -1
+	var textText: String = ""
+	var textViewOnClickListener: (View) -> Unit = {}
 }

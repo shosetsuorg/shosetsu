@@ -45,7 +45,7 @@ class LibraryItemViewHolder(itemView: View) : FastAdapter.ViewHolder<BookmarkedN
 	val chip: Chip = itemView.findViewById(R.id.novel_item_left_to_read)
 
 	override fun bindView(item: BookmarkedNovelUI, payloads: List<Any>) {
-		item.let { (id, title, imageURL, unread) ->
+		item.let { (id, title, imageURL, _, unread) ->
 			Log.d(logID(), "Binding view for $id")
 			//Sets values
 			run {
@@ -76,7 +76,7 @@ class LibraryItemViewHolder(itemView: View) : FastAdapter.ViewHolder<BookmarkedN
 	}
 
 	private fun setUnreadCount(viewHolder: LibraryItemViewHolder, unreadCount: Int) {
-		Log.d(logID(), "Setting unread count of ${unreadCount}")
+		Log.d(logID(), "Setting unread count of $unreadCount")
 		if (unreadCount != 0) {
 			viewHolder.chip.visibility = View.VISIBLE
 			viewHolder.chip.text = unreadCount.toString()

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
@@ -28,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.navigation.NavigationView
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
+import org.kodein.di.generic.instance
 
 /*
  * This file is part of Shosetsu.
@@ -57,15 +58,18 @@ class LibraryController
 	: FastAdapterRecyclerController<BookmarkedNovelUI>(), SecondDrawerController {
 	/***/
 	val viewModel: ILibraryViewModel by viewModel()
+	private val settings by instance<ShosetsuSettings>()
+	private val manager by instance<UpdateWorker.UpdateWorkerManager>()
+
 
 	/** Inflater */
 	val inflater: MenuInflater = MenuInflater(applicationContext)
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
-		return if (Settings.novelCardType == 0)
+		return if (settings.novelCardType == 0)
 			GridLayoutManager(
 					applicationContext,
-					applicationContext!!.calculateColumnCount(200f),
+					applicationContext!!.calculateColumnCount(200f, settings),
 					RecyclerView.VERTICAL,
 					false
 			) else
@@ -179,7 +183,7 @@ class LibraryController
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.updater_now -> {
-				UpdateWorker.start(
+				manager.start(
 						applicationContext!!
 				)
 				return true
@@ -194,7 +198,9 @@ class LibraryController
 			}
 			R.id.remove_from_library -> {
 				launchAsync {
-					viewModel.removeAllFromLibrary()
+					viewModel.removeFromLibrary(
+							fastAdapter.getSelectExtension().selectedItems.toList()
+					)
 				}
 				return true
 			}

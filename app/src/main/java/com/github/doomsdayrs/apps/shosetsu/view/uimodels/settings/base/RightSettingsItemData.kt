@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.common.consts
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base
 
-import android.view.View
+import androidx.annotation.CallSuper
+import com.github.doomsdayrs.apps.shosetsu.common.consts.VISIBLE
 
 /*
  * This file is part of shosetsu.
@@ -19,24 +20,15 @@ import android.view.View
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 21 / 07 / 2020
  */
+open class RightSettingsItemData(id: Int) : SettingsItemData(id) {
 
-const val SHOSETSU_UPDATE_URL: String =
-		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml"
-
-const val selectedStrokeWidth = 8
-
-const val scriptDirectory = "/scripts/"
-const val libraryDirectory = "/libraries/"
-const val sourceFolder = "/src/"
-const val repoFolderStruct = "/src/main/resources/"
-
-/** @see View.VISIBLE */
-const val VISIBLE = View.VISIBLE
-
-/** @see View.GONE */
-const val GONE = View.GONE
+	@CallSuper
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
+		settingsItem.rightField.visibility = VISIBLE
+	}
+}

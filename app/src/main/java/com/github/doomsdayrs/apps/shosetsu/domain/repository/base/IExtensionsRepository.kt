@@ -57,6 +57,6 @@ interface IExtensionsRepository {
 			formatter: Formatter,
 			listing: Int,
 			page: Int,
-			data: Array<Any>
+			data: Map<Int, Any>
 	): HResult<List<Novel.Listing>>
 }

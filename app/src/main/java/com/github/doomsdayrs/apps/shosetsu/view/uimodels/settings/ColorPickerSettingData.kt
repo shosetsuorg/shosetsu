@@ -1,10 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
 import android.graphics.Color
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.BottomSettingsItemData
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.skydoves.colorpickerview.ColorPickerDialog.Builder as CPDB
 
@@ -29,30 +28,37 @@ import com.skydoves.colorpickerview.ColorPickerDialog.Builder as CPDB
  * shosetsu
  * 25 / 06 / 2020
  */
-class ColorPickerSettingData(id: Int) : SettingsItemData(id) {
+class ColorPickerSettingData(id: Int) : BottomSettingsItemData(id) {
 	var colorFunction: (color: Int) -> Unit = {}
 	var itemColor: Int = Color.WHITE
 	var colorPreferenceName = ""
 
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
 		with(settingsItem) {
 			colorBox.visibility = View.VISIBLE
 			colorBox.setBackgroundColor(itemColor)
 			colorBox.setOnClickListener {
-				CPDB(view.context)
+				CPDB(itemView.context)
 						.setTitle("ColorPicker Dialog")
 						.setPreferenceName(colorPreferenceName)
 						.setPositiveButton(
-								view.context.getString(R.string.confirm),
+								itemView.context.getString(R.string.confirm),
 								ColorEnvelopeListener { envelope, _ ->
 									colorFunction(envelope.color)
 									colorBox.setBackgroundColor(envelope.color)
 								}
 						)
-						.setNegativeButton(view.context.getString(android.R.string.cancel))
+						.setNegativeButton(itemView.context.getString(android.R.string.cancel))
 						{ dialogInterface, _ -> dialogInterface.dismiss() }.show()
 			}
+		}
+	}
+
+	override fun unbindView(settingsItem: ViewHolder) {
+		super.unbindView(settingsItem)
+		with(settingsItem) {
+			colorBox.setOnClickListener(null)
 		}
 	}
 }

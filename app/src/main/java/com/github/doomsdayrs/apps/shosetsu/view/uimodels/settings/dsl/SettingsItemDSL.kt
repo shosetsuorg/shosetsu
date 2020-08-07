@@ -1,11 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl
 
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.CheckBoxSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SeekBarSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SwitchSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.TextSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.CheckBoxSettingData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.SwitchSettingData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.TextSettingData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsListBuilder
 
 /*
  * This file is part of shosetsu.

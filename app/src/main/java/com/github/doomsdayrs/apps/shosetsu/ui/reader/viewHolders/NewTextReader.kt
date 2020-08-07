@@ -8,7 +8,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
+import org.kodein.di.generic.instance
 
 /*
  * This file is part of shosetsu.
@@ -31,7 +35,9 @@ import com.github.doomsdayrs.apps.shosetsu.common.Settings
  * shosetsu
  * 13 / 12 / 2019
  */
-class NewTextReader(itemView: View) : NewReader(itemView) {
+class NewTextReader(itemView: View) : NewReader(itemView), KodeinAware {
+	override val kodein: Kodein by kodein(itemView.context)
+	private val settings by instance<ShosetsuSettings>()
 
 	/**
 	 * Main way of reading in this view
@@ -80,9 +86,9 @@ class NewTextReader(itemView: View) : NewReader(itemView) {
 
 	override fun bind() {
 		val replaceSpacing = StringBuilder("\n")
-		for (x in 0 until Settings.readerParagraphSpacing)
+		for (x in 0 until settings.readerParagraphSpacing)
 			replaceSpacing.append("\n")
-		for (x in 0 until Settings.readerIndentSize)
+		for (x in 0 until settings.readerIndentSize)
 			replaceSpacing.append("\t")
 
 		textView.text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())

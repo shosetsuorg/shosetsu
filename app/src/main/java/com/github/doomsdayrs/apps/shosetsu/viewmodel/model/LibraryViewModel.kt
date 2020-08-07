@@ -18,12 +18,13 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
  */
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadLibraryUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateBookmarkedNovelUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,24 +36,23 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class LibraryViewModel(
-		private val libraryAsCardsUseCase: LoadLibraryUseCase
+		private val libraryAsCardsUseCase: LoadLibraryUseCase,
+		private val updateBookmarkedNovelUIUseCase: UpdateBookmarkedNovelUIUseCase
 ) : ILibraryViewModel() {
-	override var visible: MutableLiveData<List<Int>>
-		get() = TODO("Not yet implemented")
-		set(value) {}
-
-	override fun removeAllFromLibrary() {
-		TODO("Not yet implemented")
-	}
-
-	override fun search(search: String): List<BookmarkedNovelUI> {
-		TODO("Not yet implemented")
-	}
-
 	override val liveData: LiveData<HResult<List<BookmarkedNovelUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
 			emit(loading())
 			emitSource(libraryAsCardsUseCase())
+		}
+	}
+
+	override fun removeFromLibrary(list: List<BookmarkedNovelUI>) {
+		launchIO {
+			updateBookmarkedNovelUIUseCase(list.apply {
+				forEach {
+					it.bookmarked = false
+				}
+			})
 		}
 	}
 }

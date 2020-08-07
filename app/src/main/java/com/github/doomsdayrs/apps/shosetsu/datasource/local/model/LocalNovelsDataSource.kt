@@ -55,6 +55,10 @@ class LocalNovelsDataSource(
 	override suspend fun updateNovel(novelEntity: NovelEntity) =
 			novelsDao.suspendedUpdate(novelEntity)
 
+	override suspend fun updateBookmarkedNovels(list: List<BookmarkedNovelEntity>) {
+		novelsDao.updateBookmarked(list)
+	}
+
 	override suspend fun setNovelBookmark(novelID: Int, bookmark: Int) =
 			novelsDao.setNovelBookmark(novelID, bookmark)
 

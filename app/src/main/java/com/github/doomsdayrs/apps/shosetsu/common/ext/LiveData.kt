@@ -1,8 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.common.ext
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TogglableStateSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 /*
  * This file is part of shosetsu.
@@ -23,15 +23,9 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 
 /**
  * shosetsu
- * 25 / 06 / 2020
+ * 01 / 06 / 2020
  */
-class CheckBoxSettingData(id: Int) : TogglableStateSettingData(id) {
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
-		with(settingsItem) {
-			checkBox.visibility = View.VISIBLE
-			checkBox.isChecked = isChecked
-			checkBox.setOnCheckedChangeListener(onCheckedListener)
-		}
-	}
-}
+
+/** See [LiveData.observe] for understanding, this just inlines it */
+inline fun <T> LiveData<T>.observe(owner: LifecycleOwner, crossinline observer: (T) -> Unit): Unit =
+		observe(owner, Observer { observer(it) })

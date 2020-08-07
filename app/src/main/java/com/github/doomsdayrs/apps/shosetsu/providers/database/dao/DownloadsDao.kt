@@ -50,7 +50,7 @@ interface DownloadsDao : BaseDao<DownloadEntity> {
 		return d
 	}
 
-	@Query("SELECT COUNT(*) FROM downloads")
+	@Query("SELECT COUNT(*) FROM downloads WHERE status == 0")
 	suspend fun loadDownloadCount(): Int
 
 	@Query("SELECT COUNT(*) FROM downloads WHERE chapterID = :chapterID")

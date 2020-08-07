@@ -15,7 +15,7 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.attachRouter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
-import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker.UpdateWorkerManager
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
@@ -47,8 +47,8 @@ import org.kodein.di.generic.instance
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
 /**
  * Shosetsu
  * 9 / June / 2019
@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	override val kodein: Kodein by closestKodein()
 	private val viewModel by instance<IMainViewModel>()
+	private val updateManager by instance<UpdateWorkerManager>()
 
 	/**
 	 * Main activity
@@ -181,11 +182,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		when (intent.action) {
 			Intent.ACTION_USER_BACKGROUND -> {
 				Log.i("MainActivity", "Updating novels")
-				UpdateWorker.start(this)
+				updateManager.start(this)
 			}
 			Intent.ACTION_BOOT_COMPLETED -> {
 				Log.i("MainActivity", "Bootup")
-				if (isOnline) UpdateWorker.start(this)
+				if (isOnline) updateManager.start(this)
 			}
 			else -> {
 				if (!router.hasRootController()) {

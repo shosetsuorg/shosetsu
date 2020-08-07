@@ -9,13 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.SpinnerSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.SpinnerSettingData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
+import org.kodein.di.generic.instance
 
 
 /*
@@ -40,6 +41,8 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
  * 13 / 07 / 2019
  */
 class AdvancedSettings : SettingsSubController() {
+	private val s by instance<ShosetsuSettings>()
+
 	override val settings: ArrayList<SettingsItemData> by settingsList {
 		spinnerSettingData(1) {
 			title { R.string.theme }
@@ -90,7 +93,7 @@ class AdvancedSettings : SettingsSubController() {
 		if (BuildConfig.DEBUG && findDataByID(9) == -1)
 			settings.add(switchSettingData(9) {
 				title { "Show Intro" }
-				checker { Settings::showIntro }
+				checker { s::showIntro }
 			})
 		super.onViewCreated(view)
 	}

@@ -85,6 +85,10 @@ class NovelsRepository(
 					)
 			)
 
+	override suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>) {
+		database.updateBookmarkedNovels(list)
+	}
+
 	override suspend fun retrieveNovelInfo(
 			formatter: Formatter,
 			novelEntity: NovelEntity,

@@ -8,7 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.ReaderThemes
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
@@ -46,7 +47,8 @@ class ChapterReaderViewModel(
 		private val context: Context,
 		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
 		private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
-		private val updateReaderChapterUseCase: UpdateReaderChapterUseCase
+		private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
+		private val settings: ShosetsuSettings
 ) : IChapterReaderViewModel() {
 	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
 
@@ -58,23 +60,23 @@ class ChapterReaderViewModel(
 	private var nID = -1
 
 	override val backgroundColor: MutableLiveData<Int> = MutableLiveData<Int>().default(
-			when (Settings.readerTheme) {
-				Settings.ReaderThemes.NIGHT.i, Settings.ReaderThemes.DARK.i -> Color.BLACK
-				Settings.ReaderThemes.LIGHT.i -> Color.WHITE
-				Settings.ReaderThemes.SEPIA.i -> ContextCompat.getColor(context, R.color.wheat)
-				Settings.ReaderThemes.DARKI.i -> Color.DKGRAY
-				Settings.ReaderThemes.CUSTOM.i -> Settings.readerCustomTextColor
+			when (settings.readerTheme) {
+				ReaderThemes.NIGHT.i, ReaderThemes.DARK.i -> Color.BLACK
+				ReaderThemes.LIGHT.i -> Color.WHITE
+				ReaderThemes.SEPIA.i -> ContextCompat.getColor(context, R.color.wheat)
+				ReaderThemes.DARKI.i -> Color.DKGRAY
+				ReaderThemes.CUSTOM.i -> settings.readerCustomTextColor
 				else -> Color.BLACK
 			}
 	)
 
 	override val textColor: MutableLiveData<Int> = MutableLiveData<Int>().default(
-			when (Settings.readerTheme) {
-				Settings.ReaderThemes.NIGHT.i -> Color.WHITE
-				Settings.ReaderThemes.LIGHT.i, Settings.ReaderThemes.SEPIA.i -> Color.BLACK
-				Settings.ReaderThemes.DARK.i -> Color.GRAY
-				Settings.ReaderThemes.DARKI.i -> Color.LTGRAY
-				Settings.ReaderThemes.CUSTOM.i -> Settings.readerCustomBackColor
+			when (settings.readerTheme) {
+				ReaderThemes.NIGHT.i -> Color.WHITE
+				ReaderThemes.LIGHT.i, ReaderThemes.SEPIA.i -> Color.BLACK
+				ReaderThemes.DARK.i -> Color.GRAY
+				ReaderThemes.DARKI.i -> Color.LTGRAY
+				ReaderThemes.CUSTOM.i -> settings.readerCustomBackColor
 				else -> Color.WHITE
 			}
 	)

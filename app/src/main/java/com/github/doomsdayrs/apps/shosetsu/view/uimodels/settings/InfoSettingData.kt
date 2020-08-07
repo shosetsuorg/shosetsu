@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
-import android.os.Build
-import androidx.annotation.CallSuper
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
 
 /*
  * This file is part of shosetsu.
@@ -24,31 +23,19 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 /**
  * shosetsu
  * 25 / 06 / 2020
- * Data for [SettingsItem]
  */
-abstract class SettingsItemData(val id: Int) {
-	/** Min version required for this setting to be visible */
-	var minVersionCode: Int = Build.VERSION_CODES.Q
-
-	var titleID: Int = -1
-	var titleText: String = ""
-
-	var descID: Int = -1
-	var descText: String = ""
-
-	@CallSuper
-	open fun setupView(settingsItem: SettingsItem) {
+class InfoSettingData(id: Int) : SettingsItemData(id) {
+	var itemViewOnClick: (View) -> Unit = {}
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
 		with(settingsItem) {
-			if (titleID != -1)
-				itemTitle.setText(titleID)
-			else
-				itemTitle.text = titleText
-
-			if (descID != -1)
-				itemDescription.setText(descID)
-			else
-				itemDescription.text = descText
+			itemView.setOnClickListener(itemViewOnClick)
 		}
+	}
+
+	override fun unbindView(settingsItem: ViewHolder) {
+		super.unbindView(settingsItem)
+		settingsItem.itemView.setOnClickListener(null)
 	}
 
 }

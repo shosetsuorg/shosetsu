@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.view.uimodels
 
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BookmarkedNovelEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibraryItemViewHolder
@@ -34,27 +34,34 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
  * @param id of the novel
  * @param title of the novel
  * @param imageURL of the novel
+ * @param bookmarked If this novel is bookmarked or not
  * @param unread chapters of this novel
  */
 data class BookmarkedNovelUI(
 		val id: Int,
 		val title: String,
 		val imageURL: String,
+		var bookmarked: Boolean,
 		val unread: Int
 ) : BaseRecyclerItem<LibraryItemViewHolder>(), Convertible<BookmarkedNovelEntity> {
+	lateinit var settings: ShosetsuSettings
 
 	override var identifier: Long
 		get() = id.toLong()
 		set(value) {}
 
 	override fun convertTo(): BookmarkedNovelEntity =
-			BookmarkedNovelEntity(id, title, imageURL, unread)
+			BookmarkedNovelEntity(id, title, imageURL, bookmarked, unread)
 
-	override val layoutRes: Int = if (Settings.novelCardType == 0)
-		R.layout.recycler_novel_card
-	else R.layout.recycler_novel_card_compressed
+	override val layoutRes: Int by lazy {
+		if (settings.novelCardType == 0)
+			R.layout.recycler_novel_card
+		else R.layout.recycler_novel_card_compressed
+	}
 
-	override val type: Int = Settings.novelCardType
+	override val type: Int by lazy {
+		settings.novelCardType
+	}
 
 	override fun getViewHolder(v: View): LibraryItemViewHolder = LibraryItemViewHolder(v)
 }

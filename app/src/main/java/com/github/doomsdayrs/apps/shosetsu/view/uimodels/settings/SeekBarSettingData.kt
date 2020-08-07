@@ -1,9 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
 import android.util.SparseArray
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.BottomSettingsItemData
 import com.xw.repo.BubbleSeekBar
 import com.xw.repo.BubbleSeekBar.OnProgressChangedListener
 
@@ -28,7 +27,7 @@ import com.xw.repo.BubbleSeekBar.OnProgressChangedListener
  * shosetsu
  * 25 / 06 / 2020
  */
-class SeekBarSettingData(id: Int) : SettingsItemData(id) {
+class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 	var minValue: Float = 0F
 	var maxValue: Float = 10F
 	var progressValue: Float = 5F
@@ -78,8 +77,8 @@ class SeekBarSettingData(id: Int) : SettingsItemData(id) {
 	) -> Unit =
 			{ _, _, _, _ -> }
 
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
 		with(settingsItem) {
 			seekbar.visibility = View.VISIBLE
 
@@ -134,6 +133,13 @@ class SeekBarSettingData(id: Int) : SettingsItemData(id) {
 					ProgressOnFinally(bubbleSeekBar, progress, progressFloat, fromUser)
 				}
 			}
+		}
+	}
+
+	override fun unbindView(settingsItem: ViewHolder) {
+		super.unbindView(settingsItem)
+		settingsItem.seekbar.apply {
+			onProgressChangedListener = null
 		}
 	}
 }

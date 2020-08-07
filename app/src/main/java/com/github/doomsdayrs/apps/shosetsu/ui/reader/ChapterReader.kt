@@ -19,8 +19,9 @@ import androidx.recyclerview.widget.DiffUtil.Callback
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.MarkingTypes
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.MarkingTypes
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.TextSizes
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -95,6 +96,8 @@ class ChapterReader
 
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel by instance<IChapterReaderViewModel>()
+	internal val settings: ShosetsuSettings by instance()
+
 	private val chapterReaderAdapter: ChapterReaderAdapter = ChapterReaderAdapter(this)
 	private val pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
@@ -103,7 +106,7 @@ class ChapterReader
 			viewModel.currentChapterID = chapterReaderUI.id
 
 			// Mark read if set to onview
-			if (Settings.readerMarkingType == MarkingTypes.ONVIEW) {
+			if (settings.readerMarkingType == MarkingTypes.ONVIEW) {
 				Log.d("ChapterReader", "Marking as reading by marking type")
 				chapterReaderUI.readingStatus = READING
 				viewModel.updateChapter(chapterReaderUI)
@@ -256,13 +259,13 @@ class ChapterReader
 				) {
 					if (fromUser) {
 						val size = when (progress) {
-							0 -> Settings.TextSizes.SMALL
-							1 -> Settings.TextSizes.MEDIUM
-							2 -> Settings.TextSizes.LARGE
-							else -> Settings.TextSizes.MEDIUM
+							0 -> TextSizes.SMALL
+							1 -> TextSizes.MEDIUM
+							2 -> TextSizes.LARGE
+							else -> TextSizes.MEDIUM
 						}
 						Log.i(logID(), "TextSize changed to ${size.name}")
-						Settings.readerTextSize = size.i
+						settings.readerTextSize = size.i
 						// Sets current view
 						chapterReaderAdapter.textReaders.find {
 							it.chapterID == viewModel.currentChapterID
@@ -316,7 +319,7 @@ class ChapterReader
 				) {
 					if (fromUser) {
 						Log.i(logID(), "ParaSpace changed to $progress")
-						Settings.readerParagraphSpacing = progress
+						settings.readerParagraphSpacing = progress
 						// Sets current view
 						chapterReaderAdapter.textReaders.find {
 							it.chapterID == viewModel.currentChapterID
@@ -370,7 +373,7 @@ class ChapterReader
 				) {
 					if (fromUser) {
 						Log.i(logID(), "IndentSize changed to $progress")
-						Settings.readerIndentSize = progress
+						settings.readerIndentSize = progress
 						// Sets current view
 						chapterReaderAdapter.textReaders.find {
 							it.chapterID == viewModel.currentChapterID
@@ -496,7 +499,7 @@ class ChapterReader
 					menu.findItem(R.id.chapter_view_reader_custom)
 
 			)
-			when (Settings.readerTheme) {
+			when (settings.readerTheme) {
 				0 -> themes[0].setChecked(true)
 				1 -> themes[1].setChecked(true)
 				2 -> themes[2].setChecked(true)
@@ -504,7 +507,7 @@ class ChapterReader
 				4 -> themes[4].setChecked(true)
 				5 -> themes[5].setChecked(true)
 				else -> {
-					Settings.readerTheme = 1
+					settings.readerTheme = 1
 					themes[1].setChecked(true)
 				}
 			}

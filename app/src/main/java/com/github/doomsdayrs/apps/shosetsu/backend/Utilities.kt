@@ -6,7 +6,7 @@ import android.net.NetworkCapabilities
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.view.MenuItem
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 
 /*
  * This file is part of Shosetsu.
@@ -57,8 +57,8 @@ class SHOWCASE {
 var connectivityManager: ConnectivityManager? = null
 
 
+@Deprecated("Find a better use case")
 var shoDir: String = "/Shosetsu/"
-
 
 
 /**
@@ -74,16 +74,15 @@ fun unmarkMenuItems(menuItems: Array<MenuItem>, positionSpared: Int, demarkActio
 }
 
 
-
 /**
  * Initializes the settings
  *
  * @param mainActivity activity
  */
-fun initPreferences(mainActivity: Activity) {
+fun initPreferences(mainActivity: Activity, settings: ShosetsuSettings) {
 	var dir = mainActivity.getExternalFilesDir(null)!!.absolutePath
 	dir = dir.substring(0, dir.indexOf("/Android"))
-	shoDir = Settings.settings.getString("dir", "$dir/Shosetsu/")!!
+	shoDir = settings.settings.getString("dir", "$dir/Shosetsu/")!!
 }
 
 

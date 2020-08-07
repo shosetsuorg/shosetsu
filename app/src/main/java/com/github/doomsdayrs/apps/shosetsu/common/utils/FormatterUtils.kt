@@ -1,14 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.common.utils
 
 import android.content.Context
-import app.shosetsu.lib.ShosetsuLib
 import com.github.doomsdayrs.apps.shosetsu.common.consts.libraryDirectory
 import com.github.doomsdayrs.apps.shosetsu.common.consts.scriptDirectory
 import com.github.doomsdayrs.apps.shosetsu.common.consts.sourceFolder
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import okhttp3.OkHttpClient
 import java.io.File
 
 
@@ -35,8 +33,7 @@ import java.io.File
  * [FormatterUtils] provides a class that handles all basic needs for extensions
  */
 class FormatterUtils(
-		val context: Context,
-		val okHttpClient: OkHttpClient
+		val context: Context
 ) : IFormatterUtils {
 	companion object {
 		private fun splitVersion(version: String): Array<String> =

@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
 import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.TextRequiringSettingData
 
 /*
  * This file is part of shosetsu.
@@ -23,8 +24,24 @@ import android.view.View
  * shosetsu
  * 25 / 06 / 2020
  */
-abstract class TextRequiringSettingData(id: Int) : SettingsItemData(id) {
-	var textID: Int = -1
-	var textText: String = ""
-	var textViewOnClickListener: (View) -> Unit = {}
+class TextSettingData(id: Int) : TextRequiringSettingData(id) {
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
+		with(settingsItem) {
+			if (textID != -1)
+				textView.setText(textID)
+			else
+				textView.text = textText
+			textView.visibility = View.VISIBLE
+			textView.setOnClickListener(textViewOnClickListener)
+		}
+	}
+
+	override fun unbindView(settingsItem: ViewHolder) {
+		super.unbindView(settingsItem)
+		with(settingsItem) {
+			textView.text = null
+			textView.setOnClickListener(null)
+		}
+	}
 }

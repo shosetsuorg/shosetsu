@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker
+import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker.DownloadWorkerManager
 
 /*
  * This file is part of shosetsu.
@@ -25,14 +25,15 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker
  * 20 / 06 / 2020
  */
 class StartDownloadWorkerUseCase(
-		private val context: Context
+		private val context: Context,
+		private val manager: DownloadWorkerManager
 ) {
 	/**
 	 * Starts the download worker
 	 * @param override if true then will override the current download loop
 	 */
 	operator fun invoke(override: Boolean = false) {
-		if (!DownloadWorker.isRunning(context) || override)
-			DownloadWorker.start(context)
+		if (!manager.isRunning(context) || override)
+			manager.start(context)
 	}
 }

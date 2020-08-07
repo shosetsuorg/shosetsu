@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.connectivityManager
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.initPreferences
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
@@ -63,6 +63,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 	}
 
 	override val kodein: Kodein by closestKodein()
+	val settings: ShosetsuSettings by instance()
 
 	lateinit var textView: TextView
 
@@ -72,14 +73,14 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 			startBoot()
 
 			// Set so that debug versions are perm show intro
-			if (!BuildConfig.DEBUG) Settings.showIntro = false
+			if (!BuildConfig.DEBUG) settings.showIntro = false
 		}
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
-		initPreferences(this)
+		initPreferences(this, settings)
 		textView = findViewById(R.id.title)
 		// Sets up DB
 		if (!Database.isInit()) {
@@ -89,7 +90,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 		// Settings setup
 		connectivityManager = getSystemService<ConnectivityManager>()!!
 				as ConnectivityManager
-		if (Settings.showIntro) {
+		if (settings.showIntro) {
 			Log.i(logID(), "First time, Launching activity")
 			val i = Intent(this, IntroductionActivity::class.java)
 			startActivityForResult(i, INTRO_CODE)

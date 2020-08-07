@@ -1,9 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
+import android.text.Editable
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.TextInputSettingData
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsListBuilder
 
 /*
  * This file is part of shosetsu.
@@ -24,21 +24,22 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsI
 
 /**
  * shosetsu
- * 29 / 01 / 2020
+ * 26 / 06 / 2020
  */
-abstract class SettingsSubController : FastAdapterRecyclerController<SettingsItemData>() {
-	override val layoutRes: Int = R.layout.settings
 
-	/** Settings to be used*/
-	abstract val settings: List<SettingsItemData>
+@SettingsItemDSL
+inline fun textInputSettingData(
+		id: Int,
+		action: TextInputSettingData.() -> Unit
+): SettingsItemData = TextInputSettingData(id).also(action)
 
-	override fun onViewCreated(view: View) {}
+@SettingsItemDSL
+inline fun SettingsListBuilder.textInputSettingData(
+		id: Int,
+		action: TextInputSettingData.() -> Unit
+): Unit = this.let { list.add(TextInputSettingData(id).also(action)) }
 
-	/** Finds a setting via its data ID */
-	fun findDataByID(id: Int): Int {
-		for ((index, data) in settings.withIndex())
-			if (data.id == id)
-				return index
-		return -1
-	}
+@SettingsItemDSL
+fun TextInputSettingData.doAfterTextChanged(action: (Editable) -> Unit) {
+	this.onTextChanged = action
 }

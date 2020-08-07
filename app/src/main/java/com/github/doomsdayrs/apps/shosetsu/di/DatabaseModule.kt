@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
 import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase
+import com.github.doomsdayrs.apps.shosetsu.providers.database.ShosetsuDatabase.Companion.getRoomDatabase
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
@@ -22,7 +23,6 @@ import org.kodein.di.generic.singleton
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -33,6 +33,7 @@ import org.kodein.di.generic.singleton
  */
 
 val databaseModule: Kodein.Module = Kodein.Module("database_module") {
+	bind<ShosetsuDatabase>() with singleton { getRoomDatabase(instance()) }
 	bind<ChaptersDao>() with singleton { instance<ShosetsuDatabase>().chaptersDao() }
 	bind<NovelsDao>() with singleton { instance<ShosetsuDatabase>().novelsDao() }
 	bind<DownloadsDao>() with singleton { instance<ShosetsuDatabase>().downloadsDao() }

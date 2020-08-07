@@ -1,9 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl
 
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.ButtonSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsListBuilder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.ButtonSettingData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsListBuilder
 
 /*
  * This file is part of shosetsu.

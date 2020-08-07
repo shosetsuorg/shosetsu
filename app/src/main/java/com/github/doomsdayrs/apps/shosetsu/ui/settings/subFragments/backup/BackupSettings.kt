@@ -4,18 +4,19 @@ import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.Constant.REQUEST_CODE_PICK_FILE
 import com.vincent.filepicker.activity.NormalFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
+import org.kodein.di.generic.instance
 import java.util.*
 
 /*
@@ -40,21 +41,23 @@ import java.util.*
  * 13 / 07 / 2019
  */
 class BackupSettings : SettingsSubController() {
+	private val s: ShosetsuSettings by instance()
+
 	override val settings: ArrayList<SettingsItemData> by settingsList {
 		checkBoxSettingData(0) {
 			title { R.string.backup_chapters_option }
 			description { R.string.backup_chapters_option_description }
-			checker { Settings::backupChapters }
+			checker { s::backupChapters }
 		}
 		checkBoxSettingData(1) {
 			title { R.string.backup_settings_option }
 			description { R.string.backup_settings_option_desc }
-			checker { Settings::backupSettings }
+			checker { s::backupSettings }
 		}
 		checkBoxSettingData(2) {
 			title { R.string.backup_quick_option }
 			description { R.string.backup_quick_option_desc }
-			checker { Settings::backupQuick }
+			checker { s::backupQuick }
 		}
 		buttonSettingData(3) {
 			title { R.string.backup_now }

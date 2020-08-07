@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl
 
 import android.widget.CompoundButton
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TogglableStateSettingData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.ToggleableStateSettingData
 import kotlin.reflect.KMutableProperty0
 
 /*
@@ -27,8 +27,8 @@ import kotlin.reflect.KMutableProperty0
  */
 
 @SettingsItemDSL
-inline fun TogglableStateSettingData.checker(
-		crossinline action: TogglableStateSettingData.() -> KMutableProperty0<Boolean>
+inline fun ToggleableStateSettingData.checker(
+		crossinline action: ToggleableStateSettingData.() -> KMutableProperty0<Boolean>
 ) {
 	val property = action()
 	isChecked = property.get()
@@ -37,8 +37,11 @@ inline fun TogglableStateSettingData.checker(
 	}
 }
 
+/**
+ * Applies listener for when the view is selected
+ */
 @SettingsItemDSL
-inline fun TogglableStateSettingData.onChecked(crossinline action: TogglableStateSettingData.(
+inline fun ToggleableStateSettingData.onChecked(crossinline action: ToggleableStateSettingData.(
 		@ParameterName("buttonView") CompoundButton?,
 		@ParameterName("isChecked") Boolean
 ) -> Unit) {

@@ -43,11 +43,11 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	}
 
 	// Library
-	bind<ILibraryViewModel>() with provider { LibraryViewModel(i()) }
+	bind<ILibraryViewModel>() with provider { LibraryViewModel(i(), i()) }
 
 	// Other
 	bind<IDownloadsViewModel>() with provider {
-		DownloadsViewModel(i(), i(), i(), i())
+		DownloadsViewModel(i(), i(), i(), i(), i())
 	}
 	bind<ISearchViewModel>() with provider { SearchViewModel(i(), i()) }
 	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i()) }
@@ -63,8 +63,8 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	// Novel View
 	bind<INovelViewModel>() with provider { NovelViewModel(i()) }
 	bind<INovelInfoViewModel>() with provider { NovelInfoViewModel(i(), i(), i()) }
-	bind<INovelChaptersViewModel>() with provider { NovelChaptersViewModel(i(), i(), i(), i()) }
+	bind<INovelChaptersViewModel>() with provider { NovelChaptersViewModel(i(), i(), i(), i(), i()) }
 
 	// Chapter
-	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i()) }
+	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i(), i()) }
 }

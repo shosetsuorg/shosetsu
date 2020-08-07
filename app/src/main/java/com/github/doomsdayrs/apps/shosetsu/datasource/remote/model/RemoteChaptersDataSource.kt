@@ -40,10 +40,10 @@ class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 			try {
 				successResult(formatter.getPassage(chapterURL))
 			} catch (e: IOException) {
-				errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
+				errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception", e)
 			} catch (e: LuaError) {
-				errorResult(ERROR_LUA, e.message ?: "Unknown Lua Error")
+				errorResult(ERROR_LUA, e.message ?: "Unknown Lua Error", e)
 			} catch (e: Exception) {
-				errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
+				errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error", e)
 			}
 }

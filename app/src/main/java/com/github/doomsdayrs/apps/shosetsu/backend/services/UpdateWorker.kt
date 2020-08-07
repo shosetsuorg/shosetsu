@@ -13,10 +13,7 @@ import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.updateOnLowBattery
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.updateOnLowStorage
-import com.github.doomsdayrs.apps.shosetsu.common.Settings.updateOnlyIdle
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.LogConstants
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_UPDATE
@@ -67,7 +64,10 @@ class UpdateWorker(
 
 		const val KEY_NOVELS = 0x00
 		const val KEY_CATEGORY = 0x01
+	}
 
+	class UpdateWorkerManager(override val kodein: Kodein) : KodeinAware {
+		val settings: ShosetsuSettings by instance()
 
 		/**
 		 * Returns the status of the service.
@@ -99,19 +99,19 @@ class UpdateWorker(
 					UPDATE_WORK_ID,
 					REPLACE,
 					PWRB<UpdateWorker>(
-							Settings.updateCycle.toLong(),
+							settings.updateCycle.toLong(),
 							HOURS
 					).setConstraints(
 							Constraints.Builder().apply {
 								setRequiredNetworkType(
-										if (Settings.updateOnMetered) {
+										if (settings.updateOnMetered) {
 											CONNECTED
 										} else UNMETERED
 								)
-								setRequiresStorageNotLow(!updateOnLowStorage)
-								setRequiresBatteryNotLow(!updateOnLowBattery)
+								setRequiresStorageNotLow(!settings.updateOnLowStorage)
+								setRequiresBatteryNotLow(!settings.updateOnLowBattery)
 								if (SDK_INT >= VERSION_CODES.M)
-									setRequiresDeviceIdle(updateOnlyIdle)
+									setRequiresDeviceIdle(settings.updateOnlyIdle)
 							}.build()
 					)
 							.build()
@@ -149,6 +149,7 @@ class UpdateWorker(
 	override val kodein: Kodein by closestKodein(appContext)
 	private val iNovelsRepository by instance<INovelsRepository>()
 	private val loadNovelUseCase by instance<LoadNovelUseCase>()
+	private val settings by instance<ShosetsuSettings>()
 
 	override suspend fun doWork(): Result {
 		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
@@ -161,7 +162,7 @@ class UpdateWorker(
 			when (hNovels) {
 				is HResult.Success -> {
 					val novels = hNovels.data.let {
-						if (Settings.onlyUpdateOngoing)
+						if (settings.onlyUpdateOngoing)
 							it.filter { it.status == Novel.Status.PUBLISHING }
 						else it
 					}

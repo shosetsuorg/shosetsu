@@ -1,10 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.os.Build.VERSION_CODES
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
+import org.kodein.di.generic.instance
 
 /*
  * This file is part of shosetsu.
@@ -28,12 +29,14 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.dsl.*
  * 20 / 06 / 2020
  */
 class UpdateSettings : SettingsSubController() {
+	private val s: ShosetsuSettings by instance()
+
 	override val settings: List<SettingsItemData> by settingsList {
 		// Update frequency
 		seekBarSettingData(6) {
 			title { "Update frequency" }
 			range { 0F to 6F }
-			progressValue = when (Settings.updateCycle) {
+			progressValue = when (s.updateCycle) {
 				1 -> 0F
 				2 -> 1F
 				4 -> 2F
@@ -54,7 +57,7 @@ class UpdateSettings : SettingsSubController() {
 			}
 			onProgressChanged { _, progress, _, fromUser ->
 				if (fromUser)
-					Settings.updateCycle = when (progress) {
+					s.updateCycle = when (progress) {
 						0 -> 1
 						1 -> 2
 						2 -> 4
@@ -78,29 +81,29 @@ class UpdateSettings : SettingsSubController() {
 		// Download on update
 		switchSettingData(0) {
 			title { "Download on update" }
-			checker { Settings::downloadOnUpdate }
+			checker { s::downloadOnUpdate }
 		}
 		// Update only ongoing
 		switchSettingData(1) {
 			title { "Only update ongoing" }
-			checker { Settings::onlyUpdateOngoing }
+			checker { s::onlyUpdateOngoing }
 		}
 		switchSettingData(2) {
 			title { "Allow updating on metered connection" }
-			checker { Settings::updateOnMetered }
+			checker { s::updateOnMetered }
 		}
 		switchSettingData(3) {
 			title { "Update on low battery" }
-			checker { Settings::updateOnLowBattery }
+			checker { s::updateOnLowBattery }
 		}
 		switchSettingData(4) {
 			title { "Update on low storage" }
-			checker { Settings::updateOnLowStorage }
+			checker { s::updateOnLowStorage }
 		}
 		switchSettingData(5) {
 			title { "Update only when idle" }
 			requiredVersion { VERSION_CODES.M }
-			checker { Settings::updateOnlyIdle }
+			checker { s::updateOnlyIdle }
 		}
 	}
 }

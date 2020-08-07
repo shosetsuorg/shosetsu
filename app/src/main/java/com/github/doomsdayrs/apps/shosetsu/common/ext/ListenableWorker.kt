@@ -1,4 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base
+package com.github.doomsdayrs.apps.shosetsu.common.ext
+
+import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.work.ListenableWorker
 
 /*
  * This file is part of shosetsu.
@@ -19,9 +23,25 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base
 
 /**
  * shosetsu
- * 25 / 06 / 2020
+ * 31 / 07 / 2020
  */
-class SettingsListBuilder {
-	/** List of settings */
-	val list: ArrayList<SettingsItemData> = arrayListOf()
+
+/** @see [toast] */
+fun ListenableWorker.toast(
+		length: Int = Toast.LENGTH_SHORT,
+		message: () -> String
+) {
+	launchUI {
+		applicationContext.toast(message(), length)
+	}
+}
+
+/** @see [toast] */
+fun ListenableWorker.toast(
+		length: Int = Toast.LENGTH_SHORT,
+		@StringRes message: Int
+) {
+	launchUI {
+		applicationContext.toast(message, length)
+	}
 }

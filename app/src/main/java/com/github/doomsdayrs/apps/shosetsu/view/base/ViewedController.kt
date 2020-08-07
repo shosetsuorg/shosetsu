@@ -5,14 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.Nullable
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import kotlin.reflect.KMutableProperty
@@ -146,7 +150,31 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	 */
 	abstract fun onViewCreated(view: View)
 
-	fun showError(e: HResult.Error) {
-		Log.e(logID(), "[${e.code}]\t${e.message}")
+	/**
+	 * Show an error on screen
+	 */
+	open fun showError(e: HResult.Error) {
+		toast { e.message }
+	}
+
+
+	/** @see [toast] */
+	fun toast(
+			length: Int = Toast.LENGTH_SHORT,
+			message: () -> String
+	) {
+		launchUI {
+			applicationContext?.toast(message(), length)
+		}
+	}
+
+	/** @see [toast] */
+	fun toast(
+			length: Int = Toast.LENGTH_SHORT,
+			@StringRes message: Int
+	) {
+		launchUI {
+			applicationContext?.toast(message, length)
+		}
 	}
 }

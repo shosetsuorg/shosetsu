@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
-import android.widget.CompoundButton
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.ToggleableStateSettingData
 
 /*
  * This file is part of shosetsu.
@@ -23,8 +24,20 @@ import android.widget.CompoundButton
  * shosetsu
  * 25 / 06 / 2020
  */
-abstract class TogglableStateSettingData(id: Int) : SettingsItemData(id) {
-	var isChecked: Boolean = false
-	var onCheckedListener: CompoundButton.OnCheckedChangeListener =
-			CompoundButton.OnCheckedChangeListener { _, _ -> }
+class CheckBoxSettingData(id: Int) : ToggleableStateSettingData(id) {
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
+		with(settingsItem) {
+			checkBox.visibility = View.VISIBLE
+			checkBox.isChecked = isChecked
+			checkBox.setOnCheckedChangeListener(onCheckedListener)
+		}
+	}
+
+	override fun unbindView(settingsItem: ViewHolder) {
+		super.unbindView(settingsItem)
+		with(settingsItem) {
+			checkBox.setOnCheckedChangeListener(null)
+		}
+	}
 }

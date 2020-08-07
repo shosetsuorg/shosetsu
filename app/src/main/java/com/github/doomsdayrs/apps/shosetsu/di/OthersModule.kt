@@ -1,8 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.di
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.TextRequiringSettingData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker.DownloadWorkerManager
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker.UpdateWorkerManager
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.singleton
 
 /*
  * This file is part of shosetsu.
@@ -23,20 +25,10 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
 
 /**
  * shosetsu
- * 25 / 06 / 2020
+ * 30 / 07 / 2020
  */
-class ButtonSettingData(id: Int) : TextRequiringSettingData(id) {
-	var buttonOnClickListener: (View) -> Unit = {}
-
-	override fun setupView(settingsItem: SettingsItem) {
-		super.setupView(settingsItem)
-		with(settingsItem) {
-			if (textID != -1)
-				button.setText(textID)
-			else
-				button.text = textText
-			button.visibility = View.VISIBLE
-			button.setOnClickListener(buttonOnClickListener)
-		}
-	}
+@Suppress("PublicApiImplicitType")
+val othersModule = Kodein.Module("others") {
+	bind<UpdateWorkerManager>() with singleton { UpdateWorkerManager(kodein) }
+	bind<DownloadWorkerManager>() with singleton { DownloadWorkerManager(kodein) }
 }

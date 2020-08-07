@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.common
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.core.content.edit
@@ -20,16 +21,21 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.settings.*
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 14 / June / 2019
  *
- * @author github.com/doomsdayrs
- */
-/**
  * Setting variables to work with
  */
-object Settings {
+class ShosetsuSettings(
+		/** Application context for internal use */
+		val context: Context,
+		val settings: SharedPreferences = context.getSharedPreferences("view", 0),
+		private val readerSettings: SharedPreferences = context.getSharedPreferences("reader", 0)
+
+) {
 	enum class MarkingTypes(val i: Int) {
 		ONVIEW(0),
 		ONSCROLL(1);
@@ -49,10 +55,6 @@ object Settings {
 		DARKI(4),
 		CUSTOM(5);
 	}
-
-	lateinit var settings: SharedPreferences
-	lateinit var readerSettings: SharedPreferences
-	lateinit var formatterSettings: SharedPreferences
 
 
 	// READER
@@ -216,4 +218,3 @@ object Settings {
 		set(value) = settings.edit { putBoolean(BACKUP_QUICK, value) }
 		get() = settings.getBoolean(BACKUP_QUICK, false)
 }
-

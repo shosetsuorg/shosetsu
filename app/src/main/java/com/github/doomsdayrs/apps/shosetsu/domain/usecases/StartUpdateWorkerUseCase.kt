@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker.UpdateWorkerManager
 
 /*
  * This file is part of shosetsu.
@@ -25,9 +25,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
  * 23 / 06 / 2020
  */
 class StartUpdateWorkerUseCase(
-		private val context: Context
+		private val context: Context,
+		private val manager: UpdateWorkerManager
 ) : (() -> Unit) {
 	override fun invoke() {
-		UpdateWorker.start(context)
+		manager.start(context)
 	}
 }

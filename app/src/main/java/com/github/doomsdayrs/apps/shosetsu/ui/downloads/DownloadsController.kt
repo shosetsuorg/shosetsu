@@ -23,14 +23,15 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker
-import com.github.doomsdayrs.apps.shosetsu.common.Settings
+import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
+import org.kodein.di.generic.instance
 
 /**
  * Shosetsu
@@ -42,6 +43,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
 	val viewModel: IDownloadsViewModel by viewModel()
+	private val settings by instance<ShosetsuSettings>()
+	private val manager by instance<UpdateWorker.UpdateWorkerManager>()
 
 	init {
 		setHasOptionsMenu(true)
@@ -61,7 +64,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_downloads, menu)
 		val menuItem = menu.findItem(R.id.toolbar_downloads_pause)
-		if (Settings.isDownloadPaused)
+		if (settings.isDownloadPaused)
 			menuItem.setIcon(R.drawable.ic_play_circle_filled_24dp)
 	}
 
@@ -71,7 +74,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 				item.setIcon(R.drawable.ic_play_circle_filled_24dp)
 			else {
 				item.setIcon(R.drawable.ic_pause_circle_outline_24dp)
-				DownloadWorker.start(activity!!)
+				manager.start(activity!!)
 			}
 			return true
 		}
@@ -91,6 +94,7 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 
 	override fun setupRecyclerView() {
 		recyclerView?.setHasFixedSize(false)
+		super.setupRecyclerView()
 	}
 
 	override fun createRecyclerAdapter(): DownloadAdapter = DownloadAdapter(this)

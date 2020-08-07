@@ -1,11 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
-import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapTo
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 
@@ -28,22 +23,14 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 
 /**
  * shosetsu
- * 08 / 05 / 2020
+ * 29 / 07 / 2020
  */
-class LoadLibraryUseCase(
-		private val iNovelsRepository: INovelsRepository,
-		private val settings: ShosetsuSettings
-) : (() -> LiveData<HResult<List<BookmarkedNovelUI>>>) {
-	override fun invoke(): LiveData<HResult<List<BookmarkedNovelUI>>> {
-		return liveData {
-			emitSource(iNovelsRepository.getLiveBookmarked().map { origin ->
-				origin.mapListTo().also { result ->
-					if (result is HResult.Success)
-						result.data.forEach {
-							it.settings = settings
-						}
-				}
-			})
-		}
-	}
+class UpdateBookmarkedNovelUIUseCase(
+		private val novelsRepository: INovelsRepository
+) {
+	/**
+	 *
+	 */
+	suspend operator fun invoke(list: List<BookmarkedNovelUI>): Unit =
+			novelsRepository.updateBookmarkedNovelData(list.mapTo())
 }

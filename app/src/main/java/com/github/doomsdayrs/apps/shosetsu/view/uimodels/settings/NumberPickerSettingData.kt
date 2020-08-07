@@ -1,9 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.data
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
 import android.view.View
 import android.widget.NumberPicker
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.data.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.RightSettingsItemData
 
 /*
  * This file is part of shosetsu.
@@ -26,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsItem
  * shosetsu
  * 25 / 06 / 2020
  */
-class NumberPickerSettingData(id: Int) : SettingsItemData(id) {
+class NumberPickerSettingData(id: Int) : RightSettingsItemData(id) {
 	var lowerBound = 0
 	var upperBound = 0
 	var numberPickerValue: Int = 0
@@ -36,13 +35,21 @@ class NumberPickerSettingData(id: Int) : SettingsItemData(id) {
 			newVal: Int
 	) -> Unit = { _, _, _ -> }
 
-	override fun setupView(settingsItem: SettingsItem) {
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
 		with(settingsItem) {
 			numberPicker.visibility = View.VISIBLE
 			numberPicker.minValue = lowerBound
 			numberPicker.maxValue = upperBound
 			numberPicker.value = numberPickerValue
 			numberPicker.setOnValueChangedListener(numberPickerOnValueChangedListener)
+		}
+	}
+
+	override fun unbindView(settingsItem: ViewHolder) {
+		super.unbindView(settingsItem)
+		with(settingsItem) {
+			numberPicker.setOnValueChangedListener(null)
 		}
 	}
 }

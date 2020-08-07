@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
@@ -30,14 +29,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * @author github.com/doomsdayrs
  */
 abstract class ILibraryViewModel : SubscribeHandleViewModel<List<BookmarkedNovelUI>>, ViewModel() {
-
-	/** Novels that are currently visible, Good for search */
-	abstract var visible: MutableLiveData<List<Int>>
-
-	abstract fun removeAllFromLibrary()
-
 	/**
-	 * @return new list
+	 * Remove the following from the library
 	 */
-	abstract fun search(search: String): List<BookmarkedNovelUI>
+	abstract fun removeFromLibrary(list: List<BookmarkedNovelUI>)
 }
