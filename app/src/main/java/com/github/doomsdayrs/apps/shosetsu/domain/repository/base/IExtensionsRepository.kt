@@ -27,13 +27,16 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 /**
  * shosetsu
  * 25 / 04 / 2020
- *
- * @author github.com/doomsdayrs
  */
 interface IExtensionsRepository {
+	/**
+	 * Live data of all extensions
+	 */
 	suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>>
 
 	suspend fun installExtension(extensionEntity: ExtensionEntity)
+
+	suspend fun uninstallExtension(extensionEntity: ExtensionEntity)
 
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity)
 

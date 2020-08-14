@@ -19,10 +19,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.InstallExtensionUIUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.RefreshRepositoryUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.ReloadFormattersUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
 
@@ -33,23 +30,24 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
  * @author github.com/doomsdayrs
  */
 class ExtensionsViewModel(
-		val getExtensionsUIUseCase: GetExtensionsUIUseCase,
-		val refreshRepositoryUseCase: RefreshRepositoryUseCase,
-		val reloadFormattersUseCase: ReloadFormattersUseCase,
-		val installExtensionUIUseCase: InstallExtensionUIUseCase
+		private val getExtensionsUIUseCase: GetExtensionsUIUseCase,
+		private val refreshRepositoryUseCase: RefreshRepositoryUseCase,
+		private val reloadFormattersUseCase: ReloadFormattersUseCase,
+		private val installExtensionUIUseCase: InstallExtensionUIUseCase,
+		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase
 ) : IExtensionsViewModel() {
 
-	override fun reloadFormatters() = reloadFormattersUseCase()
+	override fun reloadFormatters() =
+			reloadFormattersUseCase()
 
-	override fun refreshRepository() = refreshRepositoryUseCase()
+	override fun refreshRepository() =
+			refreshRepositoryUseCase()
 
-	override fun installExtension(extensionUI: ExtensionUI) {
-		installExtensionUIUseCase(extensionUI)
-	}
+	override fun installExtension(extensionUI: ExtensionUI) =
+			installExtensionUIUseCase(extensionUI)
 
-	override fun uninstallExtension(extensionUI: ExtensionUI) {
-		TODO("uninstallExtension")
-	}
+	override fun uninstallExtension(extensionUI: ExtensionUI) =
+			uninstallExtensionUIUseCase(extensionUI)
 
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy { getExtensionsUIUseCase() }
 }

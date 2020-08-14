@@ -89,6 +89,14 @@ class ExtensionsRepository(
 			}
 	}
 
+	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity) {
+		memorySource.removeFormatterFromMemory(extensionEntity.id)
+		fileSource.deleteFormatter(extensionEntity.fileName)
+		databaseSource.updateExtension(
+				extensionEntity.copy(enabled = false, installed = false, installedVersion = null)
+		)
+	}
+
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): Unit =
 			databaseSource.insertOrUpdate(extensionEntity)
 
@@ -121,5 +129,4 @@ class ExtensionsRepository(
 			data: Map<Int, Any>
 	): HResult<List<Novel.Listing>> =
 			remoteCatalogueDataSource.loadListing(formatter, listing, page, data)
-
 }

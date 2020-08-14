@@ -50,28 +50,28 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.extensions)
+	}
+
+	override fun setupRecyclerView() {
+		super.setupRecyclerView()
 		extensionViewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return when (item.itemId) {
-			R.id.refresh -> {
-				extensionViewModel.refreshRepository()
-				true
-			}
-			R.id.reload -> {
-				extensionViewModel.reloadFormatters()
-				true
-			}
-			else -> false
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+		R.id.refresh -> {
+			extensionViewModel.refreshRepository()
+			true
 		}
+		R.id.reload -> {
+			extensionViewModel.reloadFormatters()
+			true
+		}
+		else -> false
 	}
 
 	override fun difAreItemsTheSame(oldItem: ExtensionUI, newItem: ExtensionUI): Boolean =
 			oldItem.id == newItem.id
 
-	override fun setupRecyclerView() {
-	}
-
-	override fun createRecyclerAdapter(): ExtensionsAdapter = ExtensionsAdapter(this)
+	override fun createRecyclerAdapter(): ExtensionsAdapter =
+			ExtensionsAdapter(this)
 }

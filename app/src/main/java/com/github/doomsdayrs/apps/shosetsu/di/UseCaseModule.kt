@@ -102,4 +102,6 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<UpdateExtensionEntityUseCase>() with provider { UpdateExtensionEntityUseCase(instance()) }
 
 	bind<UpdateBookmarkedNovelUIUseCase>() with provider { UpdateBookmarkedNovelUIUseCase(instance()) }
+
+	bind<UninstallExtensionUIUseCase>() with provider { UninstallExtensionUIUseCase(instance()) }
 }
