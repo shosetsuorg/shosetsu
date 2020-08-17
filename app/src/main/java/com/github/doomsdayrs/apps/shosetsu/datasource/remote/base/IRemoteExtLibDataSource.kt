@@ -26,6 +26,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
  * 13 / 05 / 2020
  */
 interface IRemoteExtLibDataSource {
+
+	/**
+	 * Downloads an extension library
+	 * @param repo Repository of the extension
+	 * @param extLibEntity The library to download
+	 */
 	fun downloadLibrary(
 			repo: RepositoryEntity,
 			extLibEntity: ExtLibEntity

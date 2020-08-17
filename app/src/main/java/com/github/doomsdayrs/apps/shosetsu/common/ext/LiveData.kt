@@ -27,5 +27,9 @@ import androidx.lifecycle.Observer
  */
 
 /** See [LiveData.observe] for understanding, this just inlines it */
+@Deprecated("Use android extension", ReplaceWith(
+		"observe(owner){}",
+		"androidx.lifecycle.observe"
+))
 inline fun <T> LiveData<T>.observe(owner: LifecycleOwner, crossinline observer: (T) -> Unit): Unit =
 		observe(owner, Observer { observer(it) })

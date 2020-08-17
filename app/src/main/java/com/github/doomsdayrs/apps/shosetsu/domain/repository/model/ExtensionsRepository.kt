@@ -1,14 +1,17 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_BROKEN
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logError
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtensionDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtRepoDataSource
@@ -53,10 +56,10 @@ class ExtensionsRepository(
 	override suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
 			databaseSource.loadExtensions()
 
-	override suspend fun installExtension(extensionEntity: ExtensionEntity) {
+	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*> {
 		val repo = repositorySource.loadRepository(extensionEntity.repoID)
 		if (repo is HResult.Success)
-			when (val result = remoteSource.downloadFormatter(
+			when (val result = remoteSource.downloadExtension(
 					repo.data,
 					extensionEntity
 			)) {
@@ -79,14 +82,19 @@ class ExtensionsRepository(
 						extensionEntity.installed = true
 						extensionEntity.enabled = true
 						databaseSource.updateExtension(extensionEntity)
+						return successResult("")
+					} catch (e: IllegalArgumentException) {
+						return errorResult(ERROR_LUA_BROKEN, e).also { logError { it } }
 					} catch (e: Exception) {
-						Log.e(logID(), "Failed to parse formatter", e)
+						return errorResult(ERROR_GENERAL, e).also { logError { it } }
 					}
 				}
 				is HResult.Error -> {
-					Log.e(logID(), "${result.code}\t${result.message}")
+					logError { result }
+					return result
 				}
 			}
+		return emptyResult()
 	}
 
 	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity) {

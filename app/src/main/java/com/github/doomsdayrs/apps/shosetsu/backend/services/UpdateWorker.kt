@@ -19,6 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_U
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.WorkerTags.UPDATE_WORK_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logError
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
@@ -171,8 +172,12 @@ class UpdateWorker(
 						pr.setContentText(applicationContext.getString(R.string.updating) + it.title)
 						pr.setProgress(novels.size, progress, false)
 						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-						loadNovelUseCase(it, true).let {
-
+						loadNovelUseCase(it, true).let { lR ->
+							when (lR) {
+								is HResult.Success -> Log.d(logID(), "Updated $lR")
+								is HResult.Error -> logError { lR }
+								else -> Log.e(logID(), "Impossible result")
+							}
 						}
 						progress++
 					}

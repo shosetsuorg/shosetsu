@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
-import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
@@ -42,7 +42,7 @@ class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 			} catch (e: IOException) {
 				errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception", e)
 			} catch (e: LuaError) {
-				errorResult(ERROR_LUA, e.message ?: "Unknown Lua Error", e)
+				errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
 			} catch (e: Exception) {
 				errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error", e)
 			}

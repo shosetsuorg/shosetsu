@@ -10,6 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtensionDataSource
 import okio.IOException
 import org.luaj.vm2.LuaError
+import java.io.FileNotFoundException
 
 /*
  * This file is part of shosetsu.
@@ -38,7 +39,9 @@ class FileExtensionDataSource(
 	override suspend fun loadFormatter(fileName: String): HResult<Formatter> = try {
 		successResult(LuaFormatter(formatterUtils.makeFormatterFile(fileName)))
 	} catch (e: LuaError) {
-		errorResult(ErrorKeys.ERROR_LUA, e.message ?: "Unknown Lua Error")
+		errorResult(ErrorKeys.ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
+	} catch (e: FileNotFoundException) {
+		errorResult(ErrorKeys.ERROR_NOT_FOUND, e.message ?: "Unknown file not found")
 	}
 
 	override suspend fun writeFormatter(fileName: String, data: String) {

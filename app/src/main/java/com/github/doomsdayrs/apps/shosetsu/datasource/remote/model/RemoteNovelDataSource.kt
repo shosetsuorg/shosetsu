@@ -4,7 +4,7 @@ import android.util.Log
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
-import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
@@ -51,7 +51,7 @@ class RemoteNovelDataSource : IRemoteNovelDataSource {
 		} catch (e: IOException) {
 			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
 		} catch (e: LuaError) {
-			errorResult(ERROR_LUA, e.message ?: "Unknown Lua Error")
+			errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
 		} catch (e: Exception) {
 			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
 		}

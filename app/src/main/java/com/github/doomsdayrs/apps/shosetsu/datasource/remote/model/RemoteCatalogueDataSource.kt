@@ -2,11 +2,12 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
 import android.util.Log
 import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.LuaFormatter.Companion.FILTER_POSITION_QUERY
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.QUERY_INDEX
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
-import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NO_SEARCH
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
@@ -44,15 +45,17 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			data: Map<Int, Any>
 	): HResult<List<Novel.Listing>> {
 		return try {
-			successResult(
-					formatter.search(HashMap(data).apply { this[FILTER_POSITION_QUERY] = query }) {
-						Log.i(logID(), it)
-					}.toList()
-			)
+			if (formatter.hasSearch)
+				successResult(
+						formatter.search(HashMap(data).apply { this[QUERY_INDEX] = query }) {
+							Log.i(logID(), it)
+						}.toList()
+				)
+			else errorResult(ERROR_NO_SEARCH, "This extension has no search functionality")
 		} catch (e: IOException) {
 			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
 		} catch (e: LuaError) {
-			errorResult(ERROR_LUA, e.message ?: "Unknown Lua Error")
+			errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
 		} catch (e: Exception) {
 			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
 		}
@@ -71,7 +74,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 		} catch (e: IOException) {
 			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
 		} catch (e: LuaError) {
-			errorResult(ERROR_LUA, e.message ?: "Unknown Lua Error")
+			errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
 		} catch (e: Exception) {
 			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
 		}

@@ -22,6 +22,10 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * shosetsu
@@ -34,19 +38,36 @@ class ExtensionsViewModel(
 		private val refreshRepositoryUseCase: RefreshRepositoryUseCase,
 		private val reloadFormattersUseCase: ReloadFormattersUseCase,
 		private val installExtensionUIUseCase: InstallExtensionUIUseCase,
-		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase
+		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
+		private val toastUseCase: ToastUseCase
 ) : IExtensionsViewModel() {
 
-	override fun reloadFormatters() =
+	override fun reloadFormatters(): Unit =
 			reloadFormattersUseCase()
 
-	override fun refreshRepository() =
+	override fun refreshRepository(): Unit =
 			refreshRepositoryUseCase()
 
-	override fun installExtension(extensionUI: ExtensionUI) =
-			installExtensionUIUseCase(extensionUI)
+	override fun installExtension(extensionUI: ExtensionUI) {
+		GlobalScope.launch(Dispatchers.IO, start = CoroutineStart.DEFAULT) {
+			when (val result = installExtensionUIUseCase(extensionUI)) {
+				is HResult.Success -> {
+					toastUseCase {
+						"Installed!"
+					}
+				}
+				is HResult.Error -> {
+					result.error?.printStackTrace()
+					toastUseCase {
+						"Cannot install due to error ${result.code} by ${result.message} due to " +
+								"${result.error?.let { it::class.simpleName }}"
+					}
+				}
+			}
+		}
+	}
 
-	override fun uninstallExtension(extensionUI: ExtensionUI) =
+	override fun uninstallExtension(extensionUI: ExtensionUI): Unit =
 			uninstallExtensionUIUseCase(extensionUI)
 
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy { getExtensionsUIUseCase() }

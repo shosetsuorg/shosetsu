@@ -23,8 +23,21 @@ package com.github.doomsdayrs.apps.shosetsu.common.consts
  * 12 / May / 2020
  */
 object ErrorKeys {
+	/** When something is wrong generally */
 	const val ERROR_GENERAL = 0
-	const val ERROR_LUA = 1
+
+	/** When something is wrong in lua generally */
+	const val ERROR_LUA_GENERAL = 1
+
+	/** When there is a network error*/
 	const val ERROR_NETWORK = 2
+
+	/** When there is a not found error */
 	const val ERROR_NOT_FOUND = 3
+
+	/** When the lua script is broken */
+	const val ERROR_LUA_BROKEN = 4
+
+	/** When the extension has no search functionality */
+	const val ERROR_NO_SEARCH = 5
 }

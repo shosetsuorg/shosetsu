@@ -73,7 +73,7 @@ fun Array<Filter<*>>.toSettingItems(
 						}
 				)
 			}
-			is Filter.Group<*, *> -> {
+			is Filter.Group<*> -> {
 			}
 			is Filter.Header -> {
 			}

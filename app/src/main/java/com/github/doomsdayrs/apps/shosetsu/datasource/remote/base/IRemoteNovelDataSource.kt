@@ -26,6 +26,10 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  * 04 / 05 / 2020
  */
 interface IRemoteNovelDataSource {
+
+	/**
+	 * Loads novel info
+	 */
 	suspend fun loadNovel(
 			formatter: Formatter,
 			novelURL: String,

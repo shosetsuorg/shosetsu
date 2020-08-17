@@ -34,7 +34,7 @@ interface IExtensionsRepository {
 	 */
 	suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>>
 
-	suspend fun installExtension(extensionEntity: ExtensionEntity)
+	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*>
 
 	suspend fun uninstallExtension(extensionEntity: ExtensionEntity)
 

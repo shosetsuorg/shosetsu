@@ -33,7 +33,7 @@ import org.json.JSONObject
  * 13 / 05 / 2020
  */
 class RemoteExtRepoDataSource(
-		val client: OkHttpClient
+		private val client: OkHttpClient
 ) : IRemoteExtRepoDataSource {
 	override suspend fun downloadRepoData(
 			repo: RepositoryEntity
@@ -46,7 +46,7 @@ class RemoteExtRepoDataSource(
 				)
 		)
 	} catch (e: Exception) {
-		errorResult(ErrorKeys.ERROR_GENERAL, e.message ?: "Unknwon general error")
+		errorResult(ErrorKeys.ERROR_GENERAL, e.message ?: "Unknown general error")
 	}
 
 }

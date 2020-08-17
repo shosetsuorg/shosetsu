@@ -26,7 +26,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
  * 13 / 05 / 2020
  */
 interface IRemoteExtensionDataSource {
-	suspend fun downloadFormatter(
+
+	/**
+	 * Downloads an extension
+	 * @return extension content
+	 */
+	suspend fun downloadExtension(
 			repositoryEntity: RepositoryEntity,
 			extensionEntity: ExtensionEntity
 	): HResult<String>

@@ -47,10 +47,10 @@ sealed class HResult<out T : Any> {
 	 * @param error ERROR Cause
 	 */
 	@Suppress("MemberVisibilityCanBePrivate")
-	class Error(
+	data class Error(
 			val code: Int,
 			val message: String,
-			val error: kotlin.Exception? = null
+			val error: Exception? = null
 	) : HResult<Nothing>()
 }
 
@@ -66,6 +66,11 @@ fun emptyResult(): HResult.Empty = HResult.Empty
 /** This is an easy way to create an error*/
 fun errorResult(code: Int, message: String, error: Exception? = null): HResult.Error =
 		HResult.Error(code, message, error)
+
+
+/** This is an easy way to create an error via its exception */
+fun errorResult(code: Int, error: Exception? = null): HResult.Error =
+		HResult.Error(code, error?.message ?: "UnknownException", error)
 
 /**
  * Converts shit

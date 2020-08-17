@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
 
@@ -26,11 +26,8 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
  * 13 / 05 / 2020
  */
 class InstallExtensionUIUseCase(
-		val extensionsRepository: IExtensionsRepository
-) : ((ExtensionUI) -> Unit) {
-	override fun invoke(p1: ExtensionUI) {
-		launchIO {
+		private val extensionsRepository: IExtensionsRepository
+) {
+	suspend operator fun invoke(p1: ExtensionUI): HResult<*> =
 			extensionsRepository.installExtension(p1.convertTo())
-		}
-	}
 }

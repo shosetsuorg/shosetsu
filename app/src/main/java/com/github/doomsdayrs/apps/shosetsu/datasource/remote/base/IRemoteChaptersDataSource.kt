@@ -28,6 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 interface IRemoteChaptersDataSource {
 	/**
 	 * Loads the chapter passage from network
+	 * @return chapter content
 	 */
 	suspend fun loadChapterPassage(formatter: Formatter, chapterURL: String): HResult<String>
 }

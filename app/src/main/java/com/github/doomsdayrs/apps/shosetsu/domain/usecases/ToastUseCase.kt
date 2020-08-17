@@ -1,8 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import android.app.Application
+import android.widget.Toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 
 /*
  * This file is part of shosetsu.
@@ -21,21 +22,19 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 14 / 08 / 2020
  */
-abstract class IExtensionsViewModel
-	: ViewModel(), SubscribeHandleViewModel<List<ExtensionUI>> {
-	abstract fun reloadFormatters()
-	abstract fun refreshRepository()
-
-	/** Installs an extension (can also update it) */
-	abstract fun installExtension(extensionUI: ExtensionUI)
-
-	/** Uninstalls an extension */
-	abstract fun uninstallExtension(extensionUI: ExtensionUI)
+class ToastUseCase(
+		private val application: Application
+) {
+	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> String) {
+		launchUI {
+			application.toast(
+					duration = duration,
+					string = message()
+			)
+		}
+	}
 }

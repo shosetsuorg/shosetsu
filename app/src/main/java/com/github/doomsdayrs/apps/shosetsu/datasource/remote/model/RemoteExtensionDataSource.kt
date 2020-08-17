@@ -33,19 +33,19 @@ import okhttp3.OkHttpClient
  * 13 / 05 / 2020
  */
 class RemoteExtensionDataSource(
-		val client: OkHttpClient
+		private val client: OkHttpClient
 ) : IRemoteExtensionDataSource {
 
 	private fun makeFormatterURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
 			"${repo.url}${repoFolderStruct}/src/${fe.lang}/${fe.fileName}.lua"
 
-	override suspend fun downloadFormatter(
-			reposiotryEntity: RepositoryEntity,
+	override suspend fun downloadExtension(
+			repositoryEntity: RepositoryEntity,
 			extensionEntity: ExtensionEntity
 	): HResult<String> =
 			try {
 				successResult(client.quickie(makeFormatterURL(
-						reposiotryEntity,
+						repositoryEntity,
 						extensionEntity
 				)).body!!.string())
 			} catch (e: Exception) {

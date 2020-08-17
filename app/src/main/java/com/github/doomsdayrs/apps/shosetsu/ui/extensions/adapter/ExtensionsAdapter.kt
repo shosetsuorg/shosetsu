@@ -58,7 +58,7 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 
 	override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
 		val entity = extensionsController.recyclerArray[position]
-		Log.i(logID(), entity.toString())
+		//Log.i(logID(), entity.toString())
 		val id = entity.id
 		var installed = false
 		var update = false
@@ -73,7 +73,7 @@ class ExtensionsAdapter(private val extensionsController: ExtensionsController)
 							entity.installedVersion ?: "",
 							entity.repositoryVersion
 					)) {
-				Log.i(logID(), "$id has an update")
+				//Log.i(logID(), "$id has an update")
 				update = true
 				// holder.button.setImageResource(R.drawable.ic_update_black_24dp)
 				holder.button.text = holder.itemView.context.getText(R.string.update)

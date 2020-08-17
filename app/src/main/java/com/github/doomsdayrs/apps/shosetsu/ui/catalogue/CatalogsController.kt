@@ -77,7 +77,7 @@ class CatalogsController : FastAdapterRecyclerController<CatalogUI>() {
 			Log.d("FormatterSelection", i.title)
 			if (isOnline) {
 				val catalogueFragment = CatalogController(bundleOf(
-						BundleKeys.BUNDLE_FORMATTER to i.identifier
+						BundleKeys.BUNDLE_FORMATTER to i.identifier.toInt()
 				))
 				router.pushController(catalogueFragment.withFadeTransaction())
 			} else context?.toast(R.string.you_not_online)
