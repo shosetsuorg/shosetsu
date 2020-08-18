@@ -32,7 +32,14 @@ abstract class SettingsSubController : FastAdapterRecyclerController<SettingsIte
 	/** Settings to be used*/
 	abstract val settings: List<SettingsItemData>
 
-	override fun onViewCreated(view: View) {}
+	override fun onViewCreated(view: View) {
+
+	}
+
+	override fun setupFastAdapter() {
+		super.setupFastAdapter()
+		updateUI(settings)
+	}
 
 	/** Finds a setting via its data ID */
 	fun findDataByID(id: Int): Int {

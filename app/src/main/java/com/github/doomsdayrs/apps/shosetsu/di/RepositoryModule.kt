@@ -33,7 +33,7 @@ import org.kodein.di.generic.singleton
 
 val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 	bind<IChaptersRepository>() with singleton {
-		ChaptersRepository(instance(), instance(), instance(), instance())
+		ChaptersRepository(instance(), instance(), instance(), instance(), instance())
 	}
 
 	bind<IDownloadsRepository>() with singleton { DownloadsRepository(instance()) }

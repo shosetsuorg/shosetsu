@@ -1,11 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
@@ -50,7 +48,7 @@ class LoadNovelUseCase(
 						is HResult.Success -> {
 							val page = pR.data
 							val currentStatus = novel.loaded
-							Log.d(logID(), "Loaded novel info $page")
+							//Log.d(logID(), "Loaded novel info $page")
 							nR.updateNovelData(novel, page)
 							if (loadChapters)
 								if (!currentStatus)

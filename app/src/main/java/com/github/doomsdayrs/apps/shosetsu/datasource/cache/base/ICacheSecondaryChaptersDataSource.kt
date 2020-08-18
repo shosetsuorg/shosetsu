@@ -21,19 +21,25 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 17 / 08 / 2020
  *
- * This caches chapters, to prevent reloading issues
+ * This is the secondary cache system for the app, where chapters are saved to the applications
+ * cache directory.
+ *
+ * Files should not be stored for more then 10 minutes.
  */
-interface ICacheChaptersDataSource {
+interface ICacheSecondaryChaptersDataSource {
 	/**
 	 * Puts a chapter passage into cache, if cache exists this overwrites
+	 *
+	 * Will launch a second coroutine that will clear out old content
 	 */
 	suspend fun saveChapterInCache(chapterID: Int, passage: String)
 
 	/**
 	 * Gets chapter passage via it's ID
+	 *
 	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
-	suspend fun loadChapterFromCache(chapterID: Int): HResult<String>
+	suspend fun loadChapterPassage(chapterID: Int): HResult<String>
 }

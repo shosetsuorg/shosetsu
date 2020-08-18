@@ -63,6 +63,7 @@ class SettingsController : RecyclerController<SettingsAdapter, SettingsCard>() {
 			oldItem.id == newItem.id
 
 	override fun setupRecyclerView() {
+		super.setupRecyclerView()
 		recyclerView?.setHasFixedSize(true)
 	}
 

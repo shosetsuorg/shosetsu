@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.util.set
 import androidx.core.view.postDelayed
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.Callback
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -27,7 +28,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.observe
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
@@ -415,7 +415,7 @@ class ChapterReader
 		viewpager.apply {
 			adapter = chapterReaderAdapter
 			registerOnPageChangeCallback(pageChangeCallback)
-			currentItem = getCurrentChapterIndex()
+			setCurrentItem(getCurrentChapterIndex(), false)
 			addItemDecoration(DividerItemDecoration(
 					viewpager.context,
 					viewpager.orientation
