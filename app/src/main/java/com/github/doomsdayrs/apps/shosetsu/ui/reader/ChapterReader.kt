@@ -33,6 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
+import com.skydoves.colorpickerview.ColorPickerDialog
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import com.xw.repo.BubbleSeekBar
@@ -214,7 +215,15 @@ class ChapterReader
 				}
 			}
 		}
-
+		theme_select.apply {
+			setOnClickListener {
+				ColorPickerDialog.Builder(context)
+						.setPositiveButton("") { dialog, which ->
+							Log.d(logID(), "Clicked")
+						}
+						.show()
+			}
+		}
 		slidingUpPanelLayout.addPanelSlideListener(object : SlidingUpPanelLayout.PanelSlideListener {
 			override fun onPanelSlide(panel: View?, slideOffset: Float) {
 				drawer_toggle.setImageResource(R.drawable.ic_baseline_drag_handle_24)
@@ -407,7 +416,6 @@ class ChapterReader
 
 			}
 		}
-
 	}
 
 	private fun setupViewPager() {
@@ -423,6 +431,9 @@ class ChapterReader
 		}
 	}
 
+	/**
+	 * Moves bottom up and down
+	 */
 	fun animateBottom() {
 		chapter_reader_bottom?.apply {
 			post {
@@ -469,6 +480,10 @@ class ChapterReader
 		}
 	}
 
+
+	/**
+	 * Moves top up and down
+	 */
 	fun animateToolbar() {
 		toolbar?.let {
 			@Suppress("CheckedExceptionsKotlin")
@@ -483,7 +498,6 @@ class ChapterReader
 				it.visibility = if (it.visibility == VISIBLE) GONE else VISIBLE
 			}
 		}
-
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
