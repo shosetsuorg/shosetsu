@@ -14,6 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.observe
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
+import com.github.doomsdayrs.apps.shosetsu.view.setOnDoubleClickListener
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 
 /*
@@ -105,9 +106,9 @@ class ChapterReaderAdapter(
 		holder.textView.apply {
 			textSize = chapterReader.settings.readerTextSize
 
-			setOnClickListener {
-				chapterReader.animateToolbar()
+			setOnDoubleClickListener {
 				chapterReader.animateBottom()
+				chapterReader.animateToolbar()
 			}
 		}
 

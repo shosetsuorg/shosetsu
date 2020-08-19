@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/slidingUpPanelLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    app:umanoDragView="@id/chapter_reader_bottom"
+    android:orientation="vertical"
     tools:context=".ui.reader.ChapterReader">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,4 +51,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/chapter_reader_bottom" />
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

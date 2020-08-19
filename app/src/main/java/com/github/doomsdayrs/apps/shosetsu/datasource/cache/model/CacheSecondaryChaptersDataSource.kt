@@ -151,9 +151,12 @@ class CacheSecondaryChaptersDataSource(
 		launchIO { launchCleanUp() } // Launch cleanup separately
 	}
 
-	override suspend fun loadChapterPassage(chapterID: Int): HResult<String> =
-			createFile(chapterID).takeIf { it.exists() }?.let { successResult(it.readText()) }
-					?: emptyResult()
+	override suspend fun loadChapterPassage(chapterID: Int): HResult<String> {
+		launchIO { launchCleanUp() } // Launch cleanup separately
+
+		return createFile(chapterID).takeIf { it.exists() }?.let { successResult(it.readText()) }
+				?: emptyResult()
+	}
 
 	companion object {
 		private const val CHAPTER_KEY = "chapterID"

@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -33,9 +32,9 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.skydoves.colorpickerview.ColorPickerDialog
-import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState
 import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.chapter_reader.*
 import kotlinx.android.synthetic.main.chapter_reader_bottom.*
@@ -59,8 +58,9 @@ import org.kodein.di.generic.instance
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- */ /**
+ */
+
+/**
  * shosetsu
  * 13 / 12 / 2019
  *
@@ -128,13 +128,17 @@ class ChapterReader
 	 */
 	val chapters: ArrayList<ReaderChapterUI> = arrayListOf()
 
+	private val bottomSheetBehavior by lazy {
+		BottomSheetBehavior.from(chapter_reader_bottom)
+	}
+
 	public override fun onCreate(savedInstanceState: Bundle?) {
 		Log.d(logID(), "On Create")
 		window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE
 		super.onCreate(savedInstanceState)
 		setSupportActionBar(toolbar as Toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
+		//slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
 
 		viewModel.apply {
 			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
@@ -224,28 +228,33 @@ class ChapterReader
 						.show()
 			}
 		}
-		slidingUpPanelLayout.addPanelSlideListener(object : SlidingUpPanelLayout.PanelSlideListener {
-			override fun onPanelSlide(panel: View?, slideOffset: Float) {
-				drawer_toggle.setImageResource(R.drawable.ic_baseline_drag_handle_24)
-			}
 
-			override fun onPanelStateChanged(panel: View?, previousState: PanelState?, newState: PanelState?) {
-				when {
-					previousState == PanelState.DRAGGING && newState == PanelState.COLLAPSED -> {
-						drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_less_24)
-					}
-					previousState == PanelState.DRAGGING && newState == PanelState.EXPANDED -> {
-						drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_more_24)
+		bottomSheetBehavior.apply bsb@{
+			isHideable = true
+
+			addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+				override fun onStateChanged(bottomSheet: View, newState: Int) {
+					when {
+						newState == STATE_COLLAPSED -> {
+							drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_less_24)
+						}
+						newState == STATE_EXPANDED -> {
+							drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_more_24)
+						}
 					}
 				}
-			}
-		})
 
+				override fun onSlide(bottomSheet: View, slideOffset: Float) {
+					drawer_toggle.setImageResource(R.drawable.ic_baseline_drag_handle_24)
+				}
+
+			})
+		}
 		drawer_toggle.apply {
 			setOnClickListener {
-				slidingUpPanelLayout.panelState = when (slidingUpPanelLayout.panelState) {
-					PanelState.EXPANDED -> PanelState.COLLAPSED
-					else -> PanelState.EXPANDED
+				bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
+					STATE_EXPANDED -> STATE_COLLAPSED
+					else -> STATE_EXPANDED
 				}
 			}
 		}
@@ -357,9 +366,7 @@ class ChapterReader
 						progressFloat: Float,
 						fromUser: Boolean
 				) {
-
 				}
-
 			}
 		}
 
@@ -437,46 +444,40 @@ class ChapterReader
 	fun animateBottom() {
 		chapter_reader_bottom?.apply {
 			post {
-				slidingUpPanelLayout.apply {
-					val currentState = panelState!!
-					Log.d(logID(), "Changing panelState from ${currentState.name} | $panelHeight")
+				bottomSheetBehavior.apply {
+					val currentState = state
+					Log.d(logID(), "Changing panelState from $currentState | ${this.peekHeight}")
 					val state = when (currentState) {
-						PanelState.HIDDEN -> {
+						STATE_HIDDEN -> {
 							Log.d(logID(), "Hidden, making collapsed")
-							PanelState.COLLAPSED
+							STATE_COLLAPSED
 						}
-						PanelState.ANCHORED -> {
-							Log.d(logID(), "ANCHORED, making collapsed")
-							PanelState.COLLAPSED
-						}
-						PanelState.COLLAPSED -> {
+						STATE_COLLAPSED -> {
 							Log.d(logID(), "COLLAPSED, making hidden")
-							PanelState.HIDDEN
+							STATE_HIDDEN
 						}
-						PanelState.DRAGGING -> {
+						STATE_DRAGGING -> {
 							Log.d(logID(), "Dragging, making hidden")
-							PanelState.HIDDEN
+							STATE_HIDDEN
 						}
-						PanelState.EXPANDED -> {
+						STATE_EXPANDED -> {
 							Log.d(logID(), "Expanded, making hidden")
-							PanelState.HIDDEN
+							STATE_HIDDEN
 						}
+						STATE_HALF_EXPANDED -> {
+							Log.d(logID(), "Half Expanded, making hidden")
+							STATE_HIDDEN
+						}
+						STATE_SETTLING -> {
+							Log.d(logID(), "Settling, making hidden")
+							STATE_HIDDEN
+						}
+						else -> if (toolbar!!.visibility == VISIBLE) STATE_HIDDEN else STATE_COLLAPSED
 					}
-					panelState = state
+					this.state = state
 					postDelayed(400) { fixHeight() }
 				}
 			}
-		}
-	}
-
-	private fun fixHeight(): SlidingUpPanelLayout = slidingUpPanelLayout.apply {
-		val state = panelState
-		Log.d(logID(), "PanelState is now ${state.name}")
-		when (state) {
-			PanelState.HIDDEN -> panelHeight = 0
-			PanelState.COLLAPSED -> panelHeight = 238
-			PanelState.DRAGGING -> postDelayed(100) { fixHeight() }
-			else -> Log.d(logID(), "Unknown state: $state")
 		}
 	}
 
@@ -492,13 +493,37 @@ class ChapterReader
 					if (it.visibility == VISIBLE)
 						R.anim.slide_up
 					else R.anim.slide_down
-			)
+			).apply {
+				duration = 250
+			}
 			it.startAnimation(animator)
 			it.post {
 				it.visibility = if (it.visibility == VISIBLE) GONE else VISIBLE
 			}
 		}
 	}
+
+
+	/** Handles height not being right for the bottom bar */
+	private fun fixHeight() {
+		bottomSheetBehavior.apply {
+			state = if (toolbar.visibility == VISIBLE) {
+				STATE_COLLAPSED
+			} else STATE_HIDDEN
+		}
+		/*
+		slidingUpPanelLayout.apply {
+		val state = panelState
+		Log.d(logID(), "PanelState is now ${state.name}")
+		when (state) {
+			PanelState.HIDDEN -> panelHeight = 0
+			PanelState.COLLAPSED -> panelHeight = 238
+			PanelState.DRAGGING -> postDelayed(100) { fixHeight() }
+			else -> Log.d(logID(), "Unknown state: $state")
+			}
+		*/
+	}
+
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.toolbar_chapter_view, menu)
