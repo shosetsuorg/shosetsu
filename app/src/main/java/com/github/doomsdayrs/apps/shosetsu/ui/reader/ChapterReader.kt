@@ -26,6 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPT
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
+import com.github.doomsdayrs.apps.shosetsu.common.ext.hideBar
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
@@ -129,12 +130,12 @@ class ChapterReader
 	val chapters: ArrayList<ReaderChapterUI> = arrayListOf()
 
 	private val bottomSheetBehavior by lazy {
-		BottomSheetBehavior.from(chapter_reader_bottom)
+		from(chapter_reader_bottom)
 	}
 
 	public override fun onCreate(savedInstanceState: Bundle?) {
 		Log.d(logID(), "On Create")
-		window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE
+		window.hideBar()
 		super.onCreate(savedInstanceState)
 		setSupportActionBar(toolbar as Toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
