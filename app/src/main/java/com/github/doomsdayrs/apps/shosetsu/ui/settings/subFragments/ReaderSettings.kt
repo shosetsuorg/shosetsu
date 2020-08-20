@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
@@ -37,7 +38,7 @@ import java.util.*
  */
 @SuppressLint("LogConditional")
 class ReaderSettings : SettingsSubController() {
-	val S: ShosetsuSettings by instance()
+	private val shosetsuSettings: ShosetsuSettings by instance()
 
 	override val settings: ArrayList<SettingsItemData> by settingsList {
 		spinnerSettingData(0) {
@@ -47,11 +48,11 @@ class ReaderSettings : SettingsSubController() {
 					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.sizes_with_none)
 			)
-			spinnerField { S::readerParagraphSpacing }
+			spinnerField { shosetsuSettings::readerParagraphSpacing }
 		}
 		spinnerSettingData(1) {
 			title { R.string.text_size }
-			spinnerSelection = when (S.readerTextSize.toInt()) {
+			spinnerSelection = when (shosetsuSettings.readerTextSize.toInt()) {
 				14 -> 0
 				17 -> 1
 				20 -> 2
@@ -72,14 +73,14 @@ class ReaderSettings : SettingsSubController() {
 						1 -> size = 17
 						2 -> size = 20
 					}
-					S.readerTextSize = (size.toFloat())
+					shosetsuSettings.readerTextSize = (size.toFloat())
 					adapterView?.setSelection(i)
 				}
 			}
 		}
 		spinnerSettingData(2) {
 			title { R.string.paragraph_indent }
-			spinnerField { S::readerIndentSize }
+			spinnerField { shosetsuSettings::readerIndentSize }
 			arrayAdapter = ArrayAdapter(
 					context!!,
 					android.R.layout.simple_spinner_dropdown_item,
@@ -88,37 +89,53 @@ class ReaderSettings : SettingsSubController() {
 		}
 		spinnerSettingData(3) {
 			title { R.string.reader_theme }
-			spinnerField { S::readerTheme }
+			spinnerField { shosetsuSettings::readerTheme }
 			arrayAdapter = ArrayAdapter(
 					context!!,
 					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.reader_themes)
 			)
 		}
+
+		customBottomSettingData(1) {
+			title { "Reader Theme" }
+			customView {
+				LayoutInflater.from(context).inflate(
+						R.layout.reader_theme_selection,
+						null,
+						false
+				).apply {
+
+				}
+			}
+		}
 		colorPickerSettingData(1) {
 			title { R.string.text_custom_color }
 			colorName { "Text" }
 			description { R.string.custom_theme_warn }
-			colorValue { S::readerCustomBackColor }
+			colorValue { shosetsuSettings::readerCustomBackColor }
 		}
 		colorPickerSettingData(1) {
 			title { R.string.text_custom_background_color }
 			colorName { "back" }
 			description { R.string.custom_theme_warn }
-			colorValue { S::readerCustomTextColor }
+			colorValue { shosetsuSettings::readerCustomTextColor }
 		}
 		switchSettingData(1) {
 			title { R.string.inverted_swipe }
-			checker { S::isInvertedSwipe }
+			checker { shosetsuSettings::isInvertedSwipe }
 		}
 		switchSettingData(1) {
 			title { R.string.tap_to_scroll }
-			checker { S::isTapToScroll }
+			checker { shosetsuSettings::isTapToScroll }
 		}
 		switchSettingData(4) {
 			title { "Resume first unread" }
-			description { "Instead of resuming the first chapter that is not read(can be reading), the app will open the first unread chapter" }
-			checker { S::resumeOpenFirstUnread }
+			description {
+				"Instead of resuming the first chapter that is not read(can be reading), " +
+						"the app will open the first unread chapter"
+			}
+			checker { shosetsuSettings::resumeOpenFirstUnread }
 		}
 	}
 }

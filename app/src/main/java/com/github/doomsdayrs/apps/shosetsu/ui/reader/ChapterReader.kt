@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,8 +10,10 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.util.set
 import androidx.core.view.postDelayed
 import androidx.lifecycle.observe
@@ -20,8 +23,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
-import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.MarkingTypes
-import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.TextSizes
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.*
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -133,6 +135,7 @@ class ChapterReader
 		from(chapter_reader_bottom)
 	}
 
+	/** On Create */
 	public override fun onCreate(savedInstanceState: Bundle?) {
 		Log.d(logID(), "On Create")
 		window.hideBar()
@@ -151,6 +154,7 @@ class ChapterReader
 		setupBottomMenu()
 	}
 
+	/** On Destroy */
 	override fun onDestroy() {
 		Log.d(logID(), "Destroying")
 		super.onDestroy()
@@ -446,9 +450,8 @@ class ChapterReader
 		chapter_reader_bottom?.apply {
 			post {
 				bottomSheetBehavior.apply {
-					val currentState = state
-					Log.d(logID(), "Changing panelState from $currentState | ${this.peekHeight}")
-					val state = when (currentState) {
+					//Log.d(logID(), "Changing panelState from $state | ${this.peekHeight}")
+					val state = when (state) {
 						STATE_HIDDEN -> {
 							Log.d(logID(), "Hidden, making collapsed")
 							STATE_COLLAPSED
@@ -482,7 +485,6 @@ class ChapterReader
 		}
 	}
 
-
 	/**
 	 * Moves top up and down
 	 */
@@ -504,8 +506,7 @@ class ChapterReader
 		}
 	}
 
-
-	/** Handles height not being right for the bottom bar */
+	/** Syncs [bottomSheetBehavior] with [toolbar] */
 	private fun fixHeight() {
 		bottomSheetBehavior.apply {
 			state = if (toolbar.visibility == VISIBLE) {
@@ -525,7 +526,7 @@ class ChapterReader
 		*/
 	}
 
-
+	/** Creates the option menu */
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.toolbar_chapter_view, menu)
 		// Night mode
@@ -562,7 +563,7 @@ class ChapterReader
 	 * @return true if processed
 	 */
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		Log.d(logID(), "Selected item: $item")
+		//Log.d(logID(), "Selected item: $item")
 		return when (item.itemId) {
 			android.R.id.home -> {
 				finish()

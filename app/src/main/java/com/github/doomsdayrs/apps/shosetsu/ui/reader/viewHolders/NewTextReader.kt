@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.getReaderBackgroundColor
+import com.github.doomsdayrs.apps.shosetsu.ui.reader.getReaderTextColor
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -90,7 +92,9 @@ class NewTextReader(itemView: View) : NewReader(itemView), KodeinAware {
 			replaceSpacing.append("\n")
 		for (x in 0 until settings.readerIndentSize)
 			replaceSpacing.append("\t")
-
+		textView.textSize = settings.readerTextSize
+		textView.setTextColor(getReaderTextColor(settings))
+		textView.setBackgroundColor(itemView.context.getReaderBackgroundColor(settings))
 		textView.text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
 	}
 }
