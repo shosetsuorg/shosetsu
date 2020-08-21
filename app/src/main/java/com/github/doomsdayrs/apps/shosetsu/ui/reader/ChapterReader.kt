@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.reader
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -10,10 +9,8 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.util.set
 import androidx.core.view.postDelayed
 import androidx.lifecycle.observe
@@ -23,7 +20,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
-import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.*
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.MarkingTypes
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.TextSizes
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -196,6 +194,49 @@ class ChapterReader
 				}
 			}
 		}
+
+		settings.readerTextSizeLive.observe(this) { size ->
+			// Sets current view
+			chapterReaderAdapter.textReaders.find {
+				it.chapterID == viewModel.currentChapterID
+			}?.let {
+				it.textView.textSize = size
+			}
+			// Sets other views down
+			chapterReaderAdapter.textReaders.filter {
+				it.chapterID != viewModel.currentChapterID
+			}.forEach {
+				it.textView.textSize = size
+			}
+		}
+
+		settings.readerParagraphSpacingLive.observe(this) {
+			// Sets current view
+			chapterReaderAdapter.textReaders.find {
+				it.chapterID == viewModel.currentChapterID
+			}?.bind()
+
+			// Sets other views down
+			chapterReaderAdapter.textReaders.filter {
+				it.chapterID != viewModel.currentChapterID
+			}.forEach {
+				it.bind()
+			}
+		}
+
+		settings.readerIndentSizeLive.observe(this) {
+			// Sets current view
+			chapterReaderAdapter.textReaders.find {
+				it.chapterID == viewModel.currentChapterID
+			}?.bind()
+
+			// Sets other views down
+			chapterReaderAdapter.textReaders.filter {
+				it.chapterID != viewModel.currentChapterID
+			}.forEach {
+				it.bind()
+			}
+		}
 	}
 
 	private fun getCurrentChapter() = chapters.find {
@@ -239,12 +280,14 @@ class ChapterReader
 
 			addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 				override fun onStateChanged(bottomSheet: View, newState: Int) {
-					when {
-						newState == STATE_COLLAPSED -> {
+					when (newState) {
+						STATE_COLLAPSED -> {
 							drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_less_24)
 						}
-						newState == STATE_EXPANDED -> {
+						STATE_EXPANDED -> {
 							drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_more_24)
+						}
+						else -> {
 						}
 					}
 				}
@@ -273,53 +316,16 @@ class ChapterReader
 					this[2] = getString(R.string.large)
 				}
 			}
-			onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListener {
-				override fun onProgressChanged(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
-						fromUser: Boolean
-				) {
-					if (fromUser) {
-						val size = when (progress) {
-							0 -> TextSizes.SMALL
-							1 -> TextSizes.MEDIUM
-							2 -> TextSizes.LARGE
-							else -> TextSizes.MEDIUM
-						}
-						Log.i(logID(), "TextSize changed to ${size.name}")
-						settings.readerTextSize = size.i
-						// Sets current view
-						chapterReaderAdapter.textReaders.find {
-							it.chapterID == viewModel.currentChapterID
-						}?.let {
-							it.textView.textSize = size.i
-						}
-						// Sets other views down
-						chapterReaderAdapter.textReaders.filter {
-							it.chapterID != viewModel.currentChapterID
-						}.forEach {
-							it.textView.textSize = size.i
-						}
+			bubbleOnProgressChanged { _, progress, _, fromUser ->
+				if (fromUser) {
+					val size = when (progress) {
+						0 -> TextSizes.SMALL
+						1 -> TextSizes.MEDIUM
+						2 -> TextSizes.LARGE
+						else -> TextSizes.MEDIUM
 					}
+					settings.readerTextSize = size.i
 				}
-
-				override fun getProgressOnActionUp(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float
-				) {
-				}
-
-				override fun getProgressOnFinally(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
-						fromUser: Boolean
-				) {
-
-				}
-
 			}
 		}
 
@@ -333,45 +339,8 @@ class ChapterReader
 					this[3] = getString(R.string.large)
 				}
 			}
-			onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListener {
-				override fun onProgressChanged(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
-						fromUser: Boolean
-				) {
-					if (fromUser) {
-						Log.i(logID(), "ParaSpace changed to $progress")
-						settings.readerParagraphSpacing = progress
-						// Sets current view
-						chapterReaderAdapter.textReaders.find {
-							it.chapterID == viewModel.currentChapterID
-						}?.let {
-							it.bind()
-						}
-						// Sets other views down
-						chapterReaderAdapter.textReaders.filter {
-							it.chapterID != viewModel.currentChapterID
-						}.forEach {
-							it.bind()
-						}
-					}
-				}
-
-				override fun getProgressOnActionUp(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float
-				) {
-				}
-
-				override fun getProgressOnFinally(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
-						fromUser: Boolean
-				) {
-				}
+			bubbleOnProgressChanged { _, progress, _, fromUser ->
+				if (fromUser) settings.readerParagraphSpacing = progress
 			}
 		}
 
@@ -385,47 +354,8 @@ class ChapterReader
 					this[3] = getString(R.string.large)
 				}
 			}
-			onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListener {
-				override fun onProgressChanged(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
-						fromUser: Boolean
-				) {
-					if (fromUser) {
-						Log.i(logID(), "IndentSize changed to $progress")
-						settings.readerIndentSize = progress
-						// Sets current view
-						chapterReaderAdapter.textReaders.find {
-							it.chapterID == viewModel.currentChapterID
-						}?.let {
-							it.bind()
-						}
-						// Sets other views down
-						chapterReaderAdapter.textReaders.filter {
-							it.chapterID != viewModel.currentChapterID
-						}.forEach {
-							it.bind()
-						}
-					}
-				}
-
-				override fun getProgressOnActionUp(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float
-				) {
-				}
-
-				override fun getProgressOnFinally(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
-						fromUser: Boolean
-				) {
-
-				}
-
+			bubbleOnProgressChanged { _, progress, _, fromUser ->
+				if (fromUser) settings.readerIndentSize = progress
 			}
 		}
 	}
@@ -601,5 +531,39 @@ class ChapterReader
 			}
 			else -> super.onOptionsItemSelected(item)
 		}
+	}
+
+	private fun BubbleSeekBar.bubbleOnProgressChanged(onProgressChangedFun: (
+			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+			@ParameterName("progress") Int,
+			@ParameterName("progressFloat") Float,
+			@ParameterName("fromUser") Boolean
+	) -> Unit) {
+		this.onProgressChangedListener =
+				object : BubbleSeekBar.OnProgressChangedListener {
+					override fun onProgressChanged(
+							bubbleSeekBar: BubbleSeekBar?,
+							progress: Int,
+							progressFloat: Float,
+							fromUser: Boolean
+					) {
+						onProgressChangedFun(bubbleSeekBar, progress, progressFloat, fromUser)
+					}
+
+					override fun getProgressOnActionUp(
+							bubbleSeekBar: BubbleSeekBar?,
+							progress: Int,
+							progressFloat: Float
+					) {
+					}
+
+					override fun getProgressOnFinally(
+							bubbleSeekBar: BubbleSeekBar?,
+							progress: Int,
+							progressFloat: Float,
+							fromUser: Boolean
+					) {
+					}
+				}
 	}
 }

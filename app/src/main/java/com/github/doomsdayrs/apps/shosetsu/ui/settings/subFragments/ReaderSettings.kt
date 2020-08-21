@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
@@ -105,6 +107,9 @@ class ReaderSettings : SettingsSubController() {
 						null,
 						false
 				).apply {
+					val recycler = findViewById<RecyclerView>(R.id.color_picker_options)
+					val example = findViewById<TextView>(R.id.textExample)
+
 
 				}
 			}

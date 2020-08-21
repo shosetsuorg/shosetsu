@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.core.content.edit
+import androidx.lifecycle.MutableLiveData
 import com.github.doomsdayrs.apps.shosetsu.common.consts.settings.*
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 
 /*
  * This file is part of Shosetsu.
@@ -36,6 +38,7 @@ class ShosetsuSettings(
 		private val readerSettings: SharedPreferences = context.getSharedPreferences("reader", 0)
 
 ) {
+
 	enum class MarkingTypes(val i: Int) {
 		ONVIEW(0),
 		ONSCROLL(1);
@@ -73,14 +76,41 @@ class ShosetsuSettings(
 			}
 		}
 
+
+	val readerTextSizeLive: MutableLiveData<Float> by lazy {
+		MutableLiveData(readerTextSize)
+	}
+
+	val readerParagraphSpacingLive: MutableLiveData<Int> by lazy {
+		MutableLiveData(readerParagraphSpacing)
+	}
+
+	val readerIndentSizeLive: MutableLiveData<Int> by lazy {
+		MutableLiveData(readerIndentSize)
+	}
+
+	// Real data
+
+
+	// Reader
+
 	var readerTextSize: Float
-		set(value) = readerSettings.edit { putFloat(READER_TEXT_SIZE, value) }
+		set(value) = readerSettings.edit { putFloat(READER_TEXT_SIZE, value) }.also {
+			launchIO { readerTextSizeLive.postValue(value) }
+		}
 		get() = readerSettings.getFloat(READER_TEXT_SIZE, 14f)
 
-	var readerParagraphSpacing: Int
-		set(value) = readerSettings.edit { putInt(READER_TEXT_SPACING, value) }
-		get() = readerSettings.getInt(READER_TEXT_SPACING, 1)
+	var readerIndentSize: Int
+		set(value) = settings.edit { putInt(READER_TEXT_INDENT, value) }.also {
+			launchIO { readerIndentSizeLive.postValue(value) }
+		}
+		get() = settings.getInt(READER_TEXT_INDENT, 1)
 
+	var readerParagraphSpacing: Int
+		set(value) = readerSettings.edit { putInt(READER_TEXT_SPACING, value) }.also {
+			launchIO { readerParagraphSpacingLive.postValue(value) }
+		}
+		get() = readerSettings.getInt(READER_TEXT_SPACING, 1)
 
 	var readerTheme: Int
 		set(value) = readerSettings.edit { putInt(READER_THEME, value) }
@@ -118,10 +148,6 @@ class ShosetsuSettings(
 		get() = readerSettings.getBoolean(READER_RESUME_FIRST_UNREAD, false)
 
 	// View Settings
-
-	var readerIndentSize
-		set(value) = settings.edit { putInt(READER_TEXT_INDENT, value) }
-		get() = settings.getInt(READER_TEXT_INDENT, 1)
 
 	var columnsInNovelsViewP
 		set(value) = settings.edit { putInt(C_IN_NOVELS_P, value) }
