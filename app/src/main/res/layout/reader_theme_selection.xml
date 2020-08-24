@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/color_picker_options"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:gravity="center_horizontal"
-	android:orientation="vertical">
-
-	<TextView
-		android:id="@+id/textExample"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="8dp"
-		android:text="Shosetsu is a great app\n#1 app in the whole world"
-		android:textAlignment="center"
-		android:textSize="24sp" />
-
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/color_picker_options"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		tools:listitem="@layout/reader_theme_selection_item" />
-</LinearLayout>
+	android:orientation="horizontal"
+	app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+	tools:listitem="@layout/reader_theme_selection_item" />

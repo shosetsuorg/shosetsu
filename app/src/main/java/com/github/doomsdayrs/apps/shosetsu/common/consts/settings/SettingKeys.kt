@@ -29,8 +29,8 @@ const val FIRST_TIME = "first_time"
 
 // How things look in Reader
 const val READER_THEME = "readerTheme"
-const val READER_TEXT_C_COLOR = "readerCustomTextColor"
-const val READER_BACK_C_COLOR = "readerCustomBackColor"
+const val READER_USER_THEMES = "readerThemes"
+
 
 const val READER_TEXT_SIZE = "readerTextSize"
 const val READER_TEXT_SPACING = "readerParagraphSpacing"

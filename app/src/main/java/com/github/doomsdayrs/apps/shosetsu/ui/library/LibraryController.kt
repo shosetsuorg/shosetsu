@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -111,7 +112,7 @@ class LibraryController
 		itemAdapter.itemFilter.filterPredicate = { item, constraint ->
 			item.title.contains(constraint.toString(), ignoreCase = true)
 		}
-		fastAdapter.setOnPreClickListener FastAdapterClick@{ view, adapter, item, position ->
+		fastAdapter.setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
 			// Handles one click select when in selection mode
 			fastAdapter.selectExtension {
 				if (selectedItems.isNotEmpty()) {

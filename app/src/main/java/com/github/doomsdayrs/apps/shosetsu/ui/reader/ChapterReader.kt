@@ -26,15 +26,15 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPT
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
-import com.github.doomsdayrs.apps.shosetsu.common.ext.hideBar
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
+import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.select.selectExtension
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.chapter_reader.*
@@ -98,7 +98,7 @@ class ChapterReader
 
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel by instance<IChapterReaderViewModel>()
-	internal val settings: ShosetsuSettings by instance()
+	internal val shosetsuSettings: ShosetsuSettings by instance()
 
 	private val chapterReaderAdapter: ChapterReaderAdapter = ChapterReaderAdapter(this)
 	private val pageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
@@ -108,7 +108,7 @@ class ChapterReader
 			viewModel.currentChapterID = chapterReaderUI.id
 
 			// Mark read if set to onview
-			if (settings.readerMarkingType == MarkingTypes.ONVIEW) {
+			if (shosetsuSettings.readerMarkingType == MarkingTypes.ONVIEW) {
 				Log.d("ChapterReader", "Marking as reading by marking type")
 				chapterReaderUI.readingStatus = READING
 				viewModel.updateChapter(chapterReaderUI)
@@ -131,6 +131,14 @@ class ChapterReader
 
 	private val bottomSheetBehavior by lazy {
 		from(chapter_reader_bottom)
+	}
+
+	val colorItemAdapter by lazy {
+		ItemAdapter<ShosetsuSettings.ColorChoice>()
+	}
+
+	val colorFastAdapter by lazy {
+		FastAdapter.with(colorItemAdapter)
 	}
 
 	/** On Create */
@@ -195,7 +203,7 @@ class ChapterReader
 			}
 		}
 
-		settings.readerTextSizeLive.observe(this) { size ->
+		shosetsuSettings.readerTextSizeLive.observe(this) { size ->
 			// Sets current view
 			chapterReaderAdapter.textReaders.find {
 				it.chapterID == viewModel.currentChapterID
@@ -210,7 +218,7 @@ class ChapterReader
 			}
 		}
 
-		settings.readerParagraphSpacingLive.observe(this) {
+		shosetsuSettings.readerParagraphSpacingLive.observe(this) {
 			// Sets current view
 			chapterReaderAdapter.textReaders.find {
 				it.chapterID == viewModel.currentChapterID
@@ -224,7 +232,7 @@ class ChapterReader
 			}
 		}
 
-		settings.readerIndentSizeLive.observe(this) {
+		shosetsuSettings.readerIndentSizeLive.observe(this) {
 			// Sets current view
 			chapterReaderAdapter.textReaders.find {
 				it.chapterID == viewModel.currentChapterID
@@ -235,6 +243,27 @@ class ChapterReader
 				it.chapterID != viewModel.currentChapterID
 			}.forEach {
 				it.bind()
+			}
+		}
+
+		shosetsuSettings.readerUserThemeSelectionLive.observe(this) { theme ->
+			val b = shosetsuSettings.getReaderBackgroundColor(theme.toLong())
+			val t = shosetsuSettings.getReaderTextColor(theme.toLong())
+
+			// Sets current view
+			chapterReaderAdapter.textReaders.find {
+				it.chapterID == viewModel.currentChapterID
+			}?.let {
+				it.textView.setTextColor(t)
+				it.textView.setBackgroundColor(b)
+			}
+
+			// Sets other views down
+			chapterReaderAdapter.textReaders.filter {
+				it.chapterID != viewModel.currentChapterID
+			}.forEach {
+				it.textView.setTextColor(t)
+				it.textView.setBackgroundColor(b)
 			}
 		}
 	}
@@ -277,7 +306,7 @@ class ChapterReader
 
 		bottomSheetBehavior.apply bsb@{
 			isHideable = true
-
+			isDraggable = false
 			addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 				override fun onStateChanged(bottomSheet: View, newState: Int) {
 					when (newState) {
@@ -324,7 +353,7 @@ class ChapterReader
 						2 -> TextSizes.LARGE
 						else -> TextSizes.MEDIUM
 					}
-					settings.readerTextSize = size.i
+					shosetsuSettings.readerTextSize = size.i
 				}
 			}
 		}
@@ -340,7 +369,7 @@ class ChapterReader
 				}
 			}
 			bubbleOnProgressChanged { _, progress, _, fromUser ->
-				if (fromUser) settings.readerParagraphSpacing = progress
+				if (fromUser) shosetsuSettings.readerParagraphSpacing = progress
 			}
 		}
 
@@ -355,8 +384,37 @@ class ChapterReader
 				}
 			}
 			bubbleOnProgressChanged { _, progress, _, fromUser ->
-				if (fromUser) settings.readerIndentSize = progress
+				if (fromUser) shosetsuSettings.readerIndentSize = progress
 			}
+		}
+
+		color_picker_options?.apply {
+			colorFastAdapter.selectExtension {
+				isSelectable = true
+				setSelectionListener { item, _ ->
+					colorFastAdapter.notifyItemChanged(colorFastAdapter.getPosition(item))
+				}
+			}
+			this.adapter = colorFastAdapter
+			colorFastAdapter.setOnClickListener { _, _, item, _ ->
+				shosetsuSettings.readerTheme = item.identifier.toInt()
+				item.isSelected = true
+
+				run {
+					val count = colorFastAdapter.itemCount
+					for (i in 0 until count)
+						colorFastAdapter.getItem(i)?.takeIf {
+							it.identifier != item.identifier
+						}?.isSelected = false
+				}
+
+				colorFastAdapter.notifyDataSetChanged()
+				true
+			}
+			colorItemAdapter.add(shosetsuSettings.readerUserThemes.apply {
+				find { it.identifier == shosetsuSettings.readerTheme.toLong() }?.isSelected = true
+				forEach { it.inReader = true }
+			})
 		}
 	}
 
@@ -470,7 +528,7 @@ class ChapterReader
 					menu.findItem(R.id.chapter_view_reader_custom)
 
 			)
-			when (settings.readerTheme) {
+			when (shosetsuSettings.readerTheme) {
 				0 -> themes[0].setChecked(true)
 				1 -> themes[1].setChecked(true)
 				2 -> themes[2].setChecked(true)
@@ -478,7 +536,7 @@ class ChapterReader
 				4 -> themes[4].setChecked(true)
 				5 -> themes[5].setChecked(true)
 				else -> {
-					settings.readerTheme = 1
+					shosetsuSettings.readerTheme = 1
 					themes[1].setChecked(true)
 				}
 			}

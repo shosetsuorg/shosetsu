@@ -3,10 +3,21 @@ package com.github.doomsdayrs.apps.shosetsu.common
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.view.View
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.settings.*
+import com.github.doomsdayrs.apps.shosetsu.common.ext.deserializeString
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.common.ext.serializeToString
+import com.google.android.material.card.MaterialCardView
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.items.AbstractItem
 
 /*
  * This file is part of Shosetsu.
@@ -36,7 +47,6 @@ class ShosetsuSettings(
 		val context: Context,
 		val settings: SharedPreferences = context.getSharedPreferences("view", 0),
 		private val readerSettings: SharedPreferences = context.getSharedPreferences("reader", 0)
-
 ) {
 
 	enum class MarkingTypes(val i: Int) {
@@ -50,17 +60,104 @@ class ShosetsuSettings(
 		LARGE(20F)
 	}
 
-	enum class ReaderThemes(val i: Int) {
-		NIGHT(0),
-		LIGHT(1),
-		SEPIA(2),
-		DARK(3),
-		DARKI(4),
-		CUSTOM(5);
+
+	/**
+	 * Choices for colors
+	 * @param name Name of the color choice
+	 * @param textColor Color of the text
+	 * @param backgroundColor Color of the background
+	 */
+	data class ColorChoice(
+			override var identifier: Long,
+			val name: String,
+			val textColor: Int,
+			val backgroundColor: Int
+	) : AbstractItem<ColorChoice.ViewHolder>() {
+		/**
+		 * If this is in the chapter reader or not
+		 */
+		var inReader: Boolean = false
+
+		companion object {
+			/**
+			 * Converts a string into a [ColorChoice]
+			 */
+			fun fromString(string: String): ColorChoice = string.split(",").let {
+				ColorChoice(
+						it[0].toLong(),
+						it[1].deserializeString() as String,
+						it[2].toInt(),
+						it[3].toInt()
+				)
+			}
+		}
+
+
+		override fun toString(): String =
+				"$identifier,${name.serializeToString()},$textColor,$backgroundColor"
+
+		/**
+		 * View Holder
+		 * @param view view
+		 */
+		class ViewHolder(val view: View) : FastAdapter.ViewHolder<ColorChoice>(view) {
+			override fun bindView(item: ColorChoice, payloads: List<Any>) {
+				view.findViewById<TextView>(R.id.textView).apply {
+					setTextColor(item.textColor)
+					setBackgroundColor(item.backgroundColor)
+				}
+				view.findViewById<MaterialCardView>(R.id.materialCardView).apply {
+					strokeWidth = if (item.isSelected) 4 else 0
+				}
+
+				if (item.inReader)
+					view.findViewById<ImageButton>(R.id.removeButton).apply {
+						visibility = View.GONE
+					}
+			}
+
+			override fun unbindView(item: ColorChoice) {
+				view.findViewById<ImageButton>(R.id.removeButton).apply {
+					setOnClickListener(null)
+					visibility = View.VISIBLE
+				}
+				view.findViewById<MaterialCardView>(R.id.materialCardView).apply {
+					strokeWidth = 0
+				}
+			}
+		}
+
+		override val layoutRes: Int = R.layout.reader_theme_selection_item
+		override val type: Int = 1
+		override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 	}
 
 
+	// ## Live Data
+	val readerTextSizeLive: MutableLiveData<Float> by lazy {
+		MutableLiveData(readerTextSize)
+	}
+
+	val readerParagraphSpacingLive: MutableLiveData<Int> by lazy {
+		MutableLiveData(readerParagraphSpacing)
+	}
+
+	val readerIndentSizeLive: MutableLiveData<Int> by lazy {
+		MutableLiveData(readerIndentSize)
+	}
+
+	val readerUserThemeSelectionLive: MutableLiveData<Int> by lazy {
+		MutableLiveData(readerTheme)
+	}
+
+	val readerUserThemesLive: MutableLiveData<List<ColorChoice>> by lazy {
+		MutableLiveData(readerUserThemes)
+	}
+
+	//## Real data
+
 	// READER
+
 	/**
 	 * How to mark a chapter as reading
 	 */
@@ -75,24 +172,6 @@ class ShosetsuSettings(
 				else -> MarkingTypes.ONSCROLL
 			}
 		}
-
-
-	val readerTextSizeLive: MutableLiveData<Float> by lazy {
-		MutableLiveData(readerTextSize)
-	}
-
-	val readerParagraphSpacingLive: MutableLiveData<Int> by lazy {
-		MutableLiveData(readerParagraphSpacing)
-	}
-
-	val readerIndentSizeLive: MutableLiveData<Int> by lazy {
-		MutableLiveData(readerIndentSize)
-	}
-
-	// Real data
-
-
-	// Reader
 
 	var readerTextSize: Float
 		set(value) = readerSettings.edit { putFloat(READER_TEXT_SIZE, value) }.also {
@@ -112,18 +191,52 @@ class ShosetsuSettings(
 		}
 		get() = readerSettings.getInt(READER_TEXT_SPACING, 1)
 
+	/**
+	 * Value is an identifier of [ColorChoice]
+	 */
 	var readerTheme: Int
-		set(value) = readerSettings.edit { putInt(READER_THEME, value) }
-		get() = readerSettings.getInt(READER_THEME, ReaderThemes.SEPIA.i)
+		set(value) = readerSettings.edit { putInt(READER_THEME, value) }.also {
+			launchIO { readerUserThemeSelectionLive.postValue(value) }
+		}
+		get() = readerSettings.getInt(READER_THEME, -1)
 
-	var readerCustomTextColor: Int
-		set(value) = readerSettings.edit { putInt(READER_TEXT_C_COLOR, value) }
-		get() = readerSettings.getInt(READER_TEXT_C_COLOR, Color.WHITE)
-
-	var readerCustomBackColor: Int
-		set(value) = readerSettings.edit { putInt(READER_BACK_C_COLOR, value) }
-		get() = readerSettings.getInt(READER_BACK_C_COLOR, Color.BLACK)
-
+	/**
+	 * These represent choices
+	 */
+	var readerUserThemes: List<ColorChoice>
+		get() = readerSettings.getStringSet(READER_USER_THEMES, null)?.let { set ->
+			set.map { ColorChoice.fromString(it) }
+		} ?: listOf(
+				ColorChoice(
+						-1,
+						context.getString(R.string.light),
+						-0x1000000,
+						-0x1
+				),
+				ColorChoice(
+						-2,
+						context.getString(R.string.light_dark),
+						-0x333334,
+						-0xbbbbbc
+				),
+				ColorChoice(
+						-3,
+						context.getString(R.string.sepia),
+						-0x1000000,
+						getColor(context, R.color.wheat)
+				),
+				ColorChoice(
+						-4,
+						context.getString(R.string.amoled),
+						-0x1,
+						-0x1000000
+				)
+		)
+		set(value) {
+			readerSettings.edit {
+				putStringSet(READER_USER_THEMES, value.map { it.toString() }.toSet())
+			}
+		}
 
 	var isTapToScroll: Boolean
 		set(value) = readerSettings.edit { putBoolean(READER_IS_TAP_TO_SCROLL, value) }
@@ -243,4 +356,19 @@ class ShosetsuSettings(
 	var backupQuick: Boolean
 		set(value) = settings.edit { putBoolean(BACKUP_QUICK, value) }
 		get() = settings.getBoolean(BACKUP_QUICK, false)
+
+
+	@ColorInt
+	fun getReaderBackgroundColor(readerTheme: Long = this.readerTheme.toLong()): Int {
+		return readerUserThemes.find {
+			it.identifier == readerTheme
+		}?.backgroundColor ?: Color.WHITE
+	}
+
+	@ColorInt
+	fun getReaderTextColor(readerTheme: Long = this.readerTheme.toLong()): Int {
+		return readerUserThemes.find {
+			it.identifier == readerTheme
+		}?.textColor ?: Color.BLACK
+	}
 }

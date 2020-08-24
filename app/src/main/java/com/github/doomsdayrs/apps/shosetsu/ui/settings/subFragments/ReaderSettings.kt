@@ -5,13 +5,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.core.content.getSystemService
+import androidx.core.view.postDelayed
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.ColorChoice
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setOnClickListener
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setSelectionListener
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.select.selectExtension
 import org.kodein.di.generic.instance
 import java.util.*
 
@@ -43,6 +52,58 @@ class ReaderSettings : SettingsSubController() {
 	private val shosetsuSettings: ShosetsuSettings by instance()
 
 	override val settings: ArrayList<SettingsItemData> by settingsList {
+		customSettingData(4) {
+			title { "" }
+			customView {
+				activity!!.getSystemService<LayoutInflater>()!!.inflate(
+						R.layout.reader_theme_example,
+						null,
+						false
+				).apply {
+					findViewById<TextView>(R.id.textView).apply textView@{
+						val exampleText =
+								"Because there are so many lines. I had lost sense of time. Plz help" +
+										"me escape this horror called" +
+										"\nThis is some sample text. With lots of testing. Lots of paragraph," +
+										"Lots of lines. Plenty to read"
+
+						val function = { textView: TextView ->
+							val replaceSpacing = StringBuilder("\n")
+							for (x in 0 until shosetsuSettings.readerParagraphSpacing)
+								replaceSpacing.append("\n")
+							for (x in 0 until shosetsuSettings.readerIndentSize)
+								replaceSpacing.append("\t")
+							textView.textSize = shosetsuSettings.readerTextSize
+
+							val r = shosetsuSettings.readerTheme.toLong()
+							val b = shosetsuSettings.getReaderBackgroundColor(r)
+							val t = shosetsuSettings.getReaderTextColor(r)
+							textView.setTextColor(t)
+							textView.setBackgroundColor(b)
+							textView.text = exampleText.replace("\n".toRegex(), replaceSpacing.toString())
+						}
+
+						postDelayed(500) {
+							shosetsuSettings.apply {
+								readerTextSizeLive.observe(this@ReaderSettings) {
+									textSize = shosetsuSettings.readerTextSize
+								}
+								readerIndentSizeLive.observe(this@ReaderSettings) {
+									function(this@textView)
+								}
+								readerParagraphSpacingLive.observe(this@ReaderSettings) {
+									function(this@textView)
+								}
+								readerUserThemeSelectionLive.observe(this@ReaderSettings) {
+									function(this@textView)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
 		spinnerSettingData(0) {
 			title { R.string.paragraph_spacing }
 			arrayAdapter = ArrayAdapter(
@@ -89,42 +150,51 @@ class ReaderSettings : SettingsSubController() {
 					resources!!.getStringArray(R.array.sizes_with_none)
 			)
 		}
-		spinnerSettingData(3) {
-			title { R.string.reader_theme }
-			spinnerField { shosetsuSettings::readerTheme }
-			arrayAdapter = ArrayAdapter(
-					context!!,
-					android.R.layout.simple_spinner_dropdown_item,
-					resources!!.getStringArray(R.array.reader_themes)
-			)
-		}
 
 		customBottomSettingData(1) {
-			title { "Reader Theme" }
+			title { R.string.reader_theme }
 			customView {
-				LayoutInflater.from(context).inflate(
+				activity!!.getSystemService<LayoutInflater>()!!.inflate(
 						R.layout.reader_theme_selection,
 						null,
 						false
 				).apply {
 					val recycler = findViewById<RecyclerView>(R.id.color_picker_options)
-					val example = findViewById<TextView>(R.id.textExample)
+					val itemAdapter = ItemAdapter<ColorChoice>()
+					val fastAdapter = FastAdapter.with(itemAdapter)
+					fastAdapter.selectExtension {
+						isSelectable = true
+						setSelectionListener { item, _ ->
+							fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
+						}
+					}
+					recycler.adapter = fastAdapter
+					fastAdapter.setOnClickListener { _, _, item, _ ->
+						shosetsuSettings.readerTheme = item.identifier.toInt()
+						item.isSelected = true
+
+						run {
+							val count = fastAdapter.itemCount
+							for (i in 0 until count)
+								fastAdapter.getItem(i)?.takeIf {
+									it.identifier != item.identifier
+								}?.isSelected = false
+						}
+
+						fastAdapter.notifyDataSetChanged()
+						true
+					}
 
 
+					shosetsuSettings.readerUserThemesLive.observe(this@ReaderSettings) { list ->
+						itemAdapter.clear()
+						list.find {
+							it.identifier == shosetsuSettings.readerTheme.toLong()
+						}?.isSelected = true
+						itemAdapter.add(list)
+					}
 				}
 			}
-		}
-		colorPickerSettingData(1) {
-			title { R.string.text_custom_color }
-			colorName { "Text" }
-			description { R.string.custom_theme_warn }
-			colorValue { shosetsuSettings::readerCustomBackColor }
-		}
-		colorPickerSettingData(1) {
-			title { R.string.text_custom_background_color }
-			colorName { "back" }
-			description { R.string.custom_theme_warn }
-			colorValue { shosetsuSettings::readerCustomTextColor }
 		}
 		switchSettingData(1) {
 			title { R.string.inverted_swipe }

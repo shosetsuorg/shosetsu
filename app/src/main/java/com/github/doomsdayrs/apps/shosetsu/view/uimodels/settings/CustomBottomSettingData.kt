@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
 
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.BottomSettingsItemData
 
 /*
@@ -33,7 +34,7 @@ class CustomBottomSettingData(id: Int) : BottomSettingsItemData(id) {
 
 	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
 		super.bindView(settingsItem, payloads)
-		settingsItem.bottomField.addView(customView())
+		settingsItem.bottomField.addView(customView(), MATCH_PARENT, MATCH_PARENT)
 	}
 
 	override fun unbindView(settingsItem: ViewHolder) {

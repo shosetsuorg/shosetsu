@@ -5,13 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings.MarkingTypes
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.observe
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
 import com.github.doomsdayrs.apps.shosetsu.view.setOnDoubleClickListener
@@ -104,7 +104,7 @@ class ChapterReaderAdapter(
 
 
 		holder.textView.apply {
-			textSize = chapterReader.settings.readerTextSize
+			textSize = chapterReader.shosetsuSettings.readerTextSize
 
 			setOnDoubleClickListener {
 				chapterReader.animateBottom()
@@ -151,7 +151,7 @@ class ChapterReaderAdapter(
 			if (yPosition % 5 == 0) {
 				Log.i(logID(), "Scrolling")
 				// Mark as reading if on scroll
-				if (chapterReader.settings.readerMarkingType == MarkingTypes.ONSCROLL)
+				if (chapterReader.shosetsuSettings.readerMarkingType == MarkingTypes.ONSCROLL)
 					cUI.readingStatus = ReadingStatus.READING
 				chapterReader.viewModel.updateChapter(cUI, readingPosition = yPosition)
 			}

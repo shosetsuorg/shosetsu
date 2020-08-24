@@ -74,6 +74,9 @@ abstract class SettingsItemData(val id: Int) : BaseRecyclerItem<SettingsItemData
 	}
 
 	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<SettingsItemData>(itemView) {
+		/** Item main view */
+		val constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraintLayout)
+
 		/** Item title */
 		val itemTitle: TextView = itemView.findViewById(R.id.settings_item_title)
 

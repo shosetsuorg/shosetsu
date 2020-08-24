@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.common.ext
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings
+
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
 
 /*
  * This file is part of shosetsu.
@@ -19,5 +22,21 @@ package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 /**
  * shosetsu
- * 01 / 06 / 2020
+ * 19 / 08 / 2020
  */
+class CustomSettingData(id: Int) : SettingsItemData(id) {
+
+	/**
+	 * Custom view
+	 */
+	lateinit var customView: () -> View
+
+	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
+		super.bindView(settingsItem, payloads)
+		settingsItem.constraintLayout.apply {
+			removeAllViews()
+			addView(customView())
+		}
+	}
+
+}
