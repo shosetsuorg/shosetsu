@@ -10,7 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChapterUIViewHolder
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
 import com.mikepenz.fastadapter.FastAdapter
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView

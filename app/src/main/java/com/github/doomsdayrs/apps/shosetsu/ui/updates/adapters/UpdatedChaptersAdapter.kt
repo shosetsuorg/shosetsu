@@ -30,8 +30,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
 import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 
 /**

@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 
 /*
  * This file is part of shosetsu.

@@ -14,7 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadCatalogueData
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.NovelBackgroundAddUseCase
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 import kotlinx.coroutines.Job
 
@@ -44,9 +44,9 @@ class CatalogViewModel(
 		private val backgroundAddUseCase: NovelBackgroundAddUseCase,
 		private val loadCatalogueData: LoadCatalogueData
 ) : ICatalogViewModel() {
-	private val items: MutableLiveData<HResult<List<IDTitleImageBookUI>>> = MutableLiveData()
+	private val items: MutableLiveData<HResult<List<ACatalogNovelUI>>> = MutableLiveData()
 
-	override var displayItems: LiveData<HResult<List<IDTitleImageBookUI>>> =
+	override var displayItems: LiveData<HResult<List<ACatalogNovelUI>>> =
 			liveData { emitSource(items) }
 
 	override val formatterData: MutableLiveData<HResult<Formatter>> = MutableLiveData(HResult.Loading)
@@ -62,13 +62,13 @@ class CatalogViewModel(
 
 	override fun loadData(formatter: Formatter): Job =
 			launchIO {
-				val values = when (val current = items.value ?: successResult(arrayListOf())) {
+				val values: List<ACatalogNovelUI> = when (val current: HResult<List<ACatalogNovelUI>> = items.value ?: successResult(arrayListOf())) {
 					is HResult.Success -> current.data
 					else -> arrayListOf()
 				}
 				items.postValue(loading())
 
-				when (val i = loadCatalogueData(formatter, currentMaxPage)) {
+				when (val i: HResult<List<ACatalogNovelUI>> = loadCatalogueData(formatter, currentMaxPage)) {
 					is HResult.Success -> {
 						items.postValue(successResult(values + i.data))
 					}
@@ -85,6 +85,7 @@ class CatalogViewModel(
 	}
 
 	override fun loadMore(formatter: Formatter) {
+		Log.d(logID(),"Loading more")
 		launchIO {
 			currentMaxPage++
 			loadData(formatter)

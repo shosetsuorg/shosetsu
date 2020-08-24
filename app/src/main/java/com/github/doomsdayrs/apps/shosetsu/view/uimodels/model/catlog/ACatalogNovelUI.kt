@@ -1,7 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog
 
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.GetImageURL
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.GetTitle
@@ -26,24 +25,21 @@ import com.github.doomsdayrs.apps.shosetsu.view.viewholders.TitleImageFViewHolde
 
 /**
  * shosetsu
- * 04 / 07 / 2020
+ * 23 / 08 / 2020
  *
- * This class defines the item for
- * [com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController]
+ * This class represents novels listed by an extension in its catalogue
  */
-data class CatalogUI(
-		override var identifier: Long,
-		val title: String,
-		val imageURL: String
-) : BaseRecyclerItem<TitleImageFViewHolder<CatalogUI>>(), GetTitle, GetImageURL {
+abstract class ACatalogNovelUI :
+		BaseRecyclerItem<TitleImageFViewHolder<ACatalogNovelUI>>(), GetImageURL, GetTitle {
+	abstract val id: Int
+	abstract val title: String
+	abstract val imageURL: String
+	abstract var bookmarked: Boolean
+
+	override fun getViewHolder(v: View): TitleImageFViewHolder<ACatalogNovelUI> =
+			TitleImageFViewHolder(v)
+
 	override fun getDataImageURL(): String = imageURL
 
 	override fun getDataTitle(): String = title
-
-	override val layoutRes: Int
-		get() = R.layout.catalogue_item_card
-	override val type: Int
-		get() = -1
-
-	override fun getViewHolder(v: View): TitleImageFViewHolder<CatalogUI> = TitleImageFViewHolder(v)
 }

@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 import org.kodein.di.generic.instance
 

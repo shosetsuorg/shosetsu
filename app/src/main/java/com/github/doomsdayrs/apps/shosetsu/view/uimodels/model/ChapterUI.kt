@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
 
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R

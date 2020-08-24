@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
@@ -28,9 +28,9 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-abstract class ILibraryViewModel : SubscribeHandleViewModel<List<BookmarkedNovelUI>>, ViewModel() {
+abstract class ILibraryViewModel : SubscribeHandleViewModel<List<ABookmarkedNovelUI>>, ViewModel() {
 	/**
 	 * Remove the following from the library
 	 */
-	abstract fun removeFromLibrary(list: List<BookmarkedNovelUI>)
+	abstract fun removeFromLibrary(list: List<ABookmarkedNovelUI>)
 }

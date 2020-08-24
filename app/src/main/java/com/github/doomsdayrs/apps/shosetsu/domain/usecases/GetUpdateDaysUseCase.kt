@@ -29,8 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesReposi
 class GetUpdateDaysUseCase(
 		val updatesRepository: IUpdatesRepository
 ) : (() -> LiveData<HResult<List<Long>>>) {
-	override fun invoke(): LiveData<HResult<List<Long>>> =
-			liveData {
-				emitSource(updatesRepository.getUpdateDays())
-			}
+	override fun invoke(): LiveData<HResult<List<Long>>> = liveData {
+		emitSource(updatesRepository.getUpdateDays())
+	}
 }

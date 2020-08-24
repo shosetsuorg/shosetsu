@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 
@@ -31,9 +30,9 @@ class CatalogueHitBottom(private val catalogFragment: CatalogController) : Recyc
 		if (!catalogFragment.isQuery && !catalogFragment.isInSearch)
 			if (!running)
 				if (!catalogFragment.recyclerView!!.canScrollVertically(1)) {
-					Log.d("CatalogueFragmentLoad", "Getting next page")
 					running = true
 					catalogFragment.viewModel.loadMore(catalogFragment.formatter)
+					running = false
 				}
 	}
 

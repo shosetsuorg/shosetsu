@@ -14,7 +14,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DeleteChapterPassageU
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DownloadChapterPassageUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetChapterUIsUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateChapterUseCase
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
 import kotlinx.coroutines.Dispatchers
 

@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
 
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 
 /*
  * This file is part of shosetsu.
@@ -22,12 +22,13 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 
 /**
  * shosetsu
- * 26 / 06 / 2020
+ * 08 / 05 / 2020
  */
-class DeleteChapterPassageUseCase(
-		private val iChaptersRepository: IChaptersRepository
-) {
-	suspend operator fun invoke(chapterUI: ChapterUI) {
-		iChaptersRepository.deleteChapterPassage(chapterUI.convertTo())
-	}
+data class IDTitleImageBookUI(
+		val id: Int,
+		val title: String,
+		val imageURL: String,
+		var bookmarked: Boolean
+) : Convertible<IDTitleImageBook> {
+	override fun convertTo(): IDTitleImageBook = IDTitleImageBook(id, title, imageURL, bookmarked)
 }

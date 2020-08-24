@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateChapterUI
 
 /*
  * This file is part of shosetsu.

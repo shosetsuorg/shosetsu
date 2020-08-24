@@ -15,8 +15,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMA
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateChapterUI
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

@@ -6,7 +6,7 @@ import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 
 /*
  * This file is part of Shosetsu.

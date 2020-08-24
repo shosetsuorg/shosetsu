@@ -23,7 +23,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.viewpager.widget.ViewPager
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker.UpdateWorkerManager
@@ -80,13 +80,16 @@ class UpdatesController : ViewedController() {
 	override fun onViewCreated(view: View) {
 		activity?.setActivityTitle(R.string.updates)
 		setViewPager()
-		updatesViewModel.liveData.observe(this, Observer { result ->
+	}
+
+	private fun observeData() {
+		updatesViewModel.liveData.observe(this) { result ->
 			when (result) {
 				is HResult.Loading -> Log.i(logID(), "Implement Loading!")
-				is HResult.Empty -> TODO("Implement empty")
-				is HResult.Error -> TODO("Implement error logging")
+				is HResult.Empty -> TODO("Empty UI")
+				is HResult.Error -> showError(result)
 				is HResult.Success -> {
-
+					Log.d(logID(), "Recieved ${result.data.size}")
 					val currentDays = updateDays
 					val newDays = result.data.filter { newDate ->
 						currentDays.forEach { day ->
@@ -104,7 +107,7 @@ class UpdatesController : ViewedController() {
 					pagerAdapter.notifyDataSetChanged()
 				}
 			}
-		})
+		}
 	}
 
 	private fun setViewPager() {

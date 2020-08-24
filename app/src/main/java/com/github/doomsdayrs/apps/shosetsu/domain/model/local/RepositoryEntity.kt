@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.RepositoryUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.RepositoryUI
 import java.io.Serializable
 
 /*

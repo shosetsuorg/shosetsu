@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
-
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog
 
 /*
  * This file is part of shosetsu.
@@ -22,12 +19,14 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 
 /**
  * shosetsu
- * 08 / 05 / 2020
+ * 23 / 08 / 2020
  */
-data class URLTitleImageUI(
-		val url: String,
-		val title: String,
-		val imageURL: String
-) : Convertible<URLImageTitle> {
-	override fun convertTo(): URLImageTitle = URLImageTitle(url, imageURL, title)
+data class FullCatalogNovelUI(
+		override val id: Int,
+		override val title: String,
+		override val imageURL: String,
+		override var bookmarked: Boolean
+) : ACatalogNovelUI() {
+	override val layoutRes: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card
+	override val type: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed
 }

@@ -1,15 +1,16 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import android.util.Log
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CompactCatalogNovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.FullCatalogNovelUI
 
 /*
  * This file is part of shosetsu.
@@ -33,13 +34,14 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
  * 15 / 05 / 2020
  */
 class LoadCatalogueData(
-		val extensionRepository: IExtensionsRepository,
-		val novelsRepository: INovelsRepository
+		private val extensionRepository: IExtensionsRepository,
+		private val novelsRepository: INovelsRepository,
+		private val shosetsuSettings: ShosetsuSettings
 ) {
 	suspend operator fun invoke(
 			formatter: Formatter,
 			currentPage: Int
-	): HResult<List<IDTitleImageBookUI>> {
+	): HResult<List<ACatalogNovelUI>> {
 		val it = extensionRepository.loadCatalogueData(
 				formatter,
 				0,
@@ -48,14 +50,16 @@ class LoadCatalogueData(
 		)
 		return when (it) {
 			is HResult.Success -> {
-				val data = it.data
-				successResult(data.map {
-					it.convertTo(formatter)
+				val data: List<Novel.Listing> = it.data
+				successResult(data.map { novelListing ->
+					novelListing.convertTo(formatter)
 				}.map { ne ->
-					Log.d(logID(), "Converting $ne")
-					novelsRepository.insertNovelReturnCard(ne).convertTo().also {
-						Log.d(logID(), "Converted $it")
-					}
+					novelsRepository.insertNovelReturnCard(ne)
+							.let { (id, title, imageURL, bookmarked) ->
+								if (shosetsuSettings.novelCardType == 0)
+									FullCatalogNovelUI(id, title, imageURL, bookmarked)
+								else CompactCatalogNovelUI(id, title, imageURL, bookmarked)
+							}
 				})
 			}
 			is HResult.Loading -> it

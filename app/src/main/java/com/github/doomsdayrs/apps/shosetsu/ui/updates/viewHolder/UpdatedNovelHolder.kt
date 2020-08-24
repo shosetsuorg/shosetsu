@@ -22,7 +22,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 import com.google.android.material.chip.Chip
 
 

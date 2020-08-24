@@ -7,7 +7,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.

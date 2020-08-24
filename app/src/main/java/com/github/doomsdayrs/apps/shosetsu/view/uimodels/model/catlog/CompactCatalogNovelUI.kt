@@ -1,8 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
-
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntity
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog
 
 /*
  * This file is part of shosetsu.
@@ -23,22 +19,14 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntit
 
 /**
  * shosetsu
- * 06 / 05 / 2020
+ * 23 / 08 / 2020
  */
-data class ReaderChapterUI(
-		val id: Int,
-		val link: String,
-		val title: String,
-		var readingPosition: Int,
-		var readingStatus: ReadingStatus,
-		var bookmarked: Boolean
-) : Convertible<ReaderChapterEntity> {
-	override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
-			id,
-			link,
-			title,
-			readingPosition,
-			readingStatus,
-			bookmarked
-	)
+data class CompactCatalogNovelUI(
+		override val id: Int,
+		override val title: String,
+		override val imageURL: String,
+		override var bookmarked: Boolean
+) : ACatalogNovelUI() {
+	override val layoutRes: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed
+	override val type: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed
 }

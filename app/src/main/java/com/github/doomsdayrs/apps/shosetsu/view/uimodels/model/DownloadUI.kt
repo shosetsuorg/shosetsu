@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
+
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 
 /*
  * This file is part of shosetsu.
@@ -24,7 +27,22 @@ package com.github.doomsdayrs.apps.shosetsu.view.uimodels
  *
  * @author github.com/doomsdayrs
  */
-data class RepositoryUI(
-		var url: String,
-		var name: String
-)
+data class DownloadUI(
+		val chapterID: Int,
+		val novelID: Int,
+		val chapterURL: String,
+		val chapterName: String,
+		val novelName: String,
+		val formatterID: Int,
+		var status: Int = 0
+) : Convertible<DownloadEntity> {
+	override fun convertTo() = DownloadEntity(
+			chapterID,
+			novelID,
+			chapterURL,
+			chapterName,
+			novelName,
+			formatterID,
+			status
+	)
+}

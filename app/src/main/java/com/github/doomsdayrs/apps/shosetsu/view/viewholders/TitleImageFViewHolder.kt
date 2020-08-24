@@ -44,7 +44,10 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 		if (imageURL.isNotEmpty()) Picasso.get()
 				.load(imageURL)
 				.into(imageView)
-		else imageView.setImageResource(R.drawable.ic_broken_image_24dp)
+		else {
+			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
+			imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
+		}
 	}
 
 	override fun unbindView(item: ITEM) {

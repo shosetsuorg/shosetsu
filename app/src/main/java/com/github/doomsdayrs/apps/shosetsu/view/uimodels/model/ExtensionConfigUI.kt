@@ -1,10 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
 
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI.ViewHolder
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI.ViewHolder
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.GetImageURL
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.GetTitle

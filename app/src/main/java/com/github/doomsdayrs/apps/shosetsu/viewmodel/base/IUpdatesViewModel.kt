@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateChapterUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*

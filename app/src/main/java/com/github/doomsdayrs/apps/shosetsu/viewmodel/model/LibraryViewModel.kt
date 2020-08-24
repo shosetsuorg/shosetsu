@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadLibraryUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateBookmarkedNovelUIUseCase
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import kotlinx.coroutines.Dispatchers
 
@@ -39,14 +39,14 @@ class LibraryViewModel(
 		private val libraryAsCardsUseCase: LoadLibraryUseCase,
 		private val updateBookmarkedNovelUIUseCase: UpdateBookmarkedNovelUIUseCase
 ) : ILibraryViewModel() {
-	override val liveData: LiveData<HResult<List<BookmarkedNovelUI>>> by lazy {
+	override val liveData: LiveData<HResult<List<ABookmarkedNovelUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
 			emit(loading())
 			emitSource(libraryAsCardsUseCase())
 		}
 	}
 
-	override fun removeFromLibrary(list: List<BookmarkedNovelUI>) {
+	override fun removeFromLibrary(list: List<ABookmarkedNovelUI>) {
 		launchIO {
 			updateBookmarkedNovelUIUseCase(list.apply {
 				forEach {

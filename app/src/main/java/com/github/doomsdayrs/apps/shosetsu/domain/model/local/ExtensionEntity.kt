@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
 import java.io.Serializable
 
 /*

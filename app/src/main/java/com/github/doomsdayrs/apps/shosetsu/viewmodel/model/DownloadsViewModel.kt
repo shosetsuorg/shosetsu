@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DeleteDownloadUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetDownloadsUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateDownloadUseCase
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.DownloadUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
 import kotlinx.coroutines.Dispatchers
 

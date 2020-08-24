@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
-
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
 
 /*
  * This file is part of shosetsu.
@@ -18,16 +15,16 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * ====================================================================
  */
 
 /**
  * shosetsu
- * 08 / 05 / 2020
+ * 24 / 04 / 2020
+ *
+ * @author github.com/doomsdayrs
  */
-data class IDTitleImageUI(
-		val id: Int,
-		val title: String,
-		val imageURL: String
-) : Convertible<IDTitleImage> {
-	override fun convertTo(): IDTitleImage = IDTitleImage(id, title, imageURL)
-}
+data class RepositoryUI(
+		var url: String,
+		var name: String
+)

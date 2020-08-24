@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
+
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateChapterSubEntity
 
 /*
  * This file is part of shosetsu.
@@ -15,17 +18,21 @@ package com.github.doomsdayrs.apps.shosetsu.view.uimodels
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 07 / 05 / 2020
  */
-data class UpdateUI(
-		val chapterID: Int,
+data class UpdateChapterUI(
+		val id: Int,
+		val link: String,
+		val title: String,
 		val novelID: Int,
-		val time: Long
-)
+		var bookmarked: Boolean,
+		val formatterID: Int,
+		val isSaved: Boolean
+) : Convertible<UpdateChapterSubEntity> {
+	override fun convertTo(): UpdateChapterSubEntity =
+			UpdateChapterSubEntity(id, link, title, novelID, bookmarked, formatterID, isSaved)
+}

@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 
 /*
  * This file is part of shosetsu.

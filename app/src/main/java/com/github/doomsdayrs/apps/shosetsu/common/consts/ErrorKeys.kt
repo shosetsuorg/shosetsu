@@ -40,4 +40,7 @@ object ErrorKeys {
 
 	/** When the extension has no search functionality */
 	const val ERROR_NO_SEARCH = 5
+
+	/** When HTTP returns a non 200 code */
+	const val ERROR_HTTP_ERROR = 6
 }

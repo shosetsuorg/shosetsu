@@ -19,7 +19,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup

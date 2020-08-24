@@ -8,8 +8,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetUpdateDaysUseCase
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateChapterUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import kotlinx.coroutines.Dispatchers
 
@@ -41,7 +41,7 @@ class UpdatesViewModel(
 		private val getUpdateDaysUseCase: GetUpdateDaysUseCase
 ) : IUpdatesViewModel() {
 	override val liveData: LiveData<HResult<List<Long>>> by lazy {
-		liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+		liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
 			emit(loading())
 			emitSource(getUpdateDaysUseCase())
 		}

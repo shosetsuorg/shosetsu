@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
 import com.google.android.material.navigation.NavigationView
 import com.mikepenz.fastadapter.select.getSelectExtension
@@ -56,7 +56,7 @@ import org.kodein.di.generic.instance
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: FastAdapterRecyclerController<BookmarkedNovelUI>(), SecondDrawerController {
+	: FastAdapterRecyclerController<ABookmarkedNovelUI>(), SecondDrawerController {
 	/***/
 	val viewModel: ILibraryViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
@@ -129,9 +129,9 @@ class LibraryController
 			false
 		}
 
-		fastAdapter.setOnClickListener { _, _, (id), _ ->
+		fastAdapter.setOnClickListener { _, _, item, _ ->
 			router.pushController(NovelController(
-					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to id)
+					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
 			).withFadeTransaction())
 			true
 		}
@@ -141,14 +141,14 @@ class LibraryController
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 	}
 
-	override fun updateUI(list: List<BookmarkedNovelUI>) {
+	override fun updateUI(list: List<ABookmarkedNovelUI>) {
 		Log.d(logID(), "Received ${list.size} bookmarked novels")
 		super.updateUI(list)
 	}
 
 	override fun difAreItemsTheSame(
-			oldItem: BookmarkedNovelUI,
-			newItem: BookmarkedNovelUI
+			oldItem: ABookmarkedNovelUI,
+			newItem: ABookmarkedNovelUI
 	): Boolean = oldItem.id == newItem.id
 
 	override fun handleConfirm(linearLayout: LinearLayout) {

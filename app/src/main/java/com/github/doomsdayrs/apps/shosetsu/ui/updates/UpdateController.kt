@@ -23,7 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_DATE
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters.UpdatedNovelsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.UpdateUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import java.util.*
 

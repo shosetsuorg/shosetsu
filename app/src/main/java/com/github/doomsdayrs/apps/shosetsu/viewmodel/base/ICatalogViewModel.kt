@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
 import kotlinx.coroutines.Job
 
 /*
@@ -40,7 +40,7 @@ abstract class ICatalogViewModel : ViewModel() {
 	var inQuery: Boolean = false
 	var inSearch: Boolean = false
 
-	abstract var displayItems: LiveData<HResult<List<IDTitleImageBookUI>>>
+	abstract var displayItems: LiveData<HResult<List<ACatalogNovelUI>>>
 	abstract val formatterData: LiveData<HResult<Formatter>>
 
 	/**

@@ -7,7 +7,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.

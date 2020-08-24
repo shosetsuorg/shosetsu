@@ -89,17 +89,15 @@ inline fun <reified O : Any, reified I : Convertible<O>> HResult<List<I>>.mapLis
  * Converts shit
  */
 inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
-		: HResult<O> {
-	return when (this) {
-		is HResult.Success -> {
-			this.data.convertTo()?.let {
-				successResult(it)
-			} ?: emptyResult()
-		}
-		is HResult.Empty -> this
-		is HResult.Loading -> this
-		is HResult.Error -> this
+		: HResult<O> = when (this) {
+	is HResult.Success -> {
+		this.data.convertTo()?.let {
+			successResult(it)
+		} ?: emptyResult()
 	}
+	is HResult.Empty -> this
+	is HResult.Loading -> this
+	is HResult.Error -> this
 }
 
 inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo() =

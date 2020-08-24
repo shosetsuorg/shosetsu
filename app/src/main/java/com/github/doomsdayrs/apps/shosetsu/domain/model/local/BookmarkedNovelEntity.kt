@@ -1,8 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
-
 /*
  * This file is part of shosetsu.
  *
@@ -38,7 +35,4 @@ data class BookmarkedNovelEntity(
 		val imageURL: String,
 		var bookmarked: Boolean,
 		val unread: Int
-) : Convertible<BookmarkedNovelUI> {
-	override fun convertTo(): BookmarkedNovelUI =
-			BookmarkedNovelUI(id, title, imageURL, bookmarked, unread)
-}
+)

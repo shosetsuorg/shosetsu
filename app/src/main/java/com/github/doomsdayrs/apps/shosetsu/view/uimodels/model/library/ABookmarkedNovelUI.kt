@@ -1,8 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library
 
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BookmarkedNovelEntity
 import com.github.doomsdayrs.apps.shosetsu.ui.library.viewHolders.LibraryItemViewHolder
@@ -30,21 +28,24 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
  * 06 / 06 / 2020
  *
  * For displaying novels in library (UI) owo
- *
- * @param id of the novel
- * @param title of the novel
- * @param imageURL of the novel
- * @param bookmarked If this novel is bookmarked or not
- * @param unread chapters of this novel
  */
-data class BookmarkedNovelUI(
-		val id: Int,
-		val title: String,
-		val imageURL: String,
-		var bookmarked: Boolean,
-		val unread: Int
-) : BaseRecyclerItem<LibraryItemViewHolder>(), Convertible<BookmarkedNovelEntity> {
-	lateinit var settings: ShosetsuSettings
+abstract class ABookmarkedNovelUI
+	: BaseRecyclerItem<LibraryItemViewHolder>(), Convertible<BookmarkedNovelEntity> {
+
+	/** ID of the novel*/
+	abstract val id: Int
+
+	/** title of the novel*/
+	abstract val title: String
+
+	/** imageURL of the novel*/
+	abstract val imageURL: String
+
+	/** If this novel is bookmarked or not*/
+	abstract var bookmarked: Boolean
+
+	/** chapters of this novel*/
+	abstract val unread: Int
 
 	override var identifier: Long
 		get() = id.toLong()
@@ -52,16 +53,6 @@ data class BookmarkedNovelUI(
 
 	override fun convertTo(): BookmarkedNovelEntity =
 			BookmarkedNovelEntity(id, title, imageURL, bookmarked, unread)
-
-	override val layoutRes: Int by lazy {
-		if (settings.novelCardType == 0)
-			R.layout.recycler_novel_card
-		else R.layout.recycler_novel_card_compressed
-	}
-
-	override val type: Int by lazy {
-		settings.novelCardType
-	}
 
 	override fun getViewHolder(v: View): LibraryItemViewHolder = LibraryItemViewHolder(v)
 }

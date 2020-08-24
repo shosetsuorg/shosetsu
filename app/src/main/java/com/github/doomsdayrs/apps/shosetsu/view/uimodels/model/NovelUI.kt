@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
 
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible

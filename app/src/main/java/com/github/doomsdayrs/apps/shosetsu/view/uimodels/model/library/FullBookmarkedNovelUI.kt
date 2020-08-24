@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
-
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library
 
 /*
  * This file is part of shosetsu.
@@ -22,13 +19,15 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImageBook
 
 /**
  * shosetsu
- * 08 / 05 / 2020
+ * 23 / 08 / 2020
  */
-data class IDTitleImageBookUI(
-		val id: Int,
-		val title: String,
-		val imageURL: String,
-		var bookmarked: Boolean
-) : Convertible<IDTitleImageBook> {
-	override fun convertTo(): IDTitleImageBook = IDTitleImageBook(id, title, imageURL, bookmarked)
+data class FullBookmarkedNovelUI(
+		override val id: Int,
+		override val title: String,
+		override val imageURL: String,
+		override var bookmarked: Boolean,
+		override val unread: Int
+) : ABookmarkedNovelUI() {
+	override val layoutRes: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card
+	override val type: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card
 }

@@ -1,7 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
 
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateChapterSubEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntity
 
 /*
  * This file is part of shosetsu.
@@ -22,17 +23,22 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateChapterSubEn
 
 /**
  * shosetsu
- * 07 / 05 / 2020
+ * 06 / 05 / 2020
  */
-data class UpdateChapterUI(
+data class ReaderChapterUI(
 		val id: Int,
 		val link: String,
 		val title: String,
-		val novelID: Int,
-		var bookmarked: Boolean,
-		val formatterID: Int,
-		val isSaved: Boolean
-) : Convertible<UpdateChapterSubEntity> {
-	override fun convertTo(): UpdateChapterSubEntity =
-			UpdateChapterSubEntity(id, link, title, novelID, bookmarked, formatterID, isSaved)
+		var readingPosition: Int,
+		var readingStatus: ReadingStatus,
+		var bookmarked: Boolean
+) : Convertible<ReaderChapterEntity> {
+	override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
+			id,
+			link,
+			title,
+			readingPosition,
+			readingStatus,
+			bookmarked
+	)
 }

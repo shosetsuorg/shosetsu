@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
-
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library
 
 /*
  * This file is part of shosetsu.
@@ -22,12 +19,15 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 
 /**
  * shosetsu
- * 26 / 06 / 2020
+ * 23 / 08 / 2020
  */
-class DeleteChapterPassageUseCase(
-		private val iChaptersRepository: IChaptersRepository
-) {
-	suspend operator fun invoke(chapterUI: ChapterUI) {
-		iChaptersRepository.deleteChapterPassage(chapterUI.convertTo())
-	}
+data class CompactBookmarkedNovelUI(
+		override val id: Int,
+		override val title: String,
+		override val imageURL: String,
+		override var bookmarked: Boolean,
+		override val unread: Int
+) : ABookmarkedNovelUI() {
+	override val layoutRes: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed
+	override val type: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed
 }

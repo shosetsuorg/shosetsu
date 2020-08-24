@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.viewHolders.NewTextReader
 import com.github.doomsdayrs.apps.shosetsu.view.setOnDoubleClickListener
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ReaderChapterUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.

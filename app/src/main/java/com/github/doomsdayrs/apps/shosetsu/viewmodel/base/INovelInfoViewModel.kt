@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*

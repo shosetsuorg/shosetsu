@@ -7,7 +7,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
 import com.mikepenz.fastadapter.FastAdapter
 

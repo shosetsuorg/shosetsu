@@ -9,7 +9,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.BookMarkNovelIDUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterNameUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetNovelUIUseCase
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
 import kotlinx.coroutines.Dispatchers
 

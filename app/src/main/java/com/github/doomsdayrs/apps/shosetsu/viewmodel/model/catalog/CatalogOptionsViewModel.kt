@@ -8,8 +8,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetCatalogsUseCase
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.CatalogUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogOptionsViewModel
 import kotlinx.coroutines.Dispatchers
 
 /*
@@ -33,10 +33,10 @@ import kotlinx.coroutines.Dispatchers
  * shosetsu
  * 30 / 04 / 2020
  */
-class CatalogsViewModel(
+class CatalogOptionsViewModel(
 		private val getCatalogsUseCase: GetCatalogsUseCase
-) : ICatalogsViewModel() {
-	override val liveData: LiveData<HResult<List<CatalogUI>>> by lazy {
+) : ICatalogOptionsViewModel() {
+	override val liveData: LiveData<HResult<List<CatalogOptionUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Main) {
 			emit(loading())
 			emitSource(getCatalogsUseCase())

@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.ExtensionConfigUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*

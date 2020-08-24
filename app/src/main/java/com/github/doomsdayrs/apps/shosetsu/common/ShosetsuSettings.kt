@@ -371,4 +371,17 @@ class ShosetsuSettings(
 			it.identifier == readerTheme
 		}?.textColor ?: Color.BLACK
 	}
+
+	fun calculateColumnCount(context: Context, columnWidthDp: Float): Int {
+		// For example columnWidthdp=180
+		val c = if (context.resources.configuration.orientation == 1)
+			columnsInNovelsViewP
+		else columnsInNovelsViewH
+
+		val displayMetrics = context.resources.displayMetrics
+		val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
+
+		return if (c <= 0) (screenWidthDp / columnWidthDp + 0.5).toInt()
+		else (screenWidthDp / (screenWidthDp / c) + 0.5).toInt()
+	}
 }

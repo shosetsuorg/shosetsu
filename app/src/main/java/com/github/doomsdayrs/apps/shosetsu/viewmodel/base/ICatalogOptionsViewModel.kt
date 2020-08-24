@@ -1,7 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -18,31 +19,16 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
+
+
+
 
 /**
  * shosetsu
- * 24 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 30 / 04 / 2020
+ * ViewModel for [com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController]
+ * [liveData] is a [com.github.doomsdayrs.apps.shosetsu.common.dto.HResult] of [FormatterCard]
+ * [FormatterCard] are representation of the different extensions one can browse
  */
-data class DownloadUI(
-		val chapterID: Int,
-		val novelID: Int,
-		val chapterURL: String,
-		val chapterName: String,
-		val novelName: String,
-		val formatterID: Int,
-		var status: Int = 0
-) : Convertible<DownloadEntity> {
-	override fun convertTo() = DownloadEntity(
-			chapterID,
-			novelID,
-			chapterURL,
-			chapterName,
-			novelName,
-			formatterID,
-			status
-	)
-}
+abstract class ICatalogOptionsViewModel : SubscribeHandleViewModel<List<CatalogOptionUI>>, ViewModel()

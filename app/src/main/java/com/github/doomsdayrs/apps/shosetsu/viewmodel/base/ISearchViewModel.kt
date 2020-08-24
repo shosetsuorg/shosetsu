@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.URLTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.URLTitleImageUI
 
 /*
  * This file is part of shosetsu.

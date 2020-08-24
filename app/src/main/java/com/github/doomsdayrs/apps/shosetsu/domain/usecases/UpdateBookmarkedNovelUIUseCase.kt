@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import com.github.doomsdayrs.apps.shosetsu.common.dto.mapTo
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.BookmarkedNovelUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
 
 /*
  * This file is part of shosetsu.
@@ -31,6 +31,6 @@ class UpdateBookmarkedNovelUIUseCase(
 	/**
 	 *
 	 */
-	suspend operator fun invoke(list: List<BookmarkedNovelUI>): Unit =
+	suspend operator fun invoke(list: List<ABookmarkedNovelUI>): Unit =
 			novelsRepository.updateBookmarkedNovelData(list.mapTo())
 }

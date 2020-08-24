@@ -15,8 +15,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.CatalogUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogOptionsViewModel
 
 /*
  * This file is part of Shosetsu.
@@ -43,8 +43,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogsViewModel
  * @author github.com/doomsdayrs
  */
 //TODO Searching mechanics here
-class CatalogsController : FastAdapterRecyclerController<CatalogUI>() {
-	private val viewModel: ICatalogsViewModel by viewModel()
+class CatalogsController : FastAdapterRecyclerController<CatalogOptionUI>() {
+	private val viewModel: ICatalogOptionsViewModel by viewModel()
 
 	init {
 		setHasOptionsMenu(true)

@@ -2,9 +2,9 @@ package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
 import androidx.room.ColumnInfo
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageBookUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.IDTitleImageUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.URLTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.IDTitleImageBookUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.IDTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.URLTitleImageUI
 import java.io.Serializable
 
 /*

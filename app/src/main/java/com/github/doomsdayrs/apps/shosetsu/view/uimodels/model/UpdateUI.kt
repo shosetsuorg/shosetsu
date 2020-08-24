@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
-
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
+package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
 
 /*
  * This file is part of shosetsu.
@@ -18,16 +15,17 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * ====================================================================
  */
 
 /**
  * shosetsu
- * 26 / 06 / 2020
+ * 24 / 04 / 2020
+ *
+ * @author github.com/doomsdayrs
  */
-class DeleteChapterPassageUseCase(
-		private val iChaptersRepository: IChaptersRepository
-) {
-	suspend operator fun invoke(chapterUI: ChapterUI) {
-		iChaptersRepository.deleteChapterPassage(chapterUI.convertTo())
-	}
-}
+data class UpdateUI(
+		val chapterID: Int,
+		val novelID: Int,
+		val time: Long
+)

@@ -5,7 +5,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.CatalogUI
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
 
 /*
  * This file is part of shosetsu.
@@ -32,13 +32,13 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.CatalogUI
  */
 class GetCatalogsUseCase(
 		private val iExtensionsRepository: IExtensionsRepository
-) : (() -> LiveData<HResult<List<CatalogUI>>>) {
-	override fun invoke(): LiveData<HResult<List<CatalogUI>>> {
+) : (() -> LiveData<HResult<List<CatalogOptionUI>>>) {
+	override fun invoke(): LiveData<HResult<List<CatalogOptionUI>>> {
 		return liveData {
 			emitSource(iExtensionsRepository.getCards().map { data ->
 				when (data) {
 					is HResult.Success -> {
-						successResult(data.data.map { CatalogUI(it.id.toLong(), it.title, it.imageURL) })
+						successResult(data.data.map { CatalogOptionUI(it.id.toLong(), it.title, it.imageURL) })
 					}
 					is HResult.Loading -> loading()
 					is HResult.Error -> errorResult(data.code, data.message)
