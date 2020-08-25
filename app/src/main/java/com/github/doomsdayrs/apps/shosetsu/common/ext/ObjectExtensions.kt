@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import android.util.Log
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import org.acra.ACRA.getErrorReporter
 import java.util.*
 
@@ -28,9 +29,8 @@ import java.util.*
  * @author github.com/doomsdayrs
  */
 
-fun Exception.handle(logID: String, fatal: Boolean = false) {
-	Log.e(logID, "ERROR", this)
+fun HResult.Error.report(fatal: Boolean = false) {
 	val reporter = getErrorReporter()
-	reporter.putCustomData("INFO", "Exception at ${Calendar.getInstance().time}")
-	reporter.handleException(this, fatal)
+	reporter.putCustomData("RESULT_CODE", this.code.toString())
+	reporter.handleException(Error(this.message), fatal)
 }
