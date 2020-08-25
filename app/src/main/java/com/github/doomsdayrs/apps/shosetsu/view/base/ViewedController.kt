@@ -152,7 +152,6 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	 */
 	open fun showError(e: HResult.Error) {
 		toast { e.message }
-		e.report()
 	}
 
 
