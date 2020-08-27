@@ -56,13 +56,12 @@ import org.kodein.di.generic.singleton
 class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 	override fun attachBaseContext(base: Context?) {
 		super.attachBaseContext(base)
-		// Sets prefrences
 
+		setupACRA()
 		Notifications.createChannels(this)
-		setupARCA()
 	}
 
-	private fun setupARCA() {
+	private fun setupACRA() {
 		val config = CoreConfigurationBuilder(this)
 		config.setBuildConfigClass(BuildConfig::class.java).setReportFormat(StringFormat.JSON)
 
@@ -71,22 +70,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 				.setUri("https://technojo4.com/acra.php")
 				.setEnabled(true)
 
-		//config.getPluginConfigurationBuilder(MailSenderConfigurationBuilder::class.java)
-		//        .setMailTo("shoset.su@yandex.com")
-		//        .setReportAsFile(true)
-		//        .setSubject("#Crash Report#")
-		//        .setEnabled(true)
-		//        .setReportFileName(android.os.Build.MODEL + " " + Calendar.getInstance().time.toString())
-
-		//TODO add custom content for reports
-		// > Must Contain [ReportField] Report_ID, APP_VERSION_CODE, APP_VERSION_NAME, PACKAGE_NAME, ANDROID_VERSION, STACK_TRACE, USER_COMMENT, LOGCAT, INSTALLATION_ID
-		// > All other [ReportField] constants are optional
-		// > Yes there will be an option to submit ALL your data to me
-
-		ACRA.getErrorReporter().putCustomData("MODEL", android.os.Build.MODEL)
-		ACRA.getErrorReporter().putCustomData("INFO", "CRASH")
 		ACRA.init(this, config)
-
 	}
 
 	override val kodein: Kodein by Kodein.lazy {

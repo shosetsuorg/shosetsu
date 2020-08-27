@@ -13,10 +13,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchAsync
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import kotlin.reflect.KMutableProperty
