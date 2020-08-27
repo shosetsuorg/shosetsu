@@ -40,6 +40,8 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	@Query("SELECT time FROM updates ORDER BY ROWID ASC LIMIT 1")
 	fun loadStartingDayTime(): Long
 
+	@Query("SELECT * FROM updates")
+	fun loadUpdates(): LiveData<List<UpdateEntity>>
 
 	@Query("SELECT time FROM updates ORDER BY ROWID DESC LIMIT 1")
 	fun loadLatestDayTime(): Long

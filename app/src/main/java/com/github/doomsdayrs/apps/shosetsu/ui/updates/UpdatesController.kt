@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.UpdatesViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
 import org.kodein.di.generic.instance
 
 /**
@@ -34,7 +34,7 @@ import org.kodein.di.generic.instance
  * @author github.com/doomsdayrs
  */
 class UpdatesController : FastAdapterRecyclerController<UpdateUI>() {
-	private val viewModel by instance<UpdatesViewModel>()
+	val viewModel by instance<IUpdatesViewModel>()
 	override val viewTitle: Int = R.string.updates
 	override fun onViewCreated(view: View) {}
 
