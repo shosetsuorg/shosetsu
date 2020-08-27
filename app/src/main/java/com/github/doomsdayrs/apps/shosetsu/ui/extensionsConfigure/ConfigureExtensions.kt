@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure
 
 import android.view.View
-import androidx.lifecycle.Observer
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
+import androidx.lifecycle.observe
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters.ConfigExtAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
@@ -36,7 +34,8 @@ import com.mikepenz.fastadapter.FastAdapter
  * @author github.com/doomsdayrs
  */
 class ConfigureExtensions : FastAdapterRecyclerController<ExtensionConfigUI>() {
-	val viewModel: IExtensionsConfigureViewModel by viewModel()
+	private val viewModel: IExtensionsConfigureViewModel by viewModel()
+	override val viewTitle: Int = com.github.doomsdayrs.apps.shosetsu.R.string.configure_extensions
 
 	override val fastAdapter: FastAdapter<ExtensionConfigUI> by lazy {
 		val adapter = ConfigExtAdapter(viewModel)
@@ -45,11 +44,9 @@ class ConfigureExtensions : FastAdapterRecyclerController<ExtensionConfigUI>() {
 	}
 
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(R.string.configure_extensions)
-		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
+		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 	}
 
 	override fun setupFastAdapter() {
-		fastAdapter.onClickListener
 	}
 }

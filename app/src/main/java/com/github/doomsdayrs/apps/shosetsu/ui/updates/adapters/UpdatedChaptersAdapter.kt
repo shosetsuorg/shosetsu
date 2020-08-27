@@ -17,29 +17,13 @@ package com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.app.Activity
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedChapterHolder
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.viewHolder.UpdatedNovelHolder
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateChapterUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
-
 /**
  * Shosetsu
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
  */
+/*
 class UpdatedChaptersAdapter(
 		private val updatedNovelHolder: UpdatedNovelHolder,
 		val viewModel: IUpdatesViewModel
@@ -128,5 +112,5 @@ class UpdatedChaptersAdapter(
 	}
 
 	override fun getItemCount(): Int = size
-
 }
+*/

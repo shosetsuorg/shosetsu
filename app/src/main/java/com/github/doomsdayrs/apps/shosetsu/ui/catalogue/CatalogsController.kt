@@ -45,6 +45,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogOptionsViewMod
 //TODO Searching mechanics here
 class CatalogsController : FastAdapterRecyclerController<CatalogOptionUI>() {
 	private val viewModel: ICatalogOptionsViewModel by viewModel()
+	override val viewTitle: Int = R.string.catalogues
 
 	init {
 		setHasOptionsMenu(true)
@@ -68,7 +69,6 @@ class CatalogsController : FastAdapterRecyclerController<CatalogOptionUI>() {
 	}
 
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(R.string.catalogues)
 		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
 	}
 

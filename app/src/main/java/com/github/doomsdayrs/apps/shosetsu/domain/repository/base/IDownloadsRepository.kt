@@ -29,44 +29,27 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  */
 interface IDownloadsRepository {
 
-	/**
-	 * Gets a live view of the downloads
-	 */
+	/** Gets a live view of the downloads */
 	fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>>
 
-
-	/**
-	 * Loads the first download in the list, also starts it
-	 */
+	/** Loads the first download in the list, also starts it */
 	suspend fun loadFirstDownload(): HResult<DownloadEntity>
 
-	/**
-	 * Queries for the download count
-	 */
+	/** Queries for the download count */
 	suspend fun loadDownloadCount(): HResult<Int>
 
-	/**
-	 * Gets a download entity by its ID
-	 */
+	/** Gets a download entity by its ID */
 	suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity>
 
-	/**
-	 * Adds a new download to the repository
-	 */
+	/** Adds a new download to the repository */
 	suspend fun addDownload(download: DownloadEntity): HResult<Long>
 
-	/**
-	 * Updates a download in repository
-	 */
+	/** Updates a download in repository */
 	suspend fun update(download: DownloadEntity)
 
-	/**
-	 * Removes a download from the repository
-	 */
+	/** Removes a download from the repository */
 	suspend fun delete(download: DownloadEntity)
 
-	/**
-	 * Orders database to set all values back to pending
-	 */
+	/** Orders database to set all values back to pending */
 	suspend fun resetList()
 }

@@ -25,7 +25,6 @@ import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
-import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -41,6 +40,7 @@ import org.kodein.di.generic.instance
  */
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
+	override val viewTitle: Int = R.string.downloads
 
 	val viewModel: IDownloadsViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
@@ -51,7 +51,6 @@ class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
 	}
 
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(R.string.downloads)
 		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
 	}
 

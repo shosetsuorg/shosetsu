@@ -1,5 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
 
+import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
+import com.mikepenz.fastadapter.FastAdapter
+
 /*
  * This file is part of shosetsu.
  *
@@ -15,17 +20,29 @@ package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
  * 24 / 04 / 2020
  *
- * @author github.com/doomsdayrs
+ * UpdateUI entity to display
  */
 data class UpdateUI(
 		val chapterID: Int,
 		val novelID: Int,
 		val time: Long
-)
+) : BaseRecyclerItem<UpdateUI.ViewHolder>() {
+	override val layoutRes: Int = R.layout.recycler_novel_card_compressed
+	override val type: Int = R.layout.recycler_novel_card_compressed
+	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+
+	/**  */
+	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<UpdateUI>(itemView) {
+		override fun bindView(item: UpdateUI, payloads: List<Any>) {
+		}
+
+		override fun unbindView(item: UpdateUI) {
+		}
+	}
+}

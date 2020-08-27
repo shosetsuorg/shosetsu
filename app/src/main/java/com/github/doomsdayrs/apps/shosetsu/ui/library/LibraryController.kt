@@ -57,6 +57,8 @@ import org.kodein.di.generic.instance
  */
 class LibraryController
 	: FastAdapterRecyclerController<ABookmarkedNovelUI>(), SecondDrawerController {
+	override val viewTitle: Int = R.string.my_library
+
 	/***/
 	val viewModel: ILibraryViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
@@ -86,7 +88,6 @@ class LibraryController
 	}
 
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(R.string.my_library)
 	}
 
 	override fun setupRecyclerView() {

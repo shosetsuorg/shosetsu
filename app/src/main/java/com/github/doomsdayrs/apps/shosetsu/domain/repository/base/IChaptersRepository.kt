@@ -46,56 +46,36 @@ interface IChaptersRepository {
 			chapterEntity: ChapterEntity
 	): HResult<String>
 
-	/**
-	 * Save the [ChapterEntity] [passage] to memory
-	 */
+	/** Save the [ChapterEntity] [passage] to memory */
 	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, passage: String)
 
-	/**
-	 * Save the [ChapterEntity] [passage] to storage
-	 */
+	/** Save the [ChapterEntity] [passage] to storage */
 	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
 
-	/**
-	 * Handles chapters for ze novel
-	 */
+	/** Handles chapters for ze novel */
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
 
-	/**
-	 * Handles chapters return, but returns the chapters that are new
-	 */
+	/** Handles chapters return, but returns the chapters that are new */
 	suspend fun handleChaptersReturn(
 			novelEntity: NovelEntity,
 			list: List<Novel.Chapter>
 	): HResult<List<ChapterEntity>>
 
-	/**
-	 * Loads [ChapterEntity]s matching [novelID]
-	 */
+	/** Loads [ChapterEntity]s matching [novelID] */
 	suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
 
-	/**
-	 * Loads a [ChapterEntity] by its [chapterID]
-	 */
+	/** Loads a [ChapterEntity] by its [chapterID] */
 	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
 
-	/**
-	 * Update [chapterEntity] in database
-	 */
+	/** Update [chapterEntity] in database */
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
-	/**
-	 * Loads [ReaderChapterEntity]s by it's [novelID]
-	 */
+	/** Loads [ReaderChapterEntity]s by it's [novelID] */
 	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
 
-	/**
-	 * Update [readerChapterEntity] in database
-	 */
+	/** Update [readerChapterEntity] in database */
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 
-	/**
-	 * Delete the chapter passage from storage
-	 */
+	/** Delete the chapter passage from storage */
 	suspend fun deleteChapterPassage(chapterEntity: ChapterEntity)
 }

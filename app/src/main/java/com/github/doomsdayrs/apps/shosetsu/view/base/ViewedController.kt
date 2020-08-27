@@ -61,6 +61,10 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	constructor()
 	constructor(args: Bundle) : super(args)
 
+	/** Title of this view, Applies to the app system */
+	@StringRes
+	open val viewTitle: Int = -1
+
 	override val kodein: Kodein by lazy { (applicationContext as KodeinAware).kodein }
 
 	/**
@@ -140,6 +144,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 			container: ViewGroup,
 			savedViewState: Bundle?
 	): View {
+		if (viewTitle != -1) activity?.setTitle(viewTitle)
 		val view = createViewInstance(inflater, container)
 		onViewCreated(view)
 		return view

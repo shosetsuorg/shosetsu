@@ -1,11 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateChapterUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
 
@@ -33,9 +29,6 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-abstract class IUpdatesViewModel : ViewModel(), SubscribeHandleViewModel<List<Long>> {
-	abstract fun getTimeBetweenDates(date: Long, date2: Long): LiveData<HResult<List<UpdateUI>>>
-	abstract fun getURLImageTitle(novelID: Int): URLImageTitle
-	abstract fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus)
-	abstract fun getChapter(chapterID: Int): UpdateChapterUI
+abstract class IUpdatesViewModel : ViewModel(), SubscribeHandleViewModel<List<UpdateUI>> {
+	abstract suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus)
 }

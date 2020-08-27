@@ -27,7 +27,9 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
  * @author github.com/doomsdayrs
  */
 interface IUpdatesRepository {
+	/** Adds updates */
 	suspend fun addUpdates(list: List<UpdateEntity>): Array<Long>
-	fun getUpdates(): LiveData<HResult<List<UpdateEntity>>>
-	suspend fun getUpdateDays(): LiveData<HResult<List<Long>>>
+
+	/** Get all LiveData of the updates */
+	suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>>
 }

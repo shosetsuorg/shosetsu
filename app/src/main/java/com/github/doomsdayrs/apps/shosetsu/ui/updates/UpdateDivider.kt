@@ -1,8 +1,11 @@
-package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
+package com.github.doomsdayrs.apps.shosetsu.ui.updates
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
+import android.content.Context
+import android.graphics.Canvas
+import android.view.LayoutInflater
+import android.view.View
+import androidx.core.content.getSystemService
+import androidx.recyclerview.widget.RecyclerView
 
 /*
  * This file is part of shosetsu.
@@ -21,14 +24,17 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 24 / 08 / 2020
  */
-interface ILocalUpdatesDataSource {
-	suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>>
-	suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long>
+class UpdateDivider(context: Context) : RecyclerView.ItemDecoration() {
+	private val view: View = context.getSystemService<LayoutInflater>()!!.inflate(
+			-1, null, false
+	)
+
+	override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+
+		super.onDrawOver(c, parent, state)
+	}
 }

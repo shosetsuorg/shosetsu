@@ -26,8 +26,11 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
  * 01 / 05 / 2020
  */
 interface IExtLibRepository {
+
+	/** Loads extension libraries by its repository */
 	suspend fun loadExtLibByRepo(repositoryEntity: RepositoryEntity): HResult<List<ExtLibEntity>>
 
+	/** Installs an extension library by its repository */
 	suspend fun installExtLibrary(repositoryEntity: RepositoryEntity, extLibEntity: ExtLibEntity)
 
 	/**

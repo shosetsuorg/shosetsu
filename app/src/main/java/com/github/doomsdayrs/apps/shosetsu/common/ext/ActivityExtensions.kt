@@ -11,7 +11,6 @@ import androidx.core.os.bundleOf
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
-import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.ChapterReader
 import com.github.doomsdayrs.apps.shosetsu.ui.webView.WebViewApp
@@ -87,16 +86,15 @@ fun Activity.toastOnUI(@StringRes resource: Int, duration: Int = Toast.LENGTH_SH
  * @param activity     activity
  * @param cUI novel chapter
  */
-fun Activity.openChapter(cUI: UpdateChapterUI) = openChapter(cUI.id, cUI.novelID, cUI.formatterID)
+fun Activity.openChapter(cUI: UpdateChapterUI) = openChapter(cUI.id, cUI.novelID)
 
-fun Activity.openChapter(cUI: ChapterUI) = openChapter(cUI.id, cUI.novelID, cUI.formatterID)
+fun Activity.openChapter(cUI: ChapterUI) = openChapter(cUI.id, cUI.novelID)
 
-fun Activity.openChapter(chapterID: Int, novelID: Int, formatterID: Int) {
+fun Activity.openChapter(chapterID: Int, novelID: Int) {
 	startActivity(Intent(this, ChapterReader::class.java) {
 		bundleOf(
 				BUNDLE_CHAPTER_ID to chapterID,
-				BUNDLE_NOVEL_ID to novelID,
-				BUNDLE_FORMATTER to formatterID
+				BUNDLE_NOVEL_ID to novelID
 		)
 	})
 }
@@ -121,8 +119,4 @@ fun Activity.readAsset(name: String): String {
 
 fun Activity.setActivityTitle(title: String?) {
 	if (this is AppCompatActivity) this.supportActionBar?.let { it.title = title }
-}
-
-fun Activity.setActivityTitle(@StringRes title: Int) {
-	if (this is AppCompatActivity) this.supportActionBar?.let { it.setTitle(title) }
 }

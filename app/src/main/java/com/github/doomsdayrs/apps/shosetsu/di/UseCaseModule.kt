@@ -40,7 +40,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<GetExtensionsUIUseCase>() with provider { GetExtensionsUIUseCase(instance()) }
 
-	bind<GetUpdateDaysUseCase>() with provider { GetUpdateDaysUseCase(instance()) }
+	bind<GetUpdatesUseCase>() with provider { GetUpdatesUseCase(instance()) }
 
 	bind<RefreshRepositoryUseCase>() with provider { RefreshRepositoryUseCase(instance()) }
 

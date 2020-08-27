@@ -29,33 +29,37 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
  * 25 / 04 / 2020
  */
 interface IExtensionsRepository {
-	/**
-	 * Live data of all extensions
-	 */
+	/** LiveData of all extensions */
 	suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>>
 
+	/** Installs an [extensionEntity] */
 	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*>
 
+	/** Uninstalls an [extensionEntity] */
 	suspend fun uninstallExtension(extensionEntity: ExtensionEntity)
 
+	/** Inserts or Updates an [extensionEntity] */
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity)
 
+	/** Updates an [extensionEntity] */
 	suspend fun updateExtension(extensionEntity: ExtensionEntity)
 
-	/**
-	 * Loads the formatter via its extension
-	 */
+	/** Loads the formatter via its extension */
 	suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter>
 
 	/** Loads the formatter via its ID */
 	suspend fun loadFormatter(formatterID: Int): HResult<Formatter>
 
+	/** Gets the extensions as cards containing their ID, Title, and Image */
 	suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>>
 
+	/** Gets extensions that are enabled */
 	fun loadPoweredExtensionsFileNames(): HResult<List<String>>
 
+	/** Loads the MD5 of an extension */
 	fun loadExtensionMD5(extensionID: Int): HResult<String>
 
+	/** Loads catalogue data of an extension */
 	suspend fun loadCatalogueData(
 			formatter: Formatter,
 			listing: Int,

@@ -23,7 +23,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -37,6 +36,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
  * @author github.com/doomsdayrs
  */
 class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>() {
+	override val viewTitle: Int = R.string.extensions
+
 	init {
 		setHasOptionsMenu(true)
 	}
@@ -49,7 +50,6 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 	}
 
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(R.string.extensions)
 	}
 
 	override fun setupRecyclerView() {

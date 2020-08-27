@@ -1,15 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates.adapters
 
-import android.util.Log
-import com.bluelinelabs.conductor.Router
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.support.RouterPagerAdapter
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
-import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
-import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
-import org.joda.time.DateTime
-
 /*
  * This file is part of shosetsu.
  *
@@ -30,7 +20,8 @@ import org.joda.time.DateTime
 /**
  * shosetsu
  * 20 / 08 / 2019
- */
+ *//*
+
 class UpdatedDaysPager(
 		private val updateController: UpdatesController
 ) : RouterPagerAdapter(updateController) {
@@ -53,3 +44,4 @@ class UpdatedDaysPager(
 
 	override fun getCount(): Int = updateController.updateDays.size
 }
+*/

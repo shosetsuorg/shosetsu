@@ -1,17 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetUpdateDaysUseCase
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateChapterUI
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetUpdatesUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
-import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -38,28 +32,12 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class UpdatesViewModel(
-		private val getUpdateDaysUseCase: GetUpdateDaysUseCase
+		private val getUpdatesUseCase: GetUpdatesUseCase
 ) : IUpdatesViewModel() {
-	override val liveData: LiveData<HResult<List<Long>>> by lazy {
-		liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
-			emit(loading())
-			emitSource(getUpdateDaysUseCase())
-		}
+	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
+		getUpdatesUseCase()
 	}
 
-	override fun getURLImageTitle(novelID: Int): URLImageTitle {
-		TODO("Not yet implemented")
-	}
-
-	override fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus) {
-		TODO("Not yet implemented")
-	}
-
-	override fun getChapter(chapterID: Int): UpdateChapterUI {
-		TODO("Not yet implemented")
-	}
-
-	override fun getTimeBetweenDates(date: Long, date2: Long): LiveData<HResult<List<UpdateUI>>> {
-		TODO("Not yet implemented")
+	override suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus) {
 	}
 }

@@ -32,18 +32,31 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  * @author github.com/doomsdayrs
  */
 interface INovelsRepository {
+	/** Gets all bookmarked as live data */
 	suspend fun getLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>>
+
+	/** Gets NovelEntities that are bookmarked */
 	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
+
+	/** Gets NovelEntities that are bookmarked */
 	suspend fun unBookmarkNovels(selectedNovels: List<Int>)
+
+	/** Searches the bookmarked novels and returns a live data of them */
 	suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>>
 
+	/** Loads the [NovelEntity] by its [novelID] */
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
+
+	/** Loads live data of the [NovelEntity] by its [novelID] */
 	suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>>
 
+	/** Inserts the [novelEntity] and returns a UI version of it  */
 	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook
+
+	/** Inserts the [novelEntity] */
 	suspend fun insertNovel(novelEntity: NovelEntity)
 
-
+	/** Updates the [novelEntity] */
 	suspend fun updateNovel(novelEntity: NovelEntity)
 
 	/**
@@ -51,6 +64,7 @@ interface INovelsRepository {
 	 */
 	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info)
 
+	/** Updates a list of bookmarked novels */
 	suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>)
 
 	/**

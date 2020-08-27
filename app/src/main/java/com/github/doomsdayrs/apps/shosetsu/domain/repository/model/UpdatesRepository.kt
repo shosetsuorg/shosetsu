@@ -37,11 +37,6 @@ class UpdatesRepository(
 	override suspend fun addUpdates(list: List<UpdateEntity>): Array<Long> =
 			iLocalUpdatesDataSource.insertUpdates(list)
 
-	override fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> {
-		TODO("Not yet implemented")
-	}
-
-	override suspend fun getUpdateDays(): LiveData<HResult<List<Long>>> =
-		iLocalUpdatesDataSource.getUpdateDays()
-
+	override suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> =
+			iLocalUpdatesDataSource.getUpdates()
 }

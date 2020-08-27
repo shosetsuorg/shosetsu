@@ -31,6 +31,9 @@ import org.json.JSONObject
  * @author github.com/doomsdayrs
  */
 interface IExtRepoRepository {
+	/** Loads repository data */
 	suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<JSONObject>
+
+	/** Loads all repositories present */
 	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
 }

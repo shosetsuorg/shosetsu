@@ -3,7 +3,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings
 import android.view.View
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.SettingsCard
-import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types.*
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.adapter.SettingsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
@@ -30,15 +29,8 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
  * 9 / June / 2019
  */
 class SettingsController : RecyclerController<SettingsAdapter, SettingsCard>() {
-	enum class Types {
-		DOWNLOAD, // Settings for download options
-		UPDATE,
-		VIEW, // Settings for application appearance
-		ADVANCED, // Settings that control more advanced application features
-		INFO,  // Information of the app
-		BACKUP, // Settings for backup and restoring data
-		READER // Settings for reading novels in application
-	}
+	override val layoutRes: Int = R.layout.settings
+	override val viewTitle: Int = R.string.settings
 
 	init {
 		recyclerArray.clear()
@@ -53,10 +45,7 @@ class SettingsController : RecyclerController<SettingsAdapter, SettingsCard>() {
 		))
 	}
 
-	override val layoutRes: Int = R.layout.settings
-
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(R.string.settings)
 	}
 
 	override fun difAreItemsTheSame(oldItem: SettingsCard, newItem: SettingsCard): Boolean =
@@ -69,4 +58,14 @@ class SettingsController : RecyclerController<SettingsAdapter, SettingsCard>() {
 
 	override fun createRecyclerAdapter(): SettingsAdapter =
 			SettingsAdapter(recyclerArray, router)
+
+	enum class Types {
+		DOWNLOAD, // Settings for download options
+		UPDATE,
+		VIEW, // Settings for application appearance
+		ADVANCED, // Settings that control more advanced application features
+		INFO,  // Information of the app
+		BACKUP, // Settings for backup and restoring data
+		READER // Settings for reading novels in application
+	}
 }

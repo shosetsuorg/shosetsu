@@ -75,12 +75,20 @@ class InitializeExtensionsUseCase(
 		Log.i(logID(), "Completed Update")
 	}
 
+	/**
+	 * Updates the libraries in the program
+	 *
+	 * @param indexJSON of the application
+	 * @param repo Repo of the index
+	 * @param progressUpdate Upstream reporting
+	 */
 	private suspend fun updateLibraries(
 			indexJSON: JSONObject,
 			repo: RepositoryEntity,
 			progressUpdate: (String) -> Unit
 	) {
 		// Updates libraries
+
 		// Array of libraries
 		val libJSONArray: JSONArray
 		try {
