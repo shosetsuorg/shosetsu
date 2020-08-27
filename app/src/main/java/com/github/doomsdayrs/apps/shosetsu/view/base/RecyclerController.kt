@@ -143,11 +143,9 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	/**
 	 * If the contents of two items are the same
 	 */
-	open fun difAreContentsTheSame(oldItem: V, newItem: V): Boolean {
-		val b = oldItem == newItem
-		Log.d(logID(), "$oldItem v $newItem = $b")
-		return b
-	}
+	open fun difAreContentsTheSame(oldItem: V, newItem: V): Boolean =
+			//Log.d(logID(), "$oldItem v $newItem = $b")
+			oldItem == newItem
 
 	/**
 	 * If the identification of two items are the same

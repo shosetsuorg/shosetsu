@@ -35,18 +35,20 @@ import kotlinx.coroutines.launch
  */
 class ExtensionsViewModel(
 		private val getExtensionsUIUseCase: GetExtensionsUIUseCase,
-		private val refreshRepositoryUseCase: RefreshRepositoryUseCase,
-		private val reloadFormattersUseCase: ReloadFormattersUseCase,
+		private val initializeExtensionsUseCase: InitializeExtensionsUseCase,
 		private val installExtensionUIUseCase: InstallExtensionUIUseCase,
 		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
 		private val toastUseCase: ToastUseCase
 ) : IExtensionsViewModel() {
 
-	override fun reloadFormatters(): Unit =
-			reloadFormattersUseCase()
 
-	override fun refreshRepository(): Unit =
-			refreshRepositoryUseCase()
+	override fun refreshRepository() {
+		com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO {
+			initializeExtensionsUseCase.invoke {
+				toastUseCase { it }
+			}
+		}
+	}
 
 	override fun installExtension(extensionUI: ExtensionUI) {
 		GlobalScope.launch(Dispatchers.IO, start = CoroutineStart.DEFAULT) {

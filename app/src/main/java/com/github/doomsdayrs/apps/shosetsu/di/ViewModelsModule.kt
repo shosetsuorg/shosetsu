@@ -2,8 +2,8 @@ package com.github.doomsdayrs.apps.shosetsu.di
 
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.*
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogOptionsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension.ExtensionsConfigureViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension.ExtensionsViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel.NovelChaptersViewModel
@@ -57,7 +57,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i()) }
 
 	// Extensions
-	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(),i(),i()) }
+	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i()) }
 	bind<IExtensionsConfigureViewModel>() with provider { ExtensionsConfigureViewModel(i(), i()) }
 
 	// Novel View

@@ -30,7 +30,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  */
 abstract class IExtensionsViewModel
 	: ViewModel(), SubscribeHandleViewModel<List<ExtensionUI>> {
-	abstract fun reloadFormatters()
+
+	/** Refreshes the repositories and data values */
 	abstract fun refreshRepository()
 
 	/** Installs an extension (can also update it) */

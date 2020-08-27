@@ -62,10 +62,6 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 			extensionViewModel.refreshRepository()
 			true
 		}
-		R.id.reload -> {
-			extensionViewModel.reloadFormatters()
-			true
-		}
 		else -> false
 	}
 
