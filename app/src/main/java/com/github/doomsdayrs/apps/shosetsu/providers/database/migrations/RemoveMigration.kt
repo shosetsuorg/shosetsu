@@ -69,7 +69,9 @@ abstract class RemoveMigration(from: Int, to: Int) : Migration(from, to) {
 					createBackupTableSQL += ");"
 					Log.i(logID(), "Creating Backup Table with sql: $createBackupTableSQL")
 					database.execSQL(createBackupTableSQL)
-					var createIndexSql = ""
+
+					// Creates index
+					val createIndexSql = arrayListOf<String>()
 					while (uniqueIndex.moveToNext()) {
 						val indexName = uniqueIndex.getString(1)
 						val indexInfo = database.query("PRAGMA index_info('$indexName')")
@@ -77,12 +79,14 @@ abstract class RemoveMigration(from: Int, to: Int) : Migration(from, to) {
 						indexInfo.moveToNext()
 						val parentId = indexInfo.getString(2)
 						database.execSQL("DROP INDEX IF EXISTS $indexName")
-						createIndexSql += "CREATE $unique INDEX $indexName on data_backup('$parentId');"
+						createIndexSql.plusAssign("CREATE $unique INDEX $indexName on data_backup('$parentId');")
 					}
 
 					if (createIndexSql.isNotEmpty()) {
-						Log.i(logID(), "Creating index: $createIndexSql")
-						database.execSQL(createIndexSql)
+						createIndexSql.forEach {
+							Log.i(logID(), "Creating index: $it")
+							database.execSQL(it)
+						}
 					}
 
 					val insertIntoBackupSQL = "INSERT INTO $backupTableName SELECT $targetColumns FROM $tableName;"
