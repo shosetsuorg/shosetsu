@@ -37,13 +37,18 @@ import java.io.File
 class CacheSecondaryChaptersDataSource(
 		private val application: Application
 ) : ICacheSecondaryChaptersDataSource {
+	@get:Synchronized
 	private val cacheDir by lazy { application.cacheDir }
+
+	@get:Synchronized
 	private val chaptersCacheDir by lazy {
 		File(cacheDir.path + "/chapters").also {
 			if (!it.exists())
 				it.mkdir()
 		}
 	}
+
+	@get:Synchronized
 	private val chaptersCacheInstructionFile by lazy {
 		File(chaptersCacheDir.path + "/map.json").also {
 			if (!it.exists()) {
@@ -52,15 +57,20 @@ class CacheSecondaryChaptersDataSource(
 			}
 		}
 	}
+
+	@get:Synchronized
 	private val chaptersCacheInstruction: JSONArray by lazy {
 		JSONArray(chaptersCacheInstructionFile.readText())
 	}
 
+	@get:Synchronized
+	@set:Synchronized
 	/**
 	 * Helps prevent reruns
 	 */
 	private var running: Boolean = false
 
+	@Synchronized
 	/**
 	 * Writes the instruct file
 	 */
@@ -80,6 +90,7 @@ class CacheSecondaryChaptersDataSource(
 		}
 	}
 
+	@Synchronized
 	/**
 	 * Simply creates a file object
 	 */
@@ -124,6 +135,7 @@ class CacheSecondaryChaptersDataSource(
 
 	}
 
+	@Synchronized
 	override suspend fun saveChapterInCache(chapterID: Int, passage: String) {
 		// Looks for the chapter if its already in the instruction set
 		// If found, it updates the time and writes the new data
@@ -151,6 +163,7 @@ class CacheSecondaryChaptersDataSource(
 		launchIO { launchCleanUp() } // Launch cleanup separately
 	}
 
+	@Synchronized
 	override suspend fun loadChapterPassage(chapterID: Int): HResult<String> {
 		launchIO { launchCleanUp() } // Launch cleanup separately
 
