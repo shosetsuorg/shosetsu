@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapTo
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 
@@ -33,6 +34,15 @@ class GetUpdatesUseCase(
 		private val updatesRepository: IUpdatesRepository
 ) : (() -> LiveData<HResult<List<UpdateUI>>>) {
 	override fun invoke(): LiveData<HResult<List<UpdateUI>>> = liveData {
-		emitSource(updatesRepository.getUpdates().map { it.mapListTo() })
+		emitSource(updatesRepository.getCompleteUpdates().map {
+			it.let {
+				when (it) {
+					is HResult.Success -> successResult(it.data.mapTo())
+					is HResult.Loading -> it
+					is HResult.Error -> it
+					is HResult.Empty -> it
+				}
+			}
+		})
 	}
 }

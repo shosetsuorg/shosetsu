@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.edit
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.settings.*
@@ -48,7 +49,6 @@ class ShosetsuSettings(
 		val settings: SharedPreferences = context.getSharedPreferences("view", 0),
 		private val readerSettings: SharedPreferences = context.getSharedPreferences("reader", 0)
 ) {
-
 	enum class MarkingTypes(val i: Int) {
 		ONVIEW(0),
 		ONSCROLL(1);
@@ -59,7 +59,6 @@ class ShosetsuSettings(
 		MEDIUM(17F),
 		LARGE(20F)
 	}
-
 
 	/**
 	 * Choices for colors
@@ -132,25 +131,44 @@ class ShosetsuSettings(
 		override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 	}
 
+	/** LiveData of [readerTextSize] */
+	val readerTextSizeLive: LiveData<Float>
+		get() = _readerTextSizeLive
 
-	// ## Live Data
-	val readerTextSizeLive: MutableLiveData<Float> by lazy {
+	/** LiveData of [readerParagraphSpacing] */
+	val readerParagraphSpacingLive: LiveData<Int>
+		get() = _readerParagraphSpacingLive
+
+	/** LiveData of [readerIndentSize] */
+	val readerIndentSizeLive: LiveData<Int>
+		get() = _readerIndentSizeLive
+
+	/** LiveData of [readerTheme] */
+	val readerUserThemeSelectionLive: LiveData<Int>
+		get() = _readerUserThemeSelectionLive
+
+	/** LiveData of [readerUserThemes] */
+	val readerUserThemesLive: LiveData<List<ColorChoice>>
+		get() = _readerUserThemesLive
+
+
+	private val _readerTextSizeLive: MutableLiveData<Float> by lazy {
 		MutableLiveData(readerTextSize)
 	}
 
-	val readerParagraphSpacingLive: MutableLiveData<Int> by lazy {
+	private val _readerParagraphSpacingLive: MutableLiveData<Int> by lazy {
 		MutableLiveData(readerParagraphSpacing)
 	}
 
-	val readerIndentSizeLive: MutableLiveData<Int> by lazy {
+	private val _readerIndentSizeLive: MutableLiveData<Int> by lazy {
 		MutableLiveData(readerIndentSize)
 	}
 
-	val readerUserThemeSelectionLive: MutableLiveData<Int> by lazy {
+	private val _readerUserThemeSelectionLive: MutableLiveData<Int> by lazy {
 		MutableLiveData(readerTheme)
 	}
 
-	val readerUserThemesLive: MutableLiveData<List<ColorChoice>> by lazy {
+	private val _readerUserThemesLive: MutableLiveData<List<ColorChoice>> by lazy {
 		MutableLiveData(readerUserThemes)
 	}
 
@@ -175,19 +193,19 @@ class ShosetsuSettings(
 
 	var readerTextSize: Float
 		set(value) = readerSettings.edit { putFloat(READER_TEXT_SIZE, value) }.also {
-			launchIO { readerTextSizeLive.postValue(value) }
+			launchIO { _readerTextSizeLive.postValue(value) }
 		}
 		get() = readerSettings.getFloat(READER_TEXT_SIZE, 14f)
 
 	var readerIndentSize: Int
 		set(value) = settings.edit { putInt(READER_TEXT_INDENT, value) }.also {
-			launchIO { readerIndentSizeLive.postValue(value) }
+			launchIO { _readerIndentSizeLive.postValue(value) }
 		}
 		get() = settings.getInt(READER_TEXT_INDENT, 1)
 
 	var readerParagraphSpacing: Int
 		set(value) = readerSettings.edit { putInt(READER_TEXT_SPACING, value) }.also {
-			launchIO { readerParagraphSpacingLive.postValue(value) }
+			launchIO { _readerParagraphSpacingLive.postValue(value) }
 		}
 		get() = readerSettings.getInt(READER_TEXT_SPACING, 1)
 
@@ -196,7 +214,7 @@ class ShosetsuSettings(
 	 */
 	var readerTheme: Int
 		set(value) = readerSettings.edit { putInt(READER_THEME, value) }.also {
-			launchIO { readerUserThemeSelectionLive.postValue(value) }
+			launchIO { _readerUserThemeSelectionLive.postValue(value) }
 		}
 		get() = readerSettings.getInt(READER_THEME, -1)
 

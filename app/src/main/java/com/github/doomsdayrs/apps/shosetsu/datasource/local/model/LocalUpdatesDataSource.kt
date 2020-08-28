@@ -5,6 +5,7 @@ import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalUpdatesDataSource
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateCompleteEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 
@@ -69,4 +70,7 @@ class LocalUpdatesDataSource(
 
 	override suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long> =
 			updatesDao.insertAllIgnore(list)
+
+	override suspend fun getCompleteUpdates(): LiveData<HResult<List<UpdateCompleteEntity>>> =
+			updatesDao.loadCompleteUpdates().map { successResult(it) }
 }

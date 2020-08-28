@@ -4,8 +4,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 import java.io.Serializable
 
 /*
@@ -48,7 +46,4 @@ data class UpdateEntity(
 		val chapterID: Int,
 		val novelID: Int,
 		val time: Long
-) : Serializable, Convertible<UpdateUI> {
-	override fun convertTo(): UpdateUI =
-			UpdateUI(chapterID, novelID, time)
-}
+) : Serializable

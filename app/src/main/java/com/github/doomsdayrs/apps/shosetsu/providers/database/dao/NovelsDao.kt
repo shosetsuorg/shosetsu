@@ -54,9 +54,17 @@ interface NovelsDao : BaseDao<NovelEntity> {
 	@Query("SELECT id,title,imageURL FROM novels")
 	fun loadIDImageTitle(): LiveData<List<IDTitleImage>>
 
-	@Query("SELECT novels.id, novels.title, novels.imageURL, novels.bookmarked,  ( " +
-			"SELECT count(*) FROM chapters WHERE novelID = novels.id AND readingStatus != 2 " +
-			") as unread FROM novels WHERE novels.bookmarked = 1")
+	@Query("""SELECT 
+						novels.id, 
+						novels.title, 
+						novels.imageURL, 
+						novels.bookmarked,  
+						( 
+							SELECT 
+									count(*) 
+							FROM chapters WHERE novelID = novels.id AND readingStatus != 2 
+						) as unread 
+					FROM novels WHERE novels.bookmarked = 1""")
 	fun loadBookmarkedNovelsCount(): LiveData<List<BookmarkedNovelEntity>>
 
 	@Query("SELECT id FROM novels")

@@ -1,9 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
+package com.github.doomsdayrs.apps.shosetsu.domain.model.local
 
-import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.base.BaseRecyclerItem
-import com.mikepenz.fastadapter.FastAdapter
+import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 
 /*
  * This file is part of shosetsu.
@@ -24,28 +22,31 @@ import com.mikepenz.fastadapter.FastAdapter
 
 /**
  * shosetsu
- * 24 / 04 / 2020
+ * 28 / 08 / 2020
  *
- * UpdateUI entity to display
+ * Loads all data for the [UpdateEntity]
+ *
+ * @param chapterID ID of the chapter
+ * @param novelID ID of the novel
+ * @param time The time the update was made
+ * @param chapterName Name of the chapter, loaded via [chapterID]
+ * @param novelName Name of the novel, loaded via [novelID]
+ * @param novelImageURL imageURL of the novel, loaded via [novelID]
  */
-data class UpdateUI(
+data class UpdateCompleteEntity(
 		val chapterID: Int,
 		val novelID: Int,
 		val time: Long,
 		val chapterName: String,
 		val novelName: String,
 		val novelImageURL: String
-) : BaseRecyclerItem<UpdateUI.ViewHolder>() {
-	override val layoutRes: Int = R.layout.recycler_novel_card_compressed
-	override val type: Int = R.layout.recycler_novel_card_compressed
-	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
-
-	/**  */
-	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<UpdateUI>(itemView) {
-		override fun bindView(item: UpdateUI, payloads: List<Any>) {
-		}
-
-		override fun unbindView(item: UpdateUI) {
-		}
-	}
+) : Convertible<UpdateUI> {
+	override fun convertTo(): UpdateUI = UpdateUI(
+			chapterID,
+			novelID,
+			time,
+			chapterName,
+			novelName,
+			novelImageURL
+	)
 }

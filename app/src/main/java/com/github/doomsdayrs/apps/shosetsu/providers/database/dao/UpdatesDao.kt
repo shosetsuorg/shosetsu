@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.github.doomsdayrs.apps.shosetsu.common.IncorrectDateException
 import com.github.doomsdayrs.apps.shosetsu.common.ext.trimDate
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateCompleteEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 import org.joda.time.DateTime
@@ -93,4 +94,26 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 		}
 		return list
 	}
+
+	@Query("""SELECT 
+						updates.chapterID, 
+						updates.novelID, 
+						updates.time,
+						( 
+							SELECT
+								title
+							FROM chapters WHERE chapterID = updates.chapterID
+						) AS chapterName, 
+						( 
+							SELECT 
+								title
+							FROM novels WHERE id = updates.novelID
+						) AS novelName,
+						(
+							SELECT
+								imageURL
+							FROM novels WHERE id = updates.novelID
+						) AS novelImageURL
+					FROM updates""")
+	fun loadCompleteUpdates(): LiveData<List<UpdateCompleteEntity>>
 }
