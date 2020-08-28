@@ -69,14 +69,6 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
 	fun loadChapterUnreadCount(): Int
 
-	//## Manipulation queries
-
-	@Query("UPDATE chapters SET isSaved = 1 AND savePath = :path WHERE id = :id")
-	fun setChapterSavePath(id: Int, path: String)
-
-	@Query("UPDATE chapters SET isSaved = 0 AND savePath = NULL WHERE id = :chapterID")
-	suspend fun removeChapterSavePath(chapterID: Int)
-
 	//# Transactions
 
 	@Transaction
