@@ -84,7 +84,7 @@ class ShosetsuSettings(
 			fun fromString(string: String): ColorChoice = string.split(",").let {
 				ColorChoice(
 						it[0].toLong(),
-						it[1].deserializeString() as String,
+						it[1].deserializeString(),
 						it[2].toInt(),
 						it[3].toInt()
 				)

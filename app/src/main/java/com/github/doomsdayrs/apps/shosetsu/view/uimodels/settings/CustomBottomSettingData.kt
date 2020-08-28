@@ -37,7 +37,4 @@ class CustomBottomSettingData(id: Int) : BottomSettingsItemData(id) {
 		settingsItem.bottomField.addView(customView(), MATCH_PARENT, MATCH_PARENT)
 	}
 
-	override fun unbindView(settingsItem: ViewHolder) {
-		super.unbindView(settingsItem)
-	}
 }

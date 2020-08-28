@@ -36,11 +36,6 @@ class ChapterLoader( var formatter: Formatter, var novelURL: String) : AsyncTask
 	private val finalChapters: ArrayList<Novel.Chapter> = ArrayList()
 
 
-	override fun onPreExecute() {
-		super.onPreExecute()
-	}
-
-
 	public override fun doInBackground(vararg p0: Void?): Boolean {
 		// loads page
 		val novelPage: Novel.Info = formatter.parseNovel(novelURL, true) {}

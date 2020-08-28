@@ -33,8 +33,4 @@ class UpdateDivider(context: Context) : RecyclerView.ItemDecoration() {
 			-1, null, false
 	)
 
-	override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-
-		super.onDrawOver(c, parent, state)
-	}
 }

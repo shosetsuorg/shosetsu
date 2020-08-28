@@ -98,7 +98,7 @@ data class NovelUI(
 	}
 
 	override fun hashCode(): Int {
-		var result = id ?: 0
+		var result = id
 		result = 31 * result + novelURL.hashCode()
 		result = 31 * result + formatterID
 		result = 31 * result + bookmarked.hashCode()

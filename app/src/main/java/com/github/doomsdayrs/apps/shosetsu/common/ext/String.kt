@@ -52,7 +52,7 @@ fun String.clean(): String {
  * @throws ClassNotFoundException exception
  */
 @Throws(IOException::class, ClassNotFoundException::class)
-fun String.deserializeString(): Any? {
+inline fun <reified R> String.deserializeString(): R? {
 	var editString = this
 	if (editString != "serial-null") {
 		editString = editString.substring(7)
@@ -60,7 +60,7 @@ fun String.deserializeString(): Any? {
 		val bytes = Base64.decode(editString, Base64.NO_WRAP)
 		val byteArrayInputStream = ByteArrayInputStream(bytes)
 		val objectInputStream = ObjectInputStream(byteArrayInputStream)
-		return objectInputStream.readObject()
+		return objectInputStream.readObject() as R
 	}
 	return null
 }
@@ -76,8 +76,7 @@ fun String?.checkStringDeserialize(): String {
 		return ""
 	} else {
 		try {
-			val obj = deserializeString() ?: return ""
-			return obj as String
+			return deserializeString() ?: return ""
 		} catch (e: IOException) {
 			e.printStackTrace()
 		} catch (e: ClassNotFoundException) {

@@ -164,7 +164,7 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 			holder.title.text = form?.name
 			if (form?.imageURL?.isNotEmpty()!!)
 				Picasso.get()
-						.load(form?.imageURL)
+						.load(form.imageURL)
 						.into(holder.imageView)
 
 			holder.id = form.formatterID

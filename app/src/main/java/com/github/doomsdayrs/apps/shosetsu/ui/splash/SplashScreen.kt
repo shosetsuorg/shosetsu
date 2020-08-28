@@ -89,7 +89,6 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 
 		// Settings setup
 		connectivityManager = getSystemService<ConnectivityManager>()!!
-				as ConnectivityManager
 		if (settings.showIntro) {
 			Log.i(logID(), "First time, Launching activity")
 			val i = Intent(this, IntroductionActivity::class.java)

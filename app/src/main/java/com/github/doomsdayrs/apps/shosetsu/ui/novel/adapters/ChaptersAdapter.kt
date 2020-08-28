@@ -76,7 +76,7 @@ class ChaptersAdapter(
 						return@setOnMenuItemClickListener true
 					}
 					R.id.webview -> {
-						(itemView.context as Activity)?.openInWebView(chapterUI.link)
+						(itemView.context as Activity).openInWebView(chapterUI.link)
 						return@setOnMenuItemClickListener true
 					}
 					else -> return@setOnMenuItemClickListener false

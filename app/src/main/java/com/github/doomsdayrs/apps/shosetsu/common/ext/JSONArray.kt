@@ -30,17 +30,17 @@ import org.json.JSONArray
 /**
  * Performs the given [action] on each element.
  */
-public inline fun JSONArray.forEach(action: (Any) -> Unit) {
+inline fun JSONArray.forEach(action: (Any) -> Unit) {
 	for (index in 0 until length())
 		action(this[index])
 }
 
-public inline fun <T> JSONArray.forEachTyped(action: (T) -> Unit) {
+inline fun <T> JSONArray.forEachTyped(action: (T) -> Unit) {
 	for (index in 0 until length())
 		action(this[index] as T)
 }
 
-public inline fun JSONArray.forEachIndexed(action: (index: Int, Any) -> Unit) {
+inline fun JSONArray.forEachIndexed(action: (index: Int, Any) -> Unit) {
 	for (index in 0 until length())
 		action(index, this[index])
 }

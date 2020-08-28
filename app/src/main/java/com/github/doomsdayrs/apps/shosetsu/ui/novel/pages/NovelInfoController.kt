@@ -102,7 +102,7 @@ class NovelInfoController(
 			id.source_migrate -> {
 				parentController?.router?.pushController(MigrationController(bundleOf(Pair(
 						MigrationController.TARGETS_BUNDLE_KEY,
-						arrayOf(novelUI!!.id!!).toIntArray()
+						arrayOf(novelUI!!.id).toIntArray()
 				))).withFadeTransaction())
 				true
 			}
@@ -171,7 +171,7 @@ class NovelInfoController(
 		fab.setOnClickListener {
 			Log.d(logID(), "Toggling Bookmark")
 			viewModel.toggleBookmark(novelUI!!)
-			setFABIcon(fab!!)
+			setFABIcon(fab)
 		}
 	}
 

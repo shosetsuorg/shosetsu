@@ -77,10 +77,7 @@ data class ChapterEntity(
 
 		var bookmarked: Boolean = false,
 
-		var isSaved: Boolean = false,
-
-		@Deprecated("No longer needed, save path is loaded via IDs")
-		var savePath: String = ""
+		var isSaved: Boolean = false
 ) : Convertible<ChapterUI> {
 
 

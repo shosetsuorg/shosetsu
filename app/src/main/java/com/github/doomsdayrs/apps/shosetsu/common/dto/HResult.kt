@@ -91,9 +91,9 @@ inline fun <reified O : Any, reified I : Convertible<O>> HResult<List<I>>.mapLis
 inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
 		: HResult<O> = when (this) {
 	is HResult.Success -> {
-		this.data.convertTo()?.let {
+		this.data.convertTo().let {
 			successResult(it)
-		} ?: emptyResult()
+		}
 	}
 	is HResult.Empty -> this
 	is HResult.Loading -> this

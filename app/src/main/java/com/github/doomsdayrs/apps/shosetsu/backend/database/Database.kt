@@ -26,12 +26,9 @@ import android.database.sqlite.SQLiteDatabase
  * @author github.com/doomsdayrs
  */
 object Database {
-	/**
-	 * SQLITEDatabase
-	 */
+
+	/** SQLITEDatabase */
 	lateinit var sqLiteDatabase: SQLiteDatabase
 
-	fun isInit(): Boolean {
-		return this::sqLiteDatabase.isInitialized
-	}
+	fun isInit(): Boolean = this::sqLiteDatabase.isInitialized
 }

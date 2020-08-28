@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 			ChapterEntity::class,
 			NovelEntity::class
 		],
-		version = 1
+		version = 2
 )
 @TypeConverters(
 		ReadingStatusConverter::class,
@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 abstract class ShosetsuDatabase : RoomDatabase() {
 	companion object {
 		@Volatile
-		private lateinit var databaseShosetsu: ShosetsuDatabase;
+		private lateinit var databaseShosetsu: ShosetsuDatabase
 
 		@Synchronized
 		fun getRoomDatabase(context: Context): ShosetsuDatabase {

@@ -27,7 +27,7 @@ inline fun <reified T : Any> T.logError(error: () -> HResult.Error) {
 		Log.e(
 				logID(),
 				"Error Result:\t$k by $e\tmessage:\n$m${
-				if (e != null) "\nStacktrace${e.stackTrace!!.contentToString()}" else ""
+				if (e != null) "\nStacktrace${e.stackTrace.contentToString()}" else ""
 				}"
 		)
 	}

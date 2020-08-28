@@ -69,12 +69,6 @@ enum class Columns(private val key: String) {
 	CUSTOM_REPO("customRepo")
 	;
 
-	override fun toString(): String {
-		return key
-	}
+	override fun toString(): String = key
 
-}
-
-fun stringArrayOf(vararg columns: Columns): Array<String> {
-	return columns.map { it.toString() }.toTypedArray()
 }

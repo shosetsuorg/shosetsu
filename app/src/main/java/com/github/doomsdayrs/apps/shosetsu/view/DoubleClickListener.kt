@@ -39,7 +39,7 @@ abstract class DoubleClickListener(
 	override fun onClick(v: View) {
 		if ((elapsedRealtime() - timestampLastClick) < doubleClickQualificationTime)
 			onDoubleClick(v)
-		timestampLastClick = elapsedRealtime();
+		timestampLastClick = elapsedRealtime()
 	}
 
 	/** When the view is double clicked */
