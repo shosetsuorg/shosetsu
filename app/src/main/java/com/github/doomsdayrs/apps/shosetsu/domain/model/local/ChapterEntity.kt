@@ -56,7 +56,7 @@ data class ChapterEntity(
 		var id: Int? = null,
 
 		@NonNull
-		val url: String,
+		var url: String,
 
 		@NonNull
 		val novelID: Int,

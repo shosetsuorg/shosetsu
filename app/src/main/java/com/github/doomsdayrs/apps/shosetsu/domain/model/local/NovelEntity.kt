@@ -52,7 +52,7 @@ data class NovelEntity(
 
 		@NonNull
 		/** URL of the novel */
-		val url: String,
+		var url: String,
 
 		/** Source this novel is from */
 		val formatterID: Int,
