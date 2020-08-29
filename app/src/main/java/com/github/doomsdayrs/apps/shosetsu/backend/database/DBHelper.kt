@@ -139,8 +139,8 @@ class DBHelper(context: Context) :
 				while (it.moveToNext()) add(OldChapter(
 						chapterID = it.getInt(ID),
 						novelID = it.getInt(PARENT_ID),
-						title = it.getString(TITLE),
-						date = it.getString(RELEASE_DATE),
+						title = it.getString(TITLE).deserializeString() ?: "",
+						date = it.getString(RELEASE_DATE).deserializeString() ?: "",
 						order = it.getDouble(ORDER),
 						yPosition = it.getInt(Y_POSITION),
 						readChapter = it.getInt(READ_CHAPTER).let {
