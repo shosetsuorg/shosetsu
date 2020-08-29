@@ -81,9 +81,6 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 		super.onCreate(savedInstanceState)
 		initPreferences(this, settings)
 		textView = findViewById(R.id.title)
-		// Sets up old SQL database
-		DBHelper(this).writableDatabase
-
 		// Settings setup
 		connectivityManager = getSystemService<ConnectivityManager>()!!
 		if (settings.showIntro) {
@@ -127,6 +124,9 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 					}
 				}
 			}
+
+			// OLD DB TO NEW
+			DBHelper(this@SplashScreen).writableDatabase
 			launchUI {
 				val intent = Intent(this@SplashScreen, MainActivity::class.java)
 				intent.action = intent.action

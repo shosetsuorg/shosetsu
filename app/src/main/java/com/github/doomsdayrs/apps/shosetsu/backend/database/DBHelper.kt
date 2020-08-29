@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns.*
 import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables.*
@@ -58,13 +59,6 @@ class DBHelper(context: Context) :
 			db.execSQL("DROP TABLE IF EXISTS $UPDATES")
 		} else if (oldVersion < 10) {
 			convert(db)
-
-			db.execSQL("DROP TABLE IF EXISTS $CHAPTER_IDENTIFICATION")
-			db.execSQL("DROP TABLE IF EXISTS $NOVEL_IDENTIFICATION")
-			db.execSQL("DROP TABLE IF EXISTS $CHAPTERS")
-			db.execSQL("DROP TABLE IF EXISTS $NOVELS")
-			db.execSQL("DROP TABLE IF EXISTS $DOWNLOADS")
-			db.execSQL("DROP TABLE IF EXISTS $UPDATES")
 		}
 	}
 
@@ -75,7 +69,7 @@ class DBHelper(context: Context) :
 				while (it.moveToNext()) add(
 						NovelIdentification(
 								novelID = it.getInt(ID),
-								novelURL = it.getString(URL).deserializeString()!!,
+								novelURL = it.getString(URL),
 								formatterID = it.getInt(FORMATTER_ID)
 						)
 				)
@@ -87,7 +81,7 @@ class DBHelper(context: Context) :
 				while (it.moveToNext()) add(ChapterIdentification(
 						chapterID = it.getInt(ID),
 						novelID = it.getInt(PARENT_ID),
-						chapterURL = it.getString(URL).deserializeString()!!
+						chapterURL = it.getString(URL)
 				))
 			}
 		}
@@ -98,7 +92,7 @@ class DBHelper(context: Context) :
 						novelID = it.getInt(PARENT_ID),
 						bookmarked = it.getInt(BOOKMARKED) == 1,
 						title = it.getString(TITLE).deserializeString() ?: "",
-						imageURL = it.getString(IMAGE_URL).deserializeString() ?: "",
+						imageURL = it.getString(IMAGE_URL),
 						description = it.getString(DESCRIPTION).deserializeString() ?: "",
 						language = it.getString(LANGUAGE).deserializeString() ?: "",
 						maxChapter = it.getInt(MAX_CHAPTER_PAGE),
@@ -149,7 +143,7 @@ class DBHelper(context: Context) :
 						date = it.getString(RELEASE_DATE),
 						order = it.getDouble(ORDER),
 						yPosition = it.getInt(Y_POSITION),
-						readChapter = it.getInt(READING_STATUS).let {
+						readChapter = it.getInt(READ_CHAPTER).let {
 							ReadingStatus.getStatus(it)
 						},
 						bookmarked = it.getInt(BOOKMARKED) == 1
@@ -176,6 +170,14 @@ class DBHelper(context: Context) :
 		launchIO {
 			novelDAO.insertAllIgnore(novels)
 			chapterDAO.insertAllIgnore(chapters)
+			Log.d(logID(), "Finished insert, Deleting tables")
+
+			db.execSQL("DROP TABLE IF EXISTS $CHAPTER_IDENTIFICATION")
+			db.execSQL("DROP TABLE IF EXISTS $NOVEL_IDENTIFICATION")
+			db.execSQL("DROP TABLE IF EXISTS $CHAPTERS")
+			db.execSQL("DROP TABLE IF EXISTS $NOVELS")
+			db.execSQL("DROP TABLE IF EXISTS $DOWNLOADS")
+			db.execSQL("DROP TABLE IF EXISTS $UPDATES")
 		}
 	}
 
