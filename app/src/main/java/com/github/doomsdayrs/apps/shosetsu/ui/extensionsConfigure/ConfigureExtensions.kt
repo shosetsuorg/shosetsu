@@ -35,7 +35,7 @@ import com.mikepenz.fastadapter.FastAdapter
  */
 class ConfigureExtensions : FastAdapterRecyclerController<ExtensionConfigUI>() {
 	private val viewModel: IExtensionsConfigureViewModel by viewModel()
-	override val viewTitle: Int = com.github.doomsdayrs.apps.shosetsu.R.string.configure_extensions
+	override val viewTitleRes: Int = com.github.doomsdayrs.apps.shosetsu.R.string.configure_extensions
 
 	override val fastAdapter: FastAdapter<ExtensionConfigUI> by lazy {
 		val adapter = ConfigExtAdapter(viewModel)

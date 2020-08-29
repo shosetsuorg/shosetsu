@@ -50,6 +50,8 @@ import java.util.*
 @SuppressLint("LogConditional")
 class ReaderSettings : SettingsSubController() {
 	private val shosetsuSettings: ShosetsuSettings by instance()
+	override val viewTitleRes: Int = R.string.settings_reader
+
 
 	override val settings: ArrayList<SettingsItemData> by settingsList {
 		customSettingData(4) {

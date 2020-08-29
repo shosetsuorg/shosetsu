@@ -31,6 +31,8 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
  * 9 / June / 2019
  */
 class InfoSettings : SettingsSubController() {
+	override val viewTitleRes: Int = R.string.settings_info
+
 	override val settings: List<SettingsItemData> by settingsList {
 		infoSettingData(0) {
 			title { R.string.version }

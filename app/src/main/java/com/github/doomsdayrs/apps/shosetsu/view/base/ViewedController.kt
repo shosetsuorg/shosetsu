@@ -12,6 +12,7 @@ import androidx.annotation.Nullable
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import org.kodein.di.Kodein
@@ -60,7 +61,15 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 
 	/** Title of this view, Applies to the app system */
 	@StringRes
-	open val viewTitle: Int = -1
+	open val viewTitleRes: Int = -1
+
+	/** String from [viewTitleRes] else just Shosetsu */
+	open val viewTitle: String by lazy {
+		if (viewTitleRes != -1)
+			getString(viewTitleRes)
+		getString(R.string.app_name)
+	}
+
 
 	override val kodein: Kodein by lazy { (applicationContext as KodeinAware).kodein }
 
@@ -133,6 +142,10 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 		return view
 	}
 
+	fun setViewTitle() {
+		activity?.title = viewTitle
+	}
+
 	/**
 	 * The main creation method
 	 */
@@ -141,7 +154,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 			container: ViewGroup,
 			savedViewState: Bundle?
 	): View {
-		if (viewTitle != -1) activity?.setTitle(viewTitle)
+		setViewTitle()
 		val view = createViewInstance(inflater, container)
 		onViewCreated(view)
 		return view

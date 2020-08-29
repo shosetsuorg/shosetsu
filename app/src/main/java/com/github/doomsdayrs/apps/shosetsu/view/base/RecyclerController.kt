@@ -78,6 +78,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 			container: ViewGroup,
 			savedViewState: Bundle?
 	): View {
+		setViewTitle()
 		val view = createViewInstance(inflater, container)
 		recyclerView = view.findViewById(resourceID)!!
 		onViewCreated(view)

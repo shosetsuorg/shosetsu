@@ -41,6 +41,7 @@ import java.util.*
  */
 class DownloadSettings : SettingsSubController() {
 	private val s: ShosetsuSettings by instance()
+	override val viewTitleRes: Int = R.string.settings_download
 
 	override val settings: ArrayList<SettingsItemData> by settingsList {
 		textSettingData(1) {

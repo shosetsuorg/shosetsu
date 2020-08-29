@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
  */
 class SettingsController : RecyclerController<SettingsAdapter, SettingsCard>() {
 	override val layoutRes: Int = R.layout.settings
-	override val viewTitle: Int = R.string.settings
+	override val viewTitleRes: Int = R.string.settings
 
 	init {
 		recyclerArray.clear()

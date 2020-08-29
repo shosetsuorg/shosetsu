@@ -42,6 +42,7 @@ import java.util.*
  */
 class BackupSettings : SettingsSubController() {
 	private val s: ShosetsuSettings by instance()
+	override val viewTitleRes: Int = R.string.settings_backup
 
 	override val settings: ArrayList<SettingsItemData> by settingsList {
 		checkBoxSettingData(0) {

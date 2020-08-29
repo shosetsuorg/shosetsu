@@ -35,7 +35,7 @@ import org.kodein.di.generic.instance
  */
 class UpdatesController : FastAdapterRecyclerController<UpdateUI>() {
 	val viewModel by instance<IUpdatesViewModel>()
-	override val viewTitle: Int = R.string.updates
+	override val viewTitleRes: Int = R.string.updates
 	override fun onViewCreated(view: View) {}
 
 	override fun setupFastAdapter() {

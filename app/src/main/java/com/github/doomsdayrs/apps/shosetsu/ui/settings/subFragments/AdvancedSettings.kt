@@ -42,6 +42,7 @@ import org.kodein.di.generic.instance
  */
 class AdvancedSettings : SettingsSubController() {
 	private val s by instance<ShosetsuSettings>()
+	override val viewTitleRes: Int = R.string.settings_advanced
 
 	override val settings: ArrayList<SettingsItemData> by settingsList {
 		spinnerSettingData(1) {

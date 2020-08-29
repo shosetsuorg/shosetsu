@@ -36,7 +36,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
  * @author github.com/doomsdayrs
  */
 class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>() {
-	override val viewTitle: Int = R.string.extensions
+	override val viewTitleRes: Int = R.string.extensions
 
 	init {
 		setHasOptionsMenu(true)

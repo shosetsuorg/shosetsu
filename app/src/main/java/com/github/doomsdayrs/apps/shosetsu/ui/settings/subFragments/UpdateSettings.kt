@@ -30,6 +30,7 @@ import org.kodein.di.generic.instance
  */
 class UpdateSettings : SettingsSubController() {
 	private val s: ShosetsuSettings by instance()
+	override val viewTitleRes: Int = com.github.doomsdayrs.apps.shosetsu.R.string.settings_update
 
 	override val settings: List<SettingsItemData> by settingsList {
 		// Update frequency

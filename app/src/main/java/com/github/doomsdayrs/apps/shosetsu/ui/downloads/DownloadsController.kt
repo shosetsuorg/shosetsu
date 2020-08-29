@@ -40,7 +40,7 @@ import org.kodein.di.generic.instance
  */
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
-	override val viewTitle: Int = R.string.downloads
+	override val viewTitleRes: Int = R.string.downloads
 
 	val viewModel: IDownloadsViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
