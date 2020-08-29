@@ -67,7 +67,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	open val viewTitle: String by lazy {
 		if (viewTitleRes != -1)
 			getString(viewTitleRes)
-		getString(R.string.app_name)
+		else getString(R.string.app_name)
 	}
 
 
@@ -143,6 +143,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	}
 
 	fun setViewTitle() {
+		Log.i(logID(), "Activity title $viewTitle")
 		activity?.title = viewTitle
 	}
 
