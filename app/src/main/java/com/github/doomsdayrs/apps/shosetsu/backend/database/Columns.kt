@@ -24,6 +24,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database
  *
  * @author github.com/doomsdayrs
  */
+@Deprecated("SQL Database removed")
 enum class Columns(private val key: String) {
 	URL("url"),
 	PARENT_ID("parent_id"),

@@ -24,6 +24,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database
  *
  * @author github.com/doomsdayrs
  */
+@Deprecated("SQL Database removed")
 enum class Tables(private val key: String) {
 	NOVEL_IDENTIFICATION("novel_identification"),
 	CHAPTER_IDENTIFICATION("chapter_identification"),

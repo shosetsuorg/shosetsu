@@ -14,7 +14,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.backend.connectivityManager
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Database
 import com.github.doomsdayrs.apps.shosetsu.backend.initPreferences
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -82,10 +81,8 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 		super.onCreate(savedInstanceState)
 		initPreferences(this, settings)
 		textView = findViewById(R.id.title)
-		// Sets up DB
-		if (!Database.isInit()) {
-			Database.sqLiteDatabase = DBHelper(this).writableDatabase
-		}
+		// Sets up old SQL database
+		DBHelper(this).writableDatabase
 
 		// Settings setup
 		connectivityManager = getSystemService<ConnectivityManager>()!!

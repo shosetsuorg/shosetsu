@@ -33,43 +33,18 @@ import org.kodein.di.generic.instance
 *
 * You should have received a copy of the GNU General Public License
 * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
-* ====================================================================
-* Shosetsu
-* 14 / 06 / 2019
-*
-* @author github.com/doomsdayrs
 */
+
+/**
+ * Shosetsu
+ * 14 / 06 / 2019
+ */
+@Deprecated("SQL Database removed")
 class DBHelper(context: Context) :
 		SQLiteOpenHelper(context, DB_NAME, null, 10), KodeinAware {
 	override val kodein: Kodein by kodein(context)
 	private val novelDAO by kodein.instance<NovelsDao>()
 	private val chapterDAO by instance<ChaptersDao>()
-
-	/*
-    private static final String CHAPTERS_CREATE = "create table if not exists " + Tables.CHAPTERS + "(" +
-            // Refers to CHAPERID
-            Columns.ID + " integer primary key," +
-
-            // Refers to NOVELID
-            Columns.PARENT_ID + " integer not null," +
-
-            Columns.TITLE + " text," +
-            Columns.RELEASE_DATE + " text," +
-            Columns.ORDER + " integer not null," +
-
-            // > Scroll position, either 0 for top, or X for the position
-            Columns.Y + " integer not null," +
-            // > Either 0 for none, or an incremented count (Status)
-            Columns.READ_CHAPTER + " integer not null," +
-            // > Either 0 for false or 1 for true.
-            Columns.BOOKMARKED + " integer  not null," +
-
-            // If 1 then true and SAVE_PATH has data, false otherwise
-            Columns.IS_SAVED + " integer not null," +
-            Columns.SAVE_PATH + " text" +
-            ")";
-
-	 */
 
 	/***/
 	override fun onCreate(db: SQLiteDatabase) {}
