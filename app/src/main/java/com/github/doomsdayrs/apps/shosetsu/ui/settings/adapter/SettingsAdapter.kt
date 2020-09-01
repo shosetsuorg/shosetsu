@@ -9,8 +9,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.SettingsCard
 import com.github.doomsdayrs.apps.shosetsu.common.ext.getString
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController.Types.*
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.*
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.BackupSettings
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.*
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.backup.BackupSettings
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.viewHolder.SettingsCardViewHolder
 import java.util.*
 

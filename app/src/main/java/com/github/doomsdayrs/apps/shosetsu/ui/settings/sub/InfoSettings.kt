@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.sub
 
 import android.content.Intent
 import android.net.Uri

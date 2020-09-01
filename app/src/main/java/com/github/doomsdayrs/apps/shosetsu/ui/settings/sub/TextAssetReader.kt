@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.sub
 
 import android.os.Bundle
 import android.util.Log

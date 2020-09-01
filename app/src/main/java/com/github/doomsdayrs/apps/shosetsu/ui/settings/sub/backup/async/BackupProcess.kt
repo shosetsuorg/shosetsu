@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.backup.async
 /*
  * This file is part of shosetsu.
  *

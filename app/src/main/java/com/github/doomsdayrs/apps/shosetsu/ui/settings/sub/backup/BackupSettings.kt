@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup
+package com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.backup
 
 import android.app.Activity
 import android.content.Intent
@@ -8,8 +8,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.BackupProcess
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.subFragments.backup.async.RestoreProcess
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.backup.async.BackupProcess
+import com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.backup.async.RestoreProcess
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
 import com.vincent.filepicker.Constant
