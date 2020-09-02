@@ -106,4 +106,8 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<UninstallExtensionUIUseCase>() with provider { UninstallExtensionUIUseCase(instance()) }
 
 	bind<ToastUseCase>() with provider { ToastUseCase(instance()) }
+
+	bind<OpenInWebviewUseCase>() with provider { OpenInWebviewUseCase(instance(), instance(), instance()) }
+	bind<OpenInBrowserUseCase>() with provider { OpenInBrowserUseCase(instance(), instance(), instance()) }
+
 }

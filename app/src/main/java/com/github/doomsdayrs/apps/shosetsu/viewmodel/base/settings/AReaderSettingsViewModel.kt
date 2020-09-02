@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.database
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings
+
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -15,29 +18,10 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 18 / 01 / 2020
- *
- * @author github.com/doomsdayrs
+ * 31 / 08 / 2020
  */
-@Deprecated("SQL Database removed")
-enum class Tables(private val key: String) {
-	NOVEL_IDENTIFICATION("novel_identification"),
-	CHAPTER_IDENTIFICATION("chapter_identification"),
-	NOVELS("novels"),
-	CHAPTERS("chapters"),
-
-	@Deprecated("ROOM")
-	UPDATES("updates"),
-
-	@Deprecated("ROOM")
-	DOWNLOADS("downloads"), ;
-
-	override fun toString(): String {
-		return key
-	}
-}
+abstract class AReaderSettingsViewModel : ViewModel(), ISubSettingsViewModel

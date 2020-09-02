@@ -18,7 +18,6 @@ package com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.backup.async
 
 import android.os.AsyncTask
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
 import com.github.doomsdayrs.apps.shosetsu.backend.shoDir
 import org.json.JSONException
 import org.json.JSONObject
@@ -111,9 +110,3 @@ class BackupProcess : AsyncTask<Void?, Void?, Boolean>() {
 		return settings
 	}
 }
-
-@Throws(JSONException::class)
-private operator fun JSONObject.set(key: String, value: Any) = put(key, value)
-
-@Throws(JSONException::class)
-private operator fun JSONObject.set(key: Columns, value: Any) = put(key.toString(), value)

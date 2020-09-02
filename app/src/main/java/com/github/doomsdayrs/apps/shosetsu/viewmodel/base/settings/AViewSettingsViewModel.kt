@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.common.ext
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings
 
-import android.database.Cursor
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -18,20 +18,10 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 04 / 03 / 2020
- *
- * @author github.com/doomsdayrs
+ * 31 / 08 / 2020
  */
-
-fun Cursor.getString(column: Columns): String = getString(getColumnIndex(column.toString()))
-
-fun Cursor.getInt(column: Columns): Int = getInt(getColumnIndex(column.toString()))
-
-fun Cursor.getDouble(column: Columns): Double = getDouble(getColumnIndex(column.toString()))
-
-fun Cursor.getLong(column: Columns): Long = getLong(getColumnIndex(column.toString()))
+abstract class AViewSettingsViewModel : ViewModel(), ISubSettingsViewModel

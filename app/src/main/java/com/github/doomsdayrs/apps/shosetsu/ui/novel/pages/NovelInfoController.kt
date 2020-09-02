@@ -107,11 +107,11 @@ class NovelInfoController(
 				true
 			}
 			id.webview -> {
-				activity?.openInWebView(it.novelURL)
+				viewModel.openWebView(it)
 				true
 			}
 			id.browser -> {
-				activity?.openInBrowser(it.novelURL)
+				viewModel.openBrowser(it)
 				true
 			}
 			else -> super.onOptionsItemSelected(item)

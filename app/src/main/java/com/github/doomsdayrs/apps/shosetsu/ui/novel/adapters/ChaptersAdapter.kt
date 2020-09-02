@@ -1,14 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters
 
-import android.app.Activity
-import android.util.Log
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInBrowser
-import com.github.doomsdayrs.apps.shosetsu.common.ext.openInWebView
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChapterUIViewHolder
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
@@ -42,49 +37,38 @@ class ChaptersAdapter(
 
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
-		Log.d(logID(), "Binding $position")
-		val chapterUI = getItem(position)!!
-		(holder as ChapterUIViewHolder).apply {
-			popupMenu!!.setOnMenuItemClickListener { menuItem: MenuItem ->
-				when (menuItem.itemId) {
-					R.id.popup_chapter_menu_bookmark -> {
-						viewModel.updateChapter(chapterUI, bookmarked = !chapterUI.bookmarked)
-						return@setOnMenuItemClickListener true
-					}
-					R.id.popup_chapter_menu_download -> {
-						if (!chapterUI.isSaved) {
+		getItem(position)?.let { chapterUI ->
+			(holder as ChapterUIViewHolder).apply {
+				popupMenu!!.setOnMenuItemClickListener { menuItem: MenuItem ->
+					when (menuItem.itemId) {
+						R.id.popup_chapter_menu_bookmark -> viewModel.updateChapter(
+								chapterUI,
+								bookmarked = !chapterUI.bookmarked
+						)
+						R.id.popup_chapter_menu_download -> if (!chapterUI.isSaved)
 							viewModel.download(chapterUI)
-						} else {
-							viewModel.delete(chapterUI)
-						}
-						return@setOnMenuItemClickListener true
+						else viewModel.delete(chapterUI)
+						R.id.set_read -> viewModel.updateChapter(
+								chapterUI,
+								readingStatus = ReadingStatus.READ
+						)
+						R.id.set_unread -> viewModel.updateChapter(
+								chapterUI,
+								readingStatus = ReadingStatus.UNREAD
+						)
+						R.id.set_reading -> viewModel.updateChapter(
+								chapterUI,
+								readingStatus = ReadingStatus.READING
+						)
+						R.id.browser -> viewModel.openBrowser(chapterUI)
+						R.id.webview -> viewModel.openWebView(chapterUI)
+						else -> return@setOnMenuItemClickListener false
 					}
-					R.id.set_read -> {
-						viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.READ)
-						return@setOnMenuItemClickListener true
-					}
-					R.id.set_unread -> {
-						viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.UNREAD)
-						return@setOnMenuItemClickListener true
-					}
-					R.id.set_reading -> {
-						viewModel.updateChapter(chapterUI, readingStatus = ReadingStatus.READING)
-						return@setOnMenuItemClickListener true
-					}
-					R.id.browser -> {
-						(itemView.context as Activity).openInBrowser(chapterUI.link)
-						return@setOnMenuItemClickListener true
-					}
-					R.id.webview -> {
-						(itemView.context as Activity).openInWebView(chapterUI.link)
-						return@setOnMenuItemClickListener true
-					}
-					else -> return@setOnMenuItemClickListener false
+					true
 				}
 			}
 		}
 	}
 
-	override fun getSectionName(position: Int) =
-			"C. ${getItem(position)?.order}"
+	override fun getSectionName(position: Int) = "C. ${getItem(position)?.order}"
 }

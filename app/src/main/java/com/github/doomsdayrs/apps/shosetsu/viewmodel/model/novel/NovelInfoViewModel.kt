@@ -1,14 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.BookMarkNovelIDUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterNameUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetNovelUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelInfoViewModel
 import kotlinx.coroutines.Dispatchers
@@ -39,8 +35,9 @@ import kotlinx.coroutines.Dispatchers
 class NovelInfoViewModel(
 		private val getFormatterNameUseCase: GetFormatterNameUseCase,
 		private val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase,
-		private val loadNovelUIUseCase: GetNovelUIUseCase
-
+		private val loadNovelUIUseCase: GetNovelUIUseCase,
+		private val openInBrowserUseCase: OpenInBrowserUseCase,
+		private val openInWebviewUseCase: OpenInWebviewUseCase
 ) : INovelInfoViewModel() {
 	override val liveData: LiveData<HResult<NovelUI>> by lazy {
 		novelID.switchMap {
@@ -74,8 +71,16 @@ class NovelInfoViewModel(
 		launchIO { bookMarkNovelIDUseCase(novelUI.id, !novelUI.bookmarked) }
 	}
 
-	override fun onCleared() {
-		Log.d(logID(), "Cleared")
-		super.onCleared()
+
+	override fun openBrowser(it: NovelUI) {
+		launchIO {
+			openInBrowserUseCase(it)
+		}
+	}
+
+	override fun openWebView(it: NovelUI) {
+		launchIO {
+			openInWebviewUseCase(it)
+		}
 	}
 }

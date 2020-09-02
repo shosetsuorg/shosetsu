@@ -1,14 +1,17 @@
 package com.github.doomsdayrs.apps.shosetsu.backend.database
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns.*
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Tables.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper.Columns.*
+import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper.Tables.*
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.common.ext.*
+import com.github.doomsdayrs.apps.shosetsu.common.ext.deserializeString
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.converters.NovelStatusConverter
@@ -46,6 +49,51 @@ class DBHelper(context: Context) :
 	override val kodein: Kodein by kodein(context)
 	private val novelDAO by kodein.instance<NovelsDao>()
 	private val chapterDAO by instance<ChaptersDao>()
+
+	private enum class Columns(private val key: String) {
+		URL("url"),
+		PARENT_ID("parent_id"),
+		ID("id"),
+
+		TITLE("title"),
+		IMAGE_URL("image_url"),
+		DESCRIPTION("description"),
+		GENRES("genres"),
+		AUTHORS("authors"),
+		STATUS("status"),
+		TAGS("tags"),
+		ARTISTS("artists"),
+		LANGUAGE("language"),
+		MAX_CHAPTER_PAGE("max_chapter_page"),
+
+		RELEASE_DATE("release_date"),
+		ORDER("order_of"),
+
+		FORMATTER_ID("formatterID"),
+		READ_CHAPTER("read"),
+		Y_POSITION("y"),
+		BOOKMARKED("bookmarked"),
+		;
+
+		override fun toString(): String = key
+	}
+
+	private enum class Tables(private val key: String) {
+		NOVEL_IDENTIFICATION("novel_identification"),
+		CHAPTER_IDENTIFICATION("chapter_identification"),
+		NOVELS("novels"),
+		CHAPTERS("chapters"),
+
+		@Deprecated("ROOM")
+		UPDATES("updates"),
+
+		@Deprecated("ROOM")
+		DOWNLOADS("downloads"), ;
+
+		override fun toString(): String {
+			return key
+		}
+	}
 
 	/***/
 	override fun onCreate(db: SQLiteDatabase) {}
@@ -232,6 +280,36 @@ class DBHelper(context: Context) :
 		return a
 	}
 
+	private fun SQLiteDatabase.query(
+			table: Tables,
+			columns: Array<String>? = null,
+			selection: String? = null,
+			selectionArgs: Array<String?>? = null,
+			groupBy: String? = null,
+			having: String? = null,
+			orderBy: String? = null,
+			limit: String? = null
+	): Cursor {
+		return query(
+				table.toString(),
+				columns,
+				selection,
+				selectionArgs,
+				groupBy,
+				having,
+				orderBy,
+				limit
+		)
+	}
+
+
+	private fun Cursor.getString(column: Columns): String = getString(getColumnIndex(column.toString()))
+
+	private fun Cursor.getInt(column: Columns): Int = getInt(getColumnIndex(column.toString()))
+
+	private fun Cursor.getDouble(column: Columns): Double = getDouble(getColumnIndex(column.toString()))
+
+	private fun Cursor.getLong(column: Columns): Long = getLong(getColumnIndex(column.toString()))
 
 	companion object {
 		private const val DB_NAME = "database.db"

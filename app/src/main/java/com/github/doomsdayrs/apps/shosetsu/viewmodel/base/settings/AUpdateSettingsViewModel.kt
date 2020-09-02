@@ -1,4 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.common.ext
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings
+
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -19,5 +22,6 @@ package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 /**
  * shosetsu
- * 01 / 06 / 2020
+ * 31 / 08 / 2020
  */
+abstract class AUpdateSettingsViewModel : ViewModel(), ISubSettingsViewModel

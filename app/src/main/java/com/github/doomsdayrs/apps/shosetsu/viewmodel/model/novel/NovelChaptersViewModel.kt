@@ -10,10 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DeleteChapterPassageUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DownloadChapterPassageUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetChapterUIsUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateChapterUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelChaptersViewModel
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +41,8 @@ class NovelChaptersViewModel(
 		private val updateChapterUseCase: UpdateChapterUseCase,
 		private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,
 		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
+		private val openChapterUseCase: OpenInWebviewUseCase,
+		private val openInBrowserUseCase: OpenInBrowserUseCase,
 		private val settings: ShosetsuSettings
 ) : INovelChaptersViewModel() {
 	private var nID: Int = -1
@@ -99,6 +98,18 @@ class NovelChaptersViewModel(
 								readingStatus = readingStatus
 						))
 			}
+		}
+	}
+
+	override fun openWebView(chapterUI: ChapterUI) {
+		launchIO {
+			openChapterUseCase(chapterUI)
+		}
+	}
+
+	override fun openBrowser(chapterUI: ChapterUI) {
+		launchIO {
+			openInBrowserUseCase(chapterUI)
 		}
 	}
 

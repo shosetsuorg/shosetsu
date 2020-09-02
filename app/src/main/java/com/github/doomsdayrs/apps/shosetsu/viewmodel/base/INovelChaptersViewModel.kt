@@ -55,6 +55,14 @@ abstract class INovelChaptersViewModel
 	abstract fun markAllAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus)
 
 	/**
+	 * Opens the chapter in webview
+	 */
+	abstract fun openWebView(chapterUI: ChapterUI)
+
+	abstract fun openBrowser(chapterUI: ChapterUI)
+
+
+	/**
 	 * Deletes a chapter
 	 */
 	abstract fun delete(vararg chapterUI: ChapterUI)

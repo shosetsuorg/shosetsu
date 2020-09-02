@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.common.ext
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.settings
 
-import android.content.ContentValues
-import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings.AInfoSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -18,17 +20,16 @@ import com.github.doomsdayrs.apps.shosetsu.backend.database.Columns
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 15 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 31 / 08 / 2020
  */
+class InfoSettingsViewModel :AInfoSettingsViewModel(){
+	override val settings: List<SettingsItemData>
+		get() = TODO("Not yet implemented")
+	override val liveData: LiveData<HResult<List<SettingsItemData>>>
+		get() = TODO("Not yet implemented")
 
-fun ContentValues.put(columns: Columns, value: String) = put(columns.toString(), value)
-fun ContentValues.put(columns: Columns, value: Long) = put(columns.toString(), value)
-fun ContentValues.put(columns: Columns, value: Int) = put(columns.toString(), value)
-fun ContentValues.put(columns: Columns, value: Double) = put(columns.toString(), value)
+}
