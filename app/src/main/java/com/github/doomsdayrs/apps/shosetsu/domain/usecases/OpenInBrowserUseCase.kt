@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Formatter.Companion.KEY_CHAPTER_URL
+import app.shosetsu.lib.Formatter.Companion.KEY_NOVEL_URL
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
@@ -48,11 +49,11 @@ class OpenInBrowserUseCase(
 		})
 	}
 
-	suspend operator fun invoke(url: String, formatterID: Int) {
+	suspend operator fun invoke(url: String, formatterID: Int, type: Int) {
 		when (val fR: HResult<Formatter> = repository.loadFormatter(formatterID)) {
 			is HResult.Success -> {
 				val formatter = fR.data
-				this(formatter.expandURL(url, KEY_CHAPTER_URL))
+				this(formatter.expandURL(url, type))
 			}
 			is HResult.Empty -> {
 				Log.e(logID(), "Empty")
@@ -65,6 +66,15 @@ class OpenInBrowserUseCase(
 		}
 	}
 
-	suspend operator fun invoke(novelUI: NovelUI) = this(novelUI.novelURL, novelUI.formatterID)
-	suspend operator fun invoke(chapterUI: ChapterUI) = this(chapterUI.link, chapterUI.formatterID)
+	suspend operator fun invoke(novelUI: NovelUI) = this(
+			novelUI.novelURL,
+			novelUI.formatterID,
+			KEY_NOVEL_URL
+	)
+
+	suspend operator fun invoke(chapterUI: ChapterUI) = this(
+			chapterUI.link,
+			chapterUI.formatterID,
+			KEY_CHAPTER_URL
+	)
 }

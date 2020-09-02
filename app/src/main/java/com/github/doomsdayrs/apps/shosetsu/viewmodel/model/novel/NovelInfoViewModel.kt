@@ -37,7 +37,8 @@ class NovelInfoViewModel(
 		private val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase,
 		private val loadNovelUIUseCase: GetNovelUIUseCase,
 		private val openInBrowserUseCase: OpenInBrowserUseCase,
-		private val openInWebviewUseCase: OpenInWebviewUseCase
+		private val openInWebviewUseCase: OpenInWebviewUseCase,
+		private val shareUseCase: ShareUseCase
 ) : INovelInfoViewModel() {
 	override val liveData: LiveData<HResult<NovelUI>> by lazy {
 		novelID.switchMap {
@@ -81,6 +82,12 @@ class NovelInfoViewModel(
 	override fun openWebView(it: NovelUI) {
 		launchIO {
 			openInWebviewUseCase(it)
+		}
+	}
+
+	override fun share(it: NovelUI) {
+		launchIO {
+			shareUseCase(it)
 		}
 	}
 }

@@ -109,5 +109,6 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<OpenInWebviewUseCase>() with provider { OpenInWebviewUseCase(instance(), instance(), instance()) }
 	bind<OpenInBrowserUseCase>() with provider { OpenInBrowserUseCase(instance(), instance(), instance()) }
+	bind<ShareUseCase>() with provider { ShareUseCase(instance(), instance(), instance()) }
 
 }

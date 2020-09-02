@@ -114,6 +114,10 @@ class NovelInfoController(
 				viewModel.openBrowser(it)
 				true
 			}
+			id.share -> {
+				viewModel.share(it)
+				true
+			}
 			else -> super.onOptionsItemSelected(item)
 		}
 	} ?: false

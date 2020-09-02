@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/source_migrate"
-        android:title="@string/migrate_source" />
-    <item
-        android:id="@+id/webview"
-        android:title="@string/open_in_webview" />
-    <item
-        android:id="@+id/browser"
-        android:title="@string/open_in_browser" />
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:id="@+id/source_migrate"
+		android:title="@string/migrate_source" />
+	<item
+		android:id="@+id/webview"
+		android:title="@string/open_in_webview" />
+	<item
+		android:id="@+id/browser"
+		android:title="@string/open_in_browser" />
+	<item
+		android:id="@+id/share"
+		android:icon="@drawable/share"
+		android:title="@string/share"
+		app:showAsAction="ifRoom" />
 </menu>

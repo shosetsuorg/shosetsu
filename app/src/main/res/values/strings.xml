@@ -279,6 +279,7 @@
 	<string name="extension_name_desc">Title of this extension</string>
 	<string name="extension_image_desc">Image of this extension</string>
 	<string name="extension_settings_desc">Settings of this extension</string>
+	<string name="share">Share</string>
 
 	<array name="application_themes">
 		<item>@string/light</item>

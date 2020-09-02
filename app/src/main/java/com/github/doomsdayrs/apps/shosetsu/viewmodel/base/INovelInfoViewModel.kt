@@ -42,4 +42,5 @@ abstract class INovelInfoViewModel
 	abstract fun toggleBookmark(novelUI: NovelUI)
 	abstract fun openBrowser(it: NovelUI)
 	abstract fun openWebView(it: NovelUI)
+	abstract fun share(it: NovelUI)
 }
