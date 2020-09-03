@@ -246,10 +246,12 @@ class ShosetsuSettings(
 				ColorChoice(
 						-4,
 						context.getString(R.string.amoled),
-						-0x1,
+						-0x777778,
 						-0x1000000
 				)
-		)
+		).also {
+			readerUserThemes = it
+		}
 		set(value) {
 			readerSettings.edit {
 				putStringSet(READER_USER_THEMES, value.map { it.toString() }.toSet())

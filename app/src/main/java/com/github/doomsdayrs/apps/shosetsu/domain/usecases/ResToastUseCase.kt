@@ -1,10 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.providers.network
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.common.utils.CookieJarSync
-import okhttp3.OkHttpClient
-import java.util.logging.Level
-import java.util.logging.Logger
+import android.app.Application
+import android.widget.Toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 
 /*
  * This file is part of shosetsu.
@@ -23,19 +22,20 @@ import java.util.logging.Logger
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 04 / 05 / 2020
+ * 14 / 08 / 2020
  */
+class ResToastUseCase(
+		private val application: Application
+) {
 
-fun createOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
-		.addInterceptor {
-			val r = it.request()
-			Log.i("OkHttpClient request", r.url.toUrl().toExternalForm())
-			return@addInterceptor it.proceed(r)
-		}.apply {
-			Logger.getLogger(OkHttpClient::class.java.name).level = Level.FINE
+	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> Int) {
+		launchUI {
+			application.toast(
+					duration = duration,
+					string = application.getString(message())
+			)
 		}
-		.cookieJar(CookieJarSync())
-		.build()
+	}
+}

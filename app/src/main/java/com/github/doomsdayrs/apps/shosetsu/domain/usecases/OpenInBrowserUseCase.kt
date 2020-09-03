@@ -38,7 +38,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
  */
 class OpenInBrowserUseCase(
 		private val repository: IExtensionsRepository,
-		private val toastUseCase: ToastUseCase,
+		private val stringToastUseCase: StringToastUseCase,
 		private val application: Application
 ) {
 	operator fun invoke(url: String) {
@@ -57,11 +57,11 @@ class OpenInBrowserUseCase(
 			}
 			is HResult.Empty -> {
 				Log.e(logID(), "Empty")
-				toastUseCase { "Empty??" }
+				stringToastUseCase { "Empty??" }
 			}
 			is HResult.Error -> {
 				Log.e(logID(), "Error")
-				toastUseCase { "$fR" }
+				stringToastUseCase { "$fR" }
 			}
 		}
 	}

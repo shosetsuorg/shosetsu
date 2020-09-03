@@ -33,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.FullCatalo
  * shosetsu
  * 15 / 05 / 2020
  */
-class LoadCatalogueData(
+class LoadCatalogueDataUseCase(
 		private val extensionRepository: IExtensionsRepository,
 		private val novelsRepository: INovelsRepository,
 		private val shosetsuSettings: ShosetsuSettings

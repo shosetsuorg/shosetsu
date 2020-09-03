@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.HTTPException
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
@@ -39,6 +41,8 @@ class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 	): HResult<String> =
 			try {
 				successResult(formatter.getPassage(chapterURL))
+			} catch (e: HTTPException) {
+				errorResult(ErrorKeys.ERROR_HTTP_ERROR, e.message!!)
 			} catch (e: IOException) {
 				errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception", e)
 			} catch (e: LuaError) {

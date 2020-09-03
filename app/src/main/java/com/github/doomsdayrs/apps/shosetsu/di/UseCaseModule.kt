@@ -68,8 +68,8 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 		LoadNovelUseCase(instance(), instance(), instance(), instance())
 	}
 
-	bind<LoadCatalogueData>() with provider {
-		LoadCatalogueData(instance(), instance(), instance())
+	bind<LoadCatalogueDataUseCase>() with provider {
+		LoadCatalogueDataUseCase(instance(), instance(), instance())
 	}
 
 	bind<GetChapterUIsUseCase>() with provider { GetChapterUIsUseCase(instance()) }
@@ -105,7 +105,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<UninstallExtensionUIUseCase>() with provider { UninstallExtensionUIUseCase(instance()) }
 
-	bind<ToastUseCase>() with provider { ToastUseCase(instance()) }
+	bind<StringToastUseCase>() with provider { StringToastUseCase(instance()) }
 
 	bind<OpenInWebviewUseCase>() with provider { OpenInWebviewUseCase(instance(), instance(), instance()) }
 	bind<OpenInBrowserUseCase>() with provider { OpenInBrowserUseCase(instance(), instance(), instance()) }

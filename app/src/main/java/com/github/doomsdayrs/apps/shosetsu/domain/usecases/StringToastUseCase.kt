@@ -26,9 +26,10 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
  * shosetsu
  * 14 / 08 / 2020
  */
-class ToastUseCase(
+class StringToastUseCase(
 		private val application: Application
 ) {
+
 	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> String) {
 		launchUI {
 			application.toast(

@@ -2,9 +2,11 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
 import android.util.Log
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.HTTPException
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.QUERY_INDEX
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NO_SEARCH
@@ -71,11 +73,20 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			successResult(
 					formatter.listings[listing].getListing(data, page).toList()
 			)
+		} catch (e: HTTPException) {
+			Log.d(logID(), "HTTP Exception")
+			errorResult(ERROR_HTTP_ERROR, e.message!!)
 		} catch (e: IOException) {
+			Log.d(logID(), "Network exception")
 			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
 		} catch (e: LuaError) {
-			errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
+			if (e.cause != null && e.cause is HTTPException) {
+				Log.d(logID(), "HTTP exception")
+				errorResult(ERROR_HTTP_ERROR, e.cause!!.message!!)
+			} else
+				errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
 		} catch (e: Exception) {
+			Log.d(logID(), "General exception")
 			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
 		}
 	}

@@ -1,22 +1,22 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog
 
-import android.util.Log
-import androidx.lifecycle.LiveData
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import app.shosetsu.lib.Formatter
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadCatalogueData
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadCatalogueDataUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.NovelBackgroundAddUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StringToastUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 
 /*
  * This file is part of shosetsu.
@@ -42,74 +42,97 @@ import kotlinx.coroutines.Job
 class CatalogViewModel(
 		private val getFormatterUseCase: GetFormatterUseCase,
 		private val backgroundAddUseCase: NovelBackgroundAddUseCase,
-		private val loadCatalogueData: LoadCatalogueData
+		private val loadCatalogueData: LoadCatalogueDataUseCase,
+		private val stringToastUseCase: StringToastUseCase
 ) : ICatalogViewModel() {
-	private val items: MutableLiveData<HResult<List<ACatalogNovelUI>>> = MutableLiveData()
+	private val listingItems: HashMap<Int, List<ACatalogNovelUI>> = hashMapOf()
 
-	override var displayItems: LiveData<HResult<List<ACatalogNovelUI>>> =
-			liveData { emitSource(items) }
+	private var formatter: Formatter? = null
 
-	override val formatterData: MutableLiveData<HResult<Formatter>> = MutableLiveData(HResult.Loading)
+	override val listingItemsLive: MutableLiveData<HResult<List<ACatalogNovelUI>>> by lazy {
+		MutableLiveData<HResult<List<ACatalogNovelUI>>>(loading())
+	}
+
+	override val extensionName: MutableLiveData<HResult<String>> by lazy {
+		MutableLiveData<HResult<String>>(loading())
+	}
 
 	override fun setFormatterID(fID: Int) {
 		launchIO {
-			if (formatterData.value !is HResult.Success<Formatter>) {
-				Log.d(logID(), "Loading formatter $fID")
-				formatterData.postValue(getFormatterUseCase(fID))
+			if (formatter == null) {
+				when (val v = getFormatterUseCase(fID)) {
+					is HResult.Success -> {
+						formatter = v.data
+						extensionName.postValue(successResult(v.data.name))
+					}
+					is HResult.Loading -> extensionName.postValue(v)
+					is HResult.Error -> extensionName.postValue(v)
+					is HResult.Empty -> extensionName.postValue(v)
+				}
 			}
 		}
 	}
 
-	override fun loadData(formatter: Formatter): Job =
-			launchIO {
-				val values: List<ACatalogNovelUI> = when (val current: HResult<List<ACatalogNovelUI>> = items.value ?: successResult(arrayListOf())) {
-					is HResult.Success -> current.data
-					else -> arrayListOf()
-				}
-				items.postValue(loading())
+	/**
+	 * Current loading job
+	 */
+	private var loadingJob: Job = launchIO { }
 
-				when (val i: HResult<List<ACatalogNovelUI>> = loadCatalogueData(formatter, currentMaxPage)) {
-					is HResult.Success -> {
-						items.postValue(successResult(values + i.data))
+	@Synchronized
+	override fun loadData(): Job = launchIO {
+		if (formatter == null) this.cancel("Extension not loaded")
+		checkNotNull(formatter)
+		currentMaxPage++
+		val values = listingItems[0] ?: arrayListOf()
+
+		listingItemsLive.postValue(loading())
+
+		when (val i: HResult<List<ACatalogNovelUI>> = loadCatalogueData(
+				formatter!!,
+				currentMaxPage
+		)) {
+			is HResult.Success -> {
+				listingItems[0] = values + i.data
+				listingItemsLive.postValue(successResult(values + i.data))
+			}
+			is HResult.Empty -> {
+			}
+			is HResult.Error -> {
+				when (i.code) {
+					ERROR_HTTP_ERROR -> {
+						stringToastUseCase(Toast.LENGTH_LONG) { i.message }
 					}
-					is HResult.Empty -> {
-					}
-					is HResult.Error -> {
-					}
-					is HResult.Empty -> {
-					}
+					else -> stringToastUseCase { i.toString() }
 				}
 			}
+		}
+	}
 
 	override fun loadQuery(query: String) {
+		if (formatter?.hasSearch == true) {
+
+		} else stringToastUseCase { "No search functionality" }
 	}
 
-	override fun loadMore(formatter: Formatter) {
-		Log.d(logID(),"Loading more")
-		launchIO {
-			currentMaxPage++
-			loadData(formatter)
-		}
+	@Synchronized
+	override fun loadMore() {
+		if (loadingJob.isCompleted) loadingJob = launchIO { loadData().join() }
 	}
 
 	override fun searchPage(query: String) {
 		launchIO {
-
 		}
 	}
 
-	override fun resetView(formatter: Formatter) {
-		items.postValue(successResult(arrayListOf()))
-		loadData(formatter)
+	override fun resetView() {
+		listingItemsLive.postValue(successResult(arrayListOf()))
+		listingItems.clear()
+		currentMaxPage = 0
+		loadData()
 	}
 
 	override fun backgroundNovelAdd(novelID: Int) {
 		launchUI { backgroundAddUseCase(novelID) }
 	}
-
-
-	override fun onCleared() {
-		Log.d(logID(), "Cleared")
-		super.onCleared()
-	}
 }
+

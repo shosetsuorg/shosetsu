@@ -1,7 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
+import androidx.recyclerview.widget.RecyclerView.*
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 
 /*
  * This file is part of Shosetsu.
@@ -18,22 +19,32 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
+ */
+
+/**
  * Shosetsu
  * 18 / 06 / 2019
  *
  * @author github.com/doomsdayrs
  */
-class CatalogueHitBottom(private val catalogFragment: CatalogController) : RecyclerView.OnScrollListener() {
-	private var running = false
-	override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-		if (!catalogFragment.isQuery && !catalogFragment.isInSearch)
-			if (!running)
-				if (!catalogFragment.recyclerView!!.canScrollVertically(1)) {
-					running = true
-					catalogFragment.viewModel.loadMore(catalogFragment.formatter)
-					running = false
-				}
-	}
+class CatalogueHitBottom(
+		private val viewModel: ICatalogViewModel
+) : RecyclerView.OnScrollListener() {
+	private var lastBottomHit = 0L
 
+	override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+		super.onScrollStateChanged(recyclerView, newState)
+		if (!recyclerView.canScrollVertically(1)) {
+			if (newState == SCROLL_STATE_IDLE)
+				if (newState != SCROLL_STATE_DRAGGING)
+					if (newState != SCROLL_STATE_SETTLING) {
+						val currentTime = System.currentTimeMillis()
+						if (lastBottomHit < currentTime - 500) {
+							lastBottomHit = currentTime
+							viewModel.loadMore()
+						}
+					}
+
+		}
+	}
 }

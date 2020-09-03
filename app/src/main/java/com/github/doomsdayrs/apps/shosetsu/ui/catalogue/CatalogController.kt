@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMATTER
@@ -90,12 +89,9 @@ class CatalogController(
 		)
 	}
 
-	lateinit var formatter: Formatter
-
 	init {
 		setHasOptionsMenu(true)
 	}
-
 
 	override fun setupFastAdapter() {
 		super.setupFastAdapter()
@@ -118,14 +114,14 @@ class CatalogController(
 
 	override fun onViewCreated(view: View) {
 		viewModel.setFormatterID(bundle.getInt(BUNDLE_FORMATTER))
-		swipeRefreshLayout?.setOnRefreshListener { viewModel.resetView(formatter) }
+		swipeRefreshLayout?.setOnRefreshListener { viewModel.resetView() }
 		setupObservers()
 		setupRecyclerView()
 	}
 
 	override fun setupRecyclerView() {
 		recyclerView?.setHasFixedSize(false)
-		recyclerView?.addOnScrollListener(CatalogueHitBottom(this))
+		recyclerView?.addOnScrollListener(CatalogueHitBottom(viewModel))
 		super.setupRecyclerView()
 	}
 
@@ -209,16 +205,15 @@ class CatalogController(
 	}
 
 	private fun setupObservers() {
-		viewModel.displayItems.observe(this, Observer {
+		viewModel.listingItemsLive.observe(this, Observer {
 			handleRecyclerUpdate(it)
 		})
-		viewModel.formatterData.observe(this, Observer {
+		viewModel.extensionName.observe(this, Observer {
 			when (it) {
 				is HResult.Success -> {
-					formatter = it.data
-					activity?.setActivityTitle(formatter.name)
+					activity?.setActivityTitle(it.data)
 					if (recyclerArray.isEmpty())
-						viewModel.resetView(formatter)
+						viewModel.resetView()
 				}
 				else -> {
 				}

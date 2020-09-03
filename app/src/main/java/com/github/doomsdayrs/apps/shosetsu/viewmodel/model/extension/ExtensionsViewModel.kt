@@ -38,14 +38,14 @@ class ExtensionsViewModel(
 		private val initializeExtensionsUseCase: InitializeExtensionsUseCase,
 		private val installExtensionUIUseCase: InstallExtensionUIUseCase,
 		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
-		private val toastUseCase: ToastUseCase
+		private val stringToastUseCase: StringToastUseCase
 ) : IExtensionsViewModel() {
 
 
 	override fun refreshRepository() {
 		com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO {
 			initializeExtensionsUseCase.invoke {
-				toastUseCase { it }
+				stringToastUseCase { it }
 			}
 		}
 	}
@@ -54,13 +54,13 @@ class ExtensionsViewModel(
 		GlobalScope.launch(Dispatchers.IO, start = CoroutineStart.DEFAULT) {
 			when (val result = installExtensionUIUseCase(extensionUI)) {
 				is HResult.Success -> {
-					toastUseCase {
+					stringToastUseCase {
 						"Installed!"
 					}
 				}
 				is HResult.Error -> {
 					result.error?.printStackTrace()
-					toastUseCase {
+					stringToastUseCase {
 						"Cannot install due to error ${result.code} by ${result.message} due to " +
 								"${result.error?.let { it::class.simpleName }}"
 					}

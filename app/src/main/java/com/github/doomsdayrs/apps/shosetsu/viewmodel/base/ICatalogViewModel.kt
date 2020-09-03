@@ -33,6 +33,7 @@ import kotlinx.coroutines.Job
  * Used for showing the specific listing of a novel
  */
 abstract class ICatalogViewModel : ViewModel() {
+
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */
@@ -40,21 +41,28 @@ abstract class ICatalogViewModel : ViewModel() {
 	var inQuery: Boolean = false
 	var inSearch: Boolean = false
 
-	abstract var displayItems: LiveData<HResult<List<ACatalogNovelUI>>>
-	abstract val formatterData: LiveData<HResult<Formatter>>
+	/**
+	 * Novels listed by the catalogue listing
+	 */
+	abstract val listingItemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
 
 	/**
-	 * Sets the [formatterData]
+	 * Name of the extension that is used for its catalogue
+	 */
+	abstract val extensionName: LiveData<HResult<String>>
+
+	/**
+	 * Sets the [Formatter]
 	 */
 	abstract fun setFormatterID(formatterID: Int)
 
 	/**
-	 * Initializes [displayItems]
+	 * Initializes [listingItemsLive]
 	 */
-	abstract fun loadData(formatter: Formatter): Job
+	abstract fun loadData(): Job
 
 	/**
-	 * Queries the source and puts the results in [displayItems]
+	 * Queries the source and puts the results in [listingItemsLive]
 	 */
 	abstract fun loadQuery(query: String)
 
@@ -65,18 +73,19 @@ abstract class ICatalogViewModel : ViewModel() {
 	 * If [inSearch] it rejects the action
 	 * Else loads more default data
 	 */
-	abstract fun loadMore(formatter: Formatter)
+
+	abstract fun loadMore()
 
 	/**
 	 * Takes currently viewed data, and returns it to the user
-	 * @param query to compare [displayItems] against
+	 * @param query to compare [listingItemsLive] against
 	 */
 	abstract fun searchPage(query: String)
 
 	/**
-	 * Reset [displayItems], and runs [loadData] once again
+	 * Reset [listingItemsLive], and runs [loadData] once again
 	 */
-	abstract fun resetView(formatter: Formatter)
+	abstract fun resetView()
 
 	/**
 	 * Bookmarks and loads the specific novel in the background

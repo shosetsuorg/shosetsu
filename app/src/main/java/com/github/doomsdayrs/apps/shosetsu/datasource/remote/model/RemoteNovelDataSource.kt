@@ -2,8 +2,11 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.remote.model
 
 import android.util.Log
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.HTTPException
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -48,6 +51,10 @@ class RemoteNovelDataSource : IRemoteNovelDataSource {
 						Log.i(logID(), it)
 					}
 			)
+		} catch (e: HTTPException) {
+			errorResult(ERROR_HTTP_ERROR, e.message!!)
+		} catch (e: HTTPException) {
+			errorResult(ErrorKeys.ERROR_HTTP_ERROR, e.message!!)
 		} catch (e: IOException) {
 			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
 		} catch (e: LuaError) {

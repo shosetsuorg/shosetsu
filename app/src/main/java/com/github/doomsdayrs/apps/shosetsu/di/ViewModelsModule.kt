@@ -54,7 +54,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 
 	// Catalog(s)
 	bind<ICatalogOptionsViewModel>() with provider { CatalogOptionsViewModel(i()) }
-	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i()) }
+	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i(), i()) }
 
 	// Extensions
 	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i()) }
