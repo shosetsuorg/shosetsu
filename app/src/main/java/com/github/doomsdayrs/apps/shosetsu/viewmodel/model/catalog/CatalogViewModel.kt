@@ -1,9 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog
 
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
@@ -12,7 +10,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadCatalogueDataUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.NovelBackgroundAddUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StringToastUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.StringToastUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.ToastErrorUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
 import kotlinx.coroutines.Job
@@ -43,7 +42,8 @@ class CatalogViewModel(
 		private val getFormatterUseCase: GetFormatterUseCase,
 		private val backgroundAddUseCase: NovelBackgroundAddUseCase,
 		private val loadCatalogueData: LoadCatalogueDataUseCase,
-		private val stringToastUseCase: StringToastUseCase
+		private val stringToastUseCase: StringToastUseCase,
+		private var toastErrorUseCase: ToastErrorUseCase
 ) : ICatalogViewModel() {
 	private val listingItems: HashMap<Int, List<ACatalogNovelUI>> = hashMapOf()
 
@@ -97,14 +97,7 @@ class CatalogViewModel(
 			}
 			is HResult.Empty -> {
 			}
-			is HResult.Error -> {
-				when (i.code) {
-					ERROR_HTTP_ERROR -> {
-						stringToastUseCase(Toast.LENGTH_LONG) { i.message }
-					}
-					else -> stringToastUseCase { i.toString() }
-				}
-			}
+			is HResult.Error -> toastErrorUseCase<CatalogViewModel>(i)
 		}
 	}
 

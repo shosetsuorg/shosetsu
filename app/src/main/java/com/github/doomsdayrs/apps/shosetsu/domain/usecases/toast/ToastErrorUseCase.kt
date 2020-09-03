@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast
 
 import android.app.Application
 import android.widget.Toast
+import app.shosetsu.lib.HTTPException
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 
@@ -25,17 +27,34 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 /**
  * shosetsu
  * 14 / 08 / 2020
+ * @param
  */
-class StringToastUseCase(
-		private val application: Application
+class ToastErrorUseCase(
+		val application: Application
 ) {
-
-	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> String) {
+	inline operator fun <reified R : Any> invoke(error: HResult.Error, duration: Int = Toast.LENGTH_LONG) {
 		launchUI {
+			val exception = error.error
+
+			var errorMessage = R::class.simpleName ?: "UnknownSource"
+
+			errorMessage += ": " + error.code
+
+			if (exception != null)
+				if (exception.cause != null) {
+					errorMessage += when (val cause = exception.cause!!) {
+						is HTTPException -> ": HTTP: " + cause.message
+						else -> {
+							": " + cause.message
+						}
+					}
+				}
+
 			application.toast(
 					duration = duration,
-					string = message()
+					string = errorMessage
 			)
 		}
 	}
+
 }

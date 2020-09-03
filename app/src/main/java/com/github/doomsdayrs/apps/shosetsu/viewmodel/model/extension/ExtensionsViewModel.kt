@@ -19,7 +19,11 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.InitializeExtensionsUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.InstallExtensionUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UninstallExtensionUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.StringToastUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
 import kotlinx.coroutines.CoroutineStart

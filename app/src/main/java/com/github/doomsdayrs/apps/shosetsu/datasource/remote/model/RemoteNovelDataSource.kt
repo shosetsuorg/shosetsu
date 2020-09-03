@@ -4,7 +4,6 @@ import android.util.Log
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.HTTPException
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
@@ -52,15 +51,15 @@ class RemoteNovelDataSource : IRemoteNovelDataSource {
 					}
 			)
 		} catch (e: HTTPException) {
-			errorResult(ERROR_HTTP_ERROR, e.message!!)
+			errorResult(ERROR_HTTP_ERROR, e.message!!, e)
 		} catch (e: HTTPException) {
-			errorResult(ErrorKeys.ERROR_HTTP_ERROR, e.message!!)
+			errorResult(ERROR_HTTP_ERROR, e.message!!, e)
 		} catch (e: IOException) {
-			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
+			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception", e)
 		} catch (e: LuaError) {
-			errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
+			errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
 		} catch (e: Exception) {
-			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
+			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error", e)
 		}
 	}
 }

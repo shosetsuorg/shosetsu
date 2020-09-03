@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast
 
 import android.app.Application
 import android.widget.Toast
@@ -26,15 +26,15 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
  * shosetsu
  * 14 / 08 / 2020
  */
-class ResToastUseCase(
+class StringToastUseCase(
 		private val application: Application
 ) {
 
-	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> Int) {
+	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> String) {
 		launchUI {
 			application.toast(
 					duration = duration,
-					string = application.getString(message())
+					string = message()
 			)
 		}
 	}

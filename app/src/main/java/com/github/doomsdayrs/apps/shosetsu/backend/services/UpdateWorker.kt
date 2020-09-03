@@ -19,10 +19,11 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.CHANNEL_U
 import com.github.doomsdayrs.apps.shosetsu.common.consts.Notifications.ID_CHAPTER_UPDATE
 import com.github.doomsdayrs.apps.shosetsu.common.consts.WorkerTags.UPDATE_WORK_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logError
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.ToastErrorUseCase
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -92,8 +93,9 @@ class UpdateWorker(
 		 *
 		 * @param context the application context.
 		 */
-		fun start(context: Context,
-		          workerManager: WorkManager = WorkManager.getInstance(context)
+		fun start(
+				context: Context,
+				workerManager: WorkManager = WorkManager.getInstance(context)
 		) {
 			Log.i(logID(), LogConstants.SERVICE_NEW)
 			workerManager.enqueueUniquePeriodicWork(
@@ -127,8 +129,9 @@ class UpdateWorker(
 		 *
 		 * @param context the application context.
 		 */
-		fun stop(context: Context,
-		         workerManager: WorkManager = WorkManager.getInstance(context)
+		fun stop(
+				context: Context,
+				workerManager: WorkManager = WorkManager.getInstance(context)
 		): Any = workerManager.cancelUniqueWork(UPDATE_WORK_ID)
 	}
 
@@ -151,6 +154,7 @@ class UpdateWorker(
 	private val iNovelsRepository by instance<INovelsRepository>()
 	private val loadNovelUseCase by instance<LoadNovelUseCase>()
 	private val settings by instance<ShosetsuSettings>()
+	private val toastErrorUseCase by instance<ToastErrorUseCase>()
 
 	override suspend fun doWork(): Result {
 		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
@@ -162,10 +166,10 @@ class UpdateWorker(
 		iNovelsRepository.getBookmarkedNovels().let { hNovels ->
 			when (hNovels) {
 				is HResult.Success -> {
-					val novels = hNovels.data.let {
+					val novels = hNovels.data.let { list: List<NovelEntity> ->
 						if (settings.onlyUpdateOngoing)
-							it.filter { it.status == Novel.Status.PUBLISHING }
-						else it
+							list.filter { it.status == Novel.Status.PUBLISHING }
+						else list
 					}
 					var progress = 0
 					novels.forEach {
@@ -175,7 +179,7 @@ class UpdateWorker(
 						loadNovelUseCase(it, true).let { lR ->
 							when (lR) {
 								is HResult.Success -> Log.d(logID(), "Updated $lR")
-								is HResult.Error -> logError { lR }
+								is HResult.Error -> toastErrorUseCase<UpdateWorker>(lR)
 								else -> Log.e(logID(), "Impossible result")
 							}
 						}

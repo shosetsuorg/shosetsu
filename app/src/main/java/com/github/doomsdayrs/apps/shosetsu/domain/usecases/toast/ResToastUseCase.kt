@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.common.ext
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast
 
-import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import android.app.Application
+import android.widget.Toast
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 
 /*
  * This file is part of shosetsu.
@@ -18,16 +20,22 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- *
- * 14 / 08 / 2020
  */
 
-inline fun <reified T : Any> T.logError(error: () -> HResult.Error) {
-	error().let { (k, m, e) ->
-		Log.e(logID(), "Error Result:\t$k by $e\tmessage:\n$m")
-		if (e != null) {
-			Log.e(logID(), "\nStacktrace${e.stackTrace.contentToString()}")
-			Log.e(logID(), "\nStacktrace${e.cause}")
+/**
+ * shosetsu
+ * 14 / 08 / 2020
+ */
+class ResToastUseCase(
+		private val application: Application
+) {
+
+	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> Int) {
+		launchUI {
+			application.toast(
+					duration = duration,
+					string = application.getString(message())
+			)
 		}
 	}
 }

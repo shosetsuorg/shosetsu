@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.StringToastUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.ToastErrorUseCase
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -110,5 +112,5 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<OpenInWebviewUseCase>() with provider { OpenInWebviewUseCase(instance(), instance(), instance()) }
 	bind<OpenInBrowserUseCase>() with provider { OpenInBrowserUseCase(instance(), instance(), instance()) }
 	bind<ShareUseCase>() with provider { ShareUseCase(instance(), instance(), instance()) }
-
+	bind<ToastErrorUseCase>() with provider { ToastErrorUseCase(instance()) }
 }
