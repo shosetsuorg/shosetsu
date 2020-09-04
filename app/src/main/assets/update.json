@@ -1,0 +1,12 @@
+{
+  "latestVersion": "2.0.0",
+  "versionCode": 29,
+  "url": "https://github.com/Doomsdayrs/shosetsu/releases",
+  "releaseNotes": [
+    "- Complete rewrite",
+    "- New theme",
+    "- Kotlin coroutines",
+    "- Lua extensions for sources",
+    "- Repository system for lua extensions"
+  ]
+}

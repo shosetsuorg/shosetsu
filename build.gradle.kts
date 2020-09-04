@@ -60,7 +60,7 @@ open class WriteDebugUpdate : DefaultTask() {
 		val file = File("app/src/debug/assets/update.json")
 		file.writeText("""
 		{
-			"latestVersion":${getCommitCount()},
+			"latestVersion":"${getCommitCount()}",
 			"url":"https://discord.gg/ttSX7gB",
 			"releaseNotes":[
 				"${getLatestCommitMsg().replace("\n", "\",\n\t\t\t\t\"")}"

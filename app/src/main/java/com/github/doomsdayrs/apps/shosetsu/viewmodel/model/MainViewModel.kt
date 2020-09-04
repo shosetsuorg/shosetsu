@@ -1,10 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
 
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.IsOnlineUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartUpdateWorkerUseCase
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IMainViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -31,8 +33,12 @@ class MainViewModel(
 		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 		private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
 		private val updateWorkerUseCase: StartUpdateWorkerUseCase,
-		private var isOnlineUseCase: IsOnlineUseCase
+		private val isOnlineUseCase: IsOnlineUseCase,
+		private val shareUseCase: ShareUseCase,
 ) : IMainViewModel() {
+	override fun share(string: String, int: String) {
+		shareUseCase(string, string)
+	}
 
 	override fun startDownloadWorker() {
 		startDownloadWorkerUseCase()
@@ -42,8 +48,10 @@ class MainViewModel(
 		updateWorkerUseCase()
 	}
 
-	override fun startUpdateCheck() {
-		loadAppUpdateUseCase()
+	override fun startUpdateCheck(): LiveData<HResult<LoadAppUpdateUseCase.DebugAppUpdate>> {
+		return liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+			emit(loadAppUpdateUseCase())
+		}
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()

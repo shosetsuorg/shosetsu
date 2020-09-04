@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -14,6 +15,7 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
@@ -201,7 +203,38 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	}
 
 	private fun setupProcesses() {
-		viewModel.startUpdateCheck()
+		viewModel.startUpdateCheck().observe(this) { result ->
+			when (result) {
+				is HResult.Loading -> {
+				}
+				is HResult.Error -> {
+				}
+				is HResult.Empty -> {
+				}
+				is HResult.Success -> {
+					val update = result.data
+					AlertDialog.Builder(this).apply {
+						setTitle(R.string.update_app_now_question)
+						setMessage("${update.version}\t${update.versionCode}\n" + update.notes.joinToString("\n"))
+						setPositiveButton(R.string.update) { it, _ ->
+							viewModel.share(
+									update.url,
+									if (update.versionCode == -1) "Discord" else "Github"
+							)
+							it.dismiss()
+						}
+						setNegativeButton(R.string.update_not_interested) { it, _ ->
+							it.dismiss()
+						}
+						setOnDismissListener {
+							it.dismiss()
+						}
+					}.let {
+						com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI { it.show() }
+					}
+				}
+			}
+		}
 		viewModel.startDownloadWorker()
 		viewModel.startUpdateWorker()
 	}
