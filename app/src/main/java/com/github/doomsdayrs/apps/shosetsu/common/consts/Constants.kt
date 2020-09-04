@@ -26,7 +26,10 @@ import android.view.View
  */
 
 const val SHOSETSU_UPDATE_URL: String =
-		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml"
+		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/src/main/assets/update.xml"
+
+val SHOSETSU_DEV_UPDATE_URL: String =
+		SHOSETSU_UPDATE_URL.replace("master", "developmment")
 
 const val selectedStrokeWidth = 8
 

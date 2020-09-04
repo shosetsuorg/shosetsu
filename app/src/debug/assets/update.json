@@ -1,0 +1,9 @@
+{
+	"latestVersion":879,
+	"url":"https://discord.gg/ttSX7gB",
+	"releaseNotes":[
+		"- Fixed checks if the application is online or not",
+		"- UI Buttons provide feedback if the application is online or not",
+		"- DownloadsController.kt now uses fast adapter"
+	]
+}

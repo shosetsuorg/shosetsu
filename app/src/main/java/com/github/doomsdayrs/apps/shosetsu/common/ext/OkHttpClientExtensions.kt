@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 
 /*
  * This file is part of shosetsu.
@@ -25,4 +26,4 @@ import okhttp3.Request
  * 13 / 05 / 2020
  */
 
-fun OkHttpClient.quickie(url: String) = newCall(Request.Builder().url(url).build()).execute()
+fun OkHttpClient.quickie(url: String): Response = newCall(Request.Builder().url(url).build()).execute()
