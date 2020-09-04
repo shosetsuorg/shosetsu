@@ -9,10 +9,10 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
-import com.bluelinelabs.conductor.attachRouter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			return@setNavigationItemSelectedListener true
 		}
 
-		router = attachRouter(fragment_container, savedInstanceState)
+		router = attachRouter(this, fragment_container, savedInstanceState)
 
 		router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
 			override fun onChangeStarted(
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 					from: Controller?,
 					isPush: Boolean,
 					container: ViewGroup,
-					handler: ControllerChangeHandler
+					handler: ControllerChangeHandler,
 			) {
 				syncActivityViewWithController(to, from)
 			}
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 					from: Controller?,
 					isPush: Boolean,
 					container: ViewGroup,
-					handler: ControllerChangeHandler
+					handler: ControllerChangeHandler,
 			) {
 			}
 

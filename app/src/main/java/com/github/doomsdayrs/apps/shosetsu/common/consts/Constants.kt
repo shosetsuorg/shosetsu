@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.common.consts
 
 import android.view.View
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 
 /*
  * This file is part of shosetsu.
@@ -25,11 +26,20 @@ import android.view.View
  * 04 / 05 / 2020
  */
 
-const val SHOSETSU_UPDATE_URL: String =
-		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/src/main/assets/update.xml"
-
-val SHOSETSU_DEV_UPDATE_URL: String =
-		SHOSETSU_UPDATE_URL.replace("master", "developmment")
+val SHOSETSU_UPDATE_URL: String =
+		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/${
+			if (BuildConfig.DEBUG)
+				"development"
+			else "master"
+		}/app/src/${
+			if (BuildConfig.DEBUG)
+				"debug"
+			else "master"
+		}/assets/update.${
+			if (BuildConfig.DEBUG)
+				"json"
+			else "xml"
+		}"
 
 const val selectedStrokeWidth = 8
 
