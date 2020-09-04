@@ -3,7 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.settings
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings.AUpdateSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.AUpdateSettingsViewModel
 
 /*
  * This file is part of shosetsu.

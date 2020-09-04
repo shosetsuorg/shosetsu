@@ -6,7 +6,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings.AAdvancedSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 
 /*
  * This file is part of shosetsu.

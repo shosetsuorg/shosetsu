@@ -1,8 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IsOnlineCheckViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -28,15 +29,21 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-abstract class IExtensionsViewModel
-	: ViewModel(), SubscribeHandleViewModel<List<ExtensionUI>> {
+abstract class IDownloadsViewModel :
+		SubscribeHandleViewModel<List<DownloadUI>>, ViewModel(), IsOnlineCheckViewModel {
+	/**
+	 * Toggles paused downloads
+	 *
+	 * @return if paused or not
+	 */
+	abstract fun togglePause(): Boolean
 
-	/** Refreshes the repositories and data values */
-	abstract fun refreshRepository()
+	/** Deletes a download */
+	abstract fun delete(downloadUI: DownloadUI)
 
-	/** Installs an extension (can also update it) */
-	abstract fun installExtension(extensionUI: ExtensionUI)
+	/** Pauses a download */
+	abstract fun pause(downloadUI: DownloadUI)
 
-	/** Uninstalls an extension */
-	abstract fun uninstallExtension(extensionUI: ExtensionUI)
+	/** Starts a download */
+	abstract fun start(downloadUI: DownloadUI)
 }

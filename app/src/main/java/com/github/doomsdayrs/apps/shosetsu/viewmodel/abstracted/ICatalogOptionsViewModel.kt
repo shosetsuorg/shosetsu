@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IsOnlineCheckViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -20,8 +22,15 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewM
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+
+
 /**
  * shosetsu
- * 31 / 08 / 2020
+ * 30 / 04 / 2020
+ * ViewModel for [com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController]
+ * [liveData] is a [com.github.doomsdayrs.apps.shosetsu.common.dto.HResult] of [FormatterCard]
+ * [FormatterCard] are representation of the different extensions one can browse
  */
-abstract class AAdvancedSettingsViewModel : ViewModel(), ISubSettingsViewModel
+abstract class ICatalogOptionsViewModel :
+		SubscribeHandleViewModel<List<CatalogOptionUI>>, IsOnlineCheckViewModel, ViewModel()

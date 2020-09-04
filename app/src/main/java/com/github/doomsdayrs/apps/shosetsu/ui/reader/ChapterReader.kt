@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.READING
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.reader.adapters.ChapterReaderAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IChapterReaderViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.mikepenz.fastadapter.FastAdapter

@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ILibraryViewModel
 import com.google.android.material.navigation.NavigationView
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
@@ -62,7 +62,6 @@ class LibraryController
 	/***/
 	val viewModel: ILibraryViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
-	private val manager by instance<UpdateWorker.UpdateWorkerManager>()
 
 
 	/** Inflater */
@@ -185,9 +184,9 @@ class LibraryController
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			R.id.updater_now -> {
-				manager.start(
-						applicationContext!!
-				)
+				if (viewModel.isOnline())
+					viewModel.startUpdateManager()
+				else toast(R.string.you_not_online)
 				return true
 			}
 			R.id.chapter_select_all -> {

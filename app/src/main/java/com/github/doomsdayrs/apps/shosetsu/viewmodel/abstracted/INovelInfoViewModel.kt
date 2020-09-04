@@ -1,9 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.settings
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.ADownloadSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -22,14 +23,24 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.ADownlo
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 /**
  * shosetsu
- * 31 / 08 / 2020
+ * 29 / 04 / 2020
+ *
+ * @author github.com/doomsdayrs
  */
-class DownloadSettingsViewModel : ADownloadSettingsViewModel() {
-	override val settings: List<SettingsItemData>
-		get() = TODO("Not yet implemented")
-	override val liveData: LiveData<HResult<List<SettingsItemData>>>
-		get() = TODO("Not yet implemented")
+abstract class INovelInfoViewModel
+	: SubscribeHandleViewModel<NovelUI>, ViewModel() {
+	/** Name of the formatter */
+	abstract val formatterName: LiveData<HResult<String>>
 
+	/** Set's the value to be loaded */
+	abstract fun setNovelID(novelID: Int)
+
+	/** Toggles the bookmark of this ui */
+	abstract fun toggleBookmark(novelUI: NovelUI)
+	abstract fun openBrowser(it: NovelUI)
+	abstract fun openWebView(it: NovelUI)
+	abstract fun share(it: NovelUI)
 }

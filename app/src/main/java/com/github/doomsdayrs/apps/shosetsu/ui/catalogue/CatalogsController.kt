@@ -9,14 +9,13 @@ import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogOptionsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ICatalogOptionsViewModel
 
 /*
  * This file is part of Shosetsu.
@@ -75,7 +74,7 @@ class CatalogsController : FastAdapterRecyclerController<CatalogOptionUI>() {
 	override fun setupFastAdapter() {
 		fastAdapter.setOnClickListener { v, a, i, p ->
 			Log.d("FormatterSelection", i.title)
-			if (isOnline) {
+			if (viewModel.isOnline()) {
 				val catalogueFragment = CatalogController(bundleOf(
 						BundleKeys.BUNDLE_FORMATTER to i.identifier.toInt()
 				))

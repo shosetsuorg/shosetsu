@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings
 
 import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISubSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -21,13 +22,6 @@ import androidx.lifecycle.ViewModel
 
 /**
  * shosetsu
- * 20 / 06 / 2020
+ * 31 / 08 / 2020
  */
-abstract class IMainViewModel : ViewModel() {
-
-	abstract fun startDownloadWorker()
-
-	abstract fun startUpdateWorker()
-
-	abstract fun startUpdateCheck()
-}
+abstract class AReaderSettingsViewModel : ViewModel(), ISubSettingsViewModel

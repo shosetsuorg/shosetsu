@@ -186,8 +186,8 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 
 	/** @see [toast] */
 	fun toast(
-			length: Int = Toast.LENGTH_SHORT,
-			@StringRes message: Int
+			@StringRes message: Int,
+			length: Int = Toast.LENGTH_SHORT
 	) {
 		launchUI {
 			applicationContext?.toast(message, length)

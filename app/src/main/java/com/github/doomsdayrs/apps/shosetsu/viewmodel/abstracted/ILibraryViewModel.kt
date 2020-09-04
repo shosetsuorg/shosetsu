@@ -1,10 +1,10 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IsOnlineCheckViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.StartUpdateManagerViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -30,17 +30,10 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  *
  * @author github.com/doomsdayrs
  */
-abstract class INovelInfoViewModel
-	: SubscribeHandleViewModel<NovelUI>, ViewModel() {
-	/** Name of the formatter */
-	abstract val formatterName: LiveData<HResult<String>>
-
-	/** Set's the value to be loaded */
-	abstract fun setNovelID(novelID: Int)
-
-	/** Toggles the bookmark of this ui */
-	abstract fun toggleBookmark(novelUI: NovelUI)
-	abstract fun openBrowser(it: NovelUI)
-	abstract fun openWebView(it: NovelUI)
-	abstract fun share(it: NovelUI)
+abstract class ILibraryViewModel
+	: SubscribeHandleViewModel<List<ABookmarkedNovelUI>>, ViewModel(), IsOnlineCheckViewModel, StartUpdateManagerViewModel {
+	/**
+	 * Remove the following from the library
+	 */
+	abstract fun removeFromLibrary(list: List<ABookmarkedNovelUI>)
 }

@@ -1,8 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
-import androidx.lifecycle.ViewModel
-import app.shosetsu.lib.Formatter
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
 
 /*
  * This file is part of shosetsu.
@@ -23,17 +21,13 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeViewMode
 
 /**
  * shosetsu
- * 16 / 07 / 2020
- *
- * This file is mainly to configure settings of a formatter
- *
- * [liveData] is of the formatter object itself
+ * 31 / 08 / 2020
  */
-abstract class IExtensionSingleConfigureViewModel : ViewModel(), SubscribeViewModel<Formatter> {
+interface ISubSettingsViewModel : SubscribeHandleViewModel<List<SettingsItemData>> {
 
-	/** Set the extension ID to use */
-	abstract fun setExtensionID(int: Int)
-
-	/** Save the setting of this specific formatter */
-	abstract suspend fun saveSetting(id: Int, value: Any)
+	/**
+	 * SettingItemData to show
+	 * Must be lazy
+	 */
+	val settings: List<SettingsItemData>
 }

@@ -1,10 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.backend
 
 import android.app.Activity
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.view.MenuItem
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 
@@ -51,12 +47,6 @@ class SHOWCASE {
 	val webView = 13
 }
 
-/**
- * global connectivity manager variable
- */
-var connectivityManager: ConnectivityManager? = null
-
-
 @Deprecated("Find a better use case")
 var shoDir: String = "/Shosetsu/"
 
@@ -84,38 +74,6 @@ fun initPreferences(mainActivity: Activity, settings: ShosetsuSettings) {
 	dir = dir.substring(0, dir.indexOf("/Android"))
 	shoDir = settings.settings.getString("dir", "$dir/Shosetsu/")!!
 }
-
-
-/**
- * Checks if online
- *
- * @return true if so, otherwise false
- */
-val isOnline: Boolean
-	get() {
-		return if (VERSION.SDK_INT >= VERSION_CODES.M) {
-			val networkCapabilities = connectivityManager?.activeNetwork ?: return false
-			val actNw = connectivityManager?.getNetworkCapabilities(networkCapabilities)
-					?: return false
-			when {
-				actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-				actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-				actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-				else -> false
-			}
-		} else {
-			// Suppressing warnings since this is old API usage
-			@Suppress("DEPRECATION")
-			val type = connectivityManager?.activeNetworkInfo ?: return false
-			@Suppress("DEPRECATION")
-			when (type.type) {
-				ConnectivityManager.TYPE_WIFI -> true
-				ConnectivityManager.TYPE_MOBILE -> true
-				ConnectivityManager.TYPE_ETHERNET -> true
-				else -> false
-			}
-		}
-	}
 
 /**
  * Abstraction for Actions to take after demarking items. To simplify bulky code

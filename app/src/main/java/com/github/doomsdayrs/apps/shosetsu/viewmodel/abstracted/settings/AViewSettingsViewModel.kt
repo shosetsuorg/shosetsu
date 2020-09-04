@@ -1,6 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings
 
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISubSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -23,11 +24,4 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsI
  * shosetsu
  * 31 / 08 / 2020
  */
-interface ISubSettingsViewModel : SubscribeHandleViewModel<List<SettingsItemData>> {
-
-	/**
-	 * SettingItemData to show
-	 * Must be lazy
-	 */
-	val settings: List<SettingsItemData>
-}
+abstract class AViewSettingsViewModel : ViewModel(), ISubSettingsViewModel

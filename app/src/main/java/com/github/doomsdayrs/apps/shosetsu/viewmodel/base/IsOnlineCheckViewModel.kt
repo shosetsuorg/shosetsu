@@ -1,9 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.settings
-
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.ADownloadSettingsViewModel
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 /*
  * This file is part of shosetsu.
@@ -24,12 +19,12 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.ADownlo
 
 /**
  * shosetsu
- * 31 / 08 / 2020
+ * 04 / 09 / 2020
  */
-class DownloadSettingsViewModel : ADownloadSettingsViewModel() {
-	override val settings: List<SettingsItemData>
-		get() = TODO("Not yet implemented")
-	override val liveData: LiveData<HResult<List<SettingsItemData>>>
-		get() = TODO("Not yet implemented")
+interface IsOnlineCheckViewModel {
 
+	/**
+	 * Is the device connected to the internet
+	 */
+	fun isOnline(): Boolean
 }

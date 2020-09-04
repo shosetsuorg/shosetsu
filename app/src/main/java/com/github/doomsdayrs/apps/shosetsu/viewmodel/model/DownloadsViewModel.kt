@@ -7,12 +7,9 @@ import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.DeleteDownloadUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetDownloadsUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateDownloadUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IDownloadsViewModel
 import kotlinx.coroutines.Dispatchers
 
 /*
@@ -43,7 +40,8 @@ class DownloadsViewModel(
 		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 		private val updateDownloadUseCase: UpdateDownloadUseCase,
 		private val deleteDownloadUseCase: DeleteDownloadUseCase,
-		private val settings: ShosetsuSettings
+		private val settings: ShosetsuSettings,
+		private var isOnlineUseCase: IsOnlineUseCase
 ) : IDownloadsViewModel() {
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
@@ -52,9 +50,12 @@ class DownloadsViewModel(
 		}
 	}
 
+	override fun isOnline(): Boolean = isOnlineUseCase()
+
 	override fun togglePause(): Boolean {
+		if (!isOnline()) return true
 		settings.isDownloadPaused = !settings.isDownloadPaused
-		if (settings.isDownloadPaused)
+		if (!settings.isDownloadPaused)
 			startDownloadWorkerUseCase()
 		return settings.isDownloadPaused
 	}

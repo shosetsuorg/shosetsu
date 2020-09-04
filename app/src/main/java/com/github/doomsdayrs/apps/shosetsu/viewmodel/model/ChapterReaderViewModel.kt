@@ -15,7 +15,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadChapterPassageUse
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadReaderChaptersUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateReaderChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IChapterReaderViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IChapterReaderViewModel
 
 /*
  * This file is part of shosetsu.

@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.usecases.InstallExtensionUIUse
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UninstallExtensionUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.StringToastUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

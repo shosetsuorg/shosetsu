@@ -1,8 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -22,13 +22,21 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  */
 
 
-
-
 /**
  * shosetsu
- * 30 / 04 / 2020
- * ViewModel for [com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController]
- * [liveData] is a [com.github.doomsdayrs.apps.shosetsu.common.dto.HResult] of [FormatterCard]
- * [FormatterCard] are representation of the different extensions one can browse
+ * 29 / 04 / 2020
+ *
+ * @author github.com/doomsdayrs
  */
-abstract class ICatalogOptionsViewModel : SubscribeHandleViewModel<List<CatalogOptionUI>>, ViewModel()
+abstract class IExtensionsViewModel
+	: ViewModel(), SubscribeHandleViewModel<List<ExtensionUI>> {
+
+	/** Refreshes the repositories and data values */
+	abstract fun refreshRepository()
+
+	/** Installs an extension (can also update it) */
+	abstract fun installExtension(extensionUI: ExtensionUI)
+
+	/** Uninstalls an extension */
+	abstract fun uninstallExtension(extensionUI: ExtensionUI)
+}

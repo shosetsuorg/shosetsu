@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.openChapter
 import com.github.doomsdayrs.apps.shosetsu.common.ext.setOnClickListener
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IUpdatesViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IUpdatesViewModel
 import org.kodein.di.generic.instance
 
 /**

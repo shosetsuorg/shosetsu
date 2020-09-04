@@ -1,9 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
 
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.IsOnlineUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartUpdateWorkerUseCase
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IMainViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IMainViewModel
 
 /*
  * This file is part of shosetsu.
@@ -29,7 +30,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IMainViewModel
 class MainViewModel(
 		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 		private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
-		private val updateWorkerUseCase: StartUpdateWorkerUseCase
+		private val updateWorkerUseCase: StartUpdateWorkerUseCase,
+		private var isOnlineUseCase: IsOnlineUseCase
 ) : IMainViewModel() {
 
 	override fun startDownloadWorker() {
@@ -43,4 +45,6 @@ class MainViewModel(
 	override fun startUpdateCheck() {
 		loadAppUpdateUseCase()
 	}
+
+	override fun isOnline(): Boolean = isOnlineUseCase()
 }

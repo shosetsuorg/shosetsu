@@ -99,8 +99,9 @@ class DownloadWorker(
 		 *
 		 * @param context the application context.
 		 */
-		fun start(context: Context,
-		          workerManager: WorkManager = WorkManager.getInstance(context)
+		fun start(
+				context: Context,
+				workerManager: WorkManager = WorkManager.getInstance(context)
 		) {
 			workerManager.enqueueUniqueWork(
 					DOWNLOAD_WORK_ID,
@@ -126,8 +127,9 @@ class DownloadWorker(
 		 *
 		 * @param context the application context.
 		 */
-		fun stop(context: Context,
-		         workerManager: WorkManager = WorkManager.getInstance(context)
+		fun stop(
+				context: Context,
+				workerManager: WorkManager = WorkManager.getInstance(context)
 		): Any = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
 	}
 

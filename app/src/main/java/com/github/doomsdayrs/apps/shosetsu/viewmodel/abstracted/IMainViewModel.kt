@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IsOnlineCheckViewModel
 
 /*
  * This file is part of shosetsu.
@@ -22,6 +22,13 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewM
 
 /**
  * shosetsu
- * 31 / 08 / 2020
+ * 20 / 06 / 2020
  */
-abstract class AInfoSettingsViewModel : ViewModel(), ISubSettingsViewModel
+abstract class IMainViewModel : ViewModel(), IsOnlineCheckViewModel {
+
+	abstract fun startDownloadWorker()
+
+	abstract fun startUpdateWorker()
+
+	abstract fun startUpdateCheck()
+}

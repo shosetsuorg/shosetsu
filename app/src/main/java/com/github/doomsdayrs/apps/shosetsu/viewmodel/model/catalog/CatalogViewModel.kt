@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.usecases.NovelBackgroundAddUse
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.StringToastUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.ToastErrorUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ICatalogViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 

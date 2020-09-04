@@ -5,8 +5,9 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.IsOnlineUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelViewModel
 import kotlinx.coroutines.Dispatchers
 
 /*
@@ -33,8 +34,8 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class NovelViewModel(
-		private val loadNovelUseCase: LoadNovelUseCase
-
+		private val loadNovelUseCase: LoadNovelUseCase,
+		private var isOnlineUseCase: IsOnlineUseCase
 ) : INovelViewModel() {
 	private var novelIDValue: Int = -1
 
@@ -47,4 +48,6 @@ class NovelViewModel(
 				emit(loading())
 				emit(loadNovelUseCase(novelIDValue, true))
 			}
+
+	override fun isOnline(): Boolean = isOnlineUseCase()
 }

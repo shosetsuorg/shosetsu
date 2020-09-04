@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsViewModel
 
 /**
  * shosetsu

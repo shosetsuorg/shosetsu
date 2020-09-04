@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISubSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -24,4 +24,4 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewM
  * shosetsu
  * 31 / 08 / 2020
  */
-abstract class AReaderSettingsViewModel : ViewModel(), ISubSettingsViewModel
+abstract class AAdvancedSettingsViewModel : ViewModel(), ISubSettingsViewModel

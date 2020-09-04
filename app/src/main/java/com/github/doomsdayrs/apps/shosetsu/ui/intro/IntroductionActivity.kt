@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.ui.splash.SplashScreen.Companion.INTRO_CODE
 import com.github.doomsdayrs.apps.shosetsu.common.ext.readAsset
+import com.github.doomsdayrs.apps.shosetsu.ui.splash.SplashScreen.Companion.INTRO_CODE
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.heinrichreimersoftware.materialintro.app.NavigationPolicy
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
@@ -38,47 +38,47 @@ import kotlinx.android.synthetic.main.intro_license.*
  * @author github.com/doomsdayrs
  */
 class IntroductionActivity : IntroActivity() {
-    internal class License : Fragment(R.layout.intro_license) {
-        private var message = ""
-        override fun onSaveInstanceState(outState: Bundle) {
-            outState.putString("message", message)
-        }
+	internal class License : Fragment(R.layout.intro_license) {
+		private var message = ""
+		override fun onSaveInstanceState(outState: Bundle) {
+			outState.putString("message", message)
+		}
 
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            if (message.isEmpty() && savedInstanceState == null)
-                message = activity?.readAsset("license.txt") ?: ""
-            else if (message.isEmpty() && savedInstanceState != null)
-                message = savedInstanceState.getString("message", "")
-            title.text = message
-        }
-    }
+		override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+			if (message.isEmpty() && savedInstanceState == null)
+				message = activity?.readAsset("license.txt") ?: ""
+			else if (message.isEmpty() && savedInstanceState != null)
+				message = savedInstanceState.getString("message", "")
+			title.text = message
+		}
+	}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setNavigationPolicy(
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setNavigationPolicy(
                 object : NavigationPolicy {
                     override fun canGoForward(position: Int): Boolean = true
                     override fun canGoBackward(position: Int): Boolean = false
                 }
         )
 
-        addSlide(SimpleSlide.Builder()
+		addSlide(SimpleSlide.Builder()
                 .title(R.string.intro_title_greet)
                 .background(R.color.colorPrimary)
                 .build())
 
-        addSlide(SimpleSlide.Builder()
+		addSlide(SimpleSlide.Builder()
                 .title((R.string.intro_what_is_app))
                 .description((R.string.intro_what_is_app_desc))
                 .background(R.color.colorPrimary)
                 .build())
 
-        addSlide(FragmentSlide.Builder()
+		addSlide(FragmentSlide.Builder()
                 .background(R.color.colorPrimary)
                 .fragment(License())
                 .build())
 
-        addSlide(SimpleSlide.Builder()
+		addSlide(SimpleSlide.Builder()
                 .title((R.string.intro_perm_title))
                 .description((R.string.intro_perm_desc))
                 .background(R.color.colorPrimary)
@@ -88,11 +88,11 @@ class IntroductionActivity : IntroActivity() {
                 ))
                 .build())
 
-        addSlide(SimpleSlide.Builder()
+		addSlide(SimpleSlide.Builder()
                 .title((R.string.intro_happy_end))
                 .description((R.string.intro_happy_end_desc))
                 .background(R.color.colorPrimary)
                 .buttonCtaClickListener { finishActivity(INTRO_CODE) }
                 .build())
-    }
+	}
 }

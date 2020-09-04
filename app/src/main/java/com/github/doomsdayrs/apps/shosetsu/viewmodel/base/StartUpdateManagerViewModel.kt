@@ -1,7 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.settings
-
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewModel
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
 
 /*
  * This file is part of shosetsu.
@@ -22,6 +19,10 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.ISubSettingsViewM
 
 /**
  * shosetsu
- * 31 / 08 / 2020
+ * 04 / 09 / 2020
  */
-abstract class AUpdateSettingsViewModel : ViewModel(), ISubSettingsViewModel
+interface StartUpdateManagerViewModel {
+
+	/** Starts the update manager, Will not start if it is running */
+	fun startUpdateManager()
+}

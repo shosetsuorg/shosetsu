@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ICatalogViewModel
 import com.google.android.material.navigation.NavigationView
 import org.kodein.di.generic.instance
 

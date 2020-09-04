@@ -49,7 +49,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<ReloadFormattersUseCase>() with provider { ReloadFormattersUseCase() }
 
 	bind<InitializeExtensionsUseCase>() with provider {
-		InitializeExtensionsUseCase(instance(), instance(), instance())
+		InitializeExtensionsUseCase(instance(), instance(), instance(), instance())
 	}
 
 	bind<InstallExtensionUIUseCase>() with provider { InstallExtensionUIUseCase(instance()) }
@@ -113,4 +113,5 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<OpenInBrowserUseCase>() with provider { OpenInBrowserUseCase(instance(), instance(), instance()) }
 	bind<ShareUseCase>() with provider { ShareUseCase(instance(), instance(), instance()) }
 	bind<ToastErrorUseCase>() with provider { ToastErrorUseCase(instance()) }
+	bind<IsOnlineUseCase>() with provider { IsOnlineUseCase(instance()) }
 }

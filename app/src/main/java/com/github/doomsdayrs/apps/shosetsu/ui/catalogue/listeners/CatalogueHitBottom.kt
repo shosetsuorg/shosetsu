@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.*
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ICatalogViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ICatalogViewModel
 
 /*
  * This file is part of Shosetsu.

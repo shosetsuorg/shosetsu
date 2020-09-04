@@ -151,6 +151,9 @@ class ShosetsuSettings(
 	val readerUserThemesLive: LiveData<List<ColorChoice>>
 		get() = _readerUserThemesLive
 
+	/** LiveData of [isDownloadPausedLive] */
+	val isDownloadPausedLive: LiveData<Boolean>
+		get() = _isDownloadPausedLive
 
 	private val _readerTextSizeLive: MutableLiveData<Float> by lazy {
 		MutableLiveData(readerTextSize)
@@ -170,6 +173,10 @@ class ShosetsuSettings(
 
 	private val _readerUserThemesLive: MutableLiveData<List<ColorChoice>> by lazy {
 		MutableLiveData(readerUserThemes)
+	}
+
+	private val _isDownloadPausedLive: MutableLiveData<Boolean> by lazy {
+		MutableLiveData(isDownloadPaused)
 	}
 
 	//## Real data
@@ -358,7 +365,9 @@ class ShosetsuSettings(
 
 	/** If download manager is paused */
 	var isDownloadPaused: Boolean
-		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_PAUSED, value) }
+		set(value) = settings.edit { putBoolean(IS_DOWNLOAD_PAUSED, value) }.also {
+			_isDownloadPausedLive.postValue(value)
+		}
 		get() = settings.getBoolean(IS_DOWNLOAD_PAUSED, false)
 
 	// Formatter Settings

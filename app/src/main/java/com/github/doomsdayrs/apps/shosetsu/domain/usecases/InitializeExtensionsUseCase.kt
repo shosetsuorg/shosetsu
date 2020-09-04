@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult.Success
 import com.github.doomsdayrs.apps.shosetsu.common.ext.containsName
@@ -45,11 +44,12 @@ import org.json.JSONObject
 class InitializeExtensionsUseCase(
 		private val extRepo: IExtensionsRepository,
 		private val extRepoRepo: IExtRepoRepository,
-		private val extLibRepo: IExtLibRepository
+		private val extLibRepo: IExtLibRepository,
+		private var isOnlineUseCase: IsOnlineUseCase
 ) {
 	suspend fun invoke(progressUpdate: (String) -> Unit) {
 		Log.i(logID(), "Starting Update")
-		if (isOnline) {
+		if (isOnlineUseCase()) {
 			progressUpdate("Online, Loading repositories")
 			val repos: HResult<List<RepositoryEntity>> = extRepoRepo.loadRepositories()
 			if (repos is Success)

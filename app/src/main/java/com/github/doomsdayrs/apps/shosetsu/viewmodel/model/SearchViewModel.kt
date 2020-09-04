@@ -8,7 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRep
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.SearchBookMarkedNovelsUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.IDTitleImageUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.URLTitleImageUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISearchViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ISearchViewModel
 import kotlinx.coroutines.Dispatchers
 
 /*

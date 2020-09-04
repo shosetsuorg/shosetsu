@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.splash
 
 import android.content.Intent
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
@@ -9,10 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
 import app.shosetsu.lib.ShosetsuLib
 import app.shosetsu.lib.shosetsuGlobals
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.backend.connectivityManager
 import com.github.doomsdayrs.apps.shosetsu.backend.database.DBHelper
 import com.github.doomsdayrs.apps.shosetsu.backend.initPreferences
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
@@ -68,12 +65,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		if (requestCode == INTRO_CODE) {
-			startBoot()
-
-			// Set so that debug versions are perm show intro
-			if (!BuildConfig.DEBUG) settings.showIntro = false
-		}
+		if (requestCode == INTRO_CODE) startBoot()
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,11 +74,12 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 		initPreferences(this, settings)
 		textView = findViewById(R.id.title)
 		// Settings setup
-		connectivityManager = getSystemService<ConnectivityManager>()!!
 		if (settings.showIntro) {
 			Log.i(logID(), "First time, Launching activity")
-			val i = Intent(this, IntroductionActivity::class.java)
-			startActivityForResult(i, INTRO_CODE)
+			startActivityForResult(Intent(
+					this,
+					IntroductionActivity::class.java
+			), INTRO_CODE)
 		} else {
 			startBoot()
 		}

@@ -22,14 +22,15 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.adapters.DownloadAdapter
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IDownloadsViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IDownloadsViewModel
+import com.mikepenz.fastadapter.FastAdapter
 import org.kodein.di.generic.instance
 
 /**
@@ -39,62 +40,52 @@ import org.kodein.di.generic.instance
  * @author github.com/doomsdayrs
  */
 //TODO selection mechanic with options to delete,  pause,  and more
-class DownloadsController : RecyclerController<DownloadAdapter, DownloadUI>() {
+class DownloadsController : FastAdapterRecyclerController<DownloadUI>() {
 	override val viewTitleRes: Int = R.string.downloads
 
-	val viewModel: IDownloadsViewModel by viewModel()
+	private val viewModel: IDownloadsViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
-	private val manager by instance<UpdateWorker.UpdateWorkerManager>()
+
+	override val fastAdapter: FastAdapter<DownloadUI> by lazy {
+		val adapter = DownloadAdapter(viewModel)
+		adapter.addAdapter(0, itemAdapter)
+		adapter
+	}
 
 	init {
 		setHasOptionsMenu(true)
 	}
 
-	override fun onViewCreated(view: View) {
-		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
-	}
-
-	/**
-	 * Creates the option menu (on the top toolbar)
-	 *
-	 * @param menu     Menu reference to fill
-	 * @param inflater Object to inflate the menu
-	 */
+	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_downloads, menu)
-		val menuItem = menu.findItem(R.id.toolbar_downloads_pause)
-		if (settings.isDownloadPaused)
-			menuItem.setIcon(R.drawable.ic_play_circle_filled_24dp)
+		settings.isDownloadPausedLive.observe(this) {
+			menu.findItem(R.id.toolbar_downloads_pause)?.setIcon(
+					if (it)
+						R.drawable.ic_play_circle_filled_24dp
+					else R.drawable.ic_pause_circle_outline_24dp
+			)
+		}
 	}
 
+	/***/
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		if (item.itemId == R.id.toolbar_downloads_pause) {
-			if (viewModel.togglePause())
-				item.setIcon(R.drawable.ic_play_circle_filled_24dp)
-			else {
-				item.setIcon(R.drawable.ic_pause_circle_outline_24dp)
-				manager.start(activity!!)
-			}
-			return true
+			if (viewModel.isOnline()) {
+				viewModel.togglePause()
+				return true
+			} else toast(R.string.you_not_online)
 		}
 		return false
 	}
 
-	override fun updateUI(list: List<DownloadUI>) {
-		if (list.size < recyclerArray.size) {
-			recyclerArray.clear()
-			recyclerArray.addAll(list)
-			recyclerView?.adapter?.notifyDataSetChanged()
-		} else super.updateUI(list)
-	}
 
-	override fun difAreItemsTheSame(oldItem: DownloadUI, newItem: DownloadUI): Boolean =
-			oldItem.chapterID == newItem.chapterID
+	override fun onViewCreated(view: View) {
+		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
+	}
 
 	override fun setupRecyclerView() {
 		recyclerView?.setHasFixedSize(false)
 		super.setupRecyclerView()
 	}
-
-	override fun createRecyclerAdapter(): DownloadAdapter = DownloadAdapter(this)
 }

@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateExtensionEntityUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsConfigureViewModel
 
 /**
  * shosetsu

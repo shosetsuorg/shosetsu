@@ -11,7 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.getNovelID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.INovelViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -94,6 +94,10 @@ class NovelController(val bundle: Bundle) : ViewedController(bundle) {
 
 		novelTabLayout?.post { novelTabLayout?.setupWithViewPager(novelViewpager) }
 
-		swipeRefreshLayout?.setOnRefreshListener { refresh() }
+		swipeRefreshLayout?.setOnRefreshListener {
+			if (viewModel.isOnline())
+				refresh()
+			else toast(R.string.you_not_online)
+		}
 	}
 }

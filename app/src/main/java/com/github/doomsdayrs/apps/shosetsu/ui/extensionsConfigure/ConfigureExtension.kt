@@ -8,7 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_FORMA
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionSingleConfigureViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionSingleConfigureViewModel
 
 /*
  * This file is part of shosetsu.

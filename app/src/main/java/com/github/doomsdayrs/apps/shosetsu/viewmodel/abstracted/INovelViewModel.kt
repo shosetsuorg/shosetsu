@@ -1,8 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IsOnlineCheckViewModel
 
 /*
  * This file is part of shosetsu.
@@ -29,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  * @author github.com/doomsdayrs
  */
 abstract class INovelViewModel
-	: ViewModel() {
+	: ViewModel(), IsOnlineCheckViewModel {
 	/** Set's the value to be loaded */
 	abstract fun setNovelID(novelID: Int)
 

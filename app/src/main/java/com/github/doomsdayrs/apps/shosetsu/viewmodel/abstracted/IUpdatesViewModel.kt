@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -26,17 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  * 29 / 04 / 2020
  *
  * @author github.com/doomsdayrs
- * Allows a view to subscribe to the view model
  */
-interface SubscribeViewModel<T> {
-	/**
-	 * LiveData of this class
-	 */
-	val liveData: LiveData<T>
+abstract class IUpdatesViewModel : ViewModel(), SubscribeHandleViewModel<List<UpdateUI>> {
+	abstract suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus)
 }
-
-/**
- * Child of [SubscribeViewModel]
- * Passed [T] as an [HResult] of [T]
- */
-interface SubscribeHandleViewModel<T : Any> : SubscribeViewModel<HResult<T>>

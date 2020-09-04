@@ -23,10 +23,12 @@ import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.IsOnlineUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadLibraryUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartUpdateWorkerUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateBookmarkedNovelUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ILibraryViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ILibraryViewModel
 import kotlinx.coroutines.Dispatchers
 
 /**
@@ -37,13 +39,21 @@ import kotlinx.coroutines.Dispatchers
  */
 class LibraryViewModel(
 		private val libraryAsCardsUseCase: LoadLibraryUseCase,
-		private val updateBookmarkedNovelUIUseCase: UpdateBookmarkedNovelUIUseCase
+		private val updateBookmarkedNovelUIUseCase: UpdateBookmarkedNovelUIUseCase,
+		private val isOnlineUseCase: IsOnlineUseCase,
+		private var startUpdateWorkerUseCase: StartUpdateWorkerUseCase
 ) : ILibraryViewModel() {
 	override val liveData: LiveData<HResult<List<ABookmarkedNovelUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
 			emit(loading())
 			emitSource(libraryAsCardsUseCase())
 		}
+	}
+
+	override fun isOnline(): Boolean = isOnlineUseCase()
+
+	override fun startUpdateManager() {
+		startUpdateWorkerUseCase()
 	}
 
 	override fun removeFromLibrary(list: List<ABookmarkedNovelUI>) {

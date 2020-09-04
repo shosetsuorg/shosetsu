@@ -18,7 +18,7 @@ package com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.adapters
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IExtensionsConfigureViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsConfigureViewModel
 import com.mikepenz.fastadapter.FastAdapter
 
 

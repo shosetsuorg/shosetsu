@@ -1,8 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.base
+package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings
 
 import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISubSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -21,17 +20,8 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.base.SubscribeHandleVi
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 31 / 08 / 2020
  */
-abstract class IExtensionsConfigureViewModel
-	: SubscribeHandleViewModel<List<ExtensionConfigUI>>, ViewModel() {
-	/**
-	 * Update the entity
-	 */
-	abstract suspend fun updateExtensionConfig(extensionConfigUI: ExtensionConfigUI, enabled: Boolean)
-}
+abstract class AUpdateSettingsViewModel : ViewModel(), ISubSettingsViewModel

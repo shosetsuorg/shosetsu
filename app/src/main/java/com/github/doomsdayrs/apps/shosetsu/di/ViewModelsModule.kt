@@ -1,6 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.*
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogOptionsViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogViewModel
@@ -39,29 +39,29 @@ import org.kodein.di.generic.instance as i
 val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	// Main
 	bind<IMainViewModel>() with provider {
-		MainViewModel(i(), i(), i())
+		MainViewModel(i(), i(), i(), i())
 	}
 
 	// Library
-	bind<ILibraryViewModel>() with provider { LibraryViewModel(i(), i()) }
+	bind<ILibraryViewModel>() with provider { LibraryViewModel(i(), i(), i(), i()) }
 
 	// Other
 	bind<IDownloadsViewModel>() with provider {
-		DownloadsViewModel(i(), i(), i(), i(), i())
+		DownloadsViewModel(i(), i(), i(), i(), i(), i())
 	}
 	bind<ISearchViewModel>() with provider { SearchViewModel(i(), i()) }
 	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i()) }
 
 	// Catalog(s)
-	bind<ICatalogOptionsViewModel>() with provider { CatalogOptionsViewModel(i()) }
-	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i(), i()) }
+	bind<ICatalogOptionsViewModel>() with provider { CatalogOptionsViewModel(i(), i()) }
+	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i(), i(), i()) }
 
 	// Extensions
 	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i()) }
 	bind<IExtensionsConfigureViewModel>() with provider { ExtensionsConfigureViewModel(i(), i()) }
 
 	// Novel View
-	bind<INovelViewModel>() with provider { NovelViewModel(i()) }
+	bind<INovelViewModel>() with provider { NovelViewModel(i(), i()) }
 	bind<INovelInfoViewModel>() with provider { NovelInfoViewModel(i(), i(), i(), i(), i(), i()) }
 	bind<INovelChaptersViewModel>() with provider {
 		NovelChaptersViewModel(i(), i(), i(), i(), i(), i(), i())

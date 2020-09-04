@@ -14,9 +14,8 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.attachRouter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.isOnline
-import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker.UpdateWorkerManager
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
@@ -25,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IMainViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IMainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -63,7 +62,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	override val kodein: Kodein by closestKodein()
 	private val viewModel by instance<IMainViewModel>()
-	private val updateManager by instance<UpdateWorkerManager>()
 
 	/**
 	 * Main activity
@@ -182,11 +180,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		when (intent.action) {
 			Intent.ACTION_USER_BACKGROUND -> {
 				Log.i("MainActivity", "Updating novels")
-				updateManager.start(this)
+				viewModel.startUpdateWorker()
 			}
 			Intent.ACTION_BOOT_COMPLETED -> {
 				Log.i("MainActivity", "Bootup")
-				if (isOnline) updateManager.start(this)
+				if (viewModel.isOnline())
+					viewModel.startUpdateWorker()
+				else toast(R.string.you_not_online)
 			}
 			else -> {
 				if (!router.hasRootController()) {
