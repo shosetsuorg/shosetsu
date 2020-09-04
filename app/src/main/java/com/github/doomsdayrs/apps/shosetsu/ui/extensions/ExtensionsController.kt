@@ -21,13 +21,13 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter.ExtensionsAdapter
-import com.github.doomsdayrs.apps.shosetsu.view.base.RecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsViewModel
+import com.mikepenz.fastadapter.FastAdapter
 
 /**
  * shosetsu
@@ -35,7 +35,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsViewM
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>() {
+class ExtensionsController : FastAdapterRecyclerController<ExtensionUI>() {
 	override val viewTitleRes: Int = R.string.extensions
 
 	init {
@@ -43,31 +43,29 @@ class ExtensionsController : RecyclerController<ExtensionsAdapter, ExtensionUI>(
 	}
 
 	/***/
-	val extensionViewModel: IExtensionsViewModel by viewModel()
+	private val viewModel: IExtensionsViewModel by viewModel()
+
+	override val fastAdapter: FastAdapter<ExtensionUI> by lazy {
+		val adapter = ExtensionsAdapter(viewModel)
+		adapter.addAdapter(0, itemAdapter)
+		adapter
+	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_extensions, menu)
 	}
 
 	override fun onViewCreated(view: View) {
-	}
-
-	override fun setupRecyclerView() {
-		super.setupRecyclerView()
-		extensionViewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
+		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.refresh -> {
-			extensionViewModel.refreshRepository()
+			if (viewModel.isOnline())
+				viewModel.refreshRepository()
+			else toast(R.string.you_not_online)
 			true
 		}
 		else -> false
 	}
-
-	override fun difAreItemsTheSame(oldItem: ExtensionUI, newItem: ExtensionUI): Boolean =
-			oldItem.id == newItem.id
-
-	override fun createRecyclerAdapter(): ExtensionsAdapter =
-			ExtensionsAdapter(this)
 }

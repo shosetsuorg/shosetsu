@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
 import androidx.lifecycle.ViewModel
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IsOnlineCheckViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewModel
 
 /*
@@ -29,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewMod
  * @author github.com/doomsdayrs
  */
 abstract class IExtensionsViewModel
-	: ViewModel(), SubscribeHandleViewModel<List<ExtensionUI>> {
+	: ViewModel(), SubscribeHandleViewModel<List<ExtensionUI>>, IsOnlineCheckViewModel {
 
 	/** Refreshes the repositories and data values */
 	abstract fun refreshRepository()

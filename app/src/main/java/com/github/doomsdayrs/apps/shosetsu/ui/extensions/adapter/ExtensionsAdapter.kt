@@ -17,17 +17,13 @@ package com.github.doomsdayrs.apps.shosetsu.ui.extensions.adapter
  */
 
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
-import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
-import com.github.doomsdayrs.apps.shosetsu.ui.extensions.viewHolder.ExtensionHolder
-import com.squareup.picasso.Picasso
+import com.github.doomsdayrs.apps.shosetsu.common.utils.FormatterUtils.Companion.compareVersions
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsViewModel
+import com.mikepenz.fastadapter.FastAdapter
 
 /**
  * shosetsu
@@ -35,77 +31,36 @@ import com.squareup.picasso.Picasso
  *
  * @author github.com/doomsdayrs
  */
-class ExtensionsAdapter(private val extensionsController: ExtensionsController)
-	: RecyclerView.Adapter<ExtensionHolder>() {
+class ExtensionsAdapter(private val viewModel: IExtensionsViewModel)
+	: FastAdapter<ExtensionUI>() {
 
 	init {
 		setHasStableIds(true)
 	}
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExtensionHolder {
-		return ExtensionHolder(LayoutInflater.from(parent.context).inflate(
-				R.layout.extension_card,
-				parent,
-				false
-		))
-	}
 
-	override fun getItemCount(): Int {
-		return extensionsController.recyclerArray.size
-	}
-
-	override fun getItemId(position: Int) = position.toLong()
-
-	override fun onBindViewHolder(holder: ExtensionHolder, position: Int) {
-		val entity = extensionsController.recyclerArray[position]
-		//Log.i(logID(), entity.toString())
-		val id = entity.id
-		var installed = false
-		var update = false
-		if (entity.installed && entity.enabled) {
-			holder.button.text = holder.itemView.context.getString(R.string.uninstall)
-			//  holder.button.setImageResource(R.drawable.ic_delete_black_24dp)
-			installed = true
-
-
-			holder.version.text = entity.installedVersion
-			if (FormatterUtils.compareVersions(
-							entity.installedVersion ?: "",
-							entity.repositoryVersion
-					)) {
-				//Log.i(logID(), "$id has an update")
-				update = true
-				// holder.button.setImageResource(R.drawable.ic_update_black_24dp)
-				holder.button.text = holder.itemView.context.getText(R.string.update)
-				holder.updatedVersion.visibility = View.VISIBLE
-				holder.updatedVersion.text = entity.repositoryVersion
-			} else {
-				holder.updatedVersion.visibility = View.GONE
+	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+		getItem(position)?.let { extensionUI ->
+			var installed = false
+			var update = false
+			if (extensionUI.installed && extensionUI.isExtEnabled) {
+				installed = true
+				if (compareVersions(extensionUI.installedVersion ?: "",
+								extensionUI.repositoryVersion
+						))
+					update = true
 			}
-		} else {
-			holder.version.text = entity.installedVersion
-		}
-
-		holder.title.text = entity.name
-		holder.id.text = id.toString()
-		holder.hash.text = entity.md5
-		holder.language.text = entity.lang
-
-		holder.button.setOnClickListener {
-			try {
-				if (!installed || update)
-					extensionsController.extensionViewModel.installExtension(entity)
-				else
-					extensionsController.extensionViewModel.uninstallExtension(entity)
-			} catch (e: Exception) {
-				it.context.toast("Holy shit what happened")
-				Log.e(logID(), "Unhandled exception", e)
+			(holder as ExtensionUI.ViewHolder).button.setOnClickListener {
+				try {
+					if (!installed || update)
+						viewModel.installExtension(extensionUI)
+					else
+						viewModel.uninstallExtension(extensionUI)
+				} catch (e: Exception) {
+					it.context.toast("Holy shit what happened")
+					Log.e(logID(), "Unhandled exception", e)
+				}
 			}
-
-		}
-
-		if (!entity.imageURL.isNullOrEmpty()) {
-			Picasso.get().load(entity.imageURL).into(holder.imageView)
 		}
 	}
 }

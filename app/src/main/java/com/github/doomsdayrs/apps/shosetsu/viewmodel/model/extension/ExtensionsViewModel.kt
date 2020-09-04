@@ -19,10 +19,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.InitializeExtensionsUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.InstallExtensionUIUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UninstallExtensionUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.StringToastUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsViewModel
@@ -42,7 +39,8 @@ class ExtensionsViewModel(
 		private val initializeExtensionsUseCase: InitializeExtensionsUseCase,
 		private val installExtensionUIUseCase: InstallExtensionUIUseCase,
 		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
-		private val stringToastUseCase: StringToastUseCase
+		private val stringToastUseCase: StringToastUseCase,
+		private var isOnlineUseCase: IsOnlineUseCase
 ) : IExtensionsViewModel() {
 
 
@@ -77,4 +75,6 @@ class ExtensionsViewModel(
 			uninstallExtensionUIUseCase(extensionUI)
 
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy { getExtensionsUIUseCase() }
+
+	override fun isOnline(): Boolean = isOnlineUseCase()
 }

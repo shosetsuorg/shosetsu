@@ -50,7 +50,7 @@ class ExtensionsConfigureViewModel(
 										it.fileName,
 										it.imageURL ?: "",
 										it.lang,
-										it.enabled,
+										it.isExtEnabled,
 										it.installed,
 										it.installedVersion,
 										it.repositoryVersion,

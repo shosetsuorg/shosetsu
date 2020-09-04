@@ -7,6 +7,7 @@
     "- New theme",
     "- Kotlin coroutines",
     "- Lua extensions for sources",
-    "- Repository system for lua extensions"
+    "- Repository system for lua extensions",
+    "- New update service"
   ]
 }
