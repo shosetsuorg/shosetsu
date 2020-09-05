@@ -4,11 +4,9 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.viewHolders.ChapterUIViewHolder
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelChaptersViewModel
 import com.mikepenz.fastadapter.FastAdapter
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 
 /*
  * This file is part of Shosetsu.
@@ -32,14 +30,14 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
  * 9 / June / 2019
  */
 class ChaptersAdapter(
-		private val viewModel: INovelChaptersViewModel
-) : FastAdapter<ChapterUI>(), FastScrollRecyclerView.SectionedAdapter {
+		private val viewModel: INovelChaptersViewModel,
+) : FastAdapter<ChapterUI>() {
 
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
 		getItem(position)?.let { chapterUI ->
-			(holder as ChapterUIViewHolder).apply {
-				popupMenu!!.setOnMenuItemClickListener { menuItem: MenuItem ->
+			(holder as ChapterUI.ViewHolder).apply {
+				popupMenu?.setOnMenuItemClickListener { menuItem: MenuItem ->
 					when (menuItem.itemId) {
 						R.id.popup_chapter_menu_bookmark -> viewModel.updateChapter(
 								chapterUI,
@@ -70,5 +68,4 @@ class ChaptersAdapter(
 		}
 	}
 
-	override fun getSectionName(position: Int) = "C. ${getItem(position)?.order}"
 }

@@ -36,7 +36,7 @@ abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
 	/**
 	 * This contains the items
 	 */
-	open val itemAdapter: ItemAdapter<ITEM> by lazy { ItemAdapter<ITEM>() }
+	open val itemAdapter: ItemAdapter<ITEM> by lazy { ItemAdapter() }
 
 	override var adapter: FastAdapter<ITEM>?
 		get() = fastAdapter

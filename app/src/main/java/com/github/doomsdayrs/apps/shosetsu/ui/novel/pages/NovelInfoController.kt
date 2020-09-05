@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
@@ -55,7 +54,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult.Success as HSucces
  * The page you see when you select a novel
  */
 class NovelInfoController(
-		private val bundle: Bundle
+		private val bundle: Bundle,
 ) : ViewedController(bundle), FABView {
 	override val layoutRes: Int = R.layout.novel_main
 
@@ -68,7 +67,9 @@ class NovelInfoController(
 	}
 
 	// UI items
-	var fab: FloatingActionButton? = null
+	val fab: FloatingActionButton? by lazy {
+		(parentController as NovelController).fab
+	}
 
 	@Attach(id.novel_title)
 	var novelTitle: TextView? = null
@@ -128,14 +129,13 @@ class NovelInfoController(
 	}
 
 	override fun onViewCreated(view: View) {
-		fab = (parentController as NovelController).fab
 		viewModel.setNovelID(bundle.getInt(BUNDLE_NOVEL_ID))
 		setObserver()
 		setNovelData()
 	}
 
 	private fun setObserver() {
-		viewModel.liveData.observe(this, Observer {
+		viewModel.liveData.observe(this) {
 			when (it) {
 				is HSuccess -> {
 					novelUI = it.data
@@ -150,8 +150,8 @@ class NovelInfoController(
 				is HLoading -> {
 				}
 			}
-		})
-		viewModel.formatterName.observe(this, Observer {
+		}
+		viewModel.formatterName.observe(this) {
 			when (it) {
 				is HSuccess -> launchUI {
 					setFormatterName(it.data)
@@ -167,8 +167,7 @@ class NovelInfoController(
 					setFormatterName("Loading")
 				}
 			}
-
-		})
+		}
 	}
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
@@ -231,6 +230,13 @@ class NovelInfoController(
 				showFAB(it)
 			}
 			// Show the option to add the novel
+		}
+		fab?.let {
+			hideFAB(it)
+			resetFAB(it)
+			setFABIcon(it)
+			manipulateFAB(it)
+			showFAB(it)
 		}
 	}
 

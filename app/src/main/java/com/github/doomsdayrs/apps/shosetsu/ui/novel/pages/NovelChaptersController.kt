@@ -47,7 +47,7 @@ import com.mikepenz.fastadapter.select.selectExtension
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
 class NovelChaptersController(
-		private val bundle: Bundle
+		private val bundle: Bundle,
 ) : FastAdapterRecyclerController<ChapterUI>(bundle), FABView {
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
@@ -57,7 +57,7 @@ class NovelChaptersController(
 
 
 	override val fastAdapter: FastAdapter<ChapterUI> by lazy {
-		val adapter = ChaptersAdapter(viewModel)
+		val adapter = ChaptersAdapter( viewModel)
 		adapter.addAdapter(0, itemAdapter)
 		adapter
 	}
@@ -124,9 +124,6 @@ class NovelChaptersController(
 		super.updateUI(list)
 	}
 
-	override fun difAreItemsTheSame(oldItem: ChapterUI, newItem: ChapterUI): Boolean =
-			oldItem.id == newItem.id
-
 	override fun hideFAB(fab: FloatingActionButton) {
 		if (recyclerArray.isNotEmpty()) super.hideFAB(fab)
 	}
@@ -161,7 +158,6 @@ class NovelChaptersController(
 			})
 		}
 	}
-
 
 	/**
 	 * Creates the option menu (on the top toolbar)

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_novel_chapters_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,4 +15,5 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="200"
         tools:listitem="@layout/recycler_novel_chapter" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

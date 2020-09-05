@@ -161,7 +161,7 @@ dependencies {
 	implementation "com.bluelinelabs:conductor-archlifecycle:$conductor_version"
 
 	// FastScroll
-	implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.0'
+	implementation 'com.github.turing-tech:MaterialScrollBar:13.3.4'
 
 	// Material Intro https://github.com/heinrichreimer/material-intro#standard-slide-simpleslide
 	implementation "com.heinrichreimersoftware:material-intro:2.0.0"
