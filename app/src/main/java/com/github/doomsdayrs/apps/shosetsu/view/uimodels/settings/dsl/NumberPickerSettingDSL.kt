@@ -47,7 +47,7 @@ inline fun NumberPickerSettingData.range(
 				@ParameterName("lowerBound") Int,
 				@ParameterName("upperBound") Int
 				>,
-) = value().let { lowerBound = it.first;upperBound = it.second }
+): Unit = value().let { lowerBound = it.first;upperBound = it.second }
 
 @SettingsItemDSL
 inline fun NumberPickerSettingData.onValuePicked(
@@ -65,7 +65,7 @@ inline fun NumberPickerSettingData.onValuePicked(
 @SettingsItemDSL
 inline fun NumberPickerSettingData.initalValue(
 		crossinline value: NumberPickerSettingData.() -> Int,
-) = value().let { numberPickerValue = it }
+): Unit = value().let { numberPickerValue = it }
 
 @SettingsItemDSL
 inline fun NumberPickerSettingData.numberValue(

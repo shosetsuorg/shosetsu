@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.backend.database
 
 import android.content.Context
 import android.database.Cursor
+import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
@@ -21,6 +22,7 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
+import java.io.IOException
 
 /*
 * This file is part of Shosetsu.
@@ -100,6 +102,7 @@ class DBHelper(context: Context) :
 	override fun onCreate(db: SQLiteDatabase) {}
 
 	/***/
+	@Throws(SQLException::class, IOException::class, ClassNotFoundException::class)
 	override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
 		if (oldVersion < 9) {
 			db.execSQL("DROP TABLE IF EXISTS $CHAPTERS")
@@ -111,6 +114,7 @@ class DBHelper(context: Context) :
 		}
 	}
 
+	@Throws(IOException::class, ClassNotFoundException::class)
 	private fun convert(db: SQLiteDatabase) {
 
 		val novelIDS = db.rawQuery("SELECT * FROM $NOVEL_IDENTIFICATION", null).let {
@@ -217,16 +221,20 @@ class DBHelper(context: Context) :
 		}
 
 		launchIO {
-			novelDAO.insertAllIgnore(novels)
-			chapterDAO.insertAllIgnore(chapters)
-			Log.d(logID(), "Finished insert, Deleting tables")
+			try {
+				novelDAO.insertAllIgnore(novels)
+				chapterDAO.insertAllIgnore(chapters)
+				Log.d(logID(), "Finished insert, Deleting tables")
 
-			db.execSQL("DROP TABLE IF EXISTS $CHAPTER_IDENTIFICATION")
-			db.execSQL("DROP TABLE IF EXISTS $NOVEL_IDENTIFICATION")
-			db.execSQL("DROP TABLE IF EXISTS $CHAPTERS")
-			db.execSQL("DROP TABLE IF EXISTS $NOVELS")
-			db.execSQL("DROP TABLE IF EXISTS $DOWNLOADS")
-			db.execSQL("DROP TABLE IF EXISTS $UPDATES")
+				db.execSQL("DROP TABLE IF EXISTS $CHAPTER_IDENTIFICATION")
+				db.execSQL("DROP TABLE IF EXISTS $NOVEL_IDENTIFICATION")
+				db.execSQL("DROP TABLE IF EXISTS $CHAPTERS")
+				db.execSQL("DROP TABLE IF EXISTS $NOVELS")
+				db.execSQL("DROP TABLE IF EXISTS $DOWNLOADS")
+				db.execSQL("DROP TABLE IF EXISTS $UPDATES")
+			} catch (e: SQLException) {
+				e.printStackTrace()
+			}
 		}
 	}
 
@@ -281,36 +289,14 @@ class DBHelper(context: Context) :
 		return a
 	}
 
-	private fun SQLiteDatabase.query(
-			table: Tables,
-			columns: Array<String>? = null,
-			selection: String? = null,
-			selectionArgs: Array<String?>? = null,
-			groupBy: String? = null,
-			having: String? = null,
-			orderBy: String? = null,
-			limit: String? = null,
-	): Cursor {
-		return query(
-				table.toString(),
-				columns,
-				selection,
-				selectionArgs,
-				groupBy,
-				having,
-				orderBy,
-				limit
-		)
-	}
+	private fun Cursor.getString(column: Columns): String =
+			getString(getColumnIndex(column.toString()))
 
+	private fun Cursor.getInt(column: Columns): Int =
+			getInt(getColumnIndex(column.toString()))
 
-	private fun Cursor.getString(column: Columns): String = getString(getColumnIndex(column.toString()))
-
-	private fun Cursor.getInt(column: Columns): Int = getInt(getColumnIndex(column.toString()))
-
-	private fun Cursor.getDouble(column: Columns): Double = getDouble(getColumnIndex(column.toString()))
-
-	private fun Cursor.getLong(column: Columns): Long = getLong(getColumnIndex(column.toString()))
+	private fun Cursor.getDouble(column: Columns): Double =
+			getDouble(getColumnIndex(column.toString()))
 
 	companion object {
 		private const val DB_NAME = "database.db"

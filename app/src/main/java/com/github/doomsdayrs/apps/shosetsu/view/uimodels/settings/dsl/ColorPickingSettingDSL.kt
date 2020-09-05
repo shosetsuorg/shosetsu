@@ -52,12 +52,12 @@ inline fun ColorPickerSettingData.onColorPicked(
 @SettingsItemDSL
 inline fun ColorPickerSettingData.colorName(
 		crossinline value: ColorPickerSettingData.() -> String,
-) = value().let { colorPreferenceName = it }
+): Unit = value().let { colorPreferenceName = it }
 
 @SettingsItemDSL
 inline fun ColorPickerSettingData.itemColor(
 		crossinline value: ColorPickerSettingData.() -> Int,
-) = value().let { itemColor = it }
+): Unit = value().let { itemColor = it }
 
 @SettingsItemDSL
 inline fun ColorPickerSettingData.colorValue(

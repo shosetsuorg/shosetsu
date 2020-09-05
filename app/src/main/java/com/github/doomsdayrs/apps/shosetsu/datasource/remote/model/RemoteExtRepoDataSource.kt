@@ -38,6 +38,7 @@ class RemoteExtRepoDataSource(
 	override suspend fun downloadRepoData(
 			repo: RepositoryEntity,
 	): HResult<JSONObject> = try {
+		@Suppress("BlockingMethodInNonBlockingContext")
 		successResult(
 				JSONObject(
 						client.quickie(

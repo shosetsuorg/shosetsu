@@ -26,8 +26,8 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.RightSett
  * 25 / 06 / 2020
  */
 class NumberPickerSettingData(id: Int) : RightSettingsItemData(id) {
-	var lowerBound = 0
-	var upperBound = 0
+	var lowerBound: Int = 0
+	var upperBound: Int = 0
 	var numberPickerValue: Int = 0
 	var numberPickerOnValueChangedListener: (
 			picker: NumberPicker?,

@@ -38,8 +38,8 @@ abstract class ICatalogViewModel : ViewModel() {
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */
 	var currentMaxPage: Int = 1
-	var inQuery: Boolean = false
-	var inSearch: Boolean = false
+	private var inQuery: Boolean = false
+	private var inSearch: Boolean = false
 
 	/**
 	 * Novels listed by the catalogue listing

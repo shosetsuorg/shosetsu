@@ -44,7 +44,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
 class ChapterReaderAdapter(
 		private val chapterReader: ChapterReader,
 ) : RecyclerView.Adapter<NewTextReader>() {
-	var textReaders = ArrayList<NewTextReader>()
+	var textReaders: ArrayList<NewTextReader> = ArrayList<NewTextReader>()
 
 	init {
 		setHasStableIds(true)

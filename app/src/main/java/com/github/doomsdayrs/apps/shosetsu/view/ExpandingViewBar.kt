@@ -47,7 +47,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
 
 	val bar: LinearLayout
-	val barTitle: TextView
+	private val barTitle: TextView
 	val layout: LinearLayout
 	private val frameLayout: FrameLayout
 

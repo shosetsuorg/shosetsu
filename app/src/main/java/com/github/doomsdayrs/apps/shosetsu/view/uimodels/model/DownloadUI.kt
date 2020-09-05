@@ -48,7 +48,7 @@ data class DownloadUI(
 		get() = chapterID.toLong()
 		set(value) {}
 
-	override fun convertTo() = DownloadEntity(
+	override fun convertTo(): DownloadEntity = DownloadEntity(
 			chapterID,
 			novelID,
 			chapterURL,
@@ -61,16 +61,16 @@ data class DownloadUI(
 	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<DownloadUI>(itemView) {
 
 		/** Novel title */
-		val novelTitle: TextView = itemView.findViewById(R.id.novel_title)
+		private val novelTitle: TextView = itemView.findViewById(R.id.novel_title)
 
 		/** Chapter title */
-		val chapterTitle: TextView = itemView.findViewById(R.id.chapter_title)
+		private val chapterTitle: TextView = itemView.findViewById(R.id.chapter_title)
 
 		/** Status of the download */
 		val status: TextView = itemView.findViewById(R.id.status)
 
 		/** More option to apply to the download */
-		var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+		private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 
 		/** Popup menu for [moreOptions] */
 		var popupMenu: PopupMenu? = null

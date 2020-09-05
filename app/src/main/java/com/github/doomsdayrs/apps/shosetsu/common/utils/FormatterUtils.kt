@@ -61,7 +61,7 @@ class FormatterUtils(
 	}
 
 	/** AbsolutePath of application file directory */
-	val ap: String = context.filesDir.absolutePath
+	private val ap: String = context.filesDir.absolutePath
 
 	override fun makeLibraryFile(extLibEntity: ExtLibEntity): File =
 			makeLibraryFile(extLibEntity.scriptName)

@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.view.susScript.objects
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.susScript.adapters.SusScriptAdap
  */
 
 class DialogBody(inflater: LayoutInflater, builder: AlertDialog.Builder, private val susScriptDialog: SusScriptDialog) {
-	val view = inflater.inflate(R.layout.alert_extensions_handle, null)!!
+	val view: View = inflater.inflate(R.layout.alert_extensions_handle, null)!!
 	lateinit var dialog: AlertDialog
 
 	init {

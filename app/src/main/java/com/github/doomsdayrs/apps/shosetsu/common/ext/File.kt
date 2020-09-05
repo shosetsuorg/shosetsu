@@ -30,5 +30,5 @@ import java.io.File
  */
 
 @Throws(JSONException::class)
-fun File.getMeta() = JSONObject(this.useLines { it.first() }.toString()
+fun File.getMeta(): JSONObject = JSONObject(this.useLines { it.first() }.toString()
 		.replace("--", "").trim())

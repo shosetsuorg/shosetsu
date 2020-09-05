@@ -23,5 +23,5 @@ package com.github.doomsdayrs.apps.shosetsu.common.consts
  * 12 / May / 2020
  */
 object ActivityRequestCodes {
-	const val REQUEST_CODE_DIRECTORY = 1
+	const val REQUEST_CODE_DIRECTORY: Int = 1
 }

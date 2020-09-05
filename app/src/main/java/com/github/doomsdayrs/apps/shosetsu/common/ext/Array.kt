@@ -28,8 +28,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
  */
 
 fun Array<ExtLibEntity>.containsName(name: String): Int {
-	forEachIndexed { index, it ->
-		if (it.scriptName == name) {
+	forEachIndexed { index, (scriptName) ->
+		if (scriptName == name) {
 			return index
 		}
 	}
@@ -38,8 +38,8 @@ fun Array<ExtLibEntity>.containsName(name: String): Int {
 
 
 fun List<ExtLibEntity>.containsName(name: String): Int {
-	forEachIndexed { index, it ->
-		if (it.scriptName == name) {
+	forEachIndexed { index, (scriptName) ->
+		if (scriptName == name) {
 			return index
 		}
 	}

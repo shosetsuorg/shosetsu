@@ -279,7 +279,7 @@ class ShosetsuSettings(
 	 * If 0, then deletes the read chapter
 	 * If 1+, deletes the chapter of READ CHAPTER - [deletePreviousChapter]
 	 */
-	var deletePreviousChapter: Int
+	private var deletePreviousChapter: Int
 		set(value) = readerSettings.edit { putInt(DELETE_READ_CHAPTER, value) }
 		get() = readerSettings.getInt(DELETE_READ_CHAPTER, -1)
 
@@ -289,15 +289,15 @@ class ShosetsuSettings(
 
 	// View Settings
 
-	var columnsInNovelsViewP
+	var columnsInNovelsViewP: Int
 		set(value) = settings.edit { putInt(C_IN_NOVELS_P, value) }
 		get() = settings.getInt(C_IN_NOVELS_P, -1)
 
-	var columnsInNovelsViewH
+	var columnsInNovelsViewH: Int
 		set(value) = settings.edit { putInt(C_IN_NOVELS_H, value) }
 		get() = settings.getInt(C_IN_NOVELS_H, 0)
 
-	var novelCardType
+	var novelCardType: Int
 		set(value) = settings.edit { putInt(NOVEL_CARD_TYPE, value) }
 		get() = settings.getInt(NOVEL_CARD_TYPE, 0)
 

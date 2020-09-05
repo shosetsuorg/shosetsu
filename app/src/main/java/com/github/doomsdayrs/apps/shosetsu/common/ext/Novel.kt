@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
  * @author github.com/doomsdayrs
  */
 
-fun Novel.Chapter.entity(novelEntity: NovelEntity) =
+fun Novel.Chapter.entity(novelEntity: NovelEntity): ChapterEntity =
 		ChapterEntity(
 				url = this.link,
 				novelID = novelEntity.id!!,

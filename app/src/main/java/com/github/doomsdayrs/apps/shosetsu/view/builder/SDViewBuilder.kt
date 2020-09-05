@@ -122,7 +122,7 @@ open class SDViewBuilder(
 		add(expandingViewBar.layout); return radioGroup
 	}
 
-	fun inner(title: String, builder: (SDViewBuilder) -> Unit): SDViewBuilder {
+	private fun inner(title: String, builder: (SDViewBuilder) -> Unit): SDViewBuilder {
 		val expandingViewBar = ExpandingViewBar(viewGroup.context, viewGroup)
 		val innerBuilder = SDViewBuilder(expandingViewBar.layout, secondDrawerController)
 		expandingViewBar.setTitle(title)
@@ -133,11 +133,11 @@ open class SDViewBuilder(
 		return innerBuilder
 	}
 
-	val addEditText = wrap<String> { editText(it) }
-	val addSwitch = wrap<String, Boolean> { a, b -> switch(a, b) }
-	val addSpinner = wrap<String, Array<String>, Int> { a, b, c -> spinner(a, b, c) }
-	val addRadioGroup = wrap<String, Array<String>, Int> { a, b, c -> radioGroup(a, b, c) }
-	val createInner = wrap<String, (SDViewBuilder) -> Unit> { a, b -> inner(a, b) }
+	val addEditText: (a: String) -> SDViewBuilder = wrap<String> { editText(it) }
+	val addSwitch: (a: String, b: Boolean) -> SDViewBuilder = wrap<String, Boolean> { a, b -> switch(a, b) }
+	val addSpinner: (a: String, b: Array<String>, c: Int) -> SDViewBuilder = wrap<String, Array<String>, Int> { a, b, c -> spinner(a, b, c) }
+	val addRadioGroup: (a: String, b: Array<String>, c: Int) -> SDViewBuilder = wrap<String, Array<String>, Int> { a, b, c -> radioGroup(a, b, c) }
+	val createInner: (a: String, b: (SDViewBuilder) -> Unit) -> SDViewBuilder = wrap<String, (SDViewBuilder) -> Unit> { a, b -> inner(a, b) }
 
 	/*@SuppressLint("ResourceType")
 	open fun add(view: View): SDViewBuilder {
@@ -214,8 +214,8 @@ open class SDViewBuilder(
 		return add(expandingViewBar.layout)
 	}*/
 
-	fun removeLast() = layout.removeViewAt(layout.childCount - 1)
-	fun removeAll() = layout.removeAllViews()
+	fun removeLast(): Unit = layout.removeViewAt(layout.childCount - 1)
+	fun removeAll(): Unit = layout.removeAllViews()
 
 	open fun build(): View = layout
 }

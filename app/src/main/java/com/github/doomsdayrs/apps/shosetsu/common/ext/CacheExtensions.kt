@@ -25,5 +25,5 @@ import com.google.common.cache.Cache
  * 10 / May / 2020
  */
 
-operator fun <K, V> Cache<K, V>.set(key: K, value: V) = put(key, value)
+operator fun <K, V> Cache<K, V>.set(key: K, value: V): Unit = put(key, value)
 operator fun <K, V> Cache<K, V>.get(key: K): V? = getIfPresent(key)

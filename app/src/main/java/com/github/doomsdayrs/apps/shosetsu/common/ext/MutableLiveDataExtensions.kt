@@ -23,5 +23,5 @@ import androidx.lifecycle.MutableLiveData
  * shosetsu
  * 06 / 05 / 2020
  */
-inline fun <reified T : Any?> MutableLiveData<T>.default(initialValue: T) =
+inline fun <reified T : Any?> MutableLiveData<T>.default(initialValue: T): MutableLiveData<T> =
 		apply { setValue(initialValue) }

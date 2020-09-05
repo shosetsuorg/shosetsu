@@ -25,12 +25,12 @@ package com.github.doomsdayrs.apps.shosetsu.common.consts
  * 01 / 05 / 2020
  */
 object BundleKeys {
-	const val BUNDLE_URL = "url"
-	const val BUNDLE_ACTION = "action"
-	const val BUNDLE_FORMATTER = "formatter"
-	const val BUNDLE_NOVEL_URL = "novelURL"
-	const val BUNDLE_NOVEL_ID = "novelID"
-	const val BUNDLE_CHAPTER_ID = "chapterID"
-	const val BUNDLE_QUERY = "query"
-	const val BUNDLE_DATE = "date"
+	const val BUNDLE_URL: String = "url"
+	const val BUNDLE_ACTION: String = "action"
+	const val BUNDLE_FORMATTER: String = "formatter"
+	const val BUNDLE_NOVEL_URL: String = "novelURL"
+	const val BUNDLE_NOVEL_ID: String = "novelID"
+	const val BUNDLE_CHAPTER_ID: String = "chapterID"
+	const val BUNDLE_QUERY: String = "query"
+	const val BUNDLE_DATE: String = "date"
 }

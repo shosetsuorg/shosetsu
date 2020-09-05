@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases.update
 
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 
@@ -27,6 +28,6 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRep
 class UpdateExtensionEntityUseCase(
 		private val extensionRepository: IExtensionsRepository,
 ) {
-	suspend operator fun invoke(extensionUI: ExtensionEntity) =
+	suspend operator fun invoke(extensionUI: ExtensionEntity): HResult<*> =
 			extensionRepository.updateExtension(extensionUI)
 }

@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases.update
 
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 
@@ -27,6 +28,6 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 class UpdateDownloadUseCase(
 		private val downloadsRepository: IDownloadsRepository,
 ) {
-	suspend operator fun invoke(downloadUI: DownloadUI) =
+	suspend operator fun invoke(downloadUI: DownloadUI): HResult<*> =
 			downloadsRepository.update(downloadUI.convertTo())
 }

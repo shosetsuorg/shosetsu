@@ -33,12 +33,12 @@ import kotlinx.coroutines.Dispatchers
  * 01 / 05 / 2020
  */
 class SearchViewModel(
-		val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
-		val iExtensionsRepository: IExtensionsRepository,
+		private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
+		private val iExtensionsRepository: IExtensionsRepository,
 ) : ISearchViewModel() {
 	override var query: MutableLiveData<String> = MutableLiveData()
 
-	override fun setQuery(query: String) = this.query.postValue(query)
+	override fun setQuery(query: String): Unit = this.query.postValue(query)
 
 	override fun searchLibrary(): LiveData<HResult<List<IDTitleImageUI>>> {
 		return query.switchMap {

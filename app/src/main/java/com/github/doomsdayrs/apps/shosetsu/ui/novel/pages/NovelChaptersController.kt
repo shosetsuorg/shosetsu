@@ -115,7 +115,7 @@ class NovelChaptersController(
 	}
 
 	private fun setObserver() {
-		viewModel.liveData.observe(this, Observer { handleRecyclerUpdate(it) })
+		viewModel.liveData.observe(this, { handleRecyclerUpdate(it) })
 	}
 
 	override fun updateUI(list: List<ChapterUI>) {
@@ -138,7 +138,7 @@ class NovelChaptersController(
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
 		fab.setOnClickListener {
-			viewModel.openLastRead(recyclerArray).observe(this, Observer { result ->
+			viewModel.openLastRead(recyclerArray).observe(this, { result ->
 				when (result) {
 					is HResult.Error -> {
 						Log.e(logID(), "Loading last read hit an error")

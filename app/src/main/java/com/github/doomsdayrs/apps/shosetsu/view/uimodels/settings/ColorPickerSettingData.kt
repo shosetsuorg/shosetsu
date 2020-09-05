@@ -31,7 +31,7 @@ import com.skydoves.colorpickerview.ColorPickerDialog.Builder as CPDB
 class ColorPickerSettingData(id: Int) : BottomSettingsItemData(id) {
 	var colorFunction: (color: Int) -> Unit = {}
 	var itemColor: Int = Color.WHITE
-	var colorPreferenceName = ""
+	var colorPreferenceName: String = ""
 
 	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {
 		super.bindView(settingsItem, payloads)

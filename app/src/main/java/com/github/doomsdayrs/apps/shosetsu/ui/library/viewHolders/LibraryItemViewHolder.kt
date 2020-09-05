@@ -39,9 +39,9 @@ import com.squareup.picasso.Picasso
  * @author github.com/doomsdayrs
  */
 class LibraryItemViewHolder(itemView: View) : FastAdapter.ViewHolder<ABookmarkedNovelUI>(itemView) {
-	val materialCardView: MaterialCardView = itemView.findViewById(R.id.novel_item_card)
+	private val materialCardView: MaterialCardView = itemView.findViewById(R.id.novel_item_card)
 	val imageView: ImageView = itemView.findViewById(R.id.imageView)
-	val titleView: TextView = itemView.findViewById(R.id.title)
+	private val titleView: TextView = itemView.findViewById(R.id.title)
 	val chip: Chip = itemView.findViewById(R.id.novel_item_left_to_read)
 
 	override fun bindView(item: ABookmarkedNovelUI, payloads: List<Any>) {

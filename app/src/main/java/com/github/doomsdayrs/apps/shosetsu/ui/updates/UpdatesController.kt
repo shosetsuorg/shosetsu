@@ -34,7 +34,7 @@ import org.kodein.di.generic.instance
  * @author github.com/doomsdayrs
  */
 class UpdatesController : FastAdapterRecyclerController<UpdateUI>() {
-	val viewModel by instance<IUpdatesViewModel>()
+	val viewModel: IUpdatesViewModel by instance<IUpdatesViewModel>()
 	override val viewTitleRes: Int = R.string.updates
 	override fun onViewCreated(view: View) {}
 

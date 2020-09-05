@@ -46,7 +46,7 @@ inline fun SeekBarSettingData.range(
 				@ParameterName("lowerBound") Float,
 				@ParameterName("upperBound") Float
 				>,
-) = value().let {
+): Unit = value().let {
 	minValue = it.first
 	maxValue = it.second
 }
@@ -60,7 +60,7 @@ inline fun SeekBarSettingData.onProgressChanged(
 				@ParameterName("fromUser") Boolean,
 		) -> Unit,
 ) {
-	ProgressChanged = { p1, p2, p3, p4 -> value(p1, p2, p3, p4) }
+	onProgressChangedUnit = { p1, p2, p3, p4 -> value(p1, p2, p3, p4) }
 }
 
 @SettingsItemDSL
@@ -71,7 +71,7 @@ inline fun SeekBarSettingData.onProgressActionUp(
 				@ParameterName("progressFloat") Float,
 		) -> Unit,
 ) {
-	OnProgressActionUp = { p1, p2, p3 -> value(p1, p2, p3) }
+	onProgressActionUpUnit = { p1, p2, p3 -> value(p1, p2, p3) }
 }
 
 
@@ -84,5 +84,5 @@ inline fun SeekBarSettingData.onProgressFinally(
 				@ParameterName("fromUser") Boolean,
 		) -> Unit,
 ) {
-	ProgressOnFinally = { p1, p2, p3, p4 -> value(p1, p2, p3, p4) }
+	oProgressOnFinallyUnit = { p1, p2, p3, p4 -> value(p1, p2, p3, p4) }
 }

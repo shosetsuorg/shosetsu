@@ -49,4 +49,4 @@ fun Window.defaultBar() {
 	decorView.systemUiVisibility = SYSTEM_UI_FLAG_VISIBLE
 }
 
-fun Window.isDefaultBar() = decorView.systemUiVisibility == SYSTEM_UI_FLAG_VISIBLE
+fun Window.isDefaultBar(): Boolean = decorView.systemUiVisibility == SYSTEM_UI_FLAG_VISIBLE

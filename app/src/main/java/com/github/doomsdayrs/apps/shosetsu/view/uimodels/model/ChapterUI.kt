@@ -83,13 +83,13 @@ data class ChapterUI(
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<ChapterUI>(itemView) {
-		var cardView: MaterialCardView = itemView.findViewById(R.id.recycler_novel_chapter_card)
+		private var cardView: MaterialCardView = itemView.findViewById(R.id.recycler_novel_chapter_card)
 		var constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraint)
 		var title: TextView = itemView.findViewById(R.id.title)
-		var readProgressValue: TextView = itemView.findViewById(R.id.read_progress_value)
-		var readTag: TextView = itemView.findViewById(R.id.read_progress_label)
-		var downloadTag: TextView = itemView.findViewById(R.id.download_status)
-		var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+		private var readProgressValue: TextView = itemView.findViewById(R.id.read_progress_value)
+		private var readTag: TextView = itemView.findViewById(R.id.read_progress_label)
+		private var downloadTag: TextView = itemView.findViewById(R.id.download_status)
+		private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 
 		var popupMenu: PopupMenu? = null
 

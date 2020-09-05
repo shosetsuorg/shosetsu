@@ -116,10 +116,10 @@ abstract class SettingsItemData(val id: Int) : BaseRecyclerItem<SettingsItemData
 		/** Contains fields on the bottom */
 		val bottomField: ConstraintLayout = itemView.findViewById(R.id.bottomField)
 
-		override fun bindView(item: SettingsItemData, payloads: List<Any>) =
+		override fun bindView(item: SettingsItemData, payloads: List<Any>): Unit =
 				item.bindView(this, payloads)
 
-		override fun unbindView(item: SettingsItemData) =
+		override fun unbindView(item: SettingsItemData): Unit =
 				item.unbindView(this)
 
 	}

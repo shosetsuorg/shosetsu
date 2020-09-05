@@ -44,6 +44,7 @@ class RemoteExtensionDataSource(
 			extensionEntity: ExtensionEntity,
 	): HResult<String> =
 			try {
+				@Suppress("BlockingMethodInNonBlockingContext")
 				successResult(client.quickie(makeFormatterURL(
 						repositoryEntity,
 						extensionEntity

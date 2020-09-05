@@ -54,7 +54,7 @@ import org.kodein.di.generic.instance
  */
 class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 	companion object {
-		const val INTRO_CODE = 1944
+		const val INTRO_CODE: Int = 1944
 	}
 
 	override val kodein: Kodein by closestKodein()

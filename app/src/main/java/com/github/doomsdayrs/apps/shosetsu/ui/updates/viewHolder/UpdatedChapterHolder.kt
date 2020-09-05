@@ -29,11 +29,11 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class UpdatedChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-	val moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+	private val moreOptions: ImageView = itemView.findViewById(R.id.more_options)
 	val downloadTag: TextView = itemView.findViewById(R.id.download_status)
 	val title: TextView = itemView.findViewById(R.id.title)
 	val image: ImageView = itemView.findViewById(R.id.imageView)
-	val popupMenu = PopupMenu(moreOptions.context, moreOptions)
+	private val popupMenu: PopupMenu = PopupMenu(moreOptions.context, moreOptions)
 
 	init {
 		popupMenu.inflate(R.menu.popup_chapter_menu)

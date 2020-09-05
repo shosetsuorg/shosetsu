@@ -46,7 +46,7 @@ data class ExtensionUI(
 		var repositoryVersion: String,
 		var md5: String,
 ) : BaseRecyclerItem<ExtensionUI.ViewHolder>(), Convertible<ExtensionEntity> {
-	override fun convertTo() = ExtensionEntity(
+	override fun convertTo(): ExtensionEntity = ExtensionEntity(
 			id,
 			repoID,
 			name,
@@ -65,10 +65,10 @@ data class ExtensionUI(
 		val imageView: ImageView = itemView.findViewById(R.id.imageView)
 		val language: TextView = itemView.findViewById(R.id.language)
 		val title: TextView = itemView.findViewById(R.id.title)
-		val hash: TextView = itemView.findViewById(R.id.hash)
-		val idText: TextView = itemView.findViewById(R.id.id)
+		private val hash: TextView = itemView.findViewById(R.id.hash)
+		private val idText: TextView = itemView.findViewById(R.id.id)
 		val version: TextView = itemView.findViewById(R.id.version)
-		val updatedVersion: TextView = itemView.findViewById(R.id.update_version)
+		private val updatedVersion: TextView = itemView.findViewById(R.id.update_version)
 		val button: Button = itemView.findViewById(R.id.button)
 
 		override fun bindView(item: ExtensionUI, payloads: List<Any>) {

@@ -67,7 +67,7 @@ class NovelInfoController(
 	}
 
 	// UI items
-	val fab: FloatingActionButton? by lazy {
+	private val fab: FloatingActionButton? by lazy {
 		(parentController as NovelController).fab
 	}
 

@@ -112,7 +112,7 @@ inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
 	is HResult.Error -> this
 }
 
-inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo() =
+inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo(): List<O> =
 		this.map { it.convertTo() }
 
 

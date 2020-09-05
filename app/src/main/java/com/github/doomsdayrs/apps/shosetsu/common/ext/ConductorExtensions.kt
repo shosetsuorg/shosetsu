@@ -2,7 +2,9 @@ package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.os.Build
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.bluelinelabs.conductor.Controller
@@ -40,5 +42,10 @@ val Controller.context: Context?
 	get() = applicationContext
 
 fun Controller.getString(@StringRes resId: Int, default: String = "NULL"): String {
-	return resources?.getString(resId) ?: default
+	try {
+		return resources?.getString(resId) ?: default
+	} catch (e: Resources.NotFoundException) {
+		Log.d(logID(),"Could not find string resource: $resId")
+		return default
+	}
 }

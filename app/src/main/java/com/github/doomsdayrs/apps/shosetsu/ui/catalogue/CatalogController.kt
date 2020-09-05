@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
@@ -70,10 +69,10 @@ class CatalogController(
 	private val settings by instance<ShosetsuSettings>()
 
 	/** If the user is currently searching something up*/
-	var isInSearch = false
+	var isInSearch: Boolean = false
 
 	/** If the user is currently viewing query data*/
-	var isQuery = false
+	var isQuery: Boolean = false
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
 		return if (settings.novelCardType == 0) GridLayoutManager(
@@ -205,10 +204,10 @@ class CatalogController(
 	}
 
 	private fun setupObservers() {
-		viewModel.listingItemsLive.observe(this, Observer {
+		viewModel.listingItemsLive.observe(this, {
 			handleRecyclerUpdate(it)
 		})
-		viewModel.extensionName.observe(this, Observer {
+		viewModel.extensionName.observe(this, {
 			when (it) {
 				is HResult.Success -> {
 					activity?.setActivityTitle(it.data)

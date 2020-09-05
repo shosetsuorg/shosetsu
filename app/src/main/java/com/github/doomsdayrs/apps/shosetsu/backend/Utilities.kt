@@ -32,19 +32,19 @@ import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
  * </p>
  */
 class SHOWCASE {
-	val catalogue = 1
-	val downloads = 2
-	val library = 3
-	val main = 4
-	val migration = 5
-	val novel = 6
-	val novelINFO = 7
-	val novelCHAPTERS = 8
-	val novelTRACKING = 9
-	val reader = 10
-	val search = 11
-	val updates = 12
-	val webView = 13
+	val catalogue: Int = 1
+	val downloads: Int = 2
+	val library: Int = 3
+	val main: Int = 4
+	val migration: Int = 5
+	val novel: Int = 6
+	val novelINFO: Int = 7
+	val novelCHAPTERS: Int = 8
+	val novelTRACKING: Int = 9
+	val reader: Int = 10
+	val search: Int = 11
+	val updates: Int = 12
+	val webView: Int = 13
 }
 
 @Deprecated("Find a better use case")

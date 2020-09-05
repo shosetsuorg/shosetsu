@@ -83,8 +83,9 @@ class CacheSecondaryChaptersDataSource(
 	/**
 	 * Reads the instruct
 	 */
+	@Throws(JSONException::class)
 	private fun readFile() {
-		chaptersCacheInstruction.apply array@{
+		chaptersCacheInstruction.apply array@ {
 			for (i in this@array.length() - 1 downTo 0) this@array.remove(i)
 			JSONArray(chaptersCacheInstructionFile.readText()).forEach {
 				this@array.put(it)

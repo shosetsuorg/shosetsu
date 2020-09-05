@@ -103,7 +103,7 @@ class ChaptersRepository(
 			dbSource.loadChapters(novelID)
 
 	@Throws(SQLiteException::class)
-	override suspend fun updateChapter(chapterEntity: ChapterEntity) =
+	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> =
 			dbSource.updateChapter(chapterEntity)
 
 	override suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity> =

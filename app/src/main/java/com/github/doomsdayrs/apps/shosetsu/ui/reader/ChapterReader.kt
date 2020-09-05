@@ -133,11 +133,11 @@ class ChapterReader
 		from(chapter_reader_bottom)
 	}
 
-	val colorItemAdapter by lazy {
+	private val colorItemAdapter: ItemAdapter<ShosetsuSettings.ColorChoice> by lazy {
 		ItemAdapter<ShosetsuSettings.ColorChoice>()
 	}
 
-	val colorFastAdapter by lazy {
+	private val colorFastAdapter: FastAdapter<ShosetsuSettings.ColorChoice> by lazy {
 		FastAdapter.with(colorItemAdapter)
 	}
 
@@ -168,8 +168,8 @@ class ChapterReader
 	}
 
 	private fun setObservers() {
-		viewModel.liveData.observe(this) {
-			when (it) {
+		viewModel.liveData.observe(this) { hResult ->
+			when (hResult) {
 				is HResult.Loading -> {
 					Log.d(logID(), "Loading")
 				}
@@ -183,10 +183,10 @@ class ChapterReader
 					val currentSize = chapters.size
 					val dif = DiffUtil.calculateDiff(RecyclerViewDiffer(
 							chapters,
-							it.data
+							hResult.data
 					))
 					chapters.clear()
-					chapters.addAll(it.data)
+					chapters.addAll(hResult.data)
 					if (currentSize == 0) {
 						getCurrentChapter()?.let {
 							supportActionBar?.title = it.title

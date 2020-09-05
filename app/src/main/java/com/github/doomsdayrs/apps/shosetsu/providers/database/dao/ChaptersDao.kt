@@ -85,7 +85,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity) =
+	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
 			loadChapter(readerChapterEntity.id).copy(
 					readingPosition = readerChapterEntity.readingPosition,
 					readingStatus = readerChapterEntity.readingStatus,

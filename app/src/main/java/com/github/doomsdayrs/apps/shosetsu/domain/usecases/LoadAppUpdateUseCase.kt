@@ -51,6 +51,7 @@ class LoadAppUpdateUseCase(
 
 	suspend operator fun invoke(): HResult<DebugAppUpdate> {
 		okHttpClient.quickie(SHOSETSU_UPDATE_URL).takeIf { it.code == 200 }?.let { r ->
+			@Suppress("BlockingMethodInNonBlockingContext")
 			val update = ObjectMapper().registerKotlinModule()
 					.readValue<DebugAppUpdate>(r.body!!.string())
 			val currentV: Int

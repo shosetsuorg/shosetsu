@@ -96,7 +96,7 @@ class WebViewApp : AppCompatActivity(R.layout.webview), KodeinAware {
 		VIEW(0), CLOUD_FLARE(1);
 
 		companion object {
-			val actions = ArrayList<Actions>()
+			val actions: ArrayList<Actions> = ArrayList<Actions>()
 
 			init {
 				actions.add(VIEW)

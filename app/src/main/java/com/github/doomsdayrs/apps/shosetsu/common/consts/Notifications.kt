@@ -31,11 +31,11 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.notificationManager
  * @author github.com/doomsdayrs
  */
 object Notifications {
-	const val CHANNEL_UPDATE = "shosetsu_updater"
-	const val ID_CHAPTER_UPDATE = 1917
+	const val CHANNEL_UPDATE: String = "shosetsu_updater"
+	const val ID_CHAPTER_UPDATE: Int = 1917
 
-	const val CHANNEL_DOWNLOAD = "shosetsu_download"
-	const val ID_CHAPTER_DOWNLOAD = 1949
+	const val CHANNEL_DOWNLOAD: String = "shosetsu_download"
+	const val ID_CHAPTER_DOWNLOAD: Int = 1949
 
 	fun createChannels(context: Context) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return

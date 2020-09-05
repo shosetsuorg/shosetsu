@@ -29,6 +29,6 @@ class NovelTrackingController : ViewedController() {
 	override val layoutRes: Int
 		get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
-	override fun onViewCreated(view: View) =
+	override fun onViewCreated(view: View): Nothing =
 			TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 }

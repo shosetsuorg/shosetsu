@@ -73,14 +73,14 @@ class ShareUseCase(
 		}
 	}
 
-	suspend operator fun invoke(novelUI: NovelUI) = this(
+	suspend operator fun invoke(novelUI: NovelUI): Unit = this(
 			novelUI.novelURL,
 			novelUI.formatterID,
 			novelUI.title,
 			KEY_NOVEL_URL
 	)
 
-	suspend operator fun invoke(chapterUI: ChapterUI) = this(
+	suspend operator fun invoke(chapterUI: ChapterUI): Unit = this(
 			chapterUI.link,
 			chapterUI.formatterID,
 			chapterUI.title,

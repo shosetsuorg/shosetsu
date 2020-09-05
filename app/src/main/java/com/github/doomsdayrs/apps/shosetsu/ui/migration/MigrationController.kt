@@ -47,7 +47,7 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView
  */
 class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 	companion object {
-		const val TARGETS_BUNDLE_KEY = "targets"
+		const val TARGETS_BUNDLE_KEY: String = "targets"
 	}
 
 	class Transferee(

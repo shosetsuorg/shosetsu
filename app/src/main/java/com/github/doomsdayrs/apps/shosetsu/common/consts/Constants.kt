@@ -41,15 +41,15 @@ val SHOSETSU_UPDATE_URL: String =
 			else "xml"
 		}"
 
-const val selectedStrokeWidth = 8
+const val selectedStrokeWidth: Int = 8
 
-const val scriptDirectory = "/scripts/"
-const val libraryDirectory = "/libraries/"
-const val sourceFolder = "/src/"
-const val repoFolderStruct = "/src/main/resources/"
+const val scriptDirectory: String = "/scripts/"
+const val libraryDirectory: String = "/libraries/"
+const val sourceFolder: String = "/src/"
+const val repoFolderStruct: String = "/src/main/resources/"
 
 /** @see View.VISIBLE */
-const val VISIBLE = View.VISIBLE
+const val VISIBLE: Int = View.VISIBLE
 
 /** @see View.GONE */
-const val GONE = View.GONE
+const val GONE: Int = View.GONE

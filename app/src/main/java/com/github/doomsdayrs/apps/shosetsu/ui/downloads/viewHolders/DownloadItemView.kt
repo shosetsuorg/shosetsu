@@ -34,8 +34,8 @@ class DownloadItemView(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	val novelTitle: TextView = itemView.findViewById(R.id.novel_title)
 	val chapterTitle: TextView = itemView.findViewById(R.id.chapter_title)
 	val status: TextView = itemView.findViewById(R.id.status)
-	var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
-	var popupMenu: PopupMenu? = null
+	private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+	private var popupMenu: PopupMenu? = null
 
 	init {
 		if (popupMenu == null) {

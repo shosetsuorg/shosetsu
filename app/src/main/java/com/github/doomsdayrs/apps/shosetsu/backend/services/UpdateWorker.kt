@@ -61,11 +61,11 @@ class UpdateWorker(
 		params: WorkerParameters,
 ) : CoroutineWorker(appContext, params), KodeinAware {
 	companion object {
-		const val KEY_TARGET = "Target"
-		const val KEY_CHAPTERS = "Novels"
+		const val KEY_TARGET: String = "Target"
+		const val KEY_CHAPTERS: String = "Novels"
 
-		const val KEY_NOVELS = 0x00
-		const val KEY_CATEGORY = 0x01
+		const val KEY_NOVELS: Int = 0x00
+		const val KEY_CATEGORY: Int = 0x01
 	}
 
 	class UpdateWorkerManager(override val kodein: Kodein) : KodeinAware {

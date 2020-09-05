@@ -36,7 +36,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 
 	var showSectionText: Boolean = false
 
-	var showThumbText: Boolean = false
+	private var showThumbText: Boolean = false
 
 	var showSectionMark: Boolean = false
 
@@ -50,11 +50,11 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 
 	var hideBubble: Boolean = false
 
-	var sectionTextP = BubbleSeekBar.TextPosition.BELOW_SECTION_MARK
+	private var sectionTextP: Int = BubbleSeekBar.TextPosition.BELOW_SECTION_MARK
 
 	var array: SparseArray<String> = SparseArray()
 
-	var ProgressChanged: (
+	var onProgressChangedUnit: (
 			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 			@ParameterName("progress") Int,
 			@ParameterName("progressFloat") Float,
@@ -62,14 +62,14 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 	) -> Unit =
 			{ _, _, _, _ -> }
 
-	var OnProgressActionUp: (
+	var onProgressActionUpUnit: (
 			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 			@ParameterName("progress") Int,
 			@ParameterName("progressFloat") Float,
 	) -> Unit =
 			{ _, _, _ -> }
 
-	var ProgressOnFinally: (
+	var oProgressOnFinallyUnit: (
 			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 			@ParameterName("progress") Int,
 			@ParameterName("progressFloat") Float,
@@ -113,7 +113,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 						progressFloat: Float,
 						fromUser: Boolean,
 				) {
-					ProgressChanged(bubbleSeekBar, progress, progressFloat, fromUser)
+					onProgressChangedUnit(bubbleSeekBar, progress, progressFloat, fromUser)
 				}
 
 				override fun getProgressOnActionUp(
@@ -121,7 +121,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 						progress: Int,
 						progressFloat: Float,
 				) {
-					OnProgressActionUp(bubbleSeekBar, progress, progressFloat)
+					onProgressActionUpUnit(bubbleSeekBar, progress, progressFloat)
 				}
 
 				override fun getProgressOnFinally(
@@ -130,7 +130,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 						progressFloat: Float,
 						fromUser: Boolean,
 				) {
-					ProgressOnFinally(bubbleSeekBar, progress, progressFloat, fromUser)
+					oProgressOnFinallyUnit(bubbleSeekBar, progress, progressFloat, fromUser)
 				}
 			}
 		}

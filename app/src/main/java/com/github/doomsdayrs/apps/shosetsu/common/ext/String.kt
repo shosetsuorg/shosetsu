@@ -155,4 +155,4 @@ fun String.md5(): String? {
 }
 
 
-fun String.toLowerCaseR() = this.toLowerCase(Locale.ROOT)
+fun String.toLowerCaseR(): String = this.toLowerCase(Locale.ROOT)

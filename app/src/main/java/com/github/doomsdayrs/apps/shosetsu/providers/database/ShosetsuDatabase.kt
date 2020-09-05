@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database
 
 import android.content.Context
+import android.database.sqlite.SQLiteException
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.*
@@ -74,7 +75,11 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 						}
 				).build()
 			GlobalScope.launch {
-				databaseShosetsu.repositoryDao().initializeData()
+				try {
+					databaseShosetsu.repositoryDao().initializeData()
+				} catch (e: SQLiteException) {
+					e.printStackTrace()
+				}
 			}
 			return databaseShosetsu
 		}

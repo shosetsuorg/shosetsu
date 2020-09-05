@@ -4,11 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import com.github.doomsdayrs.apps.shosetsu.activity.MainActivity
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
@@ -42,8 +39,8 @@ import java.io.InputStreamReader
  * 06 / 05 / 2020
  */
 
-fun Activity.openInBrowser(url: Uri) = startActivity(Intent(Intent.ACTION_VIEW, url))
-fun Activity.openInBrowser(url: String) = openInBrowser(Uri.parse(url))
+fun Activity.openInBrowser(url: Uri): Unit = startActivity(Intent(Intent.ACTION_VIEW, url))
+fun Activity.openInBrowser(url: String): Unit = openInBrowser(Uri.parse(url))
 
 fun Activity.openInWebView(url: String) {
 	startActivity(Intent(this, WebViewApp::class.java) {
@@ -53,28 +50,6 @@ fun Activity.openInWebView(url: String) {
 		)
 	})
 }
-
-fun Activity.search(query: String) {
-	val mainActivity = this as MainActivity
-	TODO("Search View")
-	//val searchFragment = SearchController(bundleOf(
-	//		BundleKeys.BUNDLE_QUERY to query
-	//))
-	//mainActivity.transitionView(searchFragment)
-}
-
-/**
- * Like context toast, Except posts for the UI
- */
-fun Activity.toastOnUI(string: String, duration: Int = Toast.LENGTH_SHORT) =
-		runOnUiThread { Toast.makeText(this, string, duration).show() }
-
-
-/**
- * Toasts on the UI thread
- */
-fun Activity.toastOnUI(@StringRes resource: Int, duration: Int = Toast.LENGTH_SHORT) =
-		runOnUiThread { Toast.makeText(this, resource, duration).show() }
 
 /**
  * shosetsu
@@ -86,9 +61,9 @@ fun Activity.toastOnUI(@StringRes resource: Int, duration: Int = Toast.LENGTH_SH
  * @param activity     activity
  * @param cUI novel chapter
  */
-fun Activity.openChapter(cUI: UpdateChapterUI) = openChapter(cUI.id, cUI.novelID)
+fun Activity.openChapter(cUI: UpdateChapterUI): Unit = openChapter(cUI.id, cUI.novelID)
 
-fun Activity.openChapter(cUI: ChapterUI) = openChapter(cUI.id, cUI.novelID)
+fun Activity.openChapter(cUI: ChapterUI): Unit = openChapter(cUI.id, cUI.novelID)
 
 fun Activity.openChapter(chapterID: Int, novelID: Int) {
 	startActivity(Intent(this, ChapterReader::class.java) {

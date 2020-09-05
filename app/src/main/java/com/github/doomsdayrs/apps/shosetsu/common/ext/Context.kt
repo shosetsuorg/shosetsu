@@ -2,7 +2,6 @@ package com.github.doomsdayrs.apps.shosetsu.common.ext
 
 import android.Manifest.permission.*
 import android.app.Activity
-import android.app.ActivityManager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
@@ -56,7 +55,7 @@ fun Context.toast(string: String, duration: Int = LENGTH_SHORT) {
 	makeText(this, string, duration).show()
 }
 
-fun Context.checkActivitySelfPermission(@NonNull permission: String) =
+fun Context.checkActivitySelfPermission(@NonNull permission: String): Int =
 		ActivityCompat.checkSelfPermission(this, permission)
 
 /**
@@ -79,18 +78,10 @@ fun Context.requestPerms() {
 			1)
 }
 
-fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {
-	val className = serviceClass.name
-	val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-	@Suppress("DEPRECATION")
-	return manager.getRunningServices(Integer.MAX_VALUE).any { className == it.service.className }
-}
-
 /**
  * Regret message if a feature isn't re-introduced yet
  */
-fun Context.regret() = toast(R.string.regret, duration = LENGTH_LONG)
-
+fun Context.regret(): Unit = toast(R.string.regret, duration = LENGTH_LONG)
 
 @Deprecated("Move to [Settings]")
 fun Context.calculateColumnCount(columnWidthDp: Float, settings: ShosetsuSettings): Int {
