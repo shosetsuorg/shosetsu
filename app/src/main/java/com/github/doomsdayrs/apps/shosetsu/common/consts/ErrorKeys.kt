@@ -49,4 +49,10 @@ object ErrorKeys {
 
 	/** An SQL Exception occurred */
 	const val ERROR_HTTP_SQL: Int = 7
+
+	/** An JSON Exception occurred */
+	const val ERROR_JSON: Int = 8
+
+	/** An IO Exception occurred */
+	const val ERROR_IO: Int = 8
 }

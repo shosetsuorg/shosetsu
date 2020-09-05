@@ -38,8 +38,8 @@ class CacheChaptersDataSource : ICacheChaptersDataSource {
 			.expireAfterWrite(2, MINUTES)
 			.build()
 
-	override suspend fun saveChapterInCache(chapterID: Int, passage: String) =
-			chapters.set(chapterID, passage)
+	override suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
+			successResult(chapters.set(chapterID, passage))
 
 	override suspend fun loadChapterFromCache(chapterID: Int): HResult<String> =
 			chapters[chapterID]?.let { successResult(it) } ?: emptyResult()

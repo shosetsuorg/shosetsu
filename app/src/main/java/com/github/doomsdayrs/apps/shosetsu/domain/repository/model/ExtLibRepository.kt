@@ -3,6 +3,8 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 import android.database.sqlite.SQLiteException
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtLibDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtLibDataSource
@@ -50,11 +52,10 @@ class ExtLibRepository(
 	override suspend fun installExtLibrary(
 			repositoryEntity: RepositoryEntity,
 			extLibEntity: ExtLibEntity,
-	) {
+	): HResult<*> {
 		val result = remoteSource.downloadLibrary(repositoryEntity, extLibEntity)
 		if (result is HResult.Success) {
 			val data = result.data
-
 			val json = JSONObject(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
 			try {
 				extLibEntity.version = json.getString("version")
@@ -63,8 +64,10 @@ class ExtLibRepository(
 				fileSource.writeExtLib(extLibEntity.scriptName, data)
 			} catch (e: JSONException) {
 				Log.e(logID(), "Unhandled", e)
+				return errorResult(e)
 			}
 		}
+		return successResult("")
 	}
 
 	override fun blockingLoadExtLibrary(name: String): HResult<String> =

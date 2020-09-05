@@ -28,7 +28,7 @@ interface IFileChapterDataSource {
 	/**
 	 * Save the chapter passage to storage
 	 */
-	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
+	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String): HResult<*>
 
 	/**
 	 * Gets chapter passage via it's ID
@@ -36,5 +36,6 @@ interface IFileChapterDataSource {
 	 */
 	suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String>
 
-	suspend fun deleteChapter(chapterEntity: ChapterEntity)
+	/** Deletes a chapter from the filesystem */
+	suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*>
 }

@@ -31,11 +31,11 @@ interface ICacheExtLibDataSource {
 	fun blockingLoadLibrary(name: String): HResult<String>
 
 	/** Put Library in memory */
-	suspend fun setLibrary(name: String, data: String)
+	suspend fun setLibrary(name: String, data: String): HResult<*>
 
 	/** Put Library in memory */
-	fun blockingSetLibrary(name: String, data: String)
+	fun blockingSetLibrary(name: String, data: String): HResult<*>
 
 	/** Remove Library by ID from cache*/
-	suspend fun removeLibrary(name: String)
+	suspend fun removeLibrary(name: String): HResult<*>
 }

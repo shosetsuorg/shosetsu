@@ -62,14 +62,23 @@ class LocalDownloadsDataSource(
 		errorResult(e)
 	}
 
-	override suspend fun updateDownload(downloadEntity: DownloadEntity): Unit =
-			downloadsDao.suspendedUpdate(downloadEntity)
+	override suspend fun updateDownload(downloadEntity: DownloadEntity): HResult<*> = try {
+		successResult(downloadsDao.suspendedUpdate(downloadEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
-	override suspend fun deleteDownload(downloadEntity: DownloadEntity): Unit =
-			downloadsDao.suspendedDelete(downloadEntity)
+	override suspend fun deleteDownload(downloadEntity: DownloadEntity): HResult<*> = try {
+		successResult(downloadsDao.suspendedDelete(downloadEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
-	override suspend fun clearDownloads(): Unit =
-			downloadsDao.clearData()
+	override suspend fun clearDownloads(): HResult<*> = try {
+		successResult(downloadsDao.clearData())
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
 	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> = try {
 		successResult(downloadsDao.loadDownload(chapterID))

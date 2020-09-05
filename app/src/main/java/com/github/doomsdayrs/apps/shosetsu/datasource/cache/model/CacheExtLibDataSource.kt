@@ -44,14 +44,16 @@ class CacheExtLibDataSource : ICacheExtLibDataSource {
 	override fun blockingLoadLibrary(name: String): HResult<String> =
 			libraries[name]?.let { successResult(it) } ?: emptyResult()
 
-	override suspend fun setLibrary(name: String, data: String) {
+	override suspend fun setLibrary(name: String, data: String): HResult<*> {
 		libraries[name] = data
+		return successResult("")
 	}
 
-	override fun blockingSetLibrary(name: String, data: String) {
+	override fun blockingSetLibrary(name: String, data: String): HResult<*> {
 		libraries[name] = data
+		return successResult("")
 	}
 
-	override suspend fun removeLibrary(name: String): Unit =
-			libraries.invalidate(name)
+	override suspend fun removeLibrary(name: String): HResult<*> =
+			successResult(libraries.invalidate(name))
 }

@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import android.database.sqlite.SQLiteException
 import androidx.room.*
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
@@ -30,19 +31,24 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
  */
 @Dao
 interface ExtensionLibraryDao : BaseDao<ExtLibEntity> {
+	@Throws(SQLiteException::class)
 	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ExtLibEntity::class)
 	fun insertScriptLib(extLibEntity: ExtLibEntity)
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM libs WHERE repoID = :repositoryID")
 	fun loadLibByRepoID(repositoryID: Int): List<ExtLibEntity>
 
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM libs WHERE scriptName = :name")
 	fun scriptLibCountFromName(name: String): Int
 
+	@Throws(SQLiteException::class)
 	@Ignore
 	fun doesRepositoryExist(url: String): Boolean = scriptLibCountFromName(url) > 0
 
+	@Throws(SQLiteException::class)
 	@Transaction
 	fun insertOrUpdateScriptLib(extLibEntity: ExtLibEntity) {
 		if (scriptLibCountFromName(extLibEntity.scriptName) > 0) {

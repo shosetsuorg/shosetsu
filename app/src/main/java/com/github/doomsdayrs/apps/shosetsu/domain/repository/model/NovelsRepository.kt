@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -37,8 +36,8 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
  * @author github.com/doomsdayrs
  */
 class NovelsRepository(
-		val database: ILocalNovelsDataSource,
-		val remoteSource: IRemoteNovelDataSource,
+		private val database: ILocalNovelsDataSource,
+		private val remoteSource: IRemoteNovelDataSource,
 ) : INovelsRepository {
 	override suspend fun getLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>> =
 			database.loadLiveBookmarkedNovelsAndCount()
@@ -46,15 +45,14 @@ class NovelsRepository(
 	override suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>> =
 			database.loadBookmarkedNovels()
 
-	override suspend fun updateNovel(novelEntity: NovelEntity): Unit =
+	override suspend fun updateNovel(novelEntity: NovelEntity): HResult<*> =
 			database.updateNovel(novelEntity)
 
 
 	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook> =
 			database.insertNovelReturnCard(novelEntity)
 
-	@Throws(SQLiteException::class)
-	override suspend fun insertNovel(novelEntity: NovelEntity): Unit =
+	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> =
 			database.insertNovel(novelEntity)
 
 
@@ -68,8 +66,7 @@ class NovelsRepository(
 	override suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>> =
 			database.loadNovelLive(novelID)
 
-	@Throws(SQLiteException::class)
-	override suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): Unit =
+	override suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): HResult<*> =
 			database.updateNovel(
 					novelEntity.copy(
 							title = novelInfo.title,
@@ -85,9 +82,8 @@ class NovelsRepository(
 					)
 			)
 
-	override suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>) {
-		database.updateBookmarkedNovels(list)
-	}
+	override suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>): HResult<*> =
+			database.updateBookmarkedNovels(list)
 
 	override suspend fun retrieveNovelInfo(
 			formatter: Formatter,

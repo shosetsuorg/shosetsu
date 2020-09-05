@@ -59,7 +59,7 @@ class LoadNovelUseCase(
 											uR.addUpdates(cLR.data.map {
 												UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
 											})
-											successResult("Complete~")
+											successResult(novel)
 										}
 										is HResult.Error -> cLR
 										else -> errorResult(ERROR_GENERAL, "Unknown failure")
@@ -75,10 +75,10 @@ class LoadNovelUseCase(
 				else -> errorResult(ERROR_GENERAL, "Unknown failure")
 			}
 
-	suspend operator fun invoke(novel: NovelEntity, loadChapters: Boolean): HResult<*> =
+	suspend operator fun invoke(novel: NovelEntity, loadChapters: Boolean): HResult<Any> =
 			main(novel, loadChapters)
 
-	suspend operator fun invoke(novelID: Int, loadChapters: Boolean): HResult<*> =
+	suspend operator fun invoke(novelID: Int, loadChapters: Boolean): HResult<Any> =
 			when (val nResult = nR.loadNovel(novelID)) {
 				is HResult.Success -> {
 					val novel = nResult.data

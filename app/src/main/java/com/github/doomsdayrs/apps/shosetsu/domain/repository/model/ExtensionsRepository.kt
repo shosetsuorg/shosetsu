@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
-import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
@@ -95,19 +94,17 @@ class ExtensionsRepository(
 		return emptyResult()
 	}
 
-	@Throws(SQLiteException::class)
-	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity) {
-		memorySource.removeFormatterFromMemory(extensionEntity.id)
-		fileSource.deleteFormatter(extensionEntity.fileName)
-		databaseSource.updateExtension(
-				extensionEntity.copy(enabled = false, installed = false, installedVersion = null)
-		)
-	}
+	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*> =
+			memorySource.removeFormatterFromMemory(extensionEntity.id) and
+					fileSource.deleteFormatter(extensionEntity.fileName) and
+					databaseSource.updateExtension(
+							extensionEntity.copy(enabled = false, installed = false, installedVersion = null)
+					)
 
-	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): Unit =
+	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> =
 			databaseSource.insertOrUpdate(extensionEntity)
 
-	override suspend fun updateExtension(extensionEntity: ExtensionEntity): Unit =
+	override suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*> =
 			databaseSource.updateExtension(extensionEntity)
 
 	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter> = try {

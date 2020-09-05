@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.di
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.StringToastUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.ToastErrorUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -54,12 +55,12 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<InstallExtensionUIUseCase>() with provider { InstallExtensionUIUseCase(instance()) }
 
-	bind<UpdateNovelUIUseCase>() with provider { UpdateNovelUIUseCase(instance()) }
+	bind<UpdateNovelUseCase>() with provider { UpdateNovelUseCase(instance()) }
 
 	bind<GetFormatterUseCase>() with provider { GetFormatterUseCase(instance()) }
 
 	bind<NovelBackgroundAddUseCase>() with provider {
-		NovelBackgroundAddUseCase(instance())
+		NovelBackgroundAddUseCase(instance(), instance())
 	}
 
 	bind<GetFormatterNameUseCase>() with provider { GetFormatterNameUseCase(instance()) }
@@ -103,7 +104,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<UpdateExtensionEntityUseCase>() with provider { UpdateExtensionEntityUseCase(instance()) }
 
-	bind<UpdateBookmarkedNovelUIUseCase>() with provider { UpdateBookmarkedNovelUIUseCase(instance()) }
+	bind<UpdateBookmarkedNovelUseCase>() with provider { UpdateBookmarkedNovelUseCase(instance()) }
 
 	bind<UninstallExtensionUIUseCase>() with provider { UninstallExtensionUIUseCase(instance()) }
 

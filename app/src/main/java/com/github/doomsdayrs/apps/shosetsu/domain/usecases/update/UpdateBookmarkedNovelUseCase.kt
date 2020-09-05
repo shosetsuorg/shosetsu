@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.update
 
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapTo
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
 
 /*
  * This file is part of shosetsu.
@@ -22,12 +24,11 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
 
 /**
  * shosetsu
- * 07 / 06 / 2020
+ * 29 / 07 / 2020
  */
-class UpdateReaderChapterUseCase(
-		private val chapterRepository: IChaptersRepository,
+class UpdateBookmarkedNovelUseCase(
+		private val novelsRepository: INovelsRepository,
 ) {
-	suspend operator fun invoke(chapter: ReaderChapterUI) {
-		chapterRepository.updateReaderChapter(chapter.convertTo())
-	}
+	suspend operator fun invoke(list: List<ABookmarkedNovelUI>): HResult<*> =
+			novelsRepository.updateBookmarkedNovelData(list.mapTo())
 }

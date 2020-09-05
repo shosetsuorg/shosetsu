@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewModel
 
@@ -30,8 +32,10 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.SubscribeHandleViewMod
  */
 abstract class IExtensionsConfigureViewModel
 	: SubscribeHandleViewModel<List<ExtensionConfigUI>>, ViewModel() {
-	/**
-	 * Update the entity
-	 */
-	abstract suspend fun updateExtensionConfig(extensionConfigUI: ExtensionConfigUI, enabled: Boolean)
+
+	/** Update the entity */
+	abstract fun updateExtensionConfig(
+			extensionConfigUI: ExtensionConfigUI,
+			enabled: Boolean
+	): LiveData<HResult<*>>
 }

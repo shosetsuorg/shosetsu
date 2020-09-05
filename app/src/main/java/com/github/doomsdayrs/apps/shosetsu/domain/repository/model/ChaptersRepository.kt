@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.and
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheSecondaryChaptersDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileChapterDataSource
@@ -73,22 +74,23 @@ class ChaptersRepository(
 	override suspend fun saveChapterPassageToMemory(
 			chapterEntity: ChapterEntity,
 			passage: String,
-	) {
-		memorySource.saveChapterInCache(chapterEntity.id!!, passage)
-		cacheSource.saveChapterInCache(chapterEntity.id!!, passage)
-	}
+	): HResult<*> = memorySource.saveChapterInCache(chapterEntity.id!!, passage) and
+			cacheSource.saveChapterInCache(chapterEntity.id!!, passage)
 
 	@Throws(SQLiteException::class)
 	override suspend fun saveChapterPassageToStorage(
 			chapterEntity: ChapterEntity,
 			passage: String,
-	): Unit = saveChapterPassageToMemory(chapterEntity, passage).also {
-		fileSource.saveChapterPassageToStorage(chapterEntity, passage)
-		dbSource.updateChapter(chapterEntity.copy(isSaved = true))
-	}
+	): HResult<*> = saveChapterPassageToMemory(chapterEntity, passage) and
+			fileSource.saveChapterPassageToStorage(chapterEntity, passage) and
+			dbSource.updateChapter(chapterEntity.copy(isSaved = true))
+
 
 	@Throws(SQLiteException::class)
-	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): Unit =
+	override suspend fun handleChapters(
+			novelEntity: NovelEntity,
+			list: List<Novel.Chapter>,
+	): HResult<*> =
 			dbSource.handleChapters(novelEntity, list)
 
 	override suspend fun handleChaptersReturn(
@@ -112,15 +114,13 @@ class ChaptersRepository(
 	): LiveData<HResult<List<ReaderChapterEntity>>> = dbSource.loadReaderChapters(novelID)
 
 	@Throws(SQLiteException::class)
-	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
+	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*> =
 			dbSource.updateReaderChapter(readerChapterEntity)
 
 	@Throws(SQLiteException::class)
-	override suspend fun deleteChapterPassage(chapterEntity: ChapterEntity) {
-		dbSource.updateChapter(chapterEntity.copy(
-				isSaved = false
-		))
-		fileSource.deleteChapter(chapterEntity)
-	}
+	override suspend fun deleteChapterPassage(chapterEntity: ChapterEntity): HResult<*> =
+			dbSource.updateChapter(chapterEntity.copy(
+					isSaved = false
+			)) and fileSource.deleteChapter(chapterEntity)
 
 }

@@ -2,13 +2,13 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.file.model
 
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
-import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtensionDataSource
-import okio.IOException
 import org.luaj.vm2.LuaError
 import java.io.FileNotFoundException
 
@@ -39,25 +39,23 @@ class FileExtensionDataSource(
 	override suspend fun loadFormatter(fileName: String): HResult<Formatter> = try {
 		successResult(LuaFormatter(formatterUtils.makeFormatterFile(fileName)))
 	} catch (e: LuaError) {
-		errorResult(ErrorKeys.ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
+		errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
 	} catch (e: FileNotFoundException) {
-		errorResult(ErrorKeys.ERROR_NOT_FOUND, e.message ?: "Unknown file not found")
+		errorResult(ERROR_NOT_FOUND, e.message ?: "Unknown file not found", e)
 	}
 
-	override suspend fun writeFormatter(fileName: String, data: String) {
-		try {
-			formatterUtils.makeFormatterFile(fileName).also {
-				if (!it.exists()) {
-					it.parentFile.mkdir()
-					it.createNewFile()
-				}
-			}.writeText(data)
-		} catch (e: IOException) {
-			TODO("Implement Logging")
-		}
+	override suspend fun writeFormatter(fileName: String, data: String): HResult<*> {
+		formatterUtils.makeFormatterFile(fileName).also {
+			if (!it.exists()) {
+				it.parentFile?.mkdir()
+			}
+		}.writeText(data)
+		return successResult("")
 	}
 
-	override suspend fun deleteFormatter(fileName: String) {
+	override suspend fun deleteFormatter(fileName: String): HResult<*> {
 		formatterUtils.makeFormatterFile(fileName).takeIf { it.exists() }?.delete()
+				?: errorResult(ERROR_NOT_FOUND, "Cannot delete unknown file: $fileName")
+		return successResult("")
 	}
 }

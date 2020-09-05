@@ -46,7 +46,8 @@ class LocalExtensionsDataSource(
 	}
 
 
-	override suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>> = liveData {
+	override suspend fun loadPoweredExtensionsCards(
+	): LiveData<HResult<List<IDTitleImage>>> = liveData {
 		try {
 			emitSource(extensionsDao.loadPoweredExtensionsBasic().map { list ->
 				successResult(list.map { IDTitleImage(it.id, it.name, it.imageURL) })
@@ -56,12 +57,19 @@ class LocalExtensionsDataSource(
 		}
 	}
 
-	override suspend fun updateExtension(extensionEntity: ExtensionEntity) {
-		extensionsDao.suspendedUpdate(extensionEntity)
+	override suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
+		successResult(extensionsDao.suspendedUpdate(extensionEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+
 	}
 
-	override suspend fun deleteExtension(extensionEntity: ExtensionEntity): Unit =
-			extensionsDao.suspendedDelete(extensionEntity)
+	override suspend fun deleteExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
+		successResult(extensionsDao.suspendedDelete(extensionEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+
+	}
 
 	override suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity> = try {
 		successResult(extensionsDao.loadExtension(formatterID))
@@ -69,6 +77,9 @@ class LocalExtensionsDataSource(
 		errorResult(e)
 	}
 
-	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): Unit =
-			extensionsDao.insertOrUpdate(extensionEntity)
+	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> = try {
+		successResult(extensionsDao.insertOrUpdate(extensionEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 }

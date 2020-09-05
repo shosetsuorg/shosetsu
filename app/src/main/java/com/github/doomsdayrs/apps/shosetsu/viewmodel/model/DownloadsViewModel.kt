@@ -8,6 +8,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateDownloadUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IDownloadsViewModel
 import kotlinx.coroutines.Dispatchers

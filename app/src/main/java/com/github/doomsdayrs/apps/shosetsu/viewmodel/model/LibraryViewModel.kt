@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.IsOnlineUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadLibraryUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartUpdateWorkerUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateBookmarkedNovelUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ILibraryViewModel
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +39,7 @@ import kotlinx.coroutines.Dispatchers
  */
 class LibraryViewModel(
 		private val libraryAsCardsUseCase: LoadLibraryUseCase,
-		private val updateBookmarkedNovelUIUseCase: UpdateBookmarkedNovelUIUseCase,
+		private val updateBookmarkedNovelUseCase: UpdateBookmarkedNovelUseCase,
 		private val isOnlineUseCase: IsOnlineUseCase,
 		private var startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
 ) : ILibraryViewModel() {
@@ -58,7 +58,7 @@ class LibraryViewModel(
 
 	override fun removeFromLibrary(list: List<ABookmarkedNovelUI>) {
 		launchIO {
-			updateBookmarkedNovelUIUseCase(list.apply {
+			updateBookmarkedNovelUseCase(list.apply {
 				forEach {
 					it.bookmarked = false
 				}

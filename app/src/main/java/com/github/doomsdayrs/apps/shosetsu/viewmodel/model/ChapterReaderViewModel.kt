@@ -13,7 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadChapterPassageUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadReaderChaptersUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateReaderChapterUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateReaderChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IChapterReaderViewModel
 

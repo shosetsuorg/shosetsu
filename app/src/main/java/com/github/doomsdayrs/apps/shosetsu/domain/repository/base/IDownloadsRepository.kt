@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
-import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
@@ -46,14 +45,11 @@ interface IDownloadsRepository {
 	suspend fun addDownload(download: DownloadEntity): HResult<Long>
 
 	/** Updates a download in repository */
-	@Throws(SQLiteException::class)
-	suspend fun update(download: DownloadEntity)
+	suspend fun update(download: DownloadEntity): HResult<*>
 
 	/** Removes a download from the repository */
-	@Throws(SQLiteException::class)
-	suspend fun delete(download: DownloadEntity)
+	suspend fun delete(download: DownloadEntity): HResult<*>
 
 	/** Orders database to set all values back to pending */
-	@Throws(SQLiteException::class)
-	suspend fun resetList()
+	suspend fun resetList(): HResult<*>
 }

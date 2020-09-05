@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateNovelUseCase
 
 /*
  * This file is part of shosetsu.
@@ -25,9 +27,16 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  */
 class NovelBackgroundAddUseCase(
 		private val loadNovelUseCase: LoadNovelUseCase,
+		private val updateNovelEntityUseCase: UpdateNovelUseCase,
 ) {
 	suspend operator fun invoke(novelID: Int): HResult<*> =
 			loadNovelUseCase(novelID, false).also {
-				TODO("Background add")
+				if (it is HResult.Success<*>) {
+					if (it.data is NovelEntity) {
+						updateNovelEntityUseCase(it.data.copy(
+								bookmarked = true
+						).convertTo())
+					}
+				}
 			}
 }

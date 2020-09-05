@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
-import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -37,14 +36,13 @@ interface IExtensionsRepository {
 	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*>
 
 	/** Uninstalls an [extensionEntity] */
-	@Throws(SQLiteException::class)
-	suspend fun uninstallExtension(extensionEntity: ExtensionEntity)
+	suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*>
 
 	/** Inserts or Updates an [extensionEntity] */
-	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity)
+	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*>
 
 	/** Updates an [extensionEntity] */
-	suspend fun updateExtension(extensionEntity: ExtensionEntity)
+	suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*>
 
 	/** Loads the formatter via its extension */
 	suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter>

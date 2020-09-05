@@ -1,7 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.update
 
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 
 /*
  * This file is part of shosetsu.
@@ -22,12 +22,11 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 
 /**
  * shosetsu
- * 06 / 06 / 2020
+ * 21 / 06 / 2020
  */
-class UpdateChapterUseCase(
-		private val chaptersRepository: IChaptersRepository,
+class UpdateDownloadUseCase(
+		private val downloadsRepository: IDownloadsRepository,
 ) {
-	suspend operator fun invoke(chapterUI: ChapterUI) {
-		chaptersRepository.updateChapter(chapterUI.convertTo())
-	}
+	suspend operator fun invoke(downloadUI: DownloadUI) =
+			downloadsRepository.update(downloadUI.convertTo())
 }

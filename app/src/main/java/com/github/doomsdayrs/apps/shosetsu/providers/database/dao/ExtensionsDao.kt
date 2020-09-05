@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Ignore
@@ -35,24 +36,31 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
  */
 @Dao
 interface ExtensionsDao : BaseDao<ExtensionEntity> {
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions")
 	fun loadExtensions(): LiveData<List<ExtensionEntity>>
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE installed = 1 AND enabled = 1")
 	fun loadPoweredExtensions(): LiveData<List<ExtensionEntity>>
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT id, name, imageURL FROM extensions WHERE installed = 1 AND enabled = 1")
 	fun loadPoweredExtensionsBasic(): LiveData<List<IDNameImage>>
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
 	fun loadExtension(formatterID: Int): ExtensionEntity
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
 	fun loadExtensionCountFromID(formatterID: Int): Int
 
+	@Throws(SQLiteException::class)
 	@Ignore
 	fun doesExtensionExist(formatterID: Int): Boolean = loadExtensionCountFromID(formatterID) > 0
 
+	@Throws(SQLiteException::class)
 	@Transaction
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) {
 		if (doesExtensionExist(extensionEntity.id)) {

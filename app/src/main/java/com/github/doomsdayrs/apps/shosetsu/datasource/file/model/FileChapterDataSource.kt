@@ -1,13 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.file.model
 
 import android.content.Context
-import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileChapterDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import java.io.File
@@ -41,25 +39,29 @@ class FileChapterDataSource(val context: Context) : IFileChapterDataSource {
 	}
 
 	/** Makes path */
-	fun makePath(ce: ChapterEntity): String =
+	private fun makePath(ce: ChapterEntity): String =
 			"$ap/download/${ce.formatterID}/${ce.novelID}/${ce.id}.txt"
 
-	override suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String): Unit =
-			File(makePath(chapterEntity)).also {
-				Log.d(logID(), "Saving chapter to ${it.absolutePath}")
-				it.createNewFile()
-			}.writeText(passage)
+	override suspend fun saveChapterPassageToStorage(
+			chapterEntity: ChapterEntity,
+			passage: String,
+	): HResult<*> {
+		File(makePath(chapterEntity)).writeText(passage)
+		return successResult("")
+	}
 
 	override suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String> =
 			try {
 				successResult(File(makePath(chapterEntity)).readText())
 			} catch (e: FileNotFoundException) {
-				errorResult(ERROR_NOT_FOUND, e.message ?: "UNKNOWN MESSAGE")
+				errorResult(ERROR_NOT_FOUND, e)
 			} catch (e: Exception) {
-				errorResult(ERROR_GENERAL, e.message ?: "UNKNOWN MESSAGE")
+				errorResult(ERROR_GENERAL, e)
 			}
 
-	override suspend fun deleteChapter(chapterEntity: ChapterEntity) {
+	override suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*> {
 		File(makePath(chapterEntity)).takeIf { it.exists() }?.delete()
+				?: return errorResult(ERROR_NOT_FOUND, "Chapter not found")
+		return successResult("")
 	}
 }

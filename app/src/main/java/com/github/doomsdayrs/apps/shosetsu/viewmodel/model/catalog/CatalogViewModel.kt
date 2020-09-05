@@ -6,7 +6,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
-import com.github.doomsdayrs.apps.shosetsu.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetFormatterUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadCatalogueDataUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.NovelBackgroundAddUseCase
@@ -125,7 +124,7 @@ class CatalogViewModel(
 	}
 
 	override fun backgroundNovelAdd(novelID: Int) {
-		launchUI { backgroundAddUseCase(novelID) }
+		launchIO { backgroundAddUseCase(novelID) }
 	}
 }
 

@@ -43,7 +43,9 @@ class LocalChaptersDataSource(
 		private val chaptersDao: ChaptersDao,
 ) : ILocalChaptersDataSource {
 
-	override suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>> = liveData {
+	override suspend fun loadChapters(
+			novelID: Int,
+	): LiveData<HResult<List<ChapterEntity>>> = liveData {
 		try {
 			emitSource(chaptersDao.loadLiveChapters(novelID).map { successResult(it) })
 		} catch (e: SQLiteException) {
@@ -67,8 +69,16 @@ class LocalChaptersDataSource(
 		}
 	}
 
-	override suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): Unit =
-			chaptersDao.handleChapters(novelEntity, list)
+	override suspend fun handleChapters(
+			novelEntity: NovelEntity,
+			list: List<Novel.Chapter>,
+	): HResult<*> =
+			try {
+				successResult(chaptersDao.handleChapters(novelEntity, list))
+			} catch (e: SQLiteException) {
+				errorResult(e)
+			}
+
 
 	override suspend fun handleChapterReturn(
 			novelEntity: NovelEntity,
@@ -79,9 +89,18 @@ class LocalChaptersDataSource(
 		errorResult(e)
 	}
 
-	override suspend fun updateChapter(chapterEntity: ChapterEntity): Unit =
-			chaptersDao.suspendedUpdate(chapterEntity)
+	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> = try {
+		successResult(chaptersDao.suspendedUpdate(chapterEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
-	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
-			chaptersDao.updateReaderChapter(readerChapterEntity)
+
+	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*> =
+			try {
+				successResult(chaptersDao.updateReaderChapter(readerChapterEntity))
+			} catch (e: SQLiteException) {
+				errorResult(e)
+			}
+
 }

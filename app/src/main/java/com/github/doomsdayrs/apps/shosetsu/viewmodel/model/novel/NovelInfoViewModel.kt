@@ -5,6 +5,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelInfoViewModel
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,7 @@ import kotlinx.coroutines.Dispatchers
  */
 class NovelInfoViewModel(
 		private val getFormatterNameUseCase: GetFormatterNameUseCase,
-		private val updateNovelUIUseCase: UpdateNovelUIUseCase,
+		private val updateNovelUseCase: UpdateNovelUseCase,
 		private val loadNovelUIUseCase: GetNovelUIUseCase,
 		private val openInBrowserUseCase: OpenInBrowserUseCase,
 		private val openInWebviewUseCase: OpenInWebviewUseCase,
@@ -70,7 +71,7 @@ class NovelInfoViewModel(
 
 	override fun toggleBookmark(novelUI: NovelUI) {
 		launchIO {
-			updateNovelUIUseCase(novelUI.copy(
+			updateNovelUseCase(novelUI.copy(
 					bookmarked = !novelUI.bookmarked
 			))
 		}

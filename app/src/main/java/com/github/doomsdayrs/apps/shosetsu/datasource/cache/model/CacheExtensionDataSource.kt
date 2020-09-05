@@ -41,9 +41,9 @@ class CacheExtensionDataSource : ICacheExtensionsDataSource {
 	override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<Formatter> =
 			formatters[formatterID]?.let { successResult(it) } ?: emptyResult()
 
-	override suspend fun putFormatterInMemory(formatter: Formatter) =
-			formatters.set(formatter.formatterID, formatter)
+	override suspend fun putFormatterInMemory(formatter: Formatter): HResult<*> =
+			successResult(formatters.set(formatter.formatterID, formatter))
 
-	override suspend fun removeFormatterFromMemory(formatterID: Int) =
-			formatters.invalidate(formatterID)
+	override suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*> =
+			successResult(formatters.invalidate(formatterID))
 }

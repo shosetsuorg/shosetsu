@@ -29,7 +29,7 @@ interface ICacheChaptersDataSource {
 	/**
 	 * Puts a chapter passage into cache, if cache exists this overwrites
 	 */
-	suspend fun saveChapterInCache(chapterID: Int, passage: String)
+	suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*>
 
 	/**
 	 * Gets chapter passage via it's ID

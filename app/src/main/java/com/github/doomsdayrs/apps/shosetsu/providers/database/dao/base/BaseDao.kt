@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base
 
+import android.database.sqlite.SQLiteException
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -30,33 +31,44 @@ import androidx.room.Update
  * @author github.com/doomsdayrs
  */
 interface BaseDao<T> {
+	@Throws(SQLiteException::class)
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insertAllReplace(list: List<T>): Array<Long>
 
+	@Throws(SQLiteException::class)
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insertReplace(data: T): Long
 
+	@Throws(SQLiteException::class)
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	suspend fun insertAllIgnore(list: List<T>): Array<Long>
 
+	@Throws(SQLiteException::class)
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	suspend fun insertIgnore(data: T): Long
 
+
+	@Throws(SQLiteException::class)
 	@Insert(onConflict = OnConflictStrategy.ABORT)
 	suspend fun insertAllAbort(list: List<T>): Array<Long>
 
+	@Throws(SQLiteException::class)
 	@Insert(onConflict = OnConflictStrategy.ABORT)
 	suspend fun insertAbort(data: T): Long
 
 	@Update
+	@Throws(SQLiteException::class)
 	suspend fun suspendedUpdate(data: T)
 
 	@Update
+	@Throws(SQLiteException::class)
 	fun blockingUpdate(data: T)
 
 	@Delete
+	@Throws(SQLiteException::class)
 	suspend fun suspendedDelete(data: T)
 
 	@Delete
+	@Throws(SQLiteException::class)
 	fun blockingDelete(data: T)
 }

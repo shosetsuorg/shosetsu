@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.file.model
 
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_IO
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
@@ -32,17 +33,15 @@ import okio.IOException
 class FileExtLibDataSource(
 		private val formatterUtils: IFormatterUtils,
 ) : IFileExtLibDataSource {
-	override suspend fun writeExtLib(fileName: String, data: String) {
+	override suspend fun writeExtLib(fileName: String, data: String): HResult<*> {
 		try {
 			formatterUtils.makeLibraryFile(fileName).also {
-				if (!it.exists()) {
-					it.parentFile.mkdir()
-					it.createNewFile()
-				}
+				if (!it.exists()) it.parentFile?.mkdir()
 			}.writeText(data)
 		} catch (e: IOException) {
-			TODO("Implement Logging")
+			return errorResult(ERROR_IO, e)
 		}
+		return successResult("")
 	}
 
 	override suspend fun loadExtLib(fileName: String): HResult<String> =
@@ -54,7 +53,9 @@ class FileExtLibDataSource(
 			} ?: errorResult(ERROR_NOT_FOUND, "$fileName is not found in storage")
 
 
-	override suspend fun deleteExtLib(fileName: String) {
+	override suspend fun deleteExtLib(fileName: String): HResult<*> {
 		formatterUtils.makeLibraryFile(fileName).takeIf { it.exists() }?.delete()
+				?: errorResult(ERROR_IO, "Cannot delete nonexistent lib: $fileName")
+		return successResult("")
 	}
 }

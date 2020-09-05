@@ -74,20 +74,31 @@ class LocalNovelsDataSource(
 		}
 	}
 
-	override suspend fun updateNovel(novelEntity: NovelEntity): Unit =
-			novelsDao.suspendedUpdate(novelEntity)
-
-	override suspend fun updateBookmarkedNovels(list: List<BookmarkedNovelEntity>) {
-		novelsDao.updateBookmarked(list)
+	override suspend fun updateNovel(novelEntity: NovelEntity): HResult<*> = try {
+		successResult(novelsDao.suspendedUpdate(novelEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
 	}
 
-	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook> = try {
+	override suspend fun updateBookmarkedNovels(
+			list: List<BookmarkedNovelEntity>
+	): HResult<*> = try {
+		successResult(novelsDao.updateBookmarked(list))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
+
+	override suspend fun insertNovelReturnCard(
+			novelEntity: NovelEntity,
+	): HResult<IDTitleImageBook> = try {
 		successResult(novelsDao.insertNovelReturnCard(novelEntity))
 	} catch (e: SQLiteException) {
 		errorResult(e)
 	}
 
-	override suspend fun insertNovel(novelEntity: NovelEntity) {
-		novelsDao.insertIgnore(novelEntity)
+	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> = try {
+		successResult(novelsDao.insertIgnore(novelEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
 	}
 }

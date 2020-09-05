@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.datasource.local.model
 
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
@@ -35,8 +36,13 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
 class LocalUpdatesDataSource(
 		private val updatesDao: UpdatesDao,
 ) : ILocalUpdatesDataSource {
-	override suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> =
-			updatesDao.loadUpdates().map { successResult(it) }
+	override suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> = liveData {
+		try {
+			emitSource(updatesDao.loadUpdates().map { successResult(it) })
+		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		}
+	}
 
 	override suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>> = try {
 		successResult(updatesDao.insertAllIgnore(list))
@@ -44,6 +50,12 @@ class LocalUpdatesDataSource(
 		errorResult(e)
 	}
 
-	override suspend fun getCompleteUpdates(): LiveData<HResult<List<UpdateCompleteEntity>>> =
-			updatesDao.loadCompleteUpdates().map { successResult(it) }
+	override suspend fun getCompleteUpdates(
+	): LiveData<HResult<List<UpdateCompleteEntity>>> = liveData {
+		try {
+			emitSource(updatesDao.loadCompleteUpdates().map { successResult(it) })
+		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		}
+	}
 }

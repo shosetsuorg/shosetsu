@@ -3,6 +3,7 @@ package com.github.doomsdayrs.apps.shosetsu.common.dto
 import android.database.sqlite.SQLiteException
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
+import org.json.JSONException
 
 
 /*
@@ -78,6 +79,11 @@ fun errorResult(code: Int, error: Exception? = null): HResult.Error =
 fun errorResult(e: SQLiteException): HResult.Error =
 		HResult.Error(ErrorKeys.ERROR_HTTP_SQL, e.message ?: "UnknownSQLException", e)
 
+/** An exception occurred in SQL*/
+fun errorResult(e: JSONException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_JSON, e.message ?: "UnknownJSONException", e)
+
+
 /**
  * Converts shit
  */
@@ -117,4 +123,21 @@ inline fun <reified I : Any, O : Any> HResult<I>.withSuccess(action: (I) -> HRes
 		is HResult.Loading -> this
 		is HResult.Error -> this
 	}
+}
+
+inline infix fun <reified I1 : Any, reified I2 : Any> HResult<I1>.and(
+		hResult: HResult<I2>,
+): HResult<*> {
+	if (this is HResult.Success && hResult is HResult.Success) return successResult("")
+	when (this) {
+		is HResult.Error -> return this
+		is HResult.Empty -> return this
+		is HResult.Loading -> return this
+	}
+	when (hResult) {
+		is HResult.Error -> return hResult
+		is HResult.Empty -> return hResult
+		is HResult.Loading -> return hResult
+	}
+	return errorResult(ErrorKeys.ERROR_GENERAL, "Unknown case for both results")
 }

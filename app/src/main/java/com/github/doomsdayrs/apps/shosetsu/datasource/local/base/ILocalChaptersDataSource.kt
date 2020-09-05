@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
-import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -43,8 +42,7 @@ interface ILocalChaptersDataSource {
 	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
 
 	/** Handles chapters from a remote source */
-	@Throws(SQLiteException::class)
-	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
+	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>
 
 	/** Handles chapters from a remote source, then returns the new chapters */
 	suspend fun handleChapterReturn(
@@ -53,10 +51,8 @@ interface ILocalChaptersDataSource {
 	): HResult<List<ChapterEntity>>
 
 	/** Updates a [chapterEntity] */
-	@Throws(SQLiteException::class)
-	suspend fun updateChapter(chapterEntity: ChapterEntity)
+	suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*>
 
 	/** Updates a [readerChapterEntity], a cut down version [updateChapter] */
-	@Throws(SQLiteException::class)
-	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
+	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*>
 }

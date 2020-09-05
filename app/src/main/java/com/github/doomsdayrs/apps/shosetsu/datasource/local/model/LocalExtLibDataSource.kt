@@ -33,11 +33,17 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionLibra
 class LocalExtLibDataSource(
 		private val extensionLibraryDao: ExtensionLibraryDao,
 ) : ILocalExtLibDataSource {
-	override suspend fun updateExtension(extLibEntity: ExtLibEntity): Unit =
-			extensionLibraryDao.suspendedUpdate(extLibEntity)
+	override suspend fun updateExtension(extLibEntity: ExtLibEntity): HResult<*> = try {
+		successResult(extensionLibraryDao.suspendedUpdate(extLibEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
-	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): Unit =
-			extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity)
+	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): HResult<*> = try {
+		successResult(extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
 	override suspend fun loadExtLibByRepo(
 			repositoryEntity: RepositoryEntity,

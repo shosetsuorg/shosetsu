@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
@@ -38,31 +39,39 @@ import org.joda.time.Days
  */
 @Dao
 interface UpdatesDao : BaseDao<UpdateEntity> {
+	@Throws(SQLiteException::class)
 	@Query("SELECT time FROM updates ORDER BY ROWID ASC LIMIT 1")
 	fun loadStartingDayTime(): Long
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM updates")
 	fun loadUpdates(): LiveData<List<UpdateEntity>>
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT time FROM updates ORDER BY ROWID DESC LIMIT 1")
 	fun loadLatestDayTime(): Long
 
+	@Throws(SQLiteException::class)
 	suspend fun getStartingDayTime(): Long =
 			DateTime(loadStartingDayTime()).trimDate().millis
 
+	@Throws(SQLiteException::class)
 	fun getLatestDayTime(): Long =
 			DateTime(loadLatestDayTime()).trimDate().millis
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM updates WHERE time < :date2 AND time >= :date1")
 	fun loadDayCountBetweenDates(date1: Long, date2: Long): Int
 
 	/**
 	 * Raw query without checking dates, suggested to use [getTimeBetweenDates]
 	 */
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM updates WHERE time < :date2 AND time >= :date1")
 	fun loadUpdatesBetweenDates(date1: Long, date2: Long): LiveData<Array<UpdateEntity>>
 
 	@Transaction
+	@Throws(SQLiteException::class)
 	suspend fun getTotalDays(): Int {
 		val firstDay = DateTime(getStartingDayTime())
 		val latest = DateTime(getLatestDayTime())
@@ -73,6 +82,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	 * [loadUpdatesBetweenDates] but with error checking
 	 */
 	@Transaction
+	@Throws(SQLiteException::class)
 	fun getTimeBetweenDates(date1: Long, date2: Long): Array<UpdateEntity> {
 		if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
 		return loadUpdatesBetweenDates(date1, date2).value ?: arrayOf()
@@ -80,9 +90,11 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 
 
 	@Query("DELETE FROM updates WHERE novelID = :novelID")
+	@Throws(SQLiteException::class)
 	fun deleteUpdateByNovelID(novelID: Int)
 
 	@Transaction
+	@Throws(SQLiteException::class)
 	fun removeDaysWithoutUpdates(list: ArrayList<Long>): ArrayList<Long> {
 		for (x in list.size - 1 downTo 1) {
 			val updateDate = list[x]
@@ -95,6 +107,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 		return list
 	}
 
+	@Throws(SQLiteException::class)
 	@Query("""SELECT 
 						updates.chapterID, 
 						updates.novelID, 

@@ -28,7 +28,7 @@ interface IFileExtensionDataSource {
 	/** Loads the formatter from file system */
 	suspend fun loadFormatter(fileName: String): HResult<Formatter>
 
-	suspend fun writeFormatter(fileName: String, data: String)
+	suspend fun writeFormatter(fileName: String, data: String): HResult<*>
 
-	suspend fun deleteFormatter(fileName: String)
+	suspend fun deleteFormatter(fileName: String): HResult<*>
 }

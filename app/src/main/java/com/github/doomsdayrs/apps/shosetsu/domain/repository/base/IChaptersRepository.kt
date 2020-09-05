@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
-import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -48,14 +47,13 @@ interface IChaptersRepository {
 	): HResult<String>
 
 	/** Save the [ChapterEntity] [passage] to memory */
-	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, passage: String)
+	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, passage: String): HResult<*>
 
-	@Throws(SQLiteException::class)
 	/** Save the [ChapterEntity] [passage] to storage */
-	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
+	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String): HResult<*>
 
 	/** Handles chapters for ze novel */
-	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>)
+	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>
 
 	/** Handles chapters return, but returns the chapters that are new */
 	suspend fun handleChaptersReturn(
@@ -70,17 +68,14 @@ interface IChaptersRepository {
 	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
 
 	/** Update [chapterEntity] in database */
-	@Throws(SQLiteException::class)
-	suspend fun updateChapter(chapterEntity: ChapterEntity)
+	suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*>
 
 	/** Loads [ReaderChapterEntity]s by it's [novelID] */
 	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
 
 	/** Update [readerChapterEntity] in database */
-	@Throws(SQLiteException::class)
-	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
+	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*>
 
 	/** Delete the chapter passage from storage */
-	@Throws(SQLiteException::class)
-	suspend fun deleteChapterPassage(chapterEntity: ChapterEntity)
+	suspend fun deleteChapterPassage(chapterEntity: ChapterEntity): HResult<*>
 }

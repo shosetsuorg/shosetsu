@@ -11,6 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelChaptersViewModel
 import kotlinx.coroutines.Dispatchers

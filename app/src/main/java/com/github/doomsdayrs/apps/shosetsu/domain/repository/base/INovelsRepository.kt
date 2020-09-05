@@ -15,7 +15,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -53,19 +52,18 @@ interface INovelsRepository {
 	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook>
 
 	/** Inserts the [novelEntity] */
-	suspend fun insertNovel(novelEntity: NovelEntity)
+	suspend fun insertNovel(novelEntity: NovelEntity): HResult<*>
 
 	/** Updates the [novelEntity] */
-	suspend fun updateNovel(novelEntity: NovelEntity)
+	suspend fun updateNovel(novelEntity: NovelEntity): HResult<*>
 
 	/**
 	 * Updates a novel entity with new data
 	 */
-	@Throws(SQLiteException::class)
-	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info)
+	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): HResult<*>
 
 	/** Updates a list of bookmarked novels */
-	suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>)
+	suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>): HResult<*>
 
 	/**
 	 * Retrieves NovelInfo from it's source

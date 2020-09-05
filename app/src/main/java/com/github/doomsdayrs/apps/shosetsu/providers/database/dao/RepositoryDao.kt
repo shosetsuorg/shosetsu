@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Ignore
@@ -36,6 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
  */
 @Dao
 interface RepositoryDao : BaseDao<RepositoryEntity> {
+	@Throws(SQLiteException::class)
 	@Transaction
 	suspend fun insertRepositoryAndReturn(repositoryEntity: RepositoryEntity): RepositoryEntity =
 			loadRepositoryFromROWID(insertReplace(repositoryEntity))
@@ -43,31 +45,40 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 	/**
 	 * Run only if you know for sure the data exists
 	 */
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE url = :url LIMIT 1")
 	fun loadRepositoryFromURL(url: String): RepositoryEntity
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE id = :rowID LIMIT 1")
 	fun loadRepositoryFromROWID(rowID: Long): RepositoryEntity
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE id = :repositoryID LIMIT 1")
 	fun loadRepositoryFromID(repositoryID: Int): RepositoryEntity
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
 	fun loadRepositoriesLive(): LiveData<List<RepositoryEntity>>
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
 	fun loadRepositories(): List<RepositoryEntity>
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM repositories WHERE url = :url")
 	fun repositoryCountFromURL(url: String): Int
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*), id FROM repositories WHERE url = :url LIMIT 1")
 	fun repositoryCountAndROWIDFromURL(url: String): CountIDTuple
 
 	@Ignore
+	@Throws(SQLiteException::class)
 	fun doesRepositoryExist(url: String): Boolean = repositoryCountFromURL(url) > 0
 
 	@Transaction
+	@Throws(SQLiteException::class)
 	suspend fun initializeData() {
 		val branch = if (BuildConfig.DEBUG) "dev" else "master"
 		val name = if (BuildConfig.DEBUG) "dev" else "master"
@@ -79,6 +90,7 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 	}
 
 	@Transaction
+	@Throws(SQLiteException::class)
 	suspend fun createIfNotExist(repositoryEntity: RepositoryEntity): Int {
 		val tuple = repositoryCountAndROWIDFromURL(repositoryEntity.url)
 		if (tuple.count == 0)

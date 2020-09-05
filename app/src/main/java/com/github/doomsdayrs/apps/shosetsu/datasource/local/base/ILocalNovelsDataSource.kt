@@ -1,6 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
-import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BookmarkedNovelEntity
@@ -48,16 +47,14 @@ interface ILocalNovelsDataSource {
 	suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>>
 
 	/** Updates a [NovelEntity] */
-	@Throws(SQLiteException::class)
-	suspend fun updateNovel(novelEntity: NovelEntity)
+	suspend fun updateNovel(novelEntity: NovelEntity): HResult<*>
 
 	/** Updates a list of [BookmarkedNovelEntity] */
-	suspend fun updateBookmarkedNovels(list: List<BookmarkedNovelEntity>)
+	suspend fun updateBookmarkedNovels(list: List<BookmarkedNovelEntity>): HResult<*>
 
 	/** Inserts a [NovelEntity] then returns its [IDTitleImageBook] */
 	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook>
 
 	/** Inserts a [NovelEntity] */
-	@Throws(SQLiteException::class)
-	suspend fun insertNovel(novelEntity: NovelEntity)
+	suspend fun insertNovel(novelEntity: NovelEntity): HResult<*>
 }

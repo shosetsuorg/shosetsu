@@ -1,7 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.update
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 
 /*
  * This file is part of shosetsu.
@@ -22,11 +24,14 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRep
 
 /**
  * shosetsu
- * 14 / 07 / 2020
+ * 06 / 06 / 2020
  */
-class UpdateExtensionEntityUseCase(
-		private val extensionRepository: IExtensionsRepository,
+class UpdateNovelUseCase(
+		private val chaptersRepository: INovelsRepository,
 ) {
-	suspend operator fun invoke(extensionUI: ExtensionEntity) =
-			extensionRepository.updateExtension(extensionUI)
+	suspend operator fun invoke(novelUI: NovelUI): HResult<*> =
+			this(novelUI.convertTo())
+
+	suspend operator fun invoke(novelEntity: NovelEntity): HResult<*> =
+			chaptersRepository.updateNovel(novelEntity)
 }

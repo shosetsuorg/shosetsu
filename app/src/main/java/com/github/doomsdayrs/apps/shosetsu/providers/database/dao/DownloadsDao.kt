@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.providers.database.dao
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
@@ -36,12 +37,14 @@ interface DownloadsDao : BaseDao<DownloadEntity> {
 	/**
 	 * Loads the first download
 	 */
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads WHERE status = 0 LIMIT 1")
 	suspend fun loadFirstDownload(): DownloadEntity?
 
 	/**
 	 * Loads the first download, and also sets it as downloading
 	 */
+	@Throws(SQLiteException::class)
 	@Transaction
 	suspend fun loadAndStartFirstDownload(): DownloadEntity {
 		val d = loadFirstDownload()!!
@@ -50,20 +53,26 @@ interface DownloadsDao : BaseDao<DownloadEntity> {
 		return d
 	}
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM downloads WHERE status == 0")
 	suspend fun loadDownloadCount(): Int
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM downloads WHERE chapterID = :chapterID")
 	suspend fun loadDownloadCount(chapterID: Int): Int
 
+	@Throws(SQLiteException::class)
 	suspend fun isInDownloads(chapterID: Int): Boolean = loadDownloadCount(chapterID) > 0
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads")
 	fun loadDownloadItems(): LiveData<List<DownloadEntity>>
 
+	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads WHERE chapterID = :chapterID LIMIT 1")
 	suspend fun loadDownload(chapterID: Int): DownloadEntity
 
 	@Query("DELETE FROM downloads")
+	@Throws(SQLiteException::class)
 	suspend fun clearData()
 }

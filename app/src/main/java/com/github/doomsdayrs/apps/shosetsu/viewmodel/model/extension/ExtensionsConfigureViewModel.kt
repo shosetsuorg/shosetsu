@@ -20,12 +20,14 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.UpdateExtensionEntityUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateExtensionEntityUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsConfigureViewModel
+import kotlinx.coroutines.Dispatchers
 
 /**
  * shosetsu
@@ -38,7 +40,7 @@ class ExtensionsConfigureViewModel(
 		private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase,
 ) : IExtensionsConfigureViewModel() {
 	override val liveData: LiveData<HResult<List<ExtensionConfigUI>>> by lazy {
-		liveData<HResult<List<ExtensionConfigUI>>> {
+		liveData {
 			emitSource(
 					getExtensionsUIUseCase().map { hR ->
 						when (hR) {
@@ -66,10 +68,11 @@ class ExtensionsConfigureViewModel(
 		}
 	}
 
-	override suspend fun updateExtensionConfig(
+	override fun updateExtensionConfig(
 			extensionConfigUI: ExtensionConfigUI,
 			enabled: Boolean,
-	) =
-			updateExtensionEntityUseCase(extensionConfigUI.convertTo())
+	): LiveData<HResult<*>> = liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+		emit(updateExtensionEntityUseCase(extensionConfigUI.convertTo()))
+	}
 }
 

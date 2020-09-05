@@ -34,7 +34,7 @@ interface ICacheSecondaryChaptersDataSource {
 	 *
 	 * Will launch a second coroutine that will clear out old content
 	 */
-	suspend fun saveChapterInCache(chapterID: Int, passage: String)
+	suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*>
 
 	/**
 	 * Gets chapter passage via it's ID

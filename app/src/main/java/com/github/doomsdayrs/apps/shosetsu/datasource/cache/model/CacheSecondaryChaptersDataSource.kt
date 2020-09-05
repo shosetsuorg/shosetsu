@@ -4,12 +4,14 @@ import android.app.Application
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.forEach
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheSecondaryChaptersDataSource
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
@@ -99,6 +101,7 @@ class CacheSecondaryChaptersDataSource(
 	/**
 	 * Clears out [chaptersCacheInstruction] of its incorrect data
 	 */
+	@Throws(JSONException::class)
 	@Suppress("RedundantSuspendModifier")
 	@Synchronized
 	private suspend fun launchCleanUp() {
@@ -135,32 +138,38 @@ class CacheSecondaryChaptersDataSource(
 
 	}
 
+	@Throws(JSONException::class)
 	@Synchronized
-	override suspend fun saveChapterInCache(chapterID: Int, passage: String) {
-		// Looks for the chapter if its already in the instruction set
-		// If found, it updates the time and writes the new data
-		for (i in 0 until chaptersCacheInstruction.length()) {
-			val obj = chaptersCacheInstruction.getJSONObject(i)
-			val id = obj.getInt(CHAPTER_KEY)
-			if (id == chapterID) {
-				createFile(chapterID).writeText(passage)
-				obj.put(TIME_KEY, System.currentTimeMillis())
-				chaptersCacheInstruction.put(i, obj)
-				return
+	override suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> {
+		try {
+			// Looks for the chapter if its already in the instruction set
+			// If found, it updates the time and writes the new data
+			for (i in 0 until chaptersCacheInstruction.length()) {
+				val obj = chaptersCacheInstruction.getJSONObject(i)
+				val id = obj.getInt(CHAPTER_KEY)
+				if (id == chapterID) {
+					createFile(chapterID).writeText(passage)
+					obj.put(TIME_KEY, System.currentTimeMillis())
+					chaptersCacheInstruction.put(i, obj)
+					return successResult("")
+				}
 			}
+
+			// Writes data to txt file then updates the chapterInstruction json
+
+			createFile(chapterID).writeText(passage)
+			chaptersCacheInstruction.put(JSONObject().apply {
+				put(CHAPTER_KEY, chapterID)
+				put(TIME_KEY, System.currentTimeMillis())
+			})
+
+			writeFile()
+
+			launchIO { launchCleanUp() } // Launch cleanup separately
+			return successResult("")
+		} catch (e: JSONException) {
+			return errorResult(e)
 		}
-
-		// Writes data to txt file then updates the chapterInstruction json
-
-		createFile(chapterID).writeText(passage)
-		chaptersCacheInstruction.put(JSONObject().apply {
-			put(CHAPTER_KEY, chapterID)
-			put(TIME_KEY, System.currentTimeMillis())
-		})
-
-		writeFile()
-
-		launchIO { launchCleanUp() } // Launch cleanup separately
 	}
 
 	@Synchronized

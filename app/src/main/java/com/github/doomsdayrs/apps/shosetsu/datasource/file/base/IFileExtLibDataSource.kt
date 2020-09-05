@@ -24,8 +24,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  * 12 / 05 / 2020
  */
 interface IFileExtLibDataSource {
-	suspend fun writeExtLib(fileName: String, data: String)
+	suspend fun writeExtLib(fileName: String, data: String): HResult<*>
 	suspend fun loadExtLib(fileName: String): HResult<String>
 	fun blockingLoadLib(fileName: String): HResult<String>
-	suspend fun deleteExtLib(fileName: String)
+	suspend fun deleteExtLib(fileName: String): HResult<*>
 }

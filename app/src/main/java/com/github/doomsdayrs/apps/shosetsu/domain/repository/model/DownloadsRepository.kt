@@ -47,13 +47,13 @@ class DownloadsRepository(
 	override suspend fun addDownload(download: DownloadEntity): HResult<Long> =
 			iLocalDownloadsDataSource.insertDownload(download)
 
-	override suspend fun update(download: DownloadEntity): Unit =
+	override suspend fun update(download: DownloadEntity): HResult<*> =
 			iLocalDownloadsDataSource.updateDownload(download)
 
-	override suspend fun delete(download: DownloadEntity): Unit =
+	override suspend fun delete(download: DownloadEntity): HResult<*> =
 			iLocalDownloadsDataSource.deleteDownload(download)
 
-	override suspend fun resetList(): Unit =
+	override suspend fun resetList(): HResult<*> =
 			iLocalDownloadsDataSource.clearDownloads()
 
 }

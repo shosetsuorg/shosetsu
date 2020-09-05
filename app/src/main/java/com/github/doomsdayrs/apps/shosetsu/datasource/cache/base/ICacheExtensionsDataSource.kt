@@ -29,8 +29,8 @@ interface ICacheExtensionsDataSource {
 	suspend fun loadFormatterFromMemory(formatterID: Int): HResult<Formatter>
 
 	/** Put formatter in memory */
-	suspend fun putFormatterInMemory(formatter: Formatter)
+	suspend fun putFormatterInMemory(formatter: Formatter): HResult<*>
 
 	/** Remove formatter by ID from cache*/
-	suspend fun removeFormatterFromMemory(formatterID: Int)
+	suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*>
 }
