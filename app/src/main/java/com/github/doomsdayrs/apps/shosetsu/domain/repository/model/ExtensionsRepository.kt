@@ -51,7 +51,7 @@ class ExtensionsRepository(
 		private val fileSource: IFileExtensionDataSource,
 		private val remoteSource: IRemoteExtensionDataSource,
 		private val repositorySource: ILocalExtRepoDataSource,
-		private val remoteCatalogueDataSource: IRemoteCatalogueDataSource
+		private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
 	override suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
 			databaseSource.loadExtensions()
@@ -111,11 +111,13 @@ class ExtensionsRepository(
 	override suspend fun updateExtension(extensionEntity: ExtensionEntity): Unit =
 			databaseSource.updateExtension(extensionEntity)
 
-	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter> {
-		return memorySource.loadFormatterFromMemory(extensionEntity.id).takeIf { it is HResult.Success }
+	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter> = try {
+		memorySource.loadFormatterFromMemory(extensionEntity.id).takeIf { it is HResult.Success }
 				?: fileSource.loadFormatter(extensionEntity.fileName).takeIf { it is HResult.Success }
 						?.also { if (it is HResult.Success) memorySource.putFormatterInMemory(it.data) }
 				?: errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
+	} catch (e: NullPointerException) {
+		errorResult(ErrorKeys.ERROR_IMPOSSIBLE, "Impossible NPE")
 	}
 
 	override suspend fun loadFormatter(formatterID: Int): HResult<Formatter> =
@@ -134,7 +136,7 @@ class ExtensionsRepository(
 			formatter: Formatter,
 			listing: Int,
 			page: Int,
-			data: Map<Int, Any>
+			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> =
 			remoteCatalogueDataSource.loadListing(formatter, listing, page, data)
 }
