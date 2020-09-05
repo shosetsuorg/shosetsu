@@ -1,8 +1,7 @@
 {
-	"latestVersion":"887",
+	"latestVersion":"889",
 	"url":"https://discord.gg/ttSX7gB",
 	"releaseNotes":[
-		"- Removed broken fast scroll",
-		"- Fixed novel add issues"
+		"- ERROR_IMPOSSIBLE added"
 	]
 }
