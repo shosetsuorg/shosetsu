@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -36,6 +37,7 @@ interface IExtensionsRepository {
 	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*>
 
 	/** Uninstalls an [extensionEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun uninstallExtension(extensionEntity: ExtensionEntity)
 
 	/** Inserts or Updates an [extensionEntity] */
@@ -53,17 +55,12 @@ interface IExtensionsRepository {
 	/** Gets the extensions as cards containing their ID, Title, and Image */
 	suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>>
 
-	/** Gets extensions that are enabled */
-	fun loadPoweredExtensionsFileNames(): HResult<List<String>>
-
-	/** Loads the MD5 of an extension */
-	fun loadExtensionMD5(extensionID: Int): HResult<String>
 
 	/** Loads catalogue data of an extension */
 	suspend fun loadCatalogueData(
 			formatter: Formatter,
 			listing: Int,
 			page: Int,
-			data: Map<Int, Any>
+			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>
 }

@@ -31,23 +31,25 @@ import kotlin.reflect.KMutableProperty0
 @SettingsItemDSL
 inline fun spinnerSettingData(
 		id: Int,
-		action: SpinnerSettingData.() -> Unit
+		action: SpinnerSettingData.() -> Unit,
 ): SettingsItemData = SpinnerSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.spinnerSettingData(
 		id: Int,
-		action: SpinnerSettingData.() -> Unit
+		action: SpinnerSettingData.() -> Unit,
 ): Unit = this.let { list.add(SpinnerSettingData(id).also(action)) }
 
 
 @SettingsItemDSL
-inline fun SpinnerSettingData.onSpinnerItemSelected(crossinline value: (
-		AdapterView<*>?,
-		View?,
-		@ParameterName("position") Int,
-		@ParameterName("id") Long
-) -> Unit) {
+inline fun SpinnerSettingData.onSpinnerItemSelected(
+		crossinline value: (
+				AdapterView<*>?,
+				View?,
+				@ParameterName("position") Int,
+				@ParameterName("id") Long,
+		) -> Unit,
+) {
 	spinnerOnItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 		override fun onNothingSelected(parent: AdapterView<*>?) {}
 
@@ -59,12 +61,12 @@ inline fun SpinnerSettingData.onSpinnerItemSelected(crossinline value: (
 
 @SettingsItemDSL
 inline fun SpinnerSettingData.spinnerValue(
-		crossinline value: SpinnerSettingData.() -> Int
+		crossinline value: SpinnerSettingData.() -> Int,
 ): Unit = value().let { spinnerSelection = it }
 
 @SettingsItemDSL
 inline fun SpinnerSettingData.spinnerField(
-		crossinline action: SpinnerSettingData.() -> KMutableProperty0<Int>
+		crossinline action: SpinnerSettingData.() -> KMutableProperty0<Int>,
 ) {
 	val property = action()
 	spinnerValue { property.get() }

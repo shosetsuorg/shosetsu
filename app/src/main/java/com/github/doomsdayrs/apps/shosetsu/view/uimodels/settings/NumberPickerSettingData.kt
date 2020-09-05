@@ -32,7 +32,7 @@ class NumberPickerSettingData(id: Int) : RightSettingsItemData(id) {
 	var numberPickerOnValueChangedListener: (
 			picker: NumberPicker?,
 			oldVal: Int,
-			newVal: Int
+			newVal: Int,
 	) -> Unit = { _, _, _ -> }
 
 	override fun bindView(settingsItem: ViewHolder, payloads: List<Any>) {

@@ -39,7 +39,7 @@ import com.google.android.material.navigation.NavigationView
 class SDBuilder(
 		private val navigationView: NavigationView,
 		private val drawerLayout: DrawerLayout,
-		secondDrawerController: SecondDrawerController
+		secondDrawerController: SecondDrawerController,
 ) : SDViewBuilder(navigationView, secondDrawerController) {
 
 	private val parentView = inflater.inflate(drawer_layout, navigationView, false)

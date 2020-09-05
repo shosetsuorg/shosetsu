@@ -37,7 +37,7 @@ import org.luaj.vm2.LuaError
 class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 	override suspend fun loadChapterPassage(
 			formatter: Formatter,
-			chapterURL: String
+			chapterURL: String,
 	): HResult<String> =
 			try {
 				successResult(formatter.getPassage(chapterURL))

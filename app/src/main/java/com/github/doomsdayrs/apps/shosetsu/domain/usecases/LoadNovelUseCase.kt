@@ -38,7 +38,7 @@ class LoadNovelUseCase(
 		private val nR: INovelsRepository,
 		private val eR: IExtensionsRepository,
 		private val cR: IChaptersRepository,
-		private val uR: IUpdatesRepository
+		private val uR: IUpdatesRepository,
 ) {
 	private suspend fun main(novel: NovelEntity, loadChapters: Boolean) =
 			when (val fR = eR.loadFormatter(novel.formatterID)) {

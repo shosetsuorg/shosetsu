@@ -26,8 +26,6 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 import com.google.android.material.chip.Chip
 
 
-
-
 /**
  * Shosetsu
  * 9 / June / 2019

@@ -45,5 +45,5 @@ data class ExtLibEntity(
 		@PrimaryKey
 		val scriptName: String,
 		var version: String,
-		var repoID: Int
+		var repoID: Int,
 ) : Serializable

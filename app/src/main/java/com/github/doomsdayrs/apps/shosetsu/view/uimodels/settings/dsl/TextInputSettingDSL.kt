@@ -30,13 +30,13 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsL
 @SettingsItemDSL
 inline fun textInputSettingData(
 		id: Int,
-		action: TextInputSettingData.() -> Unit
+		action: TextInputSettingData.() -> Unit,
 ): SettingsItemData = TextInputSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.textInputSettingData(
 		id: Int,
-		action: TextInputSettingData.() -> Unit
+		action: TextInputSettingData.() -> Unit,
 ): Unit = this.let { list.add(TextInputSettingData(id).also(action)) }
 
 @SettingsItemDSL

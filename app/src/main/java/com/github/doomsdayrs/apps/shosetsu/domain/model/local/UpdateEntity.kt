@@ -45,5 +45,5 @@ data class UpdateEntity(
 		@PrimaryKey
 		val chapterID: Int,
 		val novelID: Int,
-		val time: Long
+		val time: Long,
 ) : Serializable

@@ -34,24 +34,24 @@ import java.io.Serializable
 
 data class CountIDTuple(
 		@ColumnInfo(name = "id") val id: Int,
-		@ColumnInfo(name = "COUNT(*)") val count: Int
+		@ColumnInfo(name = "COUNT(*)") val count: Int,
 ) : Serializable
 
 
 data class CountNovelIDTuple(
 		@ColumnInfo(name = "novelID") val id: Int,
-		@ColumnInfo(name = "COUNT(*)") val count: Int
+		@ColumnInfo(name = "COUNT(*)") val count: Int,
 ) : Serializable
 
 data class BooleanChapterIDTuple(
 		var boolean: Boolean,
-		@ColumnInfo(name = "chapterID") val id: Int
+		@ColumnInfo(name = "chapterID") val id: Int,
 ) : Serializable
 
 data class URLImageTitle(
 		var url: String,
 		var imageURL: String,
-		var title: String
+		var title: String,
 ) : Serializable, Convertible<URLTitleImageUI> {
 	override fun convertTo(): URLTitleImageUI = URLTitleImageUI(url, title, imageURL)
 }
@@ -64,7 +64,7 @@ data class URLImageTitle(
 data class IDTitleImage(
 		val id: Int,
 		val title: String,
-		val imageURL: String
+		val imageURL: String,
 ) : Serializable, Convertible<IDTitleImageUI> {
 	override fun convertTo(): IDTitleImageUI = IDTitleImageUI(id, title, imageURL)
 }
@@ -78,7 +78,7 @@ data class IDTitleImageBook(
 		val id: Int,
 		val title: String,
 		val imageURL: String,
-		var bookmarked: Boolean
+		var bookmarked: Boolean,
 ) : Serializable, Convertible<IDTitleImageBookUI> {
 	override fun convertTo(): IDTitleImageBookUI = IDTitleImageBookUI(id, title, imageURL, bookmarked)
 }
@@ -86,7 +86,7 @@ data class IDTitleImageBook(
 data class IDNameImage(
 		val id: Int,
 		val name: String,
-		val imageURL: String
+		val imageURL: String,
 ) : Serializable, Convertible<IDTitleImageUI> {
 	override fun convertTo(): IDTitleImageUI = IDTitleImageUI(id, name, imageURL)
 }

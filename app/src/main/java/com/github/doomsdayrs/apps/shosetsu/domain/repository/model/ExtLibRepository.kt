@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
@@ -38,16 +39,17 @@ class ExtLibRepository(
 		private val fileSource: IFileExtLibDataSource,
 		private val databaseSource: ILocalExtLibDataSource,
 		private val remoteSource: IRemoteExtLibDataSource,
-		private val cacheSource: ICacheExtLibDataSource
+		private val cacheSource: ICacheExtLibDataSource,
 ) : IExtLibRepository {
 	override suspend fun loadExtLibByRepo(
-			repositoryEntity: RepositoryEntity
+			repositoryEntity: RepositoryEntity,
 	): HResult<List<ExtLibEntity>> =
 			databaseSource.loadExtLibByRepo(repositoryEntity)
 
+	@Throws(JSONException::class, SQLiteException::class)
 	override suspend fun installExtLibrary(
 			repositoryEntity: RepositoryEntity,
-			extLibEntity: ExtLibEntity
+			extLibEntity: ExtLibEntity,
 	) {
 		val result = remoteSource.downloadLibrary(repositoryEntity, extLibEntity)
 		if (result is HResult.Success) {

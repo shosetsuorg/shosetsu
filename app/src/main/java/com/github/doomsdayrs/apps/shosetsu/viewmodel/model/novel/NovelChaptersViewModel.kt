@@ -43,7 +43,7 @@ class NovelChaptersViewModel(
 		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
 		private val openChapterUseCase: OpenInWebviewUseCase,
 		private val openInBrowserUseCase: OpenInBrowserUseCase,
-		private val settings: ShosetsuSettings
+		private val settings: ShosetsuSettings,
 ) : INovelChaptersViewModel() {
 	private var nID: Int = -1
 
@@ -78,7 +78,7 @@ class NovelChaptersViewModel(
 			chapterUI: ChapterUI,
 			readingPosition: Int,
 			readingStatus: ReadingStatus,
-			bookmarked: Boolean
+			bookmarked: Boolean,
 	) {
 		launchIO {
 			updateChapterUseCase(

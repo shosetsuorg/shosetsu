@@ -10,7 +10,10 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.entity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.*
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.CountIDTuple
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ReaderChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.base.BaseDao
 
 /*
@@ -58,16 +61,16 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	//## Single result queries
 
 	@Query("SELECT * FROM chapters WHERE id = :chapterID LIMIT 1")
-	fun loadChapter(chapterID: Int): ChapterEntity
+	suspend fun loadChapter(chapterID: Int): ChapterEntity
 
 	@Query("SELECT * FROM chapters WHERE _rowid_ = :rowID LIMIT 1")
-	fun loadChapter(rowID: Long): ChapterEntity
+	suspend fun loadChapter(rowID: Long): ChapterEntity
 
 	@Query("SELECT COUNT(*),id FROM chapters WHERE url = :chapterURL")
-	fun loadChapterCount(chapterURL: String): CountIDTuple
+	suspend fun loadChapterCount(chapterURL: String): CountIDTuple
 
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
-	fun loadChapterUnreadCount(): Int
+	suspend fun loadChapterUnreadCount(): Int
 
 	//# Transactions
 
@@ -92,7 +95,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	@Transaction
 	suspend fun handleChaptersReturnNew(
 			novelEntity: NovelEntity,
-			list: List<Novel.Chapter>
+			list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>> {
 		val newChapters = ArrayList<ChapterEntity>()
 		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!)
@@ -114,7 +117,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	private suspend fun insertReturn(
 			novelEntity: NovelEntity,
-			novelChapter: Novel.Chapter
+			novelChapter: Novel.Chapter,
 	): HResult<ChapterEntity> {
 		try {
 			val row = handleAbortInsert(novelChapter, novelEntity)
@@ -135,11 +138,5 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 				releaseDate = novelChapter.release,
 				order = novelChapter.order
 		))
-	}
-
-
-	private fun hasChapter(chapterURL: String): BooleanChapterIDTuple {
-		val c = loadChapterCount(chapterURL)
-		return BooleanChapterIDTuple(c.count > 0, c.id)
 	}
 }

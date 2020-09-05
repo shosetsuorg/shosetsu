@@ -39,7 +39,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
 fun Array<Filter<*>>.toSettingItems(
 		formatter: Formatter,
 		context: Context,
-		setting: ShosetsuSettings
+		setting: ShosetsuSettings,
 ): List<SettingsItemData> {
 	val settings = ArrayList<SettingsItemData>()
 	forEach { filter ->

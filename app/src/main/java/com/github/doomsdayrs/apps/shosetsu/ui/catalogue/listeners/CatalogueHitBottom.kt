@@ -28,7 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ICatalogViewMode
  * @author github.com/doomsdayrs
  */
 class CatalogueHitBottom(
-		private val viewModel: ICatalogViewModel
+		private val viewModel: ICatalogViewModel,
 ) : RecyclerView.OnScrollListener() {
 	private var lastBottomHit = 0L
 

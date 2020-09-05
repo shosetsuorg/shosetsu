@@ -57,7 +57,7 @@ class NovelChaptersController(
 
 
 	override val fastAdapter: FastAdapter<ChapterUI> by lazy {
-		val adapter = ChaptersAdapter( viewModel)
+		val adapter = ChaptersAdapter(viewModel)
 		adapter.addAdapter(0, itemAdapter)
 		adapter
 	}

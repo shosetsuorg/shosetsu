@@ -44,14 +44,8 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 	@Query("SELECT id, name, imageURL FROM extensions WHERE installed = 1 AND enabled = 1")
 	fun loadPoweredExtensionsBasic(): LiveData<List<IDNameImage>>
 
-	@Query("SELECT fileName FROM extensions WHERE installed = 1 AND enabled = 1 ORDER BY name ASC")
-	fun loadPoweredExtensionsFileNames(): Array<String>
-
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
 	fun loadExtension(formatterID: Int): ExtensionEntity
-
-	@Query("SELECT md5 FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun loadExtensionMD5(formatterID: Int): String
 
 	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
 	fun loadExtensionCountFromID(formatterID: Int): Int

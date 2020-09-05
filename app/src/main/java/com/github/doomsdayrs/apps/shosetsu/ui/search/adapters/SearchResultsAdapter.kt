@@ -17,7 +17,8 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  * ====================================================================
- */ /**
+ */
+/**
  * shosetsu
  * 20 / 12 / 2019
  *

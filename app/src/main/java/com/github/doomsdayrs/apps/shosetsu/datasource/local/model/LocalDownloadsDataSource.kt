@@ -1,9 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.model
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalDownloadsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
@@ -31,28 +34,46 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.DownloadsDao
  * 12 / 05 / 2020
  */
 class LocalDownloadsDataSource(
-		private val downloadsDao: DownloadsDao
+		private val downloadsDao: DownloadsDao,
 ) : ILocalDownloadsDataSource {
-	override fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>> =
-			downloadsDao.loadDownloadItems().map { successResult(it) }
+	override fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>> = liveData {
+		try {
+			emitSource(downloadsDao.loadDownloadItems().map { successResult(it) })
+		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		}
+	}
 
-	override suspend fun loadDownloadCount(): HResult<Int> =
-			successResult(downloadsDao.loadDownloadCount())
+	override suspend fun loadDownloadCount(): HResult<Int> = try {
+		successResult(downloadsDao.loadDownloadCount())
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
-	override suspend fun loadFirstDownload(): HResult<DownloadEntity> =
-			downloadsDao.loadFirstDownload()?.let { successResult(it) } ?: emptyResult()
+	override suspend fun loadFirstDownload(): HResult<DownloadEntity> = try {
+		downloadsDao.loadFirstDownload()?.let { successResult(it) } ?: emptyResult()
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
-	override suspend fun insertDownload(downloadEntity: DownloadEntity): Long =
-			downloadsDao.insertIgnore(downloadEntity)
+	override suspend fun insertDownload(downloadEntity: DownloadEntity): HResult<Long> = try {
+		successResult(downloadsDao.insertIgnore(downloadEntity))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
-	override suspend fun updateDownload(downloadEntity: DownloadEntity) =
+	override suspend fun updateDownload(downloadEntity: DownloadEntity): Unit =
 			downloadsDao.suspendedUpdate(downloadEntity)
 
-	override suspend fun deleteDownload(downloadEntity: DownloadEntity) =
+	override suspend fun deleteDownload(downloadEntity: DownloadEntity): Unit =
 			downloadsDao.suspendedDelete(downloadEntity)
 
-	override suspend fun clearDownloads() = downloadsDao.clearData()
+	override suspend fun clearDownloads(): Unit =
+			downloadsDao.clearData()
 
-	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> =
-			successResult(downloadsDao.loadDownload(chapterID))
+	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> = try {
+		successResult(downloadsDao.loadDownload(chapterID))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 }

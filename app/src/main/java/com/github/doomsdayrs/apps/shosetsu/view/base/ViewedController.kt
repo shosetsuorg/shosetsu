@@ -153,7 +153,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	override fun onCreateView(
 			inflater: LayoutInflater,
 			container: ViewGroup,
-			savedViewState: Bundle?
+			savedViewState: Bundle?,
 	): View {
 		setViewTitle()
 		val view = createViewInstance(inflater, container)
@@ -177,7 +177,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	/** @see [toast] */
 	fun toast(
 			length: Int = Toast.LENGTH_SHORT,
-			message: () -> String
+			message: () -> String,
 	) {
 		launchUI {
 			applicationContext?.toast(message(), length)
@@ -187,7 +187,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 	/** @see [toast] */
 	fun toast(
 			@StringRes message: Int,
-			length: Int = Toast.LENGTH_SHORT
+			length: Int = Toast.LENGTH_SHORT,
 	) {
 		launchUI {
 			applicationContext?.toast(message, length)

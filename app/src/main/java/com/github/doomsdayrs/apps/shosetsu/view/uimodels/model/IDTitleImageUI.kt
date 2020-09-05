@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
 data class IDTitleImageUI(
 		val id: Int,
 		val title: String,
-		val imageURL: String
+		val imageURL: String,
 ) : Convertible<IDTitleImage> {
 	override fun convertTo(): IDTitleImage = IDTitleImage(id, title, imageURL)
 }

@@ -43,6 +43,6 @@ abstract class IChapterReaderViewModel
 			readerChapterUI: ReaderChapterUI,
 			readingPosition: Int = readerChapterUI.readingPosition,
 			readingStatus: ReadingStatus = readerChapterUI.readingStatus,
-			bookmarked: Boolean = readerChapterUI.bookmarked
+			bookmarked: Boolean = readerChapterUI.bookmarked,
 	)
 }

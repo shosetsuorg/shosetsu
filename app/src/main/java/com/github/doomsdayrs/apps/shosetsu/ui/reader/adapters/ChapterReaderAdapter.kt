@@ -42,7 +42,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
  * @param chapterReader ChapterReader
  */
 class ChapterReaderAdapter(
-		private val chapterReader: ChapterReader
+		private val chapterReader: ChapterReader,
 ) : RecyclerView.Adapter<NewTextReader>() {
 	var textReaders = ArrayList<NewTextReader>()
 
@@ -95,7 +95,7 @@ class ChapterReaderAdapter(
 					holder.setText(it.data)
 					holder.bind()
 					holder.textView.post {
-						Log.d(logID(),"Reading position ${chapter.readingPosition}")
+						Log.d(logID(), "Reading position ${chapter.readingPosition}")
 						holder.scrollView.scrollTo(0, chapter.readingPosition)
 					}
 				}

@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
  * 07 / 06 / 2020
  */
 class UpdateReaderChapterUseCase(
-		private val chapterRepository: IChaptersRepository
+		private val chapterRepository: IChaptersRepository,
 ) {
 	suspend operator fun invoke(chapter: ReaderChapterUI) {
 		chapterRepository.updateReaderChapter(chapter.convertTo())

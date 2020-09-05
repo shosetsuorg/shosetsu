@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtRepoReposi
  * 13 / 05 / 2020
  */
 class RefreshRepositoryUseCase(
-		val repository: IExtRepoRepository
+		val repository: IExtRepoRepository,
 ) : (() -> Unit) {
 	override fun invoke() {
 		TODO("Not yet implemented")

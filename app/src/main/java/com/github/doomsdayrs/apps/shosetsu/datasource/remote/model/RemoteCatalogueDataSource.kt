@@ -44,7 +44,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	override suspend fun search(
 			formatter: Formatter,
 			query: String,
-			data: Map<Int, Any>
+			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
 			if (formatter.hasSearch)
@@ -67,7 +67,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			formatter: Formatter,
 			listing: Int,
 			page: Int,
-			data: Map<Int, Any>
+			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
 			successResult(

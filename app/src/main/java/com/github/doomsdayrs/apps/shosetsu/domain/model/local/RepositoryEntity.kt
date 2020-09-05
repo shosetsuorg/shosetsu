@@ -33,7 +33,7 @@ import java.io.Serializable
 @Entity(tableName = "repositories")
 data class RepositoryEntity(
 		var url: String,
-		var name: String
+		var name: String,
 ) : Serializable, Convertible<RepositoryUI> {
 	@PrimaryKey(autoGenerate = true)
 	var id: Int = 0

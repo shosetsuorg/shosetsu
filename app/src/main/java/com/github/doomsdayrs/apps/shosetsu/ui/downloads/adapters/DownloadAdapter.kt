@@ -30,7 +30,7 @@ import com.mikepenz.fastadapter.FastAdapter
  * @author github.com/doomsdayrs
  */
 class DownloadAdapter(
-		private var viewModel: IDownloadsViewModel
+		private var viewModel: IDownloadsViewModel,
 ) : FastAdapter<DownloadUI>() {
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)

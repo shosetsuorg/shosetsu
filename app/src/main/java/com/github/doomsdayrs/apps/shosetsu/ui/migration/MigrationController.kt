@@ -54,7 +54,7 @@ class MigrationController(bundle: Bundle) : ViewedController(bundle) {
 			val original: Int,
 			var targetFormatterID: Int = -1,
 			var listings: Array<Novel.Listing> = arrayOf(),
-			var selectedURL: String = ""
+			var selectedURL: String = "",
 	)
 
 	override val layoutRes: Int = R.layout.migration_view

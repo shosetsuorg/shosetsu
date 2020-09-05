@@ -33,7 +33,7 @@ import java.io.File
  * [FormatterUtils] provides a class that handles all basic needs for extensions
  */
 class FormatterUtils(
-		val context: Context
+		val context: Context,
 ) : IFormatterUtils {
 	companion object {
 		private fun splitVersion(version: String): Array<String> =

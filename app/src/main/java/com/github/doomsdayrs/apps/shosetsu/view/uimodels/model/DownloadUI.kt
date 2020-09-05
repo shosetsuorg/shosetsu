@@ -42,7 +42,7 @@ data class DownloadUI(
 		val chapterName: String,
 		val novelName: String,
 		val formatterID: Int,
-		var status: Int = 0
+		var status: Int = 0,
 ) : BaseRecyclerItem<DownloadUI.ViewHolder>(), Convertible<DownloadEntity> {
 	override var identifier: Long
 		get() = chapterID.toLong()

@@ -29,7 +29,7 @@ import com.mikepenz.fastadapter.items.AbstractItem
  * 02 / 07 / 2020
  */
 abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
-		bundle: Bundle
+		bundle: Bundle,
 ) : RecyclerController<FastAdapter<ITEM>, ITEM>() {
 	constructor() : this(bundleOf())
 

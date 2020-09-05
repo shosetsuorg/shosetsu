@@ -28,7 +28,7 @@ import androidx.core.content.getSystemService
  * 04 / 09 / 2020
  */
 class IsOnlineUseCase(
-		private val application: Application
+		private val application: Application,
 ) {
 	private val connectivityManager by lazy {
 		application.getSystemService<ConnectivityManager>()!!

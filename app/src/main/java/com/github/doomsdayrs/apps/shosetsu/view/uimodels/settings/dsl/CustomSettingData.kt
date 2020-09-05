@@ -30,18 +30,18 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsL
 @SettingsItemDSL
 inline fun customSettingData(
 		id: Int,
-		action: CustomSettingData.() -> Unit
+		action: CustomSettingData.() -> Unit,
 ): SettingsItemData = CustomSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.customSettingData(
 		id: Int,
-		action: CustomSettingData.() -> Unit
+		action: CustomSettingData.() -> Unit,
 ): Unit = this.let { list.add(CustomSettingData(id).also(action)) }
 
 @SettingsItemDSL
 inline fun CustomSettingData.customView(
-		crossinline view: () -> View
+		crossinline view: () -> View,
 ): CustomSettingData = this.apply {
 	customView = { view() }
 }

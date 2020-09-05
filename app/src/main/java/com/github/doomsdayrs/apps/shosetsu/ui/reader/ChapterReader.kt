@@ -71,7 +71,7 @@ class ChapterReader
 	: AppCompatActivity(R.layout.chapter_reader), KodeinAware {
 	private class RecyclerViewDiffer(
 			val old: List<ReaderChapterUI>,
-			val aNew: List<ReaderChapterUI>
+			val aNew: List<ReaderChapterUI>,
 	) : Callback() {
 		override fun getOldListSize(): Int = old.size
 
@@ -82,7 +82,7 @@ class ChapterReader
 
 		override fun areContentsTheSame(
 				oldItemPosition: Int,
-				newItemPosition: Int
+				newItemPosition: Int,
 		): Boolean {
 			val o: ReaderChapterUI = old[oldItemPosition]
 			val n = aNew[newItemPosition]
@@ -591,19 +591,21 @@ class ChapterReader
 		}
 	}
 
-	private fun BubbleSeekBar.bubbleOnProgressChanged(onProgressChangedFun: (
-			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
-			@ParameterName("progress") Int,
-			@ParameterName("progressFloat") Float,
-			@ParameterName("fromUser") Boolean
-	) -> Unit) {
+	private fun BubbleSeekBar.bubbleOnProgressChanged(
+			onProgressChangedFun: (
+					@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+					@ParameterName("progress") Int,
+					@ParameterName("progressFloat") Float,
+					@ParameterName("fromUser") Boolean,
+			) -> Unit,
+	) {
 		this.onProgressChangedListener =
 				object : BubbleSeekBar.OnProgressChangedListener {
 					override fun onProgressChanged(
 							bubbleSeekBar: BubbleSeekBar?,
 							progress: Int,
 							progressFloat: Float,
-							fromUser: Boolean
+							fromUser: Boolean,
 					) {
 						onProgressChangedFun(bubbleSeekBar, progress, progressFloat, fromUser)
 					}
@@ -611,7 +613,7 @@ class ChapterReader
 					override fun getProgressOnActionUp(
 							bubbleSeekBar: BubbleSeekBar?,
 							progress: Int,
-							progressFloat: Float
+							progressFloat: Float,
 					) {
 					}
 
@@ -619,7 +621,7 @@ class ChapterReader
 							bubbleSeekBar: BubbleSeekBar?,
 							progress: Int,
 							progressFloat: Float,
-							fromUser: Boolean
+							fromUser: Boolean,
 					) {
 					}
 				}

@@ -26,5 +26,5 @@ package com.github.doomsdayrs.apps.shosetsu.view.uimodels.model
  */
 data class RepositoryUI(
 		var url: String,
-		var name: String
+		var name: String,
 )

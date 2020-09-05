@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
  * 14 / 08 / 2020
  */
 class UninstallExtensionUIUseCase(
-		private val extensionRepository: IExtensionsRepository
+		private val extensionRepository: IExtensionsRepository,
 ) {
 	operator fun invoke(extensionEntity: ExtensionUI) {
 		launchIO {

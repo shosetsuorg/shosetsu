@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
  * 04 / 07 / 2020
  */
 class LoadExtensionConfigUseCase(
-		private val iExtensionsRepository: IExtensionsRepository
+		private val iExtensionsRepository: IExtensionsRepository,
 ) {
 	suspend operator fun invoke(): LiveData<HResult<List<ExtensionConfigUI>>> =
 			liveData<HResult<List<ExtensionConfigUI>>> {

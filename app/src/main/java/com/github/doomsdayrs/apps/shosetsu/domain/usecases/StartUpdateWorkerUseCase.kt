@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker.UpdateW
  */
 class StartUpdateWorkerUseCase(
 		private val context: Context,
-		private val manager: UpdateWorkerManager
+		private val manager: UpdateWorkerManager,
 ) : (() -> Unit) {
 	override fun invoke() {
 		manager.start(context)

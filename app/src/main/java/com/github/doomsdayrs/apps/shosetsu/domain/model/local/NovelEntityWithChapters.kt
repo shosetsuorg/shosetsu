@@ -29,7 +29,7 @@ import androidx.room.Relation
 data class NovelEntityWithChapters(
 		val novelEntity: NovelEntity,
 		@Relation(parentColumn = "id", entityColumn = "id", entity = ChapterEntity::class)
-		val array: Array<ChapterEntity>
+		val array: Array<ChapterEntity>,
 ) {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import app.shosetsu.lib.ShosetsuLib
 import app.shosetsu.lib.shosetsuGlobals
 import com.github.doomsdayrs.apps.shosetsu.R

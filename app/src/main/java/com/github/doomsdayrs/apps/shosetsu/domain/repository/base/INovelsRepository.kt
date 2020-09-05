@@ -15,6 +15,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -38,8 +39,6 @@ interface INovelsRepository {
 	/** Gets NovelEntities that are bookmarked */
 	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
 
-	/** Gets NovelEntities that are bookmarked */
-	suspend fun unBookmarkNovels(selectedNovels: List<Int>)
 
 	/** Searches the bookmarked novels and returns a live data of them */
 	suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>>
@@ -51,7 +50,7 @@ interface INovelsRepository {
 	suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>>
 
 	/** Inserts the [novelEntity] and returns a UI version of it  */
-	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook
+	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook>
 
 	/** Inserts the [novelEntity] */
 	suspend fun insertNovel(novelEntity: NovelEntity)
@@ -62,6 +61,7 @@ interface INovelsRepository {
 	/**
 	 * Updates a novel entity with new data
 	 */
+	@Throws(SQLiteException::class)
 	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info)
 
 	/** Updates a list of bookmarked novels */
@@ -73,11 +73,7 @@ interface INovelsRepository {
 	suspend fun retrieveNovelInfo(
 			formatter: Formatter,
 			novelEntity: NovelEntity,
-			loadChapters: Boolean
+			loadChapters: Boolean,
 	): HResult<Novel.Info>
 
-	/**
-	 * Bookmark a novel by it's ID
-	 */
-	suspend fun setNovelBookmark(novelID: Int, bookmark: Int)
 }

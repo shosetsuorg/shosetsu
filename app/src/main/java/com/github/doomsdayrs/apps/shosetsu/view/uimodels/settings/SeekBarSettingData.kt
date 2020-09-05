@@ -58,14 +58,14 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 			@ParameterName("progress") Int,
 			@ParameterName("progressFloat") Float,
-			@ParameterName("fromUser") Boolean
+			@ParameterName("fromUser") Boolean,
 	) -> Unit =
 			{ _, _, _, _ -> }
 
 	var OnProgressActionUp: (
 			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 			@ParameterName("progress") Int,
-			@ParameterName("progressFloat") Float
+			@ParameterName("progressFloat") Float,
 	) -> Unit =
 			{ _, _, _ -> }
 
@@ -73,7 +73,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 			@ParameterName("progress") Int,
 			@ParameterName("progressFloat") Float,
-			@ParameterName("fromUser") Boolean
+			@ParameterName("fromUser") Boolean,
 	) -> Unit =
 			{ _, _, _, _ -> }
 
@@ -111,7 +111,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 						bubbleSeekBar: BubbleSeekBar?,
 						progress: Int,
 						progressFloat: Float,
-						fromUser: Boolean
+						fromUser: Boolean,
 				) {
 					ProgressChanged(bubbleSeekBar, progress, progressFloat, fromUser)
 				}
@@ -119,7 +119,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 				override fun getProgressOnActionUp(
 						bubbleSeekBar: BubbleSeekBar?,
 						progress: Int,
-						progressFloat: Float
+						progressFloat: Float,
 				) {
 					OnProgressActionUp(bubbleSeekBar, progress, progressFloat)
 				}
@@ -128,7 +128,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 						bubbleSeekBar: BubbleSeekBar?,
 						progress: Int,
 						progressFloat: Float,
-						fromUser: Boolean
+						fromUser: Boolean,
 				) {
 					ProgressOnFinally(bubbleSeekBar, progress, progressFloat, fromUser)
 				}

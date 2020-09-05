@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
  * 13 / 05 / 2020
  */
 class GetUpdatesUseCase(
-		private val updatesRepository: IUpdatesRepository
+		private val updatesRepository: IUpdatesRepository,
 ) : (() -> LiveData<HResult<List<UpdateUI>>>) {
 	override fun invoke(): LiveData<HResult<List<UpdateUI>>> = liveData {
 		emitSource(updatesRepository.getCompleteUpdates().map {

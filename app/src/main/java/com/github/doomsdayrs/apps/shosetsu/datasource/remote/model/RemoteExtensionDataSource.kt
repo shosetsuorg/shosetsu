@@ -33,7 +33,7 @@ import okhttp3.OkHttpClient
  * 13 / 05 / 2020
  */
 class RemoteExtensionDataSource(
-		private val client: OkHttpClient
+		private val client: OkHttpClient,
 ) : IRemoteExtensionDataSource {
 
 	private fun makeFormatterURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
@@ -41,7 +41,7 @@ class RemoteExtensionDataSource(
 
 	override suspend fun downloadExtension(
 			repositoryEntity: RepositoryEntity,
-			extensionEntity: ExtensionEntity
+			extensionEntity: ExtensionEntity,
 	): HResult<String> =
 			try {
 				successResult(client.quickie(makeFormatterURL(

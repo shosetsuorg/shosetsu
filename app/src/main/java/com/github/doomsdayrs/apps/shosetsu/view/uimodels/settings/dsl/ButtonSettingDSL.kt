@@ -30,18 +30,20 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsL
 @SettingsItemDSL
 inline fun buttonSettingData(
 		id: Int,
-		action: ButtonSettingData.() -> Unit
+		action: ButtonSettingData.() -> Unit,
 ): SettingsItemData = ButtonSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.buttonSettingData(
 		id: Int,
-		action: ButtonSettingData.() -> Unit
+		action: ButtonSettingData.() -> Unit,
 ): Unit = this.let { list.add(ButtonSettingData(id).also(action)) }
 
 @SettingsItemDSL
-inline fun ButtonSettingData.onButtonClicked(crossinline action: ButtonSettingData.(
-		@ParameterName("view") View
-) -> Unit) {
+inline fun ButtonSettingData.onButtonClicked(
+		crossinline action: ButtonSettingData.(
+				@ParameterName("view") View,
+		) -> Unit,
+) {
 	buttonOnClickListener = { action(it) }
 }

@@ -31,7 +31,7 @@ import app.shosetsu.lib.Novel
  * @author github.com/doomsdayrs
  */
 @Deprecated("AsyncTask is bad")
-class ChapterLoader( var formatter: Formatter, var novelURL: String) : AsyncTask<Void, Void, Boolean>() {
+class ChapterLoader(var formatter: Formatter, var novelURL: String) : AsyncTask<Void, Void, Boolean>() {
 
 	private val finalChapters: ArrayList<Novel.Chapter> = ArrayList()
 

@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
  * @author github.com/doomsdayrs
  */
 abstract class NewReader internal constructor(
-		itemView: View
+		itemView: View,
 ) : RecyclerView.ViewHolder(itemView) {
 	/**
 	 * Sets the unformatted text

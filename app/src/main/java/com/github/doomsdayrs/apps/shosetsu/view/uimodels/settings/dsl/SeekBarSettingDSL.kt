@@ -30,13 +30,13 @@ import com.xw.repo.BubbleSeekBar
 @SettingsItemDSL
 inline fun seekBarSettingData(
 		id: Int,
-		action: SeekBarSettingData.() -> Unit
+		action: SeekBarSettingData.() -> Unit,
 ): SettingsItemData = SeekBarSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.seekBarSettingData(
 		id: Int,
-		action: SeekBarSettingData.() -> Unit
+		action: SeekBarSettingData.() -> Unit,
 ): Unit = this.let { list.add(SeekBarSettingData(id).also(action)) }
 
 
@@ -45,7 +45,7 @@ inline fun SeekBarSettingData.range(
 		crossinline value: SeekBarSettingData.() -> Pair<
 				@ParameterName("lowerBound") Float,
 				@ParameterName("upperBound") Float
-				>
+				>,
 ) = value().let {
 	minValue = it.first
 	maxValue = it.second
@@ -57,8 +57,8 @@ inline fun SeekBarSettingData.onProgressChanged(
 				@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 				@ParameterName("progress") Int,
 				@ParameterName("progressFloat") Float,
-				@ParameterName("fromUser") Boolean
-		) -> Unit
+				@ParameterName("fromUser") Boolean,
+		) -> Unit,
 ) {
 	ProgressChanged = { p1, p2, p3, p4 -> value(p1, p2, p3, p4) }
 }
@@ -68,8 +68,8 @@ inline fun SeekBarSettingData.onProgressActionUp(
 		crossinline value: SeekBarSettingData.(
 				@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 				@ParameterName("progress") Int,
-				@ParameterName("progressFloat") Float
-		) -> Unit
+				@ParameterName("progressFloat") Float,
+		) -> Unit,
 ) {
 	OnProgressActionUp = { p1, p2, p3 -> value(p1, p2, p3) }
 }
@@ -81,8 +81,8 @@ inline fun SeekBarSettingData.onProgressFinally(
 				@ParameterName("bubbleSeekBar") BubbleSeekBar?,
 				@ParameterName("progress") Int,
 				@ParameterName("progressFloat") Float,
-				@ParameterName("fromUser") Boolean
-		) -> Unit
+				@ParameterName("fromUser") Boolean,
+		) -> Unit,
 ) {
 	ProgressOnFinally = { p1, p2, p3, p4 -> value(p1, p2, p3, p4) }
 }

@@ -32,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
  */
 class LoadChapterPassageUseCase(
 		private val iChaptersRepository: IChaptersRepository,
-		private val iExtensionsRepository: IExtensionsRepository
+		private val iExtensionsRepository: IExtensionsRepository,
 ) {
 	suspend operator fun invoke(chapter: ReaderChapterUI): HResult<String> {
 		Log.d(logID(), "Getting chapter entity #${chapter.id}}")

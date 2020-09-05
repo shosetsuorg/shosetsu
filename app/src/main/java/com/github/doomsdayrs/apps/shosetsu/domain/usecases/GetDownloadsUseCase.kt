@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
  * 12 / May / 2020
  */
 class GetDownloadsUseCase(
-		private val iDownloadsRepository: IDownloadsRepository
+		private val iDownloadsRepository: IDownloadsRepository,
 ) : (() -> LiveData<HResult<List<DownloadUI>>>) {
 	override fun invoke(): LiveData<HResult<List<DownloadUI>>> {
 		return liveData { emitSource(iDownloadsRepository.loadLiveDownloads().map { it.mapListTo() }) }

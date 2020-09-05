@@ -23,5 +23,5 @@ package com.github.doomsdayrs.apps.shosetsu.common.consts
  */
 object WorkerTags {
 	const val DOWNLOAD_WORK_ID = "shosetsu_downloads"
-	const val UPDATE_WORK_ID ="shosetsu_updates"
+	const val UPDATE_WORK_ID = "shosetsu_updates"
 }

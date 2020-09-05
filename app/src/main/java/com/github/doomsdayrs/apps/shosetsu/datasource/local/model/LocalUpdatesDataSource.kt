@@ -1,8 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.model
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalUpdatesDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateCompleteEntity
@@ -31,45 +33,16 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.UpdatesDao
  * 12 / 05 / 2020
  */
 class LocalUpdatesDataSource(
-		private val updatesDao: UpdatesDao
+		private val updatesDao: UpdatesDao,
 ) : ILocalUpdatesDataSource {
 	override suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> =
 			updatesDao.loadUpdates().map { successResult(it) }
 
-	/*
-	override suspend fun getUpdates(): LiveData<HResult<List<Long>>> {
-		return liveData(context = Dispatchers.IO) {
-			var updatePages = ArrayList<Long>()
-
-			val days = updatesDao.getTotalDays()
-			Log.d(logID(), "Total Days: $days")
-
-			var startTime = updatesDao.getStartingDayTime()
-			Log.d(logID(), "Starting Day" + DateTime(startTime).toString())
-
-			// Adds the days up
-			for (x in 0 until days) {
-				val updateFragment = startTime
-				startTime += 86400000
-				updatePages.add(updateFragment)
-			}
-
-			// Removes days without updates
-			updatePages = updatesDao.removeDaysWithoutUpdates(updatePages)
-
-			// Today
-			val currentDate = DateTime(System.currentTimeMillis()).trimDate().millis
-
-			updatePages.add(currentDate)
-			updatePages.reverse()
-
-			successResult(updatePages)
-		}
+	override suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>> = try {
+		successResult(updatesDao.insertAllIgnore(list))
+	} catch (e: SQLiteException) {
+		errorResult(e)
 	}
-	 */
-
-	override suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long> =
-			updatesDao.insertAllIgnore(list)
 
 	override suspend fun getCompleteUpdates(): LiveData<HResult<List<UpdateCompleteEntity>>> =
 			updatesDao.loadCompleteUpdates().map { successResult(it) }

@@ -35,37 +35,37 @@ import com.github.doomsdayrs.apps.shosetsu.view.susScript.adapters.SusScriptAdap
  */
 
 class DialogBody(inflater: LayoutInflater, builder: AlertDialog.Builder, private val susScriptDialog: SusScriptDialog) {
-    val view = inflater.inflate(R.layout.alert_extensions_handle, null)!!
-    lateinit var dialog: AlertDialog
+	val view = inflater.inflate(R.layout.alert_extensions_handle, null)!!
+	lateinit var dialog: AlertDialog
 
-    init {
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.adapter = SusScriptAdapter(susScriptDialog)
-        recyclerView.layoutManager = LinearLayoutManager(builder.context, LinearLayoutManager.VERTICAL, false)
+	init {
+		val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+		recyclerView.adapter = SusScriptAdapter(susScriptDialog)
+		recyclerView.layoutManager = LinearLayoutManager(builder.context, LinearLayoutManager.VERTICAL, false)
 
-        val acceptAll: Button = view.findViewById(R.id.acceptAll)
-        acceptAll.setOnClickListener {
-            susScriptDialog.setAll(0)
-            susScriptDialog.processActions()
-            dialog.hide()
-        }
-        val tempAll: Button = view.findViewById(R.id.tempAll)
-        tempAll.setOnClickListener {
-            susScriptDialog.setAll(1)
-            susScriptDialog.processActions()
-            dialog.hide()
-        }
-        val disableAll: Button = view.findViewById(R.id.disableAll)
-        disableAll.setOnClickListener {
-            susScriptDialog.setAll(2)
-            susScriptDialog.processActions()
-            dialog.hide()
-        }
-        val uninstallAll: Button = view.findViewById(R.id.uninstallAll)
-        uninstallAll.setOnClickListener {
-            susScriptDialog.setAll(3)
-            susScriptDialog.processActions()
-            dialog.hide()
-        }
-    }
+		val acceptAll: Button = view.findViewById(R.id.acceptAll)
+		acceptAll.setOnClickListener {
+			susScriptDialog.setAll(0)
+			susScriptDialog.processActions()
+			dialog.hide()
+		}
+		val tempAll: Button = view.findViewById(R.id.tempAll)
+		tempAll.setOnClickListener {
+			susScriptDialog.setAll(1)
+			susScriptDialog.processActions()
+			dialog.hide()
+		}
+		val disableAll: Button = view.findViewById(R.id.disableAll)
+		disableAll.setOnClickListener {
+			susScriptDialog.setAll(2)
+			susScriptDialog.processActions()
+			dialog.hide()
+		}
+		val uninstallAll: Button = view.findViewById(R.id.uninstallAll)
+		uninstallAll.setOnClickListener {
+			susScriptDialog.setAll(3)
+			susScriptDialog.processActions()
+			dialog.hide()
+		}
+	}
 }

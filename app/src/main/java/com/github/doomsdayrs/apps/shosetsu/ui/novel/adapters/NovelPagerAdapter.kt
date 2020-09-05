@@ -77,7 +77,7 @@ class NovelPagerAdapter(private val novelController: NovelController)
 	override fun getPageTitle(position: Int): CharSequence? = titles.getItem(position)
 
 	inner class PageController(
-			private val fab: FloatingActionButton
+			private val fab: FloatingActionButton,
 	) : ViewPager.OnPageChangeListener {
 		private var currentPosition = 0
 

@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.IDTitleImageUI
  * 08 / 05 / 2020
  */
 class SearchBookMarkedNovelsUseCase(
-		val iNovelsRepository: INovelsRepository
+		val iNovelsRepository: INovelsRepository,
 ) : ((String) -> LiveData<HResult<List<IDTitleImageUI>>>) {
 	override fun invoke(p1: String): LiveData<HResult<List<IDTitleImageUI>>> {
 		return liveData { emitSource(iNovelsRepository.searchBookmarked(p1).map { it.mapListTo() }) }

@@ -41,7 +41,7 @@ class DownloadsViewModel(
 		private val updateDownloadUseCase: UpdateDownloadUseCase,
 		private val deleteDownloadUseCase: DeleteDownloadUseCase,
 		private val settings: ShosetsuSettings,
-		private var isOnlineUseCase: IsOnlineUseCase
+		private var isOnlineUseCase: IsOnlineUseCase,
 ) : IDownloadsViewModel() {
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		liveData(viewModelScope.coroutineContext + Dispatchers.IO) {

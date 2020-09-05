@@ -35,7 +35,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionSingle
  * Opens up detailed view of an extension, allows modifications
  */
 class ConfigureExtension(
-		private val bundle: Bundle
+		private val bundle: Bundle,
 ) : FastAdapterRecyclerController<SettingsItemData>(bundle) {
 	val viewModel: IExtensionSingleConfigureViewModel by viewModel()
 

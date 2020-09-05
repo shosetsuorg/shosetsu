@@ -41,7 +41,7 @@ class LibraryViewModel(
 		private val libraryAsCardsUseCase: LoadLibraryUseCase,
 		private val updateBookmarkedNovelUIUseCase: UpdateBookmarkedNovelUIUseCase,
 		private val isOnlineUseCase: IsOnlineUseCase,
-		private var startUpdateWorkerUseCase: StartUpdateWorkerUseCase
+		private var startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
 ) : ILibraryViewModel() {
 	override val liveData: LiveData<HResult<List<ABookmarkedNovelUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {

@@ -28,7 +28,7 @@ data class IDTitleImageBookUI(
 		val id: Int,
 		val title: String,
 		val imageURL: String,
-		var bookmarked: Boolean
+		var bookmarked: Boolean,
 ) : Convertible<IDTitleImageBook> {
 	override fun convertTo(): IDTitleImageBook = IDTitleImageBook(id, title, imageURL, bookmarked)
 }

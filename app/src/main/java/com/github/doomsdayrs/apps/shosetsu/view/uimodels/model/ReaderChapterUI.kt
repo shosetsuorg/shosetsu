@@ -31,7 +31,7 @@ data class ReaderChapterUI(
 		val title: String,
 		var readingPosition: Int,
 		var readingStatus: ReadingStatus,
-		var bookmarked: Boolean
+		var bookmarked: Boolean,
 ) : Convertible<ReaderChapterEntity> {
 	override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
 			id,

@@ -29,8 +29,8 @@ import org.json.JSONObject
  * 12 / 05 / 2020
  */
 class ExtRepoRepository(
-		val databaseSource: ILocalExtRepoDataSource,
-		val remoteSource: IRemoteExtRepoDataSource
+		private val databaseSource: ILocalExtRepoDataSource,
+		private val remoteSource: IRemoteExtRepoDataSource
 ) : IExtRepoRepository {
 	override suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<JSONObject> =
 			remoteSource.downloadRepoData(repositoryEntity)

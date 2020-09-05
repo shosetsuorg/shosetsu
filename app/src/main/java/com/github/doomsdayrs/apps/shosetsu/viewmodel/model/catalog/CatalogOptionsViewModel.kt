@@ -36,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
  */
 class CatalogOptionsViewModel(
 		private val getCatalogsUseCase: GetCatalogsUseCase,
-		private val isOnlineUseCase: IsOnlineUseCase
+		private val isOnlineUseCase: IsOnlineUseCase,
 ) : ICatalogOptionsViewModel() {
 	override val liveData: LiveData<HResult<List<CatalogOptionUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Main) {

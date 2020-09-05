@@ -40,7 +40,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 class ShareUseCase(
 		private val repository: IExtensionsRepository,
 		private val stringToastUseCase: StringToastUseCase,
-		private val application: Application
+		private val application: Application,
 ) {
 	operator fun invoke(url: String, title: String) {
 		Log.d(logID(), "Opening URL $url")

@@ -29,13 +29,13 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsL
 @SettingsItemDSL
 inline fun infoSettingData(
 		id: Int,
-		action: InfoSettingData.() -> Unit
+		action: InfoSettingData.() -> Unit,
 ): SettingsItemData = InfoSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.infoSettingData(
 		id: Int,
-		action: InfoSettingData.() -> Unit
+		action: InfoSettingData.() -> Unit,
 ): Unit = this.let { list.add(InfoSettingData(id).also(action)) }
 
 @SettingsItemDSL

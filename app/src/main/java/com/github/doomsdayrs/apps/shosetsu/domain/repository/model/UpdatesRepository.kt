@@ -32,10 +32,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesReposi
  * @author github.com/doomsdayrs
  */
 class UpdatesRepository(
-		private val iLocalUpdatesDataSource: ILocalUpdatesDataSource
+		private val iLocalUpdatesDataSource: ILocalUpdatesDataSource,
 ) : IUpdatesRepository {
 
-	override suspend fun addUpdates(list: List<UpdateEntity>): Array<Long> =
+	override suspend fun addUpdates(list: List<UpdateEntity>): HResult<Array<Long>> =
 			iLocalUpdatesDataSource.insertUpdates(list)
 
 	override suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> =

@@ -1,11 +1,12 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.model
 
-import android.util.Log
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
@@ -34,35 +35,40 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
  * 12 / May / 2020
  */
 class LocalExtensionsDataSource(
-		private val extensionsDao: ExtensionsDao
+		private val extensionsDao: ExtensionsDao,
 ) : ILocalExtensionsDataSource {
-	override suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
-			extensionsDao.loadExtensions().map {
-				successResult(it)
-			}
+	override suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>> = liveData {
+		try {
+			emitSource(extensionsDao.loadExtensions().map { successResult(it) })
+		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		}
+	}
 
-	override suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>> =
-			extensionsDao.loadPoweredExtensionsBasic().map { list ->
+
+	override suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>> = liveData {
+		try {
+			emitSource(extensionsDao.loadPoweredExtensionsBasic().map { list ->
 				successResult(list.map { IDTitleImage(it.id, it.name, it.imageURL) })
-			}
+			})
+		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		}
+	}
 
 	override suspend fun updateExtension(extensionEntity: ExtensionEntity) {
-		Log.d(logID(), "Updating extension data ${extensionEntity.id}")
 		extensionsDao.suspendedUpdate(extensionEntity)
 	}
 
-	override suspend fun deleteExtension(extensionEntity: ExtensionEntity) =
+	override suspend fun deleteExtension(extensionEntity: ExtensionEntity): Unit =
 			extensionsDao.suspendedDelete(extensionEntity)
 
-	override suspend fun loadExtension(formatterID: Int): ExtensionEntity =
-			extensionsDao.loadExtension(formatterID)
+	override suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity> = try {
+		successResult(extensionsDao.loadExtension(formatterID))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 
-	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) =
+	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): Unit =
 			extensionsDao.insertOrUpdate(extensionEntity)
-
-	override fun loadPoweredExtensionsFileNames(): HResult<List<String>> =
-			successResult(extensionsDao.loadPoweredExtensionsFileNames().toList())
-
-	override fun loadExtensionMD5(extensionID: Int): HResult<String> =
-			successResult(extensionsDao.loadExtensionMD5(extensionID))
 }

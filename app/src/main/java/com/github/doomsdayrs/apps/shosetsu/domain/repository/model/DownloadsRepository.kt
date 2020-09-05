@@ -19,7 +19,6 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalDownloadsDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
@@ -31,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepo
  * @author github.com/doomsdayrs
  */
 class DownloadsRepository(
-		private val iLocalDownloadsDataSource: ILocalDownloadsDataSource
+		private val iLocalDownloadsDataSource: ILocalDownloadsDataSource,
 ) : IDownloadsRepository {
 	override fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>> =
 			iLocalDownloadsDataSource.loadLiveDownloads()
@@ -46,15 +45,15 @@ class DownloadsRepository(
 			iLocalDownloadsDataSource.loadDownload(chapterID)
 
 	override suspend fun addDownload(download: DownloadEntity): HResult<Long> =
-			successResult(iLocalDownloadsDataSource.insertDownload(download))
+			iLocalDownloadsDataSource.insertDownload(download)
 
-	override suspend fun update(download: DownloadEntity) =
+	override suspend fun update(download: DownloadEntity): Unit =
 			iLocalDownloadsDataSource.updateDownload(download)
 
-	override suspend fun delete(download: DownloadEntity) =
+	override suspend fun delete(download: DownloadEntity): Unit =
 			iLocalDownloadsDataSource.deleteDownload(download)
 
-	override suspend fun resetList() =
+	override suspend fun resetList(): Unit =
 			iLocalDownloadsDataSource.clearDownloads()
 
 }

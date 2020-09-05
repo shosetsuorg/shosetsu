@@ -35,7 +35,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsConfi
  */
 class ExtensionsConfigureViewModel(
 		private val getExtensionsUIUseCase: GetExtensionsUIUseCase,
-		private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase
+		private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase,
 ) : IExtensionsConfigureViewModel() {
 	override val liveData: LiveData<HResult<List<ExtensionConfigUI>>> by lazy {
 		liveData<HResult<List<ExtensionConfigUI>>> {
@@ -68,7 +68,7 @@ class ExtensionsConfigureViewModel(
 
 	override suspend fun updateExtensionConfig(
 			extensionConfigUI: ExtensionConfigUI,
-			enabled: Boolean
+			enabled: Boolean,
 	) =
 			updateExtensionEntityUseCase(extensionConfigUI.convertTo())
 }

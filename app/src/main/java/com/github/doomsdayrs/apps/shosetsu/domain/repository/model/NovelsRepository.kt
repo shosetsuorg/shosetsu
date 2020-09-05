@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -37,7 +38,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
  */
 class NovelsRepository(
 		val database: ILocalNovelsDataSource,
-		val remoteSource: IRemoteNovelDataSource
+		val remoteSource: IRemoteNovelDataSource,
 ) : INovelsRepository {
 	override suspend fun getLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>> =
 			database.loadLiveBookmarkedNovelsAndCount()
@@ -45,19 +46,17 @@ class NovelsRepository(
 	override suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>> =
 			database.loadBookmarkedNovels()
 
-	override suspend fun updateNovel(novelEntity: NovelEntity) {
-		TODO("Not yet implemented")
-	}
+	override suspend fun updateNovel(novelEntity: NovelEntity): Unit =
+			database.updateNovel(novelEntity)
 
-	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook =
+
+	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook> =
 			database.insertNovelReturnCard(novelEntity)
 
-	override suspend fun insertNovel(novelEntity: NovelEntity) =
+	@Throws(SQLiteException::class)
+	override suspend fun insertNovel(novelEntity: NovelEntity): Unit =
 			database.insertNovel(novelEntity)
 
-	override suspend fun unBookmarkNovels(selectedNovels: List<Int>) {
-		TODO("Not yet implemented")
-	}
 
 	override suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>> {
 		TODO("Not yet implemented")
@@ -69,7 +68,8 @@ class NovelsRepository(
 	override suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>> =
 			database.loadNovelLive(novelID)
 
-	override suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info) =
+	@Throws(SQLiteException::class)
+	override suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): Unit =
 			database.updateNovel(
 					novelEntity.copy(
 							title = novelInfo.title,
@@ -92,10 +92,7 @@ class NovelsRepository(
 	override suspend fun retrieveNovelInfo(
 			formatter: Formatter,
 			novelEntity: NovelEntity,
-			loadChapters: Boolean
+			loadChapters: Boolean,
 	): HResult<Novel.Info> =
 			remoteSource.loadNovel(formatter, novelEntity.url, loadChapters)
-
-	override suspend fun setNovelBookmark(novelID: Int, bookmarked: Int) =
-			database.setNovelBookmark(novelID, bookmarked)
 }

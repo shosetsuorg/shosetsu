@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
  * 07 / 06 / 2020
  */
 class LoadReaderChaptersUseCase(
-		private val iChaptersRepository: IChaptersRepository
+		private val iChaptersRepository: IChaptersRepository,
 ) : ((@kotlin.ParameterName("novelID") Int) -> LiveData<HResult<List<ReaderChapterUI>>>) {
 	override fun invoke(novelID: Int): LiveData<HResult<List<ReaderChapterUI>>> =
 			liveData<HResult<List<ReaderChapterUI>>> {

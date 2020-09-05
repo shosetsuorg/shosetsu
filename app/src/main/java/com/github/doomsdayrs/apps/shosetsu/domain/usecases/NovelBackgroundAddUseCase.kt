@@ -25,10 +25,9 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
  */
 class NovelBackgroundAddUseCase(
 		private val loadNovelUseCase: LoadNovelUseCase,
-		private val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase
 ) {
 	suspend operator fun invoke(novelID: Int): HResult<*> =
 			loadNovelUseCase(novelID, false).also {
-				if (it is HResult.Success) bookMarkNovelIDUseCase(novelID, true)
+				TODO("Background add")
 			}
 }

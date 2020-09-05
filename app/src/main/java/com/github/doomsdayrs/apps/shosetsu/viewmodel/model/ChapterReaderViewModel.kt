@@ -43,7 +43,7 @@ class ChapterReaderViewModel(
 		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
 		private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
 		private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
-		private val settings: ShosetsuSettings
+		private val settings: ShosetsuSettings,
 ) : IChapterReaderViewModel() {
 	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
 
@@ -90,7 +90,7 @@ class ChapterReaderViewModel(
 			readerChapterUI: ReaderChapterUI,
 			readingPosition: Int,
 			readingStatus: ReadingStatus,
-			bookmarked: Boolean
+			bookmarked: Boolean,
 	) {
 		launchIO {
 			updateReaderChapterUseCase(readerChapterUI.copy(

@@ -1,6 +1,8 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.model
 
+import android.database.sqlite.SQLiteException
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalExtLibDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
@@ -29,16 +31,19 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionLibra
  * 12 / 05 / 2020
  */
 class LocalExtLibDataSource(
-	private 	val extensionLibraryDao: ExtensionLibraryDao
+		private val extensionLibraryDao: ExtensionLibraryDao,
 ) : ILocalExtLibDataSource {
-	override suspend fun updateExtension(extLibEntity: ExtLibEntity) =
+	override suspend fun updateExtension(extLibEntity: ExtLibEntity): Unit =
 			extensionLibraryDao.suspendedUpdate(extLibEntity)
 
-	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity) =
+	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): Unit =
 			extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity)
 
 	override suspend fun loadExtLibByRepo(
-			repositoryEntity: RepositoryEntity
-	): HResult<List<ExtLibEntity>> =
-			successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id))
+			repositoryEntity: RepositoryEntity,
+	): HResult<List<ExtLibEntity>> = try {
+		successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
 }

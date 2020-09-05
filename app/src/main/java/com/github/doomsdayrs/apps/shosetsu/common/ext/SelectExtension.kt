@@ -29,8 +29,8 @@ import com.mikepenz.fastadapter.select.SelectExtension
 inline fun <reified T : GenericItem> SelectExtension<T>.setSelectionListener(
 		crossinline onSelect: (
 				@ParameterName("item") T,
-				@ParameterName("selected") Boolean
-		) -> Unit
+				@ParameterName("selected") Boolean,
+		) -> Unit,
 ) {
 	selectionListener = object : ISelectionListener<T> {
 		override fun onSelectionChanged(item: T, selected: Boolean) {

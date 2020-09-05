@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
@@ -148,7 +147,7 @@ class LibraryController
 
 	override fun difAreItemsTheSame(
 			oldItem: ABookmarkedNovelUI,
-			newItem: ABookmarkedNovelUI
+			newItem: ABookmarkedNovelUI,
 	): Boolean = oldItem.id == newItem.id
 
 	override fun handleConfirm(linearLayout: LinearLayout) {

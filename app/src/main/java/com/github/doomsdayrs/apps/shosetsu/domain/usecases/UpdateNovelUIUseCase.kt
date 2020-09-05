@@ -1,8 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import android.util.Log
-import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 
 /*
  * This file is part of shosetsu.
@@ -23,14 +22,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
 
 /**
  * shosetsu
- * 15 / 05 / 2020
+ * 06 / 06 / 2020
  */
-class BookMarkNovelIDUseCase(
-		private val novelRepository: INovelsRepository
+class UpdateNovelUIUseCase(
+		private val chaptersRepository: INovelsRepository,
 ) {
-	suspend operator fun invoke(novelID: Int, bookmark: Boolean) {
-		Log.d(logID(), "Bookmarking $novelID")
-		return novelRepository.setNovelBookmark(novelID, if (bookmark) 1 else 0)
+	suspend operator fun invoke(novelUI: NovelUI) {
+		chaptersRepository.updateNovel(novelUI.convertTo())
 	}
-
 }

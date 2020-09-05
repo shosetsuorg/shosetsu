@@ -34,7 +34,7 @@ import kotlinx.coroutines.Dispatchers
  */
 class SearchViewModel(
 		val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
-		val iExtensionsRepository: IExtensionsRepository
+		val iExtensionsRepository: IExtensionsRepository,
 ) : ISearchViewModel() {
 	override var query: MutableLiveData<String> = MutableLiveData()
 

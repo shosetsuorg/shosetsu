@@ -1,5 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.common.dto
 
+import android.database.sqlite.SQLiteException
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.domain.model.base.Convertible
 
 
@@ -31,7 +33,7 @@ sealed class HResult<out T : Any> {
 	/** The operation was a success, here is your data [data] */
 	class Success<out T : Any>(
 			/** Returned data */
-			val data: T
+			val data: T,
 	) : HResult<T>()
 
 	/** This states that the operation is currently pending */
@@ -50,7 +52,7 @@ sealed class HResult<out T : Any> {
 	data class Error(
 			val code: Int,
 			val message: String,
-			val error: Exception? = null
+			val error: Exception? = null,
 	) : HResult<Nothing>()
 }
 
@@ -71,6 +73,10 @@ fun errorResult(code: Int, message: String, error: Exception? = null): HResult.E
 /** This is an easy way to create an error via its exception */
 fun errorResult(code: Int, error: Exception? = null): HResult.Error =
 		HResult.Error(code, error?.message ?: "UnknownException", error)
+
+/** An exception occurred in SQL*/
+fun errorResult(e: SQLiteException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_HTTP_SQL, e.message ?: "UnknownSQLException", e)
 
 /**
  * Converts shit
@@ -102,3 +108,13 @@ inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
 
 inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo() =
 		this.map { it.convertTo() }
+
+
+inline fun <reified I : Any, O : Any> HResult<I>.withSuccess(action: (I) -> HResult<O>): HResult<O> {
+	return when (this) {
+		is HResult.Success -> action(this.data)
+		is HResult.Empty -> this
+		is HResult.Loading -> this
+		is HResult.Error -> this
+	}
+}

@@ -42,7 +42,7 @@ class RemoteNovelDataSource : IRemoteNovelDataSource {
 	override suspend fun loadNovel(
 			formatter: Formatter,
 			novelURL: String,
-			loadChapters: Boolean
+			loadChapters: Boolean,
 	): HResult<Novel.Info> {
 		return try {
 			successResult(

@@ -43,7 +43,7 @@ class CatalogViewModel(
 		private val backgroundAddUseCase: NovelBackgroundAddUseCase,
 		private val loadCatalogueData: LoadCatalogueDataUseCase,
 		private val stringToastUseCase: StringToastUseCase,
-		private var toastErrorUseCase: ToastErrorUseCase
+		private var toastErrorUseCase: ToastErrorUseCase,
 ) : ICatalogViewModel() {
 	private val listingItems: HashMap<Int, List<ACatalogNovelUI>> = hashMapOf()
 

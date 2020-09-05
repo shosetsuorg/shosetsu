@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
  * 21 / 06 / 2020
  */
 class UpdateDownloadUseCase(
-		private val downloadsRepository: IDownloadsRepository
+		private val downloadsRepository: IDownloadsRepository,
 ) {
 	suspend operator fun invoke(downloadUI: DownloadUI) =
 			downloadsRepository.update(downloadUI.convertTo())

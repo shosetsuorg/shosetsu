@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.AInfoSe
  * shosetsu
  * 31 / 08 / 2020
  */
-class InfoSettingsViewModel :AInfoSettingsViewModel(){
+class InfoSettingsViewModel : AInfoSettingsViewModel() {
 	override val settings: List<SettingsItemData>
 		get() = TODO("Not yet implemented")
 	override val liveData: LiveData<HResult<List<SettingsItemData>>>

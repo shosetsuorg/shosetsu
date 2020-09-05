@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.AReader
  * shosetsu
  * 31 / 08 / 2020
  */
-class ReaderSettingsViewModel:AReaderSettingsViewModel() {
+class ReaderSettingsViewModel : AReaderSettingsViewModel() {
 	override val settings: List<SettingsItemData>
 		get() = TODO("Not yet implemented")
 	override val liveData: LiveData<HResult<List<SettingsItemData>>>

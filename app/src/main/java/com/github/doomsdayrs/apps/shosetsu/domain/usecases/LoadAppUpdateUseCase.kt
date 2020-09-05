@@ -36,7 +36,7 @@ import okhttp3.OkHttpClient
  * 20 / 06 / 2020
  */
 class LoadAppUpdateUseCase(
-		private val okHttpClient: OkHttpClient
+		private val okHttpClient: OkHttpClient,
 ) {
 	data class DebugAppUpdate(
 			@JsonProperty("latestVersion")

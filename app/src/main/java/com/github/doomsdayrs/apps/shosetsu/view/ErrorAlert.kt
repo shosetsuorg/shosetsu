@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class ErrorAlert(
 		val activity: Activity,
 		retryAction: (dialog: DialogInterface?, which: Int) -> Unit =
-				{ dialog, _: Int -> dialog?.dismiss() }
+				{ dialog, _: Int -> dialog?.dismiss() },
 ) : AlertDialog.Builder(activity) {
 	private val view = activity.layoutInflater.inflate(R.layout.error_view, null)!!
 	private val messageView: TextView = view.findViewById(R.id.error_message)

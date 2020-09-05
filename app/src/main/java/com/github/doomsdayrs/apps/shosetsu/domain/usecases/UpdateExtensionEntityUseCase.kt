@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRep
  * 14 / 07 / 2020
  */
 class UpdateExtensionEntityUseCase(
-		private val extensionRepository: IExtensionsRepository
+		private val extensionRepository: IExtensionsRepository,
 ) {
 	suspend operator fun invoke(extensionUI: ExtensionEntity) =
 			extensionRepository.updateExtension(extensionUI)

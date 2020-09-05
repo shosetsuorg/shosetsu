@@ -30,7 +30,7 @@ import android.view.View
  * in order to qualify as a double click. Time in MS
  */
 abstract class DoubleClickListener(
-		private val doubleClickQualificationTime: Long = 200
+		private val doubleClickQualificationTime: Long = 200,
 ) : View.OnClickListener {
 
 	private var timestampLastClick = 0L
@@ -50,7 +50,7 @@ abstract class DoubleClickListener(
  * Creates a [DoubleClickListener] and applies it to a view
  */
 inline fun View.setOnDoubleClickListener(
-		crossinline onDoubleClick: (View) -> Unit
+		crossinline onDoubleClick: (View) -> Unit,
 ) {
 	setOnClickListener(object : DoubleClickListener() {
 		override fun onDoubleClick(v: View) {

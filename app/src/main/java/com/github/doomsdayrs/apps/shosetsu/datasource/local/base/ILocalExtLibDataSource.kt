@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
+import android.database.sqlite.SQLiteException
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
@@ -29,7 +30,14 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
  * 04 / 05 / 2020
  */
 interface ILocalExtLibDataSource {
+	/** Updates an [extLibEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun updateExtension(extLibEntity: ExtLibEntity)
+
+	/** Update or insert an [extLibEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun updateOrInsert(extLibEntity: ExtLibEntity)
+
+	/** Loads a [List] of [ExtLibEntity] by its [repositoryEntity] */
 	suspend fun loadExtLibByRepo(repositoryEntity: RepositoryEntity): HResult<List<ExtLibEntity>>
 }

@@ -31,7 +31,7 @@ data class UpdateChapterUI(
 		val novelID: Int,
 		var bookmarked: Boolean,
 		val formatterID: Int,
-		val isSaved: Boolean
+		val isSaved: Boolean,
 ) : Convertible<UpdateChapterSubEntity> {
 	override fun convertTo(): UpdateChapterSubEntity =
 			UpdateChapterSubEntity(id, link, title, novelID, bookmarked, formatterID, isSaved)

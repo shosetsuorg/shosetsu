@@ -33,14 +33,14 @@ import okhttp3.OkHttpClient
  * 13 / 05 / 2020
  */
 class RemoteExtLibDataSource(
-		private val client: OkHttpClient
+		private val client: OkHttpClient,
 ) : IRemoteExtLibDataSource {
 	private fun makeLibraryURL(repo: RepositoryEntity, le: ExtLibEntity): String =
 			"${repo.url}${repoFolderStruct}/lib/${le.scriptName}.lua"
 
 	override fun downloadLibrary(
 			repo: RepositoryEntity,
-			extLibEntity: ExtLibEntity
+			extLibEntity: ExtLibEntity,
 	): HResult<String> = try {
 		successResult(client.quickie(makeLibraryURL(
 				repo,

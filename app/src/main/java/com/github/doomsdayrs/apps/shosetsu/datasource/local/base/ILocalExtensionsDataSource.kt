@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
@@ -30,12 +31,24 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
  * 04 / 05 / 2020
  */
 interface ILocalExtensionsDataSource {
+	/** Loads LiveData of extensions */
 	suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
+
+	/** Loads LiveData of extension cards that are enabled */
 	suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>>
+
+	/** Updates [extensionEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun updateExtension(extensionEntity: ExtensionEntity)
+
+	/** Delete [extensionEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun deleteExtension(extensionEntity: ExtensionEntity)
-	suspend fun loadExtension(formatterID: Int): ExtensionEntity
+
+	/** Load an [ExtensionEntity] via its [formatterID]*/
+	suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity>
+
+	/** Inserts an [extensionEntity] otherwise updates it */
+	@Throws(SQLiteException::class)
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity)
-	fun loadPoweredExtensionsFileNames(): HResult<List<String>>
-	fun loadExtensionMD5(extensionID: Int): HResult<String>
 }

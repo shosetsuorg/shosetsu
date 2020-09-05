@@ -56,43 +56,43 @@ class IntroductionActivity : IntroActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setNavigationPolicy(
-                object : NavigationPolicy {
-                    override fun canGoForward(position: Int): Boolean = true
-                    override fun canGoBackward(position: Int): Boolean = false
-                }
-        )
+				object : NavigationPolicy {
+					override fun canGoForward(position: Int): Boolean = true
+					override fun canGoBackward(position: Int): Boolean = false
+				}
+		)
 
 		addSlide(SimpleSlide.Builder()
-                .title(R.string.intro_title_greet)
-                .background(R.color.colorPrimary)
-                .build())
+				.title(R.string.intro_title_greet)
+				.background(R.color.colorPrimary)
+				.build())
 
 		addSlide(SimpleSlide.Builder()
-                .title((R.string.intro_what_is_app))
-                .description((R.string.intro_what_is_app_desc))
-                .background(R.color.colorPrimary)
-                .build())
+				.title((R.string.intro_what_is_app))
+				.description((R.string.intro_what_is_app_desc))
+				.background(R.color.colorPrimary)
+				.build())
 
 		addSlide(FragmentSlide.Builder()
-                .background(R.color.colorPrimary)
-                .fragment(License())
-                .build())
+				.background(R.color.colorPrimary)
+				.fragment(License())
+				.build())
 
 		addSlide(SimpleSlide.Builder()
-                .title((R.string.intro_perm_title))
-                .description((R.string.intro_perm_desc))
-                .background(R.color.colorPrimary)
-                .permissions(arrayOf(
-                        permission.READ_EXTERNAL_STORAGE,
-                        permission.WRITE_EXTERNAL_STORAGE
-                ))
-                .build())
+				.title((R.string.intro_perm_title))
+				.description((R.string.intro_perm_desc))
+				.background(R.color.colorPrimary)
+				.permissions(arrayOf(
+						permission.READ_EXTERNAL_STORAGE,
+						permission.WRITE_EXTERNAL_STORAGE
+				))
+				.build())
 
 		addSlide(SimpleSlide.Builder()
-                .title((R.string.intro_happy_end))
-                .description((R.string.intro_happy_end_desc))
-                .background(R.color.colorPrimary)
-                .buttonCtaClickListener { finishActivity(INTRO_CODE) }
-                .build())
+				.title((R.string.intro_happy_end))
+				.description((R.string.intro_happy_end_desc))
+				.background(R.color.colorPrimary)
+				.buttonCtaClickListener { finishActivity(INTRO_CODE) }
+				.build())
 	}
 }

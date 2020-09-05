@@ -30,7 +30,7 @@ import app.shosetsu.lib.Formatter
 open class CatalogueLoader(
 		val formatter: Formatter,
 		val filters: Array<*>,
-		val query: String? = null
+		val query: String? = null,
 ) {
 	/*
 	/**

@@ -30,7 +30,7 @@ import okio.IOException
  * 12 / 05 / 2020
  */
 class FileExtLibDataSource(
-		private val formatterUtils: IFormatterUtils
+		private val formatterUtils: IFormatterUtils,
 ) : IFileExtLibDataSource {
 	override suspend fun writeExtLib(fileName: String, data: String) {
 		try {

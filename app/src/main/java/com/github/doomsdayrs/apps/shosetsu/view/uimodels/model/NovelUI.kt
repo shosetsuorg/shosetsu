@@ -52,7 +52,7 @@ data class NovelUI(
 		var artists: Array<String>,
 		var tags: Array<String>,
 
-		var status: Novel.Status
+		var status: Novel.Status,
 ) : Convertible<NovelEntity> {
 	override fun convertTo(): NovelEntity = NovelEntity(
 			id = id,

@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BookmarkedNovelEntity
@@ -34,19 +35,29 @@ interface ILocalNovelsDataSource {
 	/** load list of novels that are to be bookmarked */
 	suspend fun loadLiveBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>>
 
+	/** Load list of bookmarked [NovelEntity] */
 	suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>>
 
-	/** Loads the bookmarked novels along with an unread count */
+	/** Loads a [List] of [BookmarkedNovelEntity] that are in the library */
 	suspend fun loadLiveBookmarkedNovelsAndCount(): LiveData<HResult<List<BookmarkedNovelEntity>>>
 
+	/** Loads a [NovelEntity] by its [novelID] */
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
+
+	/** Loads a [LiveData] of a [NovelEntity] by its [novelID] */
 	suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>>
 
+	/** Updates a [NovelEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun updateNovel(novelEntity: NovelEntity)
+
+	/** Updates a list of [BookmarkedNovelEntity] */
 	suspend fun updateBookmarkedNovels(list: List<BookmarkedNovelEntity>)
 
-	suspend fun setNovelBookmark(novelID: Int, bookmark: Int)
+	/** Inserts a [NovelEntity] then returns its [IDTitleImageBook] */
+	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook>
 
-	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook
+	/** Inserts a [NovelEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun insertNovel(novelEntity: NovelEntity)
 }

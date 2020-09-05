@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.URLImageTitle
 data class URLTitleImageUI(
 		val url: String,
 		val title: String,
-		val imageURL: String
+		val imageURL: String,
 ) : Convertible<URLImageTitle> {
 	override fun convertTo(): URLImageTitle = URLImageTitle(url, imageURL, title)
 }

@@ -39,7 +39,7 @@ data class UpdateCompleteEntity(
 		val time: Long,
 		val chapterName: String,
 		val novelName: String,
-		val novelImageURL: String
+		val novelImageURL: String,
 ) : Convertible<UpdateUI> {
 	override fun convertTo(): UpdateUI = UpdateUI(
 			chapterID,

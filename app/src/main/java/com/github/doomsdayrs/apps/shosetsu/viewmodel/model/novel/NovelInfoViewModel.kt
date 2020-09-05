@@ -34,11 +34,11 @@ import kotlinx.coroutines.Dispatchers
  */
 class NovelInfoViewModel(
 		private val getFormatterNameUseCase: GetFormatterNameUseCase,
-		private val bookMarkNovelIDUseCase: BookMarkNovelIDUseCase,
+		private val updateNovelUIUseCase: UpdateNovelUIUseCase,
 		private val loadNovelUIUseCase: GetNovelUIUseCase,
 		private val openInBrowserUseCase: OpenInBrowserUseCase,
 		private val openInWebviewUseCase: OpenInWebviewUseCase,
-		private val shareUseCase: ShareUseCase
+		private val shareUseCase: ShareUseCase,
 ) : INovelInfoViewModel() {
 	override val liveData: LiveData<HResult<NovelUI>> by lazy {
 		novelID.switchMap {
@@ -69,7 +69,11 @@ class NovelInfoViewModel(
 	}
 
 	override fun toggleBookmark(novelUI: NovelUI) {
-		launchIO { bookMarkNovelIDUseCase(novelUI.id, !novelUI.bookmarked) }
+		launchIO {
+			updateNovelUIUseCase(novelUI.copy(
+					bookmarked = !novelUI.bookmarked
+			))
+		}
 	}
 
 

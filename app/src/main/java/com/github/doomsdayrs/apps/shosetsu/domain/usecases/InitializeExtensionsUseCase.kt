@@ -45,7 +45,7 @@ class InitializeExtensionsUseCase(
 		private val extRepo: IExtensionsRepository,
 		private val extRepoRepo: IExtRepoRepository,
 		private val extLibRepo: IExtLibRepository,
-		private var isOnlineUseCase: IsOnlineUseCase
+		private var isOnlineUseCase: IsOnlineUseCase,
 ) {
 	suspend fun invoke(progressUpdate: (String) -> Unit) {
 		Log.i(logID(), "Starting Update")
@@ -85,7 +85,7 @@ class InitializeExtensionsUseCase(
 	private suspend fun updateLibraries(
 			indexJSON: JSONObject,
 			repo: RepositoryEntity,
-			progressUpdate: (String) -> Unit
+			progressUpdate: (String) -> Unit,
 	) {
 		// Updates libraries
 

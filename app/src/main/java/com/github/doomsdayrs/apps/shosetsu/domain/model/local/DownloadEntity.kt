@@ -78,7 +78,7 @@ data class DownloadEntity(
 		 *
 		 * 2 for paused
 		 */
-		var status: Int = 0
+		var status: Int = 0,
 ) : Convertible<DownloadUI>, Serializable {
 	override fun convertTo(): DownloadUI =
 			DownloadUI(

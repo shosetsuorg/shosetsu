@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
  * 26 / 06 / 2020
  */
 class DeleteChapterPassageUseCase(
-		private val iChaptersRepository: IChaptersRepository
+		private val iChaptersRepository: IChaptersRepository,
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
 		iChaptersRepository.deleteChapterPassage(chapterUI.convertTo())

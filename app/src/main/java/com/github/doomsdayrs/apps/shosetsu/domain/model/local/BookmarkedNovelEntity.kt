@@ -34,5 +34,5 @@ data class BookmarkedNovelEntity(
 		val title: String,
 		val imageURL: String,
 		var bookmarked: Boolean,
-		val unread: Int
+		val unread: Int,
 )

@@ -35,7 +35,7 @@ import kotlinx.coroutines.Dispatchers
  */
 class NovelViewModel(
 		private val loadNovelUseCase: LoadNovelUseCase,
-		private var isOnlineUseCase: IsOnlineUseCase
+		private var isOnlineUseCase: IsOnlineUseCase,
 ) : INovelViewModel() {
 	private var novelIDValue: Int = -1
 

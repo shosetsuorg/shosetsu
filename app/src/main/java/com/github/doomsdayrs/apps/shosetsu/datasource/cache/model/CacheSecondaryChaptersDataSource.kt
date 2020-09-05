@@ -35,7 +35,7 @@ import java.io.File
  * 17 / 08 / 2020
  */
 class CacheSecondaryChaptersDataSource(
-		private val application: Application
+		private val application: Application,
 ) : ICacheSecondaryChaptersDataSource {
 	@get:Synchronized
 	private val cacheDir by lazy { application.cacheDir }

@@ -40,7 +40,7 @@ class ExtensionsViewModel(
 		private val installExtensionUIUseCase: InstallExtensionUIUseCase,
 		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
 		private val stringToastUseCase: StringToastUseCase,
-		private var isOnlineUseCase: IsOnlineUseCase
+		private var isOnlineUseCase: IsOnlineUseCase,
 ) : IExtensionsViewModel() {
 
 

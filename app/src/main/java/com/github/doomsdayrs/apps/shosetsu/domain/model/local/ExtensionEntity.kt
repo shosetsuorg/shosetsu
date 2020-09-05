@@ -69,7 +69,7 @@ data class ExtensionEntity(
 		/** Version in repository*/
 		var repositoryVersion: String = "0.0.0",
 		/** MD5 to check against */
-		var md5: String = ""
+		var md5: String = "",
 ) : Serializable, Convertible<ExtensionUI> {
 	override fun convertTo(): ExtensionUI =
 			ExtensionUI(

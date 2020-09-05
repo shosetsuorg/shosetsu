@@ -34,6 +34,6 @@ interface IRemoteExtLibDataSource {
 	 */
 	fun downloadLibrary(
 			repo: RepositoryEntity,
-			extLibEntity: ExtLibEntity
+			extLibEntity: ExtLibEntity,
 	): HResult<String>
 }

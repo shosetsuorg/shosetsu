@@ -11,11 +11,7 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.TextView
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.view.ExpandingViewBar
-import com.github.doomsdayrs.apps.shosetsu.view.SDEditText
-import com.github.doomsdayrs.apps.shosetsu.view.SDRadioGroup
-import com.github.doomsdayrs.apps.shosetsu.view.SDSpinner
-import com.github.doomsdayrs.apps.shosetsu.view.SDSwitch
+import com.github.doomsdayrs.apps.shosetsu.view.*
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
 
 
@@ -46,7 +42,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
  */
 open class SDViewBuilder(
 		val viewGroup: ViewGroup,
-		val secondDrawerController: SecondDrawerController
+		val secondDrawerController: SecondDrawerController,
 ) {
 	val inflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
 	val layout: LinearLayout = inflater.inflate(

@@ -37,7 +37,7 @@ class SpinnerSettingData(id: Int) : RightSettingsItemData(id) {
 						parent: AdapterView<*>?,
 						view: View?,
 						position: Int,
-						id: Long
+						id: Long,
 				) {
 				}
 			}

@@ -49,7 +49,7 @@ abstract class INovelChaptersViewModel
 			chapterUI: ChapterUI,
 			readingPosition: Int = chapterUI.readingPosition,
 			readingStatus: ReadingStatus = chapterUI.readingStatus,
-			bookmarked: Boolean = chapterUI.bookmarked
+			bookmarked: Boolean = chapterUI.bookmarked,
 	)
 
 	abstract fun markAllAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus)

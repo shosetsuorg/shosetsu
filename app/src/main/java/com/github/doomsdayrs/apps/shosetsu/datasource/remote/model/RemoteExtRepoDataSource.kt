@@ -33,10 +33,10 @@ import org.json.JSONObject
  * 13 / 05 / 2020
  */
 class RemoteExtRepoDataSource(
-		private val client: OkHttpClient
+		private val client: OkHttpClient,
 ) : IRemoteExtRepoDataSource {
 	override suspend fun downloadRepoData(
-			repo: RepositoryEntity
+			repo: RepositoryEntity,
 	): HResult<JSONObject> = try {
 		successResult(
 				JSONObject(

@@ -34,7 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.FullBookm
  */
 class LoadLibraryUseCase(
 		private val iNovelsRepository: INovelsRepository,
-		private val settings: ShosetsuSettings
+		private val settings: ShosetsuSettings,
 ) : (() -> LiveData<HResult<List<ABookmarkedNovelUI>>>) {
 	override fun invoke(): LiveData<HResult<List<ABookmarkedNovelUI>>> {
 		return liveData {

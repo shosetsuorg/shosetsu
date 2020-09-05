@@ -47,7 +47,7 @@ class ShosetsuSettings(
 		/** Application context for internal use */
 		val context: Context,
 		val settings: SharedPreferences = context.getSharedPreferences("view", 0),
-		private val readerSettings: SharedPreferences = context.getSharedPreferences("reader", 0)
+		private val readerSettings: SharedPreferences = context.getSharedPreferences("reader", 0),
 ) {
 	enum class MarkingTypes(val i: Int) {
 		ONVIEW(0),
@@ -70,7 +70,7 @@ class ShosetsuSettings(
 			override var identifier: Long,
 			val name: String,
 			val textColor: Int,
-			val backgroundColor: Int
+			val backgroundColor: Int,
 	) : AbstractItem<ColorChoice.ViewHolder>() {
 		/**
 		 * If this is in the chapter reader or not

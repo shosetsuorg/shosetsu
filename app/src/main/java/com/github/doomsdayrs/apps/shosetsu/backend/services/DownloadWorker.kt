@@ -61,7 +61,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult.Error as HError
  */
 class DownloadWorker(
 		appContext: Context,
-		params: WorkerParameters
+		params: WorkerParameters,
 ) : CoroutineWorker(appContext, params), KodeinAware {
 	companion object {
 		private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 3
@@ -85,7 +85,7 @@ class DownloadWorker(
 		 */
 		fun isRunning(
 				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context)
+				workerManager: WorkManager = WorkManager.getInstance(context),
 		): Boolean = try {
 			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID)
 					.get()[0].state == WorkInfo.State.RUNNING
@@ -101,7 +101,7 @@ class DownloadWorker(
 		 */
 		fun start(
 				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context)
+				workerManager: WorkManager = WorkManager.getInstance(context),
 		) {
 			workerManager.enqueueUniqueWork(
 					DOWNLOAD_WORK_ID,
@@ -129,7 +129,7 @@ class DownloadWorker(
 		 */
 		fun stop(
 				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context)
+				workerManager: WorkManager = WorkManager.getInstance(context),
 		): Any = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
 	}
 

@@ -94,7 +94,7 @@ data class NovelEntity(
 
 		@NonNull
 		/** The publishing status of this novel */
-		var status: Novel.Status = Novel.Status.UNKNOWN
+		var status: Novel.Status = Novel.Status.UNKNOWN,
 ) : Convertible<NovelUI> {
 	override fun convertTo(): NovelUI = NovelUI(
 			id = id!!,

@@ -34,7 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.viewholders.TitleImageFViewHolde
 data class CatalogOptionUI(
 		override var identifier: Long,
 		val title: String,
-		val imageURL: String
+		val imageURL: String,
 ) : BaseRecyclerItem<TitleImageFViewHolder<CatalogOptionUI>>(), GetTitle, GetImageURL {
 	override fun getDataImageURL(): String = imageURL
 

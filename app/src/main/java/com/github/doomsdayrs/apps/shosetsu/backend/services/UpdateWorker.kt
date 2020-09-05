@@ -58,7 +58,7 @@ import androidx.work.PeriodicWorkRequestBuilder as PWRB
  */
 class UpdateWorker(
 		appContext: Context,
-		params: WorkerParameters
+		params: WorkerParameters,
 ) : CoroutineWorker(appContext, params), KodeinAware {
 	companion object {
 		const val KEY_TARGET = "Target"
@@ -79,7 +79,7 @@ class UpdateWorker(
 		 */
 		private fun isRunning(
 				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context)
+				workerManager: WorkManager = WorkManager.getInstance(context),
 		): Boolean = try {
 			workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID)
 					.get()[0].state == WorkInfo.State.RUNNING
@@ -95,7 +95,7 @@ class UpdateWorker(
 		 */
 		fun start(
 				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context)
+				workerManager: WorkManager = WorkManager.getInstance(context),
 		) {
 			Log.i(logID(), LogConstants.SERVICE_NEW)
 			workerManager.enqueueUniquePeriodicWork(
@@ -131,7 +131,7 @@ class UpdateWorker(
 		 */
 		fun stop(
 				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context)
+				workerManager: WorkManager = WorkManager.getInstance(context),
 		): Any = workerManager.cancelUniqueWork(UPDATE_WORK_ID)
 	}
 

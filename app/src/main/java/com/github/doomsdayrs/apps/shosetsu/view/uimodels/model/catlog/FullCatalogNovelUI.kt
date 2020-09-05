@@ -25,7 +25,7 @@ data class FullCatalogNovelUI(
 		override val id: Int,
 		override val title: String,
 		override val imageURL: String,
-		override var bookmarked: Boolean
+		override var bookmarked: Boolean,
 ) : ACatalogNovelUI() {
 	override val layoutRes: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card
 	override val type: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed

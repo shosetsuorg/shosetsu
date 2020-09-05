@@ -26,7 +26,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.RepositoryEntity
  * 04 / 05 / 2020
  */
 interface ILocalExtRepoDataSource {
+	/** Loads LiveData of the repositories */
 	fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>>
+
+	/** Loads a list of the repositories */
 	fun loadRepositories(): HResult<List<RepositoryEntity>>
+
+	/** Loads a [RepositoryEntity] by its [repoID] */
 	fun loadRepository(repoID: Int): HResult<RepositoryEntity>
 }

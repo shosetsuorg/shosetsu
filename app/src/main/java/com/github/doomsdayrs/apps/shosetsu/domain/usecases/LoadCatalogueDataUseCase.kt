@@ -36,11 +36,11 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.FullCatalo
 class LoadCatalogueDataUseCase(
 		private val extensionRepository: IExtensionsRepository,
 		private val novelsRepository: INovelsRepository,
-		private val shosetsuSettings: ShosetsuSettings
+		private val shosetsuSettings: ShosetsuSettings,
 ) {
 	suspend operator fun invoke(
 			formatter: Formatter,
-			currentPage: Int
+			currentPage: Int,
 	): HResult<List<ACatalogNovelUI>> {
 		val it = extensionRepository.loadCatalogueData(
 				formatter,
@@ -53,13 +53,16 @@ class LoadCatalogueDataUseCase(
 				val data: List<Novel.Listing> = it.data
 				successResult(data.map { novelListing ->
 					novelListing.convertTo(formatter)
-				}.map { ne ->
-					novelsRepository.insertNovelReturnCard(ne)
-							.let { (id, title, imageURL, bookmarked) ->
+				}.mapNotNull { ne ->
+					novelsRepository.insertNovelReturnCard(ne).let { result ->
+						if (result is HResult.Success)
+							result.data.let { (id, title, imageURL, bookmarked) ->
 								if (shosetsuSettings.novelCardType == 0)
 									FullCatalogNovelUI(id, title, imageURL, bookmarked)
 								else CompactCatalogNovelUI(id, title, imageURL, bookmarked)
 							}
+						else null
+					}
 				})
 			}
 			is HResult.Loading -> it

@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.local.base
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
@@ -26,13 +27,30 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.DownloadEntity
  * 04 / 05 / 2020
  */
 interface ILocalDownloadsDataSource {
+	/** Loads LiveData of [DownloadEntity]s */
 	fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>>
+
+	/** Loads the download count */
 	suspend fun loadDownloadCount(): HResult<Int>
 
+	/** Loads the first download that isn't paused or broken */
 	suspend fun loadFirstDownload(): HResult<DownloadEntity>
-	suspend fun insertDownload(downloadEntity: DownloadEntity): Long
+
+	/** Inserts a new [DownloadEntity] */
+	suspend fun insertDownload(downloadEntity: DownloadEntity): HResult<Long>
+
+	/** Updates a [DownloadEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun updateDownload(downloadEntity: DownloadEntity)
+
+	/** Deletes a [DownloadEntity] */
+	@Throws(SQLiteException::class)
 	suspend fun deleteDownload(downloadEntity: DownloadEntity)
+
+	/** Clear all downloads */
+	@Throws(SQLiteException::class)
 	suspend fun clearDownloads()
+
+	/** Loads a [DownloadEntity] via its [chapterID] */
 	suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity>
 }

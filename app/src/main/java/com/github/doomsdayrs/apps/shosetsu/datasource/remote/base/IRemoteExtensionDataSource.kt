@@ -33,6 +33,6 @@ interface IRemoteExtensionDataSource {
 	 */
 	suspend fun downloadExtension(
 			repositoryEntity: RepositoryEntity,
-			extensionEntity: ExtensionEntity
+			extensionEntity: ExtensionEntity,
 	): HResult<String>
 }

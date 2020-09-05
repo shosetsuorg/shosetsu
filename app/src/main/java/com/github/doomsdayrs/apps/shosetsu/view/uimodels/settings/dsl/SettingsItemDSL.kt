@@ -36,20 +36,20 @@ annotation class SettingsItemDSL
 @SettingsItemDSL
 inline fun checkBoxSettingData(
 		id: Int,
-		action: CheckBoxSettingData.() -> Unit
+		action: CheckBoxSettingData.() -> Unit,
 ): SettingsItemData = CheckBoxSettingData(id).also(action)
 
 
 @SettingsItemDSL
 inline fun switchSettingData(
 		id: Int,
-		action: SwitchSettingData.() -> Unit
+		action: SwitchSettingData.() -> Unit,
 ): SettingsItemData = SwitchSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun textSettingData(
 		id: Int,
-		action: TextSettingData.() -> Unit
+		action: TextSettingData.() -> Unit,
 ): SettingsItemData = TextSettingData(id).also(action)
 
 // - Functions
@@ -90,18 +90,18 @@ inline fun settingsList(crossinline listBuilder: SettingsListBuilder.() -> Unit)
 @SettingsItemDSL
 inline fun SettingsListBuilder.checkBoxSettingData(
 		id: Int,
-		action: CheckBoxSettingData.() -> Unit
+		action: CheckBoxSettingData.() -> Unit,
 ): Unit = this.let { list.add(CheckBoxSettingData(id).also(action)) }
 
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.switchSettingData(
 		id: Int,
-		action: SwitchSettingData.() -> Unit
+		action: SwitchSettingData.() -> Unit,
 ): Unit = this.let { list.add(SwitchSettingData(id).also(action)) }
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.textSettingData(
 		id: Int,
-		action: TextSettingData.() -> Unit
+		action: TextSettingData.() -> Unit,
 ): Unit = this.let { list.add(TextSettingData(id).also(action)) }

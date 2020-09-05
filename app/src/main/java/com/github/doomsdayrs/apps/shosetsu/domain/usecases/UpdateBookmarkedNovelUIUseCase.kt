@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmark
  * 29 / 07 / 2020
  */
 class UpdateBookmarkedNovelUIUseCase(
-		private val novelsRepository: INovelsRepository
+		private val novelsRepository: INovelsRepository,
 ) {
 	/**
 	 *

@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
  * 13 / 05 / 2020
  */
 class GetExtensionsUIUseCase(
-		val extensionsRepository: IExtensionsRepository
+		val extensionsRepository: IExtensionsRepository,
 ) : (() -> LiveData<HResult<List<ExtensionUI>>>) {
 	override fun invoke(): LiveData<HResult<List<ExtensionUI>>> {
 		return liveData {

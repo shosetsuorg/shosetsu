@@ -36,8 +36,10 @@ inline fun TextRequiringSettingData.text(value: TextRequiringSettingData.() -> A
 		}
 
 @SettingsItemDSL
-inline fun TextRequiringSettingData.onClicked(crossinline action: TextRequiringSettingData.(
-		@ParameterName("view") View
-) -> Unit) {
+inline fun TextRequiringSettingData.onClicked(
+		crossinline action: TextRequiringSettingData.(
+				@ParameterName("view") View,
+		) -> Unit,
+) {
 	textViewOnClickListener = { action(it) }
 }

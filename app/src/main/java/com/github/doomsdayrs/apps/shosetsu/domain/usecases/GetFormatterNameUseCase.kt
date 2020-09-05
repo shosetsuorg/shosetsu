@@ -28,7 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
  * 18 / 05 / 2020
  */
 class GetFormatterNameUseCase(
-		private val getFormatterUseCase: GetFormatterUseCase
+		private val getFormatterUseCase: GetFormatterUseCase,
 ) : ((@kotlin.ParameterName("formatterID") Int) -> LiveData<HResult<String>>) {
 	override fun invoke(formatterID: Int): LiveData<HResult<String>> {
 		return liveData<HResult<String>> {

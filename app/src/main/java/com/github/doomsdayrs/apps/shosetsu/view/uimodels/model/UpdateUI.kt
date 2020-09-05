@@ -34,7 +34,7 @@ data class UpdateUI(
 		val time: Long,
 		val chapterName: String,
 		val novelName: String,
-		val novelImageURL: String
+		val novelImageURL: String,
 ) : BaseRecyclerItem<UpdateUI.ViewHolder>() {
 	override val layoutRes: Int = R.layout.recycler_novel_card_compressed
 	override val type: Int = R.layout.recycler_novel_card_compressed

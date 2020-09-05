@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 class DownloadChapterPassageUseCase(
 		private val novelRepo: INovelsRepository,
 		private val downloadsRepository: IDownloadsRepository,
-		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase
+		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
 		novelRepo.loadNovel(chapterUI.novelID).let {

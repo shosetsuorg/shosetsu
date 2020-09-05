@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
  * @param
  */
 class ToastErrorUseCase(
-		val application: Application
+		val application: Application,
 ) {
 	inline operator fun <reified R : Any> invoke(error: HResult.Error, duration: Int = Toast.LENGTH_LONG) {
 		launchUI {

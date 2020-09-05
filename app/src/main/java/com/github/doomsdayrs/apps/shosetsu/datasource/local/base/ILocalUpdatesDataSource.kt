@@ -30,7 +30,13 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.UpdateEntity
  * 04 / 05 / 2020
  */
 interface ILocalUpdatesDataSource {
+
+	/** Loads [LiveData] of a [List] of [UpdateEntity] */
 	suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>>
-	suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long>
+
+	/** Insert a [List] of [UpdateEntity] and returns an [HResult] of [Array] of [Long] */
+	suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>>
+
+	/** Loads [LiveData] of a [List] of [UpdateCompleteEntity] */
 	suspend fun getCompleteUpdates(): LiveData<HResult<List<UpdateCompleteEntity>>>
 }

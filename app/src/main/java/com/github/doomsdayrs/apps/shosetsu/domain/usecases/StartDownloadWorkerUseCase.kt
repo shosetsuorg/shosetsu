@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker.Downl
  */
 class StartDownloadWorkerUseCase(
 		private val context: Context,
-		private val manager: DownloadWorkerManager
+		private val manager: DownloadWorkerManager,
 ) {
 	/**
 	 * Starts the download worker

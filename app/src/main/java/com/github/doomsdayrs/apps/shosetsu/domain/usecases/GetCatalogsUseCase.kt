@@ -31,7 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOpt
  * @param formatterRepository Repository of formatters
  */
 class GetCatalogsUseCase(
-		private val iExtensionsRepository: IExtensionsRepository
+		private val iExtensionsRepository: IExtensionsRepository,
 ) : (() -> LiveData<HResult<List<CatalogOptionUI>>>) {
 	override fun invoke(): LiveData<HResult<List<CatalogOptionUI>>> {
 		return liveData {

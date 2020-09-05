@@ -8,9 +8,9 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 import com.github.doomsdayrs.apps.shosetsu.view.susScript.SusScriptDialog
 import com.github.doomsdayrs.apps.shosetsu.view.susScript.viewHolders.SusScriptCard
-import com.github.doomsdayrs.apps.shosetsu.common.ext.md5
 
 /*
  * This file is part of shosetsu.
@@ -81,7 +81,7 @@ class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerV
 
 			//val realJSON = FormatterUtils.sourceJSON.getJSONObject(file.nameWithoutExtension)
 			holder.title2.text = file.nameWithoutExtension
-		//	holder.version2.text = realJSON.getString("version")
+			//	holder.version2.text = realJSON.getString("version")
 			//holder.hash2.text = realJSON.getString("md5")
 		}
 	}

@@ -1,14 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.novel.async
 
-import android.content.DialogInterface
-import android.os.AsyncTask
-import android.util.Log
-import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus.UNREAD
-import com.github.doomsdayrs.apps.shosetsu.view.ErrorAlert
-import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
-
 
 /*
  * This file is part of shosetsu.

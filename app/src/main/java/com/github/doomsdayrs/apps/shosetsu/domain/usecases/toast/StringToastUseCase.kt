@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
  * 14 / 08 / 2020
  */
 class StringToastUseCase(
-		private val application: Application
+		private val application: Application,
 ) {
 
 	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> String) {

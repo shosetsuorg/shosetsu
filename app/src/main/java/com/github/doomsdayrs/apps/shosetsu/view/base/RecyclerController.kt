@@ -76,7 +76,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	override fun onCreateView(
 			inflater: LayoutInflater,
 			container: ViewGroup,
-			savedViewState: Bundle?
+			savedViewState: Bundle?,
 	): View {
 		setViewTitle()
 		val view = createViewInstance(inflater, container)
@@ -160,7 +160,7 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	 */
 	inner class RecyclerDiffToolCallBack(
 			private val newList: List<V> = arrayListOf(),
-			private val oldList: List<V> = recyclerArray
+			private val oldList: List<V> = recyclerArray,
 	) : DiffUtil.Callback() {
 		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
 				this@RecyclerController.difAreContentsTheSame(

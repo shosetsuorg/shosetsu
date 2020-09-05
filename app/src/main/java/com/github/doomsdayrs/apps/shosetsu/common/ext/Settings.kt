@@ -65,7 +65,7 @@ inline fun <reified I : Any> ShosetsuSettings.getFormSetting(formatter: Formatte
 inline fun <reified I : Any> ShosetsuSettings.setFormSetting(
 		formatter: Formatter,
 		settingID: Int,
-		v: I
+		v: I,
 ) {
 	val s = "$settingID"
 	when (I::class) {

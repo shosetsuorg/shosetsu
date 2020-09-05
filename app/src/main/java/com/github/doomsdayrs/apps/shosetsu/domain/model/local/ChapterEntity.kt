@@ -77,7 +77,7 @@ data class ChapterEntity(
 
 		var bookmarked: Boolean = false,
 
-		var isSaved: Boolean = false
+		var isSaved: Boolean = false,
 ) : Convertible<ChapterUI> {
 
 

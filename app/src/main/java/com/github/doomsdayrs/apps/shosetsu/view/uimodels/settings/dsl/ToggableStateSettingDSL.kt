@@ -28,7 +28,7 @@ import kotlin.reflect.KMutableProperty0
 
 @SettingsItemDSL
 inline fun ToggleableStateSettingData.checker(
-		crossinline action: ToggleableStateSettingData.() -> KMutableProperty0<Boolean>
+		crossinline action: ToggleableStateSettingData.() -> KMutableProperty0<Boolean>,
 ) {
 	val property = action()
 	isChecked = property.get()
@@ -41,10 +41,12 @@ inline fun ToggleableStateSettingData.checker(
  * Applies listener for when the view is selected
  */
 @SettingsItemDSL
-inline fun ToggleableStateSettingData.onChecked(crossinline action: ToggleableStateSettingData.(
-		@ParameterName("buttonView") CompoundButton?,
-		@ParameterName("isChecked") Boolean
-) -> Unit) {
+inline fun ToggleableStateSettingData.onChecked(
+		crossinline action: ToggleableStateSettingData.(
+				@ParameterName("buttonView") CompoundButton?,
+				@ParameterName("isChecked") Boolean,
+		) -> Unit,
+) {
 	onCheckedListener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
 		action(buttonView, isChecked)
 	}

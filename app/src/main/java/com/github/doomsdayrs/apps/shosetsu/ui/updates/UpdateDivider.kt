@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.updates
 
 import android.content.Context
-import android.graphics.Canvas
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.getSystemService

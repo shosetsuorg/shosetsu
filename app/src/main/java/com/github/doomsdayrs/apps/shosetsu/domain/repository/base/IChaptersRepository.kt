@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -43,12 +44,13 @@ interface IChaptersRepository {
 	 */
 	suspend fun loadChapterPassage(
 			formatter: Formatter,
-			chapterEntity: ChapterEntity
+			chapterEntity: ChapterEntity,
 	): HResult<String>
 
 	/** Save the [ChapterEntity] [passage] to memory */
 	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, passage: String)
 
+	@Throws(SQLiteException::class)
 	/** Save the [ChapterEntity] [passage] to storage */
 	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String)
 
@@ -58,7 +60,7 @@ interface IChaptersRepository {
 	/** Handles chapters return, but returns the chapters that are new */
 	suspend fun handleChaptersReturn(
 			novelEntity: NovelEntity,
-			list: List<Novel.Chapter>
+			list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>>
 
 	/** Loads [ChapterEntity]s matching [novelID] */
@@ -68,14 +70,17 @@ interface IChaptersRepository {
 	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
 
 	/** Update [chapterEntity] in database */
+	@Throws(SQLiteException::class)
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
 	/** Loads [ReaderChapterEntity]s by it's [novelID] */
 	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
 
 	/** Update [readerChapterEntity] in database */
+	@Throws(SQLiteException::class)
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 
 	/** Delete the chapter passage from storage */
+	@Throws(SQLiteException::class)
 	suspend fun deleteChapterPassage(chapterEntity: ChapterEntity)
 }

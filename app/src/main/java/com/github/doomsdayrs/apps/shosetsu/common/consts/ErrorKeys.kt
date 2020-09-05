@@ -46,4 +46,7 @@ object ErrorKeys {
 
 	/** When HTTP returns a non 200 code */
 	const val ERROR_HTTP_ERROR: Int = 6
+
+	/** An SQL Exception occurred */
+	const val ERROR_HTTP_SQL: Int = 7
 }

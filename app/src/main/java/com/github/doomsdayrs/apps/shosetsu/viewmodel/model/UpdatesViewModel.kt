@@ -32,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IUpdatesViewMode
  * @author github.com/doomsdayrs
  */
 class UpdatesViewModel(
-		private val getUpdatesUseCase: GetUpdatesUseCase
+		private val getUpdatesUseCase: GetUpdatesUseCase,
 ) : IUpdatesViewModel() {
 	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
 		getUpdatesUseCase()

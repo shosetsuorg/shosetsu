@@ -39,7 +39,7 @@ import java.util.*
  */
 class SettingsAdapter(
 		private val settingsCards: ArrayList<SettingsCard>,
-		private val router: Router
+		private val router: Router,
 ) : RecyclerView.Adapter<SettingsCardViewHolder>() {
 	override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): SettingsCardViewHolder =
 			SettingsCardViewHolder(

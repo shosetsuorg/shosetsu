@@ -37,7 +37,7 @@ data class ReaderChapterEntity(
 
 		var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
 
-		var bookmarked: Boolean = false
+		var bookmarked: Boolean = false,
 ) : Convertible<ReaderChapterUI> {
 	override fun convertTo(): ReaderChapterUI = ReaderChapterUI(
 			id,

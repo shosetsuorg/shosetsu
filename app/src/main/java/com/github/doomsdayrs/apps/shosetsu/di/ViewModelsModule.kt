@@ -39,7 +39,7 @@ import org.kodein.di.generic.instance as i
 val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	// Main
 	bind<IMainViewModel>() with provider {
-		MainViewModel(i(), i(), i(), i(),i())
+		MainViewModel(i(), i(), i(), i(), i())
 	}
 
 	// Library
@@ -57,7 +57,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i(), i(), i()) }
 
 	// Extensions
-	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i(),i()) }
+	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i(), i()) }
 	bind<IExtensionsConfigureViewModel>() with provider { ExtensionsConfigureViewModel(i(), i()) }
 
 	// Novel View

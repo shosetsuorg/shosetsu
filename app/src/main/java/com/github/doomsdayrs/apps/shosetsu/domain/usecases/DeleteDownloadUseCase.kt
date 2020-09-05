@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
  * 21 / 06 / 2020
  */
 class DeleteDownloadUseCase(
-		private val iDownloadsRepository: IDownloadsRepository
+		private val iDownloadsRepository: IDownloadsRepository,
 ) {
 	suspend operator fun invoke(downloadUI: DownloadUI) {
 		iDownloadsRepository.delete(downloadUI.convertTo())

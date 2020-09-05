@@ -28,12 +28,12 @@ import java.io.File
  */
 
 class FileObject(val file: File) {
-    /**
-     * 0: Accept, 1: Temp Accept, 2: Disable, 3: Remove
-     */
-    var action: Int = 3
+	/**
+	 * 0: Accept, 1: Temp Accept, 2: Disable, 3: Remove
+	 */
+	var action: Int = 3
 
-    fun delete() {
-        file.delete()
-    }
+	fun delete() {
+		file.delete()
+	}
 }

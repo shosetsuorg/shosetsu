@@ -88,7 +88,8 @@ class DBHelper(context: Context) :
 		UPDATES("updates"),
 
 		@Deprecated("ROOM")
-		DOWNLOADS("downloads"), ;
+		DOWNLOADS("downloads"),
+		;
 
 		override fun toString(): String {
 			return key
@@ -232,13 +233,13 @@ class DBHelper(context: Context) :
 	private data class NovelIdentification(
 			val novelID: Int,
 			val novelURL: String,
-			val formatterID: Int
+			val formatterID: Int,
 	)
 
 	private data class ChapterIdentification(
 			val chapterID: Int,
 			val novelID: Int,
-			val chapterURL: String
+			val chapterURL: String,
 	)
 
 	private data class OldChapter(
@@ -249,7 +250,7 @@ class DBHelper(context: Context) :
 			val order: Double,
 			val yPosition: Int,
 			val readChapter: ReadingStatus,
-			val bookmarked: Boolean
+			val bookmarked: Boolean,
 	)
 
 	private data class OldNovel(
@@ -264,7 +265,7 @@ class DBHelper(context: Context) :
 			val publishingStatus: Novel.Status,
 			@Suppress("ArrayInDataClass") val artists: Array<String>,
 			val language: String,
-			val maxChapter: Int
+			val maxChapter: Int,
 	)
 
 	/**
@@ -288,7 +289,7 @@ class DBHelper(context: Context) :
 			groupBy: String? = null,
 			having: String? = null,
 			orderBy: String? = null,
-			limit: String? = null
+			limit: String? = null,
 	): Cursor {
 		return query(
 				table.toString(),

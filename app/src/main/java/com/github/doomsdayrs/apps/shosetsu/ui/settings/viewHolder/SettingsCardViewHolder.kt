@@ -27,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 13 / 07 / 2019
  */
 class SettingsCardViewHolder(
-		itemView: View
+		itemView: View,
 ) : RecyclerView.ViewHolder(itemView) {
 	val libraryCardTitle: TextView = itemView.findViewById(R.id.recycler_settings_title)
 	val cardView: View = itemView.findViewById(R.id.settings_card)

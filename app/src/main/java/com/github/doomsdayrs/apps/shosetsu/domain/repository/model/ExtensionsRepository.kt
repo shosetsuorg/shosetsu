@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
@@ -7,10 +8,7 @@ import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_BROKEN
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logError
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtensionDataSource
@@ -97,6 +95,7 @@ class ExtensionsRepository(
 		return emptyResult()
 	}
 
+	@Throws(SQLiteException::class)
 	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity) {
 		memorySource.removeFormatterFromMemory(extensionEntity.id)
 		fileSource.deleteFormatter(extensionEntity.fileName)
@@ -121,16 +120,10 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun loadFormatter(formatterID: Int): HResult<Formatter> =
-			loadFormatter(databaseSource.loadExtension(formatterID))
+			databaseSource.loadExtension(formatterID).withSuccess { loadFormatter(it) }
 
 	override suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>> =
 			databaseSource.loadPoweredExtensionsCards()
-
-	override fun loadPoweredExtensionsFileNames(): HResult<List<String>> =
-			databaseSource.loadPoweredExtensionsFileNames()
-
-	override fun loadExtensionMD5(extensionID: Int): HResult<String> =
-			databaseSource.loadExtensionMD5(extensionID)
 
 	override suspend fun loadCatalogueData(
 			formatter: Formatter,

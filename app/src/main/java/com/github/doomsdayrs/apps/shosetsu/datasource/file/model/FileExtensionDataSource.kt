@@ -34,7 +34,7 @@ import java.io.FileNotFoundException
  * 12 / 05 / 2020
  */
 class FileExtensionDataSource(
-		private val formatterUtils: IFormatterUtils
+		private val formatterUtils: IFormatterUtils,
 ) : IFileExtensionDataSource {
 	override suspend fun loadFormatter(fileName: String): HResult<Formatter> = try {
 		successResult(LuaFormatter(formatterUtils.makeFormatterFile(fileName)))

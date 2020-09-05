@@ -57,7 +57,7 @@ import org.kodein.di.generic.instance
  */
 class CatalogController(
 		/** data bundle uwu */
-		val bundle: Bundle
+		val bundle: Bundle,
 ) : FastAdapterRecyclerController<ACatalogNovelUI>(bundle), SecondDrawerController {
 
 	override val layoutRes: Int = R.layout.catalogue
