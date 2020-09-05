@@ -1,11 +1,13 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.file.model
 
 import android.content.Context
+import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileChapterDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import java.io.File
@@ -34,8 +36,8 @@ import java.io.FileNotFoundException
  * @param context Context of application
  */
 class FileChapterDataSource(val context: Context) : IFileChapterDataSource {
-	private val ap = context.getExternalFilesDir(null)!!.absolutePath.let {
-		it.substring(0, it.indexOf("Android/data/")) + "Shosetsu/"
+	private val ap = context.getExternalFilesDir(null)!!.also {
+		Log.d(logID(), it.toString())
 	}
 
 	/** Makes path */
@@ -46,7 +48,9 @@ class FileChapterDataSource(val context: Context) : IFileChapterDataSource {
 			chapterEntity: ChapterEntity,
 			passage: String,
 	): HResult<*> {
-		File(makePath(chapterEntity)).writeText(passage)
+		File(makePath(chapterEntity)).also {
+			it.parentFile?.mkdirs()
+		}.writeText(passage)
 		return successResult("")
 	}
 

@@ -1,15 +1,18 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.file.model
 
+import android.content.Context
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
+import com.github.doomsdayrs.apps.shosetsu.common.consts.scriptDirectory
+import com.github.doomsdayrs.apps.shosetsu.common.consts.sourceFolder
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtensionDataSource
 import org.luaj.vm2.LuaError
+import java.io.File
 import java.io.FileNotFoundException
 
 /*
@@ -34,10 +37,20 @@ import java.io.FileNotFoundException
  * 12 / 05 / 2020
  */
 class FileExtensionDataSource(
-		private val formatterUtils: IFormatterUtils,
+		private val context: Context,
 ) : IFileExtensionDataSource {
+	private val ap: String by lazy {
+		context.filesDir.absolutePath
+	}
+
+	private fun makeFormatterFile(fileName: String): File {
+		val f = File("$ap$sourceFolder$scriptDirectory$fileName.lua")
+		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
+		return f
+	}
+
 	override suspend fun loadFormatter(fileName: String): HResult<Formatter> = try {
-		successResult(LuaFormatter(formatterUtils.makeFormatterFile(fileName)))
+		successResult(LuaFormatter(makeFormatterFile(fileName)))
 	} catch (e: LuaError) {
 		errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
 	} catch (e: FileNotFoundException) {
@@ -45,7 +58,7 @@ class FileExtensionDataSource(
 	}
 
 	override suspend fun writeFormatter(fileName: String, data: String): HResult<*> {
-		formatterUtils.makeFormatterFile(fileName).also {
+		makeFormatterFile(fileName).also {
 			if (!it.exists()) {
 				it.parentFile?.mkdir()
 			}
@@ -54,7 +67,7 @@ class FileExtensionDataSource(
 	}
 
 	override suspend fun deleteFormatter(fileName: String): HResult<*> {
-		formatterUtils.makeFormatterFile(fileName).takeIf { it.exists() }?.delete()
+		makeFormatterFile(fileName).takeIf { it.exists() }?.delete()
 				?: errorResult(ERROR_NOT_FOUND, "Cannot delete unknown file: $fileName")
 		return successResult("")
 	}

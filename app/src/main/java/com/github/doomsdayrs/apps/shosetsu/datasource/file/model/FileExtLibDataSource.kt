@@ -1,13 +1,16 @@
 package com.github.doomsdayrs.apps.shosetsu.datasource.file.model
 
+import android.content.Context
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_IO
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
+import com.github.doomsdayrs.apps.shosetsu.common.consts.libraryDirectory
+import com.github.doomsdayrs.apps.shosetsu.common.consts.sourceFolder
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
 import com.github.doomsdayrs.apps.shosetsu.datasource.file.base.IFileExtLibDataSource
 import okio.IOException
+import java.io.File
 
 /*
  * This file is part of shosetsu.
@@ -31,11 +34,22 @@ import okio.IOException
  * 12 / 05 / 2020
  */
 class FileExtLibDataSource(
-		private val formatterUtils: IFormatterUtils,
+		private val context: Context,
 ) : IFileExtLibDataSource {
+
+	private val ap: String by lazy {
+		context.filesDir.absolutePath
+	}
+
+	private fun makeLibraryFile(fileName: String): File {
+		val f = File("$ap$sourceFolder$libraryDirectory$fileName.lua")
+		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
+		return f
+	}
+
 	override suspend fun writeExtLib(fileName: String, data: String): HResult<*> {
 		try {
-			formatterUtils.makeLibraryFile(fileName).also {
+			makeLibraryFile(fileName).also {
 				if (!it.exists()) it.parentFile?.mkdir()
 			}.writeText(data)
 		} catch (e: IOException) {
@@ -48,13 +62,13 @@ class FileExtLibDataSource(
 			blockingLoadLib(fileName)
 
 	override fun blockingLoadLib(fileName: String): HResult<String> =
-			formatterUtils.makeLibraryFile(fileName).takeIf { it.exists() }?.let {
+			makeLibraryFile(fileName).takeIf { it.exists() }?.let {
 				successResult(it.readText())
 			} ?: errorResult(ERROR_NOT_FOUND, "$fileName is not found in storage")
 
 
 	override suspend fun deleteExtLib(fileName: String): HResult<*> {
-		formatterUtils.makeLibraryFile(fileName).takeIf { it.exists() }?.delete()
+		makeLibraryFile(fileName).takeIf { it.exists() }?.delete()
 				?: errorResult(ERROR_IO, "Cannot delete nonexistent lib: $fileName")
 		return successResult("")
 	}

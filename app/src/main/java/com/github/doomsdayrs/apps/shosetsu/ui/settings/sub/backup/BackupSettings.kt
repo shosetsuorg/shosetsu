@@ -8,8 +8,6 @@ import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.ext.context
 import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.backup.async.BackupProcess
-import com.github.doomsdayrs.apps.shosetsu.ui.settings.sub.backup.async.RestoreProcess
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
 import com.vincent.filepicker.Constant
@@ -63,7 +61,7 @@ class BackupSettings : SettingsSubController() {
 		buttonSettingData(3) {
 			title { R.string.backup_now }
 			text { R.string.restore_now }
-			onButtonClicked { it.post { BackupProcess().execute() } }
+			onButtonClicked { it.post {  } }
 		}
 		buttonSettingData(4) {
 			title { R.string.restore_now }
@@ -89,7 +87,6 @@ class BackupSettings : SettingsSubController() {
 						data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE)
 				if (list != null && list.size > 0) {
 					val normalFile = list[0]
-					RestoreProcess(normalFile.path, context!!).execute()
 				}
 				/*
 				String path = data.getData().getPath();

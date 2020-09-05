@@ -1,14 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.common.utils
 
-import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.common.consts.libraryDirectory
-import com.github.doomsdayrs.apps.shosetsu.common.consts.scriptDirectory
-import com.github.doomsdayrs.apps.shosetsu.common.consts.sourceFolder
-import com.github.doomsdayrs.apps.shosetsu.common.utils.base.IFormatterUtils
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import java.io.File
-
 
 /*
  * This file is part of shosetsu.
@@ -32,9 +23,7 @@ import java.io.File
  * 18 / 01 / 2020
  * [FormatterUtils] provides a class that handles all basic needs for extensions
  */
-class FormatterUtils(
-		val context: Context,
-) : IFormatterUtils {
+class FormatterUtils {
 	companion object {
 		private fun splitVersion(version: String): Array<String> =
 				version.split(".").toTypedArray()
@@ -60,30 +49,4 @@ class FormatterUtils(
 		}
 	}
 
-	/** AbsolutePath of application file directory */
-	private val ap: String = context.filesDir.absolutePath
-
-	override fun makeLibraryFile(extLibEntity: ExtLibEntity): File =
-			makeLibraryFile(extLibEntity.scriptName)
-
-	override fun makeLibraryFile(fileName: String): File {
-		val f = File("$ap$sourceFolder$libraryDirectory$fileName.lua")
-		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
-		return f
-	}
-
-	override fun makeFormatterFile(extensionEntity: ExtensionEntity): File =
-			makeFormatterFile(extensionEntity.fileName)
-
-	override fun makeFormatterFile(fileName: String): File {
-		val f = File("$ap$sourceFolder$scriptDirectory$fileName.lua")
-		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
-		return f
-	}
-
-	/**
-	 * Loads the formatters
-	 */
-	override suspend fun initalize() {
-	}
 }

@@ -1,8 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.common.utils.base
+package com.github.doomsdayrs.apps.shosetsu.backend.services
 
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtLibEntity
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ExtensionEntity
-import java.io.File
+import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 
 /*
  * This file is part of shosetsu.
@@ -19,20 +19,18 @@ import java.io.File
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
- * 26 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 16 / 08 / 2019
  */
-interface IFormatterUtils {
-	suspend fun initalize()
-	fun makeFormatterFile(extensionEntity: ExtensionEntity): File
-	fun makeFormatterFile(fileName: String): File
-	fun makeLibraryFile(fileName: String): File
-	fun makeLibraryFile(extLibEntity: ExtLibEntity): File
+class RestoreUseCase(
+		private val iNovelsRepository: INovelsRepository,
+		private val iChaptersRepository: IChaptersRepository,
+		private val settings: ShosetsuSettings
+) {
+	operator fun invoke(file: String) {
 
+	}
 }
