@@ -57,6 +57,7 @@ const val DOWNLOAD_IDLE: String = "downloadIdle"
 // Update options
 const val IS_DOWNLOAD_ON_UPDATE: String = "isDownloadOnUpdate"
 const val ONLY_UPDATE_ONGOING: String = "onlyUpdateOngoing"
+const val UPDATE_STARTUP: String = "updateOnStartup"
 const val UPDATE_CYCLE: String = "updateCycle"
 const val UPDATE_LOW_STORAGE: String = "updateLowStorage"
 const val UPDATE_LOW_BATTERY: String = "updateLowBattery"

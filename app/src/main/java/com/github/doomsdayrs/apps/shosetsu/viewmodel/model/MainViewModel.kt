@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.IsOnlineUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.ShareUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IMainViewModel
 import kotlinx.coroutines.Dispatchers
 
@@ -32,7 +35,6 @@ import kotlinx.coroutines.Dispatchers
 class MainViewModel(
 		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 		private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
-		private val updateWorkerUseCase: StartUpdateWorkerUseCase,
 		private val isOnlineUseCase: IsOnlineUseCase,
 		private val shareUseCase: ShareUseCase,
 ) : IMainViewModel() {
@@ -44,9 +46,7 @@ class MainViewModel(
 		startDownloadWorkerUseCase()
 	}
 
-	override fun startUpdateWorker() {
-		updateWorkerUseCase()
-	}
+	override fun startUpdateWorker() {}
 
 	override fun startUpdateCheck(): LiveData<HResult<LoadAppUpdateUseCase.DebugAppUpdate>> {
 		return liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {

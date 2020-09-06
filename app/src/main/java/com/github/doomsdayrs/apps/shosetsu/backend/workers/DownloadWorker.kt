@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.services
+package com.github.doomsdayrs.apps.shosetsu.backend.workers
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -74,6 +74,9 @@ class DownloadWorker(
 		}
 	}
 
+	/**
+	 * Manager of [DownloadWorker]
+	 */
 	class DownloadWorkerManager(override val kodein: Kodein) : KodeinAware {
 		private val settings by instance<ShosetsuSettings>()
 

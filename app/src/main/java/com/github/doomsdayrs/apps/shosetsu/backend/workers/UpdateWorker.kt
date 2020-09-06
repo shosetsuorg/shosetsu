@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.services
+package com.github.doomsdayrs.apps.shosetsu.backend.workers
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -68,6 +68,9 @@ class UpdateWorker(
 		const val KEY_CATEGORY: Int = 0x01
 	}
 
+	/**
+	 * Manager of [UpdateWorker]
+	 */
 	class UpdateWorkerManager(override val kodein: Kodein) : KodeinAware {
 		val settings: ShosetsuSettings by instance()
 
@@ -77,7 +80,7 @@ class UpdateWorker(
 		 * @param context the application context.
 		 * @return true if the service is running, false otherwise.
 		 */
-		private fun isRunning(
+		fun isRunning(
 				context: Context,
 				workerManager: WorkManager = WorkManager.getInstance(context),
 		): Boolean = try {

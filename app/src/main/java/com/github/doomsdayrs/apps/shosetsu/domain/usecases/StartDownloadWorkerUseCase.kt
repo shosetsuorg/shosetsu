@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker.DownloadWorkerManager
+import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.DownloadWorkerManager
 
 /*
  * This file is part of shosetsu.

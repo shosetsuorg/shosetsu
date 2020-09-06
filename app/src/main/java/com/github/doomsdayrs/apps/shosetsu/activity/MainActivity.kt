@@ -1,7 +1,10 @@
 package com.github.doomsdayrs.apps.shosetsu.activity
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -15,9 +18,10 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.consts.ShortCuts
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
-import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
@@ -65,6 +69,16 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	override val kodein: Kodein by closestKodein()
 	private val viewModel by instance<IMainViewModel>()
 
+	private val broadcastReceiver by lazy {
+		object : BroadcastReceiver() {
+			override fun onReceive(context: Context?, intent: Intent?) {
+				intent?.let {
+					handleIntentAction(it)
+				}
+			}
+		}
+	}
+
 	/**
 	 * Main activity
 	 *
@@ -78,7 +92,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			finish()
 			return
 		}
-
+		registerReceiver(broadcastReceiver, IntentFilter().apply {
+			addAction(ShortCuts.ACTION_OPEN_UPDATES)
+			addAction(ShortCuts.ACTION_OPEN_LIBRARY)
+			addAction(ShortCuts.ACTION_OPEN_CATALOGUE)
+		})
 		setContentView(R.layout.activity_main)
 		setupView()
 		setupMain(savedInstanceState)
@@ -179,17 +197,15 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		syncActivityViewWithController(router.backstack.lastOrNull()?.controller)
 
+		handleIntentAction(intent)
+	}
+
+	internal fun handleIntentAction(intent: Intent) {
+		Log.d(logID(), "Intent received was ${intent.action}")
 		when (intent.action) {
-			Intent.ACTION_USER_BACKGROUND -> {
-				Log.i("MainActivity", "Updating novels")
-				viewModel.startUpdateWorker()
-			}
-			Intent.ACTION_BOOT_COMPLETED -> {
-				Log.i("MainActivity", "Bootup")
-				if (viewModel.isOnline())
-					viewModel.startUpdateWorker()
-				else toast(R.string.you_not_online)
-			}
+			ShortCuts.ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_catalogue)
+			ShortCuts.ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updater)
+			ShortCuts.ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
 			else -> {
 				if (!router.hasRootController()) {
 					setSelectedDrawerItem(R.id.nav_library)

@@ -280,8 +280,9 @@
 	<string name="extension_image_desc">Image of this extension</string>
 	<string name="extension_settings_desc">Settings of this extension</string>
 	<string name="share">Share</string>
+    <string name="browse">Browse</string>
 
-	<array name="application_themes">
+    <array name="application_themes">
 		<item>@string/light</item>
 		<item>@string/amoled</item>
 	</array>

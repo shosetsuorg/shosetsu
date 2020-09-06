@@ -1,76 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:dist="http://schemas.android.com/apk/distribution"
-	xmlns:tools="http://schemas.android.com/tools"
-	package="com.github.doomsdayrs.apps.shosetsu">
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.github.doomsdayrs.apps.shosetsu">
 
-	<dist:module dist:instant="true" />
+    <dist:module dist:instant="true" />
 
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INSTALL_SHORTCUT" />
 
-	<application
-		android:name=".application.ShosetsuApplication"
-		android:allowBackup="true"
-		android:fullBackupContent="true"
-		android:icon="@mipmap/ic_launcher"
-		android:label="@string/app_name"
-		android:requestLegacyExternalStorage="true"
-		android:roundIcon="@mipmap/ic_launcher_round"
-		android:supportsRtl="true"
-		android:theme="@style/Theme.MaterialComponents"
-		android:usesCleartextTraffic="true"
-		tools:ignore="GoogleAppIndexingWarning"
-		tools:targetApi="q">
-		<activity android:name=".ui.reader.ChapterReaderActvity"></activity>
-		<activity
-			android:name=".ui.splash.SplashScreen"
-			android:theme="@style/SplashScreen">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
+    <application
+        android:name=".application.ShosetsuApplication"
+        android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MaterialComponents"
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="q">
 
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
+        <receiver
+            android:name=".backend.receivers.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
-			<meta-data
-				android:name="android.app.shortcuts"
-				android:resource="@xml/shortcuts" />
-		</activity>
-		<activity
-			android:name=".activity.MainActivity"
-			android:theme="@style/AppTheme" />
-		<activity
-			android:name=".ui.webView.WebViewApp"
-			android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.splash.SplashScreen"
+            android:exported="true"
+            android:theme="@style/SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-		<activity
-			android:name=".ui.reader.ChapterReader"
-			android:theme="@style/AppTheme" />
-		<activity android:name=".ui.search.SearchController">
-			<intent-filter>
-				<action android:name="android.intent.action.SEARCH" />
-				<action android:name="com.google.android.gms.actions.SEARCH_ACTION" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/AppTheme" />
 
-			<meta-data
-				android:name="android.app.searchable"
-				android:resource="@xml/searchable" />
-		</activity>
-		<activity
-			android:name=".ui.intro.IntroductionActivity"
-			android:theme="@style/Theme.Intro" />
+        <activity
+            android:name=".ui.webView.WebViewApp"
+            android:theme="@style/AppTheme" />
 
-		<service
-			android:name=".backend.services.UpdateWorker"
-			android:exported="false" />
-		<service
-			android:name=".backend.services.RepositoryService"
-			android:exported="false" />
-	</application>
+        <activity
+            android:name=".ui.reader.ChapterReader"
+            android:theme="@style/AppTheme" />
+
+        <activity android:name=".ui.search.SearchController">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="com.google.android.gms.actions.SEARCH_ACTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <activity
+            android:name=".ui.intro.IntroductionActivity"
+            android:theme="@style/Theme.Intro" />
+    </application>
 
 </manifest>

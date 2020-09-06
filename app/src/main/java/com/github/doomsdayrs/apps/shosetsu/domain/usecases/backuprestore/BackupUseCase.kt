@@ -1,5 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.backend.services
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.backuprestore
 
+import android.content.Context
 import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
@@ -25,12 +26,13 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsReposit
  * shosetsu
  * 16 / 08 / 2019
  */
-class RestoreUseCase(
+@Suppress("unused")
+class BackupUseCase(
 		private val iNovelsRepository: INovelsRepository,
 		private val iChaptersRepository: IChaptersRepository,
-		private val settings: ShosetsuSettings
+		private val settings: ShosetsuSettings,
+		private val context: Context
 ) {
-	operator fun invoke(file: String) {
-
+	operator fun invoke() {
 	}
 }

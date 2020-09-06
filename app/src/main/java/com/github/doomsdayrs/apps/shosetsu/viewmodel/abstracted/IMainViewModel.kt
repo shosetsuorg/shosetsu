@@ -28,11 +28,11 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.IsOnlineCheckViewModel
  * 20 / 06 / 2020
  */
 abstract class IMainViewModel : ViewModel(), IsOnlineCheckViewModel {
-
 	abstract fun share(string: String, int: String)
 
 	abstract fun startDownloadWorker()
 
+	@Deprecated("Now auto started")
 	abstract fun startUpdateWorker()
 
 	abstract fun startUpdateCheck(): LiveData<HResult<LoadAppUpdateUseCase.DebugAppUpdate>>

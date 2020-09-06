@@ -336,6 +336,11 @@ class ShosetsuSettings(
 		set(value) = settings.edit { putBoolean(ONLY_UPDATE_ONGOING, value) }
 		get() = settings.getBoolean(ONLY_UPDATE_ONGOING, false)
 
+
+	var updateOnStartup: Boolean
+		set(value) = settings.edit { putBoolean(UPDATE_STARTUP, value) }
+		get() = settings.getBoolean(UPDATE_STARTUP, true)
+
 	// Advanced Settings
 	var showIntro: Boolean
 		set(value) = settings.edit { putBoolean(FIRST_TIME, value) }

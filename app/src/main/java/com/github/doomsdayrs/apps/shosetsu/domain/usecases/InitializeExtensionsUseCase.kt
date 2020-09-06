@@ -55,8 +55,6 @@ class InitializeExtensionsUseCase(
 			if (repos is Success)
 				for (repo in repos.data) {
 					val repoName = repo.name
-					val repoURL = repo.url
-					val repoID = repo.id
 
 					progressUpdate("Checking $repoName")
 					// gets the latest list for the repo

@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
-import com.github.doomsdayrs.apps.shosetsu.backend.services.DownloadWorker.DownloadWorkerManager
-import com.github.doomsdayrs.apps.shosetsu.backend.services.UpdateWorker.UpdateWorkerManager
+import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.DownloadWorkerManager
+import com.github.doomsdayrs.apps.shosetsu.backend.workers.UpdateWorker.UpdateWorkerManager
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.singleton
