@@ -22,6 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.ShortCuts
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.requestPerms
+import com.github.doomsdayrs.apps.shosetsu.common.ext.toast
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
@@ -224,8 +225,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				is HResult.Loading -> {
 				}
 				is HResult.Error -> {
+					toast("$result")
 				}
 				is HResult.Empty -> {
+					toast(R.string.app_update_unavaliable)
 				}
 				is HResult.Success -> {
 					val update = result.data
