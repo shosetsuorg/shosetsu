@@ -1,7 +1,8 @@
 {
-	"latestVersion":"902",
+	"latestVersion":"903",
 	"url":"https://discord.gg/ttSX7gB",
 	"releaseNotes":[
-		"- Added app update notification and some systems for it"
+		"- New grey UI - Need UI devs desperately",
+		"- Fixed update writing issues"
 	]
 }
