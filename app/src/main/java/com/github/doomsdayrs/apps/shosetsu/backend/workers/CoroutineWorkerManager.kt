@@ -1,11 +1,12 @@
-package com.github.doomsdayrs.apps.shosetsu.di
+package com.github.doomsdayrs.apps.shosetsu.backend.workers
 
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.UpdateWorker
+import android.content.Context
+import androidx.work.Operation
+import androidx.work.WorkManager
+import androidx.work.WorkManager.getInstance
 import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
 
 /*
  * This file is part of shosetsu.
@@ -26,10 +27,20 @@ import org.kodein.di.generic.singleton
 
 /**
  * shosetsu
- * 30 / 07 / 2020
+ * 06 / 09 / 2020
+ * @param context Context of the application
  */
-@Suppress("PublicApiImplicitType")
-val othersModule = Kodein.Module("others") {
-	bind<UpdateWorker.Manager>() with singleton { UpdateWorker.Manager(instance()) }
-	bind<DownloadWorker.Manager>() with singleton { DownloadWorker.Manager(instance()) }
+abstract class CoroutineWorkerManager(
+		val context: Context
+) : KodeinAware {
+	override val kodein: Kodein by kodein(context)
+
+	/**
+	 * WorkManager
+	 */
+	val workerManager: WorkManager by lazy { getInstance(context) }
+
+	abstract fun isRunning(): Boolean
+	abstract fun start()
+	abstract fun stop(): Operation
 }

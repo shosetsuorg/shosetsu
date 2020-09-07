@@ -23,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.ToastErrorUseCase
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -71,19 +72,15 @@ class UpdateWorker(
 	/**
 	 * Manager of [UpdateWorker]
 	 */
-	class UpdateWorkerManager(override val kodein: Kodein) : KodeinAware {
+	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		val settings: ShosetsuSettings by instance()
 
 		/**
 		 * Returns the status of the service.
 		 *
-		 * @param context the application context.
 		 * @return true if the service is running, false otherwise.
 		 */
-		fun isRunning(
-				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context),
-		): Boolean = try {
+		override fun isRunning(): Boolean = try {
 			workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID)
 					.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
@@ -93,13 +90,8 @@ class UpdateWorker(
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already
 		 * running.
-		 *
-		 * @param context the application context.
 		 */
-		fun start(
-				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context),
-		) {
+		override fun start() {
 			Log.i(logID(), LogConstants.SERVICE_NEW)
 			workerManager.enqueueUniquePeriodicWork(
 					UPDATE_WORK_ID,
@@ -129,13 +121,8 @@ class UpdateWorker(
 
 		/**
 		 * Stops the service.
-		 *
-		 * @param context the application context.
 		 */
-		fun stop(
-				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context),
-		): Any = workerManager.cancelUniqueWork(UPDATE_WORK_ID)
+		override fun stop(): Operation = workerManager.cancelUniqueWork(UPDATE_WORK_ID)
 	}
 
 	private val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
@@ -148,7 +135,7 @@ class UpdateWorker(
 			@Suppress("DEPRECATION")
 			Notification.Builder(appContext)
 		}
-				.setSmallIcon(R.drawable.ic_system_update_alt_24dp)
+				.setSmallIcon(R.drawable.ic_refresh)
 				.setContentText("Update in progress")
 				.setOnlyAlertOnce(true)
 	}
@@ -158,6 +145,7 @@ class UpdateWorker(
 	private val loadNovelUseCase by instance<LoadNovelUseCase>()
 	private val settings by instance<ShosetsuSettings>()
 	private val toastErrorUseCase by instance<ToastErrorUseCase>()
+	private val startDownloadWorker: StartDownloadWorkerUseCase by instance()
 
 	override suspend fun doWork(): Result {
 		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
@@ -193,13 +181,14 @@ class UpdateWorker(
 					pr.setOngoing(false)
 					pr.setProgress(0, 0, false)
 					notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-
 				}
 				else -> {
 					return Result.failure()
 				}
 			}
 		}
+
+		if (settings.downloadOnUpdate) startDownloadWorker()
 		return Result.success()
 	}
 }

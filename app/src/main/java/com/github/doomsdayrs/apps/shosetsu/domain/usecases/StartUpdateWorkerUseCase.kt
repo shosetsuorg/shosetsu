@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.UpdateWorker.UpdateWorkerManager
+import com.github.doomsdayrs.apps.shosetsu.backend.workers.UpdateWorker.Manager
 
 /*
  * This file is part of shosetsu.
@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.workers.UpdateWorker.UpdateWo
  */
 class StartUpdateWorkerUseCase(
 		private val context: Context,
-		private val manager: UpdateWorkerManager,
+		private val manager: Manager,
 ) {
 	/**
 	 * Starts the update worker

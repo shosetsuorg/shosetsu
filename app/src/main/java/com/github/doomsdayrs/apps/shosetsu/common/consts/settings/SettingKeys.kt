@@ -64,6 +64,13 @@ const val UPDATE_LOW_BATTERY: String = "updateLowBattery"
 const val UPDATE_METERED: String = "updateMetered"
 const val UPDATE_IDLE: String = "updateIdle"
 
+// App Update Options
+const val APP_UPDATE_STARTUP: String = "appUpdateOnStartup"
+const val APP_UPDATE_METERED: String = "appUpdateMetered"
+const val APP_UPDATE_IDLE: String = "appUpdateIdle"
+const val APP_UPDATE_CYCLE: String = "appUpdateCycle"
+
+
 // View options
 const val C_IN_NOVELS_P: String = "columnsInNovelsViewP"
 const val C_IN_NOVELS_H: String = "columnsInNovelsViewH"

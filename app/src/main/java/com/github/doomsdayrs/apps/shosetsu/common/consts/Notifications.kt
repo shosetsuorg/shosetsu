@@ -37,6 +37,10 @@ object Notifications {
 	const val CHANNEL_DOWNLOAD: String = "shosetsu_download"
 	const val ID_CHAPTER_DOWNLOAD: Int = 1949
 
+	const val CHANNEL_APP_UPDATE: String = "shosetsu_app_update"
+	const val ID_APP_UPDATE: Int = 1991
+
+
 	fun createChannels(context: Context) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 		val channels = listOf(
@@ -49,6 +53,11 @@ object Notifications {
 						CHANNEL_DOWNLOAD,
 						"Shosetsu Download",
 						NotificationManager.IMPORTANCE_LOW
+				),
+				NotificationChannel(
+						CHANNEL_APP_UPDATE,
+						"Shosetsu App Update",
+						NotificationManager.IMPORTANCE_DEFAULT
 				)
 		)
 		context.notificationManager.createNotificationChannels(channels)

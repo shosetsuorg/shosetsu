@@ -63,83 +63,10 @@ class DownloadWorker(
 		appContext: Context,
 		params: WorkerParameters,
 ) : CoroutineWorker(appContext, params), KodeinAware {
-	companion object {
-		private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 3
-
-		/**
-		 * Makes a download path for a downloadEntity
-		 */
-		fun makeDownloadPath(downloadEntity: DownloadEntity): String = with(downloadEntity) {
-			"${shoDir}/download/${formatterID}/${novelID}"
-		}
-	}
-
-	/**
-	 * Manager of [DownloadWorker]
-	 */
-	class DownloadWorkerManager(override val kodein: Kodein) : KodeinAware {
-		private val settings by instance<ShosetsuSettings>()
-
-		/**
-		 * Returns the status of the service.
-		 *
-		 * @param context the application context.
-		 * @return true if the service is running, false otherwise.
-		 */
-		fun isRunning(
-				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context),
-		): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID)
-					.get()[0].state == WorkInfo.State.RUNNING
-		} catch (e: Exception) {
-			false
-		}
-
-		/**
-		 * Starts the service. It will be started only if there isn't another instance already
-		 * running.
-		 *
-		 * @param context the application context.
-		 */
-		fun start(
-				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context),
-		) {
-			workerManager.enqueueUniqueWork(
-					DOWNLOAD_WORK_ID,
-					ExistingWorkPolicy.REPLACE,
-					OneTimeWorkRequestBuilder<DownloadWorker>()
-							.setConstraints(Constraints.Builder().apply {
-								setRequiredNetworkType(
-										if (settings.downloadOnMetered) {
-											CONNECTED
-										} else UNMETERED
-								)
-								setRequiresStorageNotLow(!settings.downloadOnLowStorage)
-								setRequiresBatteryNotLow(!settings.downloadOnLowBattery)
-								if (SDK_INT >= VERSION_CODES.M)
-									setRequiresDeviceIdle(settings.downloadOnlyIdle)
-							}.build())
-							.build()
-			)
-		}
-
-		/**
-		 * Stops the service.
-		 *
-		 * @param context the application context.
-		 */
-		fun stop(
-				context: Context,
-				workerManager: WorkManager = WorkManager.getInstance(context),
-		): Any = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
-	}
 
 	private val notificationManager by lazy {
 		applicationContext.getSystemService<NotificationManager>()!!
 	}
-
 	private val progressNotification by lazy {
 		if (SDK_INT >= VERSION_CODES.O) {
 			Notification.Builder(applicationContext, CHANNEL_DOWNLOAD)
@@ -153,13 +80,11 @@ class DownloadWorker(
 				.setContentText("Downloading Chapters")
 				.setOnlyAlertOnce(true)
 	}
-
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
 	private val chapRepo by instance<IChaptersRepository>()
 	private val extRepo by instance<IExtensionsRepository>()
 	private val settings by instance<ShosetsuSettings>()
-
 	private suspend fun getDownloadCount(): Int =
 			downloadsRepo.loadDownloadCount().let { if (it is HResult.Success) it.data else -1 }
 
@@ -273,5 +198,65 @@ class DownloadWorker(
 		}
 		Log.i(logID(), "Completed download loop")
 		return Result.success()
+	}
+
+	/**
+	 * Manager of [DownloadWorker]
+	 */
+	class Manager(context: Context) : CoroutineWorkerManager(context) {
+		private val settings by instance<ShosetsuSettings>()
+
+		/**
+		 * Returns the status of the service.
+		 *
+		 * @param context the application context.
+		 * @return true if the service is running, false otherwise.
+		 */
+		override fun isRunning(): Boolean = try {
+			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID)
+					.get()[0].state == WorkInfo.State.RUNNING
+		} catch (e: Exception) {
+			false
+		}
+
+		/**
+		 * Starts the service. It will be started only if there isn't another instance already
+		 * running.
+		 */
+		override fun start() {
+			workerManager.enqueueUniqueWork(
+					DOWNLOAD_WORK_ID,
+					ExistingWorkPolicy.REPLACE,
+					OneTimeWorkRequestBuilder<DownloadWorker>()
+							.setConstraints(Constraints.Builder().apply {
+								setRequiredNetworkType(
+										if (settings.downloadOnMetered) {
+											CONNECTED
+										} else UNMETERED
+								)
+								setRequiresStorageNotLow(!settings.downloadOnLowStorage)
+								setRequiresBatteryNotLow(!settings.downloadOnLowBattery)
+								if (SDK_INT >= VERSION_CODES.M)
+									setRequiresDeviceIdle(settings.downloadOnlyIdle)
+							}.build())
+							.build()
+			)
+		}
+
+		/**
+		 * Stops the service.
+		 */
+		override fun stop(): Operation = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
+	}
+
+	companion object {
+		private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 3
+
+		/**
+		 * Makes a download path for a downloadEntity
+		 */
+		fun makeDownloadPath(downloadEntity: DownloadEntity): String = with(downloadEntity) {
+			"${shoDir}/download/${formatterID}/${novelID}"
+		}
 	}
 }

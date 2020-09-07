@@ -111,9 +111,6 @@ dependencies {
 	//TODO GITHUB sign in to save backup data to cloud
 	//implementation 'com.github.kohsuke:github-api:github-api-1.95'
 
-	// App updater
-	implementation 'com.github.javiersantos:AppUpdater:2.7'
-
 	// Markdown view
 	implementation 'us.feras.mdv:markdownview:1.1.0'
 

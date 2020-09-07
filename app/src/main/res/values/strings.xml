@@ -141,6 +141,7 @@
 
 
 	<!-- App Update -->
+	<string name="app_update_check">App Update Check</string>
 	<string name="app_update_available">App Update available</string>
 	<string name="check_out_latest_app">Check out the latest version available of the app!</string>
 	<string name="app_update_unavaliable">App Update not available</string>

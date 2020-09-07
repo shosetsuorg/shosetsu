@@ -1,11 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.di
+package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.UpdateWorker
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
 
 /*
  * This file is part of shosetsu.
@@ -26,10 +23,12 @@ import org.kodein.di.generic.singleton
 
 /**
  * shosetsu
- * 30 / 07 / 2020
+ * 06 / 09 / 2020
+ *
+ * Source of truth for all app updates
  */
-@Suppress("PublicApiImplicitType")
-val othersModule = Kodein.Module("others") {
-	bind<UpdateWorker.Manager>() with singleton { UpdateWorker.Manager(instance()) }
-	bind<DownloadWorker.Manager>() with singleton { DownloadWorker.Manager(instance()) }
+interface IAppUpdatesRepository {
+	fun watchAppUpdates(): LiveData<HResult<LoadAppUpdateUseCase.DebugAppUpdate>>
+
+	suspend fun checkForAppUpdate(): HResult<LoadAppUpdateUseCase.DebugAppUpdate>
 }

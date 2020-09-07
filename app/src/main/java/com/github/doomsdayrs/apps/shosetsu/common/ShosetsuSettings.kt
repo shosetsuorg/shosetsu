@@ -341,7 +341,31 @@ class ShosetsuSettings(
 		set(value) = settings.edit { putBoolean(UPDATE_STARTUP, value) }
 		get() = settings.getBoolean(UPDATE_STARTUP, true)
 
+	// App Update Settings
+
+	/**
+	 * How many hours between each update check
+	 */
+	var appUpdateCycle: Int
+		set(value) = settings.edit { putInt(APP_UPDATE_CYCLE, value) }
+		get() = settings.getInt(APP_UPDATE_CYCLE, 12)
+
+	var appUpdateOnMetered: Boolean
+		set(value) = settings.edit { putBoolean(APP_UPDATE_METERED, value) }
+		get() = settings.getBoolean(APP_UPDATE_METERED, false)
+
+	var appUpdateOnlyIdle: Boolean
+		set(value) = settings.edit { putBoolean(APP_UPDATE_IDLE, value) }
+		get() = settings.getBoolean(APP_UPDATE_IDLE, false)
+
+
+	var appUpdateOnStartup: Boolean
+		set(value) = settings.edit { putBoolean(APP_UPDATE_STARTUP, value) }
+		get() = settings.getBoolean(APP_UPDATE_STARTUP, true)
+
+
 	// Advanced Settings
+
 	var showIntro: Boolean
 		set(value) = settings.edit { putBoolean(FIRST_TIME, value) }
 		get() = settings.getBoolean(FIRST_TIME, true)

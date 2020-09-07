@@ -1,7 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import android.content.Context
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.DownloadWorkerManager
+import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.Manager
 
 /*
  * This file is part of shosetsu.
@@ -26,7 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.Downlo
  */
 class StartDownloadWorkerUseCase(
 		private val context: Context,
-		private val manager: DownloadWorkerManager,
+		private val manager: Manager,
 ) {
 	/**
 	 * Starts the download worker
