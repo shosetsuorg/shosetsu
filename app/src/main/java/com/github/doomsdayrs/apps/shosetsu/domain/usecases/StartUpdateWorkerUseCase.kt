@@ -33,7 +33,7 @@ class StartUpdateWorkerUseCase(
 	 * @param override if true then will override the current update loop
 	 */
 	operator fun invoke(override: Boolean = false) {
-		if (!manager.isRunning(context) || override)
-			manager.start(context)
+		if (!manager.isRunning() || override)
+			manager.start()
 	}
 }

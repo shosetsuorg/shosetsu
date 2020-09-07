@@ -51,4 +51,6 @@ val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 	bind<INovelsRepository>() with singleton { NovelsRepository(instance(), instance()) }
 
 	bind<IUpdatesRepository>() with singleton { UpdatesRepository(instance()) }
+
+	bind<IAppUpdatesRepository>() with singleton { AppUpdatesRepository(instance(),instance()) }
 }

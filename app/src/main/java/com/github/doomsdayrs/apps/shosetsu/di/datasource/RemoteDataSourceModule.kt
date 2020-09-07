@@ -41,4 +41,6 @@ val remoteDataSouceModule: Kodein.Module = Kodein.Module("remote_data_source_mod
 	bind<IRemoteExtRepoDataSource>() with singleton { RemoteExtRepoDataSource(instance()) }
 
 	bind<IRemoteExtLibDataSource>() with singleton { RemoteExtLibDataSource(instance()) }
+
+	bind<IRemoteAppUpdateDataSource>() with singleton { RemoteAppUpdateDataSource(instance()) }
 }

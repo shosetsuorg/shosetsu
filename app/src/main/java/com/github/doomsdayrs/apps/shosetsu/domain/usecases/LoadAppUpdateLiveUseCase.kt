@@ -1,6 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.Manager
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.remote.DebugAppUpdate
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IAppUpdatesRepository
 
 /*
  * This file is part of shosetsu.
@@ -21,17 +24,11 @@ import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.Manage
 
 /**
  * shosetsu
- * 20 / 06 / 2020
+ * 07 / 09 / 2020
  */
-class StartDownloadWorkerUseCase(
-		private val manager: Manager,
+class LoadAppUpdateLiveUseCase(
+		private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	/**
-	 * Starts the download worker
-	 * @param override if true then will override the current download loop
-	 */
-	operator fun invoke(override: Boolean = false) {
-		if (!manager.isRunning() || override)
-			manager.start()
-	}
+	operator fun invoke(): LiveData<HResult<DebugAppUpdate>> =
+			iAppUpdatesRepository.watchAppUpdates()
 }

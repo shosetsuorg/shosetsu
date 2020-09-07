@@ -252,7 +252,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			}
 		}
 		viewModel.startDownloadWorker()
-		viewModel.startUpdateWorker()
 	}
 
 	fun transitionView(target: Controller) {

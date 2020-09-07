@@ -1,6 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.datasource.cache.base
 
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.Manager
+import androidx.lifecycle.LiveData
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.remote.DebugAppUpdate
 
 /*
  * This file is part of shosetsu.
@@ -21,17 +23,19 @@ import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.Manage
 
 /**
  * shosetsu
- * 20 / 06 / 2020
+ * 07 / 09 / 2020
  */
-class StartDownloadWorkerUseCase(
-		private val manager: Manager,
-) {
+interface ICacheAppUpdateDataSource {
 	/**
-	 * Starts the download worker
-	 * @param override if true then will override the current download loop
+	 * Live data of the current update
 	 */
-	operator fun invoke(override: Boolean = false) {
-		if (!manager.isRunning() || override)
-			manager.start()
-	}
+	val cacheAppUpdateLive: LiveData<HResult<DebugAppUpdate>>
+
+	/**
+	 * Accessor method to read the current cached update
+	 */
+	suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate>
+
+	/** Puts an update into cache */
+	suspend fun putAppUpdateInCache(debugAppUpdate: HResult<DebugAppUpdate>): HResult<*>
 }

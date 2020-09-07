@@ -92,7 +92,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<DeleteChapterPassageUseCase>() with provider { DeleteChapterPassageUseCase(instance()) }
 
 	bind<StartDownloadWorkerUseCase>() with provider {
-		StartDownloadWorkerUseCase(instance(), instance())
+		StartDownloadWorkerUseCase(instance())
 	}
 	bind<StartUpdateWorkerUseCase>() with provider {
 		StartUpdateWorkerUseCase(instance(), instance())
@@ -115,4 +115,8 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<ShareUseCase>() with provider { ShareUseCase(instance(), instance(), instance()) }
 	bind<ToastErrorUseCase>() with provider { ToastErrorUseCase(instance()) }
 	bind<IsOnlineUseCase>() with provider { IsOnlineUseCase(instance()) }
+
+	bind<LoadAppUpdateUseCase>() with provider { LoadAppUpdateUseCase(instance()) }
+	bind<LoadAppUpdateLiveUseCase>() with provider { LoadAppUpdateLiveUseCase(instance()) }
+
 }

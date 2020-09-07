@@ -1,13 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.di.datasource
 
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheChaptersDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtLibDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheExtensionsDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheSecondaryChaptersDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.model.CacheChaptersDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.model.CacheExtLibDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.model.CacheExtensionDataSource
-import com.github.doomsdayrs.apps.shosetsu.datasource.cache.model.CacheSecondaryChaptersDataSource
+import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.*
+import com.github.doomsdayrs.apps.shosetsu.datasource.cache.model.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -45,4 +39,6 @@ val cacheDataSouceModule: Kodein.Module = Kodein.Module("cache_data_source_modul
 	bind<ICacheSecondaryChaptersDataSource>() with singleton {
 		CacheSecondaryChaptersDataSource(instance())
 	}
+
+	bind<ICacheAppUpdateDataSource>() with singleton { CacheAppUpdateDataSource(instance()) }
 }

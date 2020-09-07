@@ -1,6 +1,6 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.model.remote
 
-import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.Manager
+import com.fasterxml.jackson.annotation.JsonProperty
 
 /*
  * This file is part of shosetsu.
@@ -21,17 +21,15 @@ import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker.Manage
 
 /**
  * shosetsu
- * 20 / 06 / 2020
+ * 07 / 09 / 2020
  */
-class StartDownloadWorkerUseCase(
-		private val manager: Manager,
-) {
-	/**
-	 * Starts the download worker
-	 * @param override if true then will override the current download loop
-	 */
-	operator fun invoke(override: Boolean = false) {
-		if (!manager.isRunning() || override)
-			manager.start()
-	}
-}
+data class DebugAppUpdate(
+		@JsonProperty("latestVersion")
+		val version: String,
+		@JsonProperty("versionCode")
+		val versionCode: Int = -1,
+		@JsonProperty("url")
+		val url: String,
+		@JsonProperty("releaseNotes")
+		val notes: List<String>,
+)

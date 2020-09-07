@@ -54,5 +54,8 @@ object ErrorKeys {
 	const val ERROR_JSON: Int = 8
 
 	/** An IO Exception occurred */
-	const val ERROR_IO: Int = 8
+	const val ERROR_IO: Int = 9
+
+	/** When something is duplicated but shouldn't be */
+	const val ERROR_DUPLICATE: Int = 10
 }

@@ -32,9 +32,9 @@ class BootReceiver : BroadcastReceiver() {
 		private val manager: UpdateWorker.Manager by instance()
 
 		operator fun invoke() {
-			if (shosetsuSettings.updateOnStartup && !manager.isRunning(context)) {
+			if (shosetsuSettings.updateOnStartup && !manager.isRunning()) {
 				Log.i(logID(), "Starting update worker on boot")
-				manager.start(context)
+				manager.start()
 			}
 		}
 	}
@@ -45,9 +45,9 @@ class BootReceiver : BroadcastReceiver() {
 		private val manager: AppUpdateWorker.Manager by instance()
 
 		operator fun invoke() {
-			if (shosetsuSettings.appUpdateOnStartup && !manager.isRunning(context)) {
+			if (shosetsuSettings.appUpdateOnStartup && !manager.isRunning()) {
 				Log.i(logID(), "Starting update worker on boot")
-				manager.start(context)
+				manager.start()
 			}
 		}
 	}

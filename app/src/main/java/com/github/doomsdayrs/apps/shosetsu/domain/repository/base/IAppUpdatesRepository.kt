@@ -2,7 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.repository.base
 
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.model.remote.DebugAppUpdate
 
 /*
  * This file is part of shosetsu.
@@ -28,7 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
  * Source of truth for all app updates
  */
 interface IAppUpdatesRepository {
-	fun watchAppUpdates(): LiveData<HResult<LoadAppUpdateUseCase.DebugAppUpdate>>
+	fun watchAppUpdates(): LiveData<HResult<DebugAppUpdate>>
 
-	suspend fun checkForAppUpdate(): HResult<LoadAppUpdateUseCase.DebugAppUpdate>
+	suspend fun checkForAppUpdate(): HResult<DebugAppUpdate>
 }
