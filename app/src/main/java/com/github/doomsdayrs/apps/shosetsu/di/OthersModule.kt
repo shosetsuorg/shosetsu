@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
+import com.github.doomsdayrs.apps.shosetsu.backend.workers.AppUpdateWorker
 import com.github.doomsdayrs.apps.shosetsu.backend.workers.DownloadWorker
 import com.github.doomsdayrs.apps.shosetsu.backend.workers.UpdateWorker
 import org.kodein.di.Kodein
@@ -32,4 +33,6 @@ import org.kodein.di.generic.singleton
 val othersModule = Kodein.Module("others") {
 	bind<UpdateWorker.Manager>() with singleton { UpdateWorker.Manager(instance()) }
 	bind<DownloadWorker.Manager>() with singleton { DownloadWorker.Manager(instance()) }
+	bind<AppUpdateWorker.Manager>() with singleton { AppUpdateWorker.Manager(instance()) }
+
 }

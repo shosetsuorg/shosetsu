@@ -4,10 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsSubController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.AInfoSettingsViewModel
 
 /*
  * This file is part of Shosetsu.
@@ -32,6 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.dsl.*
  */
 class InfoSettings : SettingsSubController() {
 	override val viewTitleRes: Int = R.string.settings_info
+	private val viewModel: AInfoSettingsViewModel by viewModel()
 
 	override val settings: List<SettingsItemData> by settingsList {
 		infoSettingData(0) {
@@ -56,6 +59,10 @@ class InfoSettings : SettingsSubController() {
 		infoSettingData(4) {
 			title { R.string.license }
 			onClick { onClickLicense() }
+		}
+		buttonSettingData(5) {
+			title { "Check for update" }
+			onButtonClicked { viewModel.checkForAppUpdate() }
 		}
 	}
 

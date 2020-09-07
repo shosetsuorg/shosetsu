@@ -24,4 +24,6 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.base.ISubSettingsViewModel
  * shosetsu
  * 31 / 08 / 2020
  */
-abstract class AInfoSettingsViewModel : ViewModel(), ISubSettingsViewModel
+abstract class AInfoSettingsViewModel : ViewModel(), ISubSettingsViewModel {
+	abstract fun checkForAppUpdate()
+}

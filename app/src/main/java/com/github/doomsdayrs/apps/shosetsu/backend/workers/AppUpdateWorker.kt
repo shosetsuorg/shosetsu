@@ -78,7 +78,7 @@ class AppUpdateWorker(
 			is HResult.Success -> {
 				pr.setContentText(
 						applicationContext.getString(R.string.app_update_available)
-								+ result.data.version
+								+ " " + result.data.version
 				)
 				notificationManager.notify(ID_APP_UPDATE, pr.build())
 			}

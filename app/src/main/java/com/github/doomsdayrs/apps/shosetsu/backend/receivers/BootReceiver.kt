@@ -22,8 +22,8 @@ class BootReceiver : BroadcastReceiver() {
 	 */
 	override fun onReceive(context: Context, intent: Intent) {
 		Log.i(logID(), "Received BOOT_COMPLETED signal")
-		AutoStartUpdateWorker(context)()
-		AutoStartAppUpdateWorker(context)()
+		AutoStartUpdateWorker(context).invoke()
+		AutoStartAppUpdateWorker(context).invoke()
 	}
 
 	internal class AutoStartUpdateWorker(val context: Context) : KodeinAware {
@@ -46,7 +46,7 @@ class BootReceiver : BroadcastReceiver() {
 
 		operator fun invoke() {
 			if (shosetsuSettings.appUpdateOnStartup && !manager.isRunning()) {
-				Log.i(logID(), "Starting update worker on boot")
+				Log.i(logID(), "Starting app update worker on boot")
 				manager.start()
 			}
 		}

@@ -1,7 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.model.settings
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.settings.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.AInfoSettingsViewModel
 
@@ -26,9 +30,19 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.AInfoSe
  * shosetsu
  * 31 / 08 / 2020
  */
-class InfoSettingsViewModel : AInfoSettingsViewModel() {
+class InfoSettingsViewModel(
+		private val loadAppUpdateUseCase: LoadAppUpdateUseCase
+) : AInfoSettingsViewModel() {
+	override fun checkForAppUpdate() {
+		Log.d(logID(), "Checking for update")
+		launchIO {
+			loadAppUpdateUseCase()
+		}
+	}
+
 	override val settings: List<SettingsItemData>
 		get() = TODO("Not yet implemented")
+
 	override val liveData: LiveData<HResult<List<SettingsItemData>>>
 		get() = TODO("Not yet implemented")
 

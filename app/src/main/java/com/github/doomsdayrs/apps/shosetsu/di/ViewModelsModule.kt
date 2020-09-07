@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.*
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.settings.AInfoSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.*
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogOptionsViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.catalog.CatalogViewModel
@@ -9,6 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.extension.ExtensionsV
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel.NovelChaptersViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel.NovelInfoViewModel
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.novel.NovelViewModel
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.model.settings.InfoSettingsViewModel
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.provider
@@ -69,4 +71,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 
 	// Chapter
 	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i(), i()) }
+
+
+	bind<AInfoSettingsViewModel>() with provider { InfoSettingsViewModel(i()) }
 }

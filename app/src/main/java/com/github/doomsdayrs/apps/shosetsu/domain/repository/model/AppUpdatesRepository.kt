@@ -6,6 +6,7 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_DUPLICATE
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.datasource.cache.base.ICacheAppUpdateDataSource
@@ -38,7 +39,7 @@ class AppUpdatesRepository(
 		private val iRemoteAppUpdateDataSource: IRemoteAppUpdateDataSource,
 		private val iCacheAppUpdateDataSource: ICacheAppUpdateDataSource,
 ) : IAppUpdatesRepository {
-	private var running = true
+	private var running = false
 
 	override fun watchAppUpdates(): LiveData<HResult<DebugAppUpdate>> =
 			iCacheAppUpdateDataSource.cacheAppUpdateLive
@@ -78,8 +79,9 @@ class AppUpdatesRepository(
 
 	@Synchronized
 	override suspend fun checkForAppUpdate(): HResult<DebugAppUpdate> {
-		if (running) return HResult.Error(ERROR_DUPLICATE, "Cannot run duplicate")
+		if (running) return errorResult(ERROR_DUPLICATE, "Cannot run duplicate")
 		else running = true
+		Log.d(logID(), "Checking for update")
 
 		val rR = iRemoteAppUpdateDataSource.loadGitAppUpdate().let {
 			if (it is HResult.Error || it is HResult.Empty) return it.also {
