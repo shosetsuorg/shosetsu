@@ -1,12 +1,7 @@
 {
-	"latestVersion":"895",
+	"latestVersion":"898",
 	"url":"https://discord.gg/ttSX7gB",
 	"releaseNotes":[
-		"- UpdateWorker.kt now starts at system boot up with an option (that doesnt have an option yet)",
-		"- Shortcuts added :D",
-		"- BootReceiver.kt takes care of startup stuff",
-		"- ShosetsuApplication.kt handles KotlinLib initialization",
-		"- ShosetsuApplication.kt now handles database conversion",
-		"- MainActivity.kt no longer auto starts the UpdateWorker.kt, Will fix up DownloadWorker.kt next"
+		"- AppUpdate added i think, This hasn't been tested and if u see a release message it may or may not be present"
 	]
 }
