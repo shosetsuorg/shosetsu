@@ -116,7 +116,6 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<ToastErrorUseCase>() with provider { ToastErrorUseCase(instance()) }
 	bind<IsOnlineUseCase>() with provider { IsOnlineUseCase(instance()) }
 
-	bind<LoadAppUpdateUseCase>() with provider { LoadAppUpdateUseCase(instance()) }
 	bind<LoadAppUpdateLiveUseCase>() with provider { LoadAppUpdateLiveUseCase(instance()) }
 
 }
