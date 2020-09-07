@@ -29,7 +29,7 @@ interface ICacheAppUpdateDataSource {
 	/**
 	 * Live data of the current update
 	 */
-	val cacheAppUpdateLive: LiveData<HResult<DebugAppUpdate>>
+	val updateAvaLive: LiveData<HResult<DebugAppUpdate>>
 
 	/**
 	 * Accessor method to read the current cached update
@@ -37,5 +37,6 @@ interface ICacheAppUpdateDataSource {
 	suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate>
 
 	/** Puts an update into cache */
-	suspend fun putAppUpdateInCache(debugAppUpdate: HResult<DebugAppUpdate>): HResult<*>
+	suspend fun putAppUpdateInCache(debugAppUpdate: DebugAppUpdate, isUpdate: Boolean): HResult<*>
+
 }

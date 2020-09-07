@@ -80,6 +80,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		}
 	}
 
+	override fun onDestroy() {
+		unregisterReceiver(broadcastReceiver)
+		super.onDestroy()
+	}
+
 	/**
 	 * Main activity
 	 *
@@ -225,10 +230,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				is HResult.Loading -> {
 				}
 				is HResult.Error -> {
-					toast("$result")
+					applicationContext.toast("$result")
 				}
 				is HResult.Empty -> {
-					toast(R.string.app_update_unavaliable)
+					applicationContext.toast(R.string.app_update_unavaliable)
 				}
 				is HResult.Success -> {
 					val update = result.data

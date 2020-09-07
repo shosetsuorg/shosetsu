@@ -6,6 +6,7 @@
     <color name="black_trans">#80000000</color>
 
     <color name="colorPrimary">#A80000</color>
+
     <color name="colorAccent">#D50000</color>
 
     <color name="bookmarked">#00A2FF</color>
@@ -13,4 +14,15 @@
     <color name="shade">#80000000</color>
 
     <color name="wheat">#F5DEB3</color>
+
+
+    <color name="grey_B_5">#0D0D0D</color>
+    <color name="grey_B_10">#191919</color>
+    <color name="grey_B_15">#262626</color>
+    <color name="grey_B_20">#333333</color>
+    <color name="grey_B_25">#404040</color>
+    <color name="grey_B_30">#4C4C4C</color>
+    <color name="grey_B_35">#595959</color>
+    <color name="grey_B_40">#666666</color>
+
 </resources>

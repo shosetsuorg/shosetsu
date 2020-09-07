@@ -43,15 +43,8 @@ class CacheAppUpdateDataSource(
 		File(application.cacheDir.absolutePath + "/SHOSETSU_APP_UPDATE.json")
 	}
 
-	override val cacheAppUpdateLive: MutableLiveData<HResult<DebugAppUpdate>> by lazy {
-		MutableLiveData(loadAppUpdate())
-	}
-
-	private fun loadAppUpdate(): HResult<DebugAppUpdate> {
-		if (!cachedUpdate.exists()) return emptyResult()
-		return successResult(ObjectMapper().registerKotlinModule()
-				.readValue(cachedUpdate.readText())
-		)
+	override val updateAvaLive: MutableLiveData<HResult<DebugAppUpdate>> by lazy {
+		MutableLiveData(emptyResult())
 	}
 
 	private fun write(debugAppUpdate: DebugAppUpdate): HResult<*> = try {
@@ -63,12 +56,16 @@ class CacheAppUpdateDataSource(
 		errorResult(ErrorKeys.ERROR_IO, e)
 	}
 
-	override suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate> = loadAppUpdate()
+	override suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate> =
+			successResult(ObjectMapper().registerKotlinModule()
+					.readValue(cachedUpdate.readText())
+			)
 
-	override suspend fun putAppUpdateInCache(debugAppUpdate: HResult<DebugAppUpdate>): HResult<*> {
-		cacheAppUpdateLive.postValue(debugAppUpdate)
-		if (debugAppUpdate is HResult.Success)
-			return write(debugAppUpdate.data)
-		return successResult("")
+	override suspend fun putAppUpdateInCache(
+			debugAppUpdate: DebugAppUpdate,
+			isUpdate: Boolean
+	): HResult<*> {
+		updateAvaLive.postValue(if (isUpdate) successResult(debugAppUpdate) else emptyResult())
+		return write(debugAppUpdate)
 	}
 }

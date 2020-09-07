@@ -42,7 +42,7 @@ class AppUpdatesRepository(
 	private var running = false
 
 	override fun watchAppUpdates(): LiveData<HResult<DebugAppUpdate>> =
-			iCacheAppUpdateDataSource.cacheAppUpdateLive
+			iCacheAppUpdateDataSource.updateAvaLive
 
 
 	private fun compareVersion(newVersion: DebugAppUpdate): HResult<DebugAppUpdate> {
@@ -93,7 +93,7 @@ class AppUpdatesRepository(
 		}!!
 
 		return compareVersion(rR).also {
-			iCacheAppUpdateDataSource.putAppUpdateInCache(it)
+			iCacheAppUpdateDataSource.putAppUpdateInCache(rR, it is HResult.Success)
 			running = false
 		}
 	}
