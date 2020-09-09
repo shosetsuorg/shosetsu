@@ -1,8 +1,9 @@
 {
-	"latestVersion":"903",
+	"latestVersion":"906",
 	"url":"https://discord.gg/ttSX7gB",
 	"releaseNotes":[
-		"- New grey UI - Need UI devs desperately",
-		"- Fixed update writing issues"
+		"- CatalogViewModel.kt and CatalogController.kt can now search :D, Happy?",
+		"- Tomorrow I'll get the SearchViewModel.kt to work",
+		"- Minor patches"
 	]
 }
