@@ -53,6 +53,13 @@ interface IExtensionsRepository {
 	/** Gets the extensions as cards containing their ID, Title, and Image */
 	suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>>
 
+	/** Queries the extension for a search result*/
+	suspend fun loadCatalogueSearch(
+			formatter: Formatter,
+			query: String,
+			page: Int,
+			data: Map<Int, Any>
+	): HResult<List<Novel.Listing>>
 
 	/** Loads catalogue data of an extension */
 	suspend fun loadCatalogueData(

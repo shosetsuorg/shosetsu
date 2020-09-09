@@ -1,9 +1,7 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.delete
 
-import androidx.lifecycle.LiveData
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.remote.DebugAppUpdate
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IAppUpdatesRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 
 /*
  * This file is part of shosetsu.
@@ -24,11 +22,12 @@ import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IAppUpdatesRep
 
 /**
  * shosetsu
- * 07 / 09 / 2020
+ * 21 / 06 / 2020
  */
-class LoadAppUpdateLiveUseCase(
-		private val iAppUpdatesRepository: IAppUpdatesRepository
+class DeleteDownloadUseCase(
+		private val iDownloadsRepository: IDownloadsRepository,
 ) {
-	operator fun invoke(): LiveData<HResult<DebugAppUpdate>> =
-			iAppUpdatesRepository.watchAppUpdates()
+	suspend operator fun invoke(downloadUI: DownloadUI) {
+		iDownloadsRepository.delete(downloadUI.convertTo())
+	}
 }

@@ -11,6 +11,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.delete.DeleteChapterPassageUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadChapterUIsUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateChapterUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelChaptersViewModel
@@ -38,7 +40,7 @@ import kotlinx.coroutines.Dispatchers
  * 17 / 05 / 2020
  */
 class NovelChaptersViewModel(
-		private val getChapterUIsUseCase: GetChapterUIsUseCase,
+		private val getChapterUIsUseCase: LoadChapterUIsUseCase,
 		private val updateChapterUseCase: UpdateChapterUseCase,
 		private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,
 		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,

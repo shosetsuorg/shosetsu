@@ -1,6 +1,9 @@
 package com.github.doomsdayrs.apps.shosetsu.di
 
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.delete.DeleteChapterPassageUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.delete.DeleteDownloadUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.*
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.StringToastUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.ToastErrorUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.*
@@ -32,18 +35,18 @@ import org.kodein.di.generic.provider
  * 01 / 05 / 2020
  */
 val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
-	bind<GetCatalogsUseCase>() with provider { GetCatalogsUseCase(instance()) }
+	bind<LoadCatalogsUseCase>() with provider { LoadCatalogsUseCase(instance()) }
 
-	bind<GetDownloadsUseCase>() with provider { GetDownloadsUseCase(instance()) }
+	bind<LoadDownloadsUseCase>() with provider { LoadDownloadsUseCase(instance()) }
 
 	bind<LoadLibraryUseCase>() with provider { LoadLibraryUseCase(instance(), instance()) }
 
 	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
 
 
-	bind<GetExtensionsUIUseCase>() with provider { GetExtensionsUIUseCase(instance()) }
+	bind<LoadExtensionsUIUseCase>() with provider { LoadExtensionsUIUseCase(instance()) }
 
-	bind<GetUpdatesUseCase>() with provider { GetUpdatesUseCase(instance()) }
+	bind<LoadUpdatesUseCase>() with provider { LoadUpdatesUseCase(instance()) }
 
 	bind<RefreshRepositoryUseCase>() with provider { RefreshRepositoryUseCase(instance()) }
 
@@ -57,25 +60,25 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<UpdateNovelUseCase>() with provider { UpdateNovelUseCase(instance()) }
 
-	bind<GetFormatterUseCase>() with provider { GetFormatterUseCase(instance()) }
+	bind<LoadFormatterUseCase>() with provider { LoadFormatterUseCase(instance()) }
 
 	bind<NovelBackgroundAddUseCase>() with provider {
 		NovelBackgroundAddUseCase(instance(), instance())
 	}
 
-	bind<GetFormatterNameUseCase>() with provider { GetFormatterNameUseCase(instance()) }
+	bind<LoadFormatterNameUseCase>() with provider { LoadFormatterNameUseCase(instance()) }
 
-	bind<GetNovelUIUseCase>() with provider { GetNovelUIUseCase(instance()) }
+	bind<LoadNovelUIUseCase>() with provider { LoadNovelUIUseCase(instance()) }
 
 	bind<LoadNovelUseCase>() with provider {
 		LoadNovelUseCase(instance(), instance(), instance(), instance())
 	}
 
-	bind<LoadCatalogueDataUseCase>() with provider {
-		LoadCatalogueDataUseCase(instance(), instance(), instance())
+	bind<LoadCatalogueListingDataUseCase>() with provider {
+		LoadCatalogueListingDataUseCase(instance(), instance(), instance())
 	}
 
-	bind<GetChapterUIsUseCase>() with provider { GetChapterUIsUseCase(instance()) }
+	bind<LoadChapterUIsUseCase>() with provider { LoadChapterUIsUseCase(instance()) }
 
 	bind<UpdateChapterUseCase>() with provider { UpdateChapterUseCase(instance()) }
 
@@ -118,4 +121,8 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<LoadAppUpdateLiveUseCase>() with provider { LoadAppUpdateLiveUseCase(instance()) }
 
+	bind<LoadCatalogueQueryDataUseCase>() with provider {
+		LoadCatalogueQueryDataUseCase(instance(), instance(), instance())
+	}
+	bind<ConvertNCToCNUIUseCase>() with provider { ConvertNCToCNUIUseCase(instance()) }
 }

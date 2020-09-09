@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData

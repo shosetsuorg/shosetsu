@@ -23,7 +23,7 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.GetExtensionsUIUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadExtensionsUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateExtensionEntityUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionConfigUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionsConfigureViewModel
@@ -36,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class ExtensionsConfigureViewModel(
-		private val getExtensionsUIUseCase: GetExtensionsUIUseCase,
+		private val getExtensionsUIUseCase: LoadExtensionsUIUseCase,
 		private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase,
 ) : IExtensionsConfigureViewModel() {
 	override val liveData: LiveData<HResult<List<ExtensionConfigUI>>> by lazy {

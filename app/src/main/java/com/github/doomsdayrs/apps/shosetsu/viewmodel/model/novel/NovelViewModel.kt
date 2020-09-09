@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.IsOnlineUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelViewModel
 import kotlinx.coroutines.Dispatchers
 

@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult

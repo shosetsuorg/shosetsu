@@ -122,6 +122,16 @@ class ExtensionsRepository(
 	override suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>> =
 			databaseSource.loadPoweredExtensionsCards()
 
+	override suspend fun loadCatalogueSearch(
+			formatter: Formatter,
+			query: String,
+			page: Int,
+			data: Map<Int, Any>
+	): HResult<List<Novel.Listing>> =
+			remoteCatalogueDataSource.search(
+					formatter, query, page, data
+			)
+
 	override suspend fun loadCatalogueData(
 			formatter: Formatter,
 			listing: Int,

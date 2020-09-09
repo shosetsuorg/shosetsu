@@ -1,5 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.common.ext
 
+import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
@@ -38,3 +39,10 @@ fun Novel.Chapter.entity(novelEntity: NovelEntity): ChapterEntity =
 				releaseDate = this.release,
 				order = this.order
 		)
+
+fun Novel.Listing.convertTo(formatter: Formatter): NovelEntity = NovelEntity(
+		url = this.link,
+		imageURL = this.imageURL,
+		title = this.title,
+		formatterID = formatter.formatterID
+)

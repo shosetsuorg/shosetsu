@@ -1,11 +1,13 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import app.shosetsu.lib.Formatter
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.IDTitleImageUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.URLTitleImageUI
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapTo
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 
 /*
  * This file is part of shosetsu.
@@ -24,16 +26,17 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.URLTitleImageUI
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 01 / 05 / 2020
+ * 18 / 05 / 2020
  */
-abstract class ISearchViewModel : ViewModel() {
-
-	abstract fun setQuery(query: String)
-	abstract fun searchLibrary(): LiveData<HResult<List<IDTitleImageUI>>>
-	abstract fun searchFormatter(formatter: Formatter): LiveData<HResult<List<URLTitleImageUI>>>
+class LoadNovelUIUseCase(
+		private val novelsRepository: INovelsRepository,
+) : ((@ParameterName("novelID") Int) -> LiveData<HResult<NovelUI>>) {
+	override fun invoke(novelID: Int): LiveData<HResult<NovelUI>> {
+		return liveData<HResult<NovelUI>> {
+			emit(loading())
+			emitSource(novelsRepository.loadNovelLive(novelID).map { it.mapTo() })
+		}
+	}
 }

@@ -1,13 +1,13 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.mapTo
-import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.
@@ -28,21 +28,14 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
 
 /**
  * shosetsu
- * 13 / 05 / 2020
+ * 07 / 06 / 2020
  */
-class GetUpdatesUseCase(
-		private val updatesRepository: IUpdatesRepository,
-) : (() -> LiveData<HResult<List<UpdateUI>>>) {
-	override fun invoke(): LiveData<HResult<List<UpdateUI>>> = liveData {
-		emitSource(updatesRepository.getCompleteUpdates().map {
-			it.let {
-				when (it) {
-					is HResult.Success -> successResult(it.data.mapTo())
-					is HResult.Loading -> it
-					is HResult.Error -> it
-					is HResult.Empty -> it
-				}
+class LoadReaderChaptersUseCase(
+		private val iChaptersRepository: IChaptersRepository,
+) : ((@kotlin.ParameterName("novelID") Int) -> LiveData<HResult<List<ReaderChapterUI>>>) {
+	override fun invoke(novelID: Int): LiveData<HResult<List<ReaderChapterUI>>> =
+			liveData<HResult<List<ReaderChapterUI>>> {
+				emit(loading())
+				emitSource(iChaptersRepository.loadReaderChapters(novelID).map { it.mapListTo() })
 			}
-		})
-	}
 }

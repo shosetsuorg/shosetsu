@@ -1,7 +1,8 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IDownloadsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.domain.model.remote.DebugAppUpdate
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IAppUpdatesRepository
 
 /*
  * This file is part of shosetsu.
@@ -22,12 +23,11 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 
 /**
  * shosetsu
- * 21 / 06 / 2020
+ * 20 / 06 / 2020
  */
-class DeleteDownloadUseCase(
-		private val iDownloadsRepository: IDownloadsRepository,
+class LoadAppUpdateUseCase(
+		private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	suspend operator fun invoke(downloadUI: DownloadUI) {
-		iDownloadsRepository.delete(downloadUI.convertTo())
-	}
+	suspend operator fun invoke(): HResult<DebugAppUpdate> =
+			iAppUpdatesRepository.checkForAppUpdate()
 }

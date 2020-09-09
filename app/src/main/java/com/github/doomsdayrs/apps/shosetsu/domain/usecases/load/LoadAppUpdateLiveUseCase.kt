@@ -1,13 +1,9 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
-import com.github.doomsdayrs.apps.shosetsu.common.dto.mapTo
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
+import com.github.doomsdayrs.apps.shosetsu.domain.model.remote.DebugAppUpdate
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IAppUpdatesRepository
 
 /*
  * This file is part of shosetsu.
@@ -28,15 +24,11 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 
 /**
  * shosetsu
- * 18 / 05 / 2020
+ * 07 / 09 / 2020
  */
-class GetNovelUIUseCase(
-		private val novelsRepository: INovelsRepository,
-) : ((@ParameterName("novelID") Int) -> LiveData<HResult<NovelUI>>) {
-	override fun invoke(novelID: Int): LiveData<HResult<NovelUI>> {
-		return liveData<HResult<NovelUI>> {
-			emit(loading())
-			emitSource(novelsRepository.loadNovelLive(novelID).map { it.mapTo() })
-		}
-	}
+class LoadAppUpdateLiveUseCase(
+		private val iAppUpdatesRepository: IAppUpdatesRepository
+) {
+	operator fun invoke(): LiveData<HResult<DebugAppUpdate>> =
+			iAppUpdatesRepository.watchAppUpdates()
 }

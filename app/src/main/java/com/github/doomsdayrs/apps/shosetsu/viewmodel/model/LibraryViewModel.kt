@@ -24,7 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.IsOnlineUseCase
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadLibraryUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadLibraryUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartUpdateWorkerUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.library.ABookmarkedNovelUI

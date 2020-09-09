@@ -8,6 +8,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.delete.DeleteDownloadUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadDownloadsUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateDownloadUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IDownloadsViewModel
@@ -37,7 +39,7 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class DownloadsViewModel(
-		private val getDownloadsUseCase: GetDownloadsUseCase,
+		private val getDownloadsUseCase: LoadDownloadsUseCase,
 		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 		private val updateDownloadUseCase: UpdateDownloadUseCase,
 		private val deleteDownloadUseCase: DeleteDownloadUseCase,

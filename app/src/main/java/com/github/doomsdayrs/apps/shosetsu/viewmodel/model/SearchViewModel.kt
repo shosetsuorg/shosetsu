@@ -36,7 +36,7 @@ class SearchViewModel(
 		private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
 		private val iExtensionsRepository: IExtensionsRepository,
 ) : ISearchViewModel() {
-	override var query: MutableLiveData<String> = MutableLiveData()
+	var query: MutableLiveData<String> = MutableLiveData()
 
 	override fun setQuery(query: String): Unit = this.query.postValue(query)
 

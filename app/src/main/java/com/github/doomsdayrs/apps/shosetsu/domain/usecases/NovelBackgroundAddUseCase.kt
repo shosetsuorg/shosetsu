@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateNovelUseCase
 
 /*

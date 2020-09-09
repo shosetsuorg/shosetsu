@@ -18,7 +18,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.WorkerTags
 import com.github.doomsdayrs.apps.shosetsu.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadAppUpdateUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadAppUpdateUseCase
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein

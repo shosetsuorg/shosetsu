@@ -1,10 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
-import android.os.Build
-import android.util.Log
 import android.widget.SearchView
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -32,24 +29,15 @@ class CatalogueSearchQuery(private val catalogFragment: CatalogController)
 	override fun onQueryTextSubmit(query: String): Boolean {
 		catalogFragment.isQuery = false
 		catalogFragment.isInSearch = true
-		catalogFragment.viewModel.loadQuery(query)
+		catalogFragment.viewModel.setQuery(query)
+		catalogFragment.viewModel.loadQuery()
 		return true
 	}
 
 	override fun onQueryTextChange(newText: String): Boolean {
-		Log.d("Library search", newText)
 		catalogFragment.isQuery = true
-		val recycleCards = ArrayList(catalogFragment.recyclerArray)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			recycleCards.removeIf { !it.title.contains(newText, true) }
-		} else {
-			for (x in recycleCards.indices.reversed()) {
-				if (!recycleCards[x].title.contains(newText, true)) {
-					recycleCards.removeAt(x)
-				}
-			}
-		}
-		return recycleCards.size != 0
+		catalogFragment.viewModel.setQuery(newText)
+		return true
 	}
 
 }

@@ -44,12 +44,15 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	override suspend fun search(
 			formatter: Formatter,
 			query: String,
+			page: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
 			if (formatter.hasSearch)
 				successResult(
-						formatter.search(HashMap(data).apply { this[QUERY_INDEX] = query }) {
+						formatter.search(HashMap(data).apply {
+							this[QUERY_INDEX] = query
+						}) {
 							Log.i(logID(), it)
 						}.toList()
 				)

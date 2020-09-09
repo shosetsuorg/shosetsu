@@ -1,11 +1,13 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadUpdatesUseCase
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapTo
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IUpdatesRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.UpdateUI
-import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IUpdatesViewModel
 
 /*
  * This file is part of shosetsu.
@@ -24,20 +26,23 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IUpdatesViewMode
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 13 / 05 / 2020
  */
-class UpdatesViewModel(
-		private val getUpdatesUseCase: LoadUpdatesUseCase,
-) : IUpdatesViewModel() {
-	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
-		getUpdatesUseCase()
-	}
-
-	override suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus) {
+class LoadUpdatesUseCase(
+		private val updatesRepository: IUpdatesRepository,
+) : (() -> LiveData<HResult<List<UpdateUI>>>) {
+	override fun invoke(): LiveData<HResult<List<UpdateUI>>> = liveData {
+		emitSource(updatesRepository.getCompleteUpdates().map {
+			it.let {
+				when (it) {
+					is HResult.Success -> successResult(it.data.mapTo())
+					is HResult.Loading -> it
+					is HResult.Error -> it
+					is HResult.Empty -> it
+				}
+			}
+		})
 	}
 }

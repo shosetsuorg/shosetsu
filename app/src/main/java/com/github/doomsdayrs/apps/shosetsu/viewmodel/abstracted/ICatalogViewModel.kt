@@ -2,6 +2,7 @@ package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import app.shosetsu.lib.Filter
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
@@ -33,7 +34,6 @@ import kotlinx.coroutines.Job
  * Used for showing the specific listing of a novel
  */
 abstract class ICatalogViewModel : ViewModel() {
-
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */
@@ -45,6 +45,10 @@ abstract class ICatalogViewModel : ViewModel() {
 	 * Novels listed by the catalogue listing
 	 */
 	abstract val listingItemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
+
+	abstract val filterItemsLive: LiveData<HResult<List<Filter<*>>>>
+
+	abstract val hasSearchLive: LiveData<HResult<Boolean>>
 
 	/**
 	 * Name of the extension that is used for its catalogue
@@ -61,10 +65,13 @@ abstract class ICatalogViewModel : ViewModel() {
 	 */
 	abstract fun loadData(): Job
 
+	abstract fun setQuery(string: String)
+
 	/**
-	 * Queries the source and puts the results in [listingItemsLive]
+	 * Called when done with [setQuery]
+	 * Removes state of normal listing, and swaps [loadData] to load a query
 	 */
-	abstract fun loadQuery(query: String)
+	abstract fun loadQuery(): Job
 
 	/**
 	 * Load up sequential data
@@ -77,12 +84,6 @@ abstract class ICatalogViewModel : ViewModel() {
 	abstract fun loadMore()
 
 	/**
-	 * Takes currently viewed data, and returns it to the user
-	 * @param query to compare [listingItemsLive] against
-	 */
-	abstract fun searchPage(query: String)
-
-	/**
 	 * Reset [listingItemsLive], and runs [loadData] once again
 	 */
 	abstract fun resetView()
@@ -92,4 +93,9 @@ abstract class ICatalogViewModel : ViewModel() {
 	 * @param novelID ID of novel to load
 	 */
 	abstract fun backgroundNovelAdd(novelID: Int)
+
+	/**
+	 * Sets filters
+	 */
+	abstract fun setFilters(map: Map<Int, Any>)
 }

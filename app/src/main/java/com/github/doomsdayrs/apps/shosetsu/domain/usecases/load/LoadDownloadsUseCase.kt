@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.DownloadUI
  * shosetsu
  * 12 / May / 2020
  */
-class GetDownloadsUseCase(
+class LoadDownloadsUseCase(
 		private val iDownloadsRepository: IDownloadsRepository,
 ) : (() -> LiveData<HResult<List<DownloadUI>>>) {
 	override fun invoke(): LiveData<HResult<List<DownloadUI>>> {

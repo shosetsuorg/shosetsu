@@ -1,10 +1,13 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
-import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
+import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ExtensionUI
 
 /*
  * This file is part of shosetsu.
@@ -25,20 +28,15 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 
 /**
  * shosetsu
- * 18 / 05 / 2020
+ * 13 / 05 / 2020
  */
-class GetFormatterNameUseCase(
-		private val getFormatterUseCase: GetFormatterUseCase,
-) : ((@kotlin.ParameterName("formatterID") Int) -> LiveData<HResult<String>>) {
-	override fun invoke(formatterID: Int): LiveData<HResult<String>> {
-		return liveData<HResult<String>> {
-			emit(loading())
-			emit(when (val f = getFormatterUseCase(formatterID)) {
-				is HResult.Success -> successResult(f.data.name)
-				is HResult.Loading -> f
-				is HResult.Empty -> f
-				is HResult.Error -> f
-			})
+class LoadExtensionsUIUseCase(
+		private val extensionsRepository: IExtensionsRepository,
+) : (() -> LiveData<HResult<List<ExtensionUI>>>) {
+	override fun invoke(): LiveData<HResult<List<ExtensionUI>>> {
+		return liveData {
+			loading()
+			emitSource(extensionsRepository.getExtensions().map { it.mapListTo() })
 		}
 	}
 }

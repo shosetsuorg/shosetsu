@@ -22,7 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
-import com.github.doomsdayrs.apps.shosetsu.domain.usecases.LoadNovelUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.StartDownloadWorkerUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.toast.ToastErrorUseCase
 import org.kodein.di.Kodein

@@ -64,6 +64,12 @@ class CatalogController(
 	@Attach(R.id.swipeRefreshLayout)
 	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
+	private var searchView: SearchView? = null
+
+	private var navigationView: NavigationView? = null
+	private var drawerLayout: DrawerLayout? = null
+
+
 	/***/
 	val viewModel: ICatalogViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
@@ -73,6 +79,15 @@ class CatalogController(
 
 	/** If the user is currently viewing query data*/
 	var isQuery: Boolean = false
+
+	init {
+		setHasOptionsMenu(true)
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		searchView = null
+	}
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
 		return if (settings.novelCardType == 0) GridLayoutManager(
@@ -86,10 +101,6 @@ class CatalogController(
 				VERTICAL,
 				false
 		)
-	}
-
-	init {
-		setHasOptionsMenu(true)
 	}
 
 	override fun setupFastAdapter() {
@@ -128,16 +139,19 @@ class CatalogController(
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(R.menu.toolbar_library, menu)
-		val searchView = menu.findItem(R.id.library_search).actionView as SearchView
-		searchView.setOnQueryTextListener(CatalogueSearchQuery(this))
-		searchView.setOnCloseListener {
+		searchView = menu.findItem(R.id.library_search).actionView as SearchView
+		searchView?.setOnQueryTextListener(CatalogueSearchQuery(this))
+		searchView?.setOnCloseListener {
 			isQuery = false
 			isInSearch = false
 			true
 		}
 	}
 
+
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
+		this.navigationView = navigationView
+		this.drawerLayout = drawerLayout
 		/*
 				val builder = SDBuilder(navigationView, drawerLayout, this)
 		if (formatter.listings.size > 1) {
@@ -204,10 +218,10 @@ class CatalogController(
 	}
 
 	private fun setupObservers() {
-		viewModel.listingItemsLive.observe(this, {
+		viewModel.listingItemsLive.observe(this) {
 			handleRecyclerUpdate(it)
-		})
-		viewModel.extensionName.observe(this, {
+		}
+		viewModel.extensionName.observe(this) {
 			when (it) {
 				is HResult.Success -> {
 					activity?.setActivityTitle(it.data)
@@ -217,7 +231,16 @@ class CatalogController(
 				else -> {
 				}
 			}
-		})
-	}
+		}
+		viewModel.hasSearchLive.observe(this) {
+			when (it) {
+				is HResult.Success -> {
+					searchView?.isEnabled = it.data
+				}
+			}
+		}
+		viewModel.filterItemsLive.observe(this){
 
+		}
+	}
 }

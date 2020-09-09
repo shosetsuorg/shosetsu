@@ -1,5 +1,11 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
+import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IChaptersRepository
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 
@@ -22,12 +28,15 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 
 /**
  * shosetsu
- * 26 / 06 / 2020
+ * 18 / 05 / 2020
  */
-class DeleteChapterPassageUseCase(
-		private val iChaptersRepository: IChaptersRepository,
-) {
-	suspend operator fun invoke(chapterUI: ChapterUI) {
-		iChaptersRepository.deleteChapterPassage(chapterUI.convertTo())
+class LoadChapterUIsUseCase(
+		private val chapters: IChaptersRepository,
+) : ((@kotlin.ParameterName("novelID") Int) -> LiveData<HResult<List<ChapterUI>>>) {
+	override fun invoke(novelID: Int): LiveData<HResult<List<ChapterUI>>> {
+		return liveData<HResult<List<ChapterUI>>> {
+			emit(loading())
+			emitSource(chapters.loadChapters(novelID).map { it.mapListTo() })
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import android.util.Log
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys

@@ -1,4 +1,4 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
@@ -30,7 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOpt
  * Returns the formatters present as a list of formatterCards
  * @param formatterRepository Repository of formatters
  */
-class GetCatalogsUseCase(
+class LoadCatalogsUseCase(
 		private val iExtensionsRepository: IExtensionsRepository,
 ) : (() -> LiveData<HResult<List<CatalogOptionUI>>>) {
 	override fun invoke(): LiveData<HResult<List<CatalogOptionUI>>> {

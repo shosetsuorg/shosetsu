@@ -1,16 +1,14 @@
-package com.github.doomsdayrs.apps.shosetsu.domain.usecases
+package com.github.doomsdayrs.apps.shosetsu.domain.usecases.load
 
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.common.ShosetsuSettings
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.domain.model.local.NovelEntity
+import com.github.doomsdayrs.apps.shosetsu.common.ext.convertTo
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.ConvertNCToCNUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CompactCatalogNovelUI
-import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.FullCatalogNovelUI
 
 /*
  * This file is part of shosetsu.
@@ -33,22 +31,21 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.FullCatalo
  * shosetsu
  * 15 / 05 / 2020
  */
-class LoadCatalogueDataUseCase(
+class LoadCatalogueListingDataUseCase(
 		private val extensionRepository: IExtensionsRepository,
 		private val novelsRepository: INovelsRepository,
-		private val shosetsuSettings: ShosetsuSettings,
+		private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
 ) {
 	suspend operator fun invoke(
 			formatter: Formatter,
 			currentPage: Int,
 	): HResult<List<ACatalogNovelUI>> {
-		val it = extensionRepository.loadCatalogueData(
+		return when (val it = extensionRepository.loadCatalogueData(
 				formatter,
 				0,
 				currentPage,
 				mapOf()
-		)
-		return when (it) {
+		)) {
 			is HResult.Success -> {
 				val data: List<Novel.Listing> = it.data
 				successResult(data.map { novelListing ->
@@ -56,11 +53,7 @@ class LoadCatalogueDataUseCase(
 				}.mapNotNull { ne ->
 					novelsRepository.insertNovelReturnCard(ne).let { result ->
 						if (result is HResult.Success)
-							result.data.let { (id, title, imageURL, bookmarked) ->
-								if (shosetsuSettings.novelCardType == 0)
-									FullCatalogNovelUI(id, title, imageURL, bookmarked)
-								else CompactCatalogNovelUI(id, title, imageURL, bookmarked)
-							}
+							convertNCToCNUIUseCase(result.data)
 						else null
 					}
 				})
@@ -70,11 +63,4 @@ class LoadCatalogueDataUseCase(
 			is HResult.Empty -> it
 		}
 	}
-
-	private fun Novel.Listing.convertTo(formatter: Formatter): NovelEntity = NovelEntity(
-			url = this.link,
-			imageURL = this.imageURL,
-			title = this.title,
-			formatterID = formatter.formatterID
-	)
 }

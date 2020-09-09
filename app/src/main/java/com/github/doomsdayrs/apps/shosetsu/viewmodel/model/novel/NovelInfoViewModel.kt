@@ -5,6 +5,8 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.*
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadFormatterNameUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadNovelUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.update.UpdateNovelUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelInfoViewModel
@@ -34,9 +36,9 @@ import kotlinx.coroutines.Dispatchers
  * @author github.com/doomsdayrs
  */
 class NovelInfoViewModel(
-		private val getFormatterNameUseCase: GetFormatterNameUseCase,
+		private val getFormatterNameUseCase: LoadFormatterNameUseCase,
 		private val updateNovelUseCase: UpdateNovelUseCase,
-		private val loadNovelUIUseCase: GetNovelUIUseCase,
+		private val loadNovelUIUseCase: LoadNovelUIUseCase,
 		private val openInBrowserUseCase: OpenInBrowserUseCase,
 		private val openInWebviewUseCase: OpenInWebviewUseCase,
 		private val shareUseCase: ShareUseCase,
