@@ -34,16 +34,14 @@ import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IExtensionSingle
  *
  * Opens up detailed view of an extension, allows modifications
  */
-class ConfigureExtension(
-		private val bundle: Bundle,
-) : FastAdapterRecyclerController<SettingsItemData>(bundle) {
+class ConfigureExtension(bundle: Bundle) : FastAdapterRecyclerController<SettingsItemData>(bundle) {
 	val viewModel: IExtensionSingleConfigureViewModel by viewModel()
 
 	override val layoutRes: Int = R.layout.configure_extension_view
 	override val resourceID: Int = R.id.settings
 
 	override fun onViewCreated(view: View) {
-		viewModel.setExtensionID(bundle.getInt(BUNDLE_FORMATTER))
+		viewModel.setExtensionID(args.getInt(BUNDLE_FORMATTER))
 	}
 
 	private fun observe() {

@@ -1,5 +1,20 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search
 
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.widget.SearchView
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
+import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
+import com.github.doomsdayrs.apps.shosetsu.ui.search.adapters.SearchRowAdapter
+import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
+import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.search.SearchRowUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ISearchViewModel
+import com.mikepenz.fastadapter.FastAdapter
+
 /*
  * This file is part of Shosetsu.
  *
@@ -24,53 +39,57 @@ package com.github.doomsdayrs.apps.shosetsu.ui.search
  * 9 / June / 2019
  *
  * @author github.com/doomsdayrs
- * TODO When opening a novel from here, Prevent reloading of already established DATA
  */
-/*
-
-class SearchController(bundle: Bundle) : RecyclerController<SearchAdapter, Any>() {
-	/** Class that handles querying */
-	inner class InternalQuery
-		: SearchView.OnQueryTextListener {
-		override fun onQueryTextSubmit(query: String): Boolean {
-			viewModel.query.postValue(query)
-			return true
-		}
-
-		override fun onQueryTextChange(newText: String?): Boolean = true
-	}
-
-	override val layoutRes: Int = search_activity
-	val viewModel: ISearchViewModel by viewModel()
-
-	lateinit var searchView: SearchView
+class SearchController(bundle: Bundle) : FastAdapterRecyclerController<SearchRowUI>(bundle) {
+	override val viewTitleRes: Int = R.string.search
+	override val layoutRes: Int = R.layout.search_activity
+	internal val viewModel: ISearchViewModel by viewModel()
+	private var searchView: SearchView? = null
 
 	init {
 		setHasOptionsMenu(true)
-		viewModel.setQuery(bundle.getString(BundleKeys.BUNDLE_QUERY, ""))
+	}
+
+	override val fastAdapter: FastAdapter<SearchRowUI> by lazy {
+		val adapter = SearchRowAdapter(this)
+		adapter.addAdapter(0, itemAdapter)
+		adapter
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		searchView = null
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_search, menu)
 		searchView = menu.findItem(R.id.catalogues_search).actionView as SearchView
-		searchView.setOnQueryTextListener(InternalQuery())
-
+		searchView?.setOnQueryTextListener(InternalQuery())
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = true
 
 	override fun onViewCreated(view: View) {
-		activity?.setActivityTitle(R.string.results)
-		adapter = SearchAdapter(this)
-		viewModel.query.observe(this, Observer {
-			launchUI {
-				Log.i(logID(), "Searching for $it")
-				searchView.setQuery(it, false)
-			}
-		})
+		viewModel.setQuery(args.getString(BundleKeys.BUNDLE_QUERY, ""))
 	}
 
+	override fun setupFastAdapter() {
+		super.setupFastAdapter()
+	}
 
-	override fun difAreItemsTheSame(oldItem: Any, newItem: Any): Boolean = true
+	/** Class that handles querying */
+	inner class InternalQuery
+		: SearchView.OnQueryTextListener {
+		override fun onQueryTextSubmit(query: String): Boolean {
+			viewModel.setQuery(query)
+			viewModel.loadQuery()
+			return true
+		}
+
+		override fun onQueryTextChange(newText: String?): Boolean {
+			newText?.let { viewModel.setQuery(it) }
+			return true
+		}
+	}
+
 }
-*/

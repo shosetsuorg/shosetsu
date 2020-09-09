@@ -35,7 +35,7 @@ import java.util.*
  * Shosetsu
  * 9 / June / 2019
  */
-class TextAssetReader(private val bundleI: Bundle) : ViewedController(bundleI) {
+class TextAssetReader(bundleI: Bundle) : ViewedController(bundleI) {
 	companion object {
 		const val BUNDLE_KEY: String = "target"
 	}

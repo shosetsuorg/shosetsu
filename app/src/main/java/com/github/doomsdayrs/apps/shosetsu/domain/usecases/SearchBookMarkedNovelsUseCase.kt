@@ -33,6 +33,8 @@ class SearchBookMarkedNovelsUseCase(
 		private val iNovelsRepository: INovelsRepository,
 ) : ((String) -> LiveData<HResult<List<IDTitleImageUI>>>) {
 	override fun invoke(p1: String): LiveData<HResult<List<IDTitleImageUI>>> {
-		return liveData { emitSource(iNovelsRepository.searchBookmarked(p1).map { it.mapListTo() }) }
+		return liveData {
+			emitSource(iNovelsRepository.searchBookmarked(p1).map { it.mapListTo() })
+		}
 	}
 }

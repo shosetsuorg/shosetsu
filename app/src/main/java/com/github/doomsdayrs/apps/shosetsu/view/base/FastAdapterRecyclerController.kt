@@ -1,7 +1,6 @@
 package com.github.doomsdayrs.apps.shosetsu.view.base
 
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
@@ -28,16 +27,13 @@ import com.mikepenz.fastadapter.items.AbstractItem
  * shosetsu
  * 02 / 07 / 2020
  */
-abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
-		bundle: Bundle,
-) : RecyclerController<FastAdapter<ITEM>, ITEM>() {
-	constructor() : this(bundleOf())
+abstract class FastAdapterRecyclerController<ITEM> : RecyclerController<FastAdapter<ITEM>, ITEM>
+		where ITEM : AbstractItem<*> {
 
 	/**
 	 * This contains the items
 	 */
 	open val itemAdapter: ItemAdapter<ITEM> by lazy { ItemAdapter() }
-
 	override var adapter: FastAdapter<ITEM>?
 		get() = fastAdapter
 		set(value) {}
@@ -46,10 +42,12 @@ abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
 	 * This is the adapter
 	 */
 	open val fastAdapter: FastAdapter<ITEM> by lazy { FastAdapter.with(itemAdapter) }
-
 	override var recyclerArray: ArrayList<ITEM>
 		get() = ArrayList(itemAdapter.itemList.items)
 		set(value) {}
+
+	constructor() : super()
+	constructor(args: Bundle) : super(args)
 
 	override fun setupRecyclerView() {
 		super.setupRecyclerView()
@@ -60,7 +58,6 @@ abstract class FastAdapterRecyclerController<ITEM : AbstractItem<*>>(
 	 * Allows child classes to manipulate the fast adapter
 	 */
 	open fun setupFastAdapter() {}
-
 	override fun updateUI(newList: List<ITEM>) {
 		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}

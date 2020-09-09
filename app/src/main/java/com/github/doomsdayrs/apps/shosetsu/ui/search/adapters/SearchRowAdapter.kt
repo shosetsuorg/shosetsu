@@ -1,10 +1,11 @@
-package com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted
+package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import androidx.recyclerview.widget.RecyclerView
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.search.SearchRowUI
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 
 /*
  * This file is part of shosetsu.
@@ -23,18 +24,19 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.search.SearchRowU
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
- * 01 / 05 / 2020
+ * 09 / 09 / 2020
  */
-abstract class ISearchViewModel : ViewModel() {
-	abstract val listings: LiveData<HResult<List<SearchRowUI>>>
+class SearchRowAdapter(private val searchController: SearchController) : FastAdapter<SearchRowUI>() {
+	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+		super.onBindViewHolder(holder, position)
+		@Suppress("NAME_SHADOWING")
+		val holder = holder as SearchRowUI.ViewHolder
 
-	abstract fun setQuery(query: String)
-	abstract fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>>
-	abstract fun searchFormatter(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>>
-	abstract fun loadQuery()
+		val itemAdapter = ItemAdapter<ACatalogNovelUI>()
+		val fastAdapter = with(itemAdapter)
+		holder.recyclerView.adapter = fastAdapter
+		getItem(position)?.let {}
+	}
 }

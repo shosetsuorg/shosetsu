@@ -40,7 +40,7 @@ import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
  *
  * @author github.com/doomsdayrs
  */
-class NovelController(val bundle: Bundle) : ViewedController(bundle) {
+class NovelController(bundle: Bundle) : ViewedController(bundle) {
 	override val layoutRes: Int = R.layout.novel
 
 	@Attach(R.id.fragment_novel_tabLayout)

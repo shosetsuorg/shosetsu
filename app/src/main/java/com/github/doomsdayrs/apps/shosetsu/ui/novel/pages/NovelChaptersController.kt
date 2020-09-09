@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
@@ -46,9 +45,8 @@ import com.mikepenz.fastadapter.select.selectExtension
  * Displays the chapters the novel contains
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
-class NovelChaptersController(
-		private val bundle: Bundle,
-) : FastAdapterRecyclerController<ChapterUI>(bundle), FABView {
+class NovelChaptersController(bundle: Bundle)
+	: FastAdapterRecyclerController<ChapterUI>(bundle), FABView {
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
@@ -67,7 +65,7 @@ class NovelChaptersController(
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.setNovelID(bundle.getNovelID())
+		viewModel.setNovelID(args.getNovelID())
 		resume = (parentController as NovelController).fab
 	}
 

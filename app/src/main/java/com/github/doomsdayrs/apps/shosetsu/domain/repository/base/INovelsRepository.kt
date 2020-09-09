@@ -38,7 +38,6 @@ interface INovelsRepository {
 	/** Gets NovelEntities that are bookmarked */
 	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
 
-
 	/** Searches the bookmarked novels and returns a live data of them */
 	suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>>
 

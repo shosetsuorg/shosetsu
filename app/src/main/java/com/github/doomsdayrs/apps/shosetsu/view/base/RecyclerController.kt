@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
-import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,10 +44,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
  *     Default will fill with a LinearLayoutManager
  * </p>
  */
-abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle)
-	: ViewedController(bundle) {
-	constructor() : this(bundleOf())
-
+abstract class RecyclerController<T, V> : ViewedController where T : RecyclerView.Adapter<*> {
 	@LayoutRes
 	override val layoutRes: Int = R.layout.recycler_controller
 
@@ -72,6 +68,9 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	 * Recycler array
 	 */
 	open var recyclerArray: ArrayList<V> = arrayListOf()
+
+	constructor() : super()
+	constructor(args: Bundle) : super(args)
 
 	override fun onCreateView(
 			inflater: LayoutInflater,
@@ -112,7 +111,6 @@ abstract class RecyclerController<T : RecyclerView.Adapter<*>, V>(bundle: Bundle
 	 * What is the layout manager
 	 */
 	open fun createLayoutManager(): RecyclerView.LayoutManager = LinearLayoutManager(context)
-
 
 	/**
 	 * Creates the adapter for the recycler view to use

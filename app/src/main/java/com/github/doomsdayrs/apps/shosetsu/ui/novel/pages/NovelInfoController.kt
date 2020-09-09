@@ -53,9 +53,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult.Success as HSucces
  *
  * The page you see when you select a novel
  */
-class NovelInfoController(
-		private val bundle: Bundle,
-) : ViewedController(bundle), FABView {
+class NovelInfoController(bundle: Bundle) : ViewedController(bundle), FABView {
 	override val layoutRes: Int = R.layout.novel_main
 
 	val viewModel: INovelInfoViewModel by viewModel()
