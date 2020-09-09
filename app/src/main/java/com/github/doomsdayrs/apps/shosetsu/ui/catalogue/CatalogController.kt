@@ -74,11 +74,6 @@ class CatalogController(
 	val viewModel: ICatalogViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
 
-	/** If the user is currently searching something up*/
-	var isInSearch: Boolean = false
-
-	/** If the user is currently viewing query data*/
-	var isQuery: Boolean = false
 
 	init {
 		setHasOptionsMenu(true)
@@ -142,8 +137,8 @@ class CatalogController(
 		searchView = menu.findItem(R.id.library_search).actionView as SearchView
 		searchView?.setOnQueryTextListener(CatalogueSearchQuery(this))
 		searchView?.setOnCloseListener {
-			isQuery = false
-			isInSearch = false
+			viewModel.setQuery("")
+			viewModel.resetView()
 			true
 		}
 	}
@@ -239,7 +234,7 @@ class CatalogController(
 				}
 			}
 		}
-		viewModel.filterItemsLive.observe(this){
+		viewModel.filterItemsLive.observe(this) {
 
 		}
 	}

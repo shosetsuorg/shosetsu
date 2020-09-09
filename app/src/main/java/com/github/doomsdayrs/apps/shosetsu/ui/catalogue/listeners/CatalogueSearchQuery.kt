@@ -27,15 +27,12 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogController
 class CatalogueSearchQuery(private val catalogFragment: CatalogController)
 	: SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(query: String): Boolean {
-		catalogFragment.isQuery = false
-		catalogFragment.isInSearch = true
 		catalogFragment.viewModel.setQuery(query)
 		catalogFragment.viewModel.loadQuery()
 		return true
 	}
 
 	override fun onQueryTextChange(newText: String): Boolean {
-		catalogFragment.isQuery = true
 		catalogFragment.viewModel.setQuery(newText)
 		return true
 	}

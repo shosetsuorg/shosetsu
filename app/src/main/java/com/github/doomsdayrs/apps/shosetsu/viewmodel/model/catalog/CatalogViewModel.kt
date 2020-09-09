@@ -128,7 +128,6 @@ class CatalogViewModel(
 		loadingJob.cancel("Loading a query")
 		listingItems.clear()
 		listingItemsLive.postValue(successResult(arrayListOf()))
-		listingItemsLive.postValue(loading())
 		loadingJob = loadData()
 	}
 
@@ -154,7 +153,6 @@ class CatalogViewModel(
 			filterData.putAll(map)
 			listingItems.clear()
 			listingItemsLive.postValue(successResult(arrayListOf()))
-			listingItemsLive.postValue(loading())
 			loadData()
 		}
 	}
