@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.activity
 
 import android.annotation.SuppressLint
+import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bluelinelabs.conductor.Conductor.attachRouter
@@ -18,6 +20,7 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_QUERY
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ShortCuts
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
@@ -28,6 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController
 import com.github.doomsdayrs.apps.shosetsu.ui.downloads.DownloadsController
 import com.github.doomsdayrs.apps.shosetsu.ui.extensions.ExtensionsController
 import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
@@ -212,6 +216,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			ShortCuts.ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_catalogue)
 			ShortCuts.ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updater)
 			ShortCuts.ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
+			Intent.ACTION_SEARCH -> {
+				router.pushController(SearchController(bundleOf(
+						BUNDLE_QUERY to intent.getStringExtra(SearchManager.QUERY)
+				)).withFadeTransaction())
+			}
 			else -> {
 				if (!router.hasRootController()) {
 					setSelectedDrawerItem(R.id.nav_library)

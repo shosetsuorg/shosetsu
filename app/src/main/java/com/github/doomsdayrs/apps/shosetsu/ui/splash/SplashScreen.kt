@@ -98,7 +98,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 						val intent = Intent(this, MainActivity::class.java)
 						Log.i(logID(), "Passing Intent ${this.intent.action}")
 						intent.action = this.intent.action
-						intent.extras?.let { this.intent.putExtras(it) }
+						this.intent.extras?.let { intent.putExtras(it) }
 						startActivity(intent)
 						progressUpdate("Finished! Going to app now~")
 						finish()
