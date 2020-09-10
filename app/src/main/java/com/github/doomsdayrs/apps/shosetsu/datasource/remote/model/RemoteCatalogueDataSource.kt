@@ -11,6 +11,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GEN
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import com.github.doomsdayrs.apps.shosetsu.common.consts.ErrorKeys.ERROR_NO_SEARCH
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.errorResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
@@ -48,15 +49,15 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
-			if (formatter.hasSearch)
-				successResult(
-						formatter.search(HashMap(data).apply {
-							this[QUERY_INDEX] = query
-						}) {
-							Log.i(logID(), it)
-						}.toList()
-				)
-			else errorResult(ERROR_NO_SEARCH, "This extension has no search functionality")
+			if (formatter.hasSearch) {
+				val l = formatter.search(HashMap(data).apply {
+					this[QUERY_INDEX] = query
+				}) {
+					Log.i(logID(), it)
+				}.toList()
+
+				if (l.isEmpty()) emptyResult() else successResult(l)
+			} else errorResult(ERROR_NO_SEARCH, "This extension has no search functionality")
 		} catch (e: IOException) {
 			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
 		} catch (e: LuaError) {

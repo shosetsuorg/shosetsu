@@ -12,6 +12,8 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNo
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.FullCatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.search.SearchRowUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ISearchViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlin.collections.set
 
 /*
@@ -41,6 +43,7 @@ class SearchViewModel(
 		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase
 ) : ISearchViewModel() {
 	private val hashMap = HashMap<Int, MutableLiveData<HResult<List<ACatalogNovelUI>>>>()
+	private val jobMap = HashMap<Int, Job>()
 
 	override val listings: LiveData<HResult<List<SearchRowUI>>> by lazy {
 		liveData {
@@ -63,8 +66,8 @@ class SearchViewModel(
 		return hashMap[-1]!!
 	}
 
-	private fun loadLibrary() {
-		launchIO {
+	private fun loadLibrary(): Job {
+		jobMap[-1] = launchIO {
 			hashMap[-1]?.postValue(searchBookMarkedNovelsUseCase(query).let {
 				when (it) {
 					is HResult.Success -> {
@@ -78,10 +81,11 @@ class SearchViewModel(
 				}
 			})
 		}
+		return jobMap[-1]!!
 	}
 
-	private fun loadFormatter(formatterID: Int) {
-		launchIO {
+	private fun loadFormatter(formatterID: Int): Job {
+		jobMap[formatterID] = launchIO {
 			hashMap[formatterID]?.postValue(
 					loadCatalogueQueryDataUseCase(
 							formatterID,
@@ -91,14 +95,17 @@ class SearchViewModel(
 					)
 			)
 		}
+		return jobMap[formatterID]!!
 	}
 
 	override fun loadQuery() {
+		jobMap.forEach { it.value.cancel("New query") }
+
 		val keys = hashMap.keys
 		keys.forEach { key ->
 			hashMap[key]?.postValue(successResult(arrayListOf()))
 			hashMap[key]?.postValue(loading())
-			if (key == -1) loadLibrary()
+			jobMap[key] = if (key == -1) loadLibrary()
 			else loadFormatter(key)
 		}
 	}

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.emptyResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalNovelsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteNovelDataSource
@@ -61,6 +62,7 @@ class NovelsRepository(
 			getBookmarkedNovels().let { result ->
 				when (result) {
 					is HResult.Success -> {
+						if (result.data.isEmpty()) emptyResult()
 						successResult(result.data.filter { it.title.contains(string, false) }.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
 							IDTitleImage(id!!, t, imageURL)
 						})
