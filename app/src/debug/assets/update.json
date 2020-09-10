@@ -1,7 +1,9 @@
 {
-	"latestVersion":"912",
+	"latestVersion":"913",
 	"url":"https://discord.gg/ttSX7gB",
 	"releaseNotes":[
-		"- Added extra passthrough for SplashScreen.kt"
+		"- GlobalSearch added, A bit buggy but it works",
+		"- Search shortcut added",
+		"- Minor adjustments to SearchRowAdapter.kt"
 	]
 }
