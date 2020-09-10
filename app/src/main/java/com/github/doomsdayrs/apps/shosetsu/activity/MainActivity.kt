@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			override fun onReceive(context: Context?, intent: Intent?) {
 				intent?.let {
 					handleIntentAction(it)
-				}
+				} ?: Log.e(logID(), "Null intent recieved")
 			}
 		}
 	}
@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		unregisterReceiver(broadcastReceiver)
 		super.onDestroy()
 	}
+
 
 	/**
 	 * Main activity
@@ -106,6 +107,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			addAction(ShortCuts.ACTION_OPEN_UPDATES)
 			addAction(ShortCuts.ACTION_OPEN_LIBRARY)
 			addAction(ShortCuts.ACTION_OPEN_CATALOGUE)
+			addAction(ShortCuts.ACTION_OPEN_SEARCH)
 		})
 		setContentView(R.layout.activity_main)
 		setupView()
@@ -217,15 +219,18 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			ShortCuts.ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updater)
 			ShortCuts.ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
 			Intent.ACTION_SEARCH -> {
+				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 				router.pushController(SearchController(bundleOf(
-						BUNDLE_QUERY to intent.getStringExtra(SearchManager.QUERY)
+						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
 				)).withFadeTransaction())
 			}
-			else -> {
-				if (!router.hasRootController()) {
-					setSelectedDrawerItem(R.id.nav_library)
-				}
+			ShortCuts.ACTION_OPEN_SEARCH -> {
+				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
+				router.pushController(SearchController(bundleOf(
+						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
+				)).withFadeTransaction())
 			}
+			else -> if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 		}
 	}
 

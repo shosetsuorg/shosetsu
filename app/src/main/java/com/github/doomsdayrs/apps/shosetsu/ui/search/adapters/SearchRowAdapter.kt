@@ -68,11 +68,10 @@ class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, private val r
 		val handleUpdate = { result: HResult<List<ACatalogNovelUI>> ->
 			when (result) {
 				is HResult.Loading -> {
-					holder.itemView.visibility = View.VISIBLE
 					holder.progressBar.visibility = View.VISIBLE
 				}
 				is HResult.Empty -> {
-					holder.itemView.visibility = View.GONE
+					holder.progressBar.visibility = View.GONE
 				}
 				is HResult.Error -> {
 				}

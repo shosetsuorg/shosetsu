@@ -1,9 +1,7 @@
 {
-	"latestVersion":"906",
+	"latestVersion":"912",
 	"url":"https://discord.gg/ttSX7gB",
 	"releaseNotes":[
-		"- CatalogViewModel.kt and CatalogController.kt can now search :D, Happy?",
-		"- Tomorrow I'll get the SearchViewModel.kt to work",
-		"- Minor patches"
+		"- Added extra passthrough for SplashScreen.kt"
 	]
 }

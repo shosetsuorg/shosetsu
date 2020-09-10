@@ -67,7 +67,6 @@ data class SearchRowUI(
 		}
 
 		override fun unbindView(item: SearchRowUI) {
-			itemView.visibility = View.VISIBLE
 			title.text = null
 			progressBar.visibility = View.GONE
 		}

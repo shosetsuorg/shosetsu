@@ -33,6 +33,7 @@ object ShortCuts {
 	const val ACTION_OPEN_LIBRARY = "openLibrary"
 	const val ACTION_OPEN_CATALOGUE = "openCatalogue"
 	const val ACTION_OPEN_UPDATES = "openUpdates"
+	const val ACTION_OPEN_SEARCH = "openSearch"
 
 	fun createShortcuts(context: Context) {
 		ShortcutManagerCompat.addDynamicShortcuts(context, listOf(
@@ -58,6 +59,14 @@ object ShortCuts {
 						.setShortLabel(context.getString(R.string.updates))
 						.setIntent(Intent(context, SplashScreen::class.java).apply {
 							action = ACTION_OPEN_UPDATES
+						})
+						.build(),
+				Builder(context, "Search")
+						.setIcon(createWithResource(context, R.drawable.ic_search_24dp))
+						.setLongLabel(context.getString(R.string.search))
+						.setShortLabel(context.getString(R.string.search))
+						.setIntent(Intent(context, SplashScreen::class.java).apply {
+							action = ACTION_OPEN_SEARCH
 						})
 						.build()
 		))
