@@ -125,4 +125,5 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 		LoadCatalogueQueryDataUseCase(instance(), instance(), instance())
 	}
 	bind<ConvertNCToCNUIUseCase>() with provider { ConvertNCToCNUIUseCase(instance()) }
+	bind<LoadSearchRowUIUseCase>() with provider { LoadSearchRowUIUseCase((instance())) }
 }

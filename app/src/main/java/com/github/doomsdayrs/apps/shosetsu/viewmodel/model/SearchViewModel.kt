@@ -1,14 +1,18 @@
 package com.github.doomsdayrs.apps.shosetsu.viewmodel.model
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import com.github.doomsdayrs.apps.shosetsu.common.dto.*
-import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.IExtensionsRepository
+import com.github.doomsdayrs.apps.shosetsu.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.domain.usecases.SearchBookMarkedNovelsUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadCatalogueQueryDataUseCase
+import com.github.doomsdayrs.apps.shosetsu.domain.usecases.load.LoadSearchRowUIUseCase
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.FullCatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.search.SearchRowUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ISearchViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlin.collections.set
 
 /*
  * This file is part of shosetsu.
@@ -33,40 +37,15 @@ import kotlinx.coroutines.Dispatchers
  */
 class SearchViewModel(
 		private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
-		private val iExtensionsRepository: IExtensionsRepository,
+		private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
+		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase
 ) : ISearchViewModel() {
-	private val hashMap = HashMap<Int, LiveData<HResult<List<ACatalogNovelUI>>>>()
+	private val hashMap = HashMap<Int, MutableLiveData<HResult<List<ACatalogNovelUI>>>>()
 
 	override val listings: LiveData<HResult<List<SearchRowUI>>> by lazy {
 		liveData {
 			emit(loading())
-			emitSource(iExtensionsRepository.getCards().map {
-				when (it) {
-					is HResult.Success -> {
-						successResult(ArrayList(
-								it.data.map { (id, title, imageURL) ->
-									SearchRowUI(id, title, imageURL)
-								}
-						))
-					}
-					is HResult.Error -> it
-					is HResult.Empty -> it
-					is HResult.Loading -> it
-				}
-			}.switchMap { result ->
-				liveData {
-					emit(result.let {
-						when (it) {
-							is HResult.Success -> successResult((it.data).apply {
-								add(0, SearchRowUI(-1, "My Library", ""))
-							}.toList())
-							is HResult.Loading -> it
-							is HResult.Empty -> it
-							is HResult.Error -> it
-						}
-					})
-				}
-			})
+			emitSource(loadSearchRowUIUseCase())
 		}
 	}
 
@@ -76,29 +55,58 @@ class SearchViewModel(
 		this.query = query
 	}
 
-	override fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>> =
-			liveData(viewModelScope.coroutineContext + Dispatchers.Default) {
-				emit(loading())
-				emitSource(searchBookMarkedNovelsUseCase(query).map {
-					when (it) {
-						is HResult.Success -> {
-							successResult(it.data.map { (id, title, imageURL) ->
-								FullCatalogNovelUI(id, title, imageURL, false)
-							})
-						}
-						HResult.Loading -> loading()
-						HResult.Empty -> emptyResult()
-						is HResult.Error -> errorResult(it.code, it.message, it.error)
+	override fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>> {
+		if (!hashMap.containsKey(-1)) {
+			hashMap[-1] = MutableLiveData(loading())
+			loadLibrary()
+		}
+		return hashMap[-1]!!
+	}
+
+	private fun loadLibrary() {
+		launchIO {
+			hashMap[-1]?.postValue(searchBookMarkedNovelsUseCase(query).let {
+				when (it) {
+					is HResult.Success -> {
+						successResult(it.data.map { (id, title, imageURL) ->
+							FullCatalogNovelUI(id, title, imageURL, false)
+						})
 					}
-				})
-			}
+					HResult.Loading -> loading()
+					HResult.Empty -> emptyResult()
+					is HResult.Error -> errorResult(it.code, it.message, it.error)
+				}
+			})
+		}
+	}
+
+	private fun loadFormatter(formatterID: Int) {
+		launchIO {
+			hashMap[formatterID]?.postValue(
+					loadCatalogueQueryDataUseCase(
+							formatterID,
+							query,
+							0,
+							mapOf()
+					)
+			)
+		}
+	}
 
 	override fun loadQuery() {
+		val keys = hashMap.keys
+		keys.forEach { key ->
+			hashMap[key]?.postValue(successResult(arrayListOf()))
+			hashMap[key]?.postValue(loading())
+			if (key == -1) loadLibrary()
+			else loadFormatter(key)
+		}
 	}
 
 	override fun searchFormatter(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>> {
 		if (!hashMap.containsKey(formatterID)) {
 			hashMap[formatterID] = MutableLiveData(loading())
+			loadFormatter(formatterID)
 		}
 		return hashMap[formatterID]!!
 	}

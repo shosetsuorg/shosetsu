@@ -39,7 +39,7 @@ interface INovelsRepository {
 	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
 
 	/** Searches the bookmarked novels and returns a live data of them */
-	suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>>
+	suspend fun searchBookmarked(string: String): HResult<List<IDTitleImage>>
 
 	/** Loads the [NovelEntity] by its [novelID] */
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>

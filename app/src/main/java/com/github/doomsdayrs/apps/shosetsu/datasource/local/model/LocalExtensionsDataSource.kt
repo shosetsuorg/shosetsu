@@ -37,7 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.providers.database.dao.ExtensionsDao
 class LocalExtensionsDataSource(
 		private val extensionsDao: ExtensionsDao,
 ) : ILocalExtensionsDataSource {
-	override suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>> = liveData {
+	override fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>> = liveData {
 		try {
 			emitSource(extensionsDao.loadExtensions().map { successResult(it) })
 		} catch (e: SQLiteException) {
@@ -46,7 +46,7 @@ class LocalExtensionsDataSource(
 	}
 
 
-	override suspend fun loadPoweredExtensionsCards(
+	override fun loadPoweredExtensionsCards(
 	): LiveData<HResult<List<IDTitleImage>>> = liveData {
 		try {
 			emitSource(extensionsDao.loadPoweredExtensionsBasic().map { list ->

@@ -1,6 +1,7 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.repository.model
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.LuaFormatter
 import app.shosetsu.lib.Novel
@@ -119,8 +120,9 @@ class ExtensionsRepository(
 	override suspend fun loadFormatter(formatterID: Int): HResult<Formatter> =
 			databaseSource.loadExtension(formatterID).withSuccess { loadFormatter(it) }
 
-	override suspend fun getCards(): LiveData<HResult<List<IDTitleImage>>> =
-			databaseSource.loadPoweredExtensionsCards()
+	override fun getCards(): LiveData<HResult<List<IDTitleImage>>> = liveData {
+		emitSource(databaseSource.loadPoweredExtensionsCards())
+	}
 
 	override suspend fun loadCatalogueSearch(
 			formatter: Formatter,

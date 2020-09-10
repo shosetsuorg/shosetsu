@@ -31,10 +31,10 @@ import com.github.doomsdayrs.apps.shosetsu.domain.model.local.IDTitleImage
  */
 interface ILocalExtensionsDataSource {
 	/** Loads LiveData of extensions */
-	suspend fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
+	fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
 
 	/** Loads LiveData of extension cards that are enabled */
-	suspend fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>>
+	fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>>
 
 	/** Updates [extensionEntity] */
 	suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*>

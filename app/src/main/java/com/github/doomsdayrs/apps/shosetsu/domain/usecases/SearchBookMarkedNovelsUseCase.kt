@@ -1,8 +1,5 @@
 package com.github.doomsdayrs.apps.shosetsu.domain.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.dto.mapListTo
 import com.github.doomsdayrs.apps.shosetsu.domain.repository.base.INovelsRepository
@@ -31,10 +28,7 @@ import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.IDTitleImageUI
  */
 class SearchBookMarkedNovelsUseCase(
 		private val iNovelsRepository: INovelsRepository,
-) : ((String) -> LiveData<HResult<List<IDTitleImageUI>>>) {
-	override fun invoke(p1: String): LiveData<HResult<List<IDTitleImageUI>>> {
-		return liveData {
-			emitSource(iNovelsRepository.searchBookmarked(p1).map { it.mapListTo() })
-		}
-	}
+) {
+	suspend operator fun invoke(p1: String): HResult<List<IDTitleImageUI>> =
+			iNovelsRepository.searchBookmarked(p1).mapListTo()
 }

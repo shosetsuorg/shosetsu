@@ -51,7 +51,7 @@ class SearchController(bundle: Bundle) : FastAdapterRecyclerController<SearchRow
 	}
 
 	override val fastAdapter: FastAdapter<SearchRowUI> by lazy {
-		val adapter = SearchRowAdapter(this,viewModel)
+		val adapter = SearchRowAdapter(this, router, viewModel)
 		adapter.addAdapter(0, itemAdapter)
 		adapter
 	}
@@ -71,7 +71,7 @@ class SearchController(bundle: Bundle) : FastAdapterRecyclerController<SearchRow
 
 	override fun onViewCreated(view: View) {
 		viewModel.setQuery(args.getString(BundleKeys.BUNDLE_QUERY, ""))
-		viewModel.listings.observe(this){
+		viewModel.listings.observe(this) {
 			handleRecyclerUpdate(it)
 		}
 	}

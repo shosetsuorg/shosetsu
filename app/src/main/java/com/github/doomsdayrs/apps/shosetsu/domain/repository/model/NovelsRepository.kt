@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.datasource.local.base.ILocalNovelsDataSource
 import com.github.doomsdayrs.apps.shosetsu.datasource.remote.base.IRemoteNovelDataSource
 import com.github.doomsdayrs.apps.shosetsu.domain.model.local.BookmarkedNovelEntity
@@ -56,8 +57,20 @@ class NovelsRepository(
 			database.insertNovel(novelEntity)
 
 
-	override suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>> {
-	}
+	override suspend fun searchBookmarked(string: String): HResult<List<IDTitleImage>> =
+			getBookmarkedNovels().let { result ->
+				when (result) {
+					is HResult.Success -> {
+						successResult(result.data.filter { it.title.contains(string, false) }.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
+							IDTitleImage(id!!, t, imageURL)
+						})
+					}
+					is HResult.Empty -> result
+					is HResult.Error -> result
+					is HResult.Loading -> result
+				}
+			}
+
 
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
 			database.loadNovel(novelID)

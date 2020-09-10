@@ -37,6 +37,20 @@ class LoadCatalogueQueryDataUseCase(
 		private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
 ) {
 	suspend operator fun invoke(
+			formatterID: Int,
+			query: String,
+			page: Int,
+			filters: Map<Int, Any>
+	) = extensionRepository.loadFormatter(formatterID).let {
+		when (it) {
+			is HResult.Success -> invoke(it.data, query, page, filters)
+			is HResult.Error -> it
+			is HResult.Empty -> it
+			is HResult.Loading -> it
+		}
+	}
+
+	suspend operator fun invoke(
 			formatter: Formatter,
 			query: String,
 			page: Int,

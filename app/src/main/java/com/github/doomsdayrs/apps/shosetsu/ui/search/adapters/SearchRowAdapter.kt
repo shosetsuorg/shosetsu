@@ -1,9 +1,18 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
 
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.Router
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
+import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
+import com.github.doomsdayrs.apps.shosetsu.common.ext.setOnClickListener
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.search.SearchRowUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ISearchViewModel
@@ -32,14 +41,28 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
  * shosetsu
  * 09 / 09 / 2020
  */
-class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, val viewModel: ISearchViewModel) : FastAdapter<SearchRowUI>() {
+class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, private val router: Router, private val viewModel: ISearchViewModel) : FastAdapter<SearchRowUI>() {
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
 		@Suppress("NAME_SHADOWING")
 		val holder = holder as SearchRowUI.ViewHolder
 
 		val itemAdapter = ItemAdapter<ACatalogNovelUI>()
-		val fastAdapter = with(itemAdapter)
+		val fastAdapter = object : FastAdapter<ACatalogNovelUI>() {
+			override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+				super.onBindViewHolder(holder, position)
+				holder.itemView.layoutParams = ViewGroup.MarginLayoutParams(400, 600).apply {
+					this.setMargins(10, 10, 10, 10)
+				}
+			}
+		}
+		fastAdapter.addAdapter(0, itemAdapter)
+		fastAdapter.setOnClickListener { _, _, item, _ ->
+			Log.d(logID(),"Pushing")
+			router.pushController(NovelController(bundleOf(BUNDLE_NOVEL_ID to item.id)).withFadeTransaction())
+			true
+		}
+
 		holder.recyclerView.adapter = fastAdapter
 
 		val handleUpdate = { result: HResult<List<ACatalogNovelUI>> ->
@@ -49,6 +72,7 @@ class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, val viewModel
 				is HResult.Error -> {
 				}
 				is HResult.Success -> {
+					holder.progressBar.visibility = View.GONE
 					FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
 							itemAdapter,
 							result.data
