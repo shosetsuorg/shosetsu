@@ -58,10 +58,10 @@ class NovelPagerAdapter(private val novelController: NovelController)
 
 	private val controllers: Array<Controller> = arrayOf(
 			NovelInfoController(bundleOf(
-					BUNDLE_NOVEL_ID to novelController.bundle.getNovelID()
+					BUNDLE_NOVEL_ID to novelController.args.getNovelID()
 			)),
 			NovelChaptersController(bundleOf(
-					BUNDLE_NOVEL_ID to novelController.bundle.getNovelID()
+					BUNDLE_NOVEL_ID to novelController.args.getNovelID()
 			))
 	)
 

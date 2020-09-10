@@ -51,7 +51,7 @@ class TextAssetReader(bundleI: Bundle) : ViewedController(bundleI) {
 
 	private fun handleB() {
 		Log.d(logID(), "Setting Message")
-		type = bundleI.getString(BUNDLE_KEY, "license")
+		type = args.getString(BUNDLE_KEY, "license")
 		message = activity?.readAsset("$type.text") ?: ""
 	}
 

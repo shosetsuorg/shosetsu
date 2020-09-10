@@ -1,7 +1,11 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners
 
-import android.app.Activity
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
+import com.bluelinelabs.conductor.Router
+import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_QUERY
+import com.github.doomsdayrs.apps.shosetsu.common.ext.withFadeTransaction
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 
 /*
  * This file is part of Shosetsu.
@@ -26,8 +30,10 @@ import android.widget.SearchView
  *
  * @author github.com/doomsdayrs
  */
-class CataloguesSearchQuery(private val activity: Activity?) : SearchView.OnQueryTextListener {
-	override fun onQueryTextSubmit(s: String): Boolean = true.also {  }
+class CataloguesSearchQuery(private val router: Router) : SearchView.OnQueryTextListener {
+	override fun onQueryTextSubmit(s: String): Boolean = true.also {
+		router.pushController(SearchController(bundleOf(BUNDLE_QUERY to s)).withFadeTransaction())
+	}
 
 	override fun onQueryTextChange(s: String): Boolean = false
 }

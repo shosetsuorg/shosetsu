@@ -36,5 +36,6 @@ abstract class ISearchViewModel : ViewModel() {
 	abstract fun setQuery(query: String)
 	abstract fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>>
 	abstract fun searchFormatter(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>>
+
 	abstract fun loadQuery()
 }

@@ -57,7 +57,6 @@ class NovelsRepository(
 
 
 	override suspend fun searchBookmarked(string: String): LiveData<HResult<List<IDTitleImage>>> {
-		TODO("Not yet implemented")
 	}
 
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =

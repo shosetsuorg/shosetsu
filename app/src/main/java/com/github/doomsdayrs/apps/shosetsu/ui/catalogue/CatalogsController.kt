@@ -5,7 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -13,6 +13,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
+import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ICatalogOptionsViewModel
@@ -53,7 +54,7 @@ class CatalogsController : FastAdapterRecyclerController<CatalogOptionUI>() {
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_catalogues, menu)
 		(menu.findItem(R.id.catalogues_search).actionView as SearchView)
-				.setOnQueryTextListener(CataloguesSearchQuery(activity))
+				.setOnQueryTextListener(CataloguesSearchQuery(router))
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {

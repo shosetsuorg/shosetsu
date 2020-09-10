@@ -1,11 +1,15 @@
 package com.github.doomsdayrs.apps.shosetsu.ui.search.adapters
 
+import android.view.View
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
+import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.ACatalogNovelUI
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.search.SearchRowUI
+import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ISearchViewModel
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 
 /*
  * This file is part of shosetsu.
@@ -28,7 +32,7 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
  * shosetsu
  * 09 / 09 / 2020
  */
-class SearchRowAdapter(private val searchController: SearchController) : FastAdapter<SearchRowUI>() {
+class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, val viewModel: ISearchViewModel) : FastAdapter<SearchRowUI>() {
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
 		@Suppress("NAME_SHADOWING")
@@ -37,6 +41,32 @@ class SearchRowAdapter(private val searchController: SearchController) : FastAda
 		val itemAdapter = ItemAdapter<ACatalogNovelUI>()
 		val fastAdapter = with(itemAdapter)
 		holder.recyclerView.adapter = fastAdapter
-		getItem(position)?.let {}
+
+		val handleUpdate = { result: HResult<List<ACatalogNovelUI>> ->
+			when (result) {
+				is HResult.Loading -> holder.progressBar.visibility = View.VISIBLE
+				is HResult.Empty -> holder.itemView.visibility = View.GONE
+				is HResult.Error -> {
+				}
+				is HResult.Success -> {
+					FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
+							itemAdapter,
+							result.data
+					)
+				}
+			}
+		}
+
+		getItem(position)?.let { (formatterID) ->
+			if (formatterID != -1) {
+				viewModel.searchFormatter(formatterID).observe(lifecycleOwner) {
+					handleUpdate(it)
+				}
+			} else {
+				viewModel.searchLibrary().observe(lifecycleOwner) {
+					handleUpdate(it)
+				}
+			}
+		}
 	}
 }

@@ -37,7 +37,7 @@ import com.squareup.picasso.Picasso
 data class SearchRowUI(
 		val formatterID: Int,
 		val name: String,
-		val imageURL: String?
+		val imageURL: String
 ) : BaseRecyclerItem<SearchRowUI.ViewHolder>() {
 
 	override val layoutRes: Int = R.layout.recycler_search_row
@@ -63,10 +63,11 @@ data class SearchRowUI(
 			title.text = item.name
 			recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
 			recyclerView.setHasFixedSize(false)
-			if (item.imageURL != null) Picasso.get().load(item.imageURL).into(imageView)
+			if (item.imageURL.isNotEmpty()) Picasso.get().load(item.imageURL).into(imageView)
 		}
 
 		override fun unbindView(item: SearchRowUI) {
+			itemView.visibility = View.VISIBLE
 			title.text = null
 			progressBar.visibility = View.GONE
 		}

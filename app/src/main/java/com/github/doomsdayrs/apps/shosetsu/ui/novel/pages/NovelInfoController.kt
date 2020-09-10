@@ -127,7 +127,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle), FABView {
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.setNovelID(bundle.getInt(BUNDLE_NOVEL_ID))
+		viewModel.setNovelID(args.getInt(BUNDLE_NOVEL_ID))
 		setObserver()
 		setNovelData()
 	}
