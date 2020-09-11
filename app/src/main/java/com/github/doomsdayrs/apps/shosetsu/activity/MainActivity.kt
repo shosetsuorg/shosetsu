@@ -34,6 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.ui.library.LibraryController
 import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.ui.settings.SettingsController
 import com.github.doomsdayrs.apps.shosetsu.ui.updates.UpdatesController
+import com.github.doomsdayrs.apps.shosetsu.view.base.FABController
 import com.github.doomsdayrs.apps.shosetsu.view.base.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.IMainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -88,7 +89,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		unregisterReceiver(broadcastReceiver)
 		super.onDestroy()
 	}
-
 
 	/**
 	 * Main activity
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			return@setNavigationItemSelectedListener true
 		}
 
-		router = attachRouter(this, fragment_container, savedInstanceState)
+		router = attachRouter(this, controller_container, savedInstanceState)
 
 		router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
 			override fun onChangeStarted(
@@ -299,6 +299,18 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		if (to is SecondDrawerController) {
 			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, second_nav_view)
 			to.createDrawer(second_nav_view, drawer_layout)
+		}
+
+		if (from is FABController) {
+			from.hideFAB(fab)
+			from.resetFAB(fab)
+		}
+
+		if (to is FABController) {
+			to.acceptFAB(fab)
+			to.setFABIcon(fab)
+			to.manipulateFAB(fab)
+			to.showFAB(fab)
 		}
 	}
 

@@ -28,7 +28,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  *
  * For views with an FAB, to provide proper transition support
  */
-interface FABView {
+interface FABController {
+
+	/**
+	 * Accept the FAB to your controller
+	 */
+	fun acceptFAB(fab: FloatingActionButton) {}
+
 	/**
 	 * Hide the FAB
 	 */

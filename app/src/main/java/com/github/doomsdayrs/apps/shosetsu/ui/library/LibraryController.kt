@@ -56,15 +56,20 @@ import org.kodein.di.generic.instance
  */
 class LibraryController
 	: FastAdapterRecyclerController<ABookmarkedNovelUI>(), SecondDrawerController {
+	// - Option Menu
+
 	override val viewTitleRes: Int = R.string.my_library
 
 	/***/
 	val viewModel: ILibraryViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
 
-
 	/** Inflater */
 	val inflater: MenuInflater = MenuInflater(applicationContext)
+
+	init {
+		setHasOptionsMenu(true)
+	}
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
 		return if (settings.novelCardType == 0)
@@ -79,10 +84,6 @@ class LibraryController
 					LinearLayoutManager.VERTICAL,
 					false
 			)
-	}
-
-	init {
-		setHasOptionsMenu(true)
 	}
 
 	override fun onViewCreated(view: View) {
@@ -157,9 +158,6 @@ class LibraryController
 	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
 		// TODO
 	}
-
-
-	// - Option Menu
 
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

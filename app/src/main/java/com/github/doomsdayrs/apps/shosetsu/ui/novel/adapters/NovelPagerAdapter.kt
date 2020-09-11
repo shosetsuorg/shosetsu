@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelChaptersController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.pages.NovelInfoController
-import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
+import com.github.doomsdayrs.apps.shosetsu.view.base.FABController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /*
@@ -93,13 +93,13 @@ class NovelPagerAdapter(private val novelController: NovelController)
 				Log.d(logID(), "TheNext position is $position")
 
 				val currentController = controllers[currentPosition]
-				if (currentController is FABView) {
+				if (currentController is FABController) {
 					currentController.hideFAB(fab)
 					currentController.resetFAB(fab)
 				}
 
 				val newController = controllers[position]
-				if (newController is FABView) {
+				if (newController is FABController) {
 					newController.setFABIcon(fab)
 					newController.manipulateFAB(fab)
 					newController.showFAB(fab)

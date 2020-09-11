@@ -16,7 +16,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys.BUNDLE_NOVEL
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.migration.MigrationController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
-import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
+import com.github.doomsdayrs.apps.shosetsu.view.base.FABController
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.NovelUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelInfoViewModel
@@ -53,7 +53,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult.Success as HSucces
  *
  * The page you see when you select a novel
  */
-class NovelInfoController(bundle: Bundle) : ViewedController(bundle), FABView {
+class NovelInfoController(bundle: Bundle) : ViewedController(bundle), FABController {
 	override val layoutRes: Int = R.layout.novel_main
 
 	val viewModel: INovelInfoViewModel by viewModel()
@@ -230,6 +230,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle), FABView {
 			// Show the option to add the novel
 		}
 		fab?.let {
+			Log.d(logID(),"Setting FAB with setNovelData()")
 			hideFAB(it)
 			resetFAB(it)
 			setFABIcon(it)
@@ -243,6 +244,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle), FABView {
 	}
 
 	override fun setFABIcon(fab: FloatingActionButton) {
+		Log.i(logID(), "Setting FAB image")
 		fab.setImageResource(
 				if (novelUI?.bookmarked == true)
 					R.drawable.ic_baseline_check_circle_24

@@ -10,6 +10,7 @@ import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.ext.getNovelID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.viewModel
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.NovelPagerAdapter
+import com.github.doomsdayrs.apps.shosetsu.view.base.FABController
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -40,7 +41,7 @@ import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
  *
  * @author github.com/doomsdayrs
  */
-class NovelController(bundle: Bundle) : ViewedController(bundle) {
+class NovelController(bundle: Bundle) : ViewedController(bundle), FABController {
 	override val layoutRes: Int = R.layout.novel
 
 	@Attach(R.id.fragment_novel_tabLayout)
@@ -52,13 +53,15 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 	@Attach(R.id.swipeRefreshLayout)
 	var swipeRefreshLayout: SwipeRefreshLayout? = null
 
-	@Attach(R.id.fab)
+	/** Floating action button */
 	var fab: FloatingActionButton? = null
 
 	/**
 	 * View model of the major novel
 	 */
 	val viewModel: INovelViewModel by viewModel()
+
+	var adapter: NovelPagerAdapter? = null
 
 	/**
 	 * Refreshes the novel
@@ -74,13 +77,20 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 		}
 	}
 
+	override fun acceptFAB(fab: FloatingActionButton) {
+		this.fab = fab
+	}
+
+	override fun setFABIcon(fab: FloatingActionButton) {
+	}
+
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(args.getNovelID())
-		val adapter = NovelPagerAdapter(this)
+		adapter = NovelPagerAdapter(this)
 		novelViewpager?.adapter = adapter
 		novelViewpager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(novelTabLayout))
 		fab?.let {
-			novelViewpager?.addOnPageChangeListener(adapter.PageController(it))
+			novelViewpager?.addOnPageChangeListener(adapter!!.PageController(it))
 		}
 
 		novelTabLayout?.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -100,4 +110,5 @@ class NovelController(bundle: Bundle) : ViewedController(bundle) {
 			else toast(R.string.you_not_online)
 		}
 	}
+
 }

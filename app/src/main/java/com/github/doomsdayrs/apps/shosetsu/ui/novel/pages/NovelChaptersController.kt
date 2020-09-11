@@ -6,13 +6,14 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.NovelController
 import com.github.doomsdayrs.apps.shosetsu.ui.novel.adapters.ChaptersAdapter
-import com.github.doomsdayrs.apps.shosetsu.view.base.FABView
+import com.github.doomsdayrs.apps.shosetsu.view.base.FABController
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.ChapterUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.INovelChaptersViewModel
@@ -46,13 +47,12 @@ import com.mikepenz.fastadapter.select.selectExtension
  * TODO Check filesystem if the chapter is saved, even if not in DB.
  */
 class NovelChaptersController(bundle: Bundle)
-	: FastAdapterRecyclerController<ChapterUI>(bundle), FABView {
+	: FastAdapterRecyclerController<ChapterUI>(bundle), FABController {
 	override val layoutRes: Int = R.layout.novel_chapters
 	override val resourceID: Int = R.id.fragment_novel_chapters_recycler
 
 	private val viewModel: INovelChaptersViewModel by viewModel()
 	private var resume: FloatingActionButton? = null
-
 
 	override val fastAdapter: FastAdapter<ChapterUI> by lazy {
 		val adapter = ChaptersAdapter(viewModel)
@@ -72,6 +72,20 @@ class NovelChaptersController(bundle: Bundle)
 	override fun setupRecyclerView() {
 		recyclerView?.setHasFixedSize(false)
 		super.setupRecyclerView()
+		recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+				when (newState) {
+					RecyclerView.SCROLL_STATE_DRAGGING -> {
+						resume?.let { hideFAB(it) }
+					}
+					RecyclerView.SCROLL_STATE_SETTLING -> {
+					}
+					RecyclerView.SCROLL_STATE_IDLE -> {
+						resume?.let { showFAB(it) }
+					}
+				}
+			}
+		})
 		setObserver()
 	}
 

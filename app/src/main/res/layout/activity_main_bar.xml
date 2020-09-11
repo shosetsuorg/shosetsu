@@ -23,7 +23,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/controller_container"
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginBottom="?attr/actionBarSize"
         android:layout_gravity="center"

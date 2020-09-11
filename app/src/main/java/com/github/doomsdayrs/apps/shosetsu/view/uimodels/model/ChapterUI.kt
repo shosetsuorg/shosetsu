@@ -103,7 +103,7 @@ data class ChapterUI(
 		}
 
 		override fun bindView(chapterUI: ChapterUI, payloads: List<Any>) {
-			Log.d(logID(), "Binding ${chapterUI.id}")
+			//Log.d(logID(), "Binding ${chapterUI.id}")
 
 			cardView.strokeWidth = if (chapterUI.isSelected) selectedStrokeWidth else 0
 			if (chapterUI.isSelected) {
@@ -121,12 +121,12 @@ data class ChapterUI(
 			}
 
 			if (chapterUI.isSaved) {
-				Log.d(logID(), "Chapter is downloaded")
+				//Log.d(logID(), "Chapter is downloaded")
 				popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download)
 						.title = "Delete"
 
 			} else {
-				Log.d(logID(), "Chapter is!downloaded")
+				//Log.d(logID(), "Chapter is!downloaded")
 				popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download)
 						.title = "Download"
 			}

@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -85,21 +86,21 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
+            android:textIsSelectable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/novel_genres"
-            tools:text="A\nB\nC\nD\nE\nF"
-            android:textIsSelectable="true" />
+            tools:text="A\nB\nC\nD\nE\nF" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/novel_genres"
-            android:background="@android:color/transparent"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
             android:theme="@style/ChipStyle"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/novel_description"
