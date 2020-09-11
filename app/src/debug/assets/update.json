@@ -1,9 +1,9 @@
 {
-	"latestVersion":"913",
+	"latestVersion":"915",
 	"url":"https://discord.gg/ttSX7gB",
 	"releaseNotes":[
-		"- GlobalSearch added, A bit buggy but it works",
-		"- Search shortcut added",
-		"- Minor adjustments to SearchRowAdapter.kt"
+		"- New reactive elements to the UI added",
+		"- Scrolling hides the top bar",
+		"- Scrolling hides the FAB in chapters controllers"
 	]
 }
