@@ -46,9 +46,4 @@ class CatalogOptionsViewModel(
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
-
-	override fun onCleared() {
-		Log.d(logID(), "Cleared")
-		super.onCleared()
-	}
 }

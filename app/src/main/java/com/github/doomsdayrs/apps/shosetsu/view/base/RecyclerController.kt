@@ -91,6 +91,7 @@ abstract class RecyclerController<T, V> : ViewedController where T : RecyclerVie
 			is HResult.Loading -> showLoading()
 			is HResult.Success -> updateUI(result.data)
 			is HResult.Error -> showError(result)
+			is HResult.Empty -> showEmpty()
 		}
 	}
 
@@ -106,6 +107,8 @@ abstract class RecyclerController<T, V> : ViewedController where T : RecyclerVie
 		adapter = createRecyclerAdapter()
 		recyclerView?.adapter = adapter
 	}
+
+	open fun showEmpty() {}
 
 	/**
 	 * What is the layout manager

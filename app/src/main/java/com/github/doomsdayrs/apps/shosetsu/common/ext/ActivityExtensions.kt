@@ -91,7 +91,3 @@ fun Activity.readAsset(name: String): String {
 	}
 	return string.toString()
 }
-
-fun Activity.setActivityTitle(title: String?) {
-	if (this is AppCompatActivity) this.supportActionBar?.let { it.title = title }
-}

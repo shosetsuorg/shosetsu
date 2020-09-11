@@ -7,13 +7,11 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.consts.BundleKeys
 import com.github.doomsdayrs.apps.shosetsu.common.ext.*
 import com.github.doomsdayrs.apps.shosetsu.ui.catalogue.listeners.CataloguesSearchQuery
 import com.github.doomsdayrs.apps.shosetsu.ui.extensionsConfigure.ConfigureExtensions
-import com.github.doomsdayrs.apps.shosetsu.ui.search.SearchController
 import com.github.doomsdayrs.apps.shosetsu.view.base.FastAdapterRecyclerController
 import com.github.doomsdayrs.apps.shosetsu.view.uimodels.model.catlog.CatalogOptionUI
 import com.github.doomsdayrs.apps.shosetsu.viewmodel.abstracted.ICatalogOptionsViewModel
@@ -69,7 +67,7 @@ class CatalogsController : FastAdapterRecyclerController<CatalogOptionUI>() {
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.liveData.observe(this, Observer(::handleRecyclerUpdate))
+		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 	}
 
 	override fun setupFastAdapter() {
@@ -85,8 +83,13 @@ class CatalogsController : FastAdapterRecyclerController<CatalogOptionUI>() {
 		}
 	}
 
+	override fun updateUI(newList: List<CatalogOptionUI>) {
+		Log.d(logID(), "Got a new list of ${newList.size}")
+		super.updateUI(newList)
+	}
+
 	override fun setupRecyclerView() {
-		recyclerView?.setHasFixedSize(true)
+		recyclerView?.setHasFixedSize(false)
 		super.setupRecyclerView()
 	}
 }

@@ -8,7 +8,6 @@ import androidx.core.os.bundleOf
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.common.ext.logID
 import com.github.doomsdayrs.apps.shosetsu.common.ext.readAsset
-import com.github.doomsdayrs.apps.shosetsu.common.ext.setActivityTitle
 import com.github.doomsdayrs.apps.shosetsu.view.base.ViewedController
 import java.util.*
 
@@ -68,7 +67,7 @@ class TextAssetReader(bundleI: Bundle) : ViewedController(bundleI) {
 	@ExperimentalStdlibApi
 	override fun onViewCreated(view: View) {
 		if (message.isEmpty()) handleB()
-		activity?.setActivityTitle(type.capitalize(Locale.ROOT))
+		activity?.title = (type.capitalize(Locale.ROOT))
 		view.findViewById<TextView>(R.id.title).text = message
 	}
 

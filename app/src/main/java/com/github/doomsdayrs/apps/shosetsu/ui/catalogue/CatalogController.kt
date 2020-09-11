@@ -219,7 +219,7 @@ class CatalogController(
 		viewModel.extensionName.observe(this) {
 			when (it) {
 				is HResult.Success -> {
-					activity?.setActivityTitle(it.data)
+					setViewTitle(it.data)
 					if (recyclerArray.isEmpty())
 						viewModel.resetView()
 				}

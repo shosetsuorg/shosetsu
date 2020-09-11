@@ -1,9 +1,7 @@
 {
-	"latestVersion":"915",
+	"latestVersion":"916",
 	"url":"https://discord.gg/ttSX7gB",
 	"releaseNotes":[
-		"- New reactive elements to the UI added",
-		"- Scrolling hides the top bar",
-		"- Scrolling hides the FAB in chapters controllers"
+		"- update"
 	]
 }

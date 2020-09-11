@@ -182,7 +182,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController(bundle), FABControl
 	private fun setNovelData() {
 		novelUI?.let { novelUI ->
 			// Handle title
-			activity?.setActivityTitle(novelUI.title)
+			this.setViewTitle(novelUI.title)
 			novelTitle?.text = novelUI.title
 
 			// Handle authors

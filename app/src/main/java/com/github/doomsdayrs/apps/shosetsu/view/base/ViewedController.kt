@@ -142,7 +142,7 @@ abstract class ViewedController : LifecycleController, KodeinAware {
 		return view
 	}
 
-	fun setViewTitle() {
+	fun setViewTitle(viewTitle: String = this.viewTitle) {
 		Log.i(logID(), "Activity title $viewTitle")
 		activity?.title = viewTitle
 	}
