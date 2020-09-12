@@ -1,11 +1,9 @@
 {
-  "latestVersion": "925",
+  "latestVersion": "928",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Fixed second open not working",
-    "- Added bottom navigation view as default",
-    "- Added legacy navigation option",
-    "- Created more fluid animations between different UIs",
-    "- :D"
+    "- New Empty UI notification :D",
+    "- Fixed some stuff",
+    "- ExtensionUI.kt now properly resets image"
   ]
 }
