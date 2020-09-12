@@ -2,6 +2,8 @@ package app.shosetsu.android.view.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.annotation.CallSuper
+import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.mikepenz.fastadapter.FastAdapter
@@ -63,18 +65,33 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 	 * Allows child classes to manipulate the fast adapter
 	 */
 	open fun setupFastAdapter() {}
+
 	override fun updateUI(newList: List<ITEM>) {
+		if (newList.isEmpty()) showEmpty() else hideEmpty()
 		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}
 
 	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =
 			difAreContentsTheSame(oldItem, newItem)
 
+
 	abstract class BasicFastAdapterRecyclerController<ITEM : AbstractItem<*>> :
 			FastAdapterRecyclerController<ControllerRecyclerBinding, ITEM> {
 
 		constructor() : super()
 		constructor(args: Bundle) : super(args)
+
+		@CallSuper
+		override fun showEmpty() {
+			binding.recyclerView.isVisible = false
+		}
+
+
+		@CallSuper
+		override fun hideEmpty() {
+			binding.recyclerView.isVisible = true
+			binding.emptyDataView.hide()
+		}
 
 		override fun bindView(inflater: LayoutInflater): ControllerRecyclerBinding =
 				ControllerRecyclerBinding.inflate(inflater).also { recyclerView = it.recyclerView }

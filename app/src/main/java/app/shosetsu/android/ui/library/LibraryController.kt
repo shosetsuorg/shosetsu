@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,6 @@ import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.google.android.material.navigation.NavigationView
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
@@ -92,7 +92,6 @@ class LibraryController
 	}
 
 	override fun onViewCreated(view: View) {
-		ControllerRecyclerBinding.bind(view)
 	}
 
 	override fun setupRecyclerView() {
@@ -148,7 +147,13 @@ class LibraryController
 	}
 
 	override fun updateUI(newList: List<ABookmarkedNovelUI>) {
-		Log.d(logID(), "Received ${newList.size} bookmarked novels")
+		if (newList.isEmpty()) {
+			showEmpty()
+		} else {
+			if (!binding.recyclerView.isVisible)
+				binding.recyclerView.isVisible = true
+			binding.emptyDataView.hide()
+		}
 		super.updateUI(newList)
 	}
 
@@ -201,7 +206,7 @@ class LibraryController
 				return true
 			}
 			R.id.remove_from_library -> {
-				app.shosetsu.android.common.ext.launchAsync {
+				launchAsync {
 					viewModel.removeFromLibrary(
 							fastAdapter.getSelectExtension().selectedItems.toList()
 					)
@@ -216,6 +221,17 @@ class LibraryController
 			}
 		}
 		return false
+	}
+
+
+	override fun hideEmpty() {
+		binding.recyclerView.isVisible = true
+		binding.emptyDataView.hide()
+	}
+
+	override fun showEmpty() {
+		binding.recyclerView.isVisible = false
+		binding.emptyDataView.show("You don't have any novels, Go to \"Browse\" and add some!")
 	}
 
 	override fun acceptPushing(pushController: (Controller) -> Unit) {

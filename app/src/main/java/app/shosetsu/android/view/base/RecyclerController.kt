@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,7 +32,6 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -48,16 +48,6 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 		where T : RecyclerView.Adapter<*>,
 		      VB : ViewBinding {
 
-	abstract class BasicRecyclerController<T : RecyclerView.Adapter<*>, V>
-		: RecyclerController<T, V, ControllerRecyclerBinding> {
-
-		constructor() : super()
-		constructor(args: Bundle) : super(args)
-
-		override fun bindView(inflater: LayoutInflater): ControllerRecyclerBinding {
-			return inflate(inflater).also { recyclerView = it.recyclerView }
-		}
-	}
 
 	lateinit var recyclerView: RecyclerView
 
@@ -86,7 +76,6 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 		return binding.root
 	}
 
-
 	/** @param result [HResult], if [HResult.Success] then updates UI */
 	open fun handleRecyclerUpdate(result: HResult<List<V>>) {
 		when (result) {
@@ -111,6 +100,7 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	}
 
 	open fun showEmpty() {}
+	open fun hideEmpty() {}
 
 	/**
 	 * What is the layout manager
@@ -134,6 +124,7 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	 * Updates the UI with a new list
 	 */
 	open fun updateUI(newList: List<V>) {
+		if (newList.isEmpty()) showEmpty() else hideEmpty()
 		adapter?.let {
 			DiffUtil.calculateDiff(RecyclerDiffToolCallBack(
 					newList = newList,
@@ -155,6 +146,30 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	 * If the identification of two items are the same
 	 */
 	abstract fun difAreItemsTheSame(oldItem: V, newItem: V): Boolean
+
+
+	abstract class BasicRecyclerController<T : RecyclerView.Adapter<*>, V>
+		: RecyclerController<T, V, ControllerRecyclerBinding> {
+
+		constructor() : super()
+		constructor(args: Bundle) : super(args)
+
+		@CallSuper
+		override fun showEmpty() {
+			binding.recyclerView.isVisible = false
+		}
+
+
+		@CallSuper
+		override fun hideEmpty() {
+			binding.recyclerView.isVisible = true
+			binding.emptyDataView.hide()
+		}
+
+		override fun bindView(inflater: LayoutInflater): ControllerRecyclerBinding {
+			return inflate(inflater).also { recyclerView = it.recyclerView }
+		}
+	}
 
 	/**
 	 * Call back to update ui of [RecyclerController]

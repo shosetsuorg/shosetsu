@@ -108,6 +108,7 @@ data class ExtensionUI(
 			idText.text = null
 			hash.text = null
 			language.text = null
+			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
 		}
 	}
 

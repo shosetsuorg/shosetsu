@@ -8,7 +8,10 @@ import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.context
+import app.shosetsu.android.common.ext.setOnClickListener
+import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.catalogue.listeners.CataloguesSearchQuery
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtensions
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
@@ -33,7 +36,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -78,6 +80,10 @@ class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>()
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 	}
 
+	override fun showEmpty() {
+		binding.emptyDataView.show("No sources, Install one from Extensions")
+	}
+
 	override fun setupFastAdapter() {
 		fastAdapter.setOnClickListener { _, _, (identifier, title), _ ->
 			Log.d("FormatterSelection", title)
@@ -91,7 +97,7 @@ class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>()
 	}
 
 	override fun updateUI(newList: List<CatalogOptionUI>) {
-		Log.d(logID(), "Got a new list of ${newList.size}")
+		if (newList.isEmpty()) showEmpty()
 		super.updateUI(newList)
 	}
 

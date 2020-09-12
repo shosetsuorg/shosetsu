@@ -51,4 +51,13 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(), Collap
 			handleRecyclerUpdate(it)
 		}
 	}
+
+	override fun showEmpty() {
+		binding.emptyDataView.show("No updates yet! Maybe check again?")
+	}
+
+	override fun updateUI(newList: List<UpdateUI>) {
+		if (newList.isEmpty()) showEmpty()
+		super.updateUI(newList)
+	}
 }
