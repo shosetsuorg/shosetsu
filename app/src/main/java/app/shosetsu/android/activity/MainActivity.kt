@@ -8,7 +8,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,17 +26,18 @@ import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.requestPerms
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.common.ext.withFadeTransaction
+import app.shosetsu.android.common.utils.collapse
+import app.shosetsu.android.common.utils.expand
+import app.shosetsu.android.ui.browse.BrowseController
 import app.shosetsu.android.ui.catalogue.CatalogsController
 import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.extensions.ExtensionsController
 import app.shosetsu.android.ui.library.LibraryController
+import app.shosetsu.android.ui.more.MoreController
 import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.ui.settings.SettingsController
 import app.shosetsu.android.ui.updates.UpdatesController
-import app.shosetsu.android.view.base.CollapsedToolBarController
-import app.shosetsu.android.view.base.FABController
-import app.shosetsu.android.view.base.LiftOnScrollToolBarController
-import app.shosetsu.android.view.base.SecondDrawerController
+import app.shosetsu.android.view.base.*
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
 import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
@@ -69,6 +74,8 @@ import org.kodein.di.generic.instance
  * @author github.com/doomsdayrs
  */
 class MainActivity : AppCompatActivity(), KodeinAware {
+	private var registered = false
+
 	// The main router of the application
 	private lateinit var router: Router
 
@@ -88,7 +95,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	}
 
 	override fun onDestroy() {
-		unregisterReceiver(broadcastReceiver)
+		if (registered)
+			unregisterReceiver(broadcastReceiver)
 		super.onDestroy()
 	}
 
@@ -102,6 +110,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		super.onCreate(savedInstanceState)
 		// Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079
 		if (!isTaskRoot) {
+			Log.i(logID(), "Broadcasting intent ${intent.action}")
+			sendBroadcast(Intent(intent.action))
 			finish()
 			return
 		}
@@ -111,9 +121,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			addAction(ShortCuts.ACTION_OPEN_CATALOGUE)
 			addAction(ShortCuts.ACTION_OPEN_SEARCH)
 		})
+		registered = true
 		setContentView(R.layout.activity_main)
 		setupView()
-		setupMain(savedInstanceState)
+		setupRouter(savedInstanceState)
+		handleIntentAction(intent)
 		setupProcesses()
 	}
 
@@ -125,8 +137,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		when {
 			drawer_layout.isDrawerOpen(GravityCompat.START) ->
 				drawer_layout.closeDrawer(GravityCompat.START)
+
 			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
 				setSelectedDrawerItem(R.id.nav_library)
+
 			backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
 		}
 	}
@@ -134,14 +148,38 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	// From tachiyomi
 	private fun setSelectedDrawerItem(id: Int) {
 		if (!isFinishing) {
-			nav_view.setCheckedItem(id)
-			nav_view.menu.performIdentifierAction(id, 0)
+			if (viewModel.navigationStyle() == 0) {
+				bottomNavigationView.selectedItemId = id
+				bottomNavigationView.menu.performIdentifierAction(id, 0)
+			} else {
+				nav_view.setCheckedItem(id)
+				nav_view.menu.performIdentifierAction(id, 0)
+			}
 		}
 	}
 
 	private fun setupView() {
 		//Sets the toolbar
 		setSupportActionBar(toolbar)
+
+		toolbar.setNavigationOnClickListener {
+			if (router.backstackSize == 1 && viewModel.navigationStyle() == 1)
+				drawer_layout.openDrawer(GravityCompat.START)
+			else onBackPressed()
+		}
+
+		if (viewModel.navigationStyle() == 0) {
+			bottomNavigationView.visibility = VISIBLE
+			nav_view.visibility = GONE
+			setupBottomNavigationDrawer()
+		} else {
+			nav_view.visibility = VISIBLE
+			bottomNavigationView.visibility = GONE
+			setupNavigationDrawer()
+		}
+	}
+
+	private fun setupNavigationDrawer() {
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		actionBarDrawerToggle = ActionBarDrawerToggle(
@@ -157,36 +195,47 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		drawer_layout.addDrawerListener(toggle)
 		toggle.syncState()
 
-		toolbar.setNavigationOnClickListener {
-			if (router.backstackSize == 1)
-				drawer_layout.openDrawer(GravityCompat.START)
-			else onBackPressed()
-		}
-	}
 
-	private fun setupMain(savedInstanceState: Bundle?) {
 		// Navigation view
 		//nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
 		nav_view.setNavigationItemSelectedListener {
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
-			if (currentRoot?.tag()?.toIntOrNull() != id) {
-				Log.d("Nav", "Selected $id")
-				when (id) {
-					R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
-					R.id.nav_catalogue -> setRoot(CatalogsController(), R.id.nav_catalogue)
-					R.id.nav_extensions -> setRoot(ExtensionsController(), R.id.nav_extensions)
-					R.id.nav_settings -> router.pushController(SettingsController().withFadeTransaction())
-					R.id.nav_downloads -> router.pushController(DownloadsController().withFadeTransaction())
-					R.id.nav_updater -> router.pushController(UpdatesController().withFadeTransaction())
-				}
-			}
+			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
 			drawer_layout.closeDrawer(GravityCompat.START)
 			return@setNavigationItemSelectedListener true
 		}
+	}
 
+	private fun setupBottomNavigationDrawer() {
+		drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
+
+		bottomNavigationView.setOnNavigationItemSelectedListener {
+			val id = it.itemId
+			val currentRoot = router.backstack.firstOrNull()
+			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
+			return@setOnNavigationItemSelectedListener true
+		}
+	}
+
+	private fun handleNavigationSelected(id: Int) {
+		Log.d("Nav", "Selected $id")
+		when (id) {
+			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
+			R.id.nav_catalogue -> setRoot(CatalogsController(), R.id.nav_catalogue)
+			R.id.nav_extensions -> setRoot(ExtensionsController(), R.id.nav_extensions)
+			R.id.nav_settings -> transitionView(SettingsController())
+			R.id.nav_downloads -> transitionView(DownloadsController())
+			R.id.nav_browse -> setRoot(BrowseController(), R.id.nav_browse)
+			R.id.nav_more -> setRoot(MoreController(), R.id.nav_more)
+			R.id.nav_updates -> if (viewModel.navigationStyle() == 1)
+				transitionView(UpdatesController())
+			else setRoot(UpdatesController(), R.id.nav_updates)
+		}
+	}
+
+	private fun setupRouter(savedInstanceState: Bundle?) {
 		router = attachRouter(this, controller_container, savedInstanceState)
-
 		router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
 			override fun onChangeStarted(
 					to: Controller?,
@@ -206,33 +255,44 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 					handler: ControllerChangeHandler,
 			) {
 			}
-
 		})
-
 		syncActivityViewWithController(router.backstack.lastOrNull()?.controller)
-
-		handleIntentAction(intent)
 	}
 
 	internal fun handleIntentAction(intent: Intent) {
 		Log.d(logID(), "Intent received was ${intent.action}")
 		when (intent.action) {
-			ShortCuts.ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_catalogue)
-			ShortCuts.ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updater)
+			ShortCuts.ACTION_OPEN_CATALOGUE -> if (viewModel.navigationStyle() == 1)
+				setSelectedDrawerItem(R.id.nav_catalogue)
+			else setSelectedDrawerItem(R.id.nav_browse)
+			ShortCuts.ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updates)
 			ShortCuts.ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
 			Intent.ACTION_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
-				router.pushController(SearchController(bundleOf(
+
+				transitionView(SearchController(bundleOf(
 						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
-				)).withFadeTransaction())
+				)))
 			}
 			ShortCuts.ACTION_OPEN_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
-				router.pushController(SearchController(bundleOf(
+
+				transitionView(SearchController(bundleOf(
 						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
-				)).withFadeTransaction())
+				)))
 			}
-			else -> if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
+			Intent.ACTION_MAIN -> {
+				if (!router.hasRootController()) {
+					setSelectedDrawerItem(R.id.nav_library)
+				} else {
+					Log.e(logID(), "Router has a root controller")
+				}
+			}
+			else -> if (!router.hasRootController()) {
+				setSelectedDrawerItem(R.id.nav_library)
+			} else {
+				Log.e(logID(), "Router has a root controller")
+			}
 		}
 	}
 
@@ -278,22 +338,41 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		viewModel.startDownloadWorker()
 	}
 
-	fun transitionView(target: Controller) {
+	private fun transitionView(target: Controller) {
 		router.pushController(target.withFadeTransaction())
 	}
 
 	@SuppressLint("ObjectAnimatorBinding")
 	internal fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
-		val showHamburger = router.backstackSize == 1
+		val showHamburger = router.backstackSize == 1 // Show hamburg means this is home
+
+		Log.d(logID(), "Show hamburger?: $showHamburger")
+
 		if (showHamburger) {
-			supportActionBar?.setDisplayHomeAsUpEnabled(true)
-			actionBarDrawerToggle.isDrawerIndicatorEnabled = true
-			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
+
+
+			// Shows navigation
+			if (viewModel.navigationStyle() == 1) {
+				supportActionBar?.setDisplayHomeAsUpEnabled(true)
+				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
+				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
+			} else {
+				supportActionBar?.setDisplayHomeAsUpEnabled(false)
+				bottomNavigationView.visibility = VISIBLE
+			}
 		} else {
-			supportActionBar?.setDisplayHomeAsUpEnabled(false)
-			actionBarDrawerToggle.isDrawerIndicatorEnabled = false
-			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
+
+			// Hides navigation
+			if (viewModel.navigationStyle() == 1) {
+				supportActionBar?.setDisplayHomeAsUpEnabled(false)
+				actionBarDrawerToggle.isDrawerIndicatorEnabled = false
+				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
+			} else {
+				supportActionBar?.setDisplayHomeAsUpEnabled(true)
+				bottomNavigationView.visibility = GONE
+			}
 		}
+
 		if (from is SecondDrawerController) {
 			second_nav_view.removeAllViews()
 			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, second_nav_view)
@@ -315,6 +394,17 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			to.showFAB(fab)
 		}
 
+		if (to is PushCapableController) to.acceptPushing { transitionView(it) }
+
+		if (from is TabbedController) {
+			tabLayout.removeAllTabs()
+			tabLayout.clearOnTabSelectedListeners()
+		}
+
+		if (to is TabbedController) to.acceptTabLayout(tabLayout)
+		if (from is TabbedController && to !is TabbedController) tabLayout.collapse()
+		if (from !is TabbedController && to is TabbedController) tabLayout.expand()
+
 		when (to) {
 			is CollapsedToolBarController -> {
 				elevatedAppBarLayout.drop()
@@ -325,6 +415,22 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			else -> {
 				elevatedAppBarLayout.elevate(false)
 			}
+		}
+	}
+
+	private fun toggleTabLayout() {
+		@Suppress("CheckedExceptionsKotlin")
+		val animator: Animation = AnimationUtils.loadAnimation(
+				tabLayout.context,
+				if (tabLayout.visibility == VISIBLE)
+					R.anim.slide_up
+				else R.anim.slide_down
+		).apply {
+			duration = 250
+		}
+		tabLayout.startAnimation(animator)
+		tabLayout.post {
+			tabLayout.visibility = if (tabLayout.visibility == VISIBLE) GONE else VISIBLE
 		}
 	}
 

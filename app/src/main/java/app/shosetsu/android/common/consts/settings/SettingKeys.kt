@@ -75,6 +75,7 @@ const val APP_UPDATE_CYCLE: String = "appUpdateCycle"
 const val C_IN_NOVELS_P: String = "columnsInNovelsViewP"
 const val C_IN_NOVELS_H: String = "columnsInNovelsViewH"
 const val NOVEL_CARD_TYPE: String = "novelCardType"
+const val NAVIGATION_STYLE: String = "navigationStyle"
 
 // Backup Options
 const val BACKUP_CHAPTERS: String = "backupChapters"

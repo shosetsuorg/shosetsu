@@ -12,8 +12,10 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CataloguesSearchQuery
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtensions
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.catlog.CatalogOptionUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogOptionsViewModel
+import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -41,9 +43,11 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 //TODO Searching mechanics here
-class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>() {
+class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>(),
+		PushCapableController {
 	private val viewModel: ICatalogOptionsViewModel by viewModel()
 	override val viewTitleRes: Int = R.string.catalogues
+	lateinit var pushController: (Controller) -> Unit
 
 	init {
 		setHasOptionsMenu(true)
@@ -55,11 +59,15 @@ class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>()
 				.setOnQueryTextListener(CataloguesSearchQuery(router))
 	}
 
+	override fun acceptPushing(pushController: (Controller) -> Unit) {
+		this.pushController = pushController
+	}
+
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.catalogues_search -> true
 			R.id.configure_parsers -> {
-				router.pushController(ConfigureExtensions().withFadeTransaction())
+				pushController(ConfigureExtensions())
 				true
 			}
 			else -> false
@@ -74,10 +82,9 @@ class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>()
 		fastAdapter.setOnClickListener { _, _, (identifier, title), _ ->
 			Log.d("FormatterSelection", title)
 			if (viewModel.isOnline()) {
-				val catalogueFragment = CatalogController(bundleOf(
+				pushController(CatalogController(bundleOf(
 						BundleKeys.BUNDLE_FORMATTER to identifier.toInt()
-				))
-				router.pushController(catalogueFragment.withFadeTransaction())
+				)))
 			} else context?.toast(R.string.you_not_online)
 			true
 		}

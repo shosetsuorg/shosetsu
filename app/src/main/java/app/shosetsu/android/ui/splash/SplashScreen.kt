@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.backend.initPreferences
 import app.shosetsu.android.common.ShosetsuSettings
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.requestPerms
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
@@ -47,7 +49,6 @@ import org.kodein.di.generic.instance
 class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 	companion object {
 		const val INTRO_CODE: Int = 1944
-		private var firstOpen = true
 	}
 
 	override val kodein: Kodein by closestKodein()
@@ -77,7 +78,7 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 		}
 	}
 
-	private fun progressUpdate(string: String) = app.shosetsu.android.common.ext.launchUI {
+	private fun progressUpdate(string: String) = launchUI {
 		textView.post { textView.text = string }
 	}
 
@@ -86,28 +87,21 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 
 
 	private fun startBoot() {
-		app.shosetsu.android.common.ext.launchIO scope@{
-			if (firstOpen) {
-				progressUpdate("Setting up the application")
-				useCase.invoke { progressUpdate(it) }
-				firstOpen = false
-				app.shosetsu.android.common.ext.launchUI {
-					with(this@SplashScreen) {
-						val intent = Intent(this, MainActivity::class.java)
-						Log.i(logID(), "Passing Intent ${this.intent.action}")
-						intent.action = this.intent.action
-						this.intent.extras?.let { intent.putExtras(it) }
-						startActivity(intent)
-						progressUpdate("Finished! Going to app now~")
-						finish()
-					}
+		launchIO scope@{
+			progressUpdate("Setting up the application")
+			useCase.invoke { progressUpdate(it) }
+
+			launchUI {
+				with(this@SplashScreen) {
+					val intent = Intent(this, MainActivity::class.java)
+					Log.i(logID(), "Passing Intent ${this.intent.action}")
+					intent.action = this.intent.action
+					this.intent.extras?.let { intent.putExtras(it) }
+					startActivity(intent)
+					progressUpdate("Finished! Going to app now~")
+					finish()
 				}
-			} else {
-				Log.i(logID(), "Broadcasting intent ${intent.action}")
-				sendBroadcast(Intent(intent.action))
-				finish()
 			}
 		}
 	}
-
 }

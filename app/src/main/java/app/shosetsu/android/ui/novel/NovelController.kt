@@ -8,6 +8,7 @@ import app.shosetsu.android.common.ext.getNovelID
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.novel.adapters.NovelPagerAdapter
 import app.shosetsu.android.view.base.FABController
+import app.shosetsu.android.view.base.TabbedController
 import app.shosetsu.android.view.base.ViewedController
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -41,7 +42,9 @@ import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
  *
  * @author github.com/doomsdayrs
  */
-class NovelController(bundle: Bundle) : ViewedController<ControllerNovelBinding>(bundle), FABController {
+class NovelController(
+		bundle: Bundle
+) : ViewedController<ControllerNovelBinding>(bundle), FABController, TabbedController {
 	override fun bindView(inflater: LayoutInflater): ControllerNovelBinding =
 			inflate(inflater)
 
@@ -54,6 +57,8 @@ class NovelController(bundle: Bundle) : ViewedController<ControllerNovelBinding>
 	val viewModel: INovelViewModel by viewModel()
 
 	var adapter: NovelPagerAdapter? = null
+
+	private lateinit var tabLayout: TabLayout
 
 	/**
 	 * Refreshes the novel
@@ -79,28 +84,32 @@ class NovelController(bundle: Bundle) : ViewedController<ControllerNovelBinding>
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(args.getNovelID())
 		adapter = NovelPagerAdapter(this)
-		binding.novelViewpager.adapter = adapter
-		binding.novelViewpager.addOnPageChangeListener(TabLayoutOnPageChangeListener(binding.tabLayout))
+		binding.viewpager.adapter = adapter
+		binding.viewpager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
 		fab?.let {
-			binding.novelViewpager.addOnPageChangeListener(adapter!!.PageController(it))
+			binding.viewpager.addOnPageChangeListener(adapter!!.PageController(it))
 		}
 
-		binding.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+		tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
 			override fun onTabSelected(tab: TabLayout.Tab) {
-				binding.novelViewpager.currentItem = tab.position
+				binding.viewpager.currentItem = tab.position
 			}
 
 			override fun onTabUnselected(tab: TabLayout.Tab) {}
 			override fun onTabReselected(tab: TabLayout.Tab) {}
 		})
 
-		binding.tabLayout.post { binding.tabLayout.setupWithViewPager(binding.novelViewpager) }
+		tabLayout.post { tabLayout.setupWithViewPager(binding.viewpager) }
 
 		binding.swipeRefreshLayout.setOnRefreshListener {
 			if (viewModel.isOnline())
 				refresh()
 			else toast(R.string.you_not_online)
 		}
+	}
+
+	override fun acceptTabLayout(tabLayout: TabLayout) {
+		this.tabLayout = tabLayout
 	}
 
 }

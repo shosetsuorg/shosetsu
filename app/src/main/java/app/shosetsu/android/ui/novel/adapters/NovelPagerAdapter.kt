@@ -56,14 +56,16 @@ class NovelPagerAdapter(private val novelController: NovelController)
 		)
 	}
 
-	private val controllers: Array<Controller> = arrayOf(
-			NovelInfoController(bundleOf(
-					BUNDLE_NOVEL_ID to novelController.args.getNovelID()
-			)),
-			NovelChaptersController(bundleOf(
-					BUNDLE_NOVEL_ID to novelController.args.getNovelID()
-			))
-	)
+	private val controllers: Array<Controller> by lazy {
+		arrayOf(
+				NovelInfoController(bundleOf(
+						BUNDLE_NOVEL_ID to novelController.args.getNovelID()
+				)),
+				NovelChaptersController(bundleOf(
+						BUNDLE_NOVEL_ID to novelController.args.getNovelID()
+				))
+		)
+	}
 
 
 	override fun configureRouter(router: Router, position: Int) {

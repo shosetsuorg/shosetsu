@@ -17,9 +17,11 @@ import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
+import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.base.SecondDrawerController
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
+import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
@@ -53,7 +55,11 @@ import org.kodein.di.generic.instance
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: FastAdapterRecyclerController<ControllerLibraryBinding, ABookmarkedNovelUI>(), SecondDrawerController {
+	: FastAdapterRecyclerController<ControllerLibraryBinding, ABookmarkedNovelUI>(),
+		SecondDrawerController,
+		PushCapableController {
+	lateinit var pushController: (Controller) -> Unit
+
 	override val viewTitleRes: Int = R.string.my_library
 
 	/***/
@@ -130,9 +136,9 @@ class LibraryController
 		}
 
 		fastAdapter.setOnClickListener { _, _, item, _ ->
-			router.pushController(NovelController(
+			pushController(NovelController(
 					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
-			).withFadeTransaction())
+			))
 			true
 		}
 	}
@@ -210,5 +216,9 @@ class LibraryController
 			}
 		}
 		return false
+	}
+
+	override fun acceptPushing(pushController: (Controller) -> Unit) {
+		this.pushController = pushController
 	}
 }

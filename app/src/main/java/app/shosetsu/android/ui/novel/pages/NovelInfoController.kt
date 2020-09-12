@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
+import app.shosetsu.android.common.ext.getString
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.common.ext.withFadeTransaction
@@ -160,14 +161,18 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 
 			// Handle authors
 			if (novelUI.authors.isNotEmpty())
-				binding.novelAuthor?.text = novelUI.authors.contentToString()
+				binding.novelAuthor?.text = novelUI.authors.takeIf {
+					it.isEmpty()
+				}?.joinToString(", ") ?: getString(R.string.none)
 
 			// Handle description
 			binding.novelDescription?.text = novelUI.description
 
 			// Handle artists
 			if (novelUI.artists.isNotEmpty())
-				binding.novelArtists?.text = novelUI.artists.contentToString()
+				binding.novelArtists?.text = novelUI.artists.takeIf {
+					it.isEmpty()
+				}?.joinToString(", ") ?: getString(R.string.none)
 
 			// Handles the status of the novel
 			when (novelUI.status) {
@@ -178,6 +183,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 			}
 
 			// Inserts the chips for genres
+			binding.novelGenres?.removeAllViews()
 			for (string in novelUI.genres) {
 				val chip = Chip(binding.novelGenres!!.context)
 				chip.text = string
@@ -203,7 +209,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 			// Show the option to add the novel
 		}
 		fab?.let {
-			Log.d(logID(),"Setting FAB with setNovelData()")
+			Log.d(logID(), "Setting FAB with setNovelData()")
 			hideFAB(it)
 			resetFAB(it)
 			setFABIcon(it)

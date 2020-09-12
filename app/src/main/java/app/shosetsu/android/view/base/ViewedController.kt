@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.getString
+import app.shosetsu.android.common.ext.launchAsync
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.toast
 import com.bluelinelabs.conductor.Controller
@@ -115,9 +116,6 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	@CallSuper
 	override fun onDestroy() {
 		Log.d(logID(), "Destroying Controller")
-		app.shosetsu.android.common.ext.launchAsync {
-			(activity as AppCompatActivity).viewModelStore.clear()
-		}
 		super.onDestroy()
 	}
 

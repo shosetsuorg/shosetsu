@@ -300,6 +300,10 @@ class ShosetsuSettings(
 		set(value) = settings.edit { putInt(NOVEL_CARD_TYPE, value) }
 		get() = settings.getInt(NOVEL_CARD_TYPE, 0)
 
+	var navigationStyle: Int
+		set(value) = settings.edit { putInt(NAVIGATION_STYLE, value) }
+		get() = settings.getInt(NAVIGATION_STYLE, 0)
+
 
 	// Update Settings
 

@@ -3,6 +3,7 @@ package app.shosetsu.android.viewmodel.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -38,6 +39,7 @@ class MainViewModel(
 		private val loadAppUpdateUseCase: LoadAppUpdateLiveUseCase,
 		private val isOnlineUseCase: IsOnlineUseCase,
 		private val shareUseCase: ShareUseCase,
+		private val shosetsuSettings: ShosetsuSettings
 ) : IMainViewModel() {
 	override fun share(string: String, int: String) {
 		shareUseCase(string, string)
@@ -54,6 +56,8 @@ class MainViewModel(
 			emitSource(loadAppUpdateUseCase())
 		}
 	}
+
+	override fun navigationStyle(): Int = shosetsuSettings.navigationStyle
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 }

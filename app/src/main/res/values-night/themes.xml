@@ -15,8 +15,6 @@
         <item name="android:background">@color/grey_B_10</item>
 
 
-
-
         <item name="floatingActionButtonStyle">@style/AppTheme.Widget.FAB</item>
         <item name="appBarLayoutStyle">@style/AppTheme.AppBar</item>
 

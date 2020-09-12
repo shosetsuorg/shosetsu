@@ -8,16 +8,19 @@
             android:id="@+id/nav_library"
             android:icon="@drawable/ic_collections_bookmark"
             android:title="@string/my_library" />
+        <item
+            android:id="@+id/nav_updates"
+            android:icon="@drawable/ic_update_24dp"
+            android:title="@string/updates" />
 
         <item
-            android:id="@+id/nav_catalogue"
-            android:icon="@drawable/ic_view_module"
-            android:title="@string/catalogue" />
+            android:id="@+id/nav_browse"
+            android:icon="@drawable/ic_baseline_navigation_24"
+            android:title="@string/browse" />
 
         <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings"
-            android:title="@string/settings" />
+            android:id="@+id/nav_more"
+            android:icon="@drawable/ic_baseline_more_horiz_24"
+            android:title="@string/more" />
     </group>
-
 </menu>

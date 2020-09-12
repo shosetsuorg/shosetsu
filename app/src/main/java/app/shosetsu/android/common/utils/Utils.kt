@@ -1,5 +1,11 @@
 package app.shosetsu.android.common.utils
 
+import android.view.View
+import android.view.ViewGroup.LayoutParams
+import android.view.animation.Animation
+import android.view.animation.Transformation
+
+
 /*
  * This file is part of shosetsu.
  *
@@ -21,3 +27,50 @@ package app.shosetsu.android.common.utils
  * shosetsu
  * 20 / 06 / 2020
  */
+
+fun View.expand() {
+	val matchParentMeasureSpec: Int = View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
+	val wrapContentMeasureSpec: Int = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+	measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+	val targetHeight: Int = measuredHeight
+
+	// Older versions of android (pre API 21) cancel animations for views with a height of 0.
+	layoutParams.height = 1
+	visibility = View.VISIBLE
+	val a: Animation = object : Animation() {
+		override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+			layoutParams.height = if (interpolatedTime == 1f) LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
+			requestLayout()
+		}
+
+		override fun willChangeBounds(): Boolean {
+			return true
+		}
+	}
+
+	// Expansion speed of 1dp/ms
+	a.duration = ((targetHeight / context.resources.displayMetrics.density) * 4).toInt().toLong()
+	startAnimation(a)
+}
+
+fun View.collapse() {
+	val initialHeight: Int = measuredHeight
+	val a: Animation = object : Animation() {
+		override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+			if (interpolatedTime == 1f) {
+				visibility = View.GONE
+			} else {
+				layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+				requestLayout()
+			}
+		}
+
+		override fun willChangeBounds(): Boolean {
+			return true
+		}
+	}
+
+	// Collapse speed of 1dp/ms
+	a.duration = ((initialHeight / context.resources.displayMetrics.density) * 4).toInt().toLong()
+	startAnimation(a)
+}

@@ -36,4 +36,10 @@ abstract class IMainViewModel : ViewModel(), IsOnlineCheckViewModel {
 	abstract fun startUpdateWorker()
 
 	abstract fun startUpdateCheck(): LiveData<HResult<DebugAppUpdate>>
+
+	/**
+	 * If 0, Bottom
+	 * If 1, Drawer
+	 */
+	abstract fun navigationStyle(): Int
 }

@@ -11,7 +11,7 @@
         android:translateY="21.6">
         <path
             android:name="path829"
-            android:fillColor="#FFFFFF"
+            android:fillColor="@android:color/white"
             android:pathData="M 73.719545,34.356472 C 71.388277,32.302736 66.781247,29.083366
   63.284344,26.86311 l -2.442281,2.719813 c 3.552409,2.331268 8.103933,5.717158
   10.324188,7.881907 z M 48.519646,38.85249 H 61.341621 V 49.676235 H 48.519646 Z

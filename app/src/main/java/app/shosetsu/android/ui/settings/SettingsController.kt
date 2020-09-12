@@ -30,10 +30,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class SettingsController : BasicRecyclerController<SettingsAdapter, SettingsCard>() {
 	override val viewTitleRes: Int = R.string.settings
-
-	init {
-		recyclerArray.clear()
-		recyclerArray.addAll(arrayListOf(
+	override var recyclerArray: ArrayList<SettingsCard>
+		get() = arrayListOf(
 				SettingsCard(DOWNLOAD),
 				SettingsCard(UPDATE),
 				SettingsCard(VIEW),
@@ -41,11 +39,11 @@ class SettingsController : BasicRecyclerController<SettingsAdapter, SettingsCard
 				SettingsCard(ADVANCED),
 				SettingsCard(INFO),
 				SettingsCard(BACKUP)
-		))
-	}
+		)
+		set(_) {}
 
-	override fun onViewCreated(view: View) {
-	}
+
+	override fun onViewCreated(view: View) {}
 
 	override fun difAreItemsTheSame(oldItem: SettingsCard, newItem: SettingsCard): Boolean =
 			oldItem.id == newItem.id

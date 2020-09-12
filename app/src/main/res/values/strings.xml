@@ -1,309 +1,319 @@
 <resources>
-	<string name="app_name">Shosetsu</string>
-	<string name="catalogue">Catalogue</string>
-	<string name="github" translatable="false">https://github.com/shosetsuorg/android</string>
-	<string name="header_text">Novel reading right on your phone!</string>
-	<string name="todo">TODO</string>
+    <string name="app_name">Shosetsu</string>
+    <string name="catalogue">Catalogue</string>
+    <string name="github" translatable="false">https://github.com/shosetsuorg/android</string>
+    <string name="header_text">Novel reading right on your phone!</string>
+    <string name="todo">TODO</string>
 
-	<string name="navigation_drawer_open">Open navigation drawer</string>
-	<string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
-	<string name="search">Search</string>
-	<string name="configure_parsers">configure_parsers</string>
-	<string name="filter">true</string>
+    <string name="search">Search</string>
+    <string name="configure_parsers">configure_parsers</string>
+    <string name="filter">true</string>
 
-	<!-- View Titles -->
-	<string name="my_library">My library</string>
-	<string name="updates">Updates</string>
-	<string name="catalogues">Catalogues</string>
-	<string name="extensions">Extensions</string>
-	<string name="downloads">Downloads</string>
-	<string name="configure_extensions">Configure Extensions</string>
-	<string name="migration_view">Migration View</string>
-	<string name="settings">Settings</string>
-	<string name="settings_download">Settings > Download</string>
-	<string name="settings_update">Settings > Update</string>
-	<string name="settings_view">Settings > View</string>
-	<string name="settings_reader">Settings > Reader</string>
-	<string name="settings_advanced">Settings > Advanced</string>
-	<string name="settings_info">Settings > Info</string>
-	<string name="settings_backup">Settings > Backup</string>
-
-
-	<!-- Reader Settings -->
-	<string name="reader_theme">Reader Theme</string>
-	<string name="text_size">Text size</string>
-	<string name="paragraph_spacing">Paragraph spacing</string>
-	<string name="paragraph_indent">Paragraph indent</string>
-
-	<string name="novel_title">Novel Title:</string>
-	<string name="novel_author">Novel Author(s):</string>
-	<string name="novel_description">Novel Description</string>
-	<string name="download">Download</string>
-	<string name="download_directory">Download directory</string>
-	<string name="position">Position:</string>
-	<string name="backup_now">Backup Now</string>
-	<string name="pending">Pending</string>
-	<string name="downloaded">Downloaded</string>
-	<string name="bookmark">Bookmark</string>
-
-	<string name="large">Large</string>
-	<string name="medium">Medium</string>
-	<string name="small">Small</string>
-	<string name="none">None</string>
-
-	<string name="select_all">Select All</string>
-	<string name="delete_selected">Delete Selected</string>
-	<string name="deselect_all">Deselect All</string>
-	<string name="download_selected">Download Selected</string>
-	<string name="retry">Retry</string>
-	<string name="mark_as">Mark As</string>
-	<string name="read">READ</string>
-	<string name="unread">UNREAD</string>
-	<string name="reading">READING</string>
-	<string name="no_change">No change</string>
-	<string name="download_speed">Download speed</string>
-
-	<!-- Migration View -->
-	<string name="starting">Starting</string>
-
-	<!-- Settings Info -->
-	<string name="version">Version</string>
-	<string name="report_bug">Report bug</string>
-	<string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
-	<string name="author">Author</string>
-	<string name="author_name" translatable="false">Doomsdayrs</string>
-	<string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>
-	<string name="disclaimer">Disclaimer</string>
-	<string name="license">License</string>
-
-	<string name="theme">Theme:</string>
-	<string name="select_between">Select between</string>
-	<string name="selection_options">Selection options</string>
-	<string name="remove">Remove</string>
-	<string name="no_results_found">No results found!</string>
-	<string name="library_updates">Library updates</string>
-	<string name="update_now">Update now</string>
-	<string name="migrate_sources">Migrate sources</string>
-	<string name="confirm">Confirm</string>
-	<string name="selection">Selection</string>
-	<string name="map_to">Map to</string>
-	<string name="migrate_source">Migrate source</string>
-	<string name="site">Site:</string>
-	<string name="artist_s">Artist(s):</string>
-	<string name="reading_status">Reading Status</string>
-	<string name="publishing_state">Publishing State:</string>
-
-	<string name="marking_mode">Marking Method</string>
-
-	<string-array name="marking_names">
-		<item>On View Selected</item>
-		<item>On View Scrolled</item>
-	</string-array>
-
-	<string-array name="sizes_no_none">
-		<item>@string/small</item>
-		<item>@string/medium</item>
-		<item>@string/large</item>
-	</string-array>
-
-	<string-array name="sizes_with_none">
-		<item>@string/none</item>
-		<item>@string/small</item>
-		<item>@string/medium</item>
-		<item>@string/large</item>
-	</string-array>
+    <!-- View Titles -->
+    <string name="my_library">My library</string>
+    <string name="updates">Updates</string>
+    <string name="catalogues">Catalogues</string>
+    <string name="extensions">Extensions</string>
+    <string name="downloads">Downloads</string>
+    <string name="configure_extensions">Configure Extensions</string>
+    <string name="migration_view">Migration View</string>
+    <string name="settings">Settings</string>
+    <string name="settings_download">Settings > Download</string>
+    <string name="settings_update">Settings > Update</string>
+    <string name="settings_view">Settings > View</string>
+    <string name="settings_reader">Settings > Reader</string>
+    <string name="settings_advanced">Settings > Advanced</string>
+    <string name="settings_info">Settings > Info</string>
+    <string name="settings_backup">Settings > Backup</string>
 
 
-	<!-- Publishing status-->
-	<string name="paused">Paused</string>
-	<string name="completed">Completed</string>
-	<string name="publishing">Publishing</string>
-	<string name="unknown">Unknown</string>
-	<string name="restore_now">Restore now</string>
+    <!-- Reader Settings -->
+    <string name="reader_theme">Reader Theme</string>
+    <string name="text_size">Text size</string>
+    <string name="paragraph_spacing">Paragraph spacing</string>
+    <string name="paragraph_indent">Paragraph indent</string>
+
+    <string name="novel_title">Novel Title:</string>
+    <string name="novel_author">Novel Author(s):</string>
+    <string name="novel_description">Novel Description</string>
+    <string name="download">Download</string>
+    <string name="download_directory">Download directory</string>
+    <string name="position">Position:</string>
+    <string name="backup_now">Backup Now</string>
+    <string name="pending">Pending</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="bookmark">Bookmark</string>
+
+    <string name="large">Large</string>
+    <string name="medium">Medium</string>
+    <string name="small">Small</string>
+    <string name="none">None</string>
+
+    <string name="select_all">Select All</string>
+    <string name="delete_selected">Delete Selected</string>
+    <string name="deselect_all">Deselect All</string>
+    <string name="download_selected">Download Selected</string>
+    <string name="retry">Retry</string>
+    <string name="mark_as">Mark As</string>
+    <string name="read">READ</string>
+    <string name="unread">UNREAD</string>
+    <string name="reading">READING</string>
+    <string name="no_change">No change</string>
+    <string name="download_speed">Download speed</string>
+
+    <!-- Migration View -->
+    <string name="starting">Starting</string>
+
+    <!-- Settings Info -->
+    <string name="version">Version</string>
+    <string name="report_bug">Report bug</string>
+    <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
+    <string name="author">Author</string>
+    <string name="author_name" translatable="false">Doomsdayrs</string>
+    <string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="license">License</string>
+
+    <string name="theme">Theme:</string>
+    <string name="select_between">Select between</string>
+    <string name="selection_options">Selection options</string>
+    <string name="remove">Remove</string>
+    <string name="no_results_found">No results found!</string>
+    <string name="library_updates">Library updates</string>
+    <string name="update_now">Update now</string>
+    <string name="migrate_sources">Migrate sources</string>
+    <string name="confirm">Confirm</string>
+    <string name="selection">Selection</string>
+    <string name="map_to">Map to</string>
+    <string name="migrate_source">Migrate source</string>
+    <string name="site">Site:</string>
+    <string name="artist_s">Artist(s):</string>
+    <string name="reading_status">Reading Status</string>
+    <string name="publishing_state">Publishing State:</string>
+
+    <string name="marking_mode">Marking Method</string>
+
+    <string-array name="marking_names">
+        <item>On View Selected</item>
+        <item>On View Scrolled</item>
+    </string-array>
+
+    <string-array name="sizes_no_none">
+        <item>@string/small</item>
+        <item>@string/medium</item>
+        <item>@string/large</item>
+    </string-array>
+
+    <string-array name="sizes_with_none">
+        <item>@string/none</item>
+        <item>@string/small</item>
+        <item>@string/medium</item>
+        <item>@string/large</item>
+    </string-array>
 
 
-	<!-- Backup and restore -->
-	<string name="reading_file">Reading</string>
-	<string name="tap_to_scroll">Tap to scroll</string>
-	<string name="inverted_swipe">Inverted Chapter Swipe</string>
-	<string name="press_to_continue_to_next_chapter">Press to continue to next chapter!</string>
-	<string name="open_in_webview">Open in WebView</string>
-	<string name="open_in_browser">Open in browser</string>
-	<string name="open_in">Open in</string>
-	<string name="webview" translatable="false">WebView</string>
-	<string name="browser">Browser</string>
-	<string name="reader">Reader</string>
-	<string name="default_reader">Default</string>
-	<string name="markdown_reader">MarkDown reader</string>
-	<string name="chapters_unread_label">Chapters unread: </string>
-	<string name="remove_novel_cache">Remove Novel Cache</string>
+    <!-- Publishing status-->
+    <string name="paused">Paused</string>
+    <string name="completed">Completed</string>
+    <string name="publishing">Publishing</string>
+    <string name="unknown">Unknown</string>
+    <string name="restore_now">Restore now</string>
 
 
-	<!-- App Update -->
-	<string name="app_update_check">App Update Check</string>
-	<string name="app_update_available">App Update available</string>
-	<string name="check_out_latest_app">Check out the latest version available of the app!</string>
-	<string name="app_update_unavaliable">App Update not available</string>
-	<string name="check_updates_later">No update available. Check for updates again later!</string>
-	<string name="update_app_now_question">Update app now?</string>
-	<string name="update_dismiss">Maybe later</string>
-	<string name="update_not_interested">Huh, not interested</string>
-
-	<!-- Theme -->
-	<string name="night">Night</string>
-	<string name="light">Light</string>
-	<string name="sepia">Sepia</string>
-	<string name="dark">Dark</string>
-	<string name="light_dark">Gray</string>
-	<string name="custom">Custom</string>
-
-	<string-array name="reader_themes">
-		<item>@string/night</item>
-		<item>@string/light</item>
-		<item>@string/sepia</item>
-		<item>@string/dark</item>
-		<item>@string/light_dark</item>
-		<item>@string/custom</item>
-	</string-array>
-
-	<!-- Shortcuts -->
-	<string name="refresh_shortcut">Check for updates</string>
-	<string name="action_global_search_hint">Global search…</string>
-
-	<!-- Download options -->
-	<string name="download_next_chapter">Download next chapter</string>
-	<string name="download_next_5_chapters">Download next 5 chapters</string>
-	<string name="download_next_10_chapters">Download next 10 chapters</string>
-	<string name="download_custom_chapters">Download custom</string>
-	<string name="download_all_chapters">Download all</string>
-	<string name="download_unread_chapters">Download unread</string>
-
-	<string-array name="chapters_download_options">
-		<item>@string/download_all_chapters</item>
-		<item>@string/download_unread_chapters</item>
-		<item>@string/download_custom_chapters</item>
-		<item>@string/download_next_10_chapters</item>
-		<item>@string/download_next_5_chapters</item>
-		<item>@string/download_next_chapter</item>
-	</string-array>
+    <!-- Backup and restore -->
+    <string name="reading_file">Reading</string>
+    <string name="tap_to_scroll">Tap to scroll</string>
+    <string name="inverted_swipe">Inverted Chapter Swipe</string>
+    <string name="press_to_continue_to_next_chapter">Press to continue to next chapter!</string>
+    <string name="open_in_webview">Open in WebView</string>
+    <string name="open_in_browser">Open in browser</string>
+    <string name="open_in">Open in</string>
+    <string name="webview" translatable="false">WebView</string>
+    <string name="browser">Browser</string>
+    <string name="reader">Reader</string>
+    <string name="default_reader">Default</string>
+    <string name="markdown_reader">MarkDown reader</string>
+    <string name="chapters_unread_label">Chapters unread: </string>
+    <string name="remove_novel_cache">Remove Novel Cache</string>
 
 
-	<string name="processing_data">Processing data</string>
-	<string name="update_complete">Completed Update</string>
-	<string name="update_not_found">No updates found</string>
-	<string name="download_fail_delete">Failed to delete, next download will correct</string>
-	<string name="you_not_online">You are not online</string>
-	<string name="download_chapter_updates">Download chapter updates</string>
-	<string name="update_list">Update list</string>
-	<string name="updated_extensions_list">List updated!</string>
-	<string name="uninstall">Uninstall</string>
-	<string name="install">Install</string>
-	<string name="update">Update</string>
-	<string name="sus_scripts">These scripts seem suspicious, Confirm actions. Canceling will uninstall all</string>
-	<string name="accept">Accept</string>
-	<string name="disable">Disable</string>
-	<string name="accept_temp">Temporary</string>
-	<string name="sus_script_title">Suspicious Scripts</string>
-	<string name="action">Action</string>
-	<string name="accept_all">Accept All</string>
-	<string name="temp_all">Temp All</string>
-	<string name="disable_all">Disable All</string>
-	<string name="uninstall_all">Uninstall All</string>
-	<string name="enabled">Enabled</string>
-	<string name="disabled">Disabled</string>
-	<string name="reload_list">Reload List</string>
-	<string name="chapters">Chapters</string>
-	<string name="results">Results</string>
-	<string name="today">Today</string>
-	<string name="yesterday">Yesterday</string>
-	<string name="view">View</string>
-	<string name="advanced">Advanced</string>
-	<string name="info">Info</string>
-	<string name="backup">Backup</string>
-	<string name="loading">Loading…</string>
-	<string name="amoled">Amoled</string>
-	<string name="crashCommentPromt">Crash Report</string>
-	<string name="crashDialogText">The application has crashed. Send a report to the developers?</string>
-	<string name="columns_of_novel_listing_p">Columns of novel listing (portrait)</string>
-	<string name="columns_of_novel_listing_h">Columns of novel listing (horizontal)</string>
-	<string name="columns_zero_automatic">0 means automatic</string>
+    <!-- App Update -->
+    <string name="app_update_check">App Update Check</string>
+    <string name="app_update_available">App Update available</string>
+    <string name="check_out_latest_app">Check out the latest version available of the app!</string>
+    <string name="app_update_unavaliable">App Update not available</string>
+    <string name="check_updates_later">No update available. Check for updates again later!</string>
+    <string name="update_app_now_question">Update app now?</string>
+    <string name="update_dismiss">Maybe later</string>
+    <string name="update_not_interested">Huh, not interested</string>
 
-	<string name="normal">Normal</string>
-	<string name="compressed">Compressed</string>
-	<string name="novel_card_type_selector_title">NovelCard Type</string>
-	<string name="novel_card_type_selector_desc">Set\'s how novel card\'s are viewed</string>
-	<string name="library_update">Updating Library</string>
-	<string name="catalogue_default_load">Default home page</string>
-	<string name="catalogue_default_load_desc">When a catalogue is selected, This is the thing it loads</string>
-	<string name="invalid_selection">Invalid Selection</string>
-	<string name="set_to">Set to:</string>
-	<string name="suggest_token">In Advanced settings, Apply a github token for the fancy view uwu</string>
-	<string name="no_empty_key">Can\'t take an empty key!</string>
-	<string name="github_token_input_desc">Enable Shosetsu to access Github with an Github token</string>
-	<string name="github_token_input_title">GitHub Oauth</string>
-	<string name="apply">Apply</string>
-	<string name="reset">Reset</string>
-	<string name="listings">Listings</string>
-	<string name="search_filters">Search</string>
-	<string name="updating">Updating</string>
-	<string name="intro_title_greet">Welcome to Shosetsu!</string>
-	<string name="intro_what_is_app">What is shosetsu?</string>
-	<string name="intro_what_is_app_desc">Shosetsu is a novel reading application, duh. Let\'s move on and read the license</string>
-	<string name="intro_perm_title">Permissions</string>
-	<string name="intro_perm_desc">Shosetsu is highly function, thus, we need ALL YOUR PERMS</string>
-	<string name="intro_happy_end">Wonderful!</string>
-	<string name="intro_happy_end_desc">That\'s it for an intro, Read well!</string>
-	<string name="text_custom_color">Text Color</string>
-	<string name="text_custom_background_color">Background Color</string>
-	<string name="custom_theme_warn">Only for custom theme</string>
-	<string name="backup_settings_option">Backup Settings?</string>
-	<string name="backup_chapters_option">Backup Chapters?</string>
-	<string name="backup_chapters_option_description">Default on, off will not save your progress</string>
-	<string name="backup_settings_option_desc">Default is off, which will not save your settings</string>
-	<string name="backup_quick_option">Quick Backup</string>
-	<string name="backup_quick_option_desc">Backups URL and simple data only. Will require network reload on restore</string>
-	<string name="accept_all_catalogue_choice_hint">Press this to confirm the catalogue for all</string>
+    <!-- Theme -->
+    <string name="night">Night</string>
+    <string name="light">Light</string>
+    <string name="sepia">Sepia</string>
+    <string name="dark">Dark</string>
+    <string name="light_dark">Gray</string>
+    <string name="custom">Custom</string>
 
-	<string name="regret">This feature have not been reintroduced yet due to time constraints :(</string>
-	<string name="installing">Installing</string>
-	<string name="toggle_bookmark">Toggle bookmark</string>
-	<string name="mark_read">Mark read</string>
-	<string name="mark_unread">Mark unread</string>
-	<string name="mark_reading">Mark reading</string>
-	<string name="delete">Delete</string>
-	<string name="pause">Pause</string>
-	<string name="start">Start</string>
-	<string name="extension_language_desc">Language of this extension</string>
-	<string name="extension_id_desc">Identification number of this extension</string>
-	<string name="extension_filename_desc">File name of this extension</string>
-	<string name="extension_name_desc">Title of this extension</string>
-	<string name="extension_image_desc">Image of this extension</string>
-	<string name="extension_settings_desc">Settings of this extension</string>
-	<string name="share">Share</string>
+    <string-array name="reader_themes">
+        <item>@string/night</item>
+        <item>@string/light</item>
+        <item>@string/sepia</item>
+        <item>@string/dark</item>
+        <item>@string/light_dark</item>
+        <item>@string/custom</item>
+    </string-array>
+
+    <!-- Shortcuts -->
+    <string name="refresh_shortcut">Check for updates</string>
+    <string name="action_global_search_hint">Global search…</string>
+
+    <!-- Download options -->
+    <string name="download_next_chapter">Download next chapter</string>
+    <string name="download_next_5_chapters">Download next 5 chapters</string>
+    <string name="download_next_10_chapters">Download next 10 chapters</string>
+    <string name="download_custom_chapters">Download custom</string>
+    <string name="download_all_chapters">Download all</string>
+    <string name="download_unread_chapters">Download unread</string>
+
+    <string-array name="chapters_download_options">
+        <item>@string/download_all_chapters</item>
+        <item>@string/download_unread_chapters</item>
+        <item>@string/download_custom_chapters</item>
+        <item>@string/download_next_10_chapters</item>
+        <item>@string/download_next_5_chapters</item>
+        <item>@string/download_next_chapter</item>
+    </string-array>
+
+
+    <string name="processing_data">Processing data</string>
+    <string name="update_complete">Completed Update</string>
+    <string name="update_not_found">No updates found</string>
+    <string name="download_fail_delete">Failed to delete, next download will correct</string>
+    <string name="you_not_online">You are not online</string>
+    <string name="download_chapter_updates">Download chapter updates</string>
+    <string name="update_list">Update list</string>
+    <string name="updated_extensions_list">List updated!</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="install">Install</string>
+    <string name="update">Update</string>
+    <string name="sus_scripts">These scripts seem suspicious, Confirm actions. Canceling will uninstall all</string>
+    <string name="accept">Accept</string>
+    <string name="disable">Disable</string>
+    <string name="accept_temp">Temporary</string>
+    <string name="sus_script_title">Suspicious Scripts</string>
+    <string name="action">Action</string>
+    <string name="accept_all">Accept All</string>
+    <string name="temp_all">Temp All</string>
+    <string name="disable_all">Disable All</string>
+    <string name="uninstall_all">Uninstall All</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="reload_list">Reload List</string>
+    <string name="chapters">Chapters</string>
+    <string name="results">Results</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="view">View</string>
+    <string name="advanced">Advanced</string>
+    <string name="info">Info</string>
+    <string name="backup">Backup</string>
+    <string name="loading">Loading…</string>
+    <string name="amoled">Amoled</string>
+    <string name="crashCommentPromt">Crash Report</string>
+    <string name="crashDialogText">The application has crashed. Send a report to the developers?</string>
+    <string name="columns_of_novel_listing_p">Columns of novel listing (portrait)</string>
+    <string name="columns_of_novel_listing_h">Columns of novel listing (horizontal)</string>
+    <string name="columns_zero_automatic">0 means automatic</string>
+
+    <string name="normal">Normal</string>
+    <string name="compressed">Compressed</string>
+    <string name="novel_card_type_selector_title">NovelCard Type</string>
+    <string name="novel_card_type_selector_desc">Set\'s how novel card\'s are viewed</string>
+    <string name="library_update">Updating Library</string>
+    <string name="catalogue_default_load">Default home page</string>
+    <string name="catalogue_default_load_desc">When a catalogue is selected, This is the thing it loads</string>
+    <string name="invalid_selection">Invalid Selection</string>
+    <string name="set_to">Set to:</string>
+    <string name="suggest_token">In Advanced settings, Apply a github token for the fancy view uwu</string>
+    <string name="no_empty_key">Can\'t take an empty key!</string>
+    <string name="github_token_input_desc">Enable Shosetsu to access Github with an Github token</string>
+    <string name="github_token_input_title">GitHub Oauth</string>
+    <string name="apply">Apply</string>
+    <string name="reset">Reset</string>
+    <string name="listings">Listings</string>
+    <string name="search_filters">Search</string>
+    <string name="updating">Updating</string>
+    <string name="intro_title_greet">Welcome to Shosetsu!</string>
+    <string name="intro_what_is_app">What is shosetsu?</string>
+    <string name="intro_what_is_app_desc">Shosetsu is a novel reading application, duh. Let\'s move on and read the license</string>
+    <string name="intro_perm_title">Permissions</string>
+    <string name="intro_perm_desc">Shosetsu is highly function, thus, we need ALL YOUR PERMS</string>
+    <string name="intro_happy_end">Wonderful!</string>
+    <string name="intro_happy_end_desc">That\'s it for an intro, Read well!</string>
+    <string name="text_custom_color">Text Color</string>
+    <string name="text_custom_background_color">Background Color</string>
+    <string name="custom_theme_warn">Only for custom theme</string>
+    <string name="backup_settings_option">Backup Settings?</string>
+    <string name="backup_chapters_option">Backup Chapters?</string>
+    <string name="backup_chapters_option_description">Default on, off will not save your progress</string>
+    <string name="backup_settings_option_desc">Default is off, which will not save your settings</string>
+    <string name="backup_quick_option">Quick Backup</string>
+    <string name="backup_quick_option_desc">Backups URL and simple data only. Will require network reload on restore</string>
+    <string name="accept_all_catalogue_choice_hint">Press this to confirm the catalogue for all</string>
+
+    <string name="regret">This feature have not been reintroduced yet due to time constraints :(</string>
+    <string name="installing">Installing</string>
+    <string name="toggle_bookmark">Toggle bookmark</string>
+    <string name="mark_read">Mark read</string>
+    <string name="mark_unread">Mark unread</string>
+    <string name="mark_reading">Mark reading</string>
+    <string name="delete">Delete</string>
+    <string name="pause">Pause</string>
+    <string name="start">Start</string>
+    <string name="extension_language_desc">Language of this extension</string>
+    <string name="extension_id_desc">Identification number of this extension</string>
+    <string name="extension_filename_desc">File name of this extension</string>
+    <string name="extension_name_desc">Title of this extension</string>
+    <string name="extension_image_desc">Image of this extension</string>
+    <string name="extension_settings_desc">Settings of this extension</string>
+    <string name="share">Share</string>
     <string name="browse">Browse</string>
+    <string name="more">More</string>
+    <string name="sources">Sources</string>
+    <string name="restart">Restart</string>
+    <string name="need_restart">Activity needs to restart</string>
+    <string name="never_mind">Nevermind</string>
 
     <array name="application_themes">
-		<item>@string/light</item>
-		<item>@string/amoled</item>
-	</array>
+        <item>@string/light</item>
+        <item>@string/amoled</item>
+    </array>
 
-	<array name="sus_array_actions">
-		<item>@string/accept</item>
-		<item>@string/accept_temp</item>
-		<item>@string/disable</item>
-		<item>@string/uninstall</item>
-	</array>
+    <array name="sus_array_actions">
+        <item>@string/accept</item>
+        <item>@string/accept_temp</item>
+        <item>@string/disable</item>
+        <item>@string/uninstall</item>
+    </array>
 
-	<array name="novel_fragment_names">
-		<item>@string/info</item>
-		<item>@string/chapters</item>
-	</array>
+    <array name="browse_tab_names">
+        <item>@string/sources</item>
+        <item>@string/extensions</item>
+    </array>
 
-	<array name="novel_card_types">
-		<item>@string/normal</item>
-		<item>@string/compressed</item>
-	</array>
+    <array name="novel_fragment_names">
+        <item>@string/info</item>
+        <item>@string/chapters</item>
+    </array>
+
+    <array name="novel_card_types">
+        <item>@string/normal</item>
+        <item>@string/compressed</item>
+    </array>
 </resources>
 
 

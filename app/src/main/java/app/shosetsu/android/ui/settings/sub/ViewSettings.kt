@@ -2,6 +2,7 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.util.Log
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.ShosetsuSettings.MarkingTypes
 import app.shosetsu.android.common.ext.context
@@ -74,6 +75,31 @@ class ViewSettings : SettingsSubController() {
 					android.R.layout.simple_spinner_dropdown_item,
 					resources!!.getStringArray(R.array.novel_card_types)
 			)
+		}
+		switchSettingData(4) {
+			title { "Legacy navigation" }
+			description { "Use legacy navigation" }
+			isChecked = s.navigationStyle == 1
+			var state = false
+			onChecked { cb, isChecked ->
+				if (state) {
+					state = false
+					return@onChecked
+				}
+				AlertDialog.Builder(this@ViewSettings.activity!!).apply {
+					this.setMessage(R.string.need_restart)
+					setPositiveButton(R.string.restart) { d, _ ->
+						s.navigationStyle = if (isChecked) 1 else 0
+						d.dismiss()
+						this@ViewSettings.activity?.finish()
+					}
+					setNegativeButton(R.string.never_mind) { d, _ ->
+						d.dismiss()
+						state = true
+						cb?.isChecked = !isChecked
+					}
+				}.show()
+			}
 		}
 	}
 

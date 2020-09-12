@@ -48,8 +48,8 @@ const val libraryDirectory: String = "/libraries/"
 const val sourceFolder: String = "/src/"
 const val repoFolderStruct: String = "/src/main/resources/"
 
-/** @see View.VISIBLE */
+@Deprecated("Just use View", replaceWith = ReplaceWith("VISIBLE", "import android.view.View.VISIBLE"), DeprecationLevel.WARNING)
 const val VISIBLE: Int = View.VISIBLE
 
-/** @see View.GONE */
+@Deprecated("Just use View", replaceWith = ReplaceWith("GONE", "import android.view.View.GONE"), DeprecationLevel.WARNING)
 const val GONE: Int = View.GONE

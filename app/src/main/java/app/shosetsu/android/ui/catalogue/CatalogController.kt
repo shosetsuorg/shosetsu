@@ -23,9 +23,11 @@ import app.shosetsu.android.ui.catalogue.listeners.CatalogueHitBottom
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
+import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.base.SecondDrawerController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
+import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
 import com.google.android.material.navigation.NavigationView
@@ -58,12 +60,14 @@ import org.kodein.di.generic.instance
 class CatalogController(
 		/** data bundle uwu */
 		val bundle: Bundle,
-) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle), SecondDrawerController {
+) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
+		SecondDrawerController, PushCapableController {
 	private var searchView: SearchView? = null
 
 	private var navigationView: NavigationView? = null
 	private var drawerLayout: DrawerLayout? = null
 
+	lateinit var pushController: (Controller) -> Unit
 
 	/***/
 	val viewModel: ICatalogViewModel by viewModel()
@@ -72,6 +76,10 @@ class CatalogController(
 
 	init {
 		setHasOptionsMenu(true)
+	}
+
+	override fun acceptPushing(pushController: (Controller) -> Unit) {
+		this.pushController = pushController
 	}
 
 	override fun onDestroy() {
@@ -97,12 +105,12 @@ class CatalogController(
 		super.setupFastAdapter()
 		fastAdapter.apply {
 			setOnClickListener { _, _, item, _ ->
-				router.pushController(NovelController(
+				pushController(NovelController(
 						bundleOf(
 								BUNDLE_NOVEL_ID to item.id,
 								BUNDLE_FORMATTER to bundle.getInt(BUNDLE_FORMATTER)
 						)
-				).withFadeTransaction())
+				))
 				true
 			}
 			onLongClickListener = { _, _, i, _ ->
@@ -200,7 +208,7 @@ class CatalogController(
 
 	override fun showLoading() {
 		super.showLoading()
-		if (recyclerArray.isEmpty() && binding.swipeRefreshLayout.isRefreshing == false)
+		if (recyclerArray.isEmpty() && !binding.swipeRefreshLayout.isRefreshing)
 			binding.swipeRefreshLayout.isRefreshing = true
 		else {
 			//TODO show bottom loader
