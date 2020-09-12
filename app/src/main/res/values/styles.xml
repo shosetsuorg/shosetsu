@@ -2,7 +2,6 @@
 
 	<style name="AppTheme.AppBar" parent="Theme.MaterialComponents.DayNight">
 		<item name="colorPrimary">@color/colorPrimary</item>
-		<item name="android:background">@color/colorPrimary</item>
 		<item name="android:statusBarColor">@color/colorPrimary</item>
 		<item name="tabStyle">@style/Widget.MaterialComponents.TabLayout.Colored</item>
 	</style>

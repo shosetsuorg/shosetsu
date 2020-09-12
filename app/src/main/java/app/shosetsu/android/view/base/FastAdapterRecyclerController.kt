@@ -1,0 +1,83 @@
+package app.shosetsu.android.view.base
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import androidx.viewbinding.ViewBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
+import com.mikepenz.fastadapter.items.AbstractItem
+
+/*
+ * This file is part of shosetsu.
+ *
+ * shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * shosetsu is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * shosetsu
+ * 02 / 07 / 2020
+ */
+abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<FastAdapter<ITEM>, ITEM, VB>
+		where ITEM : AbstractItem<*>, VB : ViewBinding {
+
+	/**
+	 * This contains the items
+	 */
+	open val itemAdapter: ItemAdapter<ITEM> by lazy { ItemAdapter() }
+	override var adapter: FastAdapter<ITEM>?
+		get() = fastAdapter
+		set(@Suppress("UNUSED_PARAMETER") value) {}
+
+	/**
+	 * This is the adapter
+	 */
+	open val fastAdapter: FastAdapter<ITEM> by lazy { FastAdapter.with(itemAdapter) }
+	override var recyclerArray: ArrayList<ITEM>
+		get() = ArrayList(itemAdapter.itemList.items)
+		set(@Suppress("UNUSED_PARAMETER") value) {}
+
+	constructor() : super()
+	constructor(args: Bundle) : super(args)
+
+	override fun setupRecyclerView() {
+		super.setupRecyclerView()
+		setupFastAdapter()
+	}
+
+	override fun createRecyclerAdapter(): FastAdapter<ITEM> = fastAdapter
+
+	/**
+	 * Allows child classes to manipulate the fast adapter
+	 */
+	open fun setupFastAdapter() {}
+	override fun updateUI(newList: List<ITEM>) {
+		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
+	}
+
+	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =
+			difAreContentsTheSame(oldItem, newItem)
+
+	abstract class BasicFastAdapterRecyclerController<ITEM : AbstractItem<*>> :
+			FastAdapterRecyclerController<ControllerRecyclerBinding, ITEM> {
+
+		constructor() : super()
+		constructor(args: Bundle) : super(args)
+
+		override fun bindView(inflater: LayoutInflater): ControllerRecyclerBinding =
+				ControllerRecyclerBinding.inflate(inflater).also { recyclerView = it.recyclerView }
+	}
+
+}

@@ -6,6 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="350dp"
 	android:background="?colorOnPrimary"
+	app:layout_scrollFlags="scroll|enterAlways|snap"
 	android:clickable="true"
 	android:descendantFocusability="blocksDescendants"
 	android:focusable="true"
@@ -17,7 +18,8 @@
 	app:layout_constraintEnd_toEndOf="parent"
 	app:layout_constraintStart_toStartOf="parent"
 	app:layout_gravity="bottom"
-	tools:context=".ui.reader.ChapterReader">
+	tools:context="app.shosetsu.android.ui.reader.ChapterReader">
+
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"

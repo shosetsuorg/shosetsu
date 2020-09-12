@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.INSTALL_SHORTCUT" />
 
     <application
-        android:name=".application.ShosetsuApplication"
+        android:name="app.shosetsu.android.application.ShosetsuApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -29,7 +29,7 @@
         tools:targetApi="q">
 
         <receiver
-            android:name=".backend.receivers.BootReceiver"
+            android:name="app.shosetsu.android.backend.receivers.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -38,7 +38,7 @@
         </receiver>
 
         <activity
-            android:name=".ui.splash.SplashScreen"
+            android:name="app.shosetsu.android.ui.splash.SplashScreen"
             android:exported="true"
             android:theme="@style/SplashScreen">
             <intent-filter>
@@ -60,19 +60,19 @@
         </activity>
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name="app.shosetsu.android.activity.MainActivity"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".ui.webView.WebViewApp"
+            android:name="app.shosetsu.android.ui.webView.WebViewApp"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".ui.reader.ChapterReader"
+            android:name="app.shosetsu.android.ui.reader.ChapterReader"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".ui.intro.IntroductionActivity"
+            android:name="app.shosetsu.android.ui.intro.IntroductionActivity"
             android:theme="@style/Theme.Intro" />
     </application>
 

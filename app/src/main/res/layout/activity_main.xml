@@ -6,22 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activity.MainActivity">
-
+    tools:context="app.shosetsu.android.activity.MainActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
-            android:id="@+id/controller_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+        <app.shosetsu.android.view.widget.ElevatedAppBarLayout
+            android:id="@+id/elevatedAppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -29,11 +22,23 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
                 android:theme="?attr/actionBarTheme"
                 app:layout_scrollFlags="scroll|enterAlways|snap" />
 
-        </com.google.android.material.appbar.AppBarLayout>
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+        </app.shosetsu.android.view.widget.ElevatedAppBarLayout>
+
+        <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+            android:id="@+id/controller_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/efab"

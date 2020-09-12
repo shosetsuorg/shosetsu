@@ -5,7 +5,7 @@
     android:id="@+id/novel_item_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="4dp"
     app:layout_constraintDimensionRatio="2:3"
     app:strokeColor="@color/selected_blue">
 
@@ -38,7 +38,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:gravity="center_horizontal"
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,28 +46,29 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
+            android:gravity="center_horizontal"
             android:paddingStart="2dp"
             android:paddingEnd="2dp"
             android:textColor="@color/white_trans"
+            android:textIsSelectable="false"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="This is a novel"
-            tools:visibility="visible"
-            android:textIsSelectable="false" />
+            tools:visibility="visible" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/novel_item_left_to_read"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="top"
-            android:textAlignment="center"
             android:gravity="start"
+            android:textAlignment="center"
             android:visibility="gone"
-            tools:visibility="visible"
+            tools:ignore="RtlCompat"
             tools:text="30"
-            tools:ignore="RtlCompat" />
+            tools:visibility="visible" />
 
     </FrameLayout>
 

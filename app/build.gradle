@@ -32,6 +32,12 @@ android {
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 		multiDexEnabled true
 	}
+
+	buildFeatures{
+		viewBinding true
+		dataBinding true
+	}
+
 	buildTypes {
 		release {
 			minifyEnabled true
