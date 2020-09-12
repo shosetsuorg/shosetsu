@@ -1,11 +1,11 @@
 {
-  "latestVersion": "919",
+  "latestVersion": "925",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Moved package directory completely to app.shosetsu.android",
-    "- Increased padding for text view",
-    "- Clean white UI",
-    "- LibraryController.kt novels now have a very particular padding and margin",
-    "- Now using ViewBinding to attach views"
+    "- Fixed second open not working",
+    "- Added bottom navigation view as default",
+    "- Added legacy navigation option",
+    "- Created more fluid animations between different UIs",
+    "- :D"
   ]
 }
