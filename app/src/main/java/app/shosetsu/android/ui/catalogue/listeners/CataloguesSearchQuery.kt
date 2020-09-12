@@ -5,7 +5,7 @@ import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.ext.withFadeTransaction
 import app.shosetsu.android.ui.search.SearchController
-import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.Controller
 
 /*
  * This file is part of Shosetsu.
@@ -30,9 +30,9 @@ import com.bluelinelabs.conductor.Router
  *
  * @author github.com/doomsdayrs
  */
-class CataloguesSearchQuery(private val router: Router) : SearchView.OnQueryTextListener {
+class CataloguesSearchQuery(private val pushController: (Controller) -> Unit) : SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(s: String): Boolean = true.also {
-		router.pushController(SearchController(bundleOf(BUNDLE_QUERY to s)).withFadeTransaction())
+		pushController(SearchController(bundleOf(BUNDLE_QUERY to s)))
 	}
 
 	override fun onQueryTextChange(s: String): Boolean = false

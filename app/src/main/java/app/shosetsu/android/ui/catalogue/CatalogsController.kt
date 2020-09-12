@@ -56,7 +56,7 @@ class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>()
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_catalogues, menu)
 		(menu.findItem(R.id.catalogues_search).actionView as SearchView)
-				.setOnQueryTextListener(CataloguesSearchQuery(router))
+				.setOnQueryTextListener(CataloguesSearchQuery(pushController))
 	}
 
 	override fun acceptPushing(pushController: (Controller) -> Unit) {

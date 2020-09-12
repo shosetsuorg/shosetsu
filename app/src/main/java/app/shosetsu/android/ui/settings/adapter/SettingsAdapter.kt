@@ -75,6 +75,7 @@ class SettingsAdapter(
 					READER -> itemView.getString(R.string.reader)
 					UPDATE -> itemView.getString(R.string.update)
 				}
+
 				libraryCardTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
 						when (type) {
 							READER -> R.drawable.ic_book_24dp

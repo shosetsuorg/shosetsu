@@ -10,8 +10,10 @@ import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.search.adapters.SearchRowAdapter
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
+import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
 
@@ -30,9 +32,7 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
-
 
 /**
  * Shosetsu
@@ -40,10 +40,12 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * @author github.com/doomsdayrs
  */
-class SearchController(bundle: Bundle) : BasicFastAdapterRecyclerController<SearchRowUI>(bundle) {
+class SearchController(bundle: Bundle)
+	: BasicFastAdapterRecyclerController<SearchRowUI>(bundle), PushCapableController {
 	override val viewTitleRes: Int = R.string.search
 	internal val viewModel: ISearchViewModel by viewModel()
 	private var searchView: SearchView? = null
+	private lateinit var pushController: (Controller) -> Unit
 
 	init {
 		setHasOptionsMenu(true)
@@ -88,6 +90,10 @@ class SearchController(bundle: Bundle) : BasicFastAdapterRecyclerController<Sear
 			newText?.let { viewModel.setQuery(it) }
 			return true
 		}
+	}
+
+	override fun acceptPushing(pushController: (Controller) -> Unit) {
+		this.pushController = pushController
 	}
 
 }
