@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.ui.reader.ChapterReader
-import app.shosetsu.android.ui.reader.viewHolders.NewMarkdownReader
-import app.shosetsu.android.ui.reader.viewHolders.NewReader
-import app.shosetsu.android.ui.reader.viewHolders.NewTextReader
+import app.shosetsu.android.ui.reader.types.model.MarkdownReader
+import app.shosetsu.android.ui.reader.types.model.StringReader
+import app.shosetsu.android.ui.reader.types.base.ReaderType
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -34,31 +34,30 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 @Suppress("unused")
-internal class ChapterViewTypeAdapter(private val chapterReader: ChapterReader) : RecyclerView.Adapter<NewReader>() {
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewReader {
+internal class ChapterViewTypeAdapter(private val chapterReader: ChapterReader) : RecyclerView.Adapter<ReaderType<*>>() {
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReaderType<*> {
 		val view: View
-		val newReader: NewReader
+		val newReader: ReaderType<*>
 		app.shosetsu.android.common.ext.launchUI {
 
 		}
 		when (viewType) {
 			0 -> {
 				view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_reader_text_view, parent, false)
-				newReader = NewTextReader(view)
+				newReader = StringReader(view)
 			}
 			1 -> {
 				view = LayoutInflater.from(parent.context).inflate(R.layout.chapter_reader_mark_down, parent, false)
-				newReader = NewMarkdownReader(view)
+				newReader = MarkdownReader(view)
 			}
 			else -> throw IllegalStateException("Unexpected value: $viewType")
 		}
 		return newReader
 	}
 
-	override fun onBindViewHolder(holder: NewReader, position: Int) {
+	override fun onBindViewHolder(holder: ReaderType<*>, position: Int) {
 		Log.i("LoadingReader", position.toString())
 		//newChapterReader.currentView.currentReader = holder;
-		holder.bind()
 		// newChapterReader.currentView.setUpReader();
 	}
 

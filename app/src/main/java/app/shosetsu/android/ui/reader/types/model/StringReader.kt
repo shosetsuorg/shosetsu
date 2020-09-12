@@ -1,13 +1,20 @@
-package app.shosetsu.android.ui.reader.viewHolders
+package app.shosetsu.android.ui.reader.types.model
 
+import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import app.shosetsu.android.common.ShosetsuSettings
+import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.ui.reader.types.base.ReaderType
+import app.shosetsu.android.view.setOnDoubleClickListener
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -35,15 +42,17 @@ import org.kodein.di.generic.instance
  * shosetsu
  * 13 / 12 / 2019
  */
-class NewTextReader(itemView: View) : NewReader(itemView), KodeinAware {
+class StringReader(
+		itemView: View
+) : ReaderType(itemView), KodeinAware {
 	override val kodein: Kodein by kodein(itemView.context)
 	private val settings by instance<ShosetsuSettings>()
 
 	/**
 	 * Main way of reading in this view
 	 */
-	val textView: TextView = itemView.findViewById(R.id.textView)
-	val scrollView: NestedScrollView = itemView.findViewById(R.id.scrollView)
+	private val textView: TextView = itemView.findViewById(R.id.textView)
+	private val scrollView: NestedScrollView = itemView.findViewById(R.id.scrollView)
 
 	private val middleBox: View = itemView.findViewById(R.id.reader_middle_box)
 	private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
@@ -53,15 +62,31 @@ class NewTextReader(itemView: View) : NewReader(itemView), KodeinAware {
 	private val errorMessage: TextView = itemView.findViewById(R.id.error_message)
 	private val errorButton: Button = itemView.findViewById(R.id.error_button)
 
-	var chapterID: Int = -1
 	private var unformattedText = ""
 
-	fun showProgress() {
+
+	init {
+		scrollView.apply {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
+					Log.d(logID(), "Scrolled")
+					scrollHitBottom()
+				}
+			} else {
+				viewTreeObserver.addOnScrollChangedListener {
+					Log.d(logID(), "Scrolled")
+					scrollHitBottom()
+				}
+			}
+		}
+	}
+
+	override fun showProgress() {
 		middleBox.visibility = VISIBLE
 		progressBar.visibility = VISIBLE
 	}
 
-	fun hideProgress() {
+	override fun hideProgress() {
 		middleBox.visibility = GONE
 		progressBar.visibility = GONE
 	}
@@ -79,19 +104,16 @@ class NewTextReader(itemView: View) : NewReader(itemView), KodeinAware {
 		}
 	}
 
-
-	override fun setText(text: String?) {
-		unformattedText = text ?: "UNKNOWN"
-	}
-
-	override fun bind() {
+	fun bind(
+			paragraphSpacing: Int = settings.readerParagraphSpacing,
+			paragraphIndent: Int = settings.readerIndentSize
+	) {
 		val replaceSpacing = StringBuilder("\n")
-		for (x in 0 until settings.readerParagraphSpacing)
+		for (x in 0 until paragraphSpacing)
 			replaceSpacing.append("\n")
-		for (x in 0 until settings.readerIndentSize)
+		for (x in 0 until paragraphIndent)
 			replaceSpacing.append("\t")
 		textView.textSize = settings.readerTextSize
-
 
 		val r = settings.readerTheme.toLong()
 		val b = settings.getReaderBackgroundColor(r)
@@ -100,5 +122,65 @@ class NewTextReader(itemView: View) : NewReader(itemView), KodeinAware {
 		textView.setTextColor(t)
 		textView.setBackgroundColor(b)
 		textView.text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
+	}
+
+	override fun setData(data: String) {
+		unformattedText = data
+		bind()
+	}
+
+	override fun setTextSize(textSize: Float) {
+		textView.textSize = textSize
+	}
+
+	override fun setTextPadding(padding: Int) {
+		textView.setPadding(padding)
+	}
+
+	override fun setParagraphSpacing(spacing: Int) {
+		bind(spacing)
+	}
+
+	override fun setParagraphIndent(indent: Int) {
+		bind(paragraphIndent = indent)
+	}
+
+	override fun setProgress(progress: Int) {
+		scrollView.scrollTo(0, progress)
+	}
+
+	override fun setOnFocusListener(focus: () -> Unit) {
+		textView.setOnDoubleClickListener { focus() }
+	}
+
+	override fun setTextColor(int: Int) {
+		textView.setTextColor(int)
+	}
+
+	override fun setBackgroundColor(int: Int) {
+		textView.setBackgroundColor(int)
+	}
+
+	/**
+	 * What to do when scroll hits bottom
+	 */
+	private fun scrollHitBottom() {
+		val view = scrollView
+
+		val total = view.getChildAt(0).height - view.height
+		val yPosition = view.scrollY
+		if (yPosition / total.toFloat() < .99) {
+			if (yPosition % 5 == 0) {
+				Log.i(logID(), "Scrolling")
+				// Mark as reading if on scroll
+				if (chapterReader.shosetsuSettings.readerMarkingType == ShosetsuSettings.MarkingTypes.ONSCROLL)
+					chapter.readingStatus = ReadingStatus.READING
+				chapterReader.viewModel.updateChapter(chapter, readingPosition = yPosition)
+			}
+		} else {
+			Log.i(logID(), "Hit the bottom")
+			// Hit bottom
+			chapterReader.viewModel.updateChapter(chapter, readingStatus = ReadingStatus.READ)
+		}
 	}
 }

@@ -1,20 +1,14 @@
 package app.shosetsu.android.ui.reader.adapters
 
-import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.ShosetsuSettings.MarkingTypes
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.ChapterReader
-import app.shosetsu.android.ui.reader.viewHolders.NewTextReader
-import app.shosetsu.android.view.setOnDoubleClickListener
-import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
+import app.shosetsu.android.ui.reader.types.base.ReaderType
+import app.shosetsu.android.ui.reader.types.model.StringReader
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -43,8 +37,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class ChapterReaderAdapter(
 		private val chapterReader: ChapterReader,
-) : RecyclerView.Adapter<NewTextReader>() {
-	var textReaders: ArrayList<NewTextReader> = ArrayList<NewTextReader>()
+) : RecyclerView.Adapter<ReaderType>() {
+	var textReaders: ArrayList<ReaderType> = ArrayList()
 
 	init {
 		setHasStableIds(true)
@@ -52,14 +46,9 @@ class ChapterReaderAdapter(
 
 	private fun chapters() = chapterReader.chapters
 
-	override fun onViewDetachedFromWindow(holder: NewTextReader) {
-		Log.d(logID(), "Detaching ${holder.chapterID}")
-		super.onViewDetachedFromWindow(holder)
-	}
-
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewTextReader {
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReaderType {
 		Log.d(logID(), "Creating new view holder")
-		val r = NewTextReader(LayoutInflater.from(parent.context).inflate(
+		val r = StringReader(LayoutInflater.from(parent.context).inflate(
 				R.layout.chapter_reader_text_view,
 				parent,
 				false
@@ -70,10 +59,10 @@ class ChapterReaderAdapter(
 
 	override fun getItemCount(): Int = chapters().size
 
-	override fun onBindViewHolder(holder: NewTextReader, position: Int) {
+	override fun onBindViewHolder(holder: ReaderType, position: Int) {
 		val chapter = chapters()[position]
-		Log.d(logID(), "Binding $position ${chapter.link}")
-		holder.chapterID = chapter.id
+		holder.attachData(chapter, chapterReader)
+
 		chapterReader.viewModel.getChapterPassage(chapter).observe(chapterReader) {
 			when (it) {
 				is HResult.Loading -> {
@@ -85,80 +74,30 @@ class ChapterReaderAdapter(
 				}
 				is HResult.Error -> {
 					Log.d(logID(), "Showing error")
-					holder.setError(it.message, "Retry") {
-						TODO("Figure out how to restart the liveData")
-					}
+					//	holder.setError(it.message, "Retry") {
+					//		TODO("Figure out how to restart the liveData")
+					//		}
 				}
 				is HResult.Success -> {
 					Log.d(logID(), "Successfully loaded :D")
 					holder.hideProgress()
-					holder.setText(it.data)
-					holder.bind()
-					holder.textView.post {
-						Log.d(logID(), "Reading position ${chapter.readingPosition}")
-						holder.scrollView.scrollTo(0, chapter.readingPosition)
+					holder.setData(it.data)
+					holder.itemView.post {
+						holder.setProgress(chapter.readingPosition)
 					}
 				}
 			}
 		}
 
 
-		holder.textView.apply {
-			textSize = chapterReader.shosetsuSettings.readerTextSize
+		holder.setTextSize(chapterReader.shosetsuSettings.readerTextSize)
 
-			setOnDoubleClickListener {
-				chapterReader.animateBottom()
-				chapterReader.animateToolbar()
-			}
+		holder.setOnFocusListener {
+			chapterReader.animateBottom()
+			chapterReader.animateToolbar()
 		}
 
-		// Sets the scroll listener
-		holder.scrollView.apply {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
-					Log.d(logID(), "Scrolled")
-					scrollHitBottom(holder, chapter)
-				}
-			} else {
-				viewTreeObserver.addOnScrollChangedListener {
-					Log.d(logID(), "Scrolled")
-					scrollHitBottom(holder, chapter)
-				}
-			}
-		}
-	}
-
-	override fun onViewAttachedToWindow(holder: NewTextReader) {
-		super.onViewAttachedToWindow(holder)
-		Log.i(logID(), "Attaching ${holder.chapterID}")
-	}
-
-	override fun onViewRecycled(holder: NewTextReader) {
-		super.onViewRecycled(holder)
-		Log.i(logID(), "Recycling ${holder.chapterID}")
 	}
 
 	override fun getItemId(position: Int): Long = chapterReader.chapters[position].id.toLong()
-
-	/**
-	 * What to do when scroll hits bottom
-	 */
-	private fun scrollHitBottom(reader: NewTextReader, cUI: ReaderChapterUI) {
-		val view = reader.scrollView
-		val total = view.getChildAt(0).height - view.height
-		val yPosition = view.scrollY
-		if (yPosition / total.toFloat() < .99) {
-			if (yPosition % 5 == 0) {
-				Log.i(logID(), "Scrolling")
-				// Mark as reading if on scroll
-				if (chapterReader.shosetsuSettings.readerMarkingType == MarkingTypes.ONSCROLL)
-					cUI.readingStatus = ReadingStatus.READING
-				chapterReader.viewModel.updateChapter(cUI, readingPosition = yPosition)
-			}
-		} else {
-			Log.i(logID(), "Hit the bottom")
-			// Hit bottom
-			chapterReader.viewModel.updateChapter(cUI, readingStatus = ReadingStatus.READ)
-		}
-	}
 }

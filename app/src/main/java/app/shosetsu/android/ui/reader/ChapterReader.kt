@@ -63,8 +63,6 @@ import org.kodein.di.generic.instance
 /**
  * shosetsu
  * 13 / 12 / 2019
- *
- * @author github.com/doomsdayrs
  */
 class ChapterReader
 	: AppCompatActivity(R.layout.activity_chapter_reader), KodeinAware {
@@ -205,43 +203,43 @@ class ChapterReader
 		shosetsuSettings.readerTextSizeLive.observe(this) { size ->
 			// Sets current view
 			chapterReaderAdapter.textReaders.find {
-				it.chapterID == viewModel.currentChapterID
+				it.chapter.id == viewModel.currentChapterID
 			}?.let {
-				it.textView.textSize = size
+				it.setTextSize(size)
 			}
 			// Sets other views down
 			chapterReaderAdapter.textReaders.filter {
-				it.chapterID != viewModel.currentChapterID
+				it.chapter.id != viewModel.currentChapterID
 			}.forEach {
-				it.textView.textSize = size
-			}
-		}
-
-		shosetsuSettings.readerParagraphSpacingLive.observe(this) {
-			// Sets current view
-			chapterReaderAdapter.textReaders.find {
-				it.chapterID == viewModel.currentChapterID
-			}?.bind()
-
-			// Sets other views down
-			chapterReaderAdapter.textReaders.filter {
-				it.chapterID != viewModel.currentChapterID
-			}.forEach {
-				it.bind()
+				it.setTextSize(size)
 			}
 		}
 
-		shosetsuSettings.readerIndentSizeLive.observe(this) {
+		shosetsuSettings.readerParagraphSpacingLive.observe(this) { pSpacing: Int ->
 			// Sets current view
 			chapterReaderAdapter.textReaders.find {
-				it.chapterID == viewModel.currentChapterID
-			}?.bind()
+				it.chapter.id == viewModel.currentChapterID
+			}?.setParagraphSpacing(pSpacing)
 
 			// Sets other views down
 			chapterReaderAdapter.textReaders.filter {
-				it.chapterID != viewModel.currentChapterID
+				it.chapter.id != viewModel.currentChapterID
 			}.forEach {
-				it.bind()
+				it.setParagraphSpacing(pSpacing)
+			}
+		}
+
+		shosetsuSettings.readerIndentSizeLive.observe(this) { indentSize: Int ->
+			// Sets current view
+			chapterReaderAdapter.textReaders.find {
+				it.chapter.id == viewModel.currentChapterID
+			}?.setParagraphIndent(indentSize)
+
+			// Sets other views down
+			chapterReaderAdapter.textReaders.filter {
+				it.chapter.id != viewModel.currentChapterID
+			}.forEach {
+				it.setParagraphIndent(indentSize)
 			}
 		}
 
@@ -251,18 +249,18 @@ class ChapterReader
 
 			// Sets current view
 			chapterReaderAdapter.textReaders.find {
-				it.chapterID == viewModel.currentChapterID
+				it.chapter.id == viewModel.currentChapterID
 			}?.let {
-				it.textView.setTextColor(t)
-				it.textView.setBackgroundColor(b)
+				it.setTextColor(t)
+				it.setBackgroundColor(b)
 			}
 
 			// Sets other views down
 			chapterReaderAdapter.textReaders.filter {
-				it.chapterID != viewModel.currentChapterID
+				it.chapter.id != viewModel.currentChapterID
 			}.forEach {
-				it.textView.setTextColor(t)
-				it.textView.setBackgroundColor(b)
+				it.setTextColor(t)
+				it.setBackgroundColor(b)
 			}
 		}
 	}
