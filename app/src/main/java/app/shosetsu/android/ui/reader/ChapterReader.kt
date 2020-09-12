@@ -1,6 +1,8 @@
 package app.shosetsu.android.ui.reader
 
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -136,6 +138,10 @@ class ChapterReader
 
 	private val colorFastAdapter: FastAdapter<ShosetsuSettings.ColorChoice> by lazy {
 		FastAdapter.with(colorItemAdapter)
+	}
+
+	override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+		return super.onCreateView(name, context, attrs)
 	}
 
 	/** On Create */
