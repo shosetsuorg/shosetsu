@@ -235,5 +235,5 @@ class CatalogController(
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerCatalogueBinding =
-			ControllerCatalogueBinding.inflate(inflater)
+			ControllerCatalogueBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 }
