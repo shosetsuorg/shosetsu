@@ -1,9 +1,9 @@
 {
-  "latestVersion": "928",
+  "latestVersion": "930",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- New Empty UI notification :D",
-    "- Fixed some stuff",
-    "- ExtensionUI.kt now properly resets image"
+    "- Changed some ui colors",
+    "- Slowed down some animations",
+    "- Removed some headers"
   ]
 }
