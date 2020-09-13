@@ -3,12 +3,10 @@ package app.shosetsu.android.ui.novel.pages
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.ImageView
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import app.shosetsu.android.common.ext.getString
-import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.common.ext.withFadeTransaction
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.base.FABController
@@ -22,8 +20,6 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBindin
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import app.shosetsu.android.common.dto.HResult.Empty as HEmpty
 import app.shosetsu.android.common.dto.HResult.Error as HError
 import app.shosetsu.android.common.dto.HResult.Loading as HLoading
@@ -191,16 +187,14 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 			}
 
 			// Loads the image
-			if (novelUI.imageURL.isNotEmpty()) {
-				Picasso.get().load(novelUI.imageURL).into(binding.novelImage, object : Callback {
-					override fun onSuccess() {
-						Picasso.get().load(novelUI.imageURL).into(binding.novelImageBackground)
-					}
-
-					override fun onError(e: Exception?) {
-					}
-				})
+			listOf(binding.novelImage!!, binding.novelImageBackground!!).forEach { iV: ImageView ->
+				if (novelUI.imageURL.isNotEmpty()) {
+					picasso(novelUI.imageURL, iV)
+				} else {
+					iV.setImageResource(R.drawable.ic_broken_image_24dp)
+				}
 			}
+
 			fab?.let {
 				hideFAB(it)
 				setFABIcon(it)

@@ -2,8 +2,10 @@ package app.shosetsu.android.viewmodel.model.novel
 
 import androidx.lifecycle.*
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.loading
+import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.wait
 import app.shosetsu.android.domain.usecases.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
@@ -12,6 +14,7 @@ import app.shosetsu.android.domain.usecases.load.LoadNovelUIUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelInfoViewModel
+import app.shosetsu.lib.Novel
 import kotlinx.coroutines.Dispatchers
 
 /*
@@ -46,31 +49,55 @@ class NovelInfoViewModel(
 		private val shareUseCase: ShareUseCase,
 ) : INovelInfoViewModel() {
 	override val liveData: LiveData<HResult<NovelUI>> by lazy {
-		novelID.switchMap {
+		novelIDLive.switchMap {
 			liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
-				emit(loading())
+				emit(successResult(NovelUI(
+						-1,
+						"",
+						-1,
+						false,
+						-1,
+						"",
+						"",
+						"",
+						true,
+						"",
+						arrayOf(),
+						arrayOf(),
+						arrayOf(),
+						arrayOf(),
+						Novel.Status.UNKNOWN
+				)))
+				wait(100)
 				emitSource(loadNovelUIUseCase(it))
 			}
 		}
 	}
 
-	private val novelID by lazy { MutableLiveData<Int>() }
+	private val novelIDLive by lazy { MutableLiveData<Int>() }
 
 	private var novelIDValue: Int = -1
 
 	override val formatterName: LiveData<HResult<String>> by lazy {
-		novelID.switchMap {
+		novelIDLive.switchMap {
 			liveData<HResult<String>>(viewModelScope.coroutineContext + Dispatchers.IO) {
+				emit(successResult(""))
 				getFormatterNameUseCase(it)
 			}
 		}
 	}
 
 	override fun setNovelID(novelID: Int) {
-		if (liveData.value !is HResult.Success) {
-			this.novelID.postValue(novelID)
-			novelIDValue = novelID
+		when {
+			novelIDValue == -1 -> logI("Setting NovelID")
+			novelIDValue != novelID -> logI("NovelID not equal, resetting")
+			novelIDValue == novelID -> {
+				logI("NovelID equal, ignoring")
+				return
+			}
 		}
+		this.novelIDLive.postValue(novelID)
+		novelIDValue = novelID
 	}
 
 	override fun toggleBookmark(novelUI: NovelUI) {
@@ -80,7 +107,6 @@ class NovelInfoViewModel(
 			))
 		}
 	}
-
 
 	override fun openBrowser(it: NovelUI) {
 		launchIO {

@@ -10,6 +10,7 @@ import app.shosetsu.android.backend.database.DBHelper.Columns.*
 import app.shosetsu.android.backend.database.DBHelper.Tables.*
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.deserializeString
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
@@ -219,7 +220,7 @@ class DBHelper(context: Context) :
 			)
 		}
 
-		app.shosetsu.android.common.ext.launchIO {
+		launchIO {
 			try {
 				novelDAO.insertAllIgnore(novels)
 				chapterDAO.insertAllIgnore(chapters)

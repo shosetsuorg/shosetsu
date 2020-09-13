@@ -3,12 +3,12 @@ package app.shosetsu.android.view.viewholders
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.GetImageURL
 import app.shosetsu.android.view.uimodels.base.GetTitle
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
-import com.squareup.picasso.Picasso
 
 /*
  * This file is part of shosetsu.
@@ -41,9 +41,7 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 	override fun bindView(item: ITEM, payloads: List<Any>) {
 		title.text = item.getDataTitle()
 		val imageURL = item.getDataImageURL()
-		if (imageURL.isNotEmpty()) Picasso.get()
-				.load(imageURL)
-				.into(imageView)
+		if (imageURL.isNotEmpty()) picasso(imageURL, imageView)
 		else {
 			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
 			imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE

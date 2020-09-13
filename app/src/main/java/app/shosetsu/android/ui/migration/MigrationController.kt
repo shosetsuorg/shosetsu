@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.context
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.base.ViewedController
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Novel
@@ -139,9 +140,7 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 			val form: Formatter? = null
 			holder.title.text = form?.name
 			if (form?.imageURL?.isNotEmpty()!!)
-				Picasso.get()
-						.load(form.imageURL)
-						.into(holder.imageView)
+				picasso(form.imageURL, holder.imageView)
 
 			holder.id = form.formatterID
 			holder.itemView.setOnClickListener {

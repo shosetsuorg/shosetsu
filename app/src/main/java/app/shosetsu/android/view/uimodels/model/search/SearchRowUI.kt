@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
@@ -63,7 +64,7 @@ data class SearchRowUI(
 			title.text = item.name
 			recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
 			recyclerView.setHasFixedSize(false)
-			if (item.imageURL.isNotEmpty()) Picasso.get().load(item.imageURL).into(imageView)
+			if (item.imageURL.isNotEmpty()) picasso(item.imageURL, imageView)
 		}
 
 		override fun unbindView(item: SearchRowUI) {

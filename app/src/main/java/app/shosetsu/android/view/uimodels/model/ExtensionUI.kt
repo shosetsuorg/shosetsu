@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.utils.FormatterUtils
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.ExtensionEntity
@@ -97,7 +98,7 @@ data class ExtensionUI(
 			hash.text = item.md5
 			language.text = item.lang
 
-			if (!item.imageURL.isNullOrEmpty()) Picasso.get().load(item.imageURL).into(imageView)
+			if (!item.imageURL.isNullOrEmpty()) picasso(item.imageURL!!, imageView)
 		}
 
 		override fun unbindView(item: ExtensionUI) {

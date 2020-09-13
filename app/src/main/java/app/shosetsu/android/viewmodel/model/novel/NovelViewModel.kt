@@ -1,10 +1,12 @@
 package app.shosetsu.android.viewmodel.model.novel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
@@ -38,9 +40,24 @@ class NovelViewModel(
 		private var isOnlineUseCase: IsOnlineUseCase,
 ) : INovelViewModel() {
 	private var novelIDValue: Int = -1
+	private val novelIDLive: MutableLiveData<Int> by lazy {
+		MutableLiveData(novelIDValue)
+	}
 
 	override fun setNovelID(novelID: Int) {
-		if (novelIDValue == -1) novelIDValue = novelID
+		when {
+			novelIDValue == -1 -> {
+				logI("ID not present, setting")
+			}
+			novelIDValue != novelID -> {
+				logI("IDs not the same, resetting")
+			}
+			novelIDValue == novelID -> {
+				logI("IDs the same, ignoring")
+			}
+		}
+		novelIDValue = novelID
+		novelIDLive.postValue(novelID)
 	}
 
 	override fun refresh(): LiveData<HResult<Any>> =

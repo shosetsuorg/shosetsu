@@ -1,8 +1,6 @@
 package app.shosetsu.android.viewmodel.model.novel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
@@ -10,6 +8,7 @@ import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.OpenInWebviewUseCase
@@ -51,10 +50,25 @@ class NovelChaptersViewModel(
 		private val settings: ShosetsuSettings,
 ) : INovelChaptersViewModel() {
 	private var nID: Int = -1
+	private val novelIDLive: MutableLiveData<Int> by lazy {
+		MutableLiveData(nID)
+	}
+
+	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {
+		novelIDLive.switchMap { getChapterUIsUseCase(it) }
+	}
 
 	override fun setNovelID(novelID: Int) {
-		if (nID == -1)
-			nID = novelID
+		when {
+			nID == -1 -> logI("Setting novelID as $novelID")
+			nID != novelID -> logI("Novel ids are not the same, resetting view")
+			nID == novelID -> {
+				logI("Novel ids are the same, ignoring")
+				return
+			}
+		}
+		nID = novelID
+		novelIDLive.postValue(nID)
 	}
 
 	override fun download(vararg chapterUI: ChapterUI) {
@@ -124,9 +138,5 @@ class NovelChaptersViewModel(
 				deleteChapterPassageUseCase(it)
 			}
 		}
-	}
-
-	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {
-		getChapterUIsUseCase(nID)
 	}
 }

@@ -1,6 +1,6 @@
 package app.shosetsu.android.common.ext
 
-import android.util.Log
+import android.util.Log.*
 import app.shosetsu.android.common.dto.HResult
 
 /*
@@ -24,10 +24,26 @@ import app.shosetsu.android.common.dto.HResult
 
 inline fun <reified T : Any> T.logError(error: () -> HResult.Error) {
 	error().let { (k, m, e) ->
-		Log.e(logID(), "Error Result:\t$k by $e\tmessage:\n$m")
+		e(logID(), "Error Result:\t$k by $e\tmessage:\n$m")
 		if (e != null) {
-			Log.e(logID(), "\nStacktrace${e.stackTrace.contentToString()}")
-			Log.e(logID(), "\nStacktrace${e.cause}")
+			e(logID(), "\nStacktrace${e.stackTrace.contentToString()}")
+			e(logID(), "\nStacktrace${e.cause}")
 		}
 	}
 }
+
+inline fun <reified T> T.inform(message: String?, t: Throwable? = null) = logI(message, t)
+
+inline fun <reified T> T.logI(message: String?, t: Throwable? = null) = i(T::class.java.simpleName, message, t)
+
+inline fun <reified T> T.logD(message: String?, t: Throwable? = null) = d(T::class.java.simpleName, message, t)
+
+inline fun <reified T> T.logE(message: String?, t: Throwable? = null) = e(T::class.java.simpleName, message, t)
+
+inline fun <reified T> T.warn(message: String?, t: Throwable? = null) = logW(message, t)
+
+inline fun <reified T> T.logW(message: String?, t: Throwable? = null) = w(T::class.java.simpleName, message, t)
+
+inline fun <reified T> T.logV(message: String?, t: Throwable? = null) = v(T::class.java.simpleName, message, t)
+
+inline fun <reified T> T.logWTF(message: String?, t: Throwable? = null) = wtf(T::class.java.simpleName, message, t)

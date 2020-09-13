@@ -5,6 +5,7 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.load.LoadCatalogueListingDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadCatalogueQueryDataUseCase
@@ -67,23 +68,39 @@ class CatalogViewModel(
 		MutableLiveData<HResult<String>>(loading())
 	}
 
-	override fun setFormatterID(fID: Int) {
-		launchIO {
-			if (formatter == null) {
-				when (val v = getFormatterUseCase(fID)) {
-					is HResult.Success -> {
-						formatter = v.data
 
-						extensionName.postValue(successResult(v.data.name))
-						hasSearchLive.postValue(successResult(v.data.hasSearch))
-						filterItemsLive.postValue(successResult(v.data.searchFiltersModel.toList()))
-					}
-					is HResult.Loading -> extensionName.postValue(v)
-					is HResult.Error -> extensionName.postValue(v)
-					is HResult.Empty -> extensionName.postValue(v)
+	private fun setFID(fID: Int): Job = launchIO {
+		if (formatter == null) {
+			this@CatalogViewModel.logI("Loading formatter")
+			when (val v = getFormatterUseCase(fID)) {
+				is HResult.Success -> {
+					formatter = v.data
+
+					extensionName.postValue(successResult(v.data.name))
+					hasSearchLive.postValue(successResult(v.data.hasSearch))
+					filterItemsLive.postValue(successResult(v.data.searchFiltersModel.toList()))
 				}
+				is HResult.Loading -> extensionName.postValue(v)
+				is HResult.Error -> extensionName.postValue(v)
+				is HResult.Empty -> extensionName.postValue(v)
 			}
-		}
+		} else if (formatter!!.formatterID != fID) {
+			this@CatalogViewModel.logI("Resetting formatter")
+			formatter = null
+			listingItems.clear()
+			filterData.clear()
+			query = ""
+			listingItemsLive.postValue(successResult(arrayListOf()))
+			filterItemsLive.postValue(successResult(arrayListOf()))
+			hasSearchLive.postValue(successResult(false))
+			hasSearchLive.postValue(loading())
+			extensionName.postValue(loading())
+			setFID(fID).join()
+		} else this@CatalogViewModel.logI("FID are the same, ignoring")
+	}
+
+	override fun setFormatterID(fID: Int) {
+		setFID(fID)
 	}
 
 	/**

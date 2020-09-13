@@ -112,7 +112,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		}
 
 		// OLD DB TO NEW
-		DBHelper(this@ShosetsuApplication).writableDatabase
+		DBHelper(this@ShosetsuApplication).writableDatabase.close()
 	}
 
 	private fun setupACRA() {

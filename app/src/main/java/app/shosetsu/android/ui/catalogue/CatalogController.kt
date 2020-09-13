@@ -223,8 +223,10 @@ class CatalogController(
 			when (it) {
 				is HResult.Success -> {
 					setViewTitle(it.data)
-					if (recyclerArray.isEmpty())
-						viewModel.resetView()
+					if (recyclerArray.isEmpty()) viewModel.resetView()
+				}
+				is HResult.Loading -> {
+					setViewTitle(getString(R.string.loading))
 				}
 				else -> {
 				}
