@@ -2,4 +2,6 @@
 <resources>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_margin">56dp</dimen>
+
+    <dimen name="app_bar_layout_elevation">4dp</dimen>
 </resources>

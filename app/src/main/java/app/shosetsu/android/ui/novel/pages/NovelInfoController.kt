@@ -57,6 +57,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 	override fun bindView(inflater: LayoutInflater): ControllerNovelInfoBinding = inflate(inflater)
 
 	val viewModel: INovelInfoViewModel by viewModel()
+	override val viewTitle: String = ""
 
 	private var novelUI: NovelUI? = null
 
@@ -156,7 +157,6 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 	private fun setNovelData() {
 		novelUI?.let { novelUI ->
 			// Handle title
-			this.setViewTitle(novelUI.title)
 			binding.novelTitle?.text = novelUI.title
 
 			// Handle authors

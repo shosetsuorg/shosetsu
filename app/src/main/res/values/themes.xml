@@ -6,8 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/black_trans</item>
-        <item name="appBarLayoutStyle">@style/AppTheme.AppBar</item>
-
+        <item name="appBarLayoutStyle">@style/AppTheme.Widget.AppBarLayout</item>
     </style>
 
     <style name="ChipStyle" parent="AppTheme"></style>

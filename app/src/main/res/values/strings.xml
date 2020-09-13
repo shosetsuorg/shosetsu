@@ -36,9 +36,9 @@
     <string name="paragraph_spacing">Paragraph spacing</string>
     <string name="paragraph_indent">Paragraph indent</string>
 
-    <string name="novel_title">Novel Title:</string>
-    <string name="novel_author">Novel Author(s):</string>
-    <string name="novel_description">Novel Description</string>
+    <string name="novel_title">Title:</string>
+    <string name="novel_author">Author(s):</string>
+    <string name="novel_description">Description</string>
     <string name="download">Download</string>
     <string name="download_directory">Download directory</string>
     <string name="position">Position:</string>

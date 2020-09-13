@@ -51,6 +51,8 @@ class NovelController(
 	/** Floating action button */
 	var fab: FloatingActionButton? = null
 
+	override val viewTitle: String = " "
+
 	/**
 	 * View model of the major novel
 	 */

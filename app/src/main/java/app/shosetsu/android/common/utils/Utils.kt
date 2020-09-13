@@ -49,7 +49,7 @@ fun View.expand() {
 	}
 
 	// Expansion speed of .25dp/ms
-	a.duration = ((targetHeight / context.resources.displayMetrics.density) * 4).toInt().toLong()
+	a.duration = ((targetHeight / context.resources.displayMetrics.density) * 5).toInt().toLong()
 	startAnimation(a)
 }
 
@@ -71,6 +71,6 @@ fun View.collapse() {
 	}
 
 	// Collapse speed of .25dp/ms
-	a.duration = ((initialHeight / context.resources.displayMetrics.density) * 4).toInt().toLong()
+	a.duration = ((initialHeight / context.resources.displayMetrics.density) * 5).toInt().toLong()
 	startAnimation(a)
 }

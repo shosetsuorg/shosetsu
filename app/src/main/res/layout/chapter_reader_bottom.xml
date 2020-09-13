@@ -5,7 +5,7 @@
     android:id="@+id/chapter_reader_bottom"
     android:layout_width="match_parent"
     android:layout_height="350dp"
-    android:background="?colorOnPrimary"
+    android:background="@color/toolbar"
     android:clickable="true"
     android:descendantFocusability="blocksDescendants"
     android:focusable="true"

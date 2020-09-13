@@ -50,6 +50,7 @@ class NovelChaptersController(bundle: Bundle)
 	: FastAdapterRecyclerController.BasicFastAdapterRecyclerController<ChapterUI>(bundle), FABController {
 	private val viewModel: INovelChaptersViewModel by viewModel()
 	private var resume: FloatingActionButton? = null
+	override val viewTitle: String = ""
 
 	override val fastAdapter: FastAdapter<ChapterUI> by lazy {
 		val adapter = ChaptersAdapter(viewModel)

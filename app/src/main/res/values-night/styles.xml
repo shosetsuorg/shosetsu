@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme.AppBar" parent="Theme.MaterialComponents.DayNight">
+    <style name="AppTheme.Widget.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:elevation">@dimen/app_bar_layout_elevation</item>
         <item name="android:colorBackground">@color/grey_B_15</item>
+        <item name="android:colorPrimaryDark">@color/grey_B_15</item>
     </style>
 
-    <style name="AppTheme.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
-        <item name="android:background">@color/grey_B_15</item>
-    </style>
 
+    <style name="AppTheme.Widget.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:colorBackground">@color/grey_B_15</item>
+        <item name="android:panelColorBackground">@color/grey_B_15</item>
+    </style>
 
     <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/launcher_theme</item>
