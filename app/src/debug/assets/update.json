@@ -1,9 +1,9 @@
 {
-  "latestVersion": "930",
+  "latestVersion": "932",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Changed some ui colors",
-    "- Slowed down some animations",
-    "- Removed some headers"
+    "- Important commit",
+    "- Fixes viewmodel reusing (no more stuck UI)",
+    "- Added Picasso.kt with placeholder and error views"
   ]
 }
