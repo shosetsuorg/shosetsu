@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_FORMATTER
+import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
+import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.IExtensionSingleConfigureViewModel
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ConfigureExtensionViewBinding
 
 /*
@@ -39,14 +43,45 @@ class ConfigureExtension(bundle: Bundle) : FastAdapterRecyclerController<Configu
 
 	override fun onViewCreated(view: View) {
 		viewModel.setExtensionID(args.getInt(BUNDLE_FORMATTER))
+		observe()
 	}
 
 	private fun observe() {
-		viewModel.liveData.observe(this) {
-			it.settingsModel
+		viewModel.liveData.observe(this) { handleExtensionResult(it) }
+		viewModel.extensionSettings.observe(this) { handleRecyclerUpdate(it) }
+	}
+
+	private fun handleExtensionResult(it: HResult<ExtensionUI>) {
+		when (it) {
+			is HResult.Success -> {
+				it.data.let { extensionUI ->
+					if (!extensionUI.imageURL.isNullOrEmpty())
+						picasso(extensionUI.imageURL!!, binding.imageView)
+					binding.fileName.text = extensionUI.fileName
+					binding.identification.text = extensionUI.id.toString()
+					binding.language.text = extensionUI.lang
+					binding.name.text = extensionUI.name
+					binding.uninstallButton.setOnClickListener {
+						viewModel.uninstall(extensionUI)
+					}
+				}
+			}
+			HResult.Loading -> {
+				binding.imageView.setImageResource(R.drawable.animated_refresh)
+				binding.fileName.text = ""
+				binding.identification.text = ""
+				binding.language.text = ""
+				binding.name.text = ""
+				binding.uninstallButton.setOnClickListener {}
+			}
+			HResult.Empty -> {
+			}
+			is HResult.Error -> {
+			}
 		}
 	}
 
+
 	override fun bindView(inflater: LayoutInflater): ConfigureExtensionViewBinding =
-			ConfigureExtensionViewBinding.inflate(inflater)
+			ConfigureExtensionViewBinding.inflate(inflater).also { recyclerView = it.settings }
 }

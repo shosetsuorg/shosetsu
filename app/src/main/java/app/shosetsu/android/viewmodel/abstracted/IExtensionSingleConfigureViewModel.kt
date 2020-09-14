@@ -1,8 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeViewModel
-import app.shosetsu.lib.Formatter
+import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /*
  * This file is part of shosetsu.
@@ -29,11 +32,13 @@ import app.shosetsu.lib.Formatter
  *
  * [liveData] is of the formatter object itself
  */
-abstract class IExtensionSingleConfigureViewModel : ViewModel(), SubscribeViewModel<Formatter> {
+abstract class IExtensionSingleConfigureViewModel : ViewModel(), SubscribeHandleViewModel<ExtensionUI> {
+	abstract val extensionSettings: LiveData<HResult<List<SettingsItemData>>>
 
 	/** Set the extension ID to use */
 	abstract fun setExtensionID(int: Int)
 
 	/** Save the setting of this specific formatter */
 	abstract suspend fun saveSetting(id: Int, value: Any)
+	abstract fun uninstall(extensionUI: ExtensionUI)
 }

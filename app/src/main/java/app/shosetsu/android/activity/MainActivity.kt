@@ -309,7 +309,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 					applicationContext.toast("$result")
 				}
 				is HResult.Empty -> {
-					applicationContext.toast(R.string.app_update_unavaliable)
 				}
 				is HResult.Success -> {
 					val update = result.data

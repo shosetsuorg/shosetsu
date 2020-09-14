@@ -8,11 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.getString
-import app.shosetsu.android.common.ext.launchAsync
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.toast
 import com.bluelinelabs.conductor.Controller
@@ -131,7 +129,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 		super.onAttach(view)
 	}
 
-	fun setViewTitle(viewTitle: String = this.viewTitle) {
+	open fun setViewTitle(viewTitle: String = this.viewTitle) {
 		Log.i(logID(), "Activity title $viewTitle")
 		activity?.title = viewTitle
 	}

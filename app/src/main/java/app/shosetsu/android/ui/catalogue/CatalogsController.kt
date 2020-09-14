@@ -48,8 +48,9 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>(),
 		PushCapableController {
 	private val viewModel: ICatalogOptionsViewModel by viewModel()
-	override val viewTitleRes: Int = R.string.catalogues
 	lateinit var pushController: (Controller) -> Unit
+
+	override fun setViewTitle(viewTitle: String) {}
 
 	init {
 		setHasOptionsMenu(true)
@@ -81,6 +82,7 @@ class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>()
 	}
 
 	override fun showEmpty() {
+		super.showEmpty()
 		binding.emptyDataView.show("No sources, Install one from Extensions")
 	}
 

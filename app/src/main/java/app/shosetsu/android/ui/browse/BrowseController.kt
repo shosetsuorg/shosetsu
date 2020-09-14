@@ -7,6 +7,7 @@ import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.base.TabbedController
 import app.shosetsu.android.view.base.ViewedController
 import com.bluelinelabs.conductor.Controller
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerBrowseBinding
 import com.google.android.material.tabs.TabLayout
 
@@ -36,6 +37,7 @@ import com.google.android.material.tabs.TabLayout
  */
 class BrowseController : ViewedController<ControllerBrowseBinding>(),
 		TabbedController, PushCapableController {
+	override val viewTitleRes: Int = R.string.browse
 
 	var adapter: BrowsePagerAdapter? = null
 	lateinit var tabLayout: TabLayout

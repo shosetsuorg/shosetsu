@@ -1,9 +1,10 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.utils.FormatterUtils
 import app.shosetsu.android.domain.model.base.Convertible
@@ -11,7 +12,6 @@ import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
-import com.squareup.picasso.Picasso
 
 /*
  * This file is part of shosetsu.
@@ -47,6 +47,14 @@ data class ExtensionUI(
 		var repositoryVersion: String,
 		var md5: String,
 ) : BaseRecyclerItem<ExtensionUI.ViewHolder>(), Convertible<ExtensionEntity> {
+	override val layoutRes: Int = R.layout.extension_card
+	override val type: Int = R.layout.extension_card
+	override var identifier: Long
+		get() = id.toLong()
+		set(value) {}
+
+	fun hasUpdate() = FormatterUtils.compareVersions(installedVersion ?: "", repositoryVersion)
+
 	override fun convertTo(): ExtensionEntity = ExtensionEntity(
 			id,
 			repoID,
@@ -61,60 +69,57 @@ data class ExtensionUI(
 			md5
 	)
 
+	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+
 	/***/
 	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<ExtensionUI>(itemView) {
 		val imageView: ImageView = itemView.findViewById(R.id.imageView)
 		val language: TextView = itemView.findViewById(R.id.language)
 		val title: TextView = itemView.findViewById(R.id.title)
-		private val hash: TextView = itemView.findViewById(R.id.hash)
-		private val idText: TextView = itemView.findViewById(R.id.id)
 		val version: TextView = itemView.findViewById(R.id.version)
 		private val updatedVersion: TextView = itemView.findViewById(R.id.update_version)
-		val button: Button = itemView.findViewById(R.id.button)
+
+		val download: ImageButton = itemView.findViewById(R.id.button)
+		val settings: ImageButton = itemView.findViewById(R.id.settings)
+
 
 		override fun bindView(item: ExtensionUI, payloads: List<Any>) {
-			val id = item.id
-
 			if (item.installed && item.isExtEnabled) {
-				button.setText(R.string.uninstall)
+				download.isVisible = false
 				version.text = item.installedVersion
 
-				if (FormatterUtils.compareVersions(
-								item.installedVersion ?: "",
-								item.repositoryVersion
-						)) {
-					button.setText(R.string.update)
+				if (item.hasUpdate()) {
+					download.isVisible = true
+					download.setImageResource(R.drawable.ic_file_update)
+					download.rotation = 180f
+
 					updatedVersion.visibility = View.VISIBLE
 					updatedVersion.text = item.repositoryVersion
 				} else {
 					updatedVersion.visibility = View.GONE
 				}
 			} else {
-				version.text = item.installedVersion
+				version.text = item.repositoryVersion
 			}
 
 			title.text = item.name
-			idText.text = id.toString()
-			hash.text = item.md5
 			language.text = item.lang
 
 			if (!item.imageURL.isNullOrEmpty()) picasso(item.imageURL!!, imageView)
 		}
 
 		override fun unbindView(item: ExtensionUI) {
-			button.setText(R.string.download)
+			download.setImageResource(R.drawable.ic_file_download)
+			download.rotation = 0f
+			download.isVisible = true
+
+			settings.isVisible = true
+
 			version.text = null
 			updatedVersion.text = null
 			title.text = null
-			idText.text = null
-			hash.text = null
 			language.text = null
 			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
 		}
 	}
-
-	override val layoutRes: Int = R.layout.extension_card
-	override val type: Int = R.layout.extension_card
-
-	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 }
