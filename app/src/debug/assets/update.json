@@ -1,9 +1,16 @@
 {
-  "latestVersion": "932",
+  "latestVersion": "935",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Important commit",
-    "- Fixes viewmodel reusing (no more stuck UI)",
-    "- Added Picasso.kt with placeholder and error views"
+    "- DownloadsController.kt now uses FAB for start/pause",
+    "- NovelInfoController.kt no longer uses FAB",
+    "- NovelChaptersController.kt now checks if it is visible to manipulate FAB",
+    "- ViewSettings.kt, Legacy navigation has adjusted description",
+    "- ViewSettings.kt some strings have been updated",
+    "- SplashScreen.kt now isn't an always case",
+    "- SearchController.kt no longer crashes on push",
+    "- CatalogController.kt now destroys data on leaving",
+    "- position 0 no longer occurs",
+    "- DownloadSettings.kt no longer has download speed option"
   ]
 }
