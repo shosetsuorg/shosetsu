@@ -84,6 +84,7 @@ class CatalogController(
 
 	override fun onDestroy() {
 		super.onDestroy()
+		viewModel.destroy()
 		searchView = null
 	}
 

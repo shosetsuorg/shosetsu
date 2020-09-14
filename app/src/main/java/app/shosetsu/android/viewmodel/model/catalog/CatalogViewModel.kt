@@ -86,15 +86,7 @@ class CatalogViewModel(
 			}
 		} else if (formatter!!.formatterID != fID) {
 			this@CatalogViewModel.logI("Resetting formatter")
-			formatter = null
-			listingItems.clear()
-			filterData.clear()
-			query = ""
-			listingItemsLive.postValue(successResult(arrayListOf()))
-			filterItemsLive.postValue(successResult(arrayListOf()))
-			hasSearchLive.postValue(successResult(false))
-			hasSearchLive.postValue(loading())
-			extensionName.postValue(loading())
+			destroy()
 			setFID(fID).join()
 		} else this@CatalogViewModel.logI("FID are the same, ignoring")
 	}
@@ -171,6 +163,20 @@ class CatalogViewModel(
 			listingItems.clear()
 			listingItemsLive.postValue(successResult(arrayListOf()))
 			loadData()
+		}
+	}
+
+	override fun destroy() {
+		launchIO {
+			formatter = null
+			listingItems.clear()
+			filterData.clear()
+			query = ""
+			listingItemsLive.postValue(successResult(arrayListOf()))
+			filterItemsLive.postValue(successResult(arrayListOf()))
+			hasSearchLive.postValue(successResult(false))
+			hasSearchLive.postValue(loading())
+			extensionName.postValue(loading())
 		}
 	}
 }

@@ -13,7 +13,6 @@ import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.catalogue.listeners.CataloguesSearchQuery
-import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtensions
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.catlog.CatalogOptionUI
@@ -69,10 +68,6 @@ class CatalogsController : BasicFastAdapterRecyclerController<CatalogOptionUI>()
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.catalogues_search -> true
-			R.id.configure_parsers -> {
-				pushController(ConfigureExtensions())
-				true
-			}
 			else -> false
 		}
 	}

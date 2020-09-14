@@ -62,6 +62,10 @@ class NovelChaptersController(bundle: Bundle)
 		setHasOptionsMenu(true)
 	}
 
+
+	private fun isVisible() =
+			(parentController as? NovelController)?.pageListener?.currentPosition == 1
+
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(args.getNovelID())
 		resume = (parentController as NovelController).fab
@@ -72,16 +76,17 @@ class NovelChaptersController(bundle: Bundle)
 		super.setupRecyclerView()
 		recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-				when (newState) {
-					RecyclerView.SCROLL_STATE_DRAGGING -> {
-						resume?.let { hideFAB(it) }
+				if (isVisible())
+					when (newState) {
+						RecyclerView.SCROLL_STATE_DRAGGING -> {
+							resume?.let { hideFAB(it) }
+						}
+						RecyclerView.SCROLL_STATE_SETTLING -> {
+						}
+						RecyclerView.SCROLL_STATE_IDLE -> {
+							resume?.let { showFAB(it) }
+						}
 					}
-					RecyclerView.SCROLL_STATE_SETTLING -> {
-					}
-					RecyclerView.SCROLL_STATE_IDLE -> {
-						resume?.let { showFAB(it) }
-					}
-				}
 			}
 		})
 		setObserver()
@@ -130,8 +135,10 @@ class NovelChaptersController(bundle: Bundle)
 
 	override fun updateUI(newList: List<ChapterUI>) {
 		Log.d(logID(), "Received chapter count of ${newList.size}")
-		if (newList.isNotEmpty()) resume?.show() else resume?.hide()
 		super.updateUI(newList)
+		resume?.let {
+			if (newList.isNotEmpty() && isVisible()) showFAB(it) else hideFAB(it)
+		}
 	}
 
 	override fun hideFAB(fab: FloatingActionButton) {

@@ -39,8 +39,10 @@ abstract class INovelInfoViewModel
 	abstract fun setNovelID(novelID: Int)
 
 	/** Toggles the bookmark of this ui */
-	abstract fun toggleBookmark(novelUI: NovelUI)
-	abstract fun openBrowser(it: NovelUI)
-	abstract fun openWebView(it: NovelUI)
-	abstract fun share(it: NovelUI)
+	abstract fun toggleBookmark()
+	abstract fun openBrowser()
+	abstract fun openWebView()
+	abstract fun share()
+
+
 }

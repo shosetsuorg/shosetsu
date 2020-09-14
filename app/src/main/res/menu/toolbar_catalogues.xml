@@ -8,11 +8,4 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"/>
-
-    <group>
-        <item
-            android:id="@+id/configure_parsers"
-            android:title="@string/configure_parsers"
-            />
-    </group>
 </menu>

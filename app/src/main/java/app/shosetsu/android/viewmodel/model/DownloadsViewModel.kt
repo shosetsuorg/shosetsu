@@ -2,10 +2,12 @@ package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
+import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
@@ -55,6 +57,10 @@ class DownloadsViewModel(
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
+
+	override val isDownloadPaused: LiveData<Boolean> by lazy {
+		settings.isDownloadPausedLive
+	}
 
 	override fun togglePause(): Boolean {
 		if (!isOnline()) return true

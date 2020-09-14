@@ -98,4 +98,8 @@ abstract class ICatalogViewModel : ViewModel() {
 	 * Sets filters
 	 */
 	abstract fun setFilters(map: Map<Int, Any>)
+
+
+	/** Destroy data */
+	abstract fun destroy()
 }

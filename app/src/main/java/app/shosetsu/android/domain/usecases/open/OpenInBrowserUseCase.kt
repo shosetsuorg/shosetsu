@@ -1,4 +1,4 @@
-package app.shosetsu.android.domain.usecases
+package app.shosetsu.android.domain.usecases.open
 
 import android.app.Application
 import android.content.Intent

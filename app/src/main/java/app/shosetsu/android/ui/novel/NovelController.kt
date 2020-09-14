@@ -59,6 +59,7 @@ class NovelController(
 	val viewModel: INovelViewModel by viewModel()
 
 	var adapter: NovelPagerAdapter? = null
+	var pageListener: NovelPagerAdapter.PageController? = null
 
 	private lateinit var tabLayout: TabLayout
 
@@ -88,8 +89,10 @@ class NovelController(
 		adapter = NovelPagerAdapter(this)
 		binding.viewpager.adapter = adapter
 		binding.viewpager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+
 		fab?.let {
-			binding.viewpager.addOnPageChangeListener(adapter!!.PageController(it))
+			pageListener = adapter!!.PageController(it)
+			binding.viewpager.addOnPageChangeListener(pageListener!!)
 		}
 
 		tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {

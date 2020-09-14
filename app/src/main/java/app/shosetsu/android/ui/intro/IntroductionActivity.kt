@@ -28,14 +28,11 @@ import kotlinx.android.synthetic.main.intro_license.*
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
  * shosetsu
  * 15 / 03 / 2020
- *
- * @author github.com/doomsdayrs
  */
 class IntroductionActivity : IntroActivity() {
 	internal class License : Fragment(R.layout.intro_license) {

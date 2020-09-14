@@ -10,8 +10,8 @@ import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
-import app.shosetsu.android.domain.usecases.OpenInBrowserUseCase
-import app.shosetsu.android.domain.usecases.OpenInWebviewUseCase
+import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
+import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.load.LoadChapterUIsUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase

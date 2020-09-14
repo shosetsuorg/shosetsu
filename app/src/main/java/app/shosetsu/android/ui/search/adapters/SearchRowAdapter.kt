@@ -15,7 +15,7 @@ import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
-import com.bluelinelabs.conductor.Router
+import com.bluelinelabs.conductor.Controller
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
@@ -41,7 +41,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
  * shosetsu
  * 09 / 09 / 2020
  */
-class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, private val router: Router, private val viewModel: ISearchViewModel) : FastAdapter<SearchRowUI>() {
+class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, private val pushController: (Controller) -> Unit, private val viewModel: ISearchViewModel) : FastAdapter<SearchRowUI>() {
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
 		@Suppress("NAME_SHADOWING")
@@ -58,8 +58,8 @@ class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, private val r
 		}
 		fastAdapter.addAdapter(0, itemAdapter)
 		fastAdapter.setOnClickListener { _, _, item, _ ->
-			Log.d(logID(),"Pushing")
-			router.pushController(NovelController(bundleOf(BUNDLE_NOVEL_ID to item.id)).withFadeTransaction())
+			Log.d(logID(), "Pushing")
+			pushController(NovelController(bundleOf(BUNDLE_NOVEL_ID to item.id)))
 			true
 		}
 

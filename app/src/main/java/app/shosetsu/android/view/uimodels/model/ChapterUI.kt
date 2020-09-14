@@ -136,7 +136,9 @@ data class ChapterUI(
 					setAlpha(1f)
 					readTag.visibility = View.VISIBLE
 					readProgressValue.visibility = View.VISIBLE
-					readProgressValue.text = item.readingPosition.toString()
+
+					if (item.readingPosition != 0)
+						readProgressValue.text = item.readingPosition.toString()
 				}
 				ReadingStatus.UNREAD -> setAlpha(1f)
 				ReadingStatus.READ -> {

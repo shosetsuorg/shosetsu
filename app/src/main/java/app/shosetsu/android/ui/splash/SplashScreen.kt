@@ -36,15 +36,12 @@ import org.kodein.di.generic.instance
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 
 /**
  * Shosetsu
  * 9 / June / 2019
- *
- * @author github.com/doomsdayrs
  */
 class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 	companion object {
@@ -58,7 +55,10 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
-		if (requestCode == INTRO_CODE) startBoot()
+		if (requestCode == INTRO_CODE) {
+			settings.showIntro = false
+			startBoot()
+		}
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {

@@ -78,7 +78,7 @@ class ViewSettings : SettingsSubController() {
 		}
 		switchSettingData(4) {
 			title { "Legacy navigation" }
-			description { "Use legacy navigation" }
+			description { "Disableds bottom navigation, enables drawer" }
 			isChecked = s.navigationStyle == 1
 			var state = false
 			onChecked { cb, isChecked ->

@@ -8,7 +8,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_URL
-import app.shosetsu.android.domain.usecases.OpenInBrowserUseCase
+import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.android.synthetic.main.activity_webview.*
 import org.kodein.di.Kodein

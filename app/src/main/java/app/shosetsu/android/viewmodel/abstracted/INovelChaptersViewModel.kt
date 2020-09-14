@@ -66,4 +66,6 @@ abstract class INovelChaptersViewModel
 	 * Deletes a chapter
 	 */
 	abstract fun delete(vararg chapterUI: ChapterUI)
+
+
 }

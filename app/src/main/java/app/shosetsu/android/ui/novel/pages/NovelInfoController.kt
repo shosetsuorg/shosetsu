@@ -1,15 +1,13 @@
 package app.shosetsu.android.ui.novel.pages
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.core.os.bundleOf
-import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
+import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
 import app.shosetsu.android.ui.novel.NovelController
-import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.ViewedController
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelInfoViewModel
@@ -19,7 +17,6 @@ import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
 import com.google.android.material.chip.Chip
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import app.shosetsu.android.common.dto.HResult.Empty as HEmpty
 import app.shosetsu.android.common.dto.HResult.Error as HError
 import app.shosetsu.android.common.dto.HResult.Loading as HLoading
@@ -48,49 +45,40 @@ import app.shosetsu.android.common.dto.HResult.Success as HSuccess
  *
  * The page you see when you select a novel
  */
-class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfoBinding>(bundle), FABController {
-
-	override fun bindView(inflater: LayoutInflater): ControllerNovelInfoBinding = inflate(inflater)
+class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfoBinding>(bundle) {
 
 	val viewModel: INovelInfoViewModel by viewModel()
 	override val viewTitle: String = ""
-
 	private var novelUI: NovelUI? = null
 
+	// UI items
 	init {
 		setHasOptionsMenu(true)
 	}
 
-	// UI items
-	private val fab: FloatingActionButton? by lazy {
-		(parentController as NovelController).fab
-	}
-
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = novelUI?.let {
-		when (item.itemId) {
-			id.source_migrate -> {
-				parentController?.router?.pushController(MigrationController(bundleOf(Pair(
-						MigrationController.TARGETS_BUNDLE_KEY,
-						arrayOf(novelUI!!.id).toIntArray()
-				))).withFadeTransaction())
-				true
-			}
-			id.webview -> {
-				viewModel.openWebView(it)
-				true
-			}
-			id.browser -> {
-				viewModel.openBrowser(it)
-				true
-			}
-			id.share -> {
-				viewModel.share(it)
-				true
-			}
-			else -> super.onOptionsItemSelected(item)
+	override fun bindView(inflater: LayoutInflater): ControllerNovelInfoBinding = inflate(inflater)
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+		id.source_migrate -> {
+			parentController?.router?.pushController(MigrationController(bundleOf(Pair(
+					TARGETS_BUNDLE_KEY,
+					arrayOf(args.getNovelID()).toIntArray()
+			))).withFadeTransaction())
+			true
 		}
-	} ?: false
+		id.webview -> {
+			viewModel.openWebView()
+			true
+		}
+		id.browser -> {
+			viewModel.openBrowser()
+			true
+		}
+		id.share -> {
+			viewModel.share()
+			true
+		}
+		else -> super.onOptionsItemSelected(item)
+	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_novel, menu)
@@ -98,7 +86,19 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.setNovelID(args.getInt(BUNDLE_NOVEL_ID))
+		viewModel.setNovelID(args.getNovelID())
+		binding.inLibrary?.setOnClickListener {
+			viewModel.toggleBookmark()
+		}
+
+		binding.webView?.setOnClickListener {
+			viewModel.openWebView()
+		}
+
+		binding.share?.setOnClickListener {
+			viewModel.share()
+		}
+
 		setObserver()
 		setNovelData()
 	}
@@ -122,34 +122,24 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 		}
 		viewModel.formatterName.observe(this) {
 			when (it) {
-				is HSuccess -> app.shosetsu.android.common.ext.launchUI {
+				is HSuccess -> launchUI {
 					setFormatterName(it.data)
 				}
-				is HError -> app.shosetsu.android.common.ext.launchUI {
+				is HError -> launchUI {
 					setFormatterName("Error on loading")
 					showError(it)
 				}
-				is HEmpty -> app.shosetsu.android.common.ext.launchUI {
+				is HEmpty -> launchUI {
 					setFormatterName("UNKNOWN")
 				}
-				is HLoading -> app.shosetsu.android.common.ext.launchUI {
+				is HLoading -> launchUI {
 					setFormatterName("Loading")
 				}
 			}
 		}
 	}
 
-	override fun manipulateFAB(fab: FloatingActionButton) {
-		fab.setOnClickListener {
-			Log.d(logID(), "Toggling Bookmark")
-			viewModel.toggleBookmark(novelUI!!)
-			setFABIcon(fab)
-		}
-	}
-
-	/**
-	 * Sets the data of this page
-	 */
+	/** Sets the data of this page */
 	private fun setNovelData() {
 		novelUI?.let { novelUI ->
 			// Handle title
@@ -187,41 +177,31 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 			}
 
 			// Loads the image
-			listOf(binding.novelImage!!, binding.novelImageBackground!!).forEach { iV: ImageView ->
+			listOf(binding.novelImage ?: null, binding.novelImageBackground
+					?: null).forEach { iV: ImageView? ->
 				if (novelUI.imageURL.isNotEmpty()) {
-					picasso(novelUI.imageURL, iV)
+					iV?.let {
+						picasso(novelUI.imageURL, it)
+					}
 				} else {
-					iV.setImageResource(R.drawable.ic_broken_image_24dp)
+					iV?.setImageResource(R.drawable.ic_broken_image_24dp)
 				}
 			}
 
-			fab?.let {
-				hideFAB(it)
-				setFABIcon(it)
-				showFAB(it)
+			if (novelUI.bookmarked) {
+				binding.inLibrary?.setChipIconResource(R.drawable.ic_heart_svg_filled)
+				binding.inLibrary?.setText(R.string.in_library)
+			} else {
+				binding.inLibrary?.setChipIconResource(R.drawable.ic_heart_svg)
+				binding.inLibrary?.setText(R.string.add_to_library)
 			}
+
 			// Show the option to add the novel
-		}
-		fab?.let {
-			Log.d(logID(), "Setting FAB with setNovelData()")
-			hideFAB(it)
-			resetFAB(it)
-			setFABIcon(it)
-			manipulateFAB(it)
-			showFAB(it)
 		}
 	}
 
 	private fun setFormatterName(text: String) {
-		binding.novelFormatter?.text = text
+		binding.novelSite?.text = text
 	}
 
-	override fun setFABIcon(fab: FloatingActionButton) {
-		Log.i(logID(), "Setting FAB image")
-		fab.setImageResource(
-				if (novelUI?.bookmarked == true)
-					R.drawable.ic_baseline_check_circle_24
-				else R.drawable.ic_add_circle_outline_24dp
-		)
-	}
 }

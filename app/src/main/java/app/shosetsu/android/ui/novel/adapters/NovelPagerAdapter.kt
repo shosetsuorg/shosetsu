@@ -81,7 +81,11 @@ class NovelPagerAdapter(private val novelController: NovelController)
 	inner class PageController(
 			private val fab: FloatingActionButton,
 	) : ViewPager.OnPageChangeListener {
-		private var currentPosition = 0
+		var currentPosition = 0
+
+		init {
+			fab.hide()
+		}
 
 		override fun onPageScrollStateChanged(state: Int) {
 		}

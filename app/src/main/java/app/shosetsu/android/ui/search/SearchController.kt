@@ -52,7 +52,7 @@ class SearchController(bundle: Bundle)
 	}
 
 	override val fastAdapter: FastAdapter<SearchRowUI> by lazy {
-		val adapter = SearchRowAdapter(this, router, viewModel)
+		val adapter = SearchRowAdapter(this, pushController, viewModel)
 		adapter.addAdapter(0, itemAdapter)
 		adapter
 	}

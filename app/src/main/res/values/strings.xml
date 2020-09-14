@@ -225,14 +225,14 @@
     <string name="amoled">Amoled</string>
     <string name="crashCommentPromt">Crash Report</string>
     <string name="crashDialogText">The application has crashed. Send a report to the developers?</string>
-    <string name="columns_of_novel_listing_p">Columns of novel listing (portrait)</string>
-    <string name="columns_of_novel_listing_h">Columns of novel listing (horizontal)</string>
+    <string name="columns_of_novel_listing_p">Columns of novels in portrait mode</string>
+    <string name="columns_of_novel_listing_h">Columns of novels in landscape mode</string>
     <string name="columns_zero_automatic">0 means automatic</string>
 
     <string name="normal">Normal</string>
     <string name="compressed">Compressed</string>
-    <string name="novel_card_type_selector_title">NovelCard Type</string>
-    <string name="novel_card_type_selector_desc">Set\'s how novel card\'s are viewed</string>
+    <string name="novel_card_type_selector_title">Novel card type</string>
+    <string name="novel_card_type_selector_desc">Swap between a grid or list for displaying novels</string>
     <string name="library_update">Updating Library</string>
     <string name="catalogue_default_load">Default home page</string>
     <string name="catalogue_default_load_desc">When a catalogue is selected, This is the thing it loads</string>
@@ -287,6 +287,8 @@
     <string name="restart">Restart</string>
     <string name="need_restart">Activity needs to restart</string>
     <string name="never_mind">Nevermind</string>
+    <string name="in_library">In library</string>
+    <string name="add_to_library">Add to library</string>
 
     <array name="application_themes">
         <item>@string/light</item>

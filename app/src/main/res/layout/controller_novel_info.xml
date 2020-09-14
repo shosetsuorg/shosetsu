@@ -5,22 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <FrameLayout
             android:id="@+id/frameLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/novel_description"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintVertical_bias="1.0">
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="8dp">
 
             <ImageView
                 android:id="@+id/novel_image_background"
@@ -37,184 +33,210 @@
                 android:background="@drawable/novel_info_background_gradient" />
         </FrameLayout>
 
-
         <ImageView
             android:id="@+id/novel_image"
             android:layout_width="125dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/todo"
-            app:layout_constraintDimensionRatio="2:3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:src="@drawable/ic_broken_image_24dp"
+            app:layout_constraintDimensionRatio="2:3" />
 
         <TextView
             android:id="@+id/novel_title"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_toEndOf="@id/title_tag"
             android:background="@android:color/transparent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/title_tag"
-            app:layout_constraintTop_toTopOf="parent"
             tools:text="Isekai something" />
 
         <TextView
-            android:id="@+id/novel_formatter"
-            android:layout_width="0dp"
+            android:id="@+id/novel_site"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/title_tag"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_toEndOf="@id/site_tag"
             android:background="@android:color/transparent"
             android:text="boxnovel"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView5"
-            app:layout_constraintTop_toBottomOf="@+id/novel_title" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/novel_author"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/site_tag"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_toEndOf="@id/author_tag"
             android:background="@android:color/transparent"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textView6"
-            app:layout_constraintTop_toBottomOf="@+id/novel_formatter"
             tools:text="A, B, C" />
-
-
-        <TextView
-            android:id="@+id/novel_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
-            android:textIsSelectable="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/novel_genres"
-            tools:text="A\nB\nC\nD\nE\nF" />
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/novel_genres"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:background="@android:color/transparent"
-            android:theme="@style/ChipStyle"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@id/novel_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/novel_image" />
 
         <TextView
             android:id="@+id/novel_artists"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/author_tag"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_toEndOf="@id/artists_tag"
             android:background="@android:color/transparent"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView7"
-            app:layout_constraintTop_toBottomOf="@+id/novel_author"
             tools:text="C, D, E" />
 
         <TextView
             android:id="@+id/novel_publish"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/artists_tag"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_toEndOf="@id/publishing_tag"
             android:background="@android:color/transparent"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView11"
-            app:layout_constraintTop_toBottomOf="@+id/novel_artists"
             tools:text="Unknown" />
 
         <TextView
             android:id="@+id/title_tag"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_toEndOf="@id/novel_image"
             android:background="@android:color/transparent"
             android:text="@string/novel_title"
             android:textAlignment="center"
             android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/novel_image"
-            app:layout_constraintTop_toTopOf="@+id/frameLayout" />
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/site_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/title_tag"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/novel_image"
             android:background="@android:color/transparent"
             android:text="@string/site"
             android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/novel_image"
-            app:layout_constraintTop_toBottomOf="@+id/novel_title" />
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/author_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/site_tag"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/novel_image"
             android:background="@android:color/transparent"
             android:text="@string/novel_author"
             android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/novel_image"
-            app:layout_constraintTop_toBottomOf="@+id/novel_formatter" />
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/artists_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/author_tag"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/novel_image"
             android:background="@android:color/transparent"
             android:text="@string/artist_s"
             android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/novel_image"
-            app:layout_constraintTop_toBottomOf="@+id/novel_author" />
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/publishing_tag"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/artists_tag"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/novel_image"
             android:background="@android:color/transparent"
             android:text="@string/publishing_state"
             android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/novel_image"
-            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+            android:textStyle="bold" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/novel_genres"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/in_library"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add to library"
+                app:chipIcon="@drawable/ic_heart_svg"
+                app:iconStartPadding="8dp" />
+
+            <ImageButton
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/share"
+                android:src="@drawable/share" />
+
+            <ImageButton
+                android:id="@+id/web_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/open_in_webview"
+                android:src="@drawable/ic_baseline_open_in_browser_24" />
+        </LinearLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/novel_genres"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@id/frameLayout"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:theme="@style/ChipStyle"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/novel_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/frameLayout"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textIsSelectable="true"
+            tools:text="A\nB\nC\nD\nE\nF" />
+
+    </RelativeLayout>
 
 </androidx.core.widget.NestedScrollView>

@@ -49,14 +49,6 @@ class DownloadSettings : SettingsSubController() {
 			text { s.downloadDirectory }
 			onClicked { performFileSearch() }
 		}
-		spinnerSettingData(2) {
-			title { R.string.download_speed }
-			arrayAdapter = (ArrayAdapter(
-					context!!,
-					android.R.layout.simple_spinner_dropdown_item,
-					arrayListOf("String")
-			))
-		}
 		switchSettingData(3) {
 			title { R.string.download_chapter_updates }
 			checker { s::downloadOnUpdate }

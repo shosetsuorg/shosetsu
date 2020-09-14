@@ -6,11 +6,11 @@ import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.wait
-import app.shosetsu.android.domain.usecases.OpenInBrowserUseCase
-import app.shosetsu.android.domain.usecases.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.load.LoadFormatterNameUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIUseCase
+import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
+import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelInfoViewModel
@@ -100,29 +100,41 @@ class NovelInfoViewModel(
 		novelIDValue = novelID
 	}
 
-	override fun toggleBookmark(novelUI: NovelUI) {
+	override fun toggleBookmark() {
 		launchIO {
-			updateNovelUseCase(novelUI.copy(
-					bookmarked = !novelUI.bookmarked
-			))
+			liveData.value?.let {
+				if (it is HResult.Success)
+					updateNovelUseCase(it.data.copy(
+							bookmarked = !it.data.bookmarked
+					))
+			}
 		}
 	}
 
-	override fun openBrowser(it: NovelUI) {
+	override fun openBrowser() {
 		launchIO {
-			openInBrowserUseCase(it)
+			liveData.value?.let {
+				if (it is HResult.Success)
+					openInBrowserUseCase(it.data)
+			}
 		}
 	}
 
-	override fun openWebView(it: NovelUI) {
+	override fun openWebView() {
 		launchIO {
-			openInWebviewUseCase(it)
+			liveData.value?.let {
+				if (it is HResult.Success)
+					openInWebviewUseCase(it.data)
+			}
 		}
 	}
 
-	override fun share(it: NovelUI) {
+	override fun share() {
 		launchIO {
-			shareUseCase(it)
+			liveData.value?.let {
+				if (it is HResult.Success)
+					shareUseCase(it.data)
+			}
 		}
 	}
 }
