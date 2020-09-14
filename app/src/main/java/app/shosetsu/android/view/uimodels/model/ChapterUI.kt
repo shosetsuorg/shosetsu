@@ -5,16 +5,15 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import app.shosetsu.android.common.consts.selectedStrokeWidth
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
+import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.card.MaterialCardView
-import com.mikepenz.fastadapter.FastAdapter
+import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerNovelChapterBinding
 
 /*
  * This file is part of shosetsu.
@@ -31,7 +30,6 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -80,14 +78,8 @@ data class ChapterUI(
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
-	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<ChapterUI>(itemView) {
-		private var cardView: MaterialCardView = itemView.findViewById(R.id.recycler_novel_chapter_card)
-		var constraintLayout: ConstraintLayout = itemView.findViewById(R.id.constraint)
-		var title: TextView = itemView.findViewById(R.id.title)
-		private var readProgressValue: TextView = itemView.findViewById(R.id.read_progress_value)
-		private var readTag: TextView = itemView.findViewById(R.id.read_progress_label)
-		private var downloadTag: TextView = itemView.findViewById(R.id.download_status)
-		private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+	class ViewHolder(itemView: View) : BindViewHolder<ChapterUI, RecyclerNovelChapterBinding>(itemView) {
+		override val binding = RecyclerNovelChapterBinding.bind(view)
 
 		var popupMenu: PopupMenu? = null
 
@@ -95,12 +87,20 @@ data class ChapterUI(
 
 		init {
 			if (popupMenu == null) {
-				popupMenu = PopupMenu(moreOptions.context, moreOptions)
+				popupMenu = PopupMenu(binding.moreOptions.context, binding.moreOptions)
 				popupMenu!!.inflate(R.menu.popup_chapter_menu)
 			}
 		}
 
-		override fun bindView(item: ChapterUI, payloads: List<Any>) {
+		private fun setAlpha(float: Float) {
+			binding.title.alpha = float
+			binding.readProgressValue.alpha = float
+			binding.readTag.alpha = float
+			binding.downloadTag.alpha = float
+			binding.moreOptions.imageAlpha = (255 * float).toInt()
+		}
+
+		override fun RecyclerNovelChapterBinding.bindView(item: ChapterUI, payloads: List<Any>) {
 			//Log.d(logID(), "Binding ${chapterUI.id}")
 
 			cardView.strokeWidth = if (item.isSelected) selectedStrokeWidth else 0
@@ -153,15 +153,7 @@ data class ChapterUI(
 			moreOptions.setOnClickListener { popupMenu?.show() }
 		}
 
-		private fun setAlpha(float: Float) {
-			title.alpha = float
-			readProgressValue.alpha = float
-			readTag.alpha = float
-			downloadTag.alpha = float
-			moreOptions.imageAlpha = (255 * float).toInt()
-		}
-
-		override fun unbindView(item: ChapterUI) {
+		override fun RecyclerNovelChapterBinding.unbindView(item: ChapterUI) {
 			title.text = null
 			oldColors?.let { title.setTextColor(it) }
 			readProgressValue.text = null

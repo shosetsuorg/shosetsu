@@ -31,6 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * This class defines the item for
  * [com.github.doomsdayrs.apps.shosetsu.ui.catalogue.CatalogsController]
  */
+@Deprecated("No longer needed")
 data class CatalogOptionUI(
 		override var identifier: Long,
 		val title: String,

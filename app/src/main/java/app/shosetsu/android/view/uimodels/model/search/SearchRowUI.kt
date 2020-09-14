@@ -1,17 +1,13 @@
 package app.shosetsu.android.view.uimodels.model.search
 
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
+import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.mikepenz.fastadapter.FastAdapter
-import com.squareup.picasso.Picasso
+import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerSearchRowBinding
 
 /*
  * This file is part of shosetsu.
@@ -40,34 +36,23 @@ data class SearchRowUI(
 		val name: String,
 		val imageURL: String
 ) : BaseRecyclerItem<SearchRowUI.ViewHolder>() {
-
 	override val layoutRes: Int = R.layout.recycler_search_row
 	override val type: Int = R.layout.recycler_search_row
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	/***/
-	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<SearchRowUI>(itemView) {
-		/** Progress Bar */
-		val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+	class ViewHolder(itemView: View) : BindViewHolder<SearchRowUI, RecyclerSearchRowBinding>(itemView) {
+		override val binding = RecyclerSearchRowBinding.bind(view)
 
-		/** ImageView */
-		val imageView: ImageView = itemView.findViewById(R.id.imageView)
-
-		/** Title */
-		val title: TextView = itemView.findViewById(R.id.title)
-
-		/** Recycler View */
-		val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
-
-		override fun bindView(item: SearchRowUI, payloads: List<Any>) {
+		override fun RecyclerSearchRowBinding.bindView(item: SearchRowUI, payloads: List<Any>) {
 			title.text = item.name
 			recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
 			recyclerView.setHasFixedSize(false)
 			if (item.imageURL.isNotEmpty()) picasso(item.imageURL, imageView)
 		}
 
-		override fun unbindView(item: SearchRowUI) {
+		override fun RecyclerSearchRowBinding.unbindView(item: SearchRowUI) {
 			title.text = null
 			progressBar.visibility = View.GONE
 		}

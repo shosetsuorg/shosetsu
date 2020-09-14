@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.base
 
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
@@ -34,11 +35,12 @@ abstract class BindViewHolder<ITEM, VB>(val view: View) : FastAdapter.ViewHolder
 	abstract fun VB.bindView(item: ITEM, payloads: List<Any>)
 	abstract fun VB.unbindView(item: ITEM)
 
-
+	@CallSuper
 	override fun bindView(item: ITEM, payloads: List<Any>) {
 		binding.bindView(item, payloads)
 	}
 
+	@CallSuper
 	override fun unbindView(item: ITEM) {
 		binding.unbindView(item)
 	}

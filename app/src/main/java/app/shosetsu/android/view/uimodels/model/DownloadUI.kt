@@ -1,14 +1,13 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
-import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.TextView
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
+import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.mikepenz.fastadapter.FastAdapter
+import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerDownloadCardBinding
 
 /*
  * This file is part of shosetsu.
@@ -58,38 +57,27 @@ data class DownloadUI(
 			status
 	)
 
-	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<DownloadUI>(itemView) {
-
-		/** Novel title */
-		private val novelTitle: TextView = itemView.findViewById(R.id.novel_title)
-
-		/** Chapter title */
-		private val chapterTitle: TextView = itemView.findViewById(R.id.chapter_title)
-
-		/** Status of the download */
-		val status: TextView = itemView.findViewById(R.id.status)
-
-		/** More option to apply to the download */
-		private var moreOptions: ImageView = itemView.findViewById(R.id.more_options)
+	class ViewHolder(itemView: View) : BindViewHolder<DownloadUI, RecyclerDownloadCardBinding>(itemView) {
+		override val binding = RecyclerDownloadCardBinding.bind(itemView)
 
 		/** Popup menu for [moreOptions] */
 		var popupMenu: PopupMenu? = null
 
 		init {
 			if (popupMenu == null) {
-				popupMenu = PopupMenu(moreOptions.context, moreOptions)
+				popupMenu = PopupMenu(binding.moreOptions.context, binding.moreOptions)
 				popupMenu!!.inflate(R.menu.popup_download_menu)
 			}
 		}
 
-		override fun bindView(item: DownloadUI, payloads: List<Any>) {
+		override fun RecyclerDownloadCardBinding.bindView(item: DownloadUI, payloads: List<Any>) {
 			novelTitle.text = item.novelName
 			chapterTitle.text = item.chapterName
 			status.text = item.status.toString()
 			moreOptions.setOnClickListener { popupMenu?.show() }
 		}
 
-		override fun unbindView(item: DownloadUI) {
+		override fun RecyclerDownloadCardBinding.unbindView(item: DownloadUI) {
 			novelTitle.text = null
 			chapterTitle.text = null
 			status.text = null

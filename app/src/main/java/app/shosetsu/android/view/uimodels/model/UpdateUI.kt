@@ -1,9 +1,11 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
+import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.mikepenz.fastadapter.FastAdapter
+import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerNovelCardCompressedBinding
 
 /*
  * This file is part of shosetsu.
@@ -41,11 +43,18 @@ data class UpdateUI(
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	/**  */
-	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<UpdateUI>(itemView) {
-		override fun bindView(item: UpdateUI, payloads: List<Any>) {
+	class ViewHolder(itemView: View) : BindViewHolder<UpdateUI, RecyclerNovelCardCompressedBinding>(itemView) {
+		override val binding = RecyclerNovelCardCompressedBinding.bind(view)
+
+		override fun RecyclerNovelCardCompressedBinding.bindView(item: UpdateUI, payloads: List<Any>) {
+			if (item.novelImageURL.isNotEmpty())
+				picasso(item.novelImageURL, imageView)
+			title.text = item.chapterName
 		}
 
-		override fun unbindView(item: UpdateUI) {
+		override fun RecyclerNovelCardCompressedBinding.unbindView(item: UpdateUI) {
+			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
+			title.text = null
 		}
 	}
 }

@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recycler_novel_chapter_card"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="0dp"
@@ -32,7 +32,7 @@
             tools:text="Chapter 1" />
 
         <TextView
-            android:id="@+id/read_progress_label"
+            android:id="@+id/read_tag"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -55,13 +55,13 @@
             android:textSize="12sp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/read_progress_label"
+            app:layout_constraintStart_toEndOf="@+id/read_tag"
             app:layout_constraintTop_toBottomOf="@+id/title"
             tools:text="1000"
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/download_status"
+            android:id="@+id/download_tag"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"

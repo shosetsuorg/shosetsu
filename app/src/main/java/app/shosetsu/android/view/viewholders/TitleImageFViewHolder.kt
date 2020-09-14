@@ -3,6 +3,7 @@ package app.shosetsu.android.view.viewholders
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.CallSuper
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.GetImageURL
 import app.shosetsu.android.view.uimodels.base.GetTitle
@@ -38,6 +39,7 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 	val title: TextView = itemView.findViewById(R.id.title)
 	val imageView: ImageView = itemView.findViewById(R.id.imageView)
 
+	@CallSuper
 	override fun bindView(item: ITEM, payloads: List<Any>) {
 		title.text = item.getDataTitle()
 		val imageURL = item.getDataImageURL()
@@ -48,6 +50,7 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 		}
 	}
 
+	@CallSuper
 	override fun unbindView(item: ITEM) {
 		title.text = null
 	}
