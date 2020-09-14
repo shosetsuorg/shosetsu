@@ -1,9 +1,8 @@
-package app.shosetsu.android.ui.catalogue.listeners
+package app.shosetsu.android.ui.browse
 
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
-import app.shosetsu.android.common.ext.withFadeTransaction
 import app.shosetsu.android.ui.search.SearchController
 import com.bluelinelabs.conductor.Controller
 
@@ -30,7 +29,7 @@ import com.bluelinelabs.conductor.Controller
  *
  * @author github.com/doomsdayrs
  */
-class CataloguesSearchQuery(private val pushController: (Controller) -> Unit) : SearchView.OnQueryTextListener {
+class BrowseSearchQuery(private val pushController: (Controller) -> Unit) : SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(s: String): Boolean = true.also {
 		pushController(SearchController(bundleOf(BUNDLE_QUERY to s)))
 	}

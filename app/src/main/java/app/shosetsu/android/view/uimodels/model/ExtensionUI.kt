@@ -1,17 +1,15 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.utils.FormatterUtils
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
+import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.mikepenz.fastadapter.FastAdapter
+import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding
 
 /*
  * This file is part of shosetsu.
@@ -72,34 +70,29 @@ data class ExtensionUI(
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	/***/
-	class ViewHolder(itemView: View) : FastAdapter.ViewHolder<ExtensionUI>(itemView) {
-		val imageView: ImageView = itemView.findViewById(R.id.imageView)
-		val language: TextView = itemView.findViewById(R.id.language)
-		val title: TextView = itemView.findViewById(R.id.title)
-		val version: TextView = itemView.findViewById(R.id.version)
-		private val updatedVersion: TextView = itemView.findViewById(R.id.update_version)
+	class ViewHolder(
+			view: View
+	) : BindViewHolder<ExtensionUI, ExtensionCardBinding>(view) {
+		override val binding = ExtensionCardBinding.bind(view)
 
-		val download: ImageButton = itemView.findViewById(R.id.button)
-		val settings: ImageButton = itemView.findViewById(R.id.settings)
-
-
-		override fun bindView(item: ExtensionUI, payloads: List<Any>) {
+		override fun ExtensionCardBinding.bindView(item: ExtensionUI, payloads: List<Any>) {
 			if (item.installed && item.isExtEnabled) {
-				download.isVisible = false
+				button.isVisible = false
 				version.text = item.installedVersion
 
 				if (item.hasUpdate()) {
-					download.isVisible = true
-					download.setImageResource(R.drawable.ic_file_update)
-					download.rotation = 180f
+					button.isVisible = true
+					button.setImageResource(R.drawable.ic_file_update)
+					button.rotation = 180f
 
-					updatedVersion.visibility = View.VISIBLE
-					updatedVersion.text = item.repositoryVersion
+					updateVersion.visibility = View.VISIBLE
+					updateVersion.text = item.repositoryVersion
 				} else {
-					updatedVersion.visibility = View.GONE
+					updateVersion.visibility = View.GONE
 				}
 			} else {
 				version.text = item.repositoryVersion
+				settings.isVisible = false
 			}
 
 			title.text = item.name
@@ -108,15 +101,15 @@ data class ExtensionUI(
 			if (!item.imageURL.isNullOrEmpty()) picasso(item.imageURL!!, imageView)
 		}
 
-		override fun unbindView(item: ExtensionUI) {
-			download.setImageResource(R.drawable.ic_file_download)
-			download.rotation = 0f
-			download.isVisible = true
+		override fun ExtensionCardBinding.unbindView(item: ExtensionUI) {
+			button.setImageResource(R.drawable.ic_file_download)
+			button.rotation = 0f
+			button.isVisible = true
 
 			settings.isVisible = true
 
 			version.text = null
-			updatedVersion.text = null
+			updateVersion.text = null
 			title.text = null
 			language.text = null
 			imageView.setImageResource(R.drawable.ic_broken_image_24dp)

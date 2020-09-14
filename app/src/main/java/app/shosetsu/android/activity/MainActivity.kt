@@ -29,9 +29,7 @@ import app.shosetsu.android.common.ext.withFadeTransaction
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
 import app.shosetsu.android.ui.browse.BrowseController
-import app.shosetsu.android.ui.catalogue.CatalogsController
 import app.shosetsu.android.ui.downloads.DownloadsController
-import app.shosetsu.android.ui.extensions.ExtensionsController
 import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.MoreController
 import app.shosetsu.android.ui.search.SearchController
@@ -222,8 +220,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		Log.d("Nav", "Selected $id")
 		when (id) {
 			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
-			R.id.nav_catalogue -> setRoot(CatalogsController(), R.id.nav_catalogue)
-			R.id.nav_extensions -> setRoot(ExtensionsController(), R.id.nav_extensions)
+			R.id.nav_catalogue -> setRoot(BrowseController(), R.id.nav_catalogue)
+			R.id.nav_extensions -> setRoot(BrowseController(), R.id.nav_extensions)
 			R.id.nav_settings -> transitionView(SettingsController())
 			R.id.nav_downloads -> transitionView(DownloadsController())
 			R.id.nav_browse -> setRoot(BrowseController(), R.id.nav_browse)

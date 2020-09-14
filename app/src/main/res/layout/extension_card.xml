@@ -29,38 +29,44 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_toStartOf="@id/button"
+            android:layout_toStartOf="@id/linearLayout"
             android:layout_toEndOf="@id/imageView"
             android:text="@string/todo"
             tools:text="This is an extension title" />
 
-        <ImageButton
-            android:id="@+id/button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_toStartOf="@id/settings"
-            android:background="@android:color/transparent"
-            android:clickable="false"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_file_download"
-            android:text="@string/download" />
-
-        <ImageButton
-            android:id="@+id/settings"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@android:color/transparent"
-            android:clickable="false"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_settings"
-            android:text="@string/download" />
+            android:layout_marginBottom="16dp">
+
+            <ImageButton
+                android:id="@+id/button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_file_download"
+                android:text="@string/download" />
+
+            <ImageButton
+                android:id="@+id/settings"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="8dp"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_settings"
+                android:text="@string/download" />
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/version"
