@@ -1,16 +1,7 @@
 {
-  "latestVersion": "935",
+  "latestVersion": "937",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- DownloadsController.kt now uses FAB for start/pause",
-    "- NovelInfoController.kt no longer uses FAB",
-    "- NovelChaptersController.kt now checks if it is visible to manipulate FAB",
-    "- ViewSettings.kt, Legacy navigation has adjusted description",
-    "- ViewSettings.kt some strings have been updated",
-    "- SplashScreen.kt now isn't an always case",
-    "- SearchController.kt no longer crashes on push",
-    "- CatalogController.kt now destroys data on leaving",
-    "- position 0 no longer occurs",
-    "- DownloadSettings.kt no longer has download speed option"
+    "- Combined ExtensionsController.kt and CatalogsController.kt"
   ]
 }
