@@ -3,6 +3,7 @@ package app.shosetsu.android.di
 import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
@@ -37,7 +38,6 @@ import org.kodein.di.generic.provider
  * 01 / 05 / 2020
  */
 val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
-	bind<LoadCatalogsUseCase>() with provider { LoadCatalogsUseCase(instance()) }
 
 	bind<LoadDownloadsUseCase>() with provider { LoadDownloadsUseCase(instance()) }
 
@@ -128,4 +128,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 	bind<ConvertNCToCNUIUseCase>() with provider { ConvertNCToCNUIUseCase(instance()) }
 	bind<LoadSearchRowUIUseCase>() with provider { LoadSearchRowUIUseCase((instance())) }
+	bind<GetExtensionSettingsUseCase>() with provider { GetExtensionSettingsUseCase(instance()) }
+	bind<LoadExtensionUIUseCase>() with provider { LoadExtensionUIUseCase(instance()) }
+
 }

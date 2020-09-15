@@ -51,8 +51,11 @@ class ExtensionsRepository(
 		private val repositorySource: ILocalExtRepoDataSource,
 		private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
-	override suspend fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
+	override fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
 			databaseSource.loadExtensions()
+
+	override fun getExtensionLive(id: Int): LiveData<HResult<ExtensionEntity>> =
+			databaseSource.loadExtensionLive(id)
 
 	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*> {
 		val repo = repositorySource.loadRepository(extensionEntity.repoID)

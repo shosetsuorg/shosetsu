@@ -63,20 +63,20 @@ class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, private val p
 			true
 		}
 
-		holder.recyclerView.adapter = fastAdapter
+		holder.binding.recyclerView.adapter = fastAdapter
 
 		val handleUpdate = { result: HResult<List<ACatalogNovelUI>> ->
 			when (result) {
 				is HResult.Loading -> {
-					holder.progressBar.visibility = View.VISIBLE
+					holder.binding.progressBar.visibility = View.VISIBLE
 				}
 				is HResult.Empty -> {
-					holder.progressBar.visibility = View.GONE
+					holder.binding.progressBar.visibility = View.GONE
 				}
 				is HResult.Error -> {
 				}
 				is HResult.Success -> {
-					holder.progressBar.visibility = View.GONE
+					holder.binding.progressBar.visibility = View.GONE
 					FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
 							itemAdapter,
 							result.data

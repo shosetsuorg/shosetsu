@@ -3,7 +3,8 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.view.uimodels.model.ExtensionConfigUI
+import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /*
@@ -23,19 +24,23 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
+ * 16 / 07 / 2020
  *
- * @author github.com/doomsdayrs
+ * This file is mainly to configure settings of a formatter
+ *
+ * [liveData] is of the formatter object itself
  */
-abstract class IExtensionsConfigureViewModel
-	: SubscribeHandleViewModel<List<ExtensionConfigUI>>, ViewModel() {
+abstract class IExtensionConfigureViewModel : ViewModel(), SubscribeHandleViewModel<ExtensionUI> {
+	abstract val extensionSettings: LiveData<HResult<List<SettingsItemData>>>
 
-	/** Update the entity */
-	abstract fun updateExtensionConfig(
-			extensionConfigUI: ExtensionConfigUI,
-			enabled: Boolean
-	): LiveData<HResult<*>>
+	/** Set the extension ID to use */
+	abstract fun setExtensionID(id: Int)
+
+	/** Save the setting of this specific formatter */
+	abstract suspend fun saveSetting(id: Int, value: Any)
+	abstract fun uninstall(extensionUI: ExtensionUI)
+
+	abstract fun destroy()
 }

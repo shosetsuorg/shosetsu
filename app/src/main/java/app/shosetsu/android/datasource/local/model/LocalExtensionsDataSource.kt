@@ -45,6 +45,13 @@ class LocalExtensionsDataSource(
 		}
 	}
 
+	override fun loadExtensionLive(formatterID: Int): LiveData<HResult<ExtensionEntity>> = liveData {
+		try {
+			emitSource(extensionsDao.loadExtensionLive(formatterID).map { successResult(it) })
+		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		}
+	}
 
 	override fun loadPoweredExtensionsCards(
 	): LiveData<HResult<List<IDTitleImage>>> = liveData {

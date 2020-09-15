@@ -25,12 +25,13 @@ import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_FORMATTER
+import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.catalogue.CatalogController
+import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
@@ -74,7 +75,7 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 			Log.d("FormatterSelection", item.name)
 			if (viewModel.isOnline()) {
 				pushController(CatalogController(bundleOf(
-						BUNDLE_FORMATTER to item.id
+						BUNDLE_EXTENSION to item.id
 				)))
 			} else context?.toast(R.string.you_not_online)
 			true
@@ -92,6 +93,15 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 
 				if (!installed || update) viewModel.installExtension(item)
 			}
+		})
+
+		fastAdapter.addEventHook(object : ClickEventHook<ExtensionUI>() {
+			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.settings else null
+
+			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<ExtensionUI>, item: ExtensionUI) {
+				pushController(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to item.id)))
+			}
+
 		})
 	}
 

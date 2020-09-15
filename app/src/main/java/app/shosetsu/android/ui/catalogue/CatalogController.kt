@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ShosetsuSettings
-import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_FORMATTER
+import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.*
@@ -109,7 +109,7 @@ class CatalogController(
 				pushController(NovelController(
 						bundleOf(
 								BUNDLE_NOVEL_ID to item.id,
-								BUNDLE_FORMATTER to bundle.getInt(BUNDLE_FORMATTER)
+								BUNDLE_EXTENSION to bundle.getInt(BUNDLE_EXTENSION)
 						)
 				))
 				true
@@ -122,7 +122,7 @@ class CatalogController(
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.setFormatterID(bundle.getInt(BUNDLE_FORMATTER))
+		viewModel.setFormatterID(bundle.getInt(BUNDLE_EXTENSION))
 		binding.swipeRefreshLayout.setOnRefreshListener { viewModel.resetView() }
 		setupObservers()
 		setupRecyclerView()

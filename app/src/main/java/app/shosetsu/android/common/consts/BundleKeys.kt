@@ -27,7 +27,8 @@ package app.shosetsu.android.common.consts
 object BundleKeys {
 	const val BUNDLE_URL: String = "url"
 	const val BUNDLE_ACTION: String = "action"
-	const val BUNDLE_FORMATTER: String = "formatter"
+	const val BUNDLE_EXTENSION: String = "extension"
+
 	const val BUNDLE_NOVEL_URL: String = "novelURL"
 	const val BUNDLE_NOVEL_ID: String = "novelID"
 	const val BUNDLE_CHAPTER_ID: String = "chapterID"

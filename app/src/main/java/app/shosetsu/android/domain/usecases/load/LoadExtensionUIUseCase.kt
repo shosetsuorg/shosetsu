@@ -1,15 +1,13 @@
-package app.shosetsu.android.viewmodel.model.catalog
+package app.shosetsu.android.domain.usecases.load
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.domain.usecases.IsOnlineUseCase
-import app.shosetsu.android.domain.usecases.load.LoadCatalogsUseCase
-import app.shosetsu.android.view.uimodels.model.catlog.CatalogOptionUI
-import app.shosetsu.android.viewmodel.abstracted.ICatalogOptionsViewModel
-import kotlinx.coroutines.Dispatchers
+import app.shosetsu.android.common.dto.mapTo
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.view.uimodels.model.ExtensionUI
 
 /*
  * This file is part of shosetsu.
@@ -30,18 +28,15 @@ import kotlinx.coroutines.Dispatchers
 
 /**
  * shosetsu
- * 30 / 04 / 2020
+ * 04 / 07 / 2020
  */
-class CatalogOptionsViewModel(
-		private val loadCatalogsUseCase: LoadCatalogsUseCase,
-		private val isOnlineUseCase: IsOnlineUseCase,
-) : ICatalogOptionsViewModel() {
-	override val liveData: LiveData<HResult<List<CatalogOptionUI>>> by lazy {
-		liveData(context = viewModelScope.coroutineContext + Dispatchers.Main) {
-			emit(loading())
-			emitSource(loadCatalogsUseCase())
-		}
-	}
-
-	override fun isOnline(): Boolean = isOnlineUseCase()
+class LoadExtensionUIUseCase(
+		private val iExtensionsRepository: IExtensionsRepository,
+) {
+	operator fun invoke(id: Int): LiveData<HResult<ExtensionUI>> =
+			liveData<HResult<ExtensionUI>> {
+				emit(loading())
+				if (id != -1)
+					emitSource(iExtensionsRepository.getExtensionLive(id).map { it.mapTo() })
+			}
 }

@@ -53,6 +53,10 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 	fun loadExtension(formatterID: Int): ExtensionEntity
 
 	@Throws(SQLiteException::class)
+	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
+	fun loadExtensionLive(formatterID: Int): LiveData<ExtensionEntity>
+
+	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
 	fun loadExtensionCountFromID(formatterID: Int): Int
 

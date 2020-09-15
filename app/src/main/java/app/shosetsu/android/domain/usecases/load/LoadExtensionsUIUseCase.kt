@@ -36,7 +36,9 @@ class LoadExtensionsUIUseCase(
 	override fun invoke(): LiveData<HResult<List<ExtensionUI>>> {
 		return liveData {
 			loading()
-			emitSource(extensionsRepository.getExtensions().map { it.mapListTo() })
+			emitSource(extensionsRepository.getExtensions().map {
+				it.mapListTo()
+			})
 		}
 	}
 }

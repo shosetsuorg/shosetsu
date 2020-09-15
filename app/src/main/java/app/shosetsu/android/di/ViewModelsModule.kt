@@ -3,9 +3,8 @@ package app.shosetsu.android.di
 import app.shosetsu.android.viewmodel.abstracted.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AInfoSettingsViewModel
 import app.shosetsu.android.viewmodel.model.*
-import app.shosetsu.android.viewmodel.model.catalog.CatalogOptionsViewModel
 import app.shosetsu.android.viewmodel.model.catalog.CatalogViewModel
-import app.shosetsu.android.viewmodel.model.extension.ExtensionsConfigureViewModel
+import app.shosetsu.android.viewmodel.model.extension.ExtensionConfigureViewModel
 import app.shosetsu.android.viewmodel.model.extension.ExtensionsViewModel
 import app.shosetsu.android.viewmodel.model.novel.NovelChaptersViewModel
 import app.shosetsu.android.viewmodel.model.novel.NovelInfoViewModel
@@ -55,12 +54,11 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i()) }
 
 	// Catalog(s)
-	bind<ICatalogOptionsViewModel>() with provider { CatalogOptionsViewModel(i(), i()) }
 	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i(), i(), i()) }
 
 	// Extensions
 	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i(), i()) }
-	bind<IExtensionsConfigureViewModel>() with provider { ExtensionsConfigureViewModel(i(), i()) }
+	bind<IExtensionConfigureViewModel>() with provider { ExtensionConfigureViewModel(i(), i(), i(), i()) }
 
 	// Novel View
 	bind<INovelViewModel>() with provider { NovelViewModel(i(), i()) }

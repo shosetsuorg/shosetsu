@@ -3,14 +3,14 @@ package app.shosetsu.android.ui.extensionsConfigure
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_FORMATTER
+import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.viewmodel.abstracted.IExtensionSingleConfigureViewModel
+import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ConfigureExtensionViewBinding
 
@@ -29,7 +29,6 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ConfigureExtensionViewBin
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -39,10 +38,10 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ConfigureExtensionViewBin
  * Opens up detailed view of an extension, allows modifications
  */
 class ConfigureExtension(bundle: Bundle) : FastAdapterRecyclerController<ConfigureExtensionViewBinding, SettingsItemData>(bundle) {
-	val viewModel: IExtensionSingleConfigureViewModel by viewModel()
+	val viewModel: IExtensionConfigureViewModel by viewModel()
 
 	override fun onViewCreated(view: View) {
-		viewModel.setExtensionID(args.getInt(BUNDLE_FORMATTER))
+		viewModel.setExtensionID(args.getInt(BUNDLE_EXTENSION))
 		observe()
 	}
 
@@ -63,6 +62,8 @@ class ConfigureExtension(bundle: Bundle) : FastAdapterRecyclerController<Configu
 					binding.name.text = extensionUI.name
 					binding.uninstallButton.setOnClickListener {
 						viewModel.uninstall(extensionUI)
+						viewModel.destroy()
+						activity?.onBackPressed()
 					}
 				}
 			}
