@@ -47,7 +47,7 @@ class LocalExtensionsDataSource(
 
 	override fun loadExtensionLive(formatterID: Int): LiveData<HResult<ExtensionEntity>> = liveData {
 		try {
-			emitSource(extensionsDao.loadExtensionLive(formatterID).map { successResult(it) })
+			emitSource(extensionsDao.getExtensionLive(formatterID).map { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		}
@@ -79,7 +79,7 @@ class LocalExtensionsDataSource(
 	}
 
 	override suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity> = try {
-		successResult(extensionsDao.loadExtension(formatterID))
+		successResult(extensionsDao.getExtension(formatterID))
 	} catch (e: SQLiteException) {
 		errorResult(e)
 	}
@@ -89,4 +89,11 @@ class LocalExtensionsDataSource(
 	} catch (e: SQLiteException) {
 		errorResult(e)
 	}
+
+	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> = try {
+		successResult(extensionsDao.getExtensions(repoID))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
+
 }

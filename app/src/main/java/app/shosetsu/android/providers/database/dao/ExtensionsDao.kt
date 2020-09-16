@@ -25,7 +25,6 @@ import app.shosetsu.android.providers.database.dao.base.BaseDao
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
@@ -50,25 +49,28 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun loadExtension(formatterID: Int): ExtensionEntity
+	fun getExtension(formatterID: Int): ExtensionEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun loadExtensionLive(formatterID: Int): LiveData<ExtensionEntity>
+	fun getExtensionLive(formatterID: Int): LiveData<ExtensionEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
-	fun loadExtensionCountFromID(formatterID: Int): Int
+	fun getExtensionCountFromID(formatterID: Int): Int
 
 	@Throws(SQLiteException::class)
 	@Ignore
-	fun doesExtensionExist(formatterID: Int): Boolean = loadExtensionCountFromID(formatterID) > 0
+	fun doesExtensionExist(formatterID: Int): Boolean = getExtensionCountFromID(formatterID) > 0
+
+	@Query("SELECT * FROM extensions WHERE repoID = :repoID")
+	fun getExtensions(repoID: Int): List<ExtensionEntity>
 
 	@Throws(SQLiteException::class)
 	@Transaction
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) {
 		if (doesExtensionExist(extensionEntity.id)) {
-			suspendedUpdate(loadExtension(extensionEntity.id).copy(
+			suspendedUpdate(getExtension(extensionEntity.id).copy(
 					name = extensionEntity.name,
 					imageURL = extensionEntity.imageURL,
 					repositoryVersion = extensionEntity.repositoryVersion,
@@ -78,5 +80,4 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 			insertReplace(extensionEntity)
 		}
 	}
-
 }

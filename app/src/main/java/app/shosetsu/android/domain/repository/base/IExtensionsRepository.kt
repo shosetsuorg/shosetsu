@@ -30,10 +30,13 @@ import app.shosetsu.lib.Novel
  */
 interface IExtensionsRepository {
 	/** LiveData of all extensions */
-	fun getExtensions(): LiveData<HResult<List<ExtensionEntity>>>
+	fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
 
 	/** LiveData of a specific extension */
 	fun getExtensionLive(id: Int): LiveData<HResult<ExtensionEntity>>
+
+	/** Get extensions by their repository ID */
+	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
 
 	/** Installs an [extensionEntity] */
 	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*>
@@ -71,4 +74,6 @@ interface IExtensionsRepository {
 			page: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>
+
+	suspend fun removeExtension(it: ExtensionEntity): HResult<*>
 }

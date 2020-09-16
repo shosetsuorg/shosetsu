@@ -2,6 +2,7 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import androidx.core.view.isVisible
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.utils.FormatterUtils
 import app.shosetsu.android.domain.model.base.Convertible
@@ -51,7 +52,13 @@ data class ExtensionUI(
 		get() = id.toLong()
 		set(value) {}
 
-	fun hasUpdate() = FormatterUtils.compareVersions(installedVersion ?: "", repositoryVersion)
+	enum class State { UPDATE, NO_UPDATE, OBSOLETE }
+
+	fun updateState(): State {
+		if (repositoryVersion == "-9.-9.-9") return State.OBSOLETE
+		return if (FormatterUtils.compareVersions(installedVersion ?: "", repositoryVersion))
+			State.UPDATE else State.NO_UPDATE
+	}
 
 	override fun convertTo(): ExtensionEntity = ExtensionEntity(
 			id,
@@ -80,15 +87,23 @@ data class ExtensionUI(
 				button.isVisible = false
 				version.text = item.installedVersion
 
-				if (item.hasUpdate()) {
-					button.isVisible = true
-					button.setImageResource(R.drawable.ic_file_update)
-					button.rotation = 180f
+				when (item.updateState()) {
+					State.UPDATE -> {
+						button.isVisible = true
+						button.setImageResource(R.drawable.ic_file_update)
+						button.rotation = 180f
 
-					updateVersion.visibility = View.VISIBLE
-					updateVersion.text = item.repositoryVersion
-				} else {
-					updateVersion.visibility = View.GONE
+						updateVersion.visibility = View.VISIBLE
+						updateVersion.text = item.repositoryVersion
+					}
+					State.NO_UPDATE -> {
+						updateVersion.visibility = View.GONE
+					}
+					State.OBSOLETE -> {
+						updateVersion.visibility = View.VISIBLE
+						updateVersion.setText(R.string.obsolete_extension)
+						updateVersion.textSize = 32f
+					}
 				}
 			} else {
 				version.text = item.repositoryVersion

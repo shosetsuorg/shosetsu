@@ -49,7 +49,8 @@ interface ILocalExtensionsDataSource {
 	/** Load an [ExtensionEntity] via its [formatterID]*/
 	fun loadExtensionLive(formatterID: Int): LiveData<HResult<ExtensionEntity>>
 
-
 	/** Inserts an [extensionEntity] otherwise updates it */
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*>
+
+	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
 }

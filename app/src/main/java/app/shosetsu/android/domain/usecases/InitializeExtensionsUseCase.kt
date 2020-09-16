@@ -168,6 +168,7 @@ class InitializeExtensionsUseCase(
 			Log.e(logID(), "JSON error", e)
 			return
 		}
+		val presentExtensions = ArrayList<Int>() // Extensions from repo
 		scriptsArray.forEachTyped { script: JSONObject ->
 			val formatterID: Int
 			val formatterName: String
@@ -183,6 +184,7 @@ class InitializeExtensionsUseCase(
 				Log.e(logID(), "Error getting id", e)
 				return@forEachTyped
 			}
+			presentExtensions.add(formatterID)
 			try {
 				formatterName = script.getString("name")
 			} catch (e: JSONException) {
@@ -229,6 +231,17 @@ class InitializeExtensionsUseCase(
 					repositoryVersion = version,
 					md5 = md5
 			))
+		}
+		extRepo.getExtensions(repo.id).let { r ->
+			if (r is Success) {
+				r.data.filterNot { presentExtensions.contains(it.id) }.forEach {
+					if (it.installed)
+						extRepo.updateExtension(it.copy(
+								repositoryVersion = "-9.-9.-9"
+						))
+					else extRepo.removeExtension(it)
+				}
+			}
 		}
 	}
 }

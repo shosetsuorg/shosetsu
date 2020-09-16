@@ -17,7 +17,6 @@ package app.shosetsu.android.ui.browse
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -72,12 +71,13 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 
 	override fun setupFastAdapter() {
 		fastAdapter.setOnClickListener { _, _, item, _ ->
-			Log.d("FormatterSelection", item.name)
-			if (viewModel.isOnline()) {
-				pushController(CatalogController(bundleOf(
-						BUNDLE_EXTENSION to item.id
-				)))
-			} else context?.toast(R.string.you_not_online)
+			if (item.installed)
+				if (viewModel.isOnline()) {
+					pushController(CatalogController(bundleOf(
+							BUNDLE_EXTENSION to item.id
+					)))
+				} else context?.toast(R.string.you_not_online)
+			else toast(R.string.ext_not_installed)
 			true
 		}
 
@@ -88,7 +88,7 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 				var update = false
 				if (item.installed && item.isExtEnabled) {
 					installed = true
-					if (item.hasUpdate()) update = true
+					if (item.updateState() == ExtensionUI.State.UPDATE) update = true
 				}
 
 				if (!installed || update) viewModel.installExtension(item)
@@ -110,7 +110,7 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 	}
 
 	override fun updateUI(newList: List<ExtensionUI>) {
-		super.updateUI(newList.sortedBy { it.name }.sortedBy { it.lang }.sortedBy { !it.installed }.sortedBy { !it.hasUpdate() })
+		super.updateUI(newList.sortedBy { it.name }.sortedBy { it.lang }.sortedBy { !it.installed }.sortedBy { !(it.updateState() == ExtensionUI.State.UPDATE) })
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
