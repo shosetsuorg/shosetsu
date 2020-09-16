@@ -18,9 +18,7 @@ package app.shosetsu.android.ui.updates
  */
 
 import android.view.View
-import app.shosetsu.android.common.ext.openChapter
-import app.shosetsu.android.common.ext.setOnClickListener
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.base.CollapsedToolBarController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.UpdateUI
@@ -38,6 +36,12 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(), Collap
 	override val viewTitleRes: Int = R.string.updates
 	override fun onViewCreated(view: View) {}
 
+
+	override fun setupRecyclerView() {
+		super.setupRecyclerView()
+		recyclerView.setPadding(0, 0, 0, 8)
+	}
+
 	override fun setupFastAdapter() {
 		fastAdapter.setOnClickListener { _, _, (chapterID, novelID), _ ->
 			activity?.openChapter(chapterID, novelID)
@@ -52,12 +56,13 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(), Collap
 		}
 	}
 
-	override fun showEmpty() {
-		binding.emptyDataView.show("No updates yet! Maybe check again?")
+	override fun updateUI(newList: List<UpdateUI>) {
+		// Launches the sorting task async, then it passes the result to the UI
+		launchIO { newList.sortedBy { it.time }.let { launchUI { super.updateUI(it) } } }
 	}
 
-	override fun updateUI(newList: List<UpdateUI>) {
-		if (newList.isEmpty()) showEmpty()
-		super.updateUI(newList)
+	override fun showEmpty() {
+		super.showEmpty()
+		binding.emptyDataView.show("No updates yet! Maybe check again?")
 	}
 }

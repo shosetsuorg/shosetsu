@@ -92,6 +92,14 @@ class LibraryController
 	}
 
 	override fun onViewCreated(view: View) {
+		showEmpty()
+		binding.swipeRefreshLayout.setOnRefreshListener {
+			if (viewModel.isOnline())
+				viewModel.startUpdateManager()
+			else toast(R.string.you_not_online)
+
+			binding.swipeRefreshLayout.isRefreshing = false
+		}
 	}
 
 	override fun setupRecyclerView() {
@@ -147,14 +155,8 @@ class LibraryController
 	}
 
 	override fun updateUI(newList: List<ABookmarkedNovelUI>) {
-		if (newList.isEmpty()) {
-			showEmpty()
-		} else {
-			if (!binding.recyclerView.isVisible)
-				binding.recyclerView.isVisible = true
-			binding.emptyDataView.hide()
-		}
-		super.updateUI(newList.sortedBy { it.title })
+		// sorts in IO, updates on UI
+		launchIO { newList.sortedBy { it.title }.let { launchUI { super.updateUI(it) } } }
 	}
 
 	override fun difAreItemsTheSame(
@@ -191,12 +193,6 @@ class LibraryController
 	/***/
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
-			R.id.updater_now -> {
-				if (viewModel.isOnline())
-					viewModel.startUpdateManager()
-				else toast(R.string.you_not_online)
-				return true
-			}
 			R.id.chapter_select_all -> {
 				fastAdapter.getSelectExtension().select()
 				return true
@@ -223,9 +219,8 @@ class LibraryController
 		return false
 	}
 
-
 	override fun hideEmpty() {
-		binding.recyclerView.isVisible = true
+		if (!binding.recyclerView.isVisible) binding.recyclerView.isVisible = true
 		binding.emptyDataView.hide()
 	}
 

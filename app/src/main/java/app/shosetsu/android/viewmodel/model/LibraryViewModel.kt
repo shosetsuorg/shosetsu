@@ -53,7 +53,7 @@ class LibraryViewModel(
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
 	override fun startUpdateManager() {
-		startUpdateWorkerUseCase()
+		startUpdateWorkerUseCase(true)
 	}
 
 	override fun removeFromLibrary(list: List<ABookmarkedNovelUI>) {

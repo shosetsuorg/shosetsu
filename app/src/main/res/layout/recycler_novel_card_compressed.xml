@@ -1,66 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/novel_item_card"
-	style="@style/Widget.MaterialComponents.CardView"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:layout_margin="8dp"
-	app:strokeColor="@color/selected_blue">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/novel_item_card"
+    style="@style/Widget.MaterialComponents.CardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    app:strokeColor="@color/selected_blue">
 
-	<FrameLayout
-		android:id="@+id/constraint"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+    <FrameLayout
+        android:id="@+id/constraint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-			<ImageView
-				android:id="@+id/imageView"
-				android:layout_width="50dp"
-				android:layout_height="50dp"
-				android:layout_marginStart="16dp"
-				android:layout_marginTop="16dp"
-				android:layout_marginBottom="16dp"
-				android:contentDescription="@string/todo"
-				android:scaleType="centerCrop"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toTopOf="parent"
-				app:srcCompat="@drawable/ic_broken_image_24dp" />
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@string/todo"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_broken_image_24dp" />
 
-			<TextView
-				android:id="@+id/title"
-				android:layout_width="0dp"
-				android:layout_height="0dp"
-				android:layout_marginStart="8dp"
-				android:layout_marginTop="16dp"
-				android:layout_marginEnd="16dp"
-				android:layout_marginBottom="16dp"
-				android:text="@string/unknown"
-				android:textStyle="bold"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintEnd_toStartOf="@+id/novel_item_left_to_read"
-				app:layout_constraintStart_toEndOf="@id/imageView"
-				app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/unknown"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/novel_item_left_to_read"
+                app:layout_constraintStart_toEndOf="@id/imageView"
+                app:layout_constraintTop_toTopOf="parent" />
 
-			<com.google.android.material.chip.Chip
-				android:id="@+id/novel_item_left_to_read"
-				android:layout_width="wrap_content"
-				android:layout_height="40dp"
-				android:layout_gravity="top"
-				android:layout_marginTop="16dp"
-				android:layout_marginEnd="16dp"
-				android:layout_marginBottom="16dp"
-				android:textAlignment="center"
-				android:visibility="gone"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/novel_item_left_to_read"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="top"
+                android:layout_marginEnd="16dp"
+                android:textAlignment="center"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
-		</androidx.constraintlayout.widget.ConstraintLayout>
-	</FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>
