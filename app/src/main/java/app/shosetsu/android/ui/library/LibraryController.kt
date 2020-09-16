@@ -154,7 +154,7 @@ class LibraryController
 				binding.recyclerView.isVisible = true
 			binding.emptyDataView.hide()
 		}
-		super.updateUI(newList)
+		super.updateUI(newList.sortedBy { it.title })
 	}
 
 	override fun difAreItemsTheSame(
