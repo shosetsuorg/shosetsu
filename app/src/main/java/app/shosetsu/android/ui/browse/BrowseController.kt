@@ -114,7 +114,7 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 					.sortedBy { it.lang }
 					.sortedBy { !it.installed }
 					.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
-			launchIO { super.updateUI(list) }
+			launchUI { super.updateUI(list) }
 		}
 	}
 
