@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_library"
@@ -11,24 +12,16 @@
             android:id="@+id/nav_updates"
             android:icon="@drawable/ic_system_update_alt_24dp"
             android:title="@string/library_updates" />
-        <item
-            android:id="@+id/nav_catalogue"
-            android:icon="@drawable/ic_view_module"
-            android:title="@string/catalogue" />
-        <item
-            android:id="@+id/nav_extensions"
-            android:icon="@drawable/ic_baseline_add_shopping_cart_24"
-            android:title="@string/extensions"/>
 
         <item
-            android:id="@+id/nav_downloads"
-            android:icon="@drawable/ic_file_download"
-            android:title="@string/download"
-            />
+            android:id="@+id/nav_browse"
+            android:icon="@drawable/ic_baseline_navigation_24"
+            android:title="@string/browse" />
+
         <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings"
-            android:title="@string/settings" />
+            android:id="@+id/nav_more"
+            android:icon="@drawable/ic_baseline_more_horiz_24"
+            android:title="@string/more" />
     </group>
 
 </menu>

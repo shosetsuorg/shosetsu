@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
+import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import org.json.JSONObject
@@ -36,4 +37,7 @@ interface IExtRepoRepository {
 
 	/** Loads all repositories present */
 	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
+
+	/** Loads all repositories present */
+	suspend fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>>
 }

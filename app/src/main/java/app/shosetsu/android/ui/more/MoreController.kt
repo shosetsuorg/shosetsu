@@ -3,6 +3,7 @@ package app.shosetsu.android.ui.more
 import android.view.LayoutInflater
 import android.view.View
 import app.shosetsu.android.ui.downloads.DownloadsController
+import app.shosetsu.android.ui.repository.RepositoryController
 import app.shosetsu.android.ui.settings.SettingsController
 import app.shosetsu.android.view.base.CollapsedToolBarController
 import app.shosetsu.android.view.base.PushCapableController
@@ -40,6 +41,9 @@ class MoreController
 	override fun onViewCreated(view: View) {
 		binding.download.setOnClickListener {
 			pushController(DownloadsController())
+		}
+		binding.repositories.setOnClickListener {
+			pushController(RepositoryController())
 		}
 		binding.settings.setOnClickListener {
 			pushController(SettingsController())

@@ -290,11 +290,11 @@ class ShosetsuSettings(
 
 	var columnsInNovelsViewP: Int
 		set(value) = settings.edit { putInt(C_IN_NOVELS_P, value) }
-		get() = settings.getInt(C_IN_NOVELS_P, -1)
+		get() = settings.getInt(C_IN_NOVELS_P, 3)
 
 	var columnsInNovelsViewH: Int
 		set(value) = settings.edit { putInt(C_IN_NOVELS_H, value) }
-		get() = settings.getInt(C_IN_NOVELS_H, 0)
+		get() = settings.getInt(C_IN_NOVELS_H, 6)
 
 	var novelCardType: Int
 		set(value) = settings.edit { putInt(NOVEL_CARD_TYPE, value) }

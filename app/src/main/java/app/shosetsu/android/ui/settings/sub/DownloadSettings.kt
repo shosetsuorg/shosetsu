@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.widget.ArrayAdapter
 import android.widget.Toast
-import app.shosetsu.android.backend.shoDir
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import app.shosetsu.android.common.ext.context
@@ -75,7 +73,6 @@ class DownloadSettings : SettingsSubController() {
 
 	private fun setDownloadDirectory(dir: String) {
 		s.downloadDirectory = dir
-		shoDir = dir
 		recyclerView.post { adapter?.notifyItemChanged(0) }
 	}
 

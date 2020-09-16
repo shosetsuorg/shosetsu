@@ -10,7 +10,6 @@ import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
-import app.shosetsu.android.backend.shoDir
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
@@ -137,7 +136,7 @@ class DownloadWorker(
 										.build()
 						)
 
-						val folder = File(makeDownloadPath(downloadEntity))
+						val folder = File(makeDownloadPath(applicationContext, downloadEntity))
 						if (!folder.exists()) if (!folder.mkdirs())
 							throw IOException("Failed to mkdirs")
 
@@ -248,14 +247,14 @@ class DownloadWorker(
 		override fun stop(): Operation = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
 	}
 
+	/**
+	 * Makes a download path for a downloadEntity
+	 */
+	fun makeDownloadPath(context: Context, downloadEntity: DownloadEntity): String = with(downloadEntity) {
+		"${context.filesDir}/download/${formatterID}/${novelID}"
+	}
+
 	companion object {
 		private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 3
-
-		/**
-		 * Makes a download path for a downloadEntity
-		 */
-		fun makeDownloadPath(downloadEntity: DownloadEntity): String = with(downloadEntity) {
-			"$shoDir/download/${formatterID}/${novelID}"
-		}
 	}
 }

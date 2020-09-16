@@ -130,5 +130,6 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<LoadSearchRowUIUseCase>() with provider { LoadSearchRowUIUseCase((instance())) }
 	bind<GetExtensionSettingsUseCase>() with provider { GetExtensionSettingsUseCase(instance()) }
 	bind<LoadExtensionUIUseCase>() with provider { LoadExtensionUIUseCase(instance()) }
+	bind<LoadRepositoriesUseCase>() with provider { LoadRepositoriesUseCase(instance()) }
 
 }

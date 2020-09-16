@@ -1,11 +1,13 @@
 package app.shosetsu.android.view.uimodels.model
 
+import android.text.format.DateFormat.format
 import android.view.View
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerNovelCardCompressedBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerUpdateUiBinding
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -38,23 +40,25 @@ data class UpdateUI(
 		val novelName: String,
 		val novelImageURL: String,
 ) : BaseRecyclerItem<UpdateUI.ViewHolder>() {
-	override val layoutRes: Int = R.layout.recycler_novel_card_compressed
-	override val type: Int = R.layout.recycler_novel_card_compressed
+	override val layoutRes: Int = R.layout.recycler_update_ui
+	override val type: Int = R.layout.recycler_update_ui
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	/**  */
-	class ViewHolder(itemView: View) : BindViewHolder<UpdateUI, RecyclerNovelCardCompressedBinding>(itemView) {
-		override val binding = RecyclerNovelCardCompressedBinding.bind(view)
+	class ViewHolder(itemView: View) : BindViewHolder<UpdateUI, RecyclerUpdateUiBinding>(itemView) {
+		override val binding = RecyclerUpdateUiBinding.bind(view)
 
-		override fun RecyclerNovelCardCompressedBinding.bindView(item: UpdateUI, payloads: List<Any>) {
+		override fun RecyclerUpdateUiBinding.bindView(item: UpdateUI, payloads: List<Any>) {
 			if (item.novelImageURL.isNotEmpty())
 				picasso(item.novelImageURL, imageView)
 			title.text = item.chapterName
+			date.text = format("dd/MM/yyyy", Date(item.time))
 		}
 
-		override fun RecyclerNovelCardCompressedBinding.unbindView(item: UpdateUI) {
+		override fun RecyclerUpdateUiBinding.unbindView(item: UpdateUI) {
 			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
 			title.text = null
+			date.text = null
 		}
 	}
 }

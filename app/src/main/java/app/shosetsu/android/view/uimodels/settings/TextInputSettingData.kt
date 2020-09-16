@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.settings
 
 import android.text.Editable
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import app.shosetsu.android.common.consts.GONE
 import app.shosetsu.android.common.consts.VISIBLE
@@ -35,9 +36,9 @@ class TextInputSettingData(id: Int) : BottomSettingsItemData(id) {
 
 	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
 		super.bindView(holder, payloads)
-		holder.itemDescription.visibility = GONE
+		holder.itemDescription.isVisible = false
 		holder.textInputEditText.apply {
-			visibility = VISIBLE
+			isVisible = true
 			if (descID != -1) setHint(descID) else if (descText.isNotEmpty()) hint = descText
 			doAfterTextChanged { it?.let(onTextChanged) }
 		}

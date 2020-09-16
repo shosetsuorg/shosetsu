@@ -291,6 +291,9 @@
     <string name="add_to_library">Add to library</string>
     <string name="obsolete_extension">Obsolete extension!</string>
     <string name="ext_not_installed">Extension not installed</string>
+    <string name="id_label">ID:</string>
+    <string name="negative_one">-1</string>
+    <string name="repositories">Repositories</string>
 
     <array name="application_themes">
         <item>@string/light</item>

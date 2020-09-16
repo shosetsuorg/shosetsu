@@ -94,7 +94,7 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 	suspend fun createIfNotExist(repositoryEntity: RepositoryEntity): Int {
 		val tuple = repositoryCountAndROWIDFromURL(repositoryEntity.url)
 		if (tuple.count == 0)
-			return insertRepositoryAndReturn(repositoryEntity).id
+			return insertRepositoryAndReturn(repositoryEntity).id!!
 		return tuple.id
 	}
 }

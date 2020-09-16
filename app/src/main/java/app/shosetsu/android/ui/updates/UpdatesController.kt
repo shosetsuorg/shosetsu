@@ -58,7 +58,7 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(), Collap
 
 	override fun updateUI(newList: List<UpdateUI>) {
 		// Launches the sorting task async, then it passes the result to the UI
-		launchIO { newList.sortedBy { it.time }.let { launchUI { super.updateUI(it) } } }
+		launchIO { newList.sortedByDescending { it.time }.let { launchUI { super.updateUI(it) } } }
 	}
 
 	override fun showEmpty() {

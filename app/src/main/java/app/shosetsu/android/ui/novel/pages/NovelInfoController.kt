@@ -177,8 +177,7 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 			}
 
 			// Loads the image
-			listOf(binding.novelImage ?: null, binding.novelImageBackground
-					?: null).forEach { iV: ImageView? ->
+			listOf(binding.novelImage, binding.novelImageBackground).forEach { iV: ImageView? ->
 				if (novelUI.imageURL.isNotEmpty()) {
 					iV?.let {
 						picasso(novelUI.imageURL, it)

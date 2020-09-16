@@ -95,6 +95,7 @@ fun ViewModel.launchIO(block: suspend CoroutineScope.() -> Unit): Job =
 				block
 		)
 
+@ExperimentalCoroutinesApi
 fun ViewModel.launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
 		GlobalScope.launch(
 				viewModelScope.coroutineContext + Dispatchers.Default,
@@ -102,6 +103,7 @@ fun ViewModel.launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
 				block
 		)
 
+@ExperimentalCoroutinesApi
 fun ViewModel.launchFree(block: suspend CoroutineScope.() -> Unit): Job =
 		GlobalScope.launch(
 				viewModelScope.coroutineContext + Dispatchers.Unconfined,
@@ -115,8 +117,10 @@ fun launchUI(block: suspend CoroutineScope.() -> Unit): Job =
 fun launchIO(block: suspend CoroutineScope.() -> Unit): Job =
 		GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT, block)
 
+@ExperimentalCoroutinesApi
 fun launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
 		GlobalScope.launch(Dispatchers.Default, CoroutineStart.UNDISPATCHED, block)
 
+@ExperimentalCoroutinesApi
 fun launchFree(block: suspend CoroutineScope.() -> Unit): Job =
 		GlobalScope.launch(Dispatchers.Unconfined, CoroutineStart.UNDISPATCHED, block)

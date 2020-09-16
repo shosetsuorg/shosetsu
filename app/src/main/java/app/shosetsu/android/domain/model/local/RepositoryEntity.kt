@@ -32,12 +32,10 @@ import java.io.Serializable
  */
 @Entity(tableName = "repositories")
 data class RepositoryEntity(
-		var url: String,
+		@PrimaryKey(autoGenerate = true)
+		val id: Int = -1,
+		val url: String,
 		var name: String,
 ) : Serializable, Convertible<RepositoryUI> {
-	@PrimaryKey(autoGenerate = true)
-	var id: Int = 0
-
-	override fun convertTo(): RepositoryUI =
-			RepositoryUI(url, name)
+	override fun convertTo(): RepositoryUI = RepositoryUI(id, url, name)
 }

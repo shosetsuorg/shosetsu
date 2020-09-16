@@ -112,6 +112,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		}
 
 		// OLD DB TO NEW
+		@Suppress("DEPRECATION")
 		DBHelper(this@ShosetsuApplication).writableDatabase.close()
 	}
 

@@ -2,10 +2,12 @@ package app.shosetsu.android.view.uimodels.settings.base
 
 import android.os.Build
 import android.view.View
+import android.view.View.VISIBLE
 import android.widget.*
 import androidx.annotation.CallSuper
 import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.VISIBLE
 import app.shosetsu.android.ui.settings.viewHolder.SettingsItem
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
@@ -56,10 +58,10 @@ abstract class SettingsItemData(val id: Int) : BaseRecyclerItem<SettingsItemData
 				itemTitle.text = titleText
 
 			if (descID != -1) {
-				itemDescription.visibility = VISIBLE
+				itemDescription.isVisible = true
 				itemDescription.setText(descID)
 			} else if (descText.isNotEmpty()) {
-				itemDescription.visibility = VISIBLE
+				itemDescription.isVisible = true
 				itemDescription.text = descText
 			}
 		}

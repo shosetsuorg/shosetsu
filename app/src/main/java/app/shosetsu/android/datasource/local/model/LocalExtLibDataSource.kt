@@ -48,7 +48,7 @@ class LocalExtLibDataSource(
 	override suspend fun loadExtLibByRepo(
 			repositoryEntity: RepositoryEntity,
 	): HResult<List<ExtLibEntity>> = try {
-		successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id))
+		successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id!!))
 	} catch (e: SQLiteException) {
 		errorResult(e)
 	}

@@ -72,4 +72,6 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 
 
 	bind<AInfoSettingsViewModel>() with provider { InfoSettingsViewModel(i()) }
+
+	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i()) }
 }

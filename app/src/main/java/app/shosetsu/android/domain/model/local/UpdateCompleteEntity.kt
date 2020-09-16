@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.model.local
 
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 
@@ -41,6 +42,10 @@ data class UpdateCompleteEntity(
 		val novelName: String,
 		val novelImageURL: String,
 ) : Convertible<UpdateUI> {
+	init {
+		logV(this.toString())
+	}
+
 	override fun convertTo(): UpdateUI = UpdateUI(
 			chapterID,
 			novelID,

@@ -231,7 +231,7 @@ class NovelChaptersController(bundle: Bundle)
 			true
 		}
 		R.id.chapter_select_between -> {
-			app.shosetsu.android.common.ext.launchAsync {
+			launchIO {
 				fastAdapter.selectExtension {
 					val selectedItems = selectedItems.toList().sortedBy { it.order }
 					val adapterList = itemAdapter.adapterItems

@@ -202,7 +202,7 @@ class LibraryController
 				return true
 			}
 			R.id.remove_from_library -> {
-				launchAsync {
+				launchIO {
 					viewModel.removeFromLibrary(
 							fastAdapter.getSelectExtension().selectedItems.toList()
 					)

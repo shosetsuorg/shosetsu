@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.settings.base
 
+import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.VISIBLE
 
 /*
@@ -26,6 +27,6 @@ import app.shosetsu.android.common.consts.VISIBLE
 open class BottomSettingsItemData(id: Int) : SettingsItemData(id) {
 	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
 		super.bindView(holder, payloads)
-		holder.bottomField.visibility = VISIBLE
+		holder.bottomField.isVisible = true
 	}
 }

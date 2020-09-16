@@ -22,18 +22,13 @@ import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.consts.ShortCuts
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.requestPerms
-import app.shosetsu.android.common.ext.toast
-import app.shosetsu.android.common.ext.withFadeTransaction
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
 import app.shosetsu.android.ui.browse.BrowseController
-import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.MoreController
 import app.shosetsu.android.ui.search.SearchController
-import app.shosetsu.android.ui.settings.SettingsController
 import app.shosetsu.android.ui.updates.UpdatesController
 import app.shosetsu.android.view.base.*
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
@@ -131,6 +126,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	 * When the back button while drawer is open, close it.
 	 */
 	override fun onBackPressed() {
+		logD("Back Pressed")
 		val backStackSize = router.backstackSize
 		when {
 			drawer_layout.isDrawerOpen(GravityCompat.START) ->
@@ -161,9 +157,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		setSupportActionBar(toolbar)
 
 		toolbar.setNavigationOnClickListener {
-			if (router.backstackSize == 1 && viewModel.navigationStyle() == 1)
-				drawer_layout.openDrawer(GravityCompat.START)
-			else onBackPressed()
+			logD("Toolbar clicked")
+			if (router.backstackSize == 1) {
+				if (viewModel.navigationStyle() == 1) {
+					logD("Opening drawer")
+					drawer_layout.openDrawer(GravityCompat.START)
+				}
+			} else onBackPressed()
 		}
 
 		if (viewModel.navigationStyle() == 0) {
@@ -219,16 +219,12 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	private fun handleNavigationSelected(id: Int) {
 		Log.d("Nav", "Selected $id")
 		when (id) {
+			// Bottom nav
 			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
-			R.id.nav_catalogue -> setRoot(BrowseController(), R.id.nav_catalogue)
-			R.id.nav_extensions -> setRoot(BrowseController(), R.id.nav_extensions)
-			R.id.nav_settings -> transitionView(SettingsController())
-			R.id.nav_downloads -> transitionView(DownloadsController())
 			R.id.nav_browse -> setRoot(BrowseController(), R.id.nav_browse)
 			R.id.nav_more -> setRoot(MoreController(), R.id.nav_more)
-			R.id.nav_updates -> if (viewModel.navigationStyle() == 1)
-				transitionView(UpdatesController())
-			else setRoot(UpdatesController(), R.id.nav_updates)
+			// Shared
+			R.id.nav_updates -> setRoot(UpdatesController(), R.id.nav_updates)
 		}
 	}
 
@@ -260,9 +256,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	internal fun handleIntentAction(intent: Intent) {
 		Log.d(logID(), "Intent received was ${intent.action}")
 		when (intent.action) {
-			ShortCuts.ACTION_OPEN_CATALOGUE -> if (viewModel.navigationStyle() == 1)
-				setSelectedDrawerItem(R.id.nav_catalogue)
-			else setSelectedDrawerItem(R.id.nav_browse)
+			ShortCuts.ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_browse)
 			ShortCuts.ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updates)
 			ShortCuts.ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
 			Intent.ACTION_SEARCH -> {
@@ -332,7 +326,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				}
 			}
 		}
-		viewModel.startDownloadWorker()
 	}
 
 	private fun transitionView(target: Controller) {
@@ -346,8 +339,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		Log.d(logID(), "Show hamburger?: $showHamburger")
 
 		if (showHamburger) {
-
-
 			// Shows navigation
 			if (viewModel.navigationStyle() == 1) {
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)

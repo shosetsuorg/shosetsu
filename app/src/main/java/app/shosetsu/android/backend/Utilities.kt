@@ -47,10 +47,6 @@ class SHOWCASE {
 	val webView: Int = 13
 }
 
-@Deprecated("Find a better use case")
-var shoDir: String = "/Shosetsu/"
-
-
 /**
  * Demarks a list of items, setting only one to be checked.
  *
@@ -61,18 +57,6 @@ var shoDir: String = "/Shosetsu/"
 fun unmarkMenuItems(menuItems: Array<MenuItem>, positionSpared: Int, demarkAction: DeMarkAction?) {
 	for (x in menuItems.indices) menuItems[x].isChecked = (x == positionSpared)
 	demarkAction?.action(positionSpared)
-}
-
-
-/**
- * Initializes the settings
- *
- * @param mainActivity activity
- */
-fun initPreferences(mainActivity: Activity, settings: ShosetsuSettings) {
-	var dir = mainActivity.getExternalFilesDir(null)!!.absolutePath
-	dir = dir.substring(0, dir.indexOf("/Android"))
-	shoDir = settings.settings.getString("dir", "$dir/Shosetsu/")!!
 }
 
 /**

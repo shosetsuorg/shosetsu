@@ -107,7 +107,9 @@ class DBHelper(context: Context) :
 		if (oldVersion < 9) {
 			db.execSQL("DROP TABLE IF EXISTS $CHAPTERS")
 			db.execSQL("DROP TABLE IF EXISTS $NOVELS")
+			@Suppress("DEPRECATION")
 			db.execSQL("DROP TABLE IF EXISTS $DOWNLOADS")
+			@Suppress("DEPRECATION")
 			db.execSQL("DROP TABLE IF EXISTS $UPDATES")
 		} else if (oldVersion < 10) {
 			convert(db)
@@ -230,7 +232,9 @@ class DBHelper(context: Context) :
 				db.execSQL("DROP TABLE IF EXISTS $NOVEL_IDENTIFICATION")
 				db.execSQL("DROP TABLE IF EXISTS $CHAPTERS")
 				db.execSQL("DROP TABLE IF EXISTS $NOVELS")
+				@Suppress("DEPRECATION")
 				db.execSQL("DROP TABLE IF EXISTS $DOWNLOADS")
+				@Suppress("DEPRECATION")
 				db.execSQL("DROP TABLE IF EXISTS $UPDATES")
 			} catch (e: SQLException) {
 				e.printStackTrace()

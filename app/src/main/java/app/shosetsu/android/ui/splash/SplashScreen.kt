@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.activity.MainActivity
-import app.shosetsu.android.backend.initPreferences
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
@@ -64,7 +63,6 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
-		initPreferences(this, settings)
 		textView = findViewById(R.id.title)
 		// Settings setup
 		if (settings.showIntro) {

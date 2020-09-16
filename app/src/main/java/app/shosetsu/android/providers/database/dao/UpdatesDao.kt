@@ -115,7 +115,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 						( 
 							SELECT
 								title
-							FROM chapters WHERE chapterID = updates.chapterID
+							FROM chapters WHERE id = updates.chapterID
 						) AS chapterName, 
 						( 
 							SELECT 

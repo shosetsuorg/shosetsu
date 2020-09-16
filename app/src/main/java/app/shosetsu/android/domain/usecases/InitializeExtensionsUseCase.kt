@@ -144,7 +144,7 @@ class InitializeExtensionsUseCase(
 										extensionLibraryEntity ?: ExtLibEntity(
 												scriptName = name,
 												version = version,
-												repoID = repo.id
+												repoID = repo.id!!
 										)
 								)
 
@@ -223,7 +223,7 @@ class InitializeExtensionsUseCase(
 			}
 			extRepo.insertOrUpdate(ExtensionEntity(
 					id = formatterID,
-					repoID = repo.id,
+					repoID = repo.id!!,
 					name = formatterName,
 					fileName = fileName,
 					imageURL = imageURL,
@@ -232,7 +232,7 @@ class InitializeExtensionsUseCase(
 					md5 = md5
 			))
 		}
-		extRepo.getExtensions(repo.id).let { r ->
+		extRepo.getExtensions(repo.id!!).let { r ->
 			if (r is Success) {
 				r.data.filterNot { presentExtensions.contains(it.id) }.forEach {
 					if (it.installed)
