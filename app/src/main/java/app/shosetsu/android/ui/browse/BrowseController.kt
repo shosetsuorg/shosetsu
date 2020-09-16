@@ -25,10 +25,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
-import app.shosetsu.android.common.ext.context
-import app.shosetsu.android.common.ext.setOnClickListener
-import app.shosetsu.android.common.ext.toast
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
@@ -106,11 +103,19 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 	}
 
 	override fun onViewCreated(view: View) {
+		showEmpty()
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 	}
 
 	override fun updateUI(newList: List<ExtensionUI>) {
-		super.updateUI(newList.sortedBy { it.name }.sortedBy { it.lang }.sortedBy { !it.installed }.sortedBy { !(it.updateState() == ExtensionUI.State.UPDATE) })
+		launchIO {
+			val list = newList
+					.sortedBy { it.name }
+					.sortedBy { it.lang }
+					.sortedBy { !it.installed }
+					.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
+			launchIO { super.updateUI(list) }
+		}
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
