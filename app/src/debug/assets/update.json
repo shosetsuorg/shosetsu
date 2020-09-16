@@ -1,7 +1,10 @@
 {
-  "latestVersion": "943",
+  "latestVersion": "946",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- library sorts by name"
+    "- Async sorting for Library, Updates, Browse, I am not sure about this",
+    "- Library override to update via swipe refresh",
+    "- Removed refresh button from library",
+    "- recycler_novel_card_compressed.xml now fits design of extension cards"
   ]
 }
