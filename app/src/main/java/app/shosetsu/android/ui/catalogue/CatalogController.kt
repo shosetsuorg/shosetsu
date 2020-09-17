@@ -1,7 +1,6 @@
 package app.shosetsu.android.ui.catalogue
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
-import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.*
@@ -109,7 +107,6 @@ class CatalogController(
 			setOnClickListener { _, _, item, _ ->
 				pushController(NovelController(
 						bundleOf(
-								BUNDLE_NOVEL_ID to item.id,
 								BUNDLE_EXTENSION to bundle.getInt(BUNDLE_EXTENSION)
 						)
 				))
@@ -204,8 +201,8 @@ class CatalogController(
 	}
 
 	override fun showError(e: HResult.Error) {
+		logE("Error $e")
 		super.showError(e)
-		Log.i(logID(), "Error $e")
 	}
 
 	override fun showLoading() {

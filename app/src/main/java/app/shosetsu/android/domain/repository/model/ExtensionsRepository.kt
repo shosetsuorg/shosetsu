@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
+import app.shosetsu.android.common.consts.ErrorKeys.ERROR_IMPOSSIBLE
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_BROKEN
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.ext.logError
@@ -120,7 +121,7 @@ class ExtensionsRepository(
 						?.also { if (it is HResult.Success) memorySource.putFormatterInMemory(it.data) }
 				?: errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
 	} catch (e: NullPointerException) {
-		errorResult(ErrorKeys.ERROR_IMPOSSIBLE, "Impossible NPE")
+		errorResult(ERROR_IMPOSSIBLE, "Impossible NPE", e)
 	}
 
 	override suspend fun loadFormatter(formatterID: Int): HResult<Formatter> =

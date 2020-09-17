@@ -11,6 +11,7 @@ import androidx.annotation.StringRes
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.getString
+import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.toast
 import com.bluelinelabs.conductor.Controller
@@ -170,7 +171,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 			length: Int = Toast.LENGTH_SHORT,
 			message: () -> String,
 	) {
-		app.shosetsu.android.common.ext.launchUI {
+		launchUI {
 			applicationContext?.toast(message(), length)
 		}
 	}
@@ -180,7 +181,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 			@StringRes message: Int,
 			length: Int = Toast.LENGTH_SHORT,
 	) {
-		app.shosetsu.android.common.ext.launchUI {
+		launchUI {
 			applicationContext?.toast(message, length)
 		}
 	}

@@ -11,6 +11,7 @@ import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.HTTPException
@@ -74,24 +75,25 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
+			logV("Data: $data")
 			successResult(
 					formatter.listings[listing].getListing(data, page).toList()
 			)
 		} catch (e: HTTPException) {
 			Log.d(logID(), "HTTP Exception")
-			errorResult(ERROR_HTTP_ERROR, e.message!!)
+			errorResult(ERROR_HTTP_ERROR, e.message!!, e)
 		} catch (e: IOException) {
 			Log.d(logID(), "Network exception")
-			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
+			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception", e)
 		} catch (e: LuaError) {
 			if (e.cause != null && e.cause is HTTPException) {
 				Log.d(logID(), "HTTP exception")
 				errorResult(ERROR_HTTP_ERROR, e.cause!!.message!!)
 			} else
-				errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
+				errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
 		} catch (e: Exception) {
 			Log.d(logID(), "General exception")
-			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
+			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error", e)
 		}
 	}
 }

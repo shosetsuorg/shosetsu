@@ -42,6 +42,10 @@ data class UpdateUI(
 ) : BaseRecyclerItem<UpdateUI.ViewHolder>() {
 	override val layoutRes: Int = R.layout.recycler_update_ui
 	override val type: Int = R.layout.recycler_update_ui
+	override var identifier: Long
+		get() = chapterID.toLong()
+		set(value) {}
+
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	/**  */
