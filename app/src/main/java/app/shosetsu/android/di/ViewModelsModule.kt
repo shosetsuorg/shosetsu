@@ -3,7 +3,7 @@ package app.shosetsu.android.di
 import app.shosetsu.android.viewmodel.abstracted.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AInfoSettingsViewModel
 import app.shosetsu.android.viewmodel.model.*
-import app.shosetsu.android.viewmodel.model.catalog.CatalogViewModel
+import app.shosetsu.android.viewmodel.model.CatalogViewModel
 import app.shosetsu.android.viewmodel.model.extension.ExtensionConfigureViewModel
 import app.shosetsu.android.viewmodel.model.extension.ExtensionsViewModel
 import app.shosetsu.android.viewmodel.model.novel.NovelChaptersViewModel

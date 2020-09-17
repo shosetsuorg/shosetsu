@@ -40,11 +40,12 @@ class LoadCatalogueListingDataUseCase(
 	suspend operator fun invoke(
 			formatter: Formatter,
 			currentPage: Int,
+			data: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> = extensionRepository.loadCatalogueData(
 			formatter,
 			0,
 			currentPage,
-			mapOf()
+			data
 	).handleReturn {
 		val data: List<Novel.Listing> = it
 		successResult(data.map { novelListing ->

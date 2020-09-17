@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
+import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.*
@@ -107,6 +108,7 @@ class CatalogController(
 			setOnClickListener { _, _, item, _ ->
 				pushController(NovelController(
 						bundleOf(
+								BUNDLE_NOVEL_ID to item.id,
 								BUNDLE_EXTENSION to bundle.getInt(BUNDLE_EXTENSION)
 						)
 				))

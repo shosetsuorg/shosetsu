@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model.catalog
+package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.MutableLiveData
 import app.shosetsu.android.common.dto.HResult
@@ -16,6 +16,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.mapify
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 
@@ -77,9 +78,9 @@ class CatalogViewModel(
 				when (val v = getFormatterUseCase(fID)) {
 					is HResult.Success -> {
 						formatter = v.data
-
 						extensionName.postValue(successResult(v.data.name))
 						hasSearchLive.postValue(successResult(v.data.hasSearch))
+						filterData.putAll(v.data.searchFiltersModel.mapify())
 						filterItemsLive.postValue(successResult(v.data.searchFiltersModel.toList()))
 					}
 					is HResult.Loading -> extensionName.postValue(v)
@@ -120,7 +121,8 @@ class CatalogViewModel(
 
 		when (val i: HResult<List<ACatalogNovelUI>> = if (query.isEmpty()) loadCatalogueListingData(
 				formatter!!,
-				currentMaxPage
+				currentMaxPage,
+				filterData
 		) else loadCatalogueQueryDataUseCase(
 				formatter!!,
 				query,
