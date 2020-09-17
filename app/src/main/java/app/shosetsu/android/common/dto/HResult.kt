@@ -88,56 +88,62 @@ fun errorResult(e: JSONException): HResult.Error =
  * Converts shit
  */
 inline fun <reified O : Any, reified I : Convertible<O>> HResult<List<I>>.mapListTo()
-		: HResult<List<O>> {
-	return when (this) {
-		is HResult.Success -> successResult(this.data.mapTo())
-		is HResult.Empty -> this
-		is HResult.Loading -> this
-		is HResult.Error -> this
-	}
-}
+		: HResult<List<O>> = this.handleReturn { successResult(it.mapTo()) }
 
 /**
  * Converts shit
  */
 inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
-		: HResult<O> = when (this) {
-	is HResult.Success -> {
-		this.data.convertTo().let {
-			successResult(it)
-		}
-	}
-	is HResult.Empty -> this
-	is HResult.Loading -> this
-	is HResult.Error -> this
-}
+		: HResult<O> = this.handleReturn { successResult(it.convertTo()) }
 
 inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo(): List<O> =
 		this.map { it.convertTo() }
 
-
-inline fun <reified I : Any, O : Any> HResult<I>.withSuccess(action: (I) -> HResult<O>): HResult<O> {
-	return when (this) {
-		is HResult.Success -> action(this.data)
-		is HResult.Empty -> this
-		is HResult.Loading -> this
-		is HResult.Error -> this
-	}
-}
+inline fun <reified I : Any, O : Any> HResult<I>.withSuccess(action: (I) -> HResult<O>): HResult<O> =
+		this.handleReturn { action(it) }
 
 inline infix fun <reified I1 : Any, reified I2 : Any> HResult<I1>.and(
 		hResult: HResult<I2>,
 ): HResult<*> {
 	if (this is HResult.Success && hResult is HResult.Success) return successResult("")
-	when (this) {
-		is HResult.Error -> return this
-		is HResult.Empty -> return this
-		is HResult.Loading -> return this
-	}
-	when (hResult) {
-		is HResult.Error -> return hResult
-		is HResult.Empty -> return hResult
-		is HResult.Loading -> return hResult
-	}
+	this.handle({ return this }, { return this }, { return this })
+	hResult.handle({ return hResult }, { return hResult }, { return hResult })
 	return errorResult(ErrorKeys.ERROR_GENERAL, "Unknown case for both results")
+}
+
+inline fun <reified I : Any> HResult<I>.handle(
+		onLoading: () -> Unit = {},
+		onEmpty: () -> Unit = {},
+		onError: (HResult.Error) -> Unit = {},
+		onSuccess: (I) -> Unit = {}
+) = when (this) {
+	is HResult.Success -> onSuccess(this.data)
+	HResult.Loading -> onLoading()
+	HResult.Empty -> onEmpty()
+	is HResult.Error -> onError(this)
+}
+
+inline fun <reified I : Any, O : Any> HResult<I>.handledReturnAny(
+		onLoading: () -> O? = { null },
+		onEmpty: () -> O? = { null },
+		onError: (HResult.Error) -> O? = { null },
+		onSuccess: (I) -> O? = { null }
+): O? = when (this) {
+	is HResult.Success -> onSuccess(this.data)
+	HResult.Loading -> onLoading()
+	HResult.Empty -> onEmpty()
+	is HResult.Error -> onError(this)
+}
+
+
+inline fun <reified I : Any, O : Any> HResult<I>.handleReturn(
+		onLoading: () -> HResult<O> = { this as HResult.Loading },
+		onEmpty: () -> HResult<O> = { this as HResult.Empty },
+		onError: (HResult.Error) -> HResult<O> = { this as HResult.Error },
+		onSuccess: (I) -> HResult<O>
+): HResult<O> = when (this) {
+	is HResult.Success -> onSuccess(this.data)
+	HResult.Loading -> onLoading()
+	HResult.Empty -> onEmpty()
+	is HResult.Error -> onError(this)
 }

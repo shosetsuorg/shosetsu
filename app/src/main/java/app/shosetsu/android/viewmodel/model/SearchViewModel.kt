@@ -3,11 +3,15 @@ package app.shosetsu.android.viewmodel.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import app.shosetsu.android.common.dto.*
+import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handleReturn
+import app.shosetsu.android.common.dto.loading
+import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
 import app.shosetsu.android.domain.usecases.load.LoadCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
+import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
@@ -68,16 +72,11 @@ class SearchViewModel(
 
 	private fun loadLibrary(): Job {
 		jobMap[-1] = launchIO {
-			hashMap[-1]?.postValue(searchBookMarkedNovelsUseCase(query).let {
-				when (it) {
-					is HResult.Success -> {
-						successResult(it.data.map { (id, title, imageURL) ->
-							FullCatalogNovelUI(id, title, imageURL, false)
-						})
-					}
-					HResult.Loading -> loading()
-					HResult.Empty -> emptyResult()
-					is HResult.Error -> errorResult(it.code, it.message, it.error)
+			hashMap[-1]?.postValue(searchBookMarkedNovelsUseCase(query).let { result: HResult<List<IDTitleImageUI>> ->
+				result.handleReturn {
+					successResult(it.map { (id, title, imageURL) ->
+						FullCatalogNovelUI(id, title, imageURL, false)
+					})
 				}
 			})
 		}

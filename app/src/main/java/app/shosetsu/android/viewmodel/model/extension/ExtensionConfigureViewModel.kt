@@ -22,6 +22,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
@@ -59,13 +60,8 @@ class ExtensionConfigureViewModel(
 	override val extensionSettings: LiveData<HResult<List<SettingsItemData>>> by lazy {
 		idLive.switchMap {
 			getExtensionSettings(it).map { r ->
-				when (r) {
-					is HResult.Success -> {
-						successResult(arrayListOf())
-					}
-					is HResult.Loading -> r
-					is HResult.Empty -> r
-					is HResult.Error -> r
+				r.handleReturn {
+					successResult(arrayListOf())
 				}
 			}
 		}

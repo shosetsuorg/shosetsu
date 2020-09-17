@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.mapTo
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
@@ -34,15 +35,8 @@ class LoadUpdatesUseCase(
 		private val updatesRepository: IUpdatesRepository,
 ) : (() -> LiveData<HResult<List<UpdateUI>>>) {
 	override fun invoke(): LiveData<HResult<List<UpdateUI>>> = liveData {
-		emitSource(updatesRepository.getCompleteUpdates().map {
-			it.let {
-				when (it) {
-					is HResult.Success -> successResult(it.data.mapTo())
-					is HResult.Loading -> it
-					is HResult.Error -> it
-					is HResult.Empty -> it
-				}
-			}
+		emitSource(updatesRepository.getCompleteUpdates().map { result ->
+			result.handleReturn { successResult(it.mapTo()) }
 		})
 	}
 }

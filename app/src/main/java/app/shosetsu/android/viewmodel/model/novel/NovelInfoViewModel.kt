@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.model.novel
 
 import androidx.lifecycle.*
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
@@ -102,39 +103,19 @@ class NovelInfoViewModel(
 
 	override fun toggleBookmark() {
 		launchIO {
-			liveData.value?.let {
-				if (it is HResult.Success)
-					updateNovelUseCase(it.data.copy(
-							bookmarked = !it.data.bookmarked
-					))
-			}
+			liveData.value?.handle { updateNovelUseCase(it.copy(bookmarked = !it.bookmarked)) }
 		}
 	}
 
 	override fun openBrowser() {
-		launchIO {
-			liveData.value?.let {
-				if (it is HResult.Success)
-					openInBrowserUseCase(it.data)
-			}
-		}
+		launchIO { liveData.value?.handle { openInBrowserUseCase(it) } }
 	}
 
 	override fun openWebView() {
-		launchIO {
-			liveData.value?.let {
-				if (it is HResult.Success)
-					openInWebviewUseCase(it.data)
-			}
-		}
+		launchIO { liveData.value?.handle { openInWebviewUseCase(it) } }
 	}
 
 	override fun share() {
-		launchIO {
-			liveData.value?.let {
-				if (it is HResult.Success)
-					shareUseCase(it.data)
-			}
-		}
+		launchIO { liveData.value?.handle { shareUseCase(it) } }
 	}
 }

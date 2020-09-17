@@ -8,4 +8,12 @@
         android:title="@string/search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/updater_now"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/update_now"
+        app:showAsAction="ifRoom" />
+
+
 </menu>

@@ -5,6 +5,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
@@ -39,32 +40,27 @@ class LoadLibraryUseCase(
 	override fun invoke(): LiveData<HResult<List<ABookmarkedNovelUI>>> {
 		return liveData {
 			emitSource(iNovelsRepository.getLiveBookmarked().map { origin ->
-				when (origin) {
-					is HResult.Success -> {
-						val list = origin.data
-						val newList =
-								list.map { (id, title, imageURL, bookmarked, unread) ->
-									if (settings.novelCardType == 0)
-										FullBookmarkedNovelUI(
-												id,
-												title,
-												imageURL,
-												bookmarked,
-												unread
-										)
-									else CompactBookmarkedNovelUI(
+				origin.handleReturn {
+					val list = it
+					val newList =
+							list.map { (id, title, imageURL, bookmarked, unread) ->
+								if (settings.novelCardType == 0)
+									FullBookmarkedNovelUI(
 											id,
 											title,
 											imageURL,
 											bookmarked,
 											unread
 									)
-								}
-						successResult(newList)
-					}
-					is HResult.Error -> origin
-					is HResult.Loading -> origin
-					is HResult.Empty -> origin
+								else CompactBookmarkedNovelUI(
+										id,
+										title,
+										imageURL,
+										bookmarked,
+										unread
+								)
+							}
+					successResult(newList)
 				}
 			})
 		}

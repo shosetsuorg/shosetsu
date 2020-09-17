@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
 import androidx.core.os.bundleOf
+import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.dto.handledReturnAny
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
@@ -17,10 +20,6 @@ import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
 import com.google.android.material.chip.Chip
-import app.shosetsu.android.common.dto.HResult.Empty as HEmpty
-import app.shosetsu.android.common.dto.HResult.Error as HError
-import app.shosetsu.android.common.dto.HResult.Loading as HLoading
-import app.shosetsu.android.common.dto.HResult.Success as HSuccess
 
 /*
  * This file is part of Shosetsu.
@@ -104,38 +103,20 @@ class NovelInfoController(bundle: Bundle) : ViewedController<ControllerNovelInfo
 	}
 
 	private fun setObserver() {
-		viewModel.liveData.observe(this) {
-			when (it) {
-				is HSuccess -> {
-					novelUI = it.data
-					activity?.invalidateOptionsMenu()
-					// If the data is not present, loads it
-					if (!novelUI!!.loaded) (parentController as NovelController).refresh()
-					else setNovelData()
-				}
-				is HError -> showError(it)
-				is HEmpty -> {
-				}
-				is HLoading -> {
-				}
+		viewModel.liveData.observe(this) { result ->
+			result.handle(onError = { showError(it) }) {
+				novelUI = it
+				activity?.invalidateOptionsMenu()
+				// If the data is not present, loads it
+				if (!novelUI!!.loaded) (parentController as NovelController).refresh()
+				else setNovelData()
 			}
 		}
-		viewModel.formatterName.observe(this) {
-			when (it) {
-				is HSuccess -> launchUI {
-					setFormatterName(it.data)
-				}
-				is HError -> launchUI {
-					setFormatterName("Error on loading")
-					showError(it)
-				}
-				is HEmpty -> launchUI {
-					setFormatterName("UNKNOWN")
-				}
-				is HLoading -> launchUI {
-					setFormatterName("Loading")
-				}
-			}
+		viewModel.formatterName.observe(this) { result: HResult<String> ->
+			result.handledReturnAny(
+					{ "Loading" }, { ("UNKNOWN") },
+					{ showError(it); "Error on loading" },
+			) { it }?.let { setFormatterName(it) }
 		}
 	}
 

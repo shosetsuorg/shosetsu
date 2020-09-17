@@ -18,6 +18,7 @@ import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueHitBottom
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
@@ -220,28 +221,20 @@ class CatalogController(
 		viewModel.listingItemsLive.observe(this) {
 			handleRecyclerUpdate(it)
 		}
-		viewModel.extensionName.observe(this) {
-			when (it) {
-				is HResult.Success -> {
-					setViewTitle(it.data)
-					if (recyclerArray.isEmpty()) viewModel.resetView()
-				}
-				is HResult.Loading -> {
-					setViewTitle(getString(R.string.loading))
-				}
-				else -> {
-				}
+		viewModel.extensionName.observe(this) { result ->
+			result.handle(onLoading = {
+				setViewTitle(getString(R.string.loading))
+			}) {
+				setViewTitle(it)
+				if (recyclerArray.isEmpty()) viewModel.resetView()
 			}
 		}
-		viewModel.hasSearchLive.observe(this) {
-			when (it) {
-				is HResult.Success -> {
-					searchView?.isEnabled = it.data
-				}
+		viewModel.hasSearchLive.observe(this) { result ->
+			result.handle {
+				searchView?.isEnabled = it
 			}
 		}
 		viewModel.filterItemsLive.observe(this) {
-
 		}
 	}
 

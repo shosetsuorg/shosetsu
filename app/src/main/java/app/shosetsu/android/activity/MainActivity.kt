@@ -21,7 +21,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.consts.ShortCuts
-import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
@@ -294,35 +294,30 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	private fun setupProcesses() {
 		viewModel.startUpdateCheck().observe(this) { result ->
-			when (result) {
-				is HResult.Loading -> {
-				}
-				is HResult.Error -> {
-					applicationContext.toast("$result")
-				}
-				is HResult.Empty -> {
-				}
-				is HResult.Success -> {
-					val update = result.data
-					AlertDialog.Builder(this).apply {
-						setTitle(R.string.update_app_now_question)
-						setMessage("${update.version}\t${update.versionCode}\n" + update.notes.joinToString("\n"))
-						setPositiveButton(R.string.update) { it, _ ->
-							viewModel.share(
-									update.url,
-									if (update.versionCode == -1) "Discord" else "Github"
-							)
-							it.dismiss()
-						}
-						setNegativeButton(R.string.update_not_interested) { it, _ ->
-							it.dismiss()
-						}
-						setOnDismissListener {
-							it.dismiss()
-						}
-					}.let {
-						app.shosetsu.android.common.ext.launchUI { it.show() }
+			result.handle(
+					onError = {
+						applicationContext.toast("$result")
 					}
+			) {
+				val update = it
+				AlertDialog.Builder(this).apply {
+					setTitle(R.string.update_app_now_question)
+					setMessage("${update.version}\t${update.versionCode}\n" + update.notes.joinToString("\n"))
+					setPositiveButton(R.string.update) { it, _ ->
+						viewModel.share(
+								update.url,
+								if (update.versionCode == -1) "Discord" else "Github"
+						)
+						it.dismiss()
+					}
+					setNegativeButton(R.string.update_not_interested) { it, _ ->
+						it.dismiss()
+					}
+					setOnDismissListener {
+						it.dismiss()
+					}
+				}.let {
+					app.shosetsu.android.common.ext.launchUI { it.show() }
 				}
 			}
 		}

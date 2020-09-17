@@ -56,7 +56,6 @@ import org.kodein.di.generic.instance
  */
 class LibraryController
 	: FastAdapterRecyclerController<ControllerLibraryBinding, ABookmarkedNovelUI>(),
-		SecondDrawerController,
 		PushCapableController {
 	lateinit var pushController: (Controller) -> Unit
 
@@ -164,14 +163,6 @@ class LibraryController
 			newItem: ABookmarkedNovelUI,
 	): Boolean = oldItem.id == newItem.id
 
-	override fun handleConfirm(linearLayout: LinearLayout) {
-		// TODO
-	}
-
-	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-		// TODO
-	}
-
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (fastAdapter.getSelectExtension().selectedItems.isEmpty()) {
@@ -193,6 +184,12 @@ class LibraryController
 	/***/
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
+			R.id.updater_now -> {
+				if (viewModel.isOnline())
+					viewModel.startUpdateManager()
+				else toast(R.string.you_not_online)
+				return true
+			}
 			R.id.chapter_select_all -> {
 				fastAdapter.getSelectExtension().select()
 				return true

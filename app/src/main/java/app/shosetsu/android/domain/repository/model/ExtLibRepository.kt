@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteException
 import android.util.Log
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.datasource.cache.base.ICacheExtLibDataSource
@@ -53,9 +54,8 @@ class ExtLibRepository(
 			repositoryEntity: RepositoryEntity,
 			extLibEntity: ExtLibEntity,
 	): HResult<*> {
-		val result = remoteSource.downloadLibrary(repositoryEntity, extLibEntity)
-		if (result is HResult.Success) {
-			val data = result.data
+		remoteSource.downloadLibrary(repositoryEntity, extLibEntity).handle {
+			val data = it
 			val json = JSONObject(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
 			try {
 				extLibEntity.version = json.getString("version")

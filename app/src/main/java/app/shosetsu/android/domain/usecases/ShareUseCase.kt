@@ -4,13 +4,12 @@ import android.app.Application
 import android.content.Intent
 import android.content.Intent.*
 import android.util.Log
-import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.Formatter.Companion.KEY_CHAPTER_URL
 import app.shosetsu.lib.Formatter.Companion.KEY_NOVEL_URL
 
@@ -57,19 +56,18 @@ class ShareUseCase(
 	}
 
 	suspend operator fun invoke(url: String, formatterID: Int, title: String, type: Int) {
-		when (val fR: HResult<Formatter> = repository.loadFormatter(formatterID)) {
-			is HResult.Success -> {
-				val formatter = fR.data
-				this(formatter.expandURL(url, type), title)
-			}
-			is HResult.Empty -> {
-				Log.e(logID(), "Empty")
-				stringToastUseCase { "Empty??" }
-			}
-			is HResult.Error -> {
-				Log.e(logID(), "Error")
-				stringToastUseCase { "$fR" }
-			}
+		repository.loadFormatter(formatterID).handle(
+				onEmpty = {
+					Log.e(logID(), "Empty")
+					stringToastUseCase { "Empty??" }
+				},
+				onError = {
+					Log.e(logID(), "Error")
+					stringToastUseCase { "$it" }
+				}
+		) {
+			val formatter = it
+			this(formatter.expandURL(url, type), title)
 		}
 	}
 

@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
@@ -39,28 +40,21 @@ class LoadCatalogueListingDataUseCase(
 	suspend operator fun invoke(
 			formatter: Formatter,
 			currentPage: Int,
-	): HResult<List<ACatalogNovelUI>> {
-		return when (val it = extensionRepository.loadCatalogueData(
-				formatter,
-				0,
-				currentPage,
-				mapOf()
-		)) {
-			is HResult.Success -> {
-				val data: List<Novel.Listing> = it.data
-				successResult(data.map { novelListing ->
-					novelListing.convertTo(formatter)
-				}.mapNotNull { ne ->
-					novelsRepository.insertNovelReturnCard(ne).let { result ->
-						if (result is HResult.Success)
-							convertNCToCNUIUseCase(result.data)
-						else null
-					}
-				})
+	): HResult<List<ACatalogNovelUI>> = extensionRepository.loadCatalogueData(
+			formatter,
+			0,
+			currentPage,
+			mapOf()
+	).handleReturn {
+		val data: List<Novel.Listing> = it
+		successResult(data.map { novelListing ->
+			novelListing.convertTo(formatter)
+		}.mapNotNull { ne ->
+			novelsRepository.insertNovelReturnCard(ne).let { result ->
+				if (result is HResult.Success)
+					convertNCToCNUIUseCase(result.data)
+				else null
 			}
-			is HResult.Loading -> it
-			is HResult.Error -> it
-			is HResult.Empty -> it
-		}
+		})
 	}
 }

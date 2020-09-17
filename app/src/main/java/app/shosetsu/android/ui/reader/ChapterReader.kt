@@ -25,6 +25,7 @@ import app.shosetsu.android.common.ShosetsuSettings.TextSizes
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.reader.adapters.ChapterReaderAdapter
@@ -140,8 +141,9 @@ class ChapterReader
 		FastAdapter.with(colorItemAdapter)
 	}
 
-	override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-		return super.onCreateView(name, context, attrs)
+	override fun onResume() {
+		window.hideBar()
+		super.onResume()
 	}
 
 	/** On Create */
@@ -171,38 +173,33 @@ class ChapterReader
 	}
 
 	private fun setObservers() {
-		viewModel.liveData.observe(this) { hResult ->
-			when (hResult) {
-				is HResult.Loading -> {
-					Log.d(logID(), "Loading")
-				}
-				is HResult.Empty -> {
-				}
-				is HResult.Error -> {
-				}
-				is HResult.Success -> {
-					Log.d(logID(), "Loading complete, now displaying")
-
-					val currentSize = chapters.size
-					val dif = DiffUtil.calculateDiff(RecyclerViewDiffer(
-							chapters,
-							hResult.data
-					))
-					chapters.clear()
-					chapters.addAll(hResult.data)
-					if (currentSize == 0) {
-						getCurrentChapter()?.let {
-							supportActionBar?.title = it.title
-						}
-						setupViewPager()
+		viewModel.liveData.observe(this) { result ->
+			result.handle(
+					onLoading = {
+						Log.d(logID(), "Loading")
 					}
-					dif.dispatchUpdatesTo(chapterReaderAdapter)
-					//bookmark.setIcon(if (it.data.bookmarked)
-					//	R.drawable.ic_bookmark_24dp
-					//else
-					//	R.drawable.ic_bookmark_border_24dp
-					//)
+			) {
+				Log.d(logID(), "Loading complete, now displaying")
+
+				val currentSize = chapters.size
+				val dif = DiffUtil.calculateDiff(RecyclerViewDiffer(
+						chapters,
+						it
+				))
+				chapters.clear()
+				chapters.addAll(it)
+				if (currentSize == 0) {
+					getCurrentChapter()?.let {
+						supportActionBar?.title = it.title
+					}
+					setupViewPager()
 				}
+				dif.dispatchUpdatesTo(chapterReaderAdapter)
+				//bookmark.setIcon(if (it.data.bookmarked)
+				//	R.drawable.ic_bookmark_24dp
+				//else
+				//	R.drawable.ic_bookmark_border_24dp
+				//)
 			}
 		}
 

@@ -4,7 +4,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderType
@@ -62,41 +63,29 @@ class ChapterReaderAdapter(
 	override fun onBindViewHolder(holder: ReaderType, position: Int) {
 		val chapter = chapters()[position]
 		holder.attachData(chapter, chapterReader)
-
-		chapterReader.viewModel.getChapterPassage(chapter).observe(chapterReader) {
-			when (it) {
-				is HResult.Loading -> {
-					Log.d(logID(), "Showing loading")
-					holder.showProgress()
-				}
-				is HResult.Empty -> {
-					Log.d(logID(), "Empty result")
-				}
-				is HResult.Error -> {
-					Log.d(logID(), "Showing error")
-					//	holder.setError(it.message, "Retry") {
-					//		TODO("Figure out how to restart the liveData")
-					//		}
-				}
-				is HResult.Success -> {
-					Log.d(logID(), "Successfully loaded :D")
-					holder.hideProgress()
-					holder.setData(it.data)
-					holder.itemView.post {
-						holder.setProgress(chapter.readingPosition)
-					}
+		chapterReader.viewModel.getChapterPassage(chapter).observe(chapterReader) { result ->
+			result.handle(
+					{ logD("Showing loading"); holder.showProgress() },
+					{ logD("Empty result") },
+					{
+						logD("Showing error")
+						//	holder.setError(it.message, "Retry") {
+						//		TODO("Figure out how to restart the liveData")
+						//		}
+					}) {
+				logD("Successfully loaded :D")
+				holder.hideProgress()
+				holder.setData(it)
+				holder.itemView.post {
+					holder.setProgress(chapter.readingPosition)
 				}
 			}
 		}
-
-
 		holder.setTextSize(chapterReader.shosetsuSettings.readerTextSize)
-
 		holder.setOnFocusListener {
 			chapterReader.animateBottom()
 			chapterReader.animateToolbar()
 		}
-
 	}
 
 	override fun getItemId(position: Int): Long = chapterReader.chapters[position].id.toLong()

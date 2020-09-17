@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.repository.model
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
+import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.local.base.ILocalNovelsDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteNovelDataSource
@@ -60,16 +61,11 @@ class NovelsRepository(
 
 	override suspend fun searchBookmarked(string: String): HResult<List<IDTitleImage>> =
 			getBookmarkedNovels().let { result ->
-				when (result) {
-					is HResult.Success -> {
-						if (result.data.isEmpty()) emptyResult()
-						successResult(result.data.filter { it.title.contains(string, false) }.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
-							IDTitleImage(id!!, t, imageURL)
-						})
-					}
-					is HResult.Empty -> result
-					is HResult.Error -> result
-					is HResult.Loading -> result
+				result.handleReturn { list: List<NovelEntity> ->
+					if (list.isEmpty()) emptyResult()
+					successResult(list.filter { it.title.contains(string, false) }.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
+						IDTitleImage(id!!, t, imageURL)
+					})
 				}
 			}
 

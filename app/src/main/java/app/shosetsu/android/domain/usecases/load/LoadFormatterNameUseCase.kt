@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.usecases.load
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.successResult
 
@@ -33,12 +34,7 @@ class LoadFormatterNameUseCase(
 	override fun invoke(formatterID: Int): LiveData<HResult<String>> {
 		return liveData<HResult<String>> {
 			emit(loading())
-			emit(when (val f = getFormatterUseCase(formatterID)) {
-				is HResult.Success -> successResult(f.data.name)
-				is HResult.Loading -> f
-				is HResult.Empty -> f
-				is HResult.Error -> f
-			})
+			emit(getFormatterUseCase(formatterID).handleReturn { successResult(it.name) })
 		}
 	}
 }

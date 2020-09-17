@@ -16,6 +16,7 @@ import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -73,24 +74,19 @@ class AppUpdateWorker(
 
 		val result = appUpdateUseCase()
 		pr.setOngoing(false)
-
-		when (result) {
-			is HResult.Success -> {
-				pr.setContentText(
-						applicationContext.getString(R.string.app_update_available)
-								+ " " + result.data.version
-				)
-				notificationManager.notify(ID_APP_UPDATE, pr.build())
-			}
-			is HResult.Empty -> {
-				pr.setContentText(applicationContext.getString(R.string.app_update_unavaliable))
-				notificationManager.notify(ID_APP_UPDATE, pr.build())
-			}
-			is HResult.Error -> {
-				Log.e(logID(), "Error!", result.error)
-				pr.setContentText("Error! ${result.code} | ${result.message}")
-				notificationManager.notify(ID_APP_UPDATE, pr.build())
-			}
+		result.handle(onEmpty = {
+			pr.setContentText(applicationContext.getString(R.string.app_update_unavaliable))
+			notificationManager.notify(ID_APP_UPDATE, pr.build())
+		}, onError = {
+			Log.e(logID(), "Error!", it.error)
+			pr.setContentText("Error! ${it.code} | ${it.message}")
+			notificationManager.notify(ID_APP_UPDATE, pr.build())
+		}) {
+			pr.setContentText(
+					applicationContext.getString(R.string.app_update_available)
+							+ " " + it.version
+			)
+			notificationManager.notify(ID_APP_UPDATE, pr.build())
 		}
 		return Result.success()
 	}
