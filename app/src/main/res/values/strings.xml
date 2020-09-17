@@ -294,6 +294,7 @@
     <string name="id_label">ID:</string>
     <string name="negative_one">-1</string>
     <string name="repositories">Repositories</string>
+    <string name="chapter_select_between_error_empty_adapter">AdapterList returned empty, Try again?</string>
 
     <array name="application_themes">
         <item>@string/light</item>

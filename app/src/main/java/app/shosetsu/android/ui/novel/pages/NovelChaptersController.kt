@@ -235,11 +235,14 @@ class NovelChaptersController(bundle: Bundle)
 				fastAdapter.selectExtension {
 					val selectedItems = selectedItems.toList().sortedBy { it.order }
 					val adapterList = itemAdapter.adapterItems
-
-					select(adapterList.subList(
+					if (adapterList.isEmpty()) {
+						launchUI { toast(R.string.chapter_select_between_error_empty_adapter) }
+						return@launchIO
+					}
+					adapterList.subList(
 							adapterList.indexOfFirst { it.id == selectedItems.first().id },
 							adapterList.indexOfFirst { it.id == selectedItems.last().id }
-					).map { fastAdapter.getPosition(it) })
+					).map { fastAdapter.getPosition(it) }.let { launchUI { select(it) } }
 				}
 			}
 			true
