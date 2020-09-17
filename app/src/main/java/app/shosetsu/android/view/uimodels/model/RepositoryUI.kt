@@ -38,6 +38,9 @@ data class RepositoryUI(
 ) : BaseRecyclerItem<ViewHolder>(), Convertible<RepositoryEntity> {
 	override val layoutRes: Int = R.layout.recycler_repository_info
 	override val type: Int = R.layout.recycler_repository_info
+	override var identifier: Long
+		get() = id.toLong()
+		set(value) {}
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
