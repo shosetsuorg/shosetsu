@@ -1,13 +1,7 @@
 {
-  "latestVersion": "949",
+  "latestVersion": "955",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- UpdatesController.kt now has date, and proper chapter naming",
-    "- RepositoryController.kt added, present in MoreController.kt",
-    "- Legacy navigation is now a 1:1 of the bottom navigation",
-    "- Still haven't figured out whats wrong with the back button in legacy navigation",
-    "- Default for columns is now 3 in portrait, 6 landscape, please set it in settings",
-    "- Fixed landscape NovelInfoController.kt crashing, Fixed its UI too",
-    "- MainActivity.kt doesn't autostart DownloadWorker.kt anymore"
+    "- Bug fixes"
   ]
 }
