@@ -6,6 +6,7 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import javax.security.auth.Destroyable
 
 /*
  * This file is part of shosetsu.
@@ -32,7 +33,9 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * @author github.com/doomsdayrs
  */
 abstract class INovelChaptersViewModel
-	: SubscribeHandleViewModel<List<ChapterUI>>, ViewModel() {
+	: SubscribeHandleViewModel<List<ChapterUI>>, ViewModel(), Destroyable {
+
+	var areChaptersReversed: Boolean = false
 
 	abstract fun setNovelID(novelID: Int)
 
@@ -66,6 +69,4 @@ abstract class INovelChaptersViewModel
 	 * Deletes a chapter
 	 */
 	abstract fun delete(vararg chapterUI: ChapterUI)
-
-
 }

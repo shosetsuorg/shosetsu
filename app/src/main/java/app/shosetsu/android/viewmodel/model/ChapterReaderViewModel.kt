@@ -1,21 +1,32 @@
 package app.shosetsu.android.viewmodel.model
 
-import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import app.shosetsu.android.common.ShosetsuSettings
+import androidx.lifecycle.*
+import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.loading
+import app.shosetsu.android.common.dto.mapTo
+import app.shosetsu.android.common.enums.MarkingTypes
+import app.shosetsu.android.common.enums.MarkingTypes.ONSCROLL
+import app.shosetsu.android.common.enums.MarkingTypes.ONVIEW
 import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.domain.model.local.ColorChoiceData
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.load.LoadReaderChaptersUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
+import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -39,20 +50,79 @@ import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
  * 06 / 05 / 2020
  */
 class ChapterReaderViewModel(
-		private val context: Context,
+		private val iSettingsRepository: ISettingsRepository,
 		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
 		private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
 		private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
-		private val settings: ShosetsuSettings,
 ) : IChapterReaderViewModel() {
+
 	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
 
 	override val liveData: LiveData<HResult<List<ReaderChapterUI>>> by lazy {
 		loadReaderChaptersUseCase(nID)
 	}
 
+	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
+		liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+			emitSource(iSettingsRepository.observeInt(ReaderTheme).switchMap { id: Int ->
+				logD("Loading theme for $id")
+				liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+					val s = iSettingsRepository.getStringSet(ReaderUserThemes)
+					if (s is HResult.Success) {
+						val selected = s.data.map { ColorChoiceData.fromString(it) }.find { it.identifier == id.toLong() }
+						selected?.let {
+							emit(it.textColor to it.backgroundColor)
+						} ?: emit(Color.BLACK to Color.WHITE)
+					} else emit(Color.BLACK to Color.WHITE)
+				}
+			})
+		}
+	}
+
+	override val liveMarkingTypes: LiveData<MarkingTypes> by lazy {
+		iSettingsRepository.observeString(ReadingMarkingType).map { MarkingTypes.valueOf(it) }
+	}
+
+	override val liveThemes: LiveData<List<ColorChoiceUI>> by lazy {
+		iSettingsRepository.observeStringSet(ReaderUserThemes).map { set: Set<String> ->
+			set.map { ColorChoiceData.fromString(it) }.mapTo()
+		}
+	}
+
+	override val liveIndentSize: LiveData<Int> by lazy {
+		iSettingsRepository.observeInt(ReaderIndentSize)
+	}
+
+	override val liveParagraphSpacing: LiveData<Int> by lazy {
+		iSettingsRepository.observeInt(ReaderParagraphSpacing)
+	}
+
+	override val liveTextSize: LiveData<Float> by lazy {
+		iSettingsRepository.observeFloat(ReaderTextSize)
+	}
+
 	override var currentChapterID: Int = -1
+
 	private var nID = -1
+
+	override fun setReaderTheme(value: Int) {
+		launchIO { iSettingsRepository.setInt(ReaderTheme, value) }
+	}
+
+	override fun setReaderIndentSize(value: Int) {
+		launchIO {
+			logI("setting")
+			iSettingsRepository.setInt(ReaderIndentSize, value)
+		}
+	}
+
+	override fun setReaderParaSpacing(value: Int) {
+		launchIO { iSettingsRepository.setInt(ReaderParagraphSpacing, value) }
+	}
+
+	override fun setReaderTextSize(value: Float) {
+		launchIO { iSettingsRepository.setFloat(ReaderTextSize, value) }
+	}
 
 	override fun setNovelID(novelID: Int) {
 		if (nID == -1)
@@ -99,5 +169,24 @@ class ChapterReaderViewModel(
 					bookmarked = bookmarked
 			))
 		}
+	}
+
+	private fun markAsReading(chapterUI: ReaderChapterUI, markingTypes: MarkingTypes,
+	                          readingPosition: Int = chapterUI.readingPosition) {
+		launchIO {
+			iSettingsRepository.getString(ReadingMarkingType).handle {
+				if (MarkingTypes.valueOf(it) == markingTypes) updateChapter(chapterUI.copy(
+						readingStatus = READING, readingPosition = readingPosition
+				))
+			}
+		}
+	}
+
+	override fun markAsReadingOnView(readerChapterUI: ReaderChapterUI) {
+		markAsReading(readerChapterUI, ONVIEW)
+	}
+
+	override fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, yAswell: Int) {
+		markAsReading(readerChapterUI, ONSCROLL, yAswell)
 	}
 }

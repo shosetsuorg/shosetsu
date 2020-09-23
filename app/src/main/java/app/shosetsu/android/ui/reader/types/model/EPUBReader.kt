@@ -32,7 +32,6 @@ import app.shosetsu.android.ui.reader.types.base.ReaderType
  * </p>
  */
 class EPUBReader(itemView: View) : ReaderType(itemView) {
-
 	override fun setData(data: String) {
 		TODO("Not yet implemented")
 	}
@@ -76,5 +75,6 @@ class EPUBReader(itemView: View) : ReaderType(itemView) {
 	override fun showProgress() {
 		TODO("Not yet implemented")
 	}
+
 
 }

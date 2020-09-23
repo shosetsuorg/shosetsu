@@ -4,8 +4,10 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import app.shosetsu.android.common.ShosetsuSettings
-import app.shosetsu.android.common.ShosetsuSettings.MarkingTypes
+import app.shosetsu.android.common.enums.MarkingTypes
 import app.shosetsu.android.common.ext.context
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -35,6 +37,8 @@ import org.kodein.di.generic.instance
  */
 class ViewSettings : SettingsSubController() {
 	private val s: ShosetsuSettings by instance()
+	private val iSettingRepository: ISettingsRepository by instance()
+
 	override val viewTitleRes: Int = R.string.settings_view
 
 	override val settings: List<SettingsItemData> by settingsList {
@@ -47,7 +51,7 @@ class ViewSettings : SettingsSubController() {
 					else -> Log.e("MarkingMode", "UnknownType")
 				}
 			}
-			spinnerSelection = s.readerMarkingType.i
+
 			arrayAdapter = ArrayAdapter(
 					context!!,
 					android.R.layout.simple_spinner_dropdown_item,
@@ -104,6 +108,5 @@ class ViewSettings : SettingsSubController() {
 	}
 
 	private fun setReaderMarkingType(markingType: MarkingTypes) {
-		s.readerMarkingType = markingType
 	}
 }

@@ -43,3 +43,12 @@ inline fun <reified VM : ViewModel, T> T.viewModel()
 					direct.instance()
 			)[VM::class.java]
 		}
+
+inline fun <reified VM : ViewModel, T> T.viewModel()
+		: Lazy<VM> where T : KodeinAware, T : AppCompatActivity =
+		lazy(LazyThreadSafetyMode.NONE) {
+			ViewModelProvider(
+					this,
+					direct.instance()
+			)[VM::class.java]
+		}

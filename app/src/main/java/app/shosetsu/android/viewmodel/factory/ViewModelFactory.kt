@@ -9,6 +9,7 @@ import app.shosetsu.android.common.ext.logID
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.TT
+import org.kodein.di.android.kodein
 import org.kodein.di.direct
 
 /*
@@ -36,7 +37,7 @@ import org.kodein.di.direct
  * @author github.com/doomsdayrs
  */
 class ViewModelFactory(context: Context) : ViewModelProvider.Factory, KodeinAware {
-	override val kodein: Kodein = (context as ShosetsuApplication).kodein
+	override val kodein: Kodein by kodein(context)
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
 		Log.d(logID(), "Creating instance of ${modelClass.name}")
 		return kodein.direct.Instance(TT(modelClass))

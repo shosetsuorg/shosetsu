@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
 	override val kodein: Kodein by closestKodein()
-	private val viewModel by instance<IMainViewModel>()
+	private val viewModel: IMainViewModel by viewModel()
 
 	private val broadcastReceiver by lazy {
 		object : BroadcastReceiver() {

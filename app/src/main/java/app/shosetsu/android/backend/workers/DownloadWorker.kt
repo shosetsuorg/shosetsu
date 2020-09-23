@@ -15,8 +15,10 @@ import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
+import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.domain.model.local.ChapterEntity
@@ -24,6 +26,7 @@ import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.lib.Formatter
 import com.github.doomsdayrs.apps.shosetsu.R
 import okio.IOException
@@ -82,7 +85,15 @@ class DownloadWorker(
 	private val downloadsRepo by instance<IDownloadsRepository>()
 	private val chapRepo by instance<IChaptersRepository>()
 	private val extRepo by instance<IExtensionsRepository>()
-	private val settings by instance<ShosetsuSettings>()
+	private val settingRepo by instance<ISettingsRepository>()
+
+	private suspend fun isDownloadPaused(): Boolean =
+			settingRepo.getBoolean(IsDownloadPaused).let {
+				if (it is HResult.Success)
+					it.data
+				else IsDownloadPaused.default
+			}
+
 	private suspend fun getDownloadCount(): Int =
 			downloadsRepo.loadDownloadCount().let { if (it is HResult.Success) it.data else -1 }
 
@@ -115,12 +126,12 @@ class DownloadWorker(
 
 	override suspend fun doWork(): Result {
 		Log.i(logID(), "Starting loop")
-		if (settings.isDownloadPaused)
+		if (isDownloadPaused())
 			Log.i(logID(), "Loop Paused")
 		else {
 			val pr = progressNotification
 
-			while (getDownloadCount() >= 1 && !settings.isDownloadPaused) {
+			while (getDownloadCount() >= 1 && !isDownloadPaused()) {
 				Log.d(logID(), "Loop")
 				downloadsRepo.loadFirstDownload().let {
 					if (it is HResult.Success) {
@@ -202,7 +213,35 @@ class DownloadWorker(
 	 * Manager of [DownloadWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
-		private val settings by instance<ShosetsuSettings>()
+		private val iSettingsRepository by instance<ISettingsRepository>()
+
+		private suspend fun downloadOnMetered(): Boolean =
+				iSettingsRepository.getBoolean(DownloadOnMeteredConnection).let {
+					if (it is HResult.Success)
+						it.data
+					else DownloadOnMeteredConnection.default
+				};
+
+		private suspend fun downloadOnLowStorage(): Boolean =
+				iSettingsRepository.getBoolean(DownloadOnLowStorage).let {
+					if (it is HResult.Success)
+						it.data
+					else DownloadOnLowStorage.default
+				};
+
+		private suspend fun downloadOnLowBattery(): Boolean =
+				iSettingsRepository.getBoolean(DownloadOnLowBattery).let {
+					if (it is HResult.Success)
+						it.data
+					else DownloadOnLowBattery.default
+				};
+
+		private suspend fun downloadOnlyIdle(): Boolean =
+				iSettingsRepository.getBoolean(DownloadOnlyWhenIdle).let {
+					if (it is HResult.Success)
+						it.data
+					else DownloadOnlyWhenIdle.default
+				};
 
 		/**
 		 * Returns the status of the service.
@@ -222,23 +261,25 @@ class DownloadWorker(
 		 * running.
 		 */
 		override fun start() {
-			workerManager.enqueueUniqueWork(
-					DOWNLOAD_WORK_ID,
-					ExistingWorkPolicy.REPLACE,
-					OneTimeWorkRequestBuilder<DownloadWorker>()
-							.setConstraints(Constraints.Builder().apply {
-								setRequiredNetworkType(
-										if (settings.downloadOnMetered) {
-											CONNECTED
-										} else UNMETERED
-								)
-								setRequiresStorageNotLow(!settings.downloadOnLowStorage)
-								setRequiresBatteryNotLow(!settings.downloadOnLowBattery)
-								if (SDK_INT >= VERSION_CODES.M)
-									setRequiresDeviceIdle(settings.downloadOnlyIdle)
-							}.build())
-							.build()
-			)
+			launchIO {
+				workerManager.enqueueUniqueWork(
+						DOWNLOAD_WORK_ID,
+						ExistingWorkPolicy.REPLACE,
+						OneTimeWorkRequestBuilder<DownloadWorker>()
+								.setConstraints(Constraints.Builder().apply {
+									setRequiredNetworkType(
+											if (downloadOnMetered()) {
+												CONNECTED
+											} else UNMETERED
+									)
+									setRequiresStorageNotLow(!downloadOnLowStorage())
+									setRequiresBatteryNotLow(!downloadOnLowBattery())
+									if (SDK_INT >= VERSION_CODES.M)
+										setRequiresDeviceIdle(downloadOnlyIdle())
+								}.build())
+								.build()
+				)
+			}
 		}
 
 		/**

@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.reader.types.base
 
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI

@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.reader.types.model
 
+import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -10,7 +11,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
-import app.shosetsu.android.common.ShosetsuSettings
+import androidx.lifecycle.LifecycleObserver
+import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.types.base.ReaderType
@@ -19,7 +21,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 
 /*
  * This file is part of shosetsu.
@@ -43,10 +44,14 @@ import org.kodein.di.generic.instance
  * 13 / 12 / 2019
  */
 class StringReader(
-		itemView: View
-) : ReaderType(itemView), KodeinAware {
+		itemView: View,
+		private var defaultTextSize: Float = SettingKey.ReaderTextSize.default,
+		var defaultParaSpacing: Int = SettingKey.ReaderParagraphSpacing.default,
+		var defaultIndentSize: Int = SettingKey.ReaderIndentSize.default,
+		var defaultForeground: Int = Color.BLACK,
+		var defaultBackground: Int = Color.WHITE
+) : ReaderType(itemView), KodeinAware, LifecycleObserver {
 	override val kodein: Kodein by kodein(itemView.context)
-	private val settings by instance<ShosetsuSettings>()
 
 	/**
 	 * Main way of reading in this view
@@ -105,22 +110,19 @@ class StringReader(
 	}
 
 	fun bind(
-			paragraphSpacing: Int = settings.readerParagraphSpacing,
-			paragraphIndent: Int = settings.readerIndentSize
+			paragraphSpacing: Int = this.defaultParaSpacing,
+			paragraphIndent: Int = defaultIndentSize
 	) {
 		val replaceSpacing = StringBuilder("\n")
 		for (x in 0 until paragraphSpacing)
 			replaceSpacing.append("\n")
 		for (x in 0 until paragraphIndent)
 			replaceSpacing.append("\t")
-		textView.textSize = settings.readerTextSize
+		textView.textSize = defaultTextSize
 
-		val r = settings.readerTheme.toLong()
-		val b = settings.getReaderBackgroundColor(r)
-		val t = settings.getReaderTextColor(r)
 
-		textView.setTextColor(t)
-		textView.setBackgroundColor(b)
+		textView.setTextColor(defaultForeground)
+		textView.setBackgroundColor(defaultBackground)
 		textView.text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
 	}
 
@@ -173,9 +175,7 @@ class StringReader(
 			if (yPosition % 5 == 0) {
 				Log.i(logID(), "Scrolling")
 				// Mark as reading if on scroll
-				if (chapterReader.shosetsuSettings.readerMarkingType == ShosetsuSettings.MarkingTypes.ONSCROLL)
-					chapter.readingStatus = ReadingStatus.READING
-				chapterReader.viewModel.updateChapter(chapter, readingPosition = yPosition)
+				chapterReader.viewModel.markAsReadingOnScroll(chapter, yPosition)
 			}
 		} else {
 			Log.i(logID(), "Hit the bottom")

@@ -34,21 +34,27 @@ class HTMLReader(itemView: View) : ReaderType(itemView) {
 	}
 
 	override fun setTextColor(int: Int) {
+		TODO("Not yet implemented")
 	}
 
 	override fun setBackgroundColor(int: Int) {
+		TODO("Not yet implemented")
 	}
 
 	override fun setTextSize(textSize: Float) {
+		TODO("Not yet implemented")
 	}
 
 	override fun setTextPadding(padding: Int) {
+		TODO("Not yet implemented")
 	}
 
 	override fun setParagraphSpacing(spacing: Int) {
+		TODO("Not yet implemented")
 	}
 
 	override fun setParagraphIndent(indent: Int) {
+		TODO("Not yet implemented")
 	}
 
 	override fun setProgress(progress: Int) {

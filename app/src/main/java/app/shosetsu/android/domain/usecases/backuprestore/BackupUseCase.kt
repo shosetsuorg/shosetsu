@@ -4,6 +4,7 @@ import android.content.Context
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +31,7 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 class BackupUseCase(
 		private val iNovelsRepository: INovelsRepository,
 		private val iChaptersRepository: IChaptersRepository,
-		private val settings: ShosetsuSettings,
+		private val settings: ISettingsRepository,
 		private val context: Context
 ) {
 	operator fun invoke() {

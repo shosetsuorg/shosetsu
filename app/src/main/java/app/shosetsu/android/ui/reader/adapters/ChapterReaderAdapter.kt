@@ -1,7 +1,7 @@
 package app.shosetsu.android.ui.reader.adapters
 
 import android.util.Log
-import android.view.LayoutInflater
+import android.view.LayoutInflater.from
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.dto.handle
@@ -41,6 +41,7 @@ class ChapterReaderAdapter(
 ) : RecyclerView.Adapter<ReaderType>() {
 	var textReaders: ArrayList<ReaderType> = ArrayList()
 
+
 	init {
 		setHasStableIds(true)
 	}
@@ -49,13 +50,18 @@ class ChapterReaderAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReaderType {
 		Log.d(logID(), "Creating new view holder")
-		val r = StringReader(LayoutInflater.from(parent.context).inflate(
-				R.layout.chapter_reader_text_view,
-				parent,
-				false
-		))
-		textReaders.add(r)
-		return r
+		return StringReader(
+				itemView = from(parent.context).inflate(
+						R.layout.chapter_reader_text_view,
+						parent,
+						false
+				),
+				defaultTextSize = chapterReader.viewModel.defaultTextSize,
+				defaultParaSpacing = chapterReader.viewModel.defaultParaSpacing,
+				defaultIndentSize = chapterReader.viewModel.defaultIndentSize,
+				defaultForeground = chapterReader.viewModel.defaultForeground,
+				defaultBackground = chapterReader.viewModel.defaultBackground
+		).also { textReaders.add(it) }
 	}
 
 	override fun getItemCount(): Int = chapters().size
@@ -63,6 +69,7 @@ class ChapterReaderAdapter(
 	override fun onBindViewHolder(holder: ReaderType, position: Int) {
 		val chapter = chapters()[position]
 		holder.attachData(chapter, chapterReader)
+
 		chapterReader.viewModel.getChapterPassage(chapter).observe(chapterReader) { result ->
 			result.handle(
 					{ logD("Showing loading"); holder.showProgress() },
@@ -81,7 +88,7 @@ class ChapterReaderAdapter(
 				}
 			}
 		}
-		holder.setTextSize(chapterReader.shosetsuSettings.readerTextSize)
+
 		holder.setOnFocusListener {
 			chapterReader.animateBottom()
 			chapterReader.animateToolbar()

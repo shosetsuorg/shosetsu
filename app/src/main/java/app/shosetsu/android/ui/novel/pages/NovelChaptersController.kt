@@ -62,7 +62,6 @@ class NovelChaptersController(bundle: Bundle)
 		setHasOptionsMenu(true)
 	}
 
-
 	private fun isVisible() =
 			(parentController as? NovelController)?.pageListener?.currentPosition == 1
 
@@ -90,6 +89,11 @@ class NovelChaptersController(bundle: Bundle)
 			}
 		})
 		setObserver()
+	}
+
+	override fun onDestroy() {
+		viewModel.destroy()
+		super.onDestroy()
 	}
 
 	override fun setupFastAdapter() {
@@ -135,9 +139,19 @@ class NovelChaptersController(bundle: Bundle)
 
 	override fun updateUI(newList: List<ChapterUI>) {
 		Log.d(logID(), "Received chapter count of ${newList.size}")
-		super.updateUI(newList)
-		resume?.let {
-			if (newList.isNotEmpty() && isVisible()) showFAB(it) else hideFAB(it)
+		launchIO {
+			ArrayList(newList).apply {
+				if (viewModel.areChaptersReversed)
+					reverse()
+			}.let {
+				launchUI {
+					super.updateUI(it)
+
+					resume?.let {
+						if (newList.isNotEmpty() && isVisible()) showFAB(it) else hideFAB(it)
+					}
+				}
+			}
 		}
 	}
 
@@ -248,6 +262,7 @@ class NovelChaptersController(bundle: Bundle)
 			true
 		}
 		R.id.chapter_filter -> {
+			viewModel.areChaptersReversed = !viewModel.areChaptersReversed
 			itemAdapter.itemList.items.reverse()
 			fastAdapter.notifyAdapterDataSetChanged()
 			true

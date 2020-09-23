@@ -10,10 +10,10 @@ import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
-import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
-import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.load.LoadChapterUIsUseCase
+import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
+import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.viewmodel.abstracted.INovelChaptersViewModel
@@ -67,6 +67,7 @@ class NovelChaptersViewModel(
 				return
 			}
 		}
+		destroy()
 		nID = novelID
 		novelIDLive.postValue(nID)
 	}
@@ -138,5 +139,9 @@ class NovelChaptersViewModel(
 				deleteChapterPassageUseCase(it)
 			}
 		}
+	}
+
+	override fun destroy() {
+		areChaptersReversed = false
 	}
 }

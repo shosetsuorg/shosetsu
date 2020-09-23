@@ -2,7 +2,6 @@ package app.shosetsu.android.backend
 
 import android.app.Activity
 import android.view.MenuItem
-import app.shosetsu.android.common.ShosetsuSettings
 
 /*
  * This file is part of Shosetsu.

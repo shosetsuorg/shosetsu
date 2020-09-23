@@ -44,4 +44,6 @@ val localDataSouceModule: Kodein.Module = Kodein.Module("local_data_source_modul
 	bind<ILocalExtRepoDataSource>() with singleton { LocalExtRepoDataSource(instance()) }
 
 	bind<ILocalUpdatesDataSource>() with singleton { LocalUpdatesDataSource(instance()) }
+
+	bind<ILocalSettingsDataSource>() with singleton { LocalSettingsDataSource(instance()) }
 }

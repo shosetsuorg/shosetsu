@@ -15,9 +15,13 @@ import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
+import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
@@ -96,8 +100,25 @@ class AppUpdateWorker(
 	 * Manager of [AppUpdateWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
-		private val settings: ShosetsuSettings by instance()
+		private val iSettingsRepository: ISettingsRepository by instance()
 
+		private suspend fun appUpdateCycle(): Long = iSettingsRepository.getInt(AppUpdateCycle).let {
+			if (it is HResult.Success)
+				it.data.toLong()
+			else AppUpdateCycle.default.toLong()
+		};
+
+		private suspend fun appUpdateOnMetered(): Boolean = iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection).let {
+			if (it is HResult.Success)
+				it.data
+			else AppUpdateOnMeteredConnection.default
+		};
+
+		private suspend fun appUpdateOnlyIdle(): Boolean = iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle).let {
+			if (it is HResult.Success)
+				it.data
+			else AppUpdateOnlyWhenIdle.default
+		};
 
 		/**
 		 * Returns the status of the service.
@@ -116,24 +137,26 @@ class AppUpdateWorker(
 		 * running.
 		 */
 		override fun start() {
-			Log.i(logID(), LogConstants.SERVICE_NEW)
-			workerManager.enqueueUniquePeriodicWork(
-					APP_UPDATE_WORK_ID,
-					ExistingPeriodicWorkPolicy.REPLACE,
-					PeriodicWorkRequestBuilder<AppUpdateWorker>(
-							settings.appUpdateCycle.toLong(),
-							TimeUnit.HOURS
-					).setConstraints(Constraints.Builder().apply {
-						setRequiredNetworkType(
-								if (settings.appUpdateOnMetered) CONNECTED else UNMETERED
-						)
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-							setRequiresDeviceIdle(settings.appUpdateOnlyIdle)
-					}.build()
-					).build()
-			)
-			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).get()[0].let {
-				Log.d(logID(), "Worker State ${it.state}")
+			launchIO {
+				this@Manager.logI(LogConstants.SERVICE_NEW)
+				workerManager.enqueueUniquePeriodicWork(
+						APP_UPDATE_WORK_ID,
+						ExistingPeriodicWorkPolicy.REPLACE,
+						PeriodicWorkRequestBuilder<AppUpdateWorker>(
+								appUpdateCycle(),
+								TimeUnit.HOURS
+						).setConstraints(Constraints.Builder().apply {
+							setRequiredNetworkType(
+									if (appUpdateOnMetered()) CONNECTED else UNMETERED
+							)
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+								setRequiresDeviceIdle(appUpdateOnlyIdle())
+						}.build()
+						).build()
+				)
+				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).get()[0].let {
+					this@Manager.logI("Worker State ${it.state}")
+				}
 			}
 		}
 

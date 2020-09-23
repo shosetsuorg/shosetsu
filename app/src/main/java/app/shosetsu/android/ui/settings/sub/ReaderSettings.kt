@@ -9,11 +9,11 @@ import androidx.core.content.getSystemService
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ShosetsuSettings
-import app.shosetsu.android.common.ShosetsuSettings.ColorChoice
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.common.ext.setSelectionListener
 import app.shosetsu.android.ui.settings.SettingsSubController
+import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -76,7 +76,7 @@ class ReaderSettings : SettingsSubController() {
 								replaceSpacing.append("\t")
 							textView.textSize = shosetsuSettings.readerTextSize
 
-							val r = shosetsuSettings.readerTheme.toLong()
+							val r = shosetsuSettings.selectedReaderTheme.toLong()
 							val b = shosetsuSettings.getReaderBackgroundColor(r)
 							val t = shosetsuSettings.getReaderTextColor(r)
 							textView.setTextColor(t)
@@ -161,7 +161,7 @@ class ReaderSettings : SettingsSubController() {
 						false
 				).apply {
 					val recycler = findViewById<RecyclerView>(R.id.color_picker_options)
-					val itemAdapter = ItemAdapter<ColorChoice>()
+					val itemAdapter = ItemAdapter<ColorChoiceUI>()
 					val fastAdapter = FastAdapter.with(itemAdapter)
 					fastAdapter.selectExtension {
 						isSelectable = true
@@ -171,7 +171,7 @@ class ReaderSettings : SettingsSubController() {
 					}
 					recycler.adapter = fastAdapter
 					fastAdapter.setOnClickListener { _, _, item, _ ->
-						shosetsuSettings.readerTheme = item.identifier.toInt()
+						shosetsuSettings.selectedReaderTheme = item.identifier.toInt()
 						item.isSelected = true
 
 						run {
@@ -190,7 +190,7 @@ class ReaderSettings : SettingsSubController() {
 					shosetsuSettings.readerUserThemesLive.observe(this@ReaderSettings) { list ->
 						itemAdapter.clear()
 						list.find {
-							it.identifier == shosetsuSettings.readerTheme.toLong()
+							it.identifier == shosetsuSettings.selectedReaderTheme.toLong()
 						}?.isSelected = true
 						itemAdapter.add(list)
 					}

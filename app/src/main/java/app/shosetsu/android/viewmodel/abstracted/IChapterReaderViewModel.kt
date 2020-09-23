@@ -1,9 +1,14 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.enums.MarkingTypes
 import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.common.enums.TextSizes
+import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
@@ -33,6 +38,28 @@ abstract class IChapterReaderViewModel
 
 	abstract var currentChapterID: Int
 
+	/**
+	 * Pair of Text color to background color
+	 */
+	abstract val liveTheme: LiveData<Pair<Int, Int>>
+
+	abstract val liveThemes: LiveData<List<ColorChoiceUI>>
+	abstract val liveMarkingTypes: LiveData<MarkingTypes>
+	abstract val liveIndentSize: LiveData<Int>
+	abstract val liveParagraphSpacing: LiveData<Int>
+	abstract val liveTextSize: LiveData<Float>
+
+	var defaultTextSize: Float = SettingKey.ReaderTextSize.default
+	var defaultParaSpacing: Int = SettingKey.ReaderParagraphSpacing.default
+	var defaultIndentSize: Int = SettingKey.ReaderIndentSize.default
+	var defaultForeground: Int = Color.BLACK
+	var defaultBackground: Int = Color.WHITE
+
+	abstract fun setReaderTheme(value: Int)
+	abstract fun setReaderTextSize(value: Float)
+	abstract fun setReaderParaSpacing(value: Int)
+	abstract fun setReaderIndentSize(value: Int)
+
 	/** Set the novelID */
 	abstract fun setNovelID(novelID: Int)
 
@@ -45,4 +72,7 @@ abstract class IChapterReaderViewModel
 			readingStatus: ReadingStatus = readerChapterUI.readingStatus,
 			bookmarked: Boolean = readerChapterUI.bookmarked,
 	)
+
+	abstract fun markAsReadingOnView(readerChapterUI: ReaderChapterUI)
+	abstract fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, yAswell: Int)
 }

@@ -3,6 +3,7 @@ package app.shosetsu.android.di
 import app.shosetsu.android.backend.workers.AppUpdateWorker
 import app.shosetsu.android.backend.workers.DownloadWorker
 import app.shosetsu.android.backend.workers.UpdateWorker
+import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -34,5 +35,5 @@ val othersModule = Kodein.Module("others") {
 	bind<UpdateWorker.Manager>() with singleton { UpdateWorker.Manager(instance()) }
 	bind<DownloadWorker.Manager>() with singleton { DownloadWorker.Manager(instance()) }
 	bind<AppUpdateWorker.Manager>() with singleton { AppUpdateWorker.Manager(instance()) }
-
+	bind<SharedPreferenceProvider>() with singleton { SharedPreferenceProvider((instance())) }
 }

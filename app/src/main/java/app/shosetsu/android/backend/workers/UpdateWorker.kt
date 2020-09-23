@@ -11,15 +11,17 @@ import androidx.work.*
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
+import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
@@ -73,7 +75,42 @@ class UpdateWorker(
 	 * Manager of [UpdateWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
-		val settings: ShosetsuSettings by instance()
+		private val iSettingsRepository by instance<ISettingsRepository>()
+
+
+		private suspend fun updateCycle(): Long = iSettingsRepository.getInt(UpdateCycle).let {
+			if (it is HResult.Success)
+				it.data.toLong()
+			else UpdateCycle.default.toLong()
+		};
+
+		private suspend fun updateOnMetered(): Boolean =
+				iSettingsRepository.getBoolean(UpdateOnMeteredConnection).let {
+					if (it is HResult.Success)
+						it.data
+					else UpdateOnMeteredConnection.default
+				};
+
+		private suspend fun updateOnLowStorage(): Boolean =
+				iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
+					if (it is HResult.Success)
+						it.data
+					else UpdateOnLowStorage.default
+				};
+
+		private suspend fun updateOnLowBattery(): Boolean =
+				iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
+					if (it is HResult.Success)
+						it.data
+					else UpdateOnLowBattery.default
+				};
+
+		private suspend fun updateOnlyIdle(): Boolean =
+				iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
+					if (it is HResult.Success)
+						it.data
+					else UpdateOnlyWhenIdle.default
+				};
 
 		/**
 		 * Returns the status of the service.
@@ -92,30 +129,32 @@ class UpdateWorker(
 		 * running.
 		 */
 		override fun start() {
-			Log.i(logID(), LogConstants.SERVICE_NEW)
-			workerManager.enqueueUniquePeriodicWork(
-					UPDATE_WORK_ID,
-					REPLACE,
-					PWRB<UpdateWorker>(
-							settings.updateCycle.toLong(),
-							HOURS
-					).setConstraints(
-							Constraints.Builder().apply {
-								setRequiredNetworkType(
-										if (settings.updateOnMetered) {
-											CONNECTED
-										} else UNMETERED
-								)
-								setRequiresStorageNotLow(!settings.updateOnLowStorage)
-								setRequiresBatteryNotLow(!settings.updateOnLowBattery)
-								if (SDK_INT >= VERSION_CODES.M)
-									setRequiresDeviceIdle(settings.updateOnlyIdle)
-							}.build()
-					)
-							.build()
-			)
-			workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).get()[0].let {
-				Log.d(logID(), "State ${it.state}")
+			launchIO {
+				Log.i(logID(), LogConstants.SERVICE_NEW)
+				workerManager.enqueueUniquePeriodicWork(
+						UPDATE_WORK_ID,
+						REPLACE,
+						PWRB<UpdateWorker>(
+								updateCycle(),
+								HOURS
+						).setConstraints(
+								Constraints.Builder().apply {
+									setRequiredNetworkType(
+											if (updateOnMetered()) {
+												CONNECTED
+											} else UNMETERED
+									)
+									setRequiresStorageNotLow(!updateOnLowStorage())
+									setRequiresBatteryNotLow(!updateOnLowBattery())
+									if (SDK_INT >= VERSION_CODES.M)
+										setRequiresDeviceIdle(updateOnlyIdle())
+								}.build()
+						)
+								.build()
+				)
+				workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).get()[0].let {
+					Log.d(logID(), "State ${it.state}")
+				}
 			}
 		}
 
@@ -143,9 +182,23 @@ class UpdateWorker(
 	override val kodein: Kodein by closestKodein(appContext)
 	private val iNovelsRepository by instance<INovelsRepository>()
 	private val loadNovelUseCase by instance<LoadNovelUseCase>()
-	private val settings by instance<ShosetsuSettings>()
 	private val toastErrorUseCase by instance<ToastErrorUseCase>()
 	private val startDownloadWorker: StartDownloadWorkerUseCase by instance()
+	private val iSettingsRepository: ISettingsRepository by instance()
+
+	private suspend fun onlyUpdateOngoing(): Boolean =
+			iSettingsRepository.getBoolean(OnlyUpdateOngoing).let {
+				if (it is HResult.Success)
+					it.data
+				else OnlyUpdateOngoing.default
+			}
+
+	private suspend fun downloadOnUpdate(): Boolean =
+			iSettingsRepository.getBoolean(IsDownloadOnUpdate).let {
+				if (it is HResult.Success)
+					it.data
+				else IsDownloadOnUpdate.default
+			}
 
 	override suspend fun doWork(): Result {
 		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
@@ -158,7 +211,7 @@ class UpdateWorker(
 			when (hNovels) {
 				is HResult.Success -> {
 					val novels = hNovels.data.let { list: List<NovelEntity> ->
-						if (settings.onlyUpdateOngoing)
+						if (onlyUpdateOngoing())
 							list.filter { it.status == Novel.Status.PUBLISHING }
 						else list
 					}
@@ -188,7 +241,7 @@ class UpdateWorker(
 			}
 		}
 
-		if (settings.downloadOnUpdate) startDownloadWorker()
+		if (downloadOnUpdate()) startDownloadWorker()
 		return Result.success()
 	}
 }
