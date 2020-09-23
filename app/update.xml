@@ -1,12 +1,11 @@
 <AppUpdater>
-
     <update>
-        <latestVersion>1.1.0</latestVersion>
-        <latestVersionCode>23</latestVersionCode>
-        <url>https://github.com/Doomsdayrs/shosetsu/releases</url>
+        <latestVersion>1.1.4</latestVersion>
+        <latestVersionCode>27</latestVersionCode>
+        <url>https://github.com/shosetsuorg/android-app/releases</url>
         <releaseNotes>
-            - Spoooood update :D
+        	- Fixed up some stuff
+		- Apology on app startup
         </releaseNotes>
     </update>
-
 </AppUpdater>
