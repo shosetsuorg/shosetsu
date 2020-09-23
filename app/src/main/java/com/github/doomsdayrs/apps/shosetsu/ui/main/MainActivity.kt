@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -64,137 +65,146 @@ import kotlinx.android.synthetic.main.activity_main.*
  */
 //TODO Inform users to refresh their libraries
 class MainActivity : AppCompatActivity(), Supporter {
-    val cataloguesFragment = CataloguesFragment()
-    val libraryFragment = LibraryFragment()
-    val updatesFragment = UpdatesFragment()
-    val settingsFragment = SettingsFragment()
-    val downloadsFragment = DownloadsFragment()
+	val cataloguesFragment = CataloguesFragment()
+	val libraryFragment = LibraryFragment()
+	val updatesFragment = UpdatesFragment()
+	val settingsFragment = SettingsFragment()
+	val downloadsFragment = DownloadsFragment()
 
 
-    fun getNavigationView(): NavigationView? {
-        return nav_view
-    }
+	fun getNavigationView(): NavigationView? {
+		return nav_view
+	}
 
-    fun getDrawerLayout(): DrawerLayout? {
-        return drawer_layout
-    }
+	fun getDrawerLayout(): DrawerLayout? {
+		return drawer_layout
+	}
 
-    /**
-     * Main activity
-     *
-     * @param savedInstanceState savedData from destruction
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-        Utilities.viewPreferences = getSharedPreferences("view", 0)
-        Utilities.downloadPreferences = getSharedPreferences("download", 0)
-        Utilities.advancedPreferences = getSharedPreferences("advanced", 0)
-        Utilities.trackingPreferences = getSharedPreferences("tracking", 0)
-        Utilities.backupPreferences = getSharedPreferences("backup", 0)
-        Utilities.initPreferences(this)
-        Utilities.setupTheme(this)
-        //  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        Log.d("Updater", "Start")
-
-
-        val appUpdater = AppUpdater(this)
-                .setUpdateFrom(UpdateFrom.XML)
-                .setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
-                .setDisplay(Display.DIALOG)
-                .setTitleOnUpdateAvailable(getString(R.string.app_update_available))
-                .setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
-                .setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
-                .setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
-                .setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
-                .setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
-                .setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
-                .setIcon(R.drawable.ic_system_update_alt_black_24dp)
-                .setCancelable(true)
-                .showEvery(5)
-        appUpdater.start()
+	/**
+	 * Main activity
+	 *
+	 * @param savedInstanceState savedData from destruction
+	 */
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+		Utilities.viewPreferences = getSharedPreferences("view", 0)
+		Utilities.downloadPreferences = getSharedPreferences("download", 0)
+		Utilities.advancedPreferences = getSharedPreferences("advanced", 0)
+		Utilities.trackingPreferences = getSharedPreferences("tracking", 0)
+		Utilities.backupPreferences = getSharedPreferences("backup", 0)
+		Utilities.initPreferences(this)
+		Utilities.setupTheme(this)
+		//  getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+		Log.d("Updater", "Start")
 
 
-        val appUpdaterUtils = AppUpdaterUtils(this)
-                .setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
-                .withListener(object : UpdateListener {
-                    override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
-                        Log.d("Latest Version", isUpdateAvailable.toString())
-                        Log.d("Latest Version", update.latestVersion)
-                        Log.d("Latest Version", update.latestVersionCode.toString())
-                    }
-
-                    override fun onFailed(error: AppUpdaterError) {
-                        Log.d("AppUpdater Error", "Something went wrong")
-                    }
-                })
-        appUpdaterUtils.start()
-        Log.d("Updater", "Completed construction")
-
-        // Settings setup
-        Settings.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        //Set the content view
-        setContentView(R.layout.activity_main)
-        //Sets the toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        // Webview agent retrieval
-        val webView = findViewById<WebView>(R.id.absolute_webView)
-        WebViewScrapper.setUa(webView.settings.userAgentString)
-
-        // Sets up DB
-        if (Database.sqLiteDatabase == null) Database.sqLiteDatabase = DBHelper(this).writableDatabase
-
-        initDownloadManager(this)
+		val appUpdater = AppUpdater(this)
+				.setUpdateFrom(UpdateFrom.XML)
+				.setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+				.setDisplay(Display.DIALOG)
+				.setTitleOnUpdateAvailable(getString(R.string.app_update_available))
+				.setContentOnUpdateAvailable(getString(R.string.check_out_latest_app))
+				.setTitleOnUpdateNotAvailable(getString(R.string.app_update_unavaliable))
+				.setContentOnUpdateNotAvailable(getString(R.string.check_updates_later))
+				.setButtonUpdate(getString(R.string.update_app_now_question)) //    .setButtonUpdateClickListener(...)
+				.setButtonDismiss(getString(R.string.update_dismiss)) //       .setButtonDismissClickListener(...)
+				.setButtonDoNotShowAgain(getString(R.string.update_not_interested)) //     .setButtonDoNotShowAgainClickListener(...)
+				.setIcon(R.drawable.ic_system_update_alt_black_24dp)
+				.setCancelable(true)
+				.showEvery(5)
+		appUpdater.start()
 
 
-        when (intent.action) {
-            Intent.ACTION_USER_BACKGROUND -> {
-                Log.i("MainActivity", "Updating novels")
-                init(Database.DatabaseNovels.getIntLibrary(), this)
-                transitionView(updatesFragment)
-            }
-            Intent.ACTION_BOOT_COMPLETED -> {
-                Log.i("MainActivity", "Bootup")
-                if (Utilities.isOnline)
-                    init(Database.DatabaseNovels.getIntLibrary(), this)
-            }
-            else -> {
-                //Prevent the frag from changing on rotation
-                if (savedInstanceState == null) {
-                    supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, libraryFragment).commit()
-                    nav_view.setCheckedItem(R.id.nav_library)
-                }
-            }
-        }
-    }
+		val appUpdaterUtils = AppUpdaterUtils(this)
+				.setUpdateFrom(UpdateFrom.XML).setUpdateXML("https://raw.githubusercontent.com/Doomsdayrs/shosetsu/master/app/update.xml")
+				.withListener(object : UpdateListener {
+					override fun onSuccess(update: Update, isUpdateAvailable: Boolean) {
+						Log.d("Latest Version", isUpdateAvailable.toString())
+						Log.d("Latest Version", update.latestVersion)
+						Log.d("Latest Version", update.latestVersionCode.toString())
+					}
 
-    fun transitionView(target: Fragment) {
-        supportFragmentManager.beginTransaction()
-                .addToBackStack("tag")
-                .replace(R.id.fragment_container, target)
-                .commit()
-    }
+					override fun onFailed(error: AppUpdaterError) {
+						Log.d("AppUpdater Error", "Something went wrong")
+					}
+				})
+		appUpdaterUtils.start()
+		Log.d("Updater", "Completed construction")
 
-    /**
-     * When the back button while drawer is open, close it.
-     */
-    override fun onBackPressed() {
-        if (drawer_layout!!.isDrawerOpen(GravityCompat.START)) drawer_layout!!.closeDrawer(GravityCompat.START) else {
-            super.onBackPressed()
-        }
-    }
+		// Settings setup
+		Settings.connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    override fun setTitle(name: String?) {
-        if (supportActionBar != null) supportActionBar!!.title = name
-    }
+		//Set the content view
+		setContentView(R.layout.activity_main)
+		//Sets the toolbar
+		val toolbar = findViewById<Toolbar>(R.id.toolbar)
+		setSupportActionBar(toolbar)
+		nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
+		val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
+				R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+		drawer_layout.addDrawerListener(toggle)
+		toggle.syncState()
+
+		// Webview agent retrieval
+		val webView = findViewById<WebView>(R.id.absolute_webView)
+		WebViewScrapper.setUa(webView.settings.userAgentString)
+
+		// Sets up DB
+		if (Database.sqLiteDatabase == null) Database.sqLiteDatabase = DBHelper(this).writableDatabase
+
+		initDownloadManager(this)
+
+		AlertDialog.Builder(this)
+				.setMessage("""
+                            Thank you for using shosetsu stable.
+                            It hope it hasn't been hard to use this application.
+                            Currently this stable is being phased out in preparation for V2 of shosetsu.
+                            Please go to https://shosetsu.app and go to the discord server for the dev release.
+                            The dev release has countless improvements over this.
+                            Thank you for your time, This message will repeat time the app is opened
+                            """.trimIndent()).show()
+
+		when (intent.action) {
+			Intent.ACTION_USER_BACKGROUND -> {
+				Log.i("MainActivity", "Updating novels")
+				init(Database.DatabaseNovels.getIntLibrary(), this)
+				transitionView(updatesFragment)
+			}
+			Intent.ACTION_BOOT_COMPLETED -> {
+				Log.i("MainActivity", "Bootup")
+				if (Utilities.isOnline)
+					init(Database.DatabaseNovels.getIntLibrary(), this)
+			}
+			else -> {
+				//Prevent the frag from changing on rotation
+				if (savedInstanceState == null) {
+					supportFragmentManager
+							.beginTransaction()
+							.replace(R.id.fragment_container, libraryFragment).commit()
+					nav_view.setCheckedItem(R.id.nav_library)
+				}
+			}
+		}
+	}
+
+	fun transitionView(target: Fragment) {
+		supportFragmentManager.beginTransaction()
+				.addToBackStack("tag")
+				.replace(R.id.fragment_container, target)
+				.commit()
+	}
+
+	/**
+	 * When the back button while drawer is open, close it.
+	 */
+	override fun onBackPressed() {
+		if (drawer_layout!!.isDrawerOpen(GravityCompat.START)) drawer_layout!!.closeDrawer(GravityCompat.START) else {
+			super.onBackPressed()
+		}
+	}
+
+	override fun setTitle(name: String?) {
+		if (supportActionBar != null) supportActionBar!!.title = name
+	}
 }
