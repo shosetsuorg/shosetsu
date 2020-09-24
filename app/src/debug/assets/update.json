@@ -1,9 +1,7 @@
 {
-  "latestVersion": "959",
+  "latestVersion": "961",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Finnaly fixed up the ChapterReader.kt",
-    "- ReaderType.kt now syncs with ChapterReader.kt's viewmodel directly",
-    "- ChapterReaderViewModel.kt now uses a switchmap to reverse chapters"
+    "- Added volume scroll"
   ]
 }
