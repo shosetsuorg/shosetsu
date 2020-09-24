@@ -68,4 +68,12 @@ class PDFReader(itemView: View) : ReaderType(itemView) {
 	override fun showProgress() {
 		TODO("Not yet implemented")
 	}
+
+	override fun incrementScroll() {
+		TODO("Not yet implemented")
+	}
+
+	override fun depleteScroll() {
+		TODO("Not yet implemented")
+	}
 }

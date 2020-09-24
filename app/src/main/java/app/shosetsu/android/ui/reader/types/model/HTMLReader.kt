@@ -72,4 +72,11 @@ class HTMLReader(itemView: View) : ReaderType(itemView) {
 		TODO("Not yet implemented")
 	}
 
+	override fun incrementScroll() {
+		TODO("Not yet implemented")
+	}
+
+	override fun depleteScroll() {
+		TODO("Not yet implemented")
+	}
 }

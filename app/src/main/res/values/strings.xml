@@ -295,6 +295,7 @@
     <string name="negative_one">-1</string>
     <string name="repositories">Repositories</string>
     <string name="chapter_select_between_error_empty_adapter">AdapterList returned empty, Try again?</string>
+    <string name="volume_scroll">Volume Scroll</string>
 
     <array name="application_themes">
         <item>@string/light</item>

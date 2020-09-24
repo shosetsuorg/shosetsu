@@ -8,7 +8,6 @@ import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.mapTo
 import app.shosetsu.android.common.enums.MarkingTypes
 import app.shosetsu.android.common.enums.MarkingTypes.ONSCROLL
 import app.shosetsu.android.common.enums.MarkingTypes.ONVIEW
@@ -100,6 +99,9 @@ class ChapterReaderViewModel(
 	override val liveTextSize: LiveData<Float> by lazy {
 		iSettingsRepository.observeFloat(ReaderTextSize)
 	}
+	override val liveVolumeScroll: LiveData<Boolean> by lazy {
+		iSettingsRepository.observeBoolean(ReaderVolumeScroll)
+	}
 
 	override var currentChapterID: Int = -1
 
@@ -188,5 +190,14 @@ class ChapterReaderViewModel(
 
 	override fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, yAswell: Int) {
 		markAsReading(readerChapterUI, ONSCROLL, yAswell)
+	}
+
+	override fun allowVolumeScroll(): Boolean = volumeScroll
+
+	override fun setOnVolumeScroll(checked: Boolean) {
+		volumeScroll = checked
+		launchIO {
+			iSettingsRepository.setBoolean(ReaderVolumeScroll, checked)
+		}
 	}
 }

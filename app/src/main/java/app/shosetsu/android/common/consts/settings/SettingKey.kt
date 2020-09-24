@@ -44,6 +44,9 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	//- How things act in Reader
 	object ReaderIsTapToScroll : SettingKey<Boolean>("tapToScroll", false)
+	object ReaderVolumeScroll : SettingKey<Boolean>("volumeToScroll", false)
+
+
 	object ReaderIsInvertedSwipe : SettingKey<Boolean>("invertedSwipe", false)
 	object ReadingMarkingType : SettingKey<String>("readingMarkingType", MarkingTypes.ONVIEW.name)
 
@@ -115,6 +118,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 					//- How things act in Reader
 					ReaderIsTapToScroll,
+					ReaderVolumeScroll,
 					ReaderIsInvertedSwipe,
 					ReadingMarkingType,
 

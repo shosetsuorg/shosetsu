@@ -62,5 +62,9 @@ abstract class ReaderType(
 	abstract fun hideProgress()
 	abstract fun showProgress()
 
+	abstract fun incrementScroll()
+
+	abstract fun depleteScroll()
+
 	// abstract fun setTextFont()
 }

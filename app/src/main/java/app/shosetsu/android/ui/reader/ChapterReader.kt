@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.reader
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
@@ -20,6 +21,7 @@ import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.enums.TextSizes
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.reader.adapters.ChapterReaderAdapter
+import app.shosetsu.android.ui.reader.types.base.ReaderType
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
@@ -175,62 +177,30 @@ class ChapterReader
 		viewModel.liveTheme.observe(this) { (t, b) ->
 			viewModel.defaultForeground = t
 			viewModel.defaultBackground = b
-			chapterReaderAdapter.textReaders.find {
-				it.chapter.id == viewModel.currentChapterID
-			}?.apply {
+
+			applyToReaders {
 				syncTextColor()
 				syncBackgroundColor()
-			}
-
-			// Sets other views down
-			chapterReaderAdapter.textReaders.filter {
-				it.chapter.id != viewModel.currentChapterID
-			}.forEach {
-				it.syncTextColor()
-				it.syncBackgroundColor()
 			}
 		}
 
 		viewModel.liveIndentSize.observe(this) { i ->
 			viewModel.defaultIndentSize = i
-			chapterReaderAdapter.textReaders.find {
-				it.chapter.id == viewModel.currentChapterID
-			}?.syncParagraphIndent()
-
-			// Sets other views down
-			chapterReaderAdapter.textReaders.filter {
-				it.chapter.id != viewModel.currentChapterID
-			}.forEach {
-				it.syncParagraphIndent()
+			applyToReaders {
+				syncParagraphIndent()
 			}
 		}
 
 		viewModel.liveParagraphSpacing.observe(this) { i ->
 			viewModel.defaultParaSpacing = i
-			chapterReaderAdapter.textReaders.find {
-				it.chapter.id == viewModel.currentChapterID
-			}?.syncParagraphSpacing()
-
-			// Sets other views down
-			chapterReaderAdapter.textReaders.filter {
-				it.chapter.id != viewModel.currentChapterID
-			}.forEach {
-				it.syncParagraphSpacing()
+			applyToReaders {
+				syncParagraphSpacing()
 			}
 		}
 
 		viewModel.liveTextSize.observe(this) { i ->
 			viewModel.defaultTextSize = i
-			chapterReaderAdapter.textReaders.find {
-				it.chapter.id == viewModel.currentChapterID
-			}?.syncTextSize()
-
-			// Sets other views down
-			chapterReaderAdapter.textReaders.filter {
-				it.chapter.id != viewModel.currentChapterID
-			}.forEach {
-				it.syncTextSize()
-			}
+			applyToReaders { syncTextSize() }
 		}
 
 		viewModel.liveThemes.observe(this) { list ->
@@ -238,6 +208,24 @@ class ChapterReader
 				forEach { it.inReader = true }
 			})
 		}
+
+		viewModel.liveVolumeScroll.observe(this) {
+			viewModel.volumeScroll = it
+		}
+	}
+
+	private fun applyToReaders(onlyCurrent: Boolean = false, action: ReaderType.() -> Unit) {
+		chapterReaderAdapter.textReaders.find {
+			it.chapter.id == viewModel.currentChapterID
+		}?.action()
+
+		// Sets other views down
+		if (!onlyCurrent)
+			chapterReaderAdapter.textReaders.filter {
+				it.chapter.id != viewModel.currentChapterID
+			}.forEach {
+				it.action()
+			}
 	}
 
 	private fun getCurrentChapter(): ReaderChapterUI? = chapters.find {
@@ -384,6 +372,13 @@ class ChapterReader
 				true
 			}
 		}
+
+		volume_to_scroll_bar?.apply {
+			isChecked = viewModel.volumeScroll
+			this.setOnCheckedChangeListener { _, isChecked ->
+				viewModel.setOnVolumeScroll(isChecked)
+			}
+		}
 	}
 
 	private fun setupViewPager() {
@@ -509,5 +504,24 @@ class ChapterReader
 				setBookmarkIcon(this)
 			}
 		}
+	}
+
+	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+		if (viewModel.allowVolumeScroll())
+			when (keyCode) {
+				KeyEvent.KEYCODE_VOLUME_DOWN -> {
+					applyToReaders(true) {
+						incrementScroll()
+					}
+					return true
+				}
+				KeyEvent.KEYCODE_VOLUME_UP -> {
+					applyToReaders(true) {
+						depleteScroll()
+					}
+					return true
+				}
+			}
+		return super.onKeyDown(keyCode, event)
 	}
 }

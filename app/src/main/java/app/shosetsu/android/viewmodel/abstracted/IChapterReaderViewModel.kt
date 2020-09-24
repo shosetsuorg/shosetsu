@@ -7,7 +7,6 @@ import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.enums.MarkingTypes
 import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.common.enums.TextSizes
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
@@ -48,12 +47,16 @@ abstract class IChapterReaderViewModel
 	abstract val liveIndentSize: LiveData<Int>
 	abstract val liveParagraphSpacing: LiveData<Int>
 	abstract val liveTextSize: LiveData<Float>
+	abstract val liveVolumeScroll: LiveData<Boolean>
+
 
 	var defaultTextSize: Float = SettingKey.ReaderTextSize.default
 	var defaultParaSpacing: Int = SettingKey.ReaderParagraphSpacing.default
 	var defaultIndentSize: Int = SettingKey.ReaderIndentSize.default
 	var defaultForeground: Int = Color.BLACK
 	var defaultBackground: Int = Color.WHITE
+
+	var volumeScroll: Boolean = false
 
 	abstract fun setReaderTheme(value: Int)
 	abstract fun setReaderTextSize(value: Float)
@@ -75,4 +78,7 @@ abstract class IChapterReaderViewModel
 
 	abstract fun markAsReadingOnView(readerChapterUI: ReaderChapterUI)
 	abstract fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, yAswell: Int)
+
+	abstract fun allowVolumeScroll(): Boolean
+	abstract fun setOnVolumeScroll(checked: Boolean)
 }

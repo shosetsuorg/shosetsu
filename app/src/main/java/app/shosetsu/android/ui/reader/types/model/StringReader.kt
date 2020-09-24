@@ -175,4 +175,24 @@ class StringReader(
 			chapterReader.viewModel.updateChapter(chapter, readingStatus = ReadingStatus.READ)
 		}
 	}
+
+	override fun depleteScroll() {
+		val currentY = scrollView.scrollY
+
+		if (currentY > scrollSpeed)
+			scrollView.smoothScrollTo(0, currentY - scrollSpeed)
+	}
+
+	override fun incrementScroll() {
+		val currentY = scrollView.scrollY
+		val maxY = scrollView.getChildAt(0).height - scrollView.height
+
+		if (currentY < maxY - scrollSpeed)
+			scrollView.smoothScrollTo(0, currentY + scrollSpeed)
+		else scrollView.smoothScrollTo(0, maxY)
+	}
+
+	companion object {
+		private const val scrollSpeed = 300
+	}
 }
