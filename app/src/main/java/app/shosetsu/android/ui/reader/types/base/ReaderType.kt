@@ -43,14 +43,14 @@ abstract class ReaderType(
 	 */
 	abstract fun setData(data: String)
 
-	abstract fun setTextColor(int: Int)
-	abstract fun setBackgroundColor(int: Int)
+	abstract fun syncTextColor()
+	abstract fun syncBackgroundColor()
 
-	abstract fun setTextSize(textSize: Float)
-	abstract fun setTextPadding(padding: Int)
+	abstract fun syncTextSize()
+	abstract fun syncTextPadding()
 
-	abstract fun setParagraphSpacing(spacing: Int)
-	abstract fun setParagraphIndent(indent: Int)
+	abstract fun syncParagraphSpacing()
+	abstract fun syncParagraphIndent()
 
 	abstract fun setProgress(progress: Int)
 

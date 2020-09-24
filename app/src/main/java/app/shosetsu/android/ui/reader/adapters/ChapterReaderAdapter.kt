@@ -41,7 +41,6 @@ class ChapterReaderAdapter(
 ) : RecyclerView.Adapter<ReaderType>() {
 	var textReaders: ArrayList<ReaderType> = ArrayList()
 
-
 	init {
 		setHasStableIds(true)
 	}
@@ -55,12 +54,7 @@ class ChapterReaderAdapter(
 						R.layout.chapter_reader_text_view,
 						parent,
 						false
-				),
-				defaultTextSize = chapterReader.viewModel.defaultTextSize,
-				defaultParaSpacing = chapterReader.viewModel.defaultParaSpacing,
-				defaultIndentSize = chapterReader.viewModel.defaultIndentSize,
-				defaultForeground = chapterReader.viewModel.defaultForeground,
-				defaultBackground = chapterReader.viewModel.defaultBackground
+				)
 		).also { textReaders.add(it) }
 	}
 

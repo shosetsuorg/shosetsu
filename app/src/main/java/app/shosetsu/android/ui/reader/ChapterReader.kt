@@ -178,16 +178,16 @@ class ChapterReader
 			chapterReaderAdapter.textReaders.find {
 				it.chapter.id == viewModel.currentChapterID
 			}?.apply {
-				setTextColor(t)
-				setBackgroundColor(b)
+				syncTextColor()
+				syncBackgroundColor()
 			}
 
 			// Sets other views down
 			chapterReaderAdapter.textReaders.filter {
 				it.chapter.id != viewModel.currentChapterID
 			}.forEach {
-				it.setTextColor(t)
-				it.setBackgroundColor(b)
+				it.syncTextColor()
+				it.syncBackgroundColor()
 			}
 		}
 
@@ -195,13 +195,13 @@ class ChapterReader
 			viewModel.defaultIndentSize = i
 			chapterReaderAdapter.textReaders.find {
 				it.chapter.id == viewModel.currentChapterID
-			}?.setParagraphIndent(i)
+			}?.syncParagraphIndent()
 
 			// Sets other views down
 			chapterReaderAdapter.textReaders.filter {
 				it.chapter.id != viewModel.currentChapterID
 			}.forEach {
-				it.setParagraphIndent(i)
+				it.syncParagraphIndent()
 			}
 		}
 
@@ -209,13 +209,13 @@ class ChapterReader
 			viewModel.defaultParaSpacing = i
 			chapterReaderAdapter.textReaders.find {
 				it.chapter.id == viewModel.currentChapterID
-			}?.setParagraphSpacing(i)
+			}?.syncParagraphSpacing()
 
 			// Sets other views down
 			chapterReaderAdapter.textReaders.filter {
 				it.chapter.id != viewModel.currentChapterID
 			}.forEach {
-				it.setParagraphSpacing(i)
+				it.syncParagraphSpacing()
 			}
 		}
 
@@ -223,13 +223,13 @@ class ChapterReader
 			viewModel.defaultTextSize = i
 			chapterReaderAdapter.textReaders.find {
 				it.chapter.id == viewModel.currentChapterID
-			}?.setTextSize(i)
+			}?.syncTextSize()
 
 			// Sets other views down
 			chapterReaderAdapter.textReaders.filter {
 				it.chapter.id != viewModel.currentChapterID
 			}.forEach {
-				it.setTextSize(i)
+				it.syncTextSize()
 			}
 		}
 
@@ -499,6 +499,12 @@ class ChapterReader
 			with(chapters[position]) {
 				viewModel.currentChapterID = id
 				viewModel.markAsReadingOnView(this)    // Mark read if set to onview
+				chapterReaderAdapter.textReaders.find { it.chapter.id == id }?.apply {
+					syncBackgroundColor()
+					syncTextColor()
+					syncTextSize()
+					syncTextPadding()
+				}
 				supportActionBar?.title = title
 				setBookmarkIcon(this)
 			}

@@ -33,27 +33,27 @@ class MarkdownReader(itemView: View) : ReaderType(itemView) {
 		TODO("Not yet implemented")
 	}
 
-	override fun setTextColor(int: Int) {
+	override fun syncTextColor() {
 		TODO("Not yet implemented")
 	}
 
-	override fun setBackgroundColor(int: Int) {
+	override fun syncBackgroundColor() {
 		TODO("Not yet implemented")
 	}
 
-	override fun setTextSize(textSize: Float) {
+	override fun syncTextSize() {
 		TODO("Not yet implemented")
 	}
 
-	override fun setTextPadding(padding: Int) {
+	override fun syncTextPadding() {
 		TODO("Not yet implemented")
 	}
 
-	override fun setParagraphSpacing(spacing: Int) {
+	override fun syncParagraphSpacing() {
 		TODO("Not yet implemented")
 	}
 
-	override fun setParagraphIndent(indent: Int) {
+	override fun syncParagraphIndent() {
 		TODO("Not yet implemented")
 	}
 

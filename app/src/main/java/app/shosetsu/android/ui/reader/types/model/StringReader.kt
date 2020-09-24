@@ -1,6 +1,5 @@
 package app.shosetsu.android.ui.reader.types.model
 
-import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.view.View
@@ -12,7 +11,6 @@ import android.widget.TextView
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleObserver
-import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.types.base.ReaderType
@@ -44,12 +42,7 @@ import org.kodein.di.android.kodein
  * 13 / 12 / 2019
  */
 class StringReader(
-		itemView: View,
-		private var defaultTextSize: Float = SettingKey.ReaderTextSize.default,
-		var defaultParaSpacing: Int = SettingKey.ReaderParagraphSpacing.default,
-		var defaultIndentSize: Int = SettingKey.ReaderIndentSize.default,
-		var defaultForeground: Int = Color.BLACK,
-		var defaultBackground: Int = Color.WHITE
+		itemView: View
 ) : ReaderType(itemView), KodeinAware, LifecycleObserver {
 	override val kodein: Kodein by kodein(itemView.context)
 
@@ -110,19 +103,18 @@ class StringReader(
 	}
 
 	fun bind(
-			paragraphSpacing: Int = this.defaultParaSpacing,
-			paragraphIndent: Int = defaultIndentSize
+			paragraphSpacing: Int = chapterReader.viewModel.defaultParaSpacing,
+			paragraphIndent: Int = chapterReader.viewModel.defaultIndentSize
 	) {
+
 		val replaceSpacing = StringBuilder("\n")
 		for (x in 0 until paragraphSpacing)
 			replaceSpacing.append("\n")
 		for (x in 0 until paragraphIndent)
 			replaceSpacing.append("\t")
-		textView.textSize = defaultTextSize
-
-
-		textView.setTextColor(defaultForeground)
-		textView.setBackgroundColor(defaultBackground)
+		syncTextSize()
+		textView.setTextColor(chapterReader.viewModel.defaultForeground)
+		textView.setBackgroundColor(chapterReader.viewModel.defaultBackground)
 		textView.text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
 	}
 
@@ -131,20 +123,20 @@ class StringReader(
 		bind()
 	}
 
-	override fun setTextSize(textSize: Float) {
-		textView.textSize = textSize
+	override fun syncTextSize() {
+		textView.textSize = chapterReader.viewModel.defaultTextSize
 	}
 
-	override fun setTextPadding(padding: Int) {
-		textView.setPadding(padding)
+	override fun syncTextPadding() {
+		textView.setPadding(16)
 	}
 
-	override fun setParagraphSpacing(spacing: Int) {
-		bind(spacing)
+	override fun syncParagraphSpacing() {
+		bind()
 	}
 
-	override fun setParagraphIndent(indent: Int) {
-		bind(paragraphIndent = indent)
+	override fun syncParagraphIndent() {
+		bind()
 	}
 
 	override fun setProgress(progress: Int) {
@@ -155,12 +147,12 @@ class StringReader(
 		textView.setOnDoubleClickListener { focus() }
 	}
 
-	override fun setTextColor(int: Int) {
-		textView.setTextColor(int)
+	override fun syncTextColor() {
+		textView.setTextColor(chapterReader.viewModel.defaultForeground)
 	}
 
-	override fun setBackgroundColor(int: Int) {
-		textView.setBackgroundColor(int)
+	override fun syncBackgroundColor() {
+		textView.setBackgroundColor(chapterReader.viewModel.defaultBackground)
 	}
 
 	/**
