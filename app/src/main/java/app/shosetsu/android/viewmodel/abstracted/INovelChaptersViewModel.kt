@@ -35,7 +35,6 @@ import javax.security.auth.Destroyable
 abstract class INovelChaptersViewModel
 	: SubscribeHandleViewModel<List<ChapterUI>>, ViewModel(), Destroyable {
 
-	var areChaptersReversed: Boolean = false
 
 	abstract fun setNovelID(novelID: Int)
 
@@ -64,6 +63,7 @@ abstract class INovelChaptersViewModel
 
 	abstract fun openBrowser(chapterUI: ChapterUI)
 
+	abstract fun reverseChapters()
 
 	/**
 	 * Deletes a chapter

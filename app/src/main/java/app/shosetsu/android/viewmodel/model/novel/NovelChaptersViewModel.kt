@@ -2,10 +2,7 @@ package app.shosetsu.android.viewmodel.model.novel
 
 import androidx.lifecycle.*
 import app.shosetsu.android.common.ShosetsuSettings
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.emptyResult
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
@@ -49,14 +46,36 @@ class NovelChaptersViewModel(
 		private val openInBrowserUseCase: OpenInBrowserUseCase,
 		private val settings: ShosetsuSettings,
 ) : INovelChaptersViewModel() {
+
 	private var nID: Int = -1
 	private val novelIDLive: MutableLiveData<Int> by lazy {
 		MutableLiveData(nID)
 	}
 
-	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {
-		novelIDLive.switchMap { getChapterUIsUseCase(it) }
+	private var areChaptersReversed: Boolean = false
+	private val reverseChapters: MutableLiveData<Boolean> by lazy {
+		MutableLiveData(areChaptersReversed)
 	}
+
+	override val liveData: LiveData<HResult<List<ChapterUI>>> by lazy {
+		novelIDLive.switchMap { id ->
+			getChapterUIsUseCase(id).switchMap { list ->
+				reverseChapters.switchMap { isReversed ->
+					reverseChapterList(isReversed, list)
+				}
+			}
+		}
+	}
+
+	private fun reverseChapterList(
+			boolean: Boolean,
+			list: HResult<List<ChapterUI>>
+	): LiveData<HResult<List<ChapterUI>>> =
+			liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+				emit(list.handleReturn {
+					successResult(ArrayList(it).apply { if (boolean) reverse() }.toList())
+				})
+			}
 
 	override fun setNovelID(novelID: Int) {
 		when {
@@ -141,7 +160,15 @@ class NovelChaptersViewModel(
 		}
 	}
 
+	override fun reverseChapters() {
+		launchIO {
+			areChaptersReversed = !areChaptersReversed
+			reverseChapters.postValue(areChaptersReversed)
+		}
+	}
+
 	override fun destroy() {
 		areChaptersReversed = false
+		reverseChapters.postValue(areChaptersReversed)
 	}
 }

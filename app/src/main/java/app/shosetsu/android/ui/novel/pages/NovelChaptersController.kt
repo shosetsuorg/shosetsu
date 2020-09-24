@@ -139,19 +139,9 @@ class NovelChaptersController(bundle: Bundle)
 
 	override fun updateUI(newList: List<ChapterUI>) {
 		Log.d(logID(), "Received chapter count of ${newList.size}")
-		launchIO {
-			ArrayList(newList).apply {
-				if (viewModel.areChaptersReversed)
-					reverse()
-			}.let {
-				launchUI {
-					super.updateUI(it)
-
-					resume?.let {
-						if (newList.isNotEmpty() && isVisible()) showFAB(it) else hideFAB(it)
-					}
-				}
-			}
+		super.updateUI(newList)
+		resume?.let {
+			if (newList.isNotEmpty() && isVisible()) showFAB(it) else hideFAB(it)
 		}
 	}
 
@@ -262,9 +252,7 @@ class NovelChaptersController(bundle: Bundle)
 			true
 		}
 		R.id.chapter_filter -> {
-			viewModel.areChaptersReversed = !viewModel.areChaptersReversed
-			itemAdapter.itemList.items.reverse()
-			fastAdapter.notifyAdapterDataSetChanged()
+			viewModel.reverseChapters()
 			true
 		}
 		else -> false

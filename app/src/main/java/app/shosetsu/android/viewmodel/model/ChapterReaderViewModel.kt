@@ -22,6 +22,7 @@ import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.load.LoadReaderChaptersUseCase
+import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
@@ -54,6 +55,7 @@ class ChapterReaderViewModel(
 		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
 		private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
 		private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
+		private val loadReadersThemes: LoadReaderThemes
 ) : IChapterReaderViewModel() {
 
 	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
@@ -84,9 +86,7 @@ class ChapterReaderViewModel(
 	}
 
 	override val liveThemes: LiveData<List<ColorChoiceUI>> by lazy {
-		iSettingsRepository.observeStringSet(ReaderUserThemes).map { set: Set<String> ->
-			set.map { ColorChoiceData.fromString(it) }.mapTo()
-		}
+		loadReadersThemes()
 	}
 
 	override val liveIndentSize: LiveData<Int> by lazy {
