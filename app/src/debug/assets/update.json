@@ -1,7 +1,8 @@
 {
-  "latestVersion": "961",
+  "latestVersion": "963",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Added volume scroll"
+    "- ChapterReader bottom bar now syncs with top bar on scroll",
+    "- Removed double tap to focus from reader"
   ]
 }
