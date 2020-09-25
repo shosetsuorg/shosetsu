@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.util.set
@@ -102,8 +103,8 @@ class ChapterReader
 		arrayListOf()
 	}
 
-	private val bottomSheetBehavior by lazy {
-		from(chapter_reader_bottom)
+	private val bottomSheetBehavior: ChapterReaderBottomBar<LinearLayout> by lazy {
+		from(chapter_reader_bottom) as ChapterReaderBottomBar
 	}
 
 	private val colorItemAdapterUI: ItemAdapter<ColorChoiceUI> by lazy {

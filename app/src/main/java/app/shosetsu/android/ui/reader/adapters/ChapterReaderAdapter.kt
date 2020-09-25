@@ -84,8 +84,6 @@ class ChapterReaderAdapter(
 		}
 
 		holder.setOnFocusListener {
-			chapterReader.animateBottom()
-			chapterReader.animateToolbar()
 		}
 	}
 

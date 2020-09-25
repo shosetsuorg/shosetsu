@@ -12,7 +12,7 @@
     android:gravity="center"
     android:orientation="vertical"
     app:behavior_peekHeight="64dp"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:layout_behavior="app.shosetsu.android.ui.reader.ChapterReaderBottomBar"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -93,6 +93,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:id="@+id/chapter_reader_bottom_scroll"
         android:layout_height="wrap_content">
 
         <LinearLayout
