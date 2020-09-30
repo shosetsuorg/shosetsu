@@ -25,5 +25,4 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
  * 31 / 08 / 2020
  */
 abstract class AInfoSettingsViewModel(iSettingsRepository: ISettingsRepository) : ASubSettingsViewModel(iSettingsRepository) {
-	abstract fun checkForAppUpdate()
 }

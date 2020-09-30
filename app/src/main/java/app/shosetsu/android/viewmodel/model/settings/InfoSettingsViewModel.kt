@@ -1,10 +1,10 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.util.Log
+import app.shosetsu.android.backend.workers.onetime.AppUpdateWorker
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AInfoSettingsViewModel
@@ -33,14 +33,12 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 31 / 08 / 2020
  */
 class InfoSettingsViewModel(
-		private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
+		private val manager: AppUpdateWorker.Manager,
 		iSettingsRepository: ISettingsRepository
 ) : AInfoSettingsViewModel(iSettingsRepository) {
-	override fun checkForAppUpdate() {
-		Log.d(logID(), "Checking for update")
-		launchIO {
-			loadAppUpdateUseCase()
-		}
+	fun checkForAppUpdate() {
+		if (!manager.isRunning())
+			manager.start()
 	}
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
@@ -49,7 +47,7 @@ class InfoSettingsViewModel(
 				description { BuildConfig.VERSION_NAME }
 			},
 			infoSettingData(1) {
-				title { (com.github.doomsdayrs.apps.shosetsu.R.string.report_bug) }
+				title { (R.string.report_bug) }
 				description { R.string.report_bug_link }
 			},
 			infoSettingData(2) {
