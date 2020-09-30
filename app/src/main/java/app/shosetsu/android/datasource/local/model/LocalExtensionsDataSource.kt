@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
+import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
@@ -82,6 +83,8 @@ class LocalExtensionsDataSource(
 		successResult(extensionsDao.getExtension(formatterID))
 	} catch (e: SQLiteException) {
 		errorResult(e)
+	} catch (e: NullPointerException) {
+		errorResult(ErrorKeys.ERROR_IMPOSSIBLE, "NPE", e)
 	}
 
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> = try {

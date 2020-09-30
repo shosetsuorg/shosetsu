@@ -1,6 +1,4 @@
-package app.shosetsu.android.view.base
-
-import com.google.android.material.tabs.TabLayout
+package app.shosetsu.android.common.enums
 
 /*
  * This file is part of Shosetsu.
@@ -21,13 +19,12 @@ import com.google.android.material.tabs.TabLayout
 
 /**
  * shosetsu
- * 12 / 09 / 2020
- *
- * Specifies this controller uses a tabLayout
- *
- * Accepts the tab layout pass through
+ * 30 / 09 / 2020
  */
-interface TabbedController {
-	fun acceptTabLayout(tabLayout: TabLayout)
-	fun configureTabs(tabLayout: TabLayout)
+enum class ChapterSortType {
+	/** How it originally is provided by source */
+	SOURCE,
+
+	/** Sort by its upload date */
+	UPLOAD
 }

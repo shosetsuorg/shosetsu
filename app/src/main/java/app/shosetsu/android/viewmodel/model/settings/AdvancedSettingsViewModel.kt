@@ -1,12 +1,15 @@
 package app.shosetsu.android.viewmodel.model.settings
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.successResult
+import android.content.Context
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of shosetsu.
@@ -29,14 +32,44 @@ import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewM
  * shosetsu
  * 31 / 08 / 2020
  */
-class AdvancedSettingsViewModel : AAdvancedSettingsViewModel() {
-	override val settings: List<SettingsItemData>
-		get() = TODO("Not yet implemented")
-
-	override val liveData: LiveData<HResult<List<SettingsItemData>>> by lazy {
-		liveData<HResult<List<SettingsItemData>>> {
-			emit(loading())
-			emit(successResult(settings))
-		}
-	}
+class AdvancedSettingsViewModel(
+		iSettingsRepository: ISettingsRepository,
+		private val context: Context
+) : AAdvancedSettingsViewModel(iSettingsRepository) {
+	override suspend fun settings(): List<SettingsItemData> = listOf(
+			spinnerSettingData(1) {
+				title { R.string.theme }
+				arrayAdapter = ArrayAdapter(
+						context,
+						android.R.layout.simple_spinner_dropdown_item,
+						context.resources.getStringArray(R.array.application_themes)
+				)
+				onSpinnerItemSelected { adapterView, _, position, _ ->
+					if (position in 0..1) {
+						val delegate = (context as AppCompatActivity).delegate
+						when (position) {
+							0 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+							1 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+						}
+						val theme = delegate.localNightMode
+						adapterView?.setSelection(if (
+								theme == AppCompatDelegate.MODE_NIGHT_YES ||
+								theme == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
+								theme == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+						) 1 else 0)
+					}
+				}
+			},
+			buttonSettingData(2) {
+				title { com.github.doomsdayrs.apps.shosetsu.R.string.remove_novel_cache }
+				onButtonClicked {
+					try {
+						// TODO purge
+					} catch (e: android.database.SQLException) {
+						context.toast("SQLITE Error")
+						android.util.Log.e("AdvancedSettings", "DatabaseError", e)
+					}
+				}
+			}
+	)
 }

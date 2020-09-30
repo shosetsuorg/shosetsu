@@ -1,9 +1,14 @@
 package app.shosetsu.android.viewmodel.model.settings
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.dto.HResult
+import android.content.Context
+import app.shosetsu.android.common.consts.settings.SettingKey.*
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of shosetsu.
@@ -26,10 +31,75 @@ import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewM
  * shosetsu
  * 31 / 08 / 2020
  */
-class DownloadSettingsViewModel : ADownloadSettingsViewModel() {
-	override val settings: List<SettingsItemData>
-		get() = TODO("Not yet implemented")
-	override val liveData: LiveData<HResult<List<SettingsItemData>>>
-		get() = TODO("Not yet implemented")
-
+class DownloadSettingsViewModel(
+		private val context: Context,
+		iSettingsRepository: ISettingsRepository
+) : ADownloadSettingsViewModel(iSettingsRepository) {
+	override suspend fun settings(): List<SettingsItemData> = listOf(
+			textSettingData(1) {
+				title { R.string.download_directory }
+				iSettingsRepository.getString(CustomExportDirectory).handle {
+					text {
+						it
+					}
+				}
+				//onClicked { performFileSearch() }
+			},
+			switchSettingData(3) {
+				title { com.github.doomsdayrs.apps.shosetsu.R.string.download_chapter_updates }
+				iSettingsRepository.getBoolean(IsDownloadOnUpdate).handle {
+					isChecked = it
+				}
+				onChecked { _, isChecked ->
+					launchIO {
+						iSettingsRepository.setBoolean(IsDownloadOnUpdate, isChecked)
+					}
+				}
+			},
+			switchSettingData(2) {
+				title { "Allow downloading on metered connection" }
+				iSettingsRepository.getBoolean(DownloadOnMeteredConnection).handle {
+					isChecked = it
+				}
+				onChecked { _, isChecked ->
+					launchIO {
+						iSettingsRepository.setBoolean(DownloadOnMeteredConnection, isChecked)
+					}
+				}
+			},
+			switchSettingData(3) {
+				title { "Download on low battery" }
+				iSettingsRepository.getBoolean(DownloadOnLowBattery).handle {
+					isChecked = it
+				}
+				onChecked { _, isChecked ->
+					launchIO {
+						iSettingsRepository.setBoolean(DownloadOnLowBattery, isChecked)
+					}
+				}
+			},
+			switchSettingData(4) {
+				title { "Download on low storage" }
+				iSettingsRepository.getBoolean(DownloadOnLowStorage).handle {
+					isChecked = it
+				}
+				onChecked { _, isChecked ->
+					launchIO {
+						iSettingsRepository.setBoolean(DownloadOnLowStorage, isChecked)
+					}
+				}
+			},
+			switchSettingData(5) {
+				title { "Download only when idle" }
+				requiredVersion { android.os.Build.VERSION_CODES.M }
+				iSettingsRepository.getBoolean(DownloadOnlyWhenIdle).handle {
+					isChecked = it
+				}
+				onChecked { _, isChecked ->
+					launchIO {
+						iSettingsRepository.setBoolean(DownloadOnlyWhenIdle, isChecked)
+					}
+				}
+			}
+	)
 }

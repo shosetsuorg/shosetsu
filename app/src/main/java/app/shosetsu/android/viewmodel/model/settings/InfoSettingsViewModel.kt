@@ -1,13 +1,15 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AInfoSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig
+import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of shosetsu.
@@ -31,8 +33,9 @@ import app.shosetsu.android.viewmodel.abstracted.settings.AInfoSettingsViewModel
  * 31 / 08 / 2020
  */
 class InfoSettingsViewModel(
-		private val loadAppUpdateUseCase: LoadAppUpdateUseCase
-) : AInfoSettingsViewModel() {
+		private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
+		iSettingsRepository: ISettingsRepository
+) : AInfoSettingsViewModel(iSettingsRepository) {
 	override fun checkForAppUpdate() {
 		Log.d(logID(), "Checking for update")
 		launchIO {
@@ -40,10 +43,29 @@ class InfoSettingsViewModel(
 		}
 	}
 
-	override val settings: List<SettingsItemData>
-		get() = TODO("Not yet implemented")
-
-	override val liveData: LiveData<HResult<List<SettingsItemData>>>
-		get() = TODO("Not yet implemented")
+	override suspend fun settings(): List<SettingsItemData> = listOf(
+			infoSettingData(0) {
+				title { R.string.version }
+				description { BuildConfig.VERSION_NAME }
+			},
+			infoSettingData(1) {
+				title { (com.github.doomsdayrs.apps.shosetsu.R.string.report_bug) }
+				description { R.string.report_bug_link }
+			},
+			infoSettingData(2) {
+				title { com.github.doomsdayrs.apps.shosetsu.R.string.author }
+				description { com.github.doomsdayrs.apps.shosetsu.R.string.author_name }
+			},
+			infoSettingData(3) {
+				title { com.github.doomsdayrs.apps.shosetsu.R.string.disclaimer }
+			},
+			infoSettingData(4) {
+				title { com.github.doomsdayrs.apps.shosetsu.R.string.license }
+			},
+			buttonSettingData(5) {
+				title { "Check for update" }
+				onButtonClicked { checkForAppUpdate() }
+			}
+	)
 
 }

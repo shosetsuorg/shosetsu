@@ -1,9 +1,17 @@
 package app.shosetsu.android.viewmodel.model.settings
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.dto.HResult
+import android.content.Context
+import android.util.Log
+import android.widget.ArrayAdapter
+import app.shosetsu.android.common.consts.settings.SettingKey
+import app.shosetsu.android.common.consts.settings.SettingKey.*
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
+import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of shosetsu.
@@ -26,9 +34,76 @@ import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
  * shosetsu
  * 31 / 08 / 2020
  */
-class ViewSettingsViewModel : AViewSettingsViewModel() {
-	override val settings: List<SettingsItemData>
-		get() = TODO("Not yet implemented")
-	override val liveData: LiveData<HResult<List<SettingsItemData>>>
-		get() = TODO("Not yet implemented")
+class ViewSettingsViewModel(
+		iSettingsRepository: ISettingsRepository,
+		private val context: Context
+) : AViewSettingsViewModel(iSettingsRepository) {
+	override suspend fun settings(): List<SettingsItemData> = listOf(
+			spinnerSettingData(0) {
+				title { R.string.marking_mode }
+				onSpinnerItemSelected { _, _, position, _ ->
+					when (position) {
+						//0 -> setReaderMarkingType(MarkingTypes.ONVIEW)
+						//1 -> setReaderMarkingType(MarkingTypes.ONSCROLL)
+						else -> Log.e("MarkingMode", "UnknownType")
+					}
+				}
+
+				arrayAdapter = ArrayAdapter(
+						context!!,
+						android.R.layout.simple_spinner_dropdown_item,
+						context.resources!!.getStringArray(R.array.marking_names)
+				)
+			},
+			numberPickerSettingData(1) {
+				title { R.string.columns_of_novel_listing_p }
+				description { (R.string.columns_zero_automatic) }
+				iSettingsRepository.getInt(ChapterColumnsInPortait).handle {
+					initalValue { it }
+				}
+				onValuePicked { _, _, newVal ->
+					launchIO {
+						iSettingsRepository.setInt(ChapterColumnsInPortait, newVal)
+					}
+				}
+				range { 0 to 10 }
+			},
+			numberPickerSettingData(2) {
+				title { R.string.columns_of_novel_listing_h }
+				description { (R.string.columns_zero_automatic) }
+				iSettingsRepository.getInt(ChapterColumnsInLandscape).handle {
+					initalValue { it }
+				}
+				onValuePicked { _, _, newVal ->
+					launchIO {
+						iSettingsRepository.setInt(ChapterColumnsInLandscape, newVal)
+					}
+				}
+				range { 0 to 10 }
+			},
+			spinnerSettingData(3) {
+				title { R.string.novel_card_type_selector_title }
+				description { R.string.novel_card_type_selector_desc }
+				iSettingsRepository.getInt(NovelCardType).handle {
+					spinnerValue { it }
+				}
+				onSpinnerItemSelected { _, _, position, _ ->
+					launchIO {
+						iSettingsRepository.setInt(NovelCardType, position)
+					}
+				}
+				arrayAdapter = ArrayAdapter(
+						context,
+						android.R.layout.simple_spinner_dropdown_item,
+						context.resources!!.getStringArray(R.array.novel_card_types)
+				)
+			},
+			switchSettingData(4) {
+				title { "Legacy navigation" }
+				description { "Disableds bottom navigation, enables drawer" }
+				iSettingsRepository.getInt(NavStyle).handle {
+					isChecked = it == 1
+				}
+			}
+	)
 }

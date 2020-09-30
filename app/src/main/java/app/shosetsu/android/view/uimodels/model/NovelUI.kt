@@ -1,8 +1,18 @@
 package app.shosetsu.android.view.uimodels.model
 
+import android.view.View
+import android.widget.ImageView
+import app.shosetsu.android.common.ext.getString
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.NovelEntity
+import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
+import app.shosetsu.android.view.uimodels.base.BindViewHolder
+import app.shosetsu.android.view.uimodels.model.NovelUI.ViewHolder
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoHeaderBinding
+import com.google.android.material.chip.Chip
 
 /*
  * This file is part of shosetsu.
@@ -53,7 +63,39 @@ data class NovelUI(
 		var tags: Array<String>,
 
 		var status: Novel.Status,
-) : Convertible<NovelEntity> {
+) : BaseRecyclerItem<ViewHolder>(), Convertible<NovelEntity> {
+	companion object {
+		fun instance() = NovelUI(
+				-1,
+				"",
+				-1,
+				false,
+				-1,
+				"",
+				"",
+				"",
+				true,
+				"",
+				arrayOf(),
+				arrayOf(),
+				arrayOf(),
+				arrayOf(),
+				Novel.Status.UNKNOWN
+		)
+	}
+
+	override val layoutRes: Int = R.layout.controller_novel_info_header
+	override val type: Int = R.layout.controller_novel_info_header
+
+	/**
+	 * Identifier made negative to avoid conflicts with [ChapterUI]
+	 */
+	override var identifier: Long = id.toLong().let {
+		if (it > 0) -it else it
+	}
+
+	override var isSelectable: Boolean = false
+
 	override fun convertTo(): NovelEntity = NovelEntity(
 			id = id,
 			url = novelURL,
@@ -72,47 +114,81 @@ data class NovelUI(
 			status = status
 	)
 
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
+	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
-		other as NovelUI
+	class ViewHolder(view: View) : BindViewHolder<NovelUI, ControllerNovelInfoHeaderBinding>(view) {
+		override val binding: ControllerNovelInfoHeaderBinding by lazy {
+			ControllerNovelInfoHeaderBinding.bind(view)
+		}
 
-		if (id != other.id) return false
-		if (novelURL != other.novelURL) return false
-		if (formatterID != other.formatterID) return false
-		if (bookmarked != other.bookmarked) return false
-		if (readerType != other.readerType) return false
-		if (title != other.title) return false
-		if (imageURL != other.imageURL) return false
-		if (description != other.description) return false
-		if (loaded != other.loaded) return false
-		if (language != other.language) return false
-		if (!genres.contentEquals(other.genres)) return false
-		if (!authors.contentEquals(other.authors)) return false
-		if (!artists.contentEquals(other.artists)) return false
-		if (!tags.contentEquals(other.tags)) return false
-		if (status != other.status) return false
+		override fun ControllerNovelInfoHeaderBinding.bindView(item: NovelUI, payloads: List<Any>) {
+			// Handle title
+			novelTitle.text = item.title
 
-		return true
-	}
+			// Handle authors
+			if (item.authors.isNotEmpty())
+				novelAuthor.text = item.authors.takeIf {
+					it.isNotEmpty()
+				}?.joinToString(", ") ?: itemView.getString(R.string.none)
 
-	override fun hashCode(): Int {
-		var result = id
-		result = 31 * result + novelURL.hashCode()
-		result = 31 * result + formatterID
-		result = 31 * result + bookmarked.hashCode()
-		result = 31 * result + readerType
-		result = 31 * result + title.hashCode()
-		result = 31 * result + imageURL.hashCode()
-		result = 31 * result + description.hashCode()
-		result = 31 * result + loaded.hashCode()
-		result = 31 * result + language.hashCode()
-		result = 31 * result + genres.contentHashCode()
-		result = 31 * result + authors.contentHashCode()
-		result = 31 * result + artists.contentHashCode()
-		result = 31 * result + tags.contentHashCode()
-		result = 31 * result + status.hashCode()
-		return result
+			// Handle description
+			novelDescription.text = item.description
+
+			// Handle artists
+			if (item.artists.isNotEmpty())
+				novelArtists.text = item.artists.takeIf {
+					it.isNotEmpty()
+				}?.joinToString(", ") ?: itemView.getString(R.string.none)
+
+			// Handles the status of the novel
+			when (item.status) {
+				Novel.Status.PAUSED -> novelPublish.setText(R.string.paused)
+				Novel.Status.COMPLETED -> novelPublish.setText(R.string.completed)
+				Novel.Status.PUBLISHING -> novelPublish.setText(R.string.publishing)
+				else -> novelPublish.setText(R.string.unknown)
+			}
+
+			// Inserts the chips for genres
+			novelGenres.removeAllViews()
+			for (string in item.genres) {
+				val chip = Chip(novelGenres.context)
+				chip.text = string
+				novelGenres.addView(chip)
+			}
+
+			// Loads the image
+			listOf(novelImage, novelImageBackground).forEach { iV: ImageView? ->
+				if (item.imageURL.isNotEmpty()) {
+					iV?.let {
+						picasso(item.imageURL, it)
+					}
+				} else {
+					iV?.setImageResource(R.drawable.ic_broken_image_24dp)
+				}
+			}
+
+			if (item.bookmarked) {
+				inLibrary.setChipIconResource(R.drawable.ic_heart_svg_filled)
+				inLibrary.setText(R.string.in_library)
+			} else {
+				inLibrary.setChipIconResource(R.drawable.ic_heart_svg)
+				inLibrary.setText(R.string.add_to_library)
+			}
+		}
+
+		override fun ControllerNovelInfoHeaderBinding.unbindView(item: NovelUI) {
+			inLibrary.setChipIconResource(R.drawable.ic_heart_svg)
+			inLibrary.setText(R.string.add_to_library)
+			listOf(novelImage, novelImageBackground).forEach { iV: ImageView? ->
+				iV?.setImageResource(R.drawable.ic_broken_image_24dp)
+			}
+			novelGenres.removeAllViews()
+			novelPublish.setText(R.string.unknown)
+			novelArtists.text = null
+			novelDescription.text = null
+			novelAuthor.text = null
+			novelSite.text = null
+			novelTitle.text = null
+		}
 	}
 }

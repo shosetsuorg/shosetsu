@@ -2,9 +2,13 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.os.Build.VERSION_CODES
 import app.shosetsu.android.common.ShosetsuSettings
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
+import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
+import app.shosetsu.android.viewmodel.model.settings.UpdateSettingsViewModel
 import org.kodein.di.generic.instance
 
 /*
@@ -29,82 +33,6 @@ import org.kodein.di.generic.instance
  * 20 / 06 / 2020
  */
 class UpdateSettings : SettingsSubController() {
-	private val s: ShosetsuSettings by instance()
 	override val viewTitleRes: Int = com.github.doomsdayrs.apps.shosetsu.R.string.settings_update
-
-	override val settings: List<SettingsItemData> by settingsList {
-		// Update frequency
-		seekBarSettingData(6) {
-			title { "Update frequency" }
-			range { 0F to 6F }
-			progressValue = when (s.updateCycle) {
-				1 -> 0F
-				2 -> 1F
-				4 -> 2F
-				6 -> 3F
-				12 -> 4F
-				24 -> 5F
-				168 -> 6F
-				else -> 0F
-			}
-			array.apply {
-				put(0, "1 Hour")
-				put(1, "2 Hours")
-				put(2, "4 Hours")
-				put(3, "6 Hours")
-				put(4, "12 Hours")
-				put(5, "Daily")
-				put(6, "Weekly")
-			}
-			onProgressChanged { _, progress, _, fromUser ->
-				if (fromUser)
-					s.updateCycle = when (progress) {
-						0 -> 1
-						1 -> 2
-						2 -> 4
-						3 -> 6
-						4 -> 12
-						5 -> 24
-						6 -> 168
-						else -> 1
-					}
-			}
-			showSectionMark = true
-			showSectionText = true
-
-			seekBySection = true
-			seekByStepSection = true
-			autoAdjustSectionMark = true
-			touchToSeek = true
-			hideBubble = true
-			sectionC = 6
-		}
-		// Download on update
-		switchSettingData(0) {
-			title { "Download on update" }
-			checker { s::downloadOnUpdate }
-		}
-		// Update only ongoing
-		switchSettingData(1) {
-			title { "Only update ongoing" }
-			checker { s::onlyUpdateOngoing }
-		}
-		switchSettingData(2) {
-			title { "Allow updating on metered connection" }
-			checker { s::updateOnMetered }
-		}
-		switchSettingData(3) {
-			title { "Update on low battery" }
-			checker { s::updateOnLowBattery }
-		}
-		switchSettingData(4) {
-			title { "Update on low storage" }
-			checker { s::updateOnLowStorage }
-		}
-		switchSettingData(5) {
-			title { "Update only when idle" }
-			requiredVersion { VERSION_CODES.M }
-			checker { s::updateOnlyIdle }
-		}
-	}
+	override val viewModel: AUpdateSettingsViewModel by viewModel()
 }

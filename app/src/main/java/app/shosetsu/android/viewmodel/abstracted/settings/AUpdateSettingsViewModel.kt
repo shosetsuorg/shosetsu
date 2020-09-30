@@ -1,7 +1,7 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
 import androidx.lifecycle.ViewModel
-import app.shosetsu.android.viewmodel.base.ISubSettingsViewModel
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
  * This file is part of shosetsu.
@@ -24,4 +24,4 @@ import app.shosetsu.android.viewmodel.base.ISubSettingsViewModel
  * shosetsu
  * 31 / 08 / 2020
  */
-abstract class AUpdateSettingsViewModel : ViewModel(), ISubSettingsViewModel
+abstract class AUpdateSettingsViewModel(iSettingsRepository: ISettingsRepository) : ASubSettingsViewModel(iSettingsRepository)

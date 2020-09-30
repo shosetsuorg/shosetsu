@@ -73,14 +73,12 @@ class DownloadsController : BasicFastAdapterRecyclerController<DownloadUI>(),
 	}
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
-		fab.setOnClickListener { togglePause() }
 		this.fab = fab
+		fab.setOnClickListener { togglePause() }
+		fab.setImageResource(R.drawable.ic_pause_circle_outline_24dp)
 	}
 
 	override fun acceptPushing(pushController: (Controller) -> Unit) {
 	}
 
-	override fun setFABIcon(fab: FloatingActionButton) {
-		fab.setImageResource(R.drawable.ic_pause_circle_outline_24dp)
-	}
 }

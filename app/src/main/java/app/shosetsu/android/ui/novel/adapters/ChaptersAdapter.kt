@@ -3,8 +3,10 @@ package app.shosetsu.android.ui.novel.adapters
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.view.uimodels.model.ChapterUI
-import app.shosetsu.android.viewmodel.abstracted.INovelChaptersViewModel
+import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
 
@@ -30,42 +32,10 @@ import com.mikepenz.fastadapter.FastAdapter
  * 9 / June / 2019
  */
 class ChaptersAdapter(
-		private val viewModel: INovelChaptersViewModel,
+		private val viewModel: INovelViewModel,
 ) : FastAdapter<ChapterUI>() {
-
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+		logV("onBindViewHolder: $position")
 		super.onBindViewHolder(holder, position)
-		getItem(position)?.let { chapterUI ->
-			(holder as ChapterUI.ViewHolder).apply {
-				popupMenu?.setOnMenuItemClickListener { menuItem: MenuItem ->
-					when (menuItem.itemId) {
-						R.id.popup_chapter_menu_bookmark -> viewModel.updateChapter(
-								chapterUI,
-								bookmarked = !chapterUI.bookmarked
-						)
-						R.id.popup_chapter_menu_download -> if (!chapterUI.isSaved)
-							viewModel.download(chapterUI)
-						else viewModel.delete(chapterUI)
-						R.id.set_read -> viewModel.updateChapter(
-								chapterUI,
-								readingStatus = ReadingStatus.READ
-						)
-						R.id.set_unread -> viewModel.updateChapter(
-								chapterUI,
-								readingStatus = ReadingStatus.UNREAD
-						)
-						R.id.set_reading -> viewModel.updateChapter(
-								chapterUI,
-								readingStatus = ReadingStatus.READING
-						)
-						R.id.browser -> viewModel.openBrowser(chapterUI)
-						R.id.webview -> viewModel.openWebView(chapterUI)
-						else -> return@setOnMenuItemClickListener false
-					}
-					true
-				}
-			}
-		}
 	}
-
 }

@@ -8,6 +8,7 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.common.consts.VISIBLE
 import app.shosetsu.android.ui.settings.viewHolder.SettingsItem
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
@@ -38,7 +39,11 @@ import com.xw.repo.BubbleSeekBar
  * 25 / 06 / 2020
  * Data for [SettingsItem]
  */
-abstract class SettingsItemData(val id: Int) : BaseRecyclerItem<SettingsItemData.ViewHolder>() {
+abstract class SettingsItemData(
+		val id: Int
+) : BaseRecyclerItem<SettingsItemData.ViewHolder>() {
+	lateinit var lifecycleOwner: LifecycleOwner
+
 	/** Min version required for this setting to be visible */
 	var minVersionCode: Int = Build.VERSION_CODES.Q
 

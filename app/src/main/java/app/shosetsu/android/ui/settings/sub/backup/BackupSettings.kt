@@ -6,9 +6,13 @@ import android.widget.Toast
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.SettingsSubController
+import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
+import app.shosetsu.android.viewmodel.model.settings.BackupSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.Constant.REQUEST_CODE_PICK_FILE
@@ -39,34 +43,13 @@ import java.util.*
  * 13 / 07 / 2019
  */
 class BackupSettings : SettingsSubController() {
-	private val s: ShosetsuSettings by instance()
 	override val viewTitleRes: Int = R.string.settings_backup
 
-	override val settings: ArrayList<SettingsItemData> by settingsList {
-		checkBoxSettingData(0) {
-			title { R.string.backup_chapters_option }
-			description { R.string.backup_chapters_option_description }
-			checker { s::backupChapters }
-		}
-		checkBoxSettingData(1) {
-			title { R.string.backup_settings_option }
-			description { R.string.backup_settings_option_desc }
-			checker { s::backupSettings }
-		}
-		checkBoxSettingData(2) {
-			title { R.string.backup_quick_option }
-			description { R.string.backup_quick_option_desc }
-			checker { s::backupQuick }
-		}
-		buttonSettingData(3) {
-			title { R.string.backup_now }
-			text { R.string.restore_now }
-			onButtonClicked { it.post {  } }
-		}
-		buttonSettingData(4) {
-			title { R.string.restore_now }
-			text { R.string.restore_now }
-			onButtonClicked { it.post { performFileSelection() } }
+	override val viewModel: BackupSettingsViewModel by viewModel()
+
+	override val adjustments: List<SettingsItemData>.() -> Unit = {
+		find<ButtonSettingData>(4).onButtonClicked {
+			performFileSelection()
 		}
 	}
 

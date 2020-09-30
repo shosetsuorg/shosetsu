@@ -33,10 +33,9 @@ import app.shosetsu.android.view.uimodels.model.ChapterUI
 class LoadChapterUIsUseCase(
 		private val chapters: IChaptersRepository,
 ) : ((@kotlin.ParameterName("novelID") Int) -> LiveData<HResult<List<ChapterUI>>>) {
-	override fun invoke(novelID: Int): LiveData<HResult<List<ChapterUI>>> {
-		return liveData<HResult<List<ChapterUI>>> {
-			emit(loading())
+	override fun invoke(novelID: Int): LiveData<HResult<List<ChapterUI>>> = liveData {
+		emit(loading())
+		if (novelID != -1)
 			emitSource(chapters.loadChapters(novelID).map { it.mapListTo() })
-		}
 	}
 }

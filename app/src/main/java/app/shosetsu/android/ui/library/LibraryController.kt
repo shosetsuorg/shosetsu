@@ -158,11 +158,6 @@ class LibraryController
 		launchIO { newList.sortedBy { it.title }.let { launchUI { super.updateUI(it) } } }
 	}
 
-	override fun difAreItemsTheSame(
-			oldItem: ABookmarkedNovelUI,
-			newItem: ABookmarkedNovelUI,
-	): Boolean = oldItem.id == newItem.id
-
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (fastAdapter.getSelectExtension().selectedItems.isEmpty()) {

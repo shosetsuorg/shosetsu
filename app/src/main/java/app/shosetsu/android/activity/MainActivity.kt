@@ -41,7 +41,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
 
 /*
  * This file is part of Shosetsu.
@@ -254,7 +253,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	}
 
 	internal fun handleIntentAction(intent: Intent) {
-		Log.d(logID(), "Intent received was ${intent.action}")
+		logD("Intent received was ${intent.action}")
 		when (intent.action) {
 			ShortCuts.ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_browse)
 			ShortCuts.ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updates)
@@ -277,13 +276,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				if (!router.hasRootController()) {
 					setSelectedDrawerItem(R.id.nav_library)
 				} else {
-					Log.e(logID(), "Router has a root controller")
+					logE("Router has a root controller")
 				}
 			}
 			else -> if (!router.hasRootController()) {
 				setSelectedDrawerItem(R.id.nav_library)
 			} else {
-				Log.e(logID(), "Router has a root controller")
+				logE("Router has a root controller")
 			}
 		}
 	}
@@ -313,11 +312,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 					setNegativeButton(R.string.update_not_interested) { it, _ ->
 						it.dismiss()
 					}
-					setOnDismissListener {
-						it.dismiss()
+					setOnDismissListener { dialogInterface ->
+						dialogInterface.dismiss()
 					}
 				}.let {
-					app.shosetsu.android.common.ext.launchUI { it.show() }
+					launchUI { it.show() }
 				}
 			}
 		}
@@ -331,7 +330,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	internal fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
 		val showHamburger = router.backstackSize == 1 // Show hamburg means this is home
 
-		Log.d(logID(), "Show hamburger?: $showHamburger")
+		logD("Show hamburger?: $showHamburger")
 
 		if (showHamburger) {
 			// Shows navigation
@@ -371,8 +370,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		}
 
 		if (to is FABController) {
-			to.acceptFAB(fab)
-			to.setFABIcon(fab)
 			to.manipulateFAB(fab)
 			to.showFAB(fab)
 		}
@@ -380,11 +377,17 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		if (to is PushCapableController) to.acceptPushing { transitionView(it) }
 
 		if (from is TabbedController) {
+			logV("from is a toolbarController")
 			tabLayout.removeAllTabs()
 			tabLayout.clearOnTabSelectedListeners()
 		}
 
-		if (to is TabbedController) to.acceptTabLayout(tabLayout)
+		if (to is TabbedController) {
+			logV("to is a toolbarController")
+			to.acceptTabLayout(tabLayout)
+			to.configureTabs(tabLayout)
+		}
+
 		if (from is TabbedController && to !is TabbedController) tabLayout.collapse()
 		if (from !is TabbedController && to is TabbedController) tabLayout.expand()
 
@@ -400,21 +403,4 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			}
 		}
 	}
-
-	private fun toggleTabLayout() {
-		@Suppress("CheckedExceptionsKotlin")
-		val animator: Animation = AnimationUtils.loadAnimation(
-				tabLayout.context,
-				if (tabLayout.visibility == VISIBLE)
-					R.anim.slide_up
-				else R.anim.slide_down
-		).apply {
-			duration = 250
-		}
-		tabLayout.startAnimation(animator)
-		tabLayout.post {
-			tabLayout.visibility = if (tabLayout.visibility == VISIBLE) GONE else VISIBLE
-		}
-	}
-
 }

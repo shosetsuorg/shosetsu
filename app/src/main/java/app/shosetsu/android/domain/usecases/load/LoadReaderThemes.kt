@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import app.shosetsu.android.common.consts.settings.SettingKey
+import app.shosetsu.android.common.consts.settings.SettingKey.ReaderUserThemes
 import app.shosetsu.android.common.dto.mapTo
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
@@ -37,7 +39,8 @@ class LoadReaderThemes(
 		private val context: Context
 ) {
 	operator fun invoke(): LiveData<List<ColorChoiceUI>> {
-		return iSettingsRepository.observeStringSet(SettingKey.ReaderUserThemes).map { set: Set<String> ->
+		return iSettingsRepository.observeStringSet(ReaderUserThemes).map { set: Set<String> ->
+
 			(if (set.isNotEmpty())
 				set.map { ColorChoiceData.fromString(it) }
 			else listOf(
@@ -57,7 +60,9 @@ class LoadReaderThemes(
 							-3,
 							context.getString(R.string.sepia),
 							-0x1000000,
-							ContextCompat.getColor(context, R.color.wheat)
+							ContextCompat.getColor(context, R.color.wheat).also {
+								logE("Hey here is the color you need: $it")
+							}
 					),
 					ColorChoiceData(
 							-4,
@@ -65,7 +70,13 @@ class LoadReaderThemes(
 							-0x777778,
 							-0x1000000
 					)
-			)).mapTo()
+			).also {
+				launchIO {
+					it.map { it.toString() }.toSet().let {
+						iSettingsRepository.setStringSet(ReaderUserThemes, it)
+					}
+				}
+			}).mapTo()
 		}
 	}
 }

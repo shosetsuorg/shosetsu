@@ -5,8 +5,12 @@ import android.view.LayoutInflater
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.common.ext.logV
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.GenericItem
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.items.AbstractItem
@@ -33,12 +37,13 @@ import com.mikepenz.fastadapter.items.AbstractItem
  * 02 / 07 / 2020
  */
 abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<FastAdapter<ITEM>, ITEM, VB>
-		where ITEM : AbstractItem<*>, VB : ViewBinding {
+		where ITEM : GenericItem, VB : ViewBinding {
 
 	/**
 	 * This contains the items
 	 */
 	open val itemAdapter: ItemAdapter<ITEM> by lazy { ItemAdapter() }
+
 	override var adapter: FastAdapter<ITEM>?
 		get() = fastAdapter
 		set(@Suppress("UNUSED_PARAMETER") value) {}
@@ -47,6 +52,7 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 	 * This is the adapter
 	 */
 	open val fastAdapter: FastAdapter<ITEM> by lazy { FastAdapter.with(itemAdapter) }
+
 	override var recyclerArray: ArrayList<ITEM>
 		get() = ArrayList(itemAdapter.itemList.items)
 		set(@Suppress("UNUSED_PARAMETER") value) {}
@@ -68,7 +74,27 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 
 	override fun updateUI(newList: List<ITEM>) {
 		if (newList.isEmpty()) showEmpty() else hideEmpty()
-		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
+		launchIO {
+			logV("Calculating result")
+			val result = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
+			logV("Result calculated, Dispatching on UI")
+			launchUI { FastAdapterDiffUtil[itemAdapter] = result }
+		}
+	}
+
+	fun <T : GenericItem> updateUI(
+			itemAdapter: ItemAdapter<T>,
+			showEmpty: () -> Unit,
+			hideEmpty: () -> Unit,
+			newList: List<T>
+	) {
+		if (newList.isEmpty()) showEmpty() else hideEmpty()
+		launchIO {
+			logV("Calculating result")
+			val result = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
+			logV("Result calculated, Dispatching on UI")
+			launchUI { FastAdapterDiffUtil[itemAdapter] = result }
+		}
 	}
 
 	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =

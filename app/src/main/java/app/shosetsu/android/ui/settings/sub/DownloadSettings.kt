@@ -2,19 +2,19 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.SettingsSubController
+import app.shosetsu.android.view.uimodels.settings.TextSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.view.uimodels.settings.dsl.onClicked
+import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
+import app.shosetsu.android.viewmodel.model.settings.DownloadSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.generic.instance
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -38,41 +38,17 @@ import java.util.*
  * 13 / 07 / 2019
  */
 class DownloadSettings : SettingsSubController() {
-	private val s: ShosetsuSettings by instance()
 	override val viewTitleRes: Int = R.string.settings_download
+	override val viewModel: ADownloadSettingsViewModel by viewModel()
 
-	override val settings: ArrayList<SettingsItemData> by settingsList {
-		textSettingData(1) {
-			title { R.string.download_directory }
-			text { s.downloadDirectory }
-			onClicked { performFileSearch() }
-		}
-		switchSettingData(3) {
-			title { R.string.download_chapter_updates }
-			checker { s::downloadOnUpdate }
-		}
-		switchSettingData(2) {
-			title { "Allow downloading on metered connection" }
-			checker { s::downloadOnMetered }
-		}
-		switchSettingData(3) {
-			title { "Download on low battery" }
-			checker { s::downloadOnLowBattery }
-		}
-		switchSettingData(4) {
-			title { "Download on low storage" }
-			checker { s::downloadOnLowStorage }
-		}
-		switchSettingData(5) {
-			title { "Download only when idle" }
-			requiredVersion { Build.VERSION_CODES.M }
-			checker { s::downloadOnlyIdle }
+	override val adjustments: List<SettingsItemData>.() -> Unit = {
+		find<TextSettingData>(1).onClicked {
+			performFileSearch()
 		}
 	}
 
-
 	private fun setDownloadDirectory(dir: String) {
-		s.downloadDirectory = dir
+		//s.downloadDirectory = dir
 		recyclerView.post { adapter?.notifyItemChanged(0) }
 	}
 

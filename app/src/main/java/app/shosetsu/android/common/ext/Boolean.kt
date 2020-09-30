@@ -1,5 +1,7 @@
 package app.shosetsu.android.common.ext
 
+import kotlin.reflect.KMutableProperty
+
 /*
  * This file is part of shosetsu.
  *
@@ -26,3 +28,12 @@ package app.shosetsu.android.common.ext
  */
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
+
+/**
+ * toggles the field
+ * If true, sets to false
+ * If false, sets to true
+ */
+fun KMutableProperty<Boolean>.toggle() {
+	this.setter.call(!this.getter.call())
+}

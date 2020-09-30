@@ -1,10 +1,7 @@
-package app.shosetsu.android.viewmodel.abstracted
+package app.shosetsu.android.viewmodel.abstracted.settings
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
  * This file is part of shosetsu.
@@ -23,26 +20,9 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 31 / 08 / 2020
  */
-abstract class INovelInfoViewModel
-	: SubscribeHandleViewModel<NovelUI>, ViewModel() {
-	/** Name of the formatter */
-	abstract val formatterName: LiveData<HResult<String>>
-
-	/** Set's the value to be loaded */
-	abstract fun setNovelID(novelID: Int)
-
-	/** Toggles the bookmark of this ui */
-	abstract fun toggleBookmark()
-	abstract fun openBrowser()
-	abstract fun openWebView()
-	abstract fun share()
-
-
+abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository) : ASubSettingsViewModel(iSettingsRepository) {
 }

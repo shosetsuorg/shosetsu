@@ -1,15 +1,12 @@
 package app.shosetsu.android.di
 
 import app.shosetsu.android.viewmodel.abstracted.*
-import app.shosetsu.android.viewmodel.abstracted.settings.AInfoSettingsViewModel
+import app.shosetsu.android.viewmodel.abstracted.settings.*
 import app.shosetsu.android.viewmodel.model.*
-import app.shosetsu.android.viewmodel.model.CatalogViewModel
 import app.shosetsu.android.viewmodel.model.extension.ExtensionConfigureViewModel
 import app.shosetsu.android.viewmodel.model.extension.ExtensionsViewModel
-import app.shosetsu.android.viewmodel.model.novel.NovelChaptersViewModel
-import app.shosetsu.android.viewmodel.model.novel.NovelInfoViewModel
 import app.shosetsu.android.viewmodel.model.novel.NovelViewModel
-import app.shosetsu.android.viewmodel.model.settings.InfoSettingsViewModel
+import app.shosetsu.android.viewmodel.model.settings.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.provider
@@ -61,17 +58,18 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<IExtensionConfigureViewModel>() with provider { ExtensionConfigureViewModel(i(), i(), i(), i()) }
 
 	// Novel View
-	bind<INovelViewModel>() with provider { NovelViewModel(i(), i()) }
-	bind<INovelInfoViewModel>() with provider { NovelInfoViewModel(i(), i(), i(), i(), i(), i()) }
-	bind<INovelChaptersViewModel>() with provider {
-		NovelChaptersViewModel(i(), i(), i(), i(), i(), i(), i())
-	}
+	bind<INovelViewModel>() with provider { NovelViewModel(i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i()) }
 
 	// Chapter
 	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i(), i()) }
-
-
-	bind<AInfoSettingsViewModel>() with provider { InfoSettingsViewModel(i()) }
-
 	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i()) }
+
+	// Settings
+	bind<AAdvancedSettingsViewModel>() with provider { AdvancedSettingsViewModel(i(), i()) }
+	bind<ABackupSettingsViewModel>() with provider { BackupSettingsViewModel(i()) }
+	bind<ADownloadSettingsViewModel>() with provider { DownloadSettingsViewModel(i(), i()) }
+	bind<AInfoSettingsViewModel>() with provider { InfoSettingsViewModel(i(), i()) }
+	bind<AReaderSettingsViewModel>() with provider { ReaderSettingsViewModel(i(), i(), i()) }
+	bind<AUpdateSettingsViewModel>() with provider { UpdateSettingsViewModel(i()) }
+	bind<AViewSettingsViewModel>() with provider { ViewSettingsViewModel(i(), i()) }
 }

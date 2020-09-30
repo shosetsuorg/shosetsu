@@ -1,7 +1,16 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
+import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.loading
+import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import kotlinx.coroutines.Dispatchers.IO
 
 /*
  * This file is part of shosetsu.
@@ -24,4 +33,14 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
  * shosetsu
  * 31 / 08 / 2020
  */
-abstract class AAdvancedSettingsViewModel(iSettingsRepository: ISettingsRepository) : ASubSettingsViewModel(iSettingsRepository)
+abstract class ASubSettingsViewModel(
+		val iSettingsRepository: ISettingsRepository
+) : ViewModel() {
+	abstract suspend fun settings(): List<SettingsItemData>
+
+	fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =
+			liveData(context = viewModelScope.coroutineContext + IO) {
+				emit(loading())
+				emit(successResult(settings()))
+			}
+}

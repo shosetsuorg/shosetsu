@@ -1,8 +1,10 @@
 package app.shosetsu.android.ui.settings
 
 import android.view.View
+import androidx.annotation.CallSuper
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
 
 /*
  * This file is part of shosetsu.
@@ -26,22 +28,21 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
  * 29 / 01 / 2020
  */
 abstract class SettingsSubController : BasicFastAdapterRecyclerController<SettingsItemData>() {
+	@CallSuper
+	override fun onViewCreated(view: View) {
+		viewModel.getSettings().observe(this) { handleRecyclerUpdate(it) }
+	}
 
-	/** Settings to be used*/
-	abstract val settings: List<SettingsItemData>
+	abstract val viewModel: ASubSettingsViewModel
 
-	override fun onViewCreated(view: View) {}
+	/** Apply adjustments to settings, such as click listeners */
+	open val adjustments: List<SettingsItemData>.() -> Unit = {}
 
-	override fun setupFastAdapter() {
-		super.setupFastAdapter()
-		updateUI(settings)
+	override fun updateUI(newList: List<SettingsItemData>) {
+		super.updateUI(newList.apply(adjustments))
 	}
 
 	/** Finds a setting via its data ID */
-	fun findDataByID(id: Int): Int {
-		for ((index, data) in settings.withIndex())
-			if (data.id == id)
-				return index
-		return -1
-	}
+	inline fun <reified T : SettingsItemData> List<SettingsItemData>.find(id: Int): T =
+			filterIsInstance<T>().find { it.id == id }!!
 }

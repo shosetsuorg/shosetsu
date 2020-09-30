@@ -7,6 +7,7 @@ import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
+import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.domain.usecases.update.*
@@ -134,4 +135,8 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<LoadReaderThemes>() with provider {
 		LoadReaderThemes(instance(), instance())
 	}
+	bind<LoadChaptersResumeFirstUnreadUseCase>() with provider {
+		LoadChaptersResumeFirstUnreadUseCase(instance())
+	}
+
 }

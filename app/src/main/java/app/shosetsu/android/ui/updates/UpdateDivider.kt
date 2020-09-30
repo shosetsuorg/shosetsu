@@ -31,5 +31,4 @@ class UpdateDivider(context: Context) : RecyclerView.ItemDecoration() {
 	private val view: View = context.getSystemService<LayoutInflater>()!!.inflate(
 			-1, null, false
 	)
-
 }

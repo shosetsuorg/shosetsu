@@ -3,12 +3,14 @@ package app.shosetsu.android.ui.settings.sub
 import android.content.Intent
 import android.net.Uri
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.common.ext.withFadeTransaction
 import app.shosetsu.android.ui.settings.SettingsSubController
+import app.shosetsu.android.ui.settings.sub.TextAssetReader.Target
+import app.shosetsu.android.view.base.PushCapableController
+import app.shosetsu.android.view.uimodels.settings.InfoSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.view.uimodels.settings.dsl.onClick
 import app.shosetsu.android.viewmodel.abstracted.settings.AInfoSettingsViewModel
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
+import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -32,40 +34,18 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * Shosetsu
  * 9 / June / 2019
  */
-class InfoSettings : SettingsSubController() {
+class InfoSettings : SettingsSubController(), PushCapableController {
 	override val viewTitleRes: Int = R.string.settings_info
-	private val viewModel: AInfoSettingsViewModel by viewModel()
+	override val viewModel: AInfoSettingsViewModel by viewModel()
 
-	override val settings: List<SettingsItemData> by settingsList {
-		infoSettingData(0) {
-			title { R.string.version }
-			description { BuildConfig.VERSION_NAME }
-		}
-		infoSettingData(1) {
-			title { (R.string.report_bug) }
-			description { R.string.report_bug_link }
-			onClick { onClickReportBug() }
-		}
-		infoSettingData(2) {
-			title { R.string.author }
-			description { R.string.author_name }
-			onClick { onClickAuthor() }
-		}
-		infoSettingData(3) {
-			title { R.string.disclaimer }
-			onClick { onClickDisclaimer() }
+	private lateinit var pushController: (Controller) -> Unit
 
-		}
-		infoSettingData(4) {
-			title { R.string.license }
-			onClick { onClickLicense() }
-		}
-		buttonSettingData(5) {
-			title { "Check for update" }
-			onButtonClicked { viewModel.checkForAppUpdate() }
-		}
+	override val adjustments: List<SettingsItemData>.() -> Unit = {
+		find<InfoSettingData>(1).onClick { onClickReportBug() }
+		find<InfoSettingData>(2).onClick { onClickAuthor() }
+		find<InfoSettingData>(3).onClick { onClickDisclaimer() }
+		find<InfoSettingData>(4).onClick { onClickLicense() }
 	}
-
 
 	private fun onClickReportBug() = activity?.startActivity(Intent(
 			Intent.ACTION_VIEW,
@@ -78,8 +58,12 @@ class InfoSettings : SettingsSubController() {
 	))
 
 	private fun onClickDisclaimer() =
-			router.pushController(TextAssetReader(TextAssetReader.Target.DISCLAIMER.bundle).withFadeTransaction())
+			pushController(TextAssetReader(Target.DISCLAIMER.bundle))
 
 	private fun onClickLicense() =
-			router.pushController(TextAssetReader(TextAssetReader.Target.LICENSE.bundle).withFadeTransaction())
+			pushController(TextAssetReader(Target.LICENSE.bundle))
+
+	override fun acceptPushing(pushController: (Controller) -> Unit) {
+		this.pushController = pushController
+	}
 }

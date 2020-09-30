@@ -8,6 +8,7 @@ import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.mapTo
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.NovelUI
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -34,7 +35,7 @@ class LoadNovelUIUseCase(
 		private val novelsRepository: INovelsRepository,
 ) : ((@ParameterName("novelID") Int) -> LiveData<HResult<NovelUI>>) {
 	override fun invoke(novelID: Int): LiveData<HResult<NovelUI>> {
-		return liveData<HResult<NovelUI>> {
+		return liveData(context = Dispatchers.IO) {
 			emit(loading())
 			emitSource(novelsRepository.loadNovelLive(novelID).map { it.mapTo() })
 		}

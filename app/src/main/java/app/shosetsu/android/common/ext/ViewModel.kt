@@ -1,6 +1,8 @@
-package app.shosetsu.android.view.base
+package app.shosetsu.android.common.ext
 
-import com.google.android.material.tabs.TabLayout
+import androidx.lifecycle.*
+import kotlinx.coroutines.Dispatchers
+import kotlin.experimental.ExperimentalTypeInference
 
 /*
  * This file is part of Shosetsu.
@@ -21,13 +23,10 @@ import com.google.android.material.tabs.TabLayout
 
 /**
  * shosetsu
- * 12 / 09 / 2020
- *
- * Specifies this controller uses a tabLayout
- *
- * Accepts the tab layout pass through
+ * 30 / 09 / 2020
  */
-interface TabbedController {
-	fun acceptTabLayout(tabLayout: TabLayout)
-	fun configureTabs(tabLayout: TabLayout)
-}
+
+@UseExperimental(ExperimentalTypeInference::class)
+fun <T> ViewModel.liveDataIO(
+		@BuilderInference block: suspend LiveDataScope<T>.() -> Unit
+): LiveData<T> = liveData(viewModelScope.coroutineContext + Dispatchers.IO) { block() }

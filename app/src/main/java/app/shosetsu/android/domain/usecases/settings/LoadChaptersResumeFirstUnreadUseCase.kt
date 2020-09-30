@@ -1,4 +1,8 @@
-package app.shosetsu.android.ui.novel.pages
+package app.shosetsu.android.domain.usecases.settings
+
+import app.shosetsu.android.common.consts.settings.SettingKey
+import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
  * This file is part of Shosetsu.
@@ -15,11 +19,15 @@ package app.shosetsu.android.ui.novel.pages
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- * Shosetsu
- * 16 / 06 / 2019
- *
- * @author github.com/doomsdayrs
  */
-@Suppress("unused")
-class NovelTrackingController
+
+/**
+ * shosetsu
+ * 25 / 09 / 2020
+ */
+class LoadChaptersResumeFirstUnreadUseCase(
+		private val settings: ISettingsRepository
+) {
+	suspend operator fun invoke(): HResult<Boolean> =
+			settings.getBoolean(SettingKey.ChaptersResumeFirstUnread)
+}
