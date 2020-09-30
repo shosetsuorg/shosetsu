@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
 import android.content.Context
-import app.shosetsu.android.backend.workers.UpdateWorker.Manager
+import app.shosetsu.android.backend.workers.onetime.UpdateWorker.Manager
 
 /*
  * This file is part of shosetsu.
@@ -25,8 +25,7 @@ import app.shosetsu.android.backend.workers.UpdateWorker.Manager
  * 23 / 06 / 2020
  */
 class StartUpdateWorkerUseCase(
-		private val context: Context,
-		private val manager: Manager,
+		private val manager: Manager
 ) {
 	/**
 	 * Starts the update worker

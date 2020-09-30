@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import app.shosetsu.android.backend.workers.AppUpdateWorker
-import app.shosetsu.android.backend.workers.UpdateWorker
+import app.shosetsu.android.backend.workers.perodic.AppUpdateCycleWorker
+import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
 import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.launchIO
@@ -25,6 +25,8 @@ class BootReceiver : BroadcastReceiver() {
 	 */
 	override fun onReceive(context: Context, intent: Intent) {
 		Log.i(logID(), "Received BOOT_COMPLETED signal")
+
+		// Starts perodic workers
 		AutoStartUpdateWorker(context).invoke()
 		AutoStartAppUpdateWorker(context).invoke()
 	}
@@ -32,7 +34,7 @@ class BootReceiver : BroadcastReceiver() {
 	internal class AutoStartUpdateWorker(val context: Context) : KodeinAware {
 		override val kodein: Kodein by kodein(context)
 		private val iSettingsRepository: ISettingsRepository by instance()
-		private val manager: UpdateWorker.Manager by instance()
+		private val manager: UpdateCycleWorker.Manager by instance()
 		operator fun invoke() {
 			launchIO {
 				val b = iSettingsRepository.getBoolean(SettingKey.UpdateOnStartup)
@@ -46,7 +48,7 @@ class BootReceiver : BroadcastReceiver() {
 
 	internal class AutoStartAppUpdateWorker(val context: Context) : KodeinAware {
 		override val kodein: Kodein by kodein(context)
-		private val manager: AppUpdateWorker.Manager by instance()
+		private val manager: AppUpdateCycleWorker.Manager by instance()
 		private val iSettingsRepository: ISettingsRepository by instance()
 		operator fun invoke() {
 			launchIO {

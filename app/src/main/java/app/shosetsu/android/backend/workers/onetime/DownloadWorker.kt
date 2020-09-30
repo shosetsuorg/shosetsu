@@ -1,4 +1,4 @@
-package app.shosetsu.android.backend.workers
+package app.shosetsu.android.backend.workers.onetime
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -10,7 +10,7 @@ import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
-import app.shosetsu.android.common.ShosetsuSettings
+import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD

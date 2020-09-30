@@ -1,4 +1,4 @@
-package app.shosetsu.android.backend.workers
+package app.shosetsu.android.backend.workers.perodic
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -11,13 +11,16 @@ import androidx.work.*
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
+import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.backend.workers.onetime.UpdateWorker
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
-import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
+import app.shosetsu.android.common.consts.WorkerTags.UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
@@ -59,20 +62,12 @@ import androidx.work.PeriodicWorkRequestBuilder as PWRB
  *     Handles update requests for the entire application
  * </p>
  */
-class UpdateWorker(
+class UpdateCycleWorker(
 		appContext: Context,
 		params: WorkerParameters,
-) : CoroutineWorker(appContext, params), KodeinAware {
-	companion object {
-		const val KEY_TARGET: String = "Target"
-		const val KEY_CHAPTERS: String = "Novels"
-
-		const val KEY_NOVELS: Int = 0x00
-		const val KEY_CATEGORY: Int = 0x01
-	}
-
+) : CoroutineWorker(appContext, params) {
 	/**
-	 * Manager of [UpdateWorker]
+	 * Manager of [UpdateCycleWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		private val iSettingsRepository by instance<ISettingsRepository>()
@@ -118,7 +113,7 @@ class UpdateWorker(
 		 * @return true if the service is running, false otherwise.
 		 */
 		override fun isRunning(): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID)
+			workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID)
 					.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
@@ -132,9 +127,9 @@ class UpdateWorker(
 			launchIO {
 				Log.i(logID(), LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniquePeriodicWork(
-						UPDATE_WORK_ID,
+						UPDATE_CYCLE_WORK_ID,
 						REPLACE,
-						PWRB<UpdateWorker>(
+						PWRB<UpdateCycleWorker>(
 								updateCycle(),
 								HOURS
 						).setConstraints(
@@ -152,7 +147,7 @@ class UpdateWorker(
 						)
 								.build()
 				)
-				workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).get()[0].let {
+				workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID).get()[0].let {
 					Log.d(logID(), "State ${it.state}")
 				}
 			}
@@ -161,87 +156,13 @@ class UpdateWorker(
 		/**
 		 * Stops the service.
 		 */
-		override fun stop(): Operation = workerManager.cancelUniqueWork(UPDATE_WORK_ID)
+		override fun stop(): Operation = workerManager.cancelUniqueWork(UPDATE_CYCLE_WORK_ID)
 	}
 
-	private val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
-
-	private val progressNotification by lazy {
-		if (SDK_INT >= VERSION_CODES.O) {
-			Notification.Builder(appContext, CHANNEL_UPDATE)
-		} else {
-			// Suppressed due to lower API
-			@Suppress("DEPRECATION")
-			Notification.Builder(appContext)
-		}
-				.setSmallIcon(R.drawable.ic_refresh)
-				.setContentText("Update in progress")
-				.setOnlyAlertOnce(true)
-	}
-
-	override val kodein: Kodein by closestKodein(appContext)
-	private val iNovelsRepository by instance<INovelsRepository>()
-	private val loadNovelUseCase by instance<LoadNovelUseCase>()
-	private val toastErrorUseCase by instance<ToastErrorUseCase>()
-	private val startDownloadWorker: StartDownloadWorkerUseCase by instance()
-	private val iSettingsRepository: ISettingsRepository by instance()
-
-	private suspend fun onlyUpdateOngoing(): Boolean =
-			iSettingsRepository.getBoolean(OnlyUpdateOngoing).let {
-				if (it is HResult.Success)
-					it.data
-				else OnlyUpdateOngoing.default
-			}
-
-	private suspend fun downloadOnUpdate(): Boolean =
-			iSettingsRepository.getBoolean(IsDownloadOnUpdate).let {
-				if (it is HResult.Success)
-					it.data
-				else IsDownloadOnUpdate.default
-			}
 
 	override suspend fun doWork(): Result {
-		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
-		val pr = progressNotification
-		pr.setContentTitle(applicationContext.getString(R.string.update))
-		pr.setOngoing(true)
-		notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-
-		iNovelsRepository.getBookmarkedNovels().let { hNovels ->
-			when (hNovels) {
-				is HResult.Success -> {
-					val novels = hNovels.data.let { list: List<NovelEntity> ->
-						if (onlyUpdateOngoing())
-							list.filter { it.status == Novel.Status.PUBLISHING }
-						else list
-					}
-					var progress = 0
-					novels.forEach {
-						pr.setContentText(applicationContext.getString(R.string.updating) + it.title)
-						pr.setProgress(novels.size, progress, false)
-						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-						loadNovelUseCase(it, true).let { lR ->
-							when (lR) {
-								is HResult.Success -> Log.d(logID(), "Updated $lR")
-								is HResult.Error -> toastErrorUseCase<UpdateWorker>(lR)
-								else -> Log.e(logID(), "Impossible result")
-							}
-						}
-						progress++
-					}
-					pr.setContentTitle(applicationContext.getString(R.string.update))
-					pr.setContentText(applicationContext.getString(R.string.update_complete))
-					pr.setOngoing(false)
-					pr.setProgress(0, 0, false)
-					notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-				}
-				else -> {
-					return Result.failure()
-				}
-			}
-		}
-
-		if (downloadOnUpdate()) startDownloadWorker()
+		logI(LogConstants.SERVICE_EXECUTE)
+		UpdateWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
 		return Result.success()
 	}
 }

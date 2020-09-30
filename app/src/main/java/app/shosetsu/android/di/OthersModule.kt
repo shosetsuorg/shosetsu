@@ -1,8 +1,10 @@
 package app.shosetsu.android.di
 
-import app.shosetsu.android.backend.workers.AppUpdateWorker
-import app.shosetsu.android.backend.workers.DownloadWorker
-import app.shosetsu.android.backend.workers.UpdateWorker
+import app.shosetsu.android.backend.workers.onetime.AppUpdateWorker
+import app.shosetsu.android.backend.workers.perodic.AppUpdateCycleWorker
+import app.shosetsu.android.backend.workers.onetime.DownloadWorker
+import app.shosetsu.android.backend.workers.onetime.UpdateWorker
+import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
@@ -32,8 +34,18 @@ import org.kodein.di.generic.singleton
  */
 @Suppress("PublicApiImplicitType")
 val othersModule = Kodein.Module("others") {
-	bind<UpdateWorker.Manager>() with singleton { UpdateWorker.Manager(instance()) }
+	bind<SharedPreferenceProvider>() with singleton { SharedPreferenceProvider((instance())) }
+
+	// Workers
+
+	// - onetime
 	bind<DownloadWorker.Manager>() with singleton { DownloadWorker.Manager(instance()) }
 	bind<AppUpdateWorker.Manager>() with singleton { AppUpdateWorker.Manager(instance()) }
-	bind<SharedPreferenceProvider>() with singleton { SharedPreferenceProvider((instance())) }
+	bind<UpdateWorker.Manager>() with singleton { UpdateWorker.Manager(instance()) }
+
+
+	// - perodic
+	bind<AppUpdateCycleWorker.Manager>() with singleton { AppUpdateCycleWorker.Manager(instance()) }
+	bind<UpdateCycleWorker.Manager>() with singleton { UpdateCycleWorker.Manager(instance()) }
+
 }

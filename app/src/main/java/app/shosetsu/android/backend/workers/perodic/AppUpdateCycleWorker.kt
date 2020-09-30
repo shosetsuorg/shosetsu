@@ -1,4 +1,4 @@
-package app.shosetsu.android.backend.workers
+package app.shosetsu.android.backend.workers.perodic
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -9,12 +9,13 @@ import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
-import app.shosetsu.android.common.ShosetsuSettings
+import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.backend.workers.onetime.AppUpdateWorker
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags
-import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
+import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
@@ -51,53 +52,20 @@ import java.util.concurrent.TimeUnit
  * shosetsu
  * 06 / 09 / 2020
  */
-class AppUpdateWorker(
+class AppUpdateCycleWorker(
 		appContext: Context,
 		params: WorkerParameters
-) : CoroutineWorker(appContext, params), KodeinAware {
-	override val kodein: Kodein by closestKodein(applicationContext)
-	private val appUpdateUseCase by instance<LoadAppUpdateUseCase>()
-	private val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
-	private val progressNotification by lazy {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			Notification.Builder(appContext, Notifications.CHANNEL_APP_UPDATE)
-		} else {
-			// Suppressed due to lower API
-			@Suppress("DEPRECATION")
-			Notification.Builder(appContext)
-		}
-				.setContentTitle(applicationContext.getString(R.string.app_update_check))
-				.setSmallIcon(R.drawable.ic_system_update_alt_24dp)
-				.setOnlyAlertOnce(true)
-	}
+) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
-		val pr = progressNotification
-		pr.setOngoing(true)
-		notificationManager.notify(ID_APP_UPDATE, pr.build())
-
-		val result = appUpdateUseCase()
-		pr.setOngoing(false)
-		result.handle(onEmpty = {
-			pr.setContentText(applicationContext.getString(R.string.app_update_unavaliable))
-			notificationManager.notify(ID_APP_UPDATE, pr.build())
-		}, onError = {
-			Log.e(logID(), "Error!", it.error)
-			pr.setContentText("Error! ${it.code} | ${it.message}")
-			notificationManager.notify(ID_APP_UPDATE, pr.build())
-		}) {
-			pr.setContentText(
-					applicationContext.getString(R.string.app_update_available)
-							+ " " + it.version
-			)
-			notificationManager.notify(ID_APP_UPDATE, pr.build())
-		}
+		logI(LogConstants.SERVICE_EXECUTE)
+		AppUpdateWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
 		return Result.success()
 	}
 
 
 	/**
-	 * Manager of [AppUpdateWorker]
+	 * Manager of [AppUpdateCycleWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		private val iSettingsRepository: ISettingsRepository by instance()
@@ -126,7 +94,7 @@ class AppUpdateWorker(
 		 * @return true if the service is running, false otherwise.
 		 */
 		override fun isRunning(): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(WorkerTags.UPDATE_WORK_ID)
+			workerManager.getWorkInfosForUniqueWork(WorkerTags.UPDATE_CYCLE_WORK_ID)
 					.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
@@ -140,9 +108,9 @@ class AppUpdateWorker(
 			launchIO {
 				this@Manager.logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniquePeriodicWork(
-						APP_UPDATE_WORK_ID,
+						APP_UPDATE_CYCLE_WORK_ID,
 						ExistingPeriodicWorkPolicy.REPLACE,
-						PeriodicWorkRequestBuilder<AppUpdateWorker>(
+						PeriodicWorkRequestBuilder<AppUpdateCycleWorker>(
 								appUpdateCycle(),
 								TimeUnit.HOURS
 						).setConstraints(Constraints.Builder().apply {
@@ -154,7 +122,7 @@ class AppUpdateWorker(
 						}.build()
 						).build()
 				)
-				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).get()[0].let {
+				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_CYCLE_WORK_ID).get()[0].let {
 					this@Manager.logI("Worker State ${it.state}")
 				}
 			}
@@ -163,7 +131,7 @@ class AppUpdateWorker(
 		/**
 		 * Stops the service.
 		 */
-		override fun stop(): Operation = workerManager.cancelUniqueWork(APP_UPDATE_WORK_ID)
+		override fun stop(): Operation = workerManager.cancelUniqueWork(APP_UPDATE_CYCLE_WORK_ID)
 	}
 
 }
