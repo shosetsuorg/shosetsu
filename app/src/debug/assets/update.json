@@ -1,12 +1,11 @@
 {
-  "latestVersion": "969",
+  "latestVersion": "976",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Added FlingRecyclerView.kt with fling speed, divide, and threshold constants in Constants.kt, FlingRecyclerView.kt lets you zOoooom through chapters",
-    "- NovelUI.kt identifier is always a certain negative",
-    "- Added download options in NovelController.kt",
-    "- Moved share button to top in NovelController.kt",
-    "- Known issue with crashing on opening a novel, the issue is being worked on",
-    "- Filter option not yet added for chapters"
+    "- Added AboutController.kt",
+    "- Removed InfoSettings.kt",
+    "- Added tinted colors",
+    "- renamed some drawables",
+    "- added new urls"
   ]
 }
