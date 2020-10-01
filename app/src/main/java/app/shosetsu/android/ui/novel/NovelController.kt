@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
@@ -58,12 +59,18 @@ class NovelController(bundle: Bundle)
 	override val viewTitle: String
 		get() = ""
 
+
 	private var resume: FloatingActionButton? = null
 	override val fastAdapter: FastAdapter<AbstractItem<*>> by lazy {
 		val a = NovelMultiAdapter(viewModel)
 		a.addAdapter(0, itemAdapter)
 		a
 	}
+
+	override fun createLayoutManager(): RecyclerView.LayoutManager =
+			object : LinearLayoutManager(context) {
+				override fun supportsPredictiveItemAnimations(): Boolean = false
+			}
 
 	init {
 		setHasOptionsMenu(true)
@@ -273,7 +280,7 @@ class NovelController(bundle: Bundle)
 		})
 		 */
 
-		viewModel.uiLive.observe(this) { handleRecyclerUpdate(it) }
+		viewModel.novelUILive().observe(this) { handleRecyclerUpdate(it) }
 		viewModel.formatterName.observe(this) { result: HResult<String> ->
 			result.handledReturnAny(
 					{ "Loading" }, { ("UNKNOWN") },

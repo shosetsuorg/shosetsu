@@ -91,7 +91,7 @@ class ReaderSettings : SettingsSubController() {
 							it.identifier == v.toLong()
 						}?.isSelected = true
 
-						itemAdapter.add(list)
+						launchUI { itemAdapter.add(list) }
 					}
 				}
 			}

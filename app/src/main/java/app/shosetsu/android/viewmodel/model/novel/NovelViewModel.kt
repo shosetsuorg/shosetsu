@@ -7,10 +7,7 @@ import androidx.lifecycle.switchMap
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.liveDataIO
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.toggle
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
@@ -68,7 +65,11 @@ class NovelViewModel(
 		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
 		private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
 ) : INovelViewModel() {
+	@get:Synchronized
+	@set:Synchronized
 	private var novelUI: NovelUI = NovelUI.instance()
+
+	@get:Synchronized
 	private val chapters = ArrayList<ChapterUI>()
 
 	/**
@@ -115,7 +116,7 @@ class NovelViewModel(
 	}
 
 	/** Adds sources for chapterManagment */
-	private fun addChapterManageSource(v: MediatorLiveData<HResult<List<AbstractItem<*>>>> = this.uiLive) {
+	private fun addChapterManageSource(v: MediatorLiveData<HResult<List<AbstractItem<*>>>> = this._uiLive) {
 		v.addSource(chaptersManagement.showOnlyReadingStatusOfLive) {
 			uiHasNewData()
 		}
@@ -135,16 +136,19 @@ class NovelViewModel(
 
 	private var chaptersManagement = ChaptersManagement()
 		set(value) {
-			uiLive.removeSource(field.showOnlyReadingStatusOfLive)
-			uiLive.removeSource(field.onlyDownloadedLive)
-			uiLive.removeSource(field.onlyBookmarkedLive)
-			uiLive.removeSource(field.sortTypeLive)
-			uiLive.removeSource(field.reversedSortLive)
+			_uiLive.removeSource(field.showOnlyReadingStatusOfLive)
+			_uiLive.removeSource(field.onlyDownloadedLive)
+			_uiLive.removeSource(field.onlyBookmarkedLive)
+			_uiLive.removeSource(field.sortTypeLive)
+			_uiLive.removeSource(field.reversedSortLive)
 			field = value
 			addChapterManageSource()
 		}
 
-	override val uiLive: MediatorLiveData<HResult<List<AbstractItem<*>>>> by lazy {
+	override fun novelUILive(): LiveData<HResult<List<AbstractItem<*>>>> =
+			_uiLive
+
+	private val _uiLive: MediatorLiveData<HResult<List<AbstractItem<*>>>> by lazy {
 		val v = MediatorLiveData<HResult<List<AbstractItem<*>>>>()
 		v.addSource(novelLive) { result ->
 			result.handle(onLoading = {
@@ -193,7 +197,8 @@ class NovelViewModel(
 
 	/** Constructs the UI */
 	private fun uiHasNewData() {
-		uiLive.postValue(successResult(ArrayList<AbstractItem<*>>().apply {
+		logV("uiHasNewData")
+		_uiLive.postValue(successResult(ArrayList<AbstractItem<*>>().apply {
 			add(novelUI)
 			addAll(chapters.handleFilters())
 		}))

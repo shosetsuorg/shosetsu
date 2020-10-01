@@ -36,7 +36,7 @@ import javax.security.auth.Destroyable
  */
 abstract class INovelViewModel
 	: ViewModel(), IsOnlineCheckViewModel, Destroyable {
-	abstract val uiLive: LiveData<HResult<List<AbstractItem<*>>>>
+	abstract fun novelUILive(): LiveData<HResult<List<AbstractItem<*>>>>
 
 	abstract val novelLive: LiveData<HResult<NovelUI>>
 	abstract val chaptersLive: LiveData<HResult<List<ChapterUI>>>

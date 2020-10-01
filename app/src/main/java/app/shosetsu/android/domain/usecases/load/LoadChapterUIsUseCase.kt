@@ -35,6 +35,6 @@ class LoadChapterUIsUseCase(
 ) : ((@kotlin.ParameterName("novelID") Int) -> LiveData<HResult<List<ChapterUI>>>) {
 	override fun invoke(novelID: Int): LiveData<HResult<List<ChapterUI>>> = liveData {
 		emit(loading())
-			emitSource(chapters.loadChapters(novelID).map { it.mapListTo() })
+		emitSource(chapters.loadChapters(novelID).map { it.mapListTo() })
 	}
 }
