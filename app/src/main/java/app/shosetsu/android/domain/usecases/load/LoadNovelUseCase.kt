@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
@@ -40,51 +40,40 @@ class LoadNovelUseCase(
 		private val cR: IChaptersRepository,
 		private val uR: IUpdatesRepository,
 ) {
-	private suspend fun main(novel: NovelEntity, loadChapters: Boolean) =
-			when (val fR = eR.loadFormatter(novel.formatterID)) {
-				is HResult.Success -> {
-					val ext = fR.data
-					when (val pR = nR.retrieveNovelInfo(ext, novel, loadChapters)) {
-						is HResult.Success -> {
-							val page = pR.data
-							val currentStatus = novel.loaded
-							//Log.d(logID(), "Loaded novel info $page")
-							nR.updateNovelData(novel, page)
-							if (loadChapters)
-								if (!currentStatus)
-									cR.handleChapters(novel, page.chapters)
-								else cR.handleChaptersReturn(novel, page.chapters).let { cLR ->
-									when (cLR) {
-										is HResult.Success -> {
-											uR.addUpdates(cLR.data.map {
-												UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
-											})
-											successResult(novel)
-										}
-										is HResult.Error -> cLR
-										else -> errorResult(ERROR_GENERAL, "Unknown failure")
-									}
-								}
-							successResult(true)
+	private suspend fun main(novel: NovelEntity, loadChapters: Boolean, haveChaptersUpdate: () -> Unit = {}): HResult<Boolean> =
+			eR.loadFormatter(novel.formatterID).handleReturn { ext ->
+				nR.retrieveNovelInfo(ext, novel, loadChapters).handleReturn { page ->
+					val currentStatus: Boolean = novel.loaded
+
+					// Fills the novel with new data
+					nR.updateNovelData(novel, page)
+
+					// If this novel has been loaded or not
+					if (loadChapters) {
+						if (!currentStatus)
+							cR.handleChapters(novel, page.chapters)
+						else cR.handleChaptersReturn(novel, page.chapters).handle { chapters ->
+							if (chapters.isNotEmpty()) haveChaptersUpdate()
+							uR.addUpdates(chapters.map {
+								UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
+							})
 						}
-						is HResult.Error -> pR
-						else -> errorResult(ERROR_GENERAL, "Unknown failure")
 					}
+					successResult(true)
 				}
-				is HResult.Error -> fR
-				else -> errorResult(ERROR_GENERAL, "Unknown failure")
 			}
 
-	suspend operator fun invoke(novel: NovelEntity, loadChapters: Boolean): HResult<Any> =
-			main(novel, loadChapters)
+	suspend operator fun invoke(
+			novel: NovelEntity,
+			loadChapters: Boolean,
+			haveChaptersUpdate: () -> Unit = {}
+	): HResult<Any> = main(novel, loadChapters, haveChaptersUpdate)
 
-	suspend operator fun invoke(novelID: Int, loadChapters: Boolean): HResult<Any> =
-			when (val nResult = nR.loadNovel(novelID)) {
-				is HResult.Success -> {
-					val novel = nResult.data
-					main(novel, loadChapters)
-				}
-				is HResult.Error -> nResult
-				else -> errorResult(ERROR_GENERAL, "Unknown failure")
-			}
+	suspend operator fun invoke(
+			novelID: Int,
+			loadChapters: Boolean
+	): HResult<Any> = nR.loadNovel(novelID).handleReturn { novel ->
+		main(novel, loadChapters)
+	}
+
 }

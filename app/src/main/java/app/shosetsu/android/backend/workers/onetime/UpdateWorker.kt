@@ -18,6 +18,7 @@ import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.model.local.NovelEntity
@@ -168,9 +169,9 @@ class UpdateWorker(
 	}
 
 	override val kodein: Kodein by closestKodein(appContext)
-	private val iNovelsRepository by instance<INovelsRepository>()
-	private val loadNovelUseCase by instance<LoadNovelUseCase>()
-	private val toastErrorUseCase by instance<ToastErrorUseCase>()
+	private val iNovelsRepository: INovelsRepository by instance()
+	private val loadNovelUseCase: LoadNovelUseCase by instance()
+	private val toastErrorUseCase: ToastErrorUseCase by instance()
 	private val startDownloadWorker: StartDownloadWorkerUseCase by instance()
 	private val iSettingsRepository: ISettingsRepository by instance()
 
@@ -195,6 +196,8 @@ class UpdateWorker(
 		pr.setOngoing(true)
 		notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
 
+		val updateNovels = arrayListOf<NovelEntity>()
+
 		iNovelsRepository.getBookmarkedNovels().let { hNovels ->
 			when (hNovels) {
 				is HResult.Success -> {
@@ -204,24 +207,24 @@ class UpdateWorker(
 						else list
 					}
 					var progress = 0
-					novels.forEach {
-						pr.setContentText(applicationContext.getString(R.string.updating) + it.title)
+
+					novels.forEach { nE ->
+						pr.setContentText(applicationContext.getString(R.string.updating) + nE.title)
 						pr.setProgress(novels.size, progress, false)
 						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-						loadNovelUseCase(it, true).let { lR ->
-							when (lR) {
-								is HResult.Success -> Log.d(logID(), "Updated $lR")
-								is HResult.Error -> toastErrorUseCase<UpdateWorker>(lR)
-								else -> Log.e(logID(), "Impossible result")
-							}
-						}
+						loadNovelUseCase(nE, true) {
+							updateNovels.add(nE)
+						}.handle(onError = { toastErrorUseCase<UpdateWorker>(it) })
 						progress++
 					}
+
 					pr.setContentTitle(applicationContext.getString(R.string.update))
 					pr.setContentText(applicationContext.getString(R.string.update_complete))
 					pr.setOngoing(false)
 					pr.setProgress(0, 0, false)
 					notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+
+					if (updateNovels.isEmpty()) notificationManager.cancel(ID_CHAPTER_UPDATE)
 				}
 				else -> {
 					return Result.failure()
@@ -229,7 +232,8 @@ class UpdateWorker(
 			}
 		}
 
-		if (downloadOnUpdate())
+		// Will update only if downloadOnUpdate is enabled and there have been chapters
+		if (downloadOnUpdate() && updateNovels.isNotEmpty())
 			startDownloadWorker()
 
 		return Result.success()

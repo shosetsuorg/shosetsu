@@ -15,10 +15,12 @@ import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
-import app.shosetsu.android.common.consts.settings.SettingKey.*
+import app.shosetsu.android.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
+import app.shosetsu.android.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.handledReturnAny
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
@@ -74,14 +76,12 @@ class AppUpdateWorker(
 		val pr = progressNotification
 		pr.setOngoing(true)
 		notificationManager.notify(ID_APP_UPDATE, pr.build())
-
 		val result = appUpdateUseCase()
 		pr.setOngoing(false)
 		result.handle(onEmpty = {
-			pr.setContentText(applicationContext.getString(R.string.app_update_unavaliable))
-			notificationManager.notify(ID_APP_UPDATE, pr.build())
+			notificationManager.cancel(ID_APP_UPDATE)
 		}, onError = {
-			Log.e(logID(), "Error!", it.error)
+			logE("Error!", it.error)
 			pr.setContentText("Error! ${it.code} | ${it.message}")
 			notificationManager.notify(ID_APP_UPDATE, pr.build())
 		}) {

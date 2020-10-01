@@ -198,12 +198,8 @@ class DownloadWorker(
 					}
 				}
 			}
-			notificationManager.notify(ID_CHAPTER_DOWNLOAD,
-					pr.setOngoing(false).setProgress(
-							0,
-							0,
-							false
-					).setContentText(applicationContext.getString(R.string.completed)).build())
+
+			notificationManager.cancel(ID_CHAPTER_DOWNLOAD)
 		}
 		Log.i(logID(), "Completed download loop")
 		return Result.success()
