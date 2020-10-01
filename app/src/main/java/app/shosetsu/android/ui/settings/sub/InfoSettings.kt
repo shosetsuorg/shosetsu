@@ -41,10 +41,10 @@ class InfoSettings : SettingsSubController(), PushCapableController {
 	private lateinit var pushController: (Controller) -> Unit
 
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		find<InfoSettingData>(1).onClick { onClickReportBug() }
-		find<InfoSettingData>(2).onClick { onClickAuthor() }
-		find<InfoSettingData>(3).onClick { onClickDisclaimer() }
-		find<InfoSettingData>(4).onClick { onClickLicense() }
+		find<InfoSettingData>(1)?.onClick { onClickReportBug() }
+		find<InfoSettingData>(2)?.onClick { onClickAuthor() }
+		find<InfoSettingData>(3)?.onClick { onClickDisclaimer() }
+		find<InfoSettingData>(4)?.onClick { onClickLicense() }
 	}
 
 	private fun onClickReportBug() = activity?.startActivity(Intent(

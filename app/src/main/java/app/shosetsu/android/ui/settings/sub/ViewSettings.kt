@@ -44,7 +44,7 @@ class ViewSettings : SettingsSubController() {
 
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
 		var state = false
-		find<SwitchSettingData>(4).onChecked { cb, isChecked ->
+		find<SwitchSettingData>(4)?.onChecked { cb, isChecked ->
 			if (state) {
 				state = false
 				return@onChecked

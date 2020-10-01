@@ -2,11 +2,9 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.content.res.ColorStateList
 import android.view.View
-import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.TextView
 import androidx.core.content.ContextCompat
-import app.shosetsu.android.common.consts.selectedStrokeWidth
+import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.ChapterEntity
@@ -66,11 +64,9 @@ data class ChapterUI(
 					isSaved
 			)
 
-	override val layoutRes: Int
-		get() = R.layout.recycler_novel_chapter
+	override val layoutRes: Int = R.layout.recycler_novel_chapter
 
-	override val type: Int
-		get() = -1
+	override val type: Int = R.layout.recycler_novel_chapter
 
 	override var identifier: Long
 		get() = id.toLong()
@@ -103,7 +99,7 @@ data class ChapterUI(
 		override fun RecyclerNovelChapterBinding.bindView(item: ChapterUI, payloads: List<Any>) {
 			//Log.d(logID(), "Binding ${chapterUI.id}")
 
-			cardView.strokeWidth = if (item.isSelected) selectedStrokeWidth else 0
+			cardView.strokeWidth = if (item.isSelected) SELECTED_STROKE_WIDTH else 0
 			if (item.isSelected) {
 				cardView.isSelected
 			}

@@ -42,7 +42,7 @@ class DownloadSettings : SettingsSubController() {
 	override val viewModel: ADownloadSettingsViewModel by viewModel()
 
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		find<TextSettingData>(1).onClicked {
+		find<TextSettingData>(1)?.onClicked {
 			performFileSearch()
 		}
 	}

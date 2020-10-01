@@ -1,22 +1,15 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.core.content.getSystemService
 import androidx.core.view.postDelayed
-import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.consts.settings.SettingKey
+import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.dto.handledReturnAny
-import app.shosetsu.android.common.dto.mapTo
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.setOnClickListener
-import app.shosetsu.android.common.ext.setSelectionListener
-import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
@@ -24,9 +17,6 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.select.selectExtension
 
 /*
  * This file is part of shosetsu.
@@ -52,58 +42,14 @@ import com.mikepenz.fastadapter.select.selectExtension
 class ReaderSettingsViewModel(
 		iSettingsRepository: ISettingsRepository,
 		private val context: Context,
-		private val loadReaderThemes: LoadReaderThemes
+		val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
+
+	override fun getReaderThemes(): LiveData<List<ColorChoiceUI>> = loadReaderThemes()
+
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 			customSettingData(1) {
 				title { "" }
-				customView {
-					context.getSystemService<LayoutInflater>()!!.inflate(
-							R.layout.reader_theme_example,
-							null,
-							false
-					).apply {
-						findViewById<TextView>(R.id.textView).apply textView@{
-							val exampleText =
-									"Because there are so many lines. I had lost sense of time. Plz help" +
-											"me escape this horror called" +
-											"\nThis is some sample text. With lots of testing. Lots of paragraph," +
-											"Lots of lines. Plenty to read"
-
-							val function = { textView: TextView ->
-								val replaceSpacing = StringBuilder("\n")
-								//for (x in 0 until shosetsuSettings.readerParagraphSpacing)
-								//	replaceSpacing.append("\n")
-								//for (x in 0 until shosetsuSettings.readerIndentSize)
-								//	replaceSpacing.append("\t")
-								//textView.textSize = shosetsuSettings.readerTextSize
-
-								//val r = shosetsuSettings.selectedReaderTheme.toLong()
-								//val b = shosetsuSettings.getReaderBackgroundColor(r)
-								//val t = shosetsuSettings.getReaderTextColor(r)
-								//textView.setTextColor(t)
-								//textView.setBackgroundColor(b)
-								textView.text = exampleText.replace("\n".toRegex(), replaceSpacing.toString())
-							}
-							postDelayed(500) {
-								//shosetsuSettings.apply {
-								//	readerTextSizeLive.observe(this@ReaderSettings) {
-								//		textSize = shosetsuSettings.readerTextSize
-								//	}
-								//	readerIndentSizeLive.observe(this@ReaderSettings) {
-								//		function(this@textView)
-								//	}
-								//	readerParagraphSpacingLive.observe(this@ReaderSettings) {
-								//		function(this@textView)
-								//	}
-								//	readerUserThemeSelectionLive.observe(this@ReaderSettings) {
-								//		function(this@textView)
-								//	}
-								//}
-							}
-						}
-					}
-				}
 			},
 			spinnerSettingData(2) {
 				title { R.string.paragraph_spacing }
@@ -172,53 +118,6 @@ class ReaderSettingsViewModel(
 			},
 			customBottomSettingData(5) {
 				title { R.string.reader_theme }
-				customView {
-					context.getSystemService<LayoutInflater>()!!.inflate(
-							R.layout.reader_theme_selection,
-							null,
-							false
-					).apply {
-						val recycler = findViewById<RecyclerView>(R.id.color_picker_options)
-						val itemAdapter = ItemAdapter<ColorChoiceUI>()
-						val fastAdapter = FastAdapter.with(itemAdapter)
-						fastAdapter.selectExtension {
-							isSelectable = true
-							setSelectionListener { item, _ ->
-								fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
-							}
-						}
-						recycler.adapter = fastAdapter
-						fastAdapter.setOnClickListener { _, _, item, _ ->
-							launchIO {
-								iSettingsRepository.setInt(ReaderTheme, item.identifier.toInt())
-							}
-							item.isSelected = true
-
-							run {
-								val count = fastAdapter.itemCount
-								for (i in 0 until count)
-									fastAdapter.getItem(i)?.takeIf {
-										it.identifier != item.identifier
-									}?.isSelected = false
-							}
-
-							fastAdapter.notifyDataSetChanged()
-							true
-						}
-
-						loadReaderThemes().observe(lifecycleOwner) { list ->
-							itemAdapter.clear()
-							launchIO {
-								val v = iSettingsRepository.getInt(ReaderTheme).handledReturnAny { it }!!
-								list.find {
-									it.identifier == v.toLong()
-								}?.isSelected = true
-
-								itemAdapter.add(list)
-							}
-						}
-					}
-				}
 			},
 			switchSettingData(6) {
 				title { R.string.inverted_swipe }

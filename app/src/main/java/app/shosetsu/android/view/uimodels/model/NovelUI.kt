@@ -90,9 +90,7 @@ data class NovelUI(
 	/**
 	 * Identifier made negative to avoid conflicts with [ChapterUI]
 	 */
-	override var identifier: Long = id.toLong().let {
-		if (it > 0) -it else it
-	}
+	override var identifier: Long = -1091
 
 	override var isSelectable: Boolean = false
 

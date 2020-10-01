@@ -9,6 +9,7 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.liveDataIO
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
@@ -50,7 +51,7 @@ class DownloadsViewModel(
 		private var isOnlineUseCase: IsOnlineUseCase,
 ) : IDownloadsViewModel() {
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
-		liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+		liveDataIO {
 			emit(loading())
 			emitSource(getDownloadsUseCase())
 		}

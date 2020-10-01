@@ -2,6 +2,7 @@ package app.shosetsu.android.view.uimodels.settings
 
 import android.view.View
 import app.shosetsu.android.view.uimodels.settings.base.TextRequiringSettingData
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
  * This file is part of shosetsu.
@@ -25,8 +26,9 @@ import app.shosetsu.android.view.uimodels.settings.base.TextRequiringSettingData
  * 25 / 06 / 2020
  */
 class TextSettingData(id: Int) : TextRequiringSettingData(id) {
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
+
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
 		with(holder) {
 			if (textID != -1)
 				textView.setText(textID)
@@ -37,8 +39,8 @@ class TextSettingData(id: Int) : TextRequiringSettingData(id) {
 		}
 	}
 
-	override fun unbindView(holder: ViewHolder) {
-		super.unbindView(holder)
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
 		with(holder) {
 			textView.text = null
 			textView.setOnClickListener(null)

@@ -1,10 +1,14 @@
 package app.shosetsu.android.ui.settings
 
 import android.view.View
-import app.shosetsu.android.common.SettingsCard
-import app.shosetsu.android.ui.settings.SettingsController.Types.*
-import app.shosetsu.android.ui.settings.adapter.SettingsAdapter
-import app.shosetsu.android.view.base.RecyclerController.BasicRecyclerController
+import app.shosetsu.android.common.enums.SettingCategory.*
+import app.shosetsu.android.common.ext.setOnClickListener
+import app.shosetsu.android.ui.settings.sub.*
+import app.shosetsu.android.ui.settings.sub.backup.BackupSettings
+import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.base.PushCapableController
+import app.shosetsu.android.view.uimodels.model.SettingsCategoryUI
+import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -28,41 +32,46 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * Shosetsu
  * 9 / June / 2019
  */
-class SettingsController : BasicRecyclerController<SettingsAdapter, SettingsCard>() {
+class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI>(), PushCapableController {
 	override val viewTitleRes: Int = R.string.settings
-	override var recyclerArray: ArrayList<SettingsCard>
+	lateinit var pushController: (Controller) -> Unit
+	override var recyclerArray: ArrayList<SettingsCategoryUI>
 		get() = arrayListOf(
-				SettingsCard(DOWNLOAD),
-				SettingsCard(UPDATE),
-				SettingsCard(VIEW),
-				SettingsCard(READER),
-				SettingsCard(ADVANCED),
-				SettingsCard(INFO),
-				SettingsCard(BACKUP)
+				SettingsCategoryUI(VIEW, R.string.view, R.drawable.ic_view_module),
+				SettingsCategoryUI(READER, R.string.reader, R.drawable.ic_book_24dp),
+				SettingsCategoryUI(DOWNLOAD, R.string.download, R.drawable.ic_file_download),
+				SettingsCategoryUI(UPDATE, R.string.update, R.drawable.ic_update_24dp),
+				SettingsCategoryUI(BACKUP, R.string.backup, R.drawable.ic_system_update_alt_24dp),
+				SettingsCategoryUI(ADVANCED, R.string.advanced, R.drawable.ic_settings),
+				SettingsCategoryUI(INFO, R.string.info, R.drawable.ic_info_outline_24dp),
 		)
 		set(_) {}
 
-
-	override fun onViewCreated(view: View) {}
-
-	override fun difAreItemsTheSame(oldItem: SettingsCard, newItem: SettingsCard): Boolean =
-			oldItem.id == newItem.id
-
-	override fun setupRecyclerView() {
-		super.setupRecyclerView()
-		recyclerView.setHasFixedSize(true)
+	override fun acceptPushing(pushController: (Controller) -> Unit) {
+		this.pushController = pushController
 	}
 
-	override fun createRecyclerAdapter(): SettingsAdapter =
-			SettingsAdapter(recyclerArray, router)
+	override fun onViewCreated(view: View) {
+		updateUI(recyclerArray)
+	}
 
-	enum class Types {
-		DOWNLOAD, // Settings for download options
-		UPDATE,
-		VIEW, // Settings for application appearance
-		ADVANCED, // Settings that control more advanced application features
-		INFO,  // Information of the app
-		BACKUP, // Settings for backup and restoring data
-		READER // Settings for reading novels in application
+	override fun setupRecyclerView() {
+		recyclerView.setHasFixedSize(true)
+		super.setupRecyclerView()
+	}
+
+	override fun setupFastAdapter() {
+		fastAdapter.setOnClickListener { _, _, item, _ ->
+			pushController(when (item.category) {
+				VIEW -> ViewSettings()
+				INFO -> InfoSettings()
+				ADVANCED -> AdvancedSettings()
+				DOWNLOAD -> DownloadSettings()
+				BACKUP -> BackupSettings()
+				READER -> ReaderSettings()
+				UPDATE -> UpdateSettings()
+			})
+			true
+		}
 	}
 }

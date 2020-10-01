@@ -160,6 +160,29 @@ class NovelController(bundle: Bundle)
 			viewModel.share()
 			true
 		}
+		id.download_next -> {
+			viewModel.downloadNextChapter()
+			true
+		}
+		id.download_next_5 -> {
+			viewModel.downloadNext5Chapters()
+			true
+		}
+		id.download_next_10 -> {
+			viewModel.downloadNext10Chapters()
+			true
+		}
+		id.download_custom -> {
+			true
+		}
+		id.download_unread -> {
+			viewModel.downloadAllUnreadChapters()
+			true
+		}
+		id.download_all -> {
+			viewModel.downloadAllChapters()
+			true
+		}
 		else -> super.onOptionsItemSelected(item)
 	}
 
@@ -226,14 +249,6 @@ class NovelController(bundle: Bundle)
 
 			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<NovelUI>, item: NovelUI) {
 				viewModel.openWebView()
-			}
-		})
-
-		fastAdapter.addEventHook(object : ClickEventHook<NovelUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.share else null
-
-			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<NovelUI>, item: NovelUI) {
-				viewModel.share()
 			}
 		})
 		setObserver()

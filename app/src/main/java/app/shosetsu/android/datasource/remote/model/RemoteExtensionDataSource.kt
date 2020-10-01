@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.model
 
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
-import app.shosetsu.android.common.consts.repoFolderStruct
+import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
@@ -37,7 +37,7 @@ class RemoteExtensionDataSource(
 ) : IRemoteExtensionDataSource {
 
 	private fun makeFormatterURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
-			"${repo.url}$repoFolderStruct/src/${fe.lang}/${fe.fileName}.lua"
+			"${repo.url}$REPO_DIR_STRUCT/src/${fe.lang}/${fe.fileName}.lua"
 
 	override suspend fun downloadExtension(
 			repositoryEntity: RepositoryEntity,

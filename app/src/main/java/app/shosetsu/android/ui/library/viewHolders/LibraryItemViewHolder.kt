@@ -1,19 +1,5 @@
 package app.shosetsu.android.ui.library.viewHolders
 
-import android.util.Log
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import app.shosetsu.android.common.consts.selectedStrokeWidth
-import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.picasso
-import app.shosetsu.android.common.ext.toast
-import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.chip.Chip
-import com.mikepenz.fastadapter.FastAdapter
-
 /*
  * This file is part of Shosetsu.
  *

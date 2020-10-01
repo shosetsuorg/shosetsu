@@ -3,6 +3,7 @@ package app.shosetsu.android.view.uimodels.settings
 import android.view.View
 import android.widget.NumberPicker
 import app.shosetsu.android.view.uimodels.settings.base.RightSettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
  * This file is part of shosetsu.
@@ -35,8 +36,8 @@ class NumberPickerSettingData(id: Int) : RightSettingsItemData(id) {
 			newVal: Int,
 	) -> Unit = { _, _, _ -> }
 
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
 		with(holder) {
 			numberPicker.visibility = View.VISIBLE
 			numberPicker.minValue = lowerBound
@@ -46,8 +47,8 @@ class NumberPickerSettingData(id: Int) : RightSettingsItemData(id) {
 		}
 	}
 
-	override fun unbindView(holder: ViewHolder) {
-		super.unbindView(holder)
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
 		with(holder) {
 			numberPicker.setOnValueChangedListener(null)
 		}

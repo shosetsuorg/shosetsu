@@ -58,9 +58,9 @@
     <string name="download_selected">Download Selected</string>
     <string name="retry">Retry</string>
     <string name="mark_as">Mark As</string>
-    <string name="read">READ</string>
-    <string name="unread">UNREAD</string>
-    <string name="reading">READING</string>
+    <string name="read">Read</string>
+    <string name="unread">Unread</string>
+    <string name="reading">Reading</string>
     <string name="no_change">No change</string>
     <string name="download_speed">Download speed</string>
 
@@ -296,6 +296,7 @@
     <string name="repositories">Repositories</string>
     <string name="chapter_select_between_error_empty_adapter">AdapterList returned empty, Try again?</string>
     <string name="volume_scroll">Volume Scroll</string>
+    <string name="all">All</string>
 
     <array name="application_themes">
         <item>@string/light</item>

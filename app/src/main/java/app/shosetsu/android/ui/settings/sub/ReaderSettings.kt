@@ -1,10 +1,24 @@
 package app.shosetsu.android.ui.settings.sub
 
 import android.annotation.SuppressLint
-import app.shosetsu.android.common.ext.viewModel
+import android.view.LayoutInflater
+import android.widget.TextView
+import androidx.core.content.getSystemService
+import androidx.core.view.postDelayed
+import androidx.recyclerview.widget.RecyclerView
+import app.shosetsu.android.common.consts.settings.SettingKey
+import app.shosetsu.android.common.dto.handledReturnAny
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.settings.SettingsSubController
+import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
+import app.shosetsu.android.view.uimodels.settings.CustomBottomSettingData
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.customView
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.select.selectExtension
 
 /*
  * This file is part of shosetsu.
@@ -33,4 +47,101 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class ReaderSettings : SettingsSubController() {
 	override val viewTitleRes: Int = R.string.settings_reader
 	override val viewModel: AReaderSettingsViewModel by viewModel()
+
+	override val adjustments: List<SettingsItemData>.() -> Unit = {
+		find<CustomBottomSettingData>(5)?.customView { root ->
+			root.context.getSystemService<LayoutInflater>()!!.inflate(
+					R.layout.reader_theme_selection,
+					root,
+					false
+			).apply {
+				val recycler = findViewById<RecyclerView>(R.id.color_picker_options)
+				val itemAdapter = ItemAdapter<ColorChoiceUI>()
+				val fastAdapter = FastAdapter.with(itemAdapter)
+				fastAdapter.selectExtension {
+					isSelectable = true
+					setSelectionListener { item, _ ->
+						fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
+					}
+				}
+				recycler.adapter = fastAdapter
+				fastAdapter.setOnClickListener { _, _, item, _ ->
+					launchIO {
+						viewModel.iSettingsRepository.setInt(SettingKey.ReaderTheme, item.identifier.toInt())
+					}
+					item.isSelected = true
+
+					run {
+						val count = fastAdapter.itemCount
+						for (i in 0 until count)
+							fastAdapter.getItem(i)?.takeIf {
+								it.identifier != item.identifier
+							}?.isSelected = false
+					}
+
+					fastAdapter.notifyDataSetChanged()
+					true
+				}
+
+				viewModel.getReaderThemes().observe(this@ReaderSettings) { list ->
+					itemAdapter.clear()
+					launchIO {
+						val v = viewModel.iSettingsRepository.getInt(SettingKey.ReaderTheme).handledReturnAny { it }!!
+						list.find {
+							it.identifier == v.toLong()
+						}?.isSelected = true
+
+						itemAdapter.add(list)
+					}
+				}
+			}
+		}
+		find<CustomBottomSettingData>(1)?.customView {
+			it.context.getSystemService<LayoutInflater>()!!.inflate(
+					R.layout.reader_theme_example,
+					null,
+					false
+			).apply {
+				findViewById<TextView>(R.id.textView).apply textView@{
+					val exampleText =
+							"Because there are so many lines. I had lost sense of time. Plz help" +
+									"me escape this horror called" +
+									"\nThis is some sample text. With lots of testing. Lots of paragraph," +
+									"Lots of lines. Plenty to read"
+
+					val function = { textView: TextView ->
+						val replaceSpacing = StringBuilder("\n")
+						//for (x in 0 until shosetsuSettings.readerParagraphSpacing)
+						//	replaceSpacing.append("\n")
+						//for (x in 0 until shosetsuSettings.readerIndentSize)
+						//	replaceSpacing.append("\t")
+						//textView.textSize = shosetsuSettings.readerTextSize
+
+						//val r = shosetsuSettings.selectedReaderTheme.toLong()
+						//val b = shosetsuSettings.getReaderBackgroundColor(r)
+						//val t = shosetsuSettings.getReaderTextColor(r)
+						//textView.setTextColor(t)
+						//textView.setBackgroundColor(b)
+						textView.text = exampleText.replace("\n".toRegex(), replaceSpacing.toString())
+					}
+					postDelayed(500) {
+						//shosetsuSettings.apply {
+						//	readerTextSizeLive.observe(this@ReaderSettings) {
+						//		textSize = shosetsuSettings.readerTextSize
+						//	}
+						//	readerIndentSizeLive.observe(this@ReaderSettings) {
+						//		function(this@textView)
+						//	}
+						//	readerParagraphSpacingLive.observe(this@ReaderSettings) {
+						//		function(this@textView)
+						//	}
+						//	readerUserThemeSelectionLive.observe(this@ReaderSettings) {
+						//		function(this@textView)
+						//	}
+						//}
+					}
+				}
+			}
+		}
+	}
 }

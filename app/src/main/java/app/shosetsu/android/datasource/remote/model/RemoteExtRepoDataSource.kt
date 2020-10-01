@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.model
 
 import app.shosetsu.android.common.consts.ErrorKeys
-import app.shosetsu.android.common.consts.repoFolderStruct
+import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
@@ -42,7 +42,7 @@ class RemoteExtRepoDataSource(
 		(successResult(
 				JSONObject(
 						client.quickie(
-								"${repo.url}${repoFolderStruct}index.json"
+								"${repo.url}${REPO_DIR_STRUCT}index.json"
 						).body!!.string()
 				)
 		))

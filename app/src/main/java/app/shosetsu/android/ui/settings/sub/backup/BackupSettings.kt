@@ -11,6 +11,7 @@ import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
 import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
 import app.shosetsu.android.viewmodel.model.settings.BackupSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -45,10 +46,10 @@ import java.util.*
 class BackupSettings : SettingsSubController() {
 	override val viewTitleRes: Int = R.string.settings_backup
 
-	override val viewModel: BackupSettingsViewModel by viewModel()
+	override val viewModel: ABackupSettingsViewModel by viewModel()
 
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		find<ButtonSettingData>(4).onButtonClicked {
+		find<ButtonSettingData>(4)?.onButtonClicked {
 			performFileSelection()
 		}
 	}

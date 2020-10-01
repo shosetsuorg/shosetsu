@@ -3,6 +3,7 @@ package app.shosetsu.android.view.uimodels.settings
 import android.util.SparseArray
 import android.view.View
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 import com.xw.repo.BubbleSeekBar
 import com.xw.repo.BubbleSeekBar.OnProgressChangedListener
 
@@ -77,12 +78,12 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 	) -> Unit =
 			{ _, _, _, _ -> }
 
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
 		with(holder) {
-			seekbar.visibility = View.VISIBLE
+			bubbleSeekBar.visibility = View.VISIBLE
 
-			seekbar.configBuilder.apply {
+			bubbleSeekBar.configBuilder.apply {
 				min(minValue)
 				max(maxValue)
 				progress(progressValue)
@@ -105,8 +106,8 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 				if (touchToSeek)
 					touchToSeek()
 			}.build()
-			seekbar.setCustomSectionTextArray { _, _ -> array }
-			seekbar.onProgressChangedListener = object : OnProgressChangedListener {
+			bubbleSeekBar.setCustomSectionTextArray { _, _ -> array }
+			bubbleSeekBar.onProgressChangedListener = object : OnProgressChangedListener {
 				override fun onProgressChanged(
 						bubbleSeekBar: BubbleSeekBar?,
 						progress: Int,
@@ -134,11 +135,12 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 				}
 			}
 		}
+
 	}
 
-	override fun unbindView(holder: ViewHolder) {
-		super.unbindView(holder)
-		holder.seekbar.apply {
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
+		holder.bubbleSeekBar.apply {
 			onProgressChangedListener = null
 		}
 	}

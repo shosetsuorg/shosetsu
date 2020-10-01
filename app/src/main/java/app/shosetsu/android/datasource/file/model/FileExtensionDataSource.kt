@@ -3,8 +3,8 @@ package app.shosetsu.android.datasource.file.model
 import android.content.Context
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NOT_FOUND
-import app.shosetsu.android.common.consts.scriptDirectory
-import app.shosetsu.android.common.consts.sourceFolder
+import app.shosetsu.android.common.consts.SCRIPT_DIR
+import app.shosetsu.android.common.consts.SOURCE_DIR
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
@@ -44,7 +44,7 @@ class FileExtensionDataSource(
 	}
 
 	private fun makeFormatterFile(fileName: String): File {
-		val f = File("$ap$sourceFolder$scriptDirectory$fileName.lua")
+		val f = File("$ap$SOURCE_DIR$SCRIPT_DIR$fileName.lua")
 		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
 		return f
 	}

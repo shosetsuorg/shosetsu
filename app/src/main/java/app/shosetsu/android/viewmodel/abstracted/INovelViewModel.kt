@@ -88,4 +88,12 @@ abstract class INovelViewModel
 	abstract fun markChapterAsUnread(chapterUI: ChapterUI)
 	abstract fun markChapterAsReading(chapterUI: ChapterUI)
 	abstract fun toggleChapterBookmark(chapterUI: ChapterUI)
+
+	abstract fun downloadNextChapter()
+	abstract fun downloadNext5Chapters()
+	abstract fun downloadNext10Chapters()
+	abstract fun downloadNextCustomChapters(max: Int)
+
+	abstract fun downloadAllUnreadChapters()
+	abstract fun downloadAllChapters()
 }

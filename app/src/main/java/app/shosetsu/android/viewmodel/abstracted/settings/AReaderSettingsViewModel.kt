@@ -1,7 +1,9 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 
 /*
  * This file is part of shosetsu.
@@ -24,4 +26,6 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
  * shosetsu
  * 31 / 08 / 2020
  */
-abstract class AReaderSettingsViewModel(iSettingsRepository: ISettingsRepository) : ASubSettingsViewModel(iSettingsRepository)
+abstract class AReaderSettingsViewModel(iSettingsRepository: ISettingsRepository) : ASubSettingsViewModel(iSettingsRepository) {
+	abstract fun getReaderThemes(): LiveData<List<ColorChoiceUI>>
+}

@@ -2,6 +2,7 @@ package app.shosetsu.android.view.uimodels.settings.base
 
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.VISIBLE
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
  * This file is part of shosetsu.
@@ -25,8 +26,14 @@ import app.shosetsu.android.common.consts.VISIBLE
  * 21 / 07 / 2020
  */
 open class BottomSettingsItemData(id: Int) : SettingsItemData(id) {
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
+
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
 		holder.bottomField.isVisible = true
+	}
+
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
+		holder.bottomField.isVisible = false
 	}
 }

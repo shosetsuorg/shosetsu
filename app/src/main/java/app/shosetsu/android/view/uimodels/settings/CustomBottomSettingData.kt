@@ -1,8 +1,10 @@
 package app.shosetsu.android.view.uimodels.settings
 
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
  * This file is part of shosetsu.
@@ -30,11 +32,16 @@ class CustomBottomSettingData(id: Int) : BottomSettingsItemData(id) {
 	/**
 	 * Custom view
 	 */
-	lateinit var customView: () -> View
+	var customView: (ViewGroup) -> View? = { null }
 
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
-		holder.bottomField.addView(customView(), MATCH_PARENT, MATCH_PARENT)
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
+		holder.bottomField.addView(customView(holder.bottomField), MATCH_PARENT, MATCH_PARENT)
+	}
+
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
+		holder.bottomField.removeAllViews()
 	}
 
 }

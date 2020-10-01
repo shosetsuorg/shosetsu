@@ -2,7 +2,7 @@ package app.shosetsu.android.view.uimodels.model.library
 
 import android.view.View
 import androidx.core.view.isVisible
-import app.shosetsu.android.common.consts.selectedStrokeWidth
+import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.domain.model.base.Convertible
@@ -77,7 +77,7 @@ abstract class ABookmarkedNovelUI
 		override fun bindView(item: ABookmarkedNovelUI, payloads: List<Any>) {
 			super.bindView(item, payloads)
 			setUnreadCount(this, item.unread)
-			materialCardView.strokeWidth = if (item.isSelected) selectedStrokeWidth else 0
+			materialCardView.strokeWidth = if (item.isSelected) SELECTED_STROKE_WIDTH else 0
 			chip.setOnClickListener { it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text) }
 		}
 

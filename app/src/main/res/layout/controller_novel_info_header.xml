@@ -193,15 +193,6 @@
             app:iconStartPadding="8dp" />
 
         <ImageButton
-            android:id="@+id/share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/share"
-            android:src="@drawable/share" />
-
-        <ImageButton
             android:id="@+id/web_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

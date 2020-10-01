@@ -41,12 +41,16 @@ val SHOSETSU_UPDATE_URL: String =
 			else "xml"
 		}"
 
-const val selectedStrokeWidth: Int = 8
+const val SELECTED_STROKE_WIDTH: Int = 8
 
-const val scriptDirectory: String = "/scripts/"
-const val libraryDirectory: String = "/libraries/"
-const val sourceFolder: String = "/src/"
-const val repoFolderStruct: String = "/src/main/resources/"
+const val FLING_SPEED = 10
+const val FLING_DIVIDE = 100
+const val FLING_THRESHOLD = 15000
+
+const val SCRIPT_DIR: String = "/scripts/"
+const val LIBRARY_DIR: String = "/libraries/"
+const val SOURCE_DIR: String = "/src/"
+const val REPO_DIR_STRUCT: String = "/src/main/resources/"
 
 @Deprecated("Just use View", replaceWith = ReplaceWith("VISIBLE", "import android.view.View.VISIBLE"), DeprecationLevel.WARNING)
 const val VISIBLE: Int = View.VISIBLE

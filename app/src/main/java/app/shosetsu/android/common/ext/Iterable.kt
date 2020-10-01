@@ -1,7 +1,4 @@
-package app.shosetsu.android.common
-
-import app.shosetsu.android.ui.settings.SettingsController.Types
-
+package app.shosetsu.android.common.ext
 
 /*
  * This file is part of Shosetsu.
@@ -18,14 +15,13 @@ import app.shosetsu.android.ui.settings.SettingsController.Types
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
-
 
 /**
- * Shosetsu
- * 9 / June / 2019
- *
- * @author github.com/doomsdayrs
+ * shosetsu
+ * 30 / 09 / 2020
  */
-data class SettingsCard(val id: Types)
+
+fun Iterable<String>.combine(separator: String): String = StringBuilder().apply {
+	forEach { append(it).append(separator) }
+}.toString()

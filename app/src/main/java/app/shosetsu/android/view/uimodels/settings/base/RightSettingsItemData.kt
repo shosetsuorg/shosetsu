@@ -3,6 +3,7 @@ package app.shosetsu.android.view.uimodels.settings.base
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.VISIBLE
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
  * This file is part of shosetsu.
@@ -27,9 +28,14 @@ import app.shosetsu.android.common.consts.VISIBLE
  */
 open class RightSettingsItemData(id: Int) : SettingsItemData(id) {
 
-	@CallSuper
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
 		holder.rightField.isVisible = true
 	}
+
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
+		holder.rightField.isVisible = false
+	}
+
 }

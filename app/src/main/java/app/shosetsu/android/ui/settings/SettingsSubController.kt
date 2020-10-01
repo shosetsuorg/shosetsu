@@ -43,6 +43,6 @@ abstract class SettingsSubController : BasicFastAdapterRecyclerController<Settin
 	}
 
 	/** Finds a setting via its data ID */
-	inline fun <reified T : SettingsItemData> List<SettingsItemData>.find(id: Int): T =
-			filterIsInstance<T>().find { it.id == id }!!
+	inline fun <reified T : SettingsItemData> List<SettingsItemData>.find(id: Int): T? =
+			filterIsInstance<T>().find { it.id == id }
 }

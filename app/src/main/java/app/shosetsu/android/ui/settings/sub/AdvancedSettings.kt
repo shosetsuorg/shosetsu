@@ -45,7 +45,7 @@ class AdvancedSettings : SettingsSubController() {
 
 
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		find<SpinnerSettingData>(1).onSpinnerItemSelected { adapterView, _, position, _ ->
+		find<SpinnerSettingData>(1)?.onSpinnerItemSelected { adapterView, _, position, _ ->
 			if (position in 0..1) {
 				val delegate = (activity as AppCompatActivity).delegate
 				when (position) {

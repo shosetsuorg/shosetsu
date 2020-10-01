@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.skydoves.colorpickerview.ColorPickerDialog.Builder as CPDB
 
@@ -33,8 +34,8 @@ class ColorPickerSettingData(id: Int) : BottomSettingsItemData(id) {
 	var itemColor: Int = Color.WHITE
 	var colorPreferenceName: String = ""
 
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
 		with(holder) {
 			colorBox.visibility = View.VISIBLE
 			colorBox.setBackgroundColor(itemColor)
@@ -55,8 +56,8 @@ class ColorPickerSettingData(id: Int) : BottomSettingsItemData(id) {
 		}
 	}
 
-	override fun unbindView(holder: ViewHolder) {
-		super.unbindView(holder)
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
 		with(holder) {
 			colorBox.setOnClickListener(null)
 		}

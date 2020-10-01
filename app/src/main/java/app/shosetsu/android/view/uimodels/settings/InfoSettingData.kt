@@ -2,6 +2,7 @@ package app.shosetsu.android.view.uimodels.settings
 
 import android.view.View
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
  * This file is part of shosetsu.
@@ -26,16 +27,19 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
  */
 class InfoSettingData(id: Int) : SettingsItemData(id) {
 	var itemViewOnClick: (View) -> Unit = {}
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
+
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
 		with(holder) {
 			itemView.setOnClickListener(itemViewOnClick)
 		}
 	}
 
-	override fun unbindView(holder: ViewHolder) {
-		super.unbindView(holder)
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
 		holder.itemView.setOnClickListener(null)
+
 	}
+
 
 }

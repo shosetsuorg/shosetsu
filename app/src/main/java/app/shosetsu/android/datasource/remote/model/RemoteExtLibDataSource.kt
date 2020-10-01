@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.model
 
 import app.shosetsu.android.common.consts.ErrorKeys
-import app.shosetsu.android.common.consts.repoFolderStruct
+import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
@@ -36,7 +36,7 @@ class RemoteExtLibDataSource(
 		private val client: OkHttpClient,
 ) : IRemoteExtLibDataSource {
 	private fun makeLibraryURL(repo: RepositoryEntity, le: ExtLibEntity): String =
-			"${repo.url}$repoFolderStruct/lib/${le.scriptName}.lua"
+			"${repo.url}$REPO_DIR_STRUCT/lib/${le.scriptName}.lua"
 
 	override fun downloadLibrary(
 			repo: RepositoryEntity,

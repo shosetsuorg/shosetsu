@@ -6,6 +6,7 @@ import androidx.core.widget.doAfterTextChanged
 import app.shosetsu.android.common.consts.GONE
 import app.shosetsu.android.common.consts.VISIBLE
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
  * This file is part of shosetsu.
@@ -34,13 +35,25 @@ class TextInputSettingData(id: Int) : BottomSettingsItemData(id) {
 	/** @see doAfterTextChanged */
 	var onTextChanged: (Editable) -> Unit = { _: Editable -> }
 
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
-		holder.itemDescription.isVisible = false
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
+		holder.settingsItemDesc.isVisible = false
 		holder.textInputEditText.apply {
 			isVisible = true
 			if (descID != -1) setHint(descID) else if (descText.isNotEmpty()) hint = descText
 			doAfterTextChanged { it?.let(onTextChanged) }
 		}
 	}
+
+	override fun unbindBinding(holder: SettingsItemBinding) {
+		super.unbindBinding(holder)
+		holder.settingsItemDesc.isVisible = true
+		holder.textInputEditText.apply {
+			isVisible = false
+			hint = null
+			doAfterTextChanged { }
+			text = null
+		}
+	}
+
 }

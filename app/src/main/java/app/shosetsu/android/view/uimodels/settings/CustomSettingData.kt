@@ -2,6 +2,7 @@ package app.shosetsu.android.view.uimodels.settings
 
 import android.view.View
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
  * This file is part of shosetsu.
@@ -29,14 +30,13 @@ class CustomSettingData(id: Int) : SettingsItemData(id) {
 	/**
 	 * Custom view
 	 */
-	lateinit var customView: () -> View
+	var customView: () -> View? = { null }
 
-	override fun bindView(holder: ViewHolder, payloads: List<Any>) {
-		super.bindView(holder, payloads)
-		holder.constraintLayout.apply {
+	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
+		super.bindBinding(holder, payloads)
+		holder.itemView.apply {
 			removeAllViews()
-			addView(customView())
+			customView()?.let { addView(it) }
 		}
 	}
-
 }

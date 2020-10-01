@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context="app.shosetsu.android.activity.MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <app.shosetsu.android.view.widget.FlingRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

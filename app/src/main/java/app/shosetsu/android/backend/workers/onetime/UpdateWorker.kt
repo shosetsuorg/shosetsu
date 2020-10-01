@@ -19,6 +19,7 @@ import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.ext.combine
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.model.local.NovelEntity
@@ -219,7 +220,10 @@ class UpdateWorker(
 					}
 
 					pr.setContentTitle(applicationContext.getString(R.string.update))
-					pr.setContentText(applicationContext.getString(R.string.update_complete))
+					pr.setContentText(
+							applicationContext.getString(R.string.update_complete) + "\n" +
+									updateNovels.map { it.title }.combine(",\n")
+					)
 					pr.setOngoing(false)
 					pr.setProgress(0, 0, false)
 					notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())

@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.settings.dsl
 
 import android.view.View
+import android.view.ViewGroup
 import app.shosetsu.android.view.uimodels.settings.CustomBottomSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsListBuilder
@@ -42,7 +43,7 @@ inline fun SettingsListBuilder.customBottomSettingData(
 
 @SettingsItemDSL
 inline fun CustomBottomSettingData.customView(
-		crossinline view: () -> View,
+		crossinline view: (@ParameterName("root") ViewGroup) -> View,
 ): CustomBottomSettingData = this.apply {
-	customView = { view() }
+	customView = { view(it) }
 }

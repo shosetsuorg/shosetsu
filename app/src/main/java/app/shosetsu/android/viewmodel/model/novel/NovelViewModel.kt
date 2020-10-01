@@ -1,6 +1,9 @@
 package app.shosetsu.android.viewmodel.model.novel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
@@ -25,8 +28,6 @@ import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import com.mikepenz.fastadapter.items.AbstractItem
-import kotlinx.coroutines.Dispatchers
-import kotlin.reflect.KMutableProperty
 
 /*
  * This file is part of shosetsu.
@@ -174,7 +175,7 @@ class NovelViewModel(
 	}
 	override val formatterName: LiveData<HResult<String>> by lazy {
 		novelIDLive.switchMap {
-			liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+			liveDataIO {
 				emit(successResult(""))
 				emitSource(getFormatterNameUseCase(it))
 			}
@@ -182,7 +183,7 @@ class NovelViewModel(
 	}
 	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
 		novelIDLive.switchMap {
-			liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+			liveDataIO {
 				emitSource(loadNovelUIUseCase(it))
 			}
 		}
@@ -236,11 +237,13 @@ class NovelViewModel(
 	}
 
 	override fun destroy() {
-		novelIDLive.postValue(-1)
 		novelUI = NovelUI.instance()
 		chapters.clear()
 		chaptersManagement = ChaptersManagement()
-		uiHasNewData()
+		launchIO {
+			novelIDLive.postValue(-1)
+			uiHasNewData()
+		}
 	}
 
 	override fun downloadChapter(vararg chapterUI: ChapterUI) {
@@ -275,7 +278,7 @@ class NovelViewModel(
 	}
 
 	override fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>> =
-			liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+			liveDataIO {
 				emit(loading())
 				val array = array.sortedBy { it.order }
 				val result = isChaptersResumeFirstUnread()
@@ -296,7 +299,7 @@ class NovelViewModel(
 	}
 
 	override fun refresh(): LiveData<HResult<Any>> =
-			liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+			liveDataIO {
 				emit(loading())
 				emit(loadNovelUseCase(novelIDValue, true))
 			}
@@ -357,6 +360,47 @@ class NovelViewModel(
 			updateChapterUseCase(chapterUI.copy(
 					bookmarked = !chapterUI.bookmarked
 			))
+		}
+	}
+
+	override fun downloadNextChapter() {
+		launchIO {
+			val array = chapters.sortedBy { it.order }
+			val r = array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
+			if (r != -1) downloadChapter(array[r])
+		}
+	}
+
+
+	override fun downloadNextCustomChapters(max: Int) {
+		launchIO {
+			val array = chapters.sortedBy { it.order }
+			val r = array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
+			if (r != -1) {
+				val list = arrayListOf<ChapterUI>()
+				list.add(array[r])
+				var count = 1
+				while ((r + count) < array.size && count <= max) {
+					list.add(array[r + count])
+					count++
+				}
+				downloadChapter(*list.toTypedArray())
+			}
+		}
+	}
+
+	override fun downloadNext5Chapters() = downloadNextCustomChapters(5)
+	override fun downloadNext10Chapters() = downloadNextCustomChapters(10)
+
+	override fun downloadAllUnreadChapters() {
+		launchIO {
+			downloadChapter(*chapters.filter { it.readingStatus == ReadingStatus.UNREAD }.toTypedArray())
+		}
+	}
+
+	override fun downloadAllChapters() {
+		launchIO {
+			downloadChapter(*chapters.toTypedArray())
 		}
 	}
 }
