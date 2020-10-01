@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.drawerlayout.widget.DrawerLayout
-import app.shosetsu.android.view.base.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.layout.drawer_layout
 import com.google.android.material.navigation.NavigationView
@@ -39,20 +38,19 @@ import com.google.android.material.navigation.NavigationView
 class SDBuilder(
 		private val navigationView: NavigationView,
 		private val drawerLayout: DrawerLayout,
-		secondDrawerController: SecondDrawerController,
-) : SDViewBuilder(navigationView, secondDrawerController) {
+) : SDViewBuilder(navigationView) {
 
 	private val parentView = inflater.inflate(drawer_layout, navigationView, false)
 
 	override fun build(): View {
 		parentView.findViewById<Button>(R.id.accept).setOnClickListener {
-			secondDrawerController.handleConfirm(layout)
+			//secondDrawerController.handleConfirm(layout)
 			drawerLayout.closeDrawer(viewGroup)
 		}
 		parentView.findViewById<LinearLayout>(R.id.linearLayout).addView(layout)
 		parentView.findViewById<Button>(R.id.reset).setOnClickListener {
 			viewGroup.removeAllViews()
-			secondDrawerController.createDrawer(navigationView, drawerLayout)
+			//secondDrawerController.createDrawer(navigationView, drawerLayout)
 			drawerLayout.closeDrawer(viewGroup)
 		}
 		return parentView

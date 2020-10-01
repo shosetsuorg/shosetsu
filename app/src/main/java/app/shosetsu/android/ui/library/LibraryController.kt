@@ -19,7 +19,6 @@ import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
-import app.shosetsu.android.view.base.SecondDrawerController
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
 import com.bluelinelabs.conductor.Controller

@@ -355,15 +355,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			}
 		}
 
-		if (from is SecondDrawerController) {
-			second_nav_view.removeAllViews()
-			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, second_nav_view)
-		}
-		if (to is SecondDrawerController) {
-			drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, second_nav_view)
-			to.createDrawer(second_nav_view, drawer_layout)
-		}
-
 		if (from is FABController) {
 			from.hideFAB(fab)
 			from.resetFAB(fab)

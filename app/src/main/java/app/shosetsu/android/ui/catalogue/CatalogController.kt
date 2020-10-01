@@ -24,7 +24,6 @@ import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
-import app.shosetsu.android.view.base.SecondDrawerController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import com.bluelinelabs.conductor.Controller
@@ -61,7 +60,7 @@ class CatalogController(
 		/** data bundle uwu */
 		val bundle: Bundle,
 ) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
-		SecondDrawerController, PushCapableController {
+		PushCapableController {
 	private var searchView: SearchView? = null
 
 	private var navigationView: NavigationView? = null
@@ -145,56 +144,6 @@ class CatalogController(
 			viewModel.resetView()
 			true
 		}
-	}
-
-
-	override fun createDrawer(navigationView: NavigationView, drawerLayout: DrawerLayout) {
-		this.navigationView = navigationView
-		this.drawerLayout = drawerLayout
-		/*
-				val builder = SDBuilder(navigationView, drawerLayout, this)
-		if (formatter.listings.size > 1) {
-			val listingSpinner = builder.spinner(
-					"Listing",
-					formatter.listings.map { it.name }.toTypedArray(),
-					this.selectedListing
-			)
-
-			val build = { menu: SDViewBuilder ->
-				formatter.listings[this.selectedListing].filters.forEach { it.build(menu) }
-
-			}
-			val menu = builder.inner(context!!.getString(R.string.listings), build)
-
-			listingSpinner.onItemSelectedListener =
-					object : AdapterView.OnItemSelectedListener {
-						override fun onNothingSelected(parent: AdapterView<*>?) {}
-						override fun onItemSelected(
-								parent: AdapterView<*>?,
-								view: View?,
-								position: Int,
-								id: Long
-						) {
-							selectedListing = position
-							menu.removeAll()
-							build(menu)
-						}
-					}
-		}
-
-		builder.inner(context!!.getString(R.string.search_filters)) {
-			formatter.searchFilters.forEach { filter -> filter.build(it) }
-		}
-
-		navigationView.addView(builder.build())
-		*/
-	}
-
-	override fun handleConfirm(linearLayout: LinearLayout) {
-		//filterValues = formatter.listings[this.selectedListing].filters.values()
-		//setLibraryCards(arrayListOf())
-		//adapter?.notifyDataSetChanged()
-		//viewModel.loadMore()
 	}
 
 	override fun updateUI(newList: List<ACatalogNovelUI>) {

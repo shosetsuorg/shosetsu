@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.TextView
 import app.shosetsu.android.view.*
-import app.shosetsu.android.view.base.SecondDrawerController
 import com.github.doomsdayrs.apps.shosetsu.R
 
 
@@ -42,7 +41,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 open class SDViewBuilder(
 		val viewGroup: ViewGroup,
-		val secondDrawerController: SecondDrawerController,
 ) {
 	val inflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
 	val layout: LinearLayout = inflater.inflate(
@@ -124,13 +122,13 @@ open class SDViewBuilder(
 
 	private fun inner(title: String, builder: (SDViewBuilder) -> Unit): SDViewBuilder {
 		val expandingViewBar = ExpandingViewBar(viewGroup.context, viewGroup)
-		val innerBuilder = SDViewBuilder(expandingViewBar.layout, secondDrawerController)
+		//val innerBuilder = SDViewBuilder(expandingViewBar.layout, secondDrawerController)
 		expandingViewBar.setTitle(title)
 		expandingViewBar.bar
-		builder(innerBuilder)
-		expandingViewBar.setChild(innerBuilder.build())
+		//expandingViewBar.setChild(innerBuilder.build())
 		add(expandingViewBar.layout)
-		return innerBuilder
+		//return innerBuilder
+		return throw Exception("")
 	}
 
 	val addEditText: (a: String) -> SDViewBuilder = wrap<String> { editText(it) }
