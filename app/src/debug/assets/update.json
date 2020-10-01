@@ -1,8 +1,12 @@
 {
-  "latestVersion": "963",
+  "latestVersion": "969",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- ChapterReader bottom bar now syncs with top bar on scroll",
-    "- Removed double tap to focus from reader"
+    "- Added FlingRecyclerView.kt with fling speed, divide, and threshold constants in Constants.kt, FlingRecyclerView.kt lets you zOoooom through chapters",
+    "- NovelUI.kt identifier is always a certain negative",
+    "- Added download options in NovelController.kt",
+    "- Moved share button to top in NovelController.kt",
+    "- Known issue with crashing on opening a novel, the issue is being worked on",
+    "- Filter option not yet added for chapters"
   ]
 }
