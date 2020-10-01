@@ -5,7 +5,6 @@ enum class SettingCategory {
 	UPDATE,
 	VIEW, // Settings for application appearance
 	ADVANCED, // Settings that control more advanced application features
-	INFO,  // Information of the app
 	BACKUP, // Settings for backup and restoring data
 	READER // Settings for reading novels in application
 }

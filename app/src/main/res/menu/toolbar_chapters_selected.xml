@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/chapter_download_selected"
-        android:icon="@drawable/ic_file_download"
+        android:icon="@drawable/download"
         android:title="@string/download_selected"
         app:showAsAction="ifRoom" />
     <item

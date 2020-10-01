@@ -1,7 +1,21 @@
 <resources>
     <string name="app_name">Shosetsu</string>
     <string name="catalogue">Catalogue</string>
-    <string name="github" translatable="false">https://github.com/shosetsuorg/android</string>
+
+    <string name="website">Website</string>
+    <string name="website_url" translatable="false">https://shosetsu.app</string>
+
+    <string name="github">Github</string>
+    <string name="github_url" translatable="false">https://github.com/shosetsuorg/android-app</string>
+    <string name="extensions_url" translatable="false">https://github.com/shosetsuorg/extensions</string>
+
+    <string name="discord">Discord</string>
+    <string name="discord_url" translatable="false">https://discord.gg/ttSX7gB</string>
+
+    <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
+    <string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>
+
+
     <string name="header_text">Novel reading right on your phone!</string>
     <string name="todo">TODO</string>
 
@@ -70,10 +84,8 @@
     <!-- Settings Info -->
     <string name="version">Version</string>
     <string name="report_bug">Report bug</string>
-    <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
     <string name="author">Author</string>
     <string name="author_name" translatable="false">Doomsdayrs</string>
-    <string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>
     <string name="disclaimer">Disclaimer</string>
     <string name="license">License</string>
 
@@ -297,6 +309,10 @@
     <string name="chapter_select_between_error_empty_adapter">AdapterList returned empty, Try again?</string>
     <string name="volume_scroll">Volume Scroll</string>
     <string name="all">All</string>
+    <string name="about">About</string>
+    <string name="check_for_app_update">Check for app update</string>
+    <string name="source_licenses">Source Licenses</string>
+
 
     <array name="application_themes">
         <item>@string/light</item>

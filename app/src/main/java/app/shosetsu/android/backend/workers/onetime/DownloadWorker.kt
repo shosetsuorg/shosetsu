@@ -76,7 +76,7 @@ class DownloadWorker(
 			@Suppress("DEPRECATION")
 			Notification.Builder(applicationContext)
 		}
-				.setSmallIcon(R.drawable.ic_file_download)
+				.setSmallIcon(R.drawable.download)
 				.setContentTitle(applicationContext.getString(R.string.app_name))
 				.setContentText("Downloading Chapters")
 				.setOnlyAlertOnce(true)

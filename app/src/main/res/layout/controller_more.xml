@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="app.shosetsu.android.activity.MainActivity">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_name"
-        android:elevation="1dp"
         android:src="@drawable/ic_launcher_foreground_thick" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/download"
@@ -22,7 +28,9 @@
         android:elevation="0dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="0dp"
-        app:cardForegroundColor="@android:color/transparent">
+        app:cardElevation="0dp"
+        app:cardForegroundColor="@android:color/transparent"
+        app:strokeWidth="0dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -32,7 +40,7 @@
             android:drawablePadding="24dp"
             android:gravity="center_vertical"
             android:text="@string/downloads"
-            app:drawableStartCompat="@drawable/ic_file_download" />
+            app:drawableStartCompat="@drawable/download_tinted" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -45,7 +53,10 @@
         android:elevation="0dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="0dp"
-        app:cardForegroundColor="@android:color/transparent">
+
+        app:cardElevation="0dp"
+        app:cardForegroundColor="@android:color/transparent"
+        app:strokeWidth="0dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -55,7 +66,7 @@
             android:drawablePadding="24dp"
             android:gravity="center_vertical"
             android:text="@string/repositories"
-            app:drawableStartCompat="@drawable/ic_baseline_add_shopping_cart_24" />
+            app:drawableStartCompat="@drawable/add_shopping_cart_tinted" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -68,7 +79,9 @@
         android:elevation="0dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="0dp"
-        app:cardForegroundColor="@android:color/transparent">
+        app:cardElevation="0dp"
+        app:cardForegroundColor="@android:color/transparent"
+        app:strokeWidth="0dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -78,6 +91,35 @@
             android:drawablePadding="24dp"
             android:gravity="center_vertical"
             android:text="@string/settings"
-            app:drawableStartCompat="@drawable/ic_settings" />
+            app:drawableStartCompat="@drawable/settings_tinted" />
     </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
+        android:elevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+
+        app:cardForegroundColor="@android:color/transparent"
+        app:strokeWidth="0dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@android:color/transparent"
+            android:drawablePadding="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/about"
+            app:drawableStartCompat="@drawable/info_outline_tinted" />
+    </com.google.android.material.card.MaterialCardView>
+
+
 </LinearLayout>

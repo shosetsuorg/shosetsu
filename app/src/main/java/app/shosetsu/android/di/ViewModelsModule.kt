@@ -50,6 +50,8 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<ISearchViewModel>() with provider { SearchViewModel(i(), i(), i()) }
 	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i()) }
 
+	bind<AAboutViewModel>() with provider { AboutViewModel(i(), i(), i()) }
+
 	// Catalog(s)
 	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i(), i(), i()) }
 
@@ -64,11 +66,11 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i(), i()) }
 	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i()) }
 
+
 	// Settings
 	bind<AAdvancedSettingsViewModel>() with provider { AdvancedSettingsViewModel(i(), i()) }
 	bind<ABackupSettingsViewModel>() with provider { BackupSettingsViewModel(i()) }
 	bind<ADownloadSettingsViewModel>() with provider { DownloadSettingsViewModel(i(), i()) }
-	bind<AInfoSettingsViewModel>() with provider { InfoSettingsViewModel(i(), i()) }
 	bind<AReaderSettingsViewModel>() with provider { ReaderSettingsViewModel(i(), i(), i()) }
 	bind<AUpdateSettingsViewModel>() with provider { UpdateSettingsViewModel(i()) }
 	bind<AViewSettingsViewModel>() with provider { ViewSettingsViewModel(i(), i()) }

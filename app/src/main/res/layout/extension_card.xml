@@ -52,7 +52,7 @@
                 android:background="@android:color/transparent"
                 android:clickable="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_file_download"
+                android:src="@drawable/download"
                 android:text="@string/download" />
 
             <ImageButton
@@ -63,7 +63,7 @@
                 android:background="@android:color/transparent"
                 android:clickable="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_settings"
+                android:src="@drawable/settings"
                 android:text="@string/download" />
         </LinearLayout>
 

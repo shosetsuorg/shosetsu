@@ -2,7 +2,6 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import androidx.core.view.isVisible
-import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.utils.FormatterUtils
 import app.shosetsu.android.domain.model.base.Convertible
@@ -117,7 +116,7 @@ data class ExtensionUI(
 		}
 
 		override fun ExtensionCardBinding.unbindView(item: ExtensionUI) {
-			button.setImageResource(R.drawable.ic_file_download)
+			button.setImageResource(R.drawable.download)
 			button.rotation = 0f
 			button.isVisible = true
 

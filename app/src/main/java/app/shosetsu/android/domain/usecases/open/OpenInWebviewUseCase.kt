@@ -38,14 +38,13 @@ import app.shosetsu.lib.Formatter.Companion.KEY_NOVEL_URL
  * shosetsu
  * 01 / 09 / 2020
  *
- * Opens the chapter into
  */
 class OpenInWebviewUseCase(
 		private val repository: IExtensionsRepository,
 		private val stringToastUseCase: StringToastUseCase,
 		private val application: Application,
 ) {
-	private operator fun invoke(url: String) {
+	operator fun invoke(url: String) {
 		Log.d(logID(), "Opening URL $url")
 		val i = Intent(application, WebViewApp::class.java) {
 			bundleOf(

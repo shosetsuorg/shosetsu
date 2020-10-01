@@ -39,11 +39,10 @@ class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI
 		get() = arrayListOf(
 				SettingsCategoryUI(VIEW, R.string.view, R.drawable.ic_view_module),
 				SettingsCategoryUI(READER, R.string.reader, R.drawable.ic_book_24dp),
-				SettingsCategoryUI(DOWNLOAD, R.string.download, R.drawable.ic_file_download),
+				SettingsCategoryUI(DOWNLOAD, R.string.download, R.drawable.download),
 				SettingsCategoryUI(UPDATE, R.string.update, R.drawable.ic_update_24dp),
 				SettingsCategoryUI(BACKUP, R.string.backup, R.drawable.ic_system_update_alt_24dp),
-				SettingsCategoryUI(ADVANCED, R.string.advanced, R.drawable.ic_settings),
-				SettingsCategoryUI(INFO, R.string.info, R.drawable.ic_info_outline_24dp),
+				SettingsCategoryUI(ADVANCED, R.string.advanced, R.drawable.settings),
 		)
 		set(_) {}
 
@@ -63,7 +62,6 @@ class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI
 		fastAdapter.setOnClickListener { _, _, item, _ ->
 			pushController(when (item.category) {
 				VIEW -> ViewSettings()
-				INFO -> InfoSettings()
 				ADVANCED -> AdvancedSettings()
 				DOWNLOAD -> DownloadSettings()
 				BACKUP -> BackupSettings()

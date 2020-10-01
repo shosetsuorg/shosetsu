@@ -67,6 +67,6 @@ class RepositoryController : BasicFastAdapterRecyclerController<RepositoryUI>(),
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
 		// On add repo
-		fab.setImageResource(R.drawable.ic_add_circle_outline_24dp)
+		fab.setImageResource(R.drawable.add_circle_outline)
 	}
 }
