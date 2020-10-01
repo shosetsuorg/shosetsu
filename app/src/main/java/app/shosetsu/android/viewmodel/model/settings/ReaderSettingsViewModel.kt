@@ -1,11 +1,7 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.widget.ArrayAdapter
-import android.widget.TextView
-import androidx.core.content.getSystemService
-import androidx.core.view.postDelayed
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.handle
@@ -85,18 +81,19 @@ class ReaderSettingsViewModel(
 					}
 				}
 				onSpinnerItemSelected { adapterView, _, i, _ ->
-					launchIO {
-						if (i in 0..2) {
-							var size = 14
-							when (i) {
-								0 -> {
-								}
-								1 -> size = 17
-								2 -> size = 20
+					if (i in 0..2) {
+						var size = 14
+						when (i) {
+							0 -> {
 							}
-							iSettingsRepository.setFloat(ReaderTextSize, size.toFloat())
-							adapterView?.setSelection(i)
+							1 -> size = 17
+							2 -> size = 20
 						}
+						launchIO {
+							iSettingsRepository.setFloat(ReaderTextSize, size.toFloat())
+						}
+
+						adapterView?.setSelection(i)
 					}
 				}
 			},
