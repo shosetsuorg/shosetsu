@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logV
@@ -71,6 +72,22 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 	 * Allows child classes to manipulate the fast adapter
 	 */
 	open fun setupFastAdapter() {}
+
+	/** @param result [HResult], if [HResult.Success] then updates UI */
+	fun <T : GenericItem> handleRecyclerUpdate(
+			itemAdapter: ItemAdapter<T>,
+			showEmpty: () -> Unit,
+			hideEmpty: () -> Unit,
+			result: HResult<List<T>>
+	) {
+		when (result) {
+			is HResult.Loading -> showLoading()
+			is HResult.Success -> updateUI(itemAdapter, showEmpty, hideEmpty, result.data)
+			is HResult.Error -> showError(result)
+			is HResult.Empty -> showEmpty()
+		}
+	}
+
 
 	override fun updateUI(newList: List<ITEM>) {
 		if (newList.isEmpty()) showEmpty() else hideEmpty()

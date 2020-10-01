@@ -6,9 +6,7 @@ import android.view.*
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.dto.handledReturnAny
+import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
@@ -25,6 +23,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBindin
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.fastadapter.select.getSelectExtension
@@ -55,26 +54,30 @@ import com.mikepenz.fastadapter.select.selectExtension
  */
 class NovelController(bundle: Bundle)
 	: FastAdapterRecyclerController<ControllerNovelInfoBinding, AbstractItem<*>>(bundle), FABController {
+
+
 	val viewModel: INovelViewModel by viewModel()
 	override val viewTitle: String
 		get() = ""
-
-
 	private var resume: FloatingActionButton? = null
+
+	private val novelUIAdapter by lazy { ItemAdapter<NovelUI>() }
+	private val chapterUIAdapter by lazy { ItemAdapter<ChapterUI>() }
 	override val fastAdapter: FastAdapter<AbstractItem<*>> by lazy {
 		val a = NovelMultiAdapter(viewModel)
-		a.addAdapter(0, itemAdapter)
+		a.addAdapter(0, novelUIAdapter as ItemAdapter<AbstractItem<*>>)
+		a.addAdapter(1, chapterUIAdapter as ItemAdapter<AbstractItem<*>>)
 		a
+	}
+
+	init {
+		setHasOptionsMenu(true)
 	}
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager =
 			object : LinearLayoutManager(context) {
 				override fun supportsPredictiveItemAnimations(): Boolean = false
 			}
-
-	init {
-		setHasOptionsMenu(true)
-	}
 
 	/** Refreshes the novel */
 	private fun refresh() {
@@ -108,7 +111,7 @@ class NovelController(bundle: Bundle)
 		super.setupRecyclerView()
 	}
 
-	private fun getChapters(): List<ChapterUI> = recyclerArray.filterIsInstance<ChapterUI>()
+	private fun getChapters(): List<ChapterUI> = chapterUIAdapter.itemList.items
 
 	override fun hideFAB(fab: FloatingActionButton) {
 		if (recyclerArray.isNotEmpty()) super.hideFAB(fab)
@@ -280,7 +283,19 @@ class NovelController(bundle: Bundle)
 		})
 		 */
 
-		viewModel.novelUILive().observe(this) { handleRecyclerUpdate(it) }
+		//viewModel.novelUILive().observe(this) { handleRecyclerUpdate(it) }
+		viewModel.novelLive.observe(this) { hResult ->
+			handleRecyclerUpdate(
+					novelUIAdapter,
+					{ showEmpty() },
+					{ hideEmpty() },
+					hResult.handleReturn { successResult(listOf(it)) }
+			)
+		}
+
+		viewModel.chaptersLive.observe(this) {
+			handleRecyclerUpdate(chapterUIAdapter, { showEmpty() }, { hideEmpty() }, it)
+		}
 		viewModel.formatterName.observe(this) { result: HResult<String> ->
 			result.handledReturnAny(
 					{ "Loading" }, { ("UNKNOWN") },
@@ -296,7 +311,6 @@ class NovelController(bundle: Bundle)
 			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
 	private fun selectedChapterArray(): Array<ChapterUI> = selectedChapters().toTypedArray()
-
 	private fun selectAll() {
 		fastAdapter.getSelectExtension().select()
 	}

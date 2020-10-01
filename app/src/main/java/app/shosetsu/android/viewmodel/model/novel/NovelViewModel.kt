@@ -66,10 +66,6 @@ class NovelViewModel(
 		private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
 ) : INovelViewModel() {
 	@get:Synchronized
-	@set:Synchronized
-	private var novelUI: NovelUI = NovelUI.instance()
-
-	@get:Synchronized
 	private val chapters = ArrayList<ChapterUI>()
 
 	/**
@@ -145,20 +141,9 @@ class NovelViewModel(
 			addChapterManageSource()
 		}
 
-	override fun novelUILive(): LiveData<HResult<List<AbstractItem<*>>>> =
-			_uiLive
-
+	@Deprecated("No longer needed")
 	private val _uiLive: MediatorLiveData<HResult<List<AbstractItem<*>>>> by lazy {
 		val v = MediatorLiveData<HResult<List<AbstractItem<*>>>>()
-		v.addSource(novelLive) { result ->
-			result.handle(onLoading = {
-				v.postValue(loading())
-			}, onError = { v.postValue(it) }) {
-				this.novelUI = it
-				if (!it.loaded) refresh()
-				uiHasNewData()
-			}
-		}
 		v.addSource(chaptersLive) { result ->
 			result.handle(onError = { v.postValue(it) }) {
 				chapters.clear()
@@ -199,7 +184,6 @@ class NovelViewModel(
 	private fun uiHasNewData() {
 		logV("uiHasNewData")
 		_uiLive.postValue(successResult(ArrayList<AbstractItem<*>>().apply {
-			add(novelUI)
 			addAll(chapters.handleFilters())
 		}))
 	}
@@ -242,7 +226,6 @@ class NovelViewModel(
 	}
 
 	override fun destroy() {
-		novelUI = NovelUI.instance()
 		chapters.clear()
 		chaptersManagement = ChaptersManagement()
 		launchIO {
@@ -334,7 +317,8 @@ class NovelViewModel(
 		}
 	}
 
-	override fun isBookmarked(): Boolean = novelUI?.bookmarked ?: false
+	override fun isBookmarked(): Boolean = novelLive.value?.handledReturnAny { it.bookmarked }
+			?: false
 
 	override fun markChapterAsRead(chapterUI: ChapterUI) {
 		launchIO {
