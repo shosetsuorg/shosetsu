@@ -52,7 +52,6 @@ class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI
 	}
 
 	override fun onViewCreated(view: View) {
-		updateUI(recyclerArray)
 	}
 
 	override fun setupRecyclerView() {
@@ -73,5 +72,6 @@ class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI
 			})
 			true
 		}
+		updateUI(recyclerArray)
 	}
 }
