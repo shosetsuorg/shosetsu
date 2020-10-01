@@ -74,10 +74,14 @@ class NovelController(bundle: Bundle)
 		setHasOptionsMenu(true)
 	}
 
+
+	/*
+	/** Fixes invalid adapter postion errors */
 	override fun createLayoutManager(): RecyclerView.LayoutManager =
 			object : LinearLayoutManager(context) {
 				override fun supportsPredictiveItemAnimations(): Boolean = false
 			}
+	*/
 
 	/** Refreshes the novel */
 	private fun refresh() {

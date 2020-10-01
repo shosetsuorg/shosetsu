@@ -3,7 +3,9 @@ package app.shosetsu.android.di
 import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
+import app.shosetsu.android.domain.usecases.get.GetChapterUIsUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
+import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
@@ -71,7 +73,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<LoadFormatterNameUseCase>() with provider { LoadFormatterNameUseCase(instance()) }
 
-	bind<LoadNovelUIUseCase>() with provider { LoadNovelUIUseCase(instance()) }
+	bind<GetNovelUIUseCase>() with provider { GetNovelUIUseCase(instance()) }
 
 	bind<LoadNovelUseCase>() with provider {
 		LoadNovelUseCase(instance(), instance(), instance(), instance())
@@ -81,7 +83,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 		LoadCatalogueListingDataUseCase(instance(), instance(), instance())
 	}
 
-	bind<LoadChapterUIsUseCase>() with provider { LoadChapterUIsUseCase(instance()) }
+	bind<GetChapterUIsUseCase>() with provider { GetChapterUIsUseCase(instance()) }
 
 	bind<UpdateChapterUseCase>() with provider { UpdateChapterUseCase(instance()) }
 

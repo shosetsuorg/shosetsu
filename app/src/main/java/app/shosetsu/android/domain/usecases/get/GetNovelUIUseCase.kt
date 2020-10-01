@@ -1,13 +1,14 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.domain.usecases.get
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.mapListTo
-import app.shosetsu.android.domain.repository.base.IChaptersRepository
-import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.android.common.dto.mapTo
+import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.view.uimodels.model.NovelUI
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -30,11 +31,14 @@ import app.shosetsu.android.view.uimodels.model.ChapterUI
  * shosetsu
  * 18 / 05 / 2020
  */
-class LoadChapterUIsUseCase(
-		private val chapters: IChaptersRepository,
-) : ((@kotlin.ParameterName("novelID") Int) -> LiveData<HResult<List<ChapterUI>>>) {
-	override fun invoke(novelID: Int): LiveData<HResult<List<ChapterUI>>> = liveData {
-		emit(loading())
-		emitSource(chapters.loadChapters(novelID).map { it.mapListTo() })
+class GetNovelUIUseCase(
+		private val novelsRepository: INovelsRepository,
+) : ((@ParameterName("novelID") Int) -> LiveData<HResult<NovelUI>>) {
+	override fun invoke(novelID: Int): LiveData<HResult<NovelUI>> {
+		return liveData(context = Dispatchers.IO) {
+			emit(loading())
+			if (novelID != -1)
+				emitSource(novelsRepository.loadNovelLive(novelID).map { it.mapTo() })
+		}
 	}
 }

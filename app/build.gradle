@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
-	kotlin_version = '1.4.0'
+	kotlin_version = '1.4.10'
 	kodein_version = "6.5.5"
 	conductor_version = '3.0.0-rc6'
 	conductor_version_support = "3.0.0-rc2"

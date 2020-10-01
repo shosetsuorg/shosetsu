@@ -7,14 +7,17 @@ import androidx.lifecycle.switchMap
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.liveDataIO
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.toggle
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
-import app.shosetsu.android.domain.usecases.load.LoadChapterUIsUseCase
+import app.shosetsu.android.domain.usecases.get.GetChapterUIsUseCase
+import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
 import app.shosetsu.android.domain.usecases.load.LoadFormatterNameUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUIUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
@@ -24,7 +27,6 @@ import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
-import com.mikepenz.fastadapter.items.AbstractItem
 
 /*
  * This file is part of shosetsu.
@@ -51,8 +53,8 @@ import com.mikepenz.fastadapter.items.AbstractItem
  */
 class NovelViewModel(
 		private val getFormatterNameUseCase: LoadFormatterNameUseCase,
-		private val getChapterUIsUseCase: LoadChapterUIsUseCase,
-		private val loadNovelUIUseCase: LoadNovelUIUseCase,
+		private val getChapterUIsUseCase: GetChapterUIsUseCase,
+		private val loadNovelUIUseCase: GetNovelUIUseCase,
 
 		private val updateNovelUseCase: UpdateNovelUseCase,
 		private val openInBrowserUseCase: OpenInBrowserUseCase,
@@ -66,7 +68,8 @@ class NovelViewModel(
 		private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
 ) : INovelViewModel() {
 	@get:Synchronized
-	private val chapters = ArrayList<ChapterUI>()
+	private val chapters: ArrayList<ChapterUI>
+		get() = chaptersLive.value?.handledReturnAny { ArrayList((it)) } ?: arrayListOf()
 
 	/**
 	 * This class manages how chapters are filtered, sorted, and displayed
@@ -111,57 +114,40 @@ class NovelViewModel(
 		fun toggleReverse() = this::reversedSort.toggle()
 	}
 
-	/** Adds sources for chapterManagment */
-	private fun addChapterManageSource(v: MediatorLiveData<HResult<List<AbstractItem<*>>>> = this._uiLive) {
-		v.addSource(chaptersManagement.showOnlyReadingStatusOfLive) {
-			uiHasNewData()
-		}
-		v.addSource(chaptersManagement.onlyDownloadedLive) {
-			uiHasNewData()
-		}
-		v.addSource(chaptersManagement.onlyBookmarkedLive) {
-			uiHasNewData()
-		}
-		v.addSource(chaptersManagement.sortTypeLive) {
-			uiHasNewData()
-		}
-		v.addSource(chaptersManagement.reversedSortLive) {
-			uiHasNewData()
-		}
-	}
-
-	private var chaptersManagement = ChaptersManagement()
-		set(value) {
-			_uiLive.removeSource(field.showOnlyReadingStatusOfLive)
-			_uiLive.removeSource(field.onlyDownloadedLive)
-			_uiLive.removeSource(field.onlyBookmarkedLive)
-			_uiLive.removeSource(field.sortTypeLive)
-			_uiLive.removeSource(field.reversedSortLive)
-			field = value
-			addChapterManageSource()
-		}
-
-	@Deprecated("No longer needed")
-	private val _uiLive: MediatorLiveData<HResult<List<AbstractItem<*>>>> by lazy {
-		val v = MediatorLiveData<HResult<List<AbstractItem<*>>>>()
-		v.addSource(chaptersLive) { result ->
-			result.handle(onError = { v.postValue(it) }) {
-				chapters.clear()
-				chapters.addAll(it)
-				uiHasNewData()
-			}
-		}
-		addChapterManageSource(v)
-		v
-	}
+	private val chaptersManagement = ChaptersManagement()
 
 	override val chaptersLive: LiveData<HResult<List<ChapterUI>>> by lazy {
 		novelIDLive.switchMap { id ->
 			liveDataIO {
-				emitSource(getChapterUIsUseCase(id))
+				emitSource(getChapterUIsUseCase(id).switchMap { list ->
+					MediatorLiveData<HResult<List<ChapterUI>>>().apply {
+						val update = {
+							postValue(list.handleReturn {
+								successResult(it.handleFilters())
+							})
+						}
+						addSource(chaptersManagement.onlyDownloadedLive) {
+							update()
+						}
+						addSource(chaptersManagement.onlyBookmarkedLive) {
+							update()
+						}
+						addSource(chaptersManagement.sortTypeLive) {
+							update()
+						}
+						addSource(chaptersManagement.reversedSortLive) {
+							update()
+						}
+						addSource(chaptersManagement.showOnlyReadingStatusOfLive) {
+							update()
+						}
+						update()
+					}
+				})
 			}
 		}
 	}
+
 	override val formatterName: LiveData<HResult<String>> by lazy {
 		novelIDLive.switchMap {
 			liveDataIO {
@@ -177,16 +163,9 @@ class NovelViewModel(
 			}
 		}
 	}
+
 	private val novelIDLive: MutableLiveData<Int> by lazy { MutableLiveData() }
 	private var novelIDValue = -1
-
-	/** Constructs the UI */
-	private fun uiHasNewData() {
-		logV("uiHasNewData")
-		_uiLive.postValue(successResult(ArrayList<AbstractItem<*>>().apply {
-			addAll(chapters.handleFilters())
-		}))
-	}
 
 	private fun List<ChapterUI>.handleFilters(): List<ChapterUI> {
 		var result: List<ChapterUI> = this
@@ -227,10 +206,15 @@ class NovelViewModel(
 
 	override fun destroy() {
 		chapters.clear()
-		chaptersManagement = ChaptersManagement()
+		chaptersManagement.apply {
+			showOnlyReadingStatusOf = null
+			onlyDownloaded = false
+			onlyBookmarked = false
+			sortType = ChapterSortType.SOURCE
+			reversedSort = false
+		}
 		launchIO {
 			novelIDLive.postValue(-1)
-			uiHasNewData()
 		}
 	}
 

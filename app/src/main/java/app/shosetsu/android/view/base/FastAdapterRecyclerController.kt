@@ -91,12 +91,10 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 
 	override fun updateUI(newList: List<ITEM>) {
 		if (newList.isEmpty()) showEmpty() else hideEmpty()
-		launchIO {
-			logV("Calculating result")
-			val result = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
-			logV("Result calculated, Dispatching on UI")
-			launchUI { FastAdapterDiffUtil[itemAdapter] = result }
-		}
+		logV("Calculating result")
+		val result = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
+		logV("Result calculated, Dispatching on UI")
+		FastAdapterDiffUtil[itemAdapter] = result
 	}
 
 	fun <T : GenericItem> updateUI(
@@ -106,12 +104,10 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 			newList: List<T>
 	) {
 		if (newList.isEmpty()) showEmpty() else hideEmpty()
-		launchIO {
-			logV("Calculating result")
-			val result = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
-			logV("Result calculated, Dispatching on UI")
-			launchUI { FastAdapterDiffUtil[itemAdapter] = result }
-		}
+		logV("Calculating result")
+		val result = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
+		logV("Result calculated, Dispatching on UI")
+		FastAdapterDiffUtil[itemAdapter] = result
 	}
 
 	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =
