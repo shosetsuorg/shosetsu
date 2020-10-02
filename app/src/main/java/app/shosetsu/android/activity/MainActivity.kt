@@ -365,6 +365,16 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			to.showFAB(fab)
 		}
 
+		if (from is ExtendedFABController) {
+			from.hideFAB(efab)
+			from.resetFAB(efab)
+		}
+
+		if (to is ExtendedFABController) {
+			to.manipulateFAB(efab)
+			to.showFAB(efab)
+		}
+
 		if (to is PushCapableController) to.acceptPushing { transitionView(it) }
 
 		if (from is TabbedController) {

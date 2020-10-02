@@ -118,17 +118,17 @@ class NovelController(bundle: Bundle)
 	private fun getChapters(): List<ChapterUI> = chapterUIAdapter.itemList.items
 
 	override fun hideFAB(fab: FloatingActionButton) {
-		if (recyclerArray.isNotEmpty()) super.hideFAB(fab)
+		if (getChapters().isNotEmpty()) super.hideFAB(fab)
 	}
 
 	override fun showFAB(fab: FloatingActionButton) {
-		if (recyclerArray.isNotEmpty()) super.showFAB(fab)
+		if (getChapters().isNotEmpty()) super.showFAB(fab)
 	}
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
 		resume = fab
 		fab.setOnClickListener {
-			viewModel.openLastRead(recyclerArray.filterIsInstance<ChapterUI>()).observe(this, { result ->
+			viewModel.openLastRead(getChapters()).observe(this, { result ->
 				when (result) {
 					is HResult.Error -> {
 						Log.e(logID(), "Loading last read hit an error")
