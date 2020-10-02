@@ -7,7 +7,6 @@ import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
-import com.mikepenz.fastadapter.items.AbstractItem
 import javax.security.auth.Destroyable
 
 /*
@@ -63,7 +62,6 @@ abstract class INovelViewModel
 	abstract fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>>
 
 	abstract fun markAllChaptersAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus)
-
 	/**
 	 * Opens the chapter in webview
 	 */
@@ -87,6 +85,10 @@ abstract class INovelViewModel
 	abstract fun markChapterAsUnread(chapterUI: ChapterUI)
 	abstract fun markChapterAsReading(chapterUI: ChapterUI)
 	abstract fun toggleChapterBookmark(chapterUI: ChapterUI)
+
+	abstract fun removeChapterBookmarks(vararg chapterUI: ChapterUI)
+	abstract fun bookmarkChapters(vararg chapterUI: ChapterUI)
+
 
 	abstract fun downloadNextChapter()
 	abstract fun downloadNext5Chapters()

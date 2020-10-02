@@ -16,14 +16,15 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="bottom"
             app:contentInsetEnd="8dp"
             app:contentInsetStart="8dp">
 
             <androidx.appcompat.widget.ActionMenuView
                 android:id="@+id/bottom_action_menu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

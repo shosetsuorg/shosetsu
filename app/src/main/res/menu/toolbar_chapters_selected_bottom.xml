@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/chapter_download_selected"
+        android:icon="@drawable/download"
+        android:title="@string/download_selected"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/chapter_delete_selected"
+        android:icon="@drawable/trash"
+        android:title="@string/delete_selected"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/mark_read"
+        android:icon="@drawable/read_mark"
+        android:title="@string/mark_read"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/mark_unread"
+        android:icon="@drawable/unread_mark"
+        android:title="@string/mark_unread"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/bookmark"
+        android:icon="@drawable/empty_bookmark"
+        android:title="@string/bookmark"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/remove_bookmark"
+        android:icon="@drawable/filled_bookmark"
+        android:title="@string/remove_bookmark"
+        app:showAsAction="always" />
+</menu>

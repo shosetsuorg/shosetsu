@@ -2,14 +2,18 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="windowActionModeOverlay">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.Main" parent="AppTheme">
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/black_trans</item>
         <item name="appBarLayoutStyle">@style/AppTheme.Widget.AppBarLayout</item>
     </style>
 
-    <style name="ChipStyle" parent="AppTheme"></style>
+    <style name="ChipStyle" parent="AppTheme.Main"></style>
 
     <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog" />
 </resources>

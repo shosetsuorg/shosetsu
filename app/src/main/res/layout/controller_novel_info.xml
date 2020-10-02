@@ -22,9 +22,10 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <app.shosetsu.android.view.widget.BottomActionBar
-        android:id="@+id/bottom_action_bar"
+        android:id="@+id/bottom_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:layout_dodgeInsetEdges="bottom" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

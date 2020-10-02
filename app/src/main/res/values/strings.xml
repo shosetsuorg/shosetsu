@@ -312,6 +312,8 @@
     <string name="about">About</string>
     <string name="check_for_app_update">Check for app update</string>
     <string name="source_licenses">Source Licenses</string>
+    <string name="inverse_selection">Inverse Selection</string>
+    <string name="remove_bookmark">Remove Bookmark</string>
 
 
     <array name="application_themes">

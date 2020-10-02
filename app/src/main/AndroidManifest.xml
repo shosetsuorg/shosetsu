@@ -61,15 +61,15 @@
 
         <activity
             android:name="app.shosetsu.android.activity.MainActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.Main" />
 
         <activity
             android:name="app.shosetsu.android.ui.webView.WebViewApp"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.Main" />
 
         <activity
             android:name="app.shosetsu.android.ui.reader.ChapterReader"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.Main" />
 
         <activity
             android:name="app.shosetsu.android.ui.intro.IntroductionActivity"

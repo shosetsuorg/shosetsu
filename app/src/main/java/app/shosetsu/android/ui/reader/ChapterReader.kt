@@ -240,8 +240,8 @@ class ChapterReader
 	private fun setBookmarkIcon(readerChapterUI: ReaderChapterUI) {
 		bookmark.setImageResource(
 				if (readerChapterUI.bookmarked)
-					R.drawable.ic_bookmark_24dp
-				else R.drawable.ic_bookmark_border_24dp
+					R.drawable.filled_bookmark
+				else R.drawable.empty_bookmark
 		)
 	}
 

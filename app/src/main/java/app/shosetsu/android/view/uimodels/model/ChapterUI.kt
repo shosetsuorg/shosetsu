@@ -2,7 +2,6 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.content.res.ColorStateList
 import android.view.View
-import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.ReadingStatus
@@ -77,23 +76,15 @@ data class ChapterUI(
 	class ViewHolder(itemView: View) : BindViewHolder<ChapterUI, RecyclerNovelChapterBinding>(itemView) {
 		override val binding = RecyclerNovelChapterBinding.bind(view)
 
-		var popupMenu: PopupMenu? = null
 
 		private var oldColors: ColorStateList? = null
 
-		init {
-			if (popupMenu == null) {
-				popupMenu = PopupMenu(binding.moreOptions.context, binding.moreOptions)
-				popupMenu!!.inflate(R.menu.popup_chapter_menu)
-			}
-		}
 
 		private fun setAlpha(float: Float) {
 			binding.title.alpha = float
 			binding.readProgressValue.alpha = float
 			binding.readTag.alpha = float
 			binding.downloadTag.alpha = float
-			binding.moreOptions.imageAlpha = (255 * float).toInt()
 		}
 
 		override fun RecyclerNovelChapterBinding.bindView(item: ChapterUI, payloads: List<Any>) {
@@ -112,17 +103,6 @@ data class ChapterUI(
 						itemView.context,
 						R.color.bookmarked
 				))
-			}
-
-			if (item.isSaved) {
-				//Log.d(logID(), "Chapter is downloaded")
-				popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download)
-						.title = "Delete"
-
-			} else {
-				//Log.d(logID(), "Chapter is!downloaded")
-				popupMenu!!.menu.findItem(R.id.popup_chapter_menu_download)
-						.title = "Download"
 			}
 
 			downloadTag.visibility = if (item.isSaved) View.VISIBLE else View.INVISIBLE
@@ -146,7 +126,6 @@ data class ChapterUI(
 				}
 			}
 
-			moreOptions.setOnClickListener { popupMenu?.show() }
 		}
 
 		override fun RecyclerNovelChapterBinding.unbindView(item: ChapterUI) {
@@ -155,7 +134,6 @@ data class ChapterUI(
 			readProgressValue.text = null
 			readTag.visibility = View.GONE
 			downloadTag.visibility = View.GONE
-			moreOptions.setOnClickListener(null)
 		}
 	}
 }

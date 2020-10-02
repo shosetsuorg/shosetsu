@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
-import app.shosetsu.android.ui.novel.adapters.NovelMultiAdapter
 import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.ChapterUI
@@ -23,11 +21,13 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBindin
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
+import com.mikepenz.fastadapter.utils.AdapterPredicate
 
 /*
  * This file is part of Shosetsu.
@@ -54,8 +54,6 @@ import com.mikepenz.fastadapter.select.selectExtension
  */
 class NovelController(bundle: Bundle)
 	: FastAdapterRecyclerController<ControllerNovelInfoBinding, AbstractItem<*>>(bundle), FABController {
-
-
 	val viewModel: INovelViewModel by viewModel()
 	override val viewTitle: String
 		get() = ""
@@ -64,16 +62,103 @@ class NovelController(bundle: Bundle)
 	private val novelUIAdapter by lazy { ItemAdapter<NovelUI>() }
 	private val chapterUIAdapter by lazy { ItemAdapter<ChapterUI>() }
 	override val fastAdapter: FastAdapter<AbstractItem<*>> by lazy {
-		val a = NovelMultiAdapter(viewModel)
-		a.addAdapter(0, novelUIAdapter as ItemAdapter<AbstractItem<*>>)
-		a.addAdapter(1, chapterUIAdapter as ItemAdapter<AbstractItem<*>>)
-		a
+		FastAdapter<AbstractItem<*>>().apply {
+			addAdapter(0, novelUIAdapter as ItemAdapter<AbstractItem<*>>)
+			addAdapter(1, chapterUIAdapter as ItemAdapter<AbstractItem<*>>)
+		}
 	}
+
+	private var actionMode: ActionMode? = null
 
 	init {
 		setHasOptionsMenu(true)
 	}
 
+	private fun startSelectionAction(): Boolean {
+		if (actionMode != null) return false
+		hideFAB(resume!!)
+		actionMode = activity?.startActionMode(SelectionActionMode())
+		return true
+	}
+
+	private fun finishSelectionAction() {
+		actionMode?.finish()
+		//	recyclerView.postDelayed(400) { (activity as MainActivity?)?.supportActionBar?.show() }
+	}
+
+	private inner class SelectionActionMode : ActionMode.Callback {
+		override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+			// Hides the original action bar
+			// (activity as MainActivity?)?.supportActionBar?.hide()
+
+			mode.menuInflater.inflate(R.menu.toolbar_chapters_selected, menu)
+			mode.setTitle(R.string.selection)
+			binding.bottomMenu.show(mode, R.menu.toolbar_chapters_selected_bottom) {
+				when (it.itemId) {
+					R.id.chapter_download_selected -> {
+						downloadSelected()
+						finishSelectionAction()
+						true
+					}
+					R.id.chapter_delete_selected -> {
+						deleteSelected()
+						finishSelectionAction()
+						true
+					}
+					R.id.mark_read -> {
+						markSelectedAs(ReadingStatus.READ)
+						finishSelectionAction()
+						true
+					}
+					R.id.mark_unread -> {
+						markSelectedAs(ReadingStatus.UNREAD)
+						finishSelectionAction()
+						true
+					}
+					R.id.bookmark -> {
+						bookmarkSelected()
+						finishSelectionAction()
+						true
+					}
+					R.id.remove_bookmark -> {
+						removeSelectedBookmark()
+						finishSelectionAction()
+						true
+					}
+					else -> false
+				}
+			}
+			calculateBottomSelectionMenuChanges()
+			return true
+		}
+
+		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = false
+
+		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
+				when (item.itemId) {
+					R.id.chapter_select_all -> {
+						selectAll()
+						true
+					}
+					R.id.chapter_select_between -> {
+						selectBetween()
+						true
+					}
+					R.id.chapter_inverse -> {
+						invertSelection()
+						true
+					}
+					else -> false
+				}
+
+		override fun onDestroyActionMode(mode: ActionMode) {
+			binding.bottomMenu.hide()
+			binding.bottomMenu.clear()
+			actionMode = null
+			showFAB(resume!!)
+			fastAdapter.getSelectExtension().deselect()
+		}
+	}
 
 	/*
 	/** Fixes invalid adapter postion errors */
@@ -122,7 +207,7 @@ class NovelController(bundle: Bundle)
 	}
 
 	override fun showFAB(fab: FloatingActionButton) {
-		if (getChapters().isNotEmpty()) super.showFAB(fab)
+		if (getChapters().isNotEmpty() && actionMode == null) super.showFAB(fab)
 	}
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
@@ -214,6 +299,37 @@ class NovelController(bundle: Bundle)
 		}
 	}
 
+	private fun calculateBottomSelectionMenuChanges() {
+		val chaptersSelected =
+				fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
+
+		// If any are not bookmarked, show bookmark option
+		if (chaptersSelected.any { !it.bookmarked }) {
+			binding.bottomMenu.findItem(R.id.bookmark)?.isVisible = false
+			binding.bottomMenu.findItem(R.id.remove_bookmark)?.isVisible = true
+		} else {
+			binding.bottomMenu.findItem(R.id.bookmark)?.isVisible = true
+			binding.bottomMenu.findItem(R.id.remove_bookmark)?.isVisible = false
+		}
+
+		// If any are downloaded, show delete
+		binding.bottomMenu.findItem(R.id.chapter_delete_selected)?.isVisible =
+				chaptersSelected.any { it.isSaved }
+
+		// If any are not downloaded, show download option
+		binding.bottomMenu.findItem(R.id.chapter_download_selected)?.isVisible =
+				chaptersSelected.any { !it.isSaved }
+
+		// If any are unread, show read option
+		if (chaptersSelected.any { it.readingStatus == ReadingStatus.UNREAD }) {
+			binding.bottomMenu.findItem(R.id.mark_unread)?.isVisible = false
+			binding.bottomMenu.findItem(R.id.mark_read)?.isVisible = true
+		} else {
+			binding.bottomMenu.findItem(R.id.mark_unread)?.isVisible = true
+			binding.bottomMenu.findItem(R.id.mark_read)?.isVisible = false
+		}
+	}
+
 	override fun setupFastAdapter() {
 		fastAdapter.selectExtension {
 			isSelectable = true
@@ -223,22 +339,27 @@ class NovelController(bundle: Bundle)
 				// Recreates the item view
 				fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
 
+				// Updates action mode
+				calculateBottomSelectionMenuChanges()
+
 				// Swaps the options menu on top
 				val size = selectedItems.size
-				if (size == 0 || size == 1) activity?.invalidateOptionsMenu()
+				if (size == 1) startSelectionAction() else if (size == 0) finishSelectionAction()
 			}
 		}
 		fastAdapter.setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
 			// Handles one click select when in selection mode
 			fastAdapter.selectExtension {
 				if (selectedItems.isNotEmpty()) {
-					if (!item.isSelected)
+					logV("Is item selected? ${item.isSelected}")
+					if (!item.isSelected) {
 						select(
 								item = item,
 								considerSelectableFlag = true
 						)
-					else
+					} else {
 						deselect(position)
+					}
 					return@FastAdapterClick true
 				}
 			}
@@ -270,6 +391,7 @@ class NovelController(bundle: Bundle)
 
 	override fun onDestroy() {
 		viewModel.destroy()
+		actionMode?.finish()
 		super.onDestroy()
 	}
 
@@ -315,12 +437,45 @@ class NovelController(bundle: Bundle)
 			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
 	private fun selectedChapterArray(): Array<ChapterUI> = selectedChapters().toTypedArray()
+
+	private fun bookmarkSelected() {
+		viewModel.bookmarkChapters(*selectedChapterArray())
+	}
+
+	private fun removeSelectedBookmark() {
+		viewModel.removeChapterBookmarks(*selectedChapterArray())
+	}
+
 	private fun selectAll() {
-		fastAdapter.getSelectExtension().select()
+		fastAdapter.getSelectExtension().select(true)
+	}
+
+	private fun invertSelection() {
+		fastAdapter.recursive(object : AdapterPredicate<AbstractItem<*>> {
+			override fun apply(
+					lastParentAdapter: IAdapter<AbstractItem<*>>,
+					lastParentPosition: Int,
+					item: AbstractItem<*>,
+					position: Int
+			): Boolean {
+				if (item.isSelected) {
+					fastAdapter.getSelectExtension().deselect(item)
+				} else {
+					fastAdapter.getSelectExtension().select(
+							adapter = lastParentAdapter,
+							item = item,
+							position = RecyclerView.NO_POSITION,
+							fireEvent = false,
+							considerSelectableFlag = true
+					)
+				}
+				return false
+			}
+		}, false)
+		fastAdapter.notifyDataSetChanged()
 	}
 
 	private fun downloadSelected() {
-
 		viewModel.downloadChapter(*selectedChapterArray())
 	}
 
@@ -340,35 +495,33 @@ class NovelController(bundle: Bundle)
 	}
 
 	private fun selectBetween() {
-		launchIO {
-			fastAdapter.selectExtension {
-				val selectedItems = selectedChapters().sortedBy { it.order }
-				val adapterList = itemAdapter.adapterItems.filterIsInstance<ChapterUI>()
-				if (adapterList.isEmpty()) {
-					launchUI { toast(R.string.chapter_select_between_error_empty_adapter) }
-					return@launchIO
-				}
-
-				val first = adapterList.indexOfFirst { it.id == selectedItems.first().id }
-				val last = adapterList.indexOfFirst { it.id == selectedItems.last().id }
-
-				if (first == -1) return@launchIO
-				if (last == -1) return@launchIO
-
-				val smallest: Int
-				val largest: Int
-				when {
-					first > last -> {
-						largest = first
-						smallest = last
-					}
-					else -> {
-						smallest = first
-						largest = last
-					}
-				}
-				adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }.let { launchUI { select(it) } }
+		fastAdapter.selectExtension {
+			val selectedItems = selectedChapters().sortedBy { it.order }
+			val adapterList = chapterUIAdapter.adapterItems
+			if (adapterList.isEmpty()) {
+				launchUI { toast(R.string.chapter_select_between_error_empty_adapter) }
+				return
 			}
+
+			val first = adapterList.indexOfFirst { it.id == selectedItems.first().id }
+			val last = adapterList.indexOfFirst { it.id == selectedItems.last().id }
+
+			if (first == -1) return
+			if (last == -1) return
+
+			val smallest: Int
+			val largest: Int
+			when {
+				first > last -> {
+					largest = first
+					smallest = last
+				}
+				else -> {
+					smallest = first
+					largest = last
+				}
+			}
+			adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }.let { launchUI { select(it) } }
 		}
 	}
 
