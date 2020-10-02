@@ -1,7 +1,9 @@
 {
-  "latestVersion": "980",
+  "latestVersion": "983",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Fixed FAB not appearing"
+    "- NovelController.kt now has selection mechanic",
+    "- Some bugs fixed",
+    "- Themes merged some properties"
   ]
 }
