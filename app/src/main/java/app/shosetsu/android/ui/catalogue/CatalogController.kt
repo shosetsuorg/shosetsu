@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -19,17 +18,20 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.ui.catalogue.listeners.CatalogueHitBottom
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
+import app.shosetsu.android.view.uimodels.model.ProgressItem
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
 import com.google.android.material.navigation.NavigationView
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 import org.kodein.di.generic.instance
 
 /*
@@ -71,7 +73,16 @@ class CatalogController(
 	/***/
 	val viewModel: ICatalogViewModel by viewModel()
 	private val settings by instance<ShosetsuSettings>()
+	private val progressAdapter by lazy { ItemAdapter<ProgressItem>() }
 
+
+	override val fastAdapter: FastAdapter<ACatalogNovelUI> by lazy {
+		FastAdapter<ACatalogNovelUI>().apply {
+			addAdapter(0, itemAdapter)
+			@Suppress("UNCHECKED_CAST")
+			addAdapter(1, progressAdapter as ItemAdapter<ACatalogNovelUI>)
+		}
+	}
 
 	init {
 		setHasOptionsMenu(true)
@@ -129,7 +140,15 @@ class CatalogController(
 
 	override fun setupRecyclerView() {
 		recyclerView.setHasFixedSize(false)
-		recyclerView.addOnScrollListener(CatalogueHitBottom(viewModel))
+		//recyclerView.addOnScrollListener(CatalogueHitBottom(viewModel))
+		recyclerView.addOnScrollListener(object : EndlessRecyclerOnScrollListener(progressAdapter) {
+			override fun onLoadMore(currentPage: Int) {
+				progressAdapter.clear()
+				progressAdapter.add(ProgressItem())
+
+				viewModel.loadMore()
+			}
+		})
 		super.setupRecyclerView()
 	}
 
