@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/catalogues_search"
-        android:icon="@drawable/ic_search_24dp"
+        android:icon="@drawable/search"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always" />
@@ -11,5 +11,5 @@
         app:showAsAction="ifRoom"
         android:id="@+id/refresh"
         android:title="@string/update_list"
-        android:icon="@drawable/ic_refresh" />
+        android:icon="@drawable/refresh" />
 </menu>

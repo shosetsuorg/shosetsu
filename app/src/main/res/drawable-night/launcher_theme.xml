@@ -2,6 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@android:color/black" />
     <item
-        android:drawable="@drawable/shosetsu_name_symbol"
+        android:drawable="@drawable/shou_icon"
         android:gravity="center" />
 </layer-list>

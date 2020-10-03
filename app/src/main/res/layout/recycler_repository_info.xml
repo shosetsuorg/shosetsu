@@ -61,7 +61,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_close_24dp" />
+            android:src="@drawable/close" />
 
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

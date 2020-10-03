@@ -18,9 +18,6 @@ package app.shosetsu.android.ui.downloads
  */
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.downloads.adapters.DownloadAdapter
 import app.shosetsu.android.view.base.FABController
@@ -63,7 +60,7 @@ class DownloadsController : BasicFastAdapterRecyclerController<DownloadUI>(),
 		viewModel.isDownloadPaused.observe(this) {
 			fab?.setImageResource(
 					if (it)
-						R.drawable.ic_play_arrow_24dp
+						R.drawable.play_arrow
 					else R.drawable.ic_pause_circle_outline_24dp
 			)
 		}

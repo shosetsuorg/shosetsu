@@ -58,6 +58,6 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_more_vert_24dp" />
+        app:srcCompat="@drawable/more_vert" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

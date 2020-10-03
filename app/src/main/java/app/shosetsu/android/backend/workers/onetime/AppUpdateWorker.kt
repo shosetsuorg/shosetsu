@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
@@ -22,7 +21,6 @@ import app.shosetsu.android.common.dto.handledReturnAny
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -68,7 +66,7 @@ class AppUpdateWorker(
 			Notification.Builder(appContext)
 		}
 				.setContentTitle(applicationContext.getString(R.string.app_update_check))
-				.setSmallIcon(R.drawable.ic_system_update_alt_24dp)
+				.setSmallIcon(R.drawable.app_update)
 				.setOnlyAlertOnce(true)
 	}
 

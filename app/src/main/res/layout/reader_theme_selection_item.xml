@@ -28,13 +28,13 @@
 			android:textStyle="bold" />
 
 		<ImageButton
-			android:id="@+id/removeButton"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_margin="8dp"
-			android:background="@android:color/transparent"
-			android:contentDescription="Remove this color"
-			android:src="@drawable/ic_close_24dp" />
+            android:id="@+id/removeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Remove this color"
+            android:src="@drawable/close" />
 	</LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

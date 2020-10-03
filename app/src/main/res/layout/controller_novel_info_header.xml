@@ -199,7 +199,7 @@
             android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/open_in_webview"
-            android:src="@drawable/ic_baseline_open_in_browser_24" />
+            android:src="@drawable/open_in_browser" />
     </LinearLayout>
 
     <com.google.android.material.chip.ChipGroup
@@ -254,7 +254,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:text="@string/filter"
-            app:chipIcon="@drawable/ic_filter_list_24dp" />
+            app:chipIcon="@drawable/filter" />
 
     </RelativeLayout>
 

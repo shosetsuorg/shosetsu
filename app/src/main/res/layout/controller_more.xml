@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_launcher_foreground_thick" />
+        android:src="@drawable/shou_icon_thick" />
 
     <View
         android:layout_width="match_parent"

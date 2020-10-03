@@ -50,7 +50,7 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close_24dp" />
+            app:srcCompat="@drawable/close" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint"

@@ -20,7 +20,7 @@
             android:layout_alignParentStart="true"
             android:contentDescription="@string/todo"
             app:layout_constraintDimensionRatio="1:1"
-            app:srcCompat="@drawable/ic_close_24dp" />
+            app:srcCompat="@drawable/close" />
 
         <TextView
             android:id="@+id/title"

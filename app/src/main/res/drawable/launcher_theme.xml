@@ -4,6 +4,6 @@
     <item android:drawable="@color/colorPrimary" />
 
     <item
-        android:drawable="@drawable/shosetsu_name_symbol"
+        android:drawable="@drawable/shou_icon"
         android:gravity="center" />
 </layer-list>

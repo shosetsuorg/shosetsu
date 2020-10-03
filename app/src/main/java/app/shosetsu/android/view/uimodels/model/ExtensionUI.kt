@@ -89,7 +89,7 @@ data class ExtensionUI(
 				when (item.updateState()) {
 					State.UPDATE -> {
 						button.isVisible = true
-						button.setImageResource(R.drawable.ic_file_update)
+						button.setImageResource(R.drawable.download_tinted)
 						button.rotation = 180f
 
 						updateVersion.visibility = View.VISIBLE

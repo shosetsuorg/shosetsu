@@ -232,7 +232,7 @@ class NovelController(bundle: Bundle)
 				}
 			})
 		}
-		fab.setImageResource(R.drawable.ic_play_arrow_24dp)
+		fab.setImageResource(R.drawable.play_arrow)
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerNovelInfoBinding = inflate(inflater).also {

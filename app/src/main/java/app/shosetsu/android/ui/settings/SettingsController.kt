@@ -37,11 +37,11 @@ class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI
 	lateinit var pushController: (Controller) -> Unit
 	override var recyclerArray: ArrayList<SettingsCategoryUI>
 		get() = arrayListOf(
-				SettingsCategoryUI(VIEW, R.string.view, R.drawable.ic_view_module),
-				SettingsCategoryUI(READER, R.string.reader, R.drawable.ic_book_24dp),
+				SettingsCategoryUI(VIEW, R.string.view, R.drawable.view_module),
+				SettingsCategoryUI(READER, R.string.reader, R.drawable.book),
 				SettingsCategoryUI(DOWNLOAD, R.string.download, R.drawable.download),
-				SettingsCategoryUI(UPDATE, R.string.update, R.drawable.ic_update_24dp),
-				SettingsCategoryUI(BACKUP, R.string.backup, R.drawable.ic_system_update_alt_24dp),
+				SettingsCategoryUI(UPDATE, R.string.update, R.drawable.update),
+				SettingsCategoryUI(BACKUP, R.string.backup, R.drawable.app_update),
 				SettingsCategoryUI(ADVANCED, R.string.advanced, R.drawable.settings),
 		)
 		set(_) {}

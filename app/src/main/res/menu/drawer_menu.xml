@@ -6,16 +6,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_library"
-            android:icon="@drawable/ic_collections_bookmark"
+            android:icon="@drawable/library"
             android:title="@string/my_library" />
         <item
             android:id="@+id/nav_updates"
-            android:icon="@drawable/ic_system_update_alt_24dp"
+            android:icon="@drawable/app_update"
             android:title="@string/library_updates" />
 
         <item
             android:id="@+id/nav_browse"
-            android:icon="@drawable/ic_baseline_navigation_24"
+            android:icon="@drawable/navigation_arrow"
             android:title="@string/browse" />
 
         <item

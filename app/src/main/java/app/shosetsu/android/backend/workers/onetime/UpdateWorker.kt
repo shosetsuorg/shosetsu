@@ -83,28 +83,28 @@ class UpdateWorker(
 					if (it is HResult.Success)
 						it.data
 					else UpdateOnMeteredConnection.default
-				};
+				}
 
 		private suspend fun updateOnLowStorage(): Boolean =
 				iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
 					if (it is HResult.Success)
 						it.data
 					else UpdateOnLowStorage.default
-				};
+				}
 
 		private suspend fun updateOnLowBattery(): Boolean =
 				iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
 					if (it is HResult.Success)
 						it.data
 					else UpdateOnLowBattery.default
-				};
+				}
 
 		private suspend fun updateOnlyIdle(): Boolean =
 				iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
 					if (it is HResult.Success)
 						it.data
 					else UpdateOnlyWhenIdle.default
-				};
+				}
 
 		/**
 		 * Returns the status of the service.
@@ -164,7 +164,7 @@ class UpdateWorker(
 			@Suppress("DEPRECATION")
 			Notification.Builder(appContext)
 		}
-				.setSmallIcon(R.drawable.ic_refresh)
+				.setSmallIcon(R.drawable.refresh)
 				.setContentText("Update in progress")
 				.setOnlyAlertOnce(true)
 	}

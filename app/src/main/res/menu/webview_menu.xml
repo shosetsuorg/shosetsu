@@ -3,10 +3,10 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/open_browser"
-		android:checkable="false"
-		android:icon="@drawable/ic_baseline_open_in_browser_24"
-		android:title="Item"
-		android:visible="true"
-		app:showAsAction="always" />
+        android:id="@+id/open_browser"
+        android:checkable="false"
+        android:icon="@drawable/open_in_browser"
+        android:title="Item"
+        android:visible="true"
+        app:showAsAction="always" />
 </menu>

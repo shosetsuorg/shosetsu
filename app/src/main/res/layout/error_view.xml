@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_error_outline_24dp" />
+            app:srcCompat="@drawable/error_outline" />
 
         <ScrollView
             android:layout_width="match_parent"
