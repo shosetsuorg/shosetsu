@@ -21,9 +21,11 @@ import android.view.View
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.base.CollapsedToolBarController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.decoration.StickyHeaderDecor
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
+import org.joda.time.DateTime
 
 /**
  * shosetsu
@@ -40,6 +42,7 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(), Collap
 	override fun setupRecyclerView() {
 		super.setupRecyclerView()
 		recyclerView.setPadding(0, 0, 0, 8)
+		recyclerView.addItemDecoration(StickyHeaderDecor(recyclerView.context, UpdateCallback()))
 	}
 
 	override fun setupFastAdapter() {
@@ -64,5 +67,32 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(), Collap
 	override fun showEmpty() {
 		super.showEmpty()
 		binding.emptyDataView.show("No updates yet! Maybe check again?")
+	}
+
+	private inner class UpdateCallback : StickyHeaderDecor.SectionCallback {
+		override fun isSection(pos: Int): Boolean {
+			if (pos == 0) return true
+			fastAdapter.getItem(pos)?.let { currentItem ->
+				fastAdapter.getItem(pos - 1)?.let { previousItem ->
+					val currentDate = DateTime(currentItem.time).trimDate()
+					val previousDate = DateTime(previousItem.time).trimDate()
+					return currentDate.plusDays(1) == previousDate
+				}
+			}
+			return false
+		}
+
+		override fun getSectionHeaderName(pos: Int): String {
+			fastAdapter.getItem(pos)?.let {
+				return when (val dateTime = DateTime(it.time).trimDate()) {
+					DateTime(System.currentTimeMillis()).trimDate() ->
+						context!!.getString(R.string.today)
+					DateTime(System.currentTimeMillis()).trimDate().minusDays(1) ->
+						context!!.getString(R.string.yesterday)
+					else -> "${dateTime.dayOfMonth}/${dateTime.monthOfYear}/${dateTime.year}"
+				}
+			}
+			return "No Bogga"
+		}
 	}
 }

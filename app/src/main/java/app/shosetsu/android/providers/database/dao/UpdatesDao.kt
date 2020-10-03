@@ -127,6 +127,13 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 								imageURL
 							FROM novels WHERE id = updates.novelID
 						) AS novelImageURL
-					FROM updates""")
+					FROM updates 
+					WHERE 
+						(
+							SELECT 
+								bookmarked 
+							FROM novels WHERE id = updates.novelID
+						) = 1
+				""")
 	fun loadCompleteUpdates(): LiveData<List<UpdateCompleteEntity>>
 }

@@ -7,5 +7,5 @@
 
     <dimen name="sub_text_size">12sp</dimen>
 
-
+    <dimen name="header_height">35dp</dimen>
 </resources>
