@@ -80,7 +80,7 @@ data class ChapterUI(
 		private var oldColors: ColorStateList? = null
 
 
-		private fun setAlpha(float: Float) {
+		private fun setAlpha(float: Float = 1f) {
 			binding.title.alpha = float
 			binding.readProgressValue.alpha = float
 			binding.readTag.alpha = float
@@ -109,16 +109,16 @@ data class ChapterUI(
 
 			when (item.readingStatus) {
 				ReadingStatus.READING -> {
-					setAlpha(1f)
-					readTag.visibility = View.VISIBLE
-					readProgressValue.visibility = View.VISIBLE
-
-					if (item.readingPosition != 0)
+					setAlpha()
+					if (item.readingPosition != 0) {
+						readTag.visibility = View.VISIBLE
+						readProgressValue.visibility = View.VISIBLE
 						readProgressValue.text = item.readingPosition.toString()
+					}
 				}
-				ReadingStatus.UNREAD -> setAlpha(1f)
+				ReadingStatus.UNREAD -> setAlpha()
 				ReadingStatus.READ -> {
-					setAlpha(0.5F)
+					setAlpha(0.5F) // Opacity to move attention away
 					readTag.visibility = View.GONE
 					readProgressValue.visibility = View.GONE
 				}

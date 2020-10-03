@@ -229,6 +229,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/chapter_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/novel_description"
@@ -254,6 +255,13 @@
             android:layout_alignParentEnd="true"
             android:text="@string/filter"
             app:chipIcon="@drawable/ic_filter_list_24dp" />
+
     </RelativeLayout>
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/chapter_control"
+        android:background="?android:attr/listDivider" />
 </RelativeLayout>
