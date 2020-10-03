@@ -1,9 +1,11 @@
 {
-  "latestVersion": "983",
+  "latestVersion": "985",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- NovelController.kt now has selection mechanic",
-    "- Some bugs fixed",
-    "- Themes merged some properties"
+    "- added basic scrollbars to chapter list and reader (cosmetic)",
+    "- fixed inconsistent sizes for chapters.",
+    "- ChapterUI.kt doesn't show hanging "
+    Position
+    ""
   ]
 }
