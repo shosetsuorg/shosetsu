@@ -56,6 +56,9 @@ class AboutController : ViewedController<ControllerAboutBinding>(), PushCapableC
 			discord.setOnClickListener {
 				viewModel.openDiscord()
 			}
+			patreon.setOnClickListener {
+				viewModel.openPatreon()
+			}
 			sourceLicenses.setOnClickListener {
 				onClickLicense()
 			}

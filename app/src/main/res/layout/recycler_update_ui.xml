@@ -28,7 +28,7 @@
                 android:layout_alignParentTop="true"
                 android:contentDescription="@string/todo"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/ic_broken_image_24dp" />
+                app:srcCompat="@drawable/broken_image" />
 
             <TextView
                 android:id="@+id/title"

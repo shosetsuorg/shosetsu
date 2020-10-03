@@ -3,12 +3,11 @@ package app.shosetsu.android.view.uimodels.model
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import app.shosetsu.android.common.enums.SettingCategory
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerSettingsCardBinding
-
-import app.shosetsu.android.common.enums.SettingCategory
 
 /*
  * This file is part of Shosetsu.
@@ -59,7 +58,7 @@ data class SettingsCategoryUI(
 		override fun RecyclerSettingsCardBinding.unbindView(item: SettingsCategoryUI) {
 			recyclerSettingsTitle.text = null
 			recyclerSettingsTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-					R.drawable.ic_broken_image_24dp,
+					R.drawable.broken_image,
 					0,
 					0,
 					0

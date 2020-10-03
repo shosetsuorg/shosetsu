@@ -12,6 +12,9 @@
     <string name="discord">Discord</string>
     <string name="discord_url" translatable="false">https://discord.gg/ttSX7gB</string>
 
+    <string name="patreon">Support the dev on Patreon</string>
+    <string name="patreon_url">https://www.patreon.com/doomsdayrs</string>
+
     <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
     <string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>
 

@@ -71,12 +71,12 @@ class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
 				val transition: Transition = when (frameLayout.visibility == View.VISIBLE) {
 					true -> {
 						Log.i("DrawerItem", "Closing RadioView")
-						image.setImageResource(R.drawable.ic_baseline_expand_more_24)
+						image.setImageResource(R.drawable.expand_more)
 						Slide(Gravity.BOTTOM)
 					}
 					false -> {
 						Log.i("DrawerItem", "Opening Radio View")
-						image.setImageResource(R.drawable.ic_baseline_expand_less_24)
+						image.setImageResource(R.drawable.expand_less)
 						Slide(Gravity.TOP)
 					}
 				}

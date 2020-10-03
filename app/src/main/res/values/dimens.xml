@@ -4,4 +4,8 @@
     <dimen name="fab_margin">56dp</dimen>
 
     <dimen name="app_bar_layout_elevation">4dp</dimen>
+
+    <dimen name="sub_text_size">12sp</dimen>
+
+
 </resources>

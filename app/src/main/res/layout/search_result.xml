@@ -20,7 +20,7 @@
             android:layout_height="160dp"
             android:contentDescription="@string/todo"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_broken_image_24dp"
+            android:src="@drawable/broken_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="3:4"
             app:layout_constraintEnd_toEndOf="parent"

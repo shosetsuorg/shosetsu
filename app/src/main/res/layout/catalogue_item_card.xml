@@ -18,7 +18,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
-            android:src="@drawable/ic_broken_image_24dp"
+            android:src="@drawable/broken_image"
             app:layout_constraintDimensionRatio="1:1" />
 
         <TextView

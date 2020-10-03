@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:contentDescription="@string/todo"
-        android:src="@drawable/ic_baseline_expand_more_24"
+        android:src="@drawable/expand_more"
         app:layout_constraintTop_toBottomOf="@+id/novels_to_transfer"
         tools:layout_editor_absoluteX="45dp" />
 

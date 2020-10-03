@@ -60,7 +60,7 @@ data class UpdateUI(
 		}
 
 		override fun RecyclerUpdateUiBinding.unbindView(item: UpdateUI) {
-			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
+			imageView.setImageResource(R.drawable.broken_image)
 			title.text = null
 			date.text = null
 		}

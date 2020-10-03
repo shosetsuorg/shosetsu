@@ -30,4 +30,5 @@ abstract class AAboutViewModel : ViewModel() {
 	abstract fun openExtensions()
 	abstract fun openDiscord()
 	abstract fun openLicenses()
+	abstract fun openPatreon()
 }

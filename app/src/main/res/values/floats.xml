@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="sub_text_float" format="float" type="integer">0.7</item>
+</resources>

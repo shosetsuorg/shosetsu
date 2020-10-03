@@ -126,7 +126,7 @@ data class ExtensionUI(
 			updateVersion.text = null
 			title.text = null
 			language.text = null
-			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
+			imageView.setImageResource(R.drawable.broken_image)
 		}
 	}
 }

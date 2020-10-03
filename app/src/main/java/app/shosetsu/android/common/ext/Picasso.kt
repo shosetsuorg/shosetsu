@@ -30,5 +30,5 @@ import com.squareup.picasso.Picasso
 fun picasso(source: String, into: ImageView) = Picasso.get()
 		.load(source)
 		.placeholder(R.drawable.animated_refresh)
-		.error(R.drawable.ic_broken_image_24dp)
+		.error(R.drawable.broken_image)
 		.into(into)

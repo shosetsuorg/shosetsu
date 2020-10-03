@@ -45,7 +45,7 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 		val imageURL = item.getDataImageURL()
 		if (imageURL.isNotEmpty()) picasso(imageURL, imageView)
 		else {
-			imageView.setImageResource(R.drawable.ic_broken_image_24dp)
+			imageView.setImageResource(R.drawable.broken_image)
 			imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
 		}
 	}

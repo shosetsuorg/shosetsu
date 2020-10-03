@@ -70,4 +70,11 @@ class AboutViewModel(
 
 	override fun openLicenses() {
 	}
+
+	override fun openPatreon() {
+		context.startActivity(Intent(
+				Intent.ACTION_VIEW,
+				Uri.parse(context.getString(R.string.patreon_url))
+		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
+	}
 }

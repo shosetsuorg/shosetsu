@@ -35,9 +35,10 @@
             <TextView
                 android:id="@+id/version_tag"
                 android:layout_width="match_parent"
+                android:alpha="@integer/sub_text_float"
                 android:layout_height="wrap_content"
                 android:text="@string/todo"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sub_text_size" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -102,8 +103,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:alpha="@integer/sub_text_float"
                 android:text="@string/website_url"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sub_text_size" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -139,8 +141,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:alpha="@integer/sub_text_float"
                 android:text="@string/github_url"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sub_text_size" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -175,8 +178,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:alpha="@integer/sub_text_float"
                 android:text="@string/extensions_url"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sub_text_size" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -211,8 +215,46 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:alpha="@integer/sub_text_float"
                 android:text="@string/discord_url"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sub_text_size" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/patreon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
+        android:elevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        app:cardForegroundColor="@android:color/transparent"
+        app:contentPadding="16dp"
+        app:strokeWidth="0dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:text="@string/patreon" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="@integer/sub_text_float"
+                android:text="@string/patreon_url"
+                android:textSize="@dimen/sub_text_size" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

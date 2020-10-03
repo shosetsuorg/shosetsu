@@ -272,10 +272,10 @@ class ChapterReader
 				override fun onStateChanged(bottomSheet: View, newState: Int) {
 					when (newState) {
 						STATE_COLLAPSED -> {
-							drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_less_24)
+							drawer_toggle.setImageResource(R.drawable.expand_less)
 						}
 						STATE_EXPANDED -> {
-							drawer_toggle.setImageResource(R.drawable.ic_baseline_expand_more_24)
+							drawer_toggle.setImageResource(R.drawable.expand_more)
 						}
 						else -> {
 						}

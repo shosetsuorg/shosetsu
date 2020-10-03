@@ -40,7 +40,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/todo"
-        android:src="@drawable/ic_broken_image_24dp"
+        android:src="@drawable/broken_image"
         app:layout_constraintDimensionRatio="2:3" />
 
     <TextView

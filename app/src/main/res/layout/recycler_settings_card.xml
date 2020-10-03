@@ -18,11 +18,10 @@
         android:layout_height="match_parent"
         android:layout_margin="16dp"
         android:background="@android:color/transparent"
-        android:drawableStart="@drawable/ic_broken_image_24dp"
         android:drawablePadding="8dp"
-        android:drawableTint="@color/colorPrimary"
         android:gravity="center_vertical"
         android:text=""
+        app:drawableStartCompat="@drawable/broken_image_tint"
         tools:text="This is a setting category" />
 
 </com.google.android.material.card.MaterialCardView>

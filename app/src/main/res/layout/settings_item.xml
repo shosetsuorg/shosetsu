@@ -20,17 +20,18 @@
 		app:layout_constraintTop_toTopOf="parent" />
 
 	<TextView
-		android:id="@+id/settings_item_desc"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="8dp"
-		android:text="@string/todo"
-		android:textSize="12sp"
-		android:visibility="gone"
-		app:layout_constraintEnd_toStartOf="@+id/rightField"
-		app:layout_constraintHorizontal_bias="0.6"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/settings_item_title" />
+        android:id="@+id/settings_item_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/todo"
+        android:alpha="@integer/sub_text_float"
+        android:textSize="@dimen/sub_text_size"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/rightField"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_item_title" />
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/rightField"

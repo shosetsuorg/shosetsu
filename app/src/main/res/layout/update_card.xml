@@ -15,7 +15,7 @@
         android:contentDescription="@string/todo"
         android:cropToPadding="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_broken_image_24dp"
+        android:src="@drawable/broken_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"

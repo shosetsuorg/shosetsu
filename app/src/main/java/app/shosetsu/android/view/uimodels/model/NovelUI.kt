@@ -161,7 +161,7 @@ data class NovelUI(
 						picasso(item.imageURL, it)
 					}
 				} else {
-					iV?.setImageResource(R.drawable.ic_broken_image_24dp)
+					iV?.setImageResource(R.drawable.broken_image)
 				}
 			}
 
@@ -178,7 +178,7 @@ data class NovelUI(
 			inLibrary.setChipIconResource(R.drawable.ic_heart_svg)
 			inLibrary.setText(R.string.add_to_library)
 			listOf(novelImage, novelImageBackground).forEach { iV: ImageView? ->
-				iV?.setImageResource(R.drawable.ic_broken_image_24dp)
+				iV?.setImageResource(R.drawable.broken_image)
 			}
 			novelGenres.removeAllViews()
 			novelPublish.setText(R.string.unknown)

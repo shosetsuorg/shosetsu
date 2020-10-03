@@ -32,7 +32,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/todo"
-                android:src="@drawable/ic_broken_image_24dp" />
+                android:src="@drawable/broken_image" />
 
             <View
                 android:id="@+id/view"
