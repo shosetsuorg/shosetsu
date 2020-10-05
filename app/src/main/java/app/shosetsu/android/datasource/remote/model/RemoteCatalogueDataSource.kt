@@ -76,9 +76,9 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	): HResult<List<Novel.Listing>> {
 		return try {
 			logV("Data: $data")
-			successResult(
-					formatter.listings[listing].getListing(data, page).toList()
-			)
+			val l = formatter.listings[listing]
+			if (!l.isIncrementing && page > 0) emptyResult()
+			else successResult(l.getListing(data, page).toList())
 		} catch (e: HTTPException) {
 			Log.d(logID(), "HTTP Exception")
 			errorResult(ERROR_HTTP_ERROR, e.message!!, e)

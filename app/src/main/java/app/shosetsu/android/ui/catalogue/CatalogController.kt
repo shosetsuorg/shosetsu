@@ -179,9 +179,6 @@ class CatalogController(
 		super.showLoading()
 		if (recyclerArray.isEmpty() && !binding.swipeRefreshLayout.isRefreshing)
 			binding.swipeRefreshLayout.isRefreshing = true
-		else {
-			//TODO show bottom loader
-		}
 	}
 
 	private fun setupObservers() {
