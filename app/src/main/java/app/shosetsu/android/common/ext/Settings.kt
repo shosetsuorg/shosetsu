@@ -2,7 +2,7 @@ package app.shosetsu.android.common.ext
 
 import android.content.Context
 import app.shosetsu.android.common.ShosetsuSettings
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -27,32 +27,32 @@ import app.shosetsu.lib.Formatter
  */
 
 
-fun Context.getIntSetting(formatter: Formatter, settingID: Int): Int? =
+fun Context.getIntSetting(formatter: IExtension, settingID: Int): Int? =
 		formatter.settingsModel.find { it.id == settingID }?.let {
 			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
 					.getInt("$settingID", it.state as Int)
 		}
 
-fun Context.getBooleanSetting(formatter: Formatter, settingID: Int): Boolean? =
+fun Context.getBooleanSetting(formatter: IExtension, settingID: Int): Boolean? =
 		formatter.settingsModel.find { it.id == settingID }?.let {
 			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
 					.getBoolean("$settingID", it.state as Boolean)
 		}
 
-fun Context.getDoubleSetting(formatter: Formatter, settingID: Int): Float? =
+fun Context.getDoubleSetting(formatter: IExtension, settingID: Int): Float? =
 		formatter.settingsModel.find { it.id == settingID }?.let {
 			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
 					.getFloat("$settingID", it.state as Float)
 		}
 
-fun Context.getStringSetting(formatter: Formatter, settingID: Int): String? =
+fun Context.getStringSetting(formatter: IExtension, settingID: Int): String? =
 		formatter.settingsModel.find { it.id == settingID }?.let {
 			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
 					.getString("$settingID", it.state as String)
 		}
 
 
-inline fun <reified I : Any> ShosetsuSettings.getFormSetting(formatter: Formatter, settingID: Int): I? {
+inline fun <reified I : Any> ShosetsuSettings.getFormSetting(formatter: IExtension, settingID: Int): I? {
 	return when (I::class) {
 		Int::class -> context.getIntSetting(formatter, settingID)
 		String::class -> context.getStringSetting(formatter, settingID)
@@ -63,7 +63,7 @@ inline fun <reified I : Any> ShosetsuSettings.getFormSetting(formatter: Formatte
 }
 
 inline fun <reified I : Any> ShosetsuSettings.setFormSetting(
-		formatter: Formatter,
+		formatter: IExtension,
 		settingID: Int,
 		v: I,
 ) {

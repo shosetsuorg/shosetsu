@@ -17,9 +17,9 @@ import app.shosetsu.android.datasource.remote.base.IRemoteExtensionDataSource
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.LuaFormatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.lua.LuaExtension
 
 /*
  * This file is part of shosetsu.
@@ -70,14 +70,14 @@ class ExtensionsRepository(
 			)) {
 				is HResult.Success -> {
 					try {
-						val formatter = LuaFormatter(result.data)
+						val formatter = LuaExtension(result.data)
 
 						// Write to storage/cache
 						memorySource.putFormatterInMemory(formatter)
 						fileSource.writeFormatter(extensionEntity.fileName, result.data)
 
 						// Update database info
-						formatter.getMetaData()!!.let { meta ->
+						formatter.metaData!!.let { meta ->
 							val version = meta.getString("version")
 							extensionEntity.installedVersion = version
 							extensionEntity.repositoryVersion = version
@@ -115,7 +115,7 @@ class ExtensionsRepository(
 	override suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*> =
 			databaseSource.updateExtension(extensionEntity)
 
-	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter> = try {
+	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<IExtension> = try {
 		memorySource.loadFormatterFromMemory(extensionEntity.id).takeIf { it is HResult.Success }
 				?: fileSource.loadFormatter(extensionEntity.fileName).takeIf { it is HResult.Success }
 						?.also { if (it is HResult.Success) memorySource.putFormatterInMemory(it.data) }
@@ -124,7 +124,7 @@ class ExtensionsRepository(
 		errorResult(ERROR_IMPOSSIBLE, "Impossible NPE", e)
 	}
 
-	override suspend fun loadFormatter(formatterID: Int): HResult<Formatter> =
+	override suspend fun loadFormatter(formatterID: Int): HResult<IExtension> =
 			databaseSource.loadExtension(formatterID).withSuccess { loadFormatter(it) }
 
 	override fun getCards(): LiveData<HResult<List<IDTitleImage>>> = liveData {
@@ -132,22 +132,20 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun loadCatalogueSearch(
-			formatter: Formatter,
+			formatter: IExtension,
 			query: String,
-			page: Int,
 			data: Map<Int, Any>
 	): HResult<List<Novel.Listing>> =
 			remoteCatalogueDataSource.search(
-					formatter, query, page, data
+					formatter, query, data
 			)
 
 	override suspend fun loadCatalogueData(
-			formatter: Formatter,
+			formatter: IExtension,
 			listing: Int,
-			page: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> =
-			remoteCatalogueDataSource.loadListing(formatter, listing, page, data)
+			remoteCatalogueDataSource.loadListing(formatter, listing, data)
 
 	override suspend fun removeExtension(it: ExtensionEntity): HResult<*> =
 			databaseSource.deleteExtension(it)

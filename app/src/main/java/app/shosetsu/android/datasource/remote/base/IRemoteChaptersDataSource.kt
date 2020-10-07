@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -30,5 +30,5 @@ interface IRemoteChaptersDataSource {
 	 * Loads the chapter passage from network
 	 * @return chapter content
 	 */
-	suspend fun loadChapterPassage(formatter: Formatter, chapterURL: String): HResult<String>
+	suspend fun loadChapterPassage(formatter: IExtension, chapterURL: String): HResult<String>
 }

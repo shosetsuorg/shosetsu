@@ -15,7 +15,8 @@ import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import app.shosetsu.lib.Filter
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.mapify
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -48,7 +49,7 @@ class CatalogViewModel(
 		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
 		private var toastErrorUseCase: ToastErrorUseCase,
 ) : ICatalogViewModel() {
-	private var formatter: Formatter? = null
+	private var formatter: IExtension? = null
 
 	private var listingItems: ArrayList<ACatalogNovelUI> = arrayListOf()
 	private var filterData = hashMapOf<Int, Any>()
@@ -121,13 +122,15 @@ class CatalogViewModel(
 
 		when (val i: HResult<List<ACatalogNovelUI>> = if (query.isEmpty()) loadCatalogueListingData(
 				formatter!!,
-				currentMaxPage,
-				filterData
+				filterData.apply {
+					this[PAGE_INDEX] = currentMaxPage
+				}
 		) else loadCatalogueQueryDataUseCase(
 				formatter!!,
 				query,
-				currentMaxPage,
-				filterData
+				filterData.apply {
+					this[PAGE_INDEX] = currentMaxPage
+				}
 		)) {
 			is HResult.Success -> {
 				listingItems = values.also { it.addAll(i.data) }

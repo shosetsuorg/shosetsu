@@ -8,7 +8,7 @@ import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 /*
@@ -40,21 +40,18 @@ class LoadCatalogueQueryDataUseCase(
 	suspend operator fun invoke(
 			formatterID: Int,
 			query: String,
-			page: Int,
 			filters: Map<Int, Any>
 	) = extensionRepository.loadFormatter(formatterID).handleReturn {
-		invoke(it, query, page, filters)
+		invoke(it, query, filters)
 	}
 
 	suspend operator fun invoke(
-			formatter: Formatter,
+			formatter: IExtension,
 			query: String,
-			page: Int,
 			filters: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> = extensionRepository.loadCatalogueSearch(
 			formatter,
 			query,
-			page,
 			filters
 	).handleReturn {
 		val data: List<Novel.Listing> = it

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 /*
@@ -51,27 +51,25 @@ interface IExtensionsRepository {
 	suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*>
 
 	/** Loads the formatter via its extension */
-	suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<Formatter>
+	suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<IExtension>
 
 	/** Loads the formatter via its ID */
-	suspend fun loadFormatter(formatterID: Int): HResult<Formatter>
+	suspend fun loadFormatter(formatterID: Int): HResult<IExtension>
 
 	/** Gets the extensions as cards containing their ID, Title, and Image */
 	fun getCards(): LiveData<HResult<List<IDTitleImage>>>
 
 	/** Queries the extension for a search result*/
 	suspend fun loadCatalogueSearch(
-			formatter: Formatter,
+			formatter: IExtension,
 			query: String,
-			page: Int,
 			data: Map<Int, Any>
 	): HResult<List<Novel.Listing>>
 
 	/** Loads catalogue data of an extension */
 	suspend fun loadCatalogueData(
-			formatter: Formatter,
+			formatter: IExtension,
 			listing: Int,
-			page: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>
 

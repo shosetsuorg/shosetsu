@@ -13,10 +13,7 @@ import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
-import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.HTTPException
-import app.shosetsu.lib.Novel
-import app.shosetsu.lib.QUERY_INDEX
+import app.shosetsu.lib.*
 import okio.IOException
 import org.luaj.vm2.LuaError
 
@@ -44,19 +41,15 @@ import org.luaj.vm2.LuaError
  */
 class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	override suspend fun search(
-			formatter: Formatter,
+			formatter: IExtension,
 			query: String,
-			page: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
 			if (formatter.hasSearch) {
 				val l = formatter.search(HashMap(data).apply {
 					this[QUERY_INDEX] = query
-				}) {
-					Log.i(logID(), it)
-				}.toList()
-
+				}).toList()
 				if (l.isEmpty()) emptyResult() else successResult(l)
 			} else errorResult(ERROR_NO_SEARCH, "This extension has no search functionality")
 		} catch (e: IOException) {
@@ -69,16 +62,15 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	}
 
 	override suspend fun loadListing(
-			formatter: Formatter,
+			formatter: IExtension,
 			listing: Int,
-			page: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
 			logV("Data: $data")
 			val l = formatter.listings[listing]
-			if (!l.isIncrementing && page > 0) emptyResult()
-			else successResult(l.getListing(data, page).toList())
+			if (!l.isIncrementing && (data[PAGE_INDEX] as Int) > 0) emptyResult()
+			else successResult(l.getListing(data).toList())
 		} catch (e: HTTPException) {
 			Log.d(logID(), "HTTP Exception")
 			errorResult(ERROR_HTTP_ERROR, e.message!!, e)

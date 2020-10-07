@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 /*
@@ -31,9 +31,8 @@ interface IRemoteCatalogueDataSource {
 	 * Runs a search on an extension
 	 */
 	suspend fun search(
-			formatter: Formatter,
+			formatter: IExtension,
 			query: String,
-			page: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>
 
@@ -42,9 +41,8 @@ interface IRemoteCatalogueDataSource {
 	 * Loads a listings data from an extension
 	 */
 	suspend fun loadListing(
-			formatter: Formatter,
+			formatter: IExtension,
 			listing: Int,
-			page: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>
 }

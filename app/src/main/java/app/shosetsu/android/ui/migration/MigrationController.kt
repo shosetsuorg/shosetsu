@@ -12,12 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.base.ViewedController
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.MigrationViewBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.MigrationViewBinding.inflate
-import com.squareup.picasso.Picasso
 
 /*
  * This file is part of Shosetsu.
@@ -137,7 +136,7 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 		}
 
 		override fun onBindViewHolder(holder: CatalogueHolder, position: Int) {
-			val form: Formatter? = null
+			val form: IExtension? = null
 			holder.title.text = form?.name
 			if (form?.imageURL?.isNotEmpty()!!)
 				picasso(form.imageURL, holder.imageView)

@@ -21,7 +21,7 @@ import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.domain.model.local.NovelEntity
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 
@@ -68,7 +68,7 @@ interface INovelsRepository {
 	 * Retrieves NovelInfo from it's source
 	 */
 	suspend fun retrieveNovelInfo(
-			formatter: Formatter,
+			formatter: IExtension,
 			novelEntity: NovelEntity,
 			loadChapters: Boolean,
 	): HResult<Novel.Info>

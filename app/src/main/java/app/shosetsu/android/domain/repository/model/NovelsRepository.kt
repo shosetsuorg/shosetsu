@@ -12,7 +12,7 @@ import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 /*
@@ -96,7 +96,7 @@ class NovelsRepository(
 			database.updateBookmarkedNovels(list)
 
 	override suspend fun retrieveNovelInfo(
-			formatter: Formatter,
+			formatter: IExtension,
 			novelEntity: NovelEntity,
 			loadChapters: Boolean,
 	): HResult<Novel.Info> =

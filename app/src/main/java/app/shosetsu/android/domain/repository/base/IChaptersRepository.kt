@@ -5,7 +5,7 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 /*
@@ -42,7 +42,7 @@ interface IChaptersRepository {
 	 * Then checks network
 	 */
 	suspend fun loadChapterPassage(
-			formatter: Formatter,
+			formatter: IExtension,
 			chapterEntity: ChapterEntity,
 	): HResult<String>
 

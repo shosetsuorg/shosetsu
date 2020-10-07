@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.cache.base
 
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -26,10 +26,10 @@ import app.shosetsu.lib.Formatter
  */
 interface ICacheExtensionsDataSource {
 	/** Load formatter from memory */
-	suspend fun loadFormatterFromMemory(formatterID: Int): HResult<Formatter>
+	suspend fun loadFormatterFromMemory(formatterID: Int): HResult<IExtension>
 
 	/** Put formatter in memory */
-	suspend fun putFormatterInMemory(formatter: Formatter): HResult<*>
+	suspend fun putFormatterInMemory(formatter: IExtension): HResult<*>
 
 	/** Remove formatter by ID from cache*/
 	suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*>

@@ -1,6 +1,5 @@
 package app.shosetsu.android.datasource.remote.model
 
-import android.util.Log
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_GENERAL
@@ -8,10 +7,9 @@ import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NETWORK
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.datasource.remote.base.IRemoteNovelDataSource
-import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.HTTPException
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import okio.IOException
 import org.luaj.vm2.LuaError
@@ -40,15 +38,13 @@ import org.luaj.vm2.LuaError
  */
 class RemoteNovelDataSource : IRemoteNovelDataSource {
 	override suspend fun loadNovel(
-			formatter: Formatter,
+			formatter: IExtension,
 			novelURL: String,
 			loadChapters: Boolean,
 	): HResult<Novel.Info> {
 		return try {
 			successResult(
-					formatter.parseNovel(novelURL, loadChapters) {
-						Log.i(logID(), it)
-					}
+					formatter.parseNovel(novelURL, loadChapters)
 			)
 		} catch (e: HTTPException) {
 			errorResult(ERROR_HTTP_ERROR, e.message!!, e)

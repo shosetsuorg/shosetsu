@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.lib.Filter
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import kotlinx.coroutines.Job
 
 /*
@@ -56,7 +56,7 @@ abstract class ICatalogViewModel : ViewModel() {
 	abstract val extensionName: LiveData<HResult<String>>
 
 	/**
-	 * Sets the [Formatter]
+	 * Sets the [IExtension]
 	 */
 	abstract fun setFormatterID(formatterID: Int)
 

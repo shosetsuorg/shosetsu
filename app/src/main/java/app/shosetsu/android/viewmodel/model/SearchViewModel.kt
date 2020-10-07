@@ -89,7 +89,6 @@ class SearchViewModel(
 					loadCatalogueQueryDataUseCase(
 							formatterID,
 							query,
-							0,
 							mapOf()
 					)
 			)

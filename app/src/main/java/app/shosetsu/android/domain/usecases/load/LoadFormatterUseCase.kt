@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -26,6 +26,6 @@ import app.shosetsu.lib.Formatter
  * 15 / 05 / 2020
  */
 class LoadFormatterUseCase(private val extensionsRepository: IExtensionsRepository) {
-	suspend operator fun invoke(formatterID: Int): HResult<Formatter> =
+	suspend operator fun invoke(formatterID: Int): HResult<IExtension> =
 			extensionsRepository.loadFormatter(formatterID)
 }

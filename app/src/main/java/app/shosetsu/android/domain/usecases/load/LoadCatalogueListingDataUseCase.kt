@@ -8,7 +8,7 @@ import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 /*
@@ -38,13 +38,11 @@ class LoadCatalogueListingDataUseCase(
 		private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
 ) {
 	suspend operator fun invoke(
-			formatter: Formatter,
-			currentPage: Int,
+			formatter: IExtension,
 			data: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> = extensionRepository.loadCatalogueData(
 			formatter,
 			0,
-			currentPage,
 			data
 	).handleReturn {
 		val data: List<Novel.Listing> = it

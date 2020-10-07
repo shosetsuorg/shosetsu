@@ -19,8 +19,8 @@ import app.shosetsu.android.di.datasource.localDataSouceModule
 import app.shosetsu.android.di.datasource.remoteDataSouceModule
 import app.shosetsu.android.domain.repository.base.IExtLibRepository
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
-import app.shosetsu.lib.ShosetsuLib
-import app.shosetsu.lib.shosetsuGlobals
+import app.shosetsu.lib.lua.ShosetsuLuaLib
+import app.shosetsu.lib.lua.shosetsuGlobals
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import okhttp3.OkHttpClient
@@ -91,8 +91,8 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 
 	override fun onCreate() {
 		super.onCreate()
-		ShosetsuLib.httpClient = okHttpClient
-		ShosetsuLib.libLoader = libLoader@{ name ->
+		ShosetsuLuaLib.httpClient = okHttpClient
+		ShosetsuLuaLib.libLoader = libLoader@{ name ->
 			Log.i("LibraryLoaderSync", "Loading:\t$name")
 			return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {
 				is HResult.Success -> {

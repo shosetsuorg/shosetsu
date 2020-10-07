@@ -9,8 +9,8 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
-import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.LuaFormatter
+import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.lua.LuaExtension
 import org.luaj.vm2.LuaError
 import java.io.File
 import java.io.FileNotFoundException
@@ -49,8 +49,8 @@ class FileExtensionDataSource(
 		return f
 	}
 
-	override suspend fun loadFormatter(fileName: String): HResult<Formatter> = try {
-		successResult(LuaFormatter(makeFormatterFile(fileName)))
+	override suspend fun loadFormatter(fileName: String): HResult<IExtension> = try {
+		successResult(LuaExtension(makeFormatterFile(fileName)))
 	} catch (e: LuaError) {
 		errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
 	} catch (e: FileNotFoundException) {

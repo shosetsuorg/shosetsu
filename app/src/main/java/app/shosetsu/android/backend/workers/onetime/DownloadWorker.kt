@@ -27,7 +27,7 @@ import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import com.github.doomsdayrs.apps.shosetsu.R
 import okio.IOException
 import org.kodein.di.Kodein
@@ -102,7 +102,7 @@ class DownloadWorker(
 				when (cR) {
 					is HResult.Success -> {
 						val chapterEntity = cR.data
-						extRepo.loadFormatter(chapterEntity.formatterID).let { fR: HResult<Formatter> ->
+						extRepo.loadFormatter(chapterEntity.formatterID).let { fR: HResult<IExtension> ->
 							when (fR) {
 								is HResult.Success -> {
 									val formatterEntity = fR.data
@@ -216,28 +216,28 @@ class DownloadWorker(
 					if (it is HResult.Success)
 						it.data
 					else DownloadOnMeteredConnection.default
-				};
+				}
 
 		private suspend fun downloadOnLowStorage(): Boolean =
 				iSettingsRepository.getBoolean(DownloadOnLowStorage).let {
 					if (it is HResult.Success)
 						it.data
 					else DownloadOnLowStorage.default
-				};
+				}
 
 		private suspend fun downloadOnLowBattery(): Boolean =
 				iSettingsRepository.getBoolean(DownloadOnLowBattery).let {
 					if (it is HResult.Success)
 						it.data
 					else DownloadOnLowBattery.default
-				};
+				}
 
 		private suspend fun downloadOnlyIdle(): Boolean =
 				iSettingsRepository.getBoolean(DownloadOnlyWhenIdle).let {
 					if (it is HResult.Success)
 						it.data
 					else DownloadOnlyWhenIdle.default
-				};
+				}
 
 		/**
 		 * Returns the status of the service.

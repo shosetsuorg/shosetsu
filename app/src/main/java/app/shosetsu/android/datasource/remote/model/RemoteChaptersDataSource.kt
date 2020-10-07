@@ -8,8 +8,8 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
-import app.shosetsu.lib.Formatter
 import app.shosetsu.lib.HTTPException
+import app.shosetsu.lib.IExtension
 import okio.IOException
 import org.luaj.vm2.LuaError
 
@@ -36,7 +36,7 @@ import org.luaj.vm2.LuaError
  */
 class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 	override suspend fun loadChapterPassage(
-			formatter: Formatter,
+			formatter: IExtension,
 			chapterURL: String,
 	): HResult<String> =
 			try {

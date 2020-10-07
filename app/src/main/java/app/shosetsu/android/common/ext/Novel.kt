@@ -2,7 +2,7 @@ package app.shosetsu.android.common.ext
 
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 /*
@@ -40,7 +40,7 @@ fun Novel.Chapter.entity(novelEntity: NovelEntity): ChapterEntity =
 				order = this.order
 		)
 
-fun Novel.Listing.convertTo(formatter: Formatter): NovelEntity = NovelEntity(
+fun Novel.Listing.convertTo(formatter: IExtension): NovelEntity = NovelEntity(
 		url = this.link,
 		imageURL = this.imageURL,
 		title = this.title,

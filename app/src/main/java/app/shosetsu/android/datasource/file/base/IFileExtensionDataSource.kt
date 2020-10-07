@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.file.base
 
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -26,7 +26,7 @@ import app.shosetsu.lib.Formatter
  */
 interface IFileExtensionDataSource {
 	/** Loads the formatter from file system */
-	suspend fun loadFormatter(fileName: String): HResult<Formatter>
+	suspend fun loadFormatter(fileName: String): HResult<IExtension>
 
 	suspend fun writeFormatter(fileName: String, data: String): HResult<*>
 

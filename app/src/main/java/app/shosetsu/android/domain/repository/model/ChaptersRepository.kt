@@ -13,7 +13,7 @@ import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
 /*
@@ -58,7 +58,7 @@ class ChaptersRepository(
 	}
 
 	override suspend fun loadChapterPassage(
-			formatter: Formatter,
+			formatter: IExtension,
 			chapterEntity: ChapterEntity,
 	): HResult<String> = memorySource.loadChapterFromCache(chapterEntity.id!!)
 			.takeIf { it is HResult.Success }

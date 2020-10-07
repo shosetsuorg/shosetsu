@@ -10,7 +10,7 @@ import app.shosetsu.android.view.builder.SDViewBuilder
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.lib.Filter
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -38,7 +38,7 @@ import app.shosetsu.lib.Formatter
  */
 
 fun Array<Filter<*>>.toSettingItems(
-		formatter: Formatter,
+		formatter: IExtension,
 		context: Context,
 		setting: ShosetsuSettings,
 ): List<SettingsItemData> {

@@ -6,7 +6,7 @@ import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.set
 import app.shosetsu.android.datasource.cache.base.ICacheExtensionsDataSource
-import app.shosetsu.lib.Formatter
+import app.shosetsu.lib.IExtension
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit.MINUTES
@@ -34,14 +34,14 @@ import java.util.concurrent.TimeUnit.MINUTES
  */
 class CacheExtensionDataSource : ICacheExtensionsDataSource {
 	/** Map of Formatter ID to Formatter */
-	private val formatters: Cache<Int, Formatter> = CacheBuilder.newBuilder()
+	private val formatters: Cache<Int, IExtension> = CacheBuilder.newBuilder()
 			.expireAfterAccess(20, MINUTES)
 			.build()
 
-	override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<Formatter> =
+	override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<IExtension> =
 			formatters[formatterID]?.let { successResult(it) } ?: emptyResult()
 
-	override suspend fun putFormatterInMemory(formatter: Formatter): HResult<*> =
+	override suspend fun putFormatterInMemory(formatter: IExtension): HResult<*> =
 			successResult(formatters.set(formatter.formatterID, formatter))
 
 	override suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*> =

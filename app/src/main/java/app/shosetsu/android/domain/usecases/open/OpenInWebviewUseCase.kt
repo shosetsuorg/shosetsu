@@ -13,9 +13,9 @@ import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.ui.webView.WebViewApp
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.lib.Formatter
-import app.shosetsu.lib.Formatter.Companion.KEY_CHAPTER_URL
-import app.shosetsu.lib.Formatter.Companion.KEY_NOVEL_URL
+import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.IExtension.Companion.KEY_CHAPTER_URL
+import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
 
 /*
  * This file is part of shosetsu.
@@ -59,7 +59,7 @@ class OpenInWebviewUseCase(
 
 
 	suspend operator fun invoke(url: String, formatterID: Int, type: Int) {
-		when (val fR: HResult<Formatter> = repository.loadFormatter(formatterID)) {
+		when (val fR: HResult<IExtension> = repository.loadFormatter(formatterID)) {
 			is HResult.Success -> {
 				val formatter = fR.data
 				this(formatter.expandURL(url, type))
