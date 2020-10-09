@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import java.io.Serializable
@@ -69,16 +70,7 @@ data class DownloadEntity(
 		val novelName: String,
 		@NonNull
 		val formatterID: Int,
-		/**
-		 * -1 for error
-		 *
-		 * 0 for pending
-		 *
-		 * 1 for active
-		 *
-		 * 2 for paused
-		 */
-		var status: Int = 0,
+		var status: DownloadStatus = DownloadStatus.PENDING,
 ) : Convertible<DownloadUI>, Serializable {
 	override fun convertTo(): DownloadUI =
 			DownloadUI(

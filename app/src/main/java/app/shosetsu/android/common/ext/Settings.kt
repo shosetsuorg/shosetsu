@@ -52,6 +52,7 @@ fun Context.getStringSetting(formatter: IExtension, settingID: Int): String? =
 		}
 
 
+@Suppress("DEPRECATION")
 inline fun <reified I : Any> ShosetsuSettings.getFormSetting(formatter: IExtension, settingID: Int): I? {
 	return when (I::class) {
 		Int::class -> context.getIntSetting(formatter, settingID)
@@ -62,6 +63,7 @@ inline fun <reified I : Any> ShosetsuSettings.getFormSetting(formatter: IExtensi
 	} as I?
 }
 
+@Suppress("DEPRECATION")
 inline fun <reified I : Any> ShosetsuSettings.setFormSetting(
 		formatter: IExtension,
 		settingID: Int,

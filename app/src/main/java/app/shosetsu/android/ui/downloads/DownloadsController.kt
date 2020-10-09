@@ -19,7 +19,6 @@ package app.shosetsu.android.ui.downloads
 
 import android.view.View
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.ui.downloads.adapters.DownloadAdapter
 import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
@@ -28,7 +27,6 @@ import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.mikepenz.fastadapter.FastAdapter
 
 /**
  * Shosetsu
@@ -45,11 +43,6 @@ class DownloadsController : BasicFastAdapterRecyclerController<DownloadUI>(),
 
 	private var fab: FloatingActionButton? = null
 
-	override val fastAdapter: FastAdapter<DownloadUI> by lazy {
-		val adapter = DownloadAdapter(viewModel)
-		adapter.addAdapter(0, itemAdapter)
-		adapter
-	}
 
 	private fun togglePause() {
 		if (viewModel.isOnline()) viewModel.togglePause() else toast(R.string.you_not_online)

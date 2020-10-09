@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteException
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import app.shosetsu.android.domain.model.local.*
+import app.shosetsu.android.providers.database.converters.DownloadStatusConverter
 import app.shosetsu.android.providers.database.converters.NovelStatusConverter
 import app.shosetsu.android.providers.database.converters.ReadingStatusConverter
 import app.shosetsu.android.providers.database.converters.StringArrayConverters
@@ -53,7 +54,8 @@ import kotlinx.coroutines.launch
 @TypeConverters(
 		ReadingStatusConverter::class,
 		StringArrayConverters::class,
-		NovelStatusConverter::class
+		NovelStatusConverter::class,
+		DownloadStatusConverter::class
 )
 abstract class ShosetsuDatabase : RoomDatabase() {
 	companion object {

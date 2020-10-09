@@ -1,15 +1,14 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
-import app.shosetsu.android.common.ShosetsuSettings
+import app.shosetsu.android.common.consts.settings.SettingKey.IsDownloadPaused
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.liveDataIO
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
@@ -17,7 +16,6 @@ import app.shosetsu.android.domain.usecases.load.LoadDownloadsUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateDownloadUseCase
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
-import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -47,7 +45,7 @@ class DownloadsViewModel(
 		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 		private val updateDownloadUseCase: UpdateDownloadUseCase,
 		private val deleteDownloadUseCase: DeleteDownloadUseCase,
-		private val settings: ShosetsuSettings,
+		private val settings: ISettingsRepository,
 		private var isOnlineUseCase: IsOnlineUseCase,
 ) : IDownloadsViewModel() {
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
@@ -60,15 +58,17 @@ class DownloadsViewModel(
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
 	override val isDownloadPaused: LiveData<Boolean> by lazy {
-		settings.isDownloadPausedLive
+		settings.observeBoolean(IsDownloadPaused)
 	}
 
-	override fun togglePause(): Boolean {
-		if (!isOnline()) return true
-		settings.isDownloadPaused = !settings.isDownloadPaused
-		if (!settings.isDownloadPaused)
-			startDownloadWorkerUseCase()
-		return settings.isDownloadPaused
+	override fun togglePause() {
+		if (!isOnline()) return
+		launchIO {
+			settings.getBoolean(IsDownloadPaused).handle { isPaused ->
+				settings.setBoolean(IsDownloadPaused, !isPaused)
+				if (!isPaused) startDownloadWorkerUseCase()
+			}
+		}
 	}
 
 	override fun delete(downloadUI: DownloadUI) {
@@ -76,10 +76,10 @@ class DownloadsViewModel(
 	}
 
 	override fun pause(downloadUI: DownloadUI) {
-		launchIO { updateDownloadUseCase(downloadUI.copy(status = 2)) }
+		launchIO { updateDownloadUseCase(downloadUI.copy(status = DownloadStatus.PAUSED)) }
 	}
 
 	override fun start(downloadUI: DownloadUI) {
-		launchIO { updateDownloadUseCase(downloadUI.copy(status = 0)) }
+		launchIO { updateDownloadUseCase(downloadUI.copy(status = DownloadStatus.PENDING)) }
 	}
 }

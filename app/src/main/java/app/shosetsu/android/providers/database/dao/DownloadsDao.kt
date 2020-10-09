@@ -4,7 +4,6 @@ import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Transaction
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 
@@ -40,18 +39,6 @@ interface DownloadsDao : BaseDao<DownloadEntity> {
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads WHERE status = 0 LIMIT 1")
 	suspend fun loadFirstDownload(): DownloadEntity?
-
-	/**
-	 * Loads the first download, and also sets it as downloading
-	 */
-	@Throws(SQLiteException::class)
-	@Transaction
-	suspend fun loadAndStartFirstDownload(): DownloadEntity {
-		val d = loadFirstDownload()!!
-		d.status = 1
-		blockingUpdate(d)
-		return d
-	}
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM downloads WHERE status == 0")

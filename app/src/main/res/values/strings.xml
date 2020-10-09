@@ -317,6 +317,8 @@
     <string name="source_licenses">Source Licenses</string>
     <string name="inverse_selection">Inverse Selection</string>
     <string name="remove_bookmark">Remove Bookmark</string>
+    <string name="downloading">Downloading</string>
+    <string name="error">Error</string>
 
 
     <array name="application_themes">

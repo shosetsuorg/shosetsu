@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
@@ -41,7 +40,7 @@ abstract class IDownloadsViewModel :
 	 *
 	 * @return if paused or not
 	 */
-	abstract fun togglePause(): Boolean
+	abstract fun togglePause()
 
 	/** Deletes a download */
 	abstract fun delete(downloadUI: DownloadUI)

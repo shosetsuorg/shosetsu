@@ -1,7 +1,7 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
-import android.widget.PopupMenu
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
@@ -41,7 +41,7 @@ data class DownloadUI(
 		val chapterName: String,
 		val novelName: String,
 		val formatterID: Int,
-		var status: Int = 0,
+		var status: DownloadStatus = DownloadStatus.PENDING,
 ) : BaseRecyclerItem<DownloadUI.ViewHolder>(), Convertible<DownloadEntity> {
 	override var identifier: Long
 		get() = chapterID.toLong()
@@ -60,29 +60,21 @@ data class DownloadUI(
 	class ViewHolder(itemView: View) : BindViewHolder<DownloadUI, RecyclerDownloadCardBinding>(itemView) {
 		override val binding = RecyclerDownloadCardBinding.bind(itemView)
 
-		/** Popup menu for [moreOptions] */
-		var popupMenu: PopupMenu? = null
-
-		init {
-			if (popupMenu == null) {
-				popupMenu = PopupMenu(binding.moreOptions.context, binding.moreOptions)
-				popupMenu!!.inflate(R.menu.popup_download_menu)
-			}
-		}
-
 		override fun RecyclerDownloadCardBinding.bindView(item: DownloadUI, payloads: List<Any>) {
 			novelTitle.text = item.novelName
 			chapterTitle.text = item.chapterName
-			status.text = item.status.toString()
-			moreOptions.setOnClickListener { popupMenu?.show() }
+			status.setText(when (item.status) {
+				DownloadStatus.PENDING -> R.string.pending
+				DownloadStatus.DOWNLOADING -> R.string.downloading
+				DownloadStatus.PAUSED -> R.string.paused
+				DownloadStatus.ERROR -> R.string.error
+			})
 		}
 
 		override fun RecyclerDownloadCardBinding.unbindView(item: DownloadUI) {
 			novelTitle.text = null
 			chapterTitle.text = null
 			status.text = null
-			moreOptions.setOnClickListener(null)
-			popupMenu = null
 		}
 	}
 

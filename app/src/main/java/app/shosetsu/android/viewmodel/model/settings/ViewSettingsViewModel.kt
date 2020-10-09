@@ -3,7 +3,6 @@ package app.shosetsu.android.viewmodel.model.settings
 import android.content.Context
 import android.util.Log
 import android.widget.ArrayAdapter
-import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.launchIO
@@ -50,7 +49,7 @@ class ViewSettingsViewModel(
 				}
 
 				arrayAdapter = ArrayAdapter(
-						context!!,
+						context,
 						android.R.layout.simple_spinner_dropdown_item,
 						context.resources!!.getStringArray(R.array.marking_names)
 				)

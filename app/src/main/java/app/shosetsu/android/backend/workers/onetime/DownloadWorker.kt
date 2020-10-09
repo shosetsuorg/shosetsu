@@ -18,6 +18,7 @@ import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.toast
@@ -136,9 +137,8 @@ class DownloadWorker(
 				downloadsRepo.loadFirstDownload().let {
 					if (it is HResult.Success) {
 						val downloadEntity: DownloadEntity = it.data
-						downloadEntity.status = 1
+						downloadEntity.status = DownloadStatus.DOWNLOADING
 						downloadsRepo.update(downloadEntity)
-
 
 						notificationManager.notify(ID_CHAPTER_DOWNLOAD,
 								pr.setOngoing(true)
@@ -166,8 +166,6 @@ class DownloadWorker(
 
 						when (downloadResult) {
 							is HResult.Success -> {
-								downloadEntity.status = 2
-								downloadsRepo.update(downloadEntity)
 								downloadsRepo.delete(downloadEntity)
 								notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr
 										.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
@@ -175,7 +173,7 @@ class DownloadWorker(
 								)
 							}
 							is HError -> {
-								downloadEntity.status = -1
+								downloadEntity.status = DownloadStatus.ERROR
 								downloadsRepo.update(downloadEntity)
 								notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr
 										.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
