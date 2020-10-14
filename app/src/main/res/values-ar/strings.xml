@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Shosetsu</string>
-    <string name="catalogue">Catalogue</string>
+    <string name="catalogue">الدليل</string>
  
-    <string name="website">Website</string>
+    <string name="website">الموقع</string>
     <string name="website_url" translatable="false">https://shosetsu.app</string>
  
     <string name="github">Github</string>
@@ -12,104 +12,104 @@
     <string name="discord">Discord</string>
     <string name="discord_url" translatable="false">https://discord.gg/ttSX7gB</string>
  
-    <string name="patreon">Support the dev on Patreon</string>
+    <string name="patreon">ادعم التطوير على باتريون</string>
     <string name="patreon_url">https://www.patreon.com/doomsdayrs</string>
  
     <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
     <string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>
  
  
-    <string name="header_text">Novel reading right on your phone!</string>
+    <string name="header_text">اقرأ الروايات على هاتفك!</string>
     <string name="todo">TODO</string>
  
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
  
-    <string name="search">Search</string>
-    <string name="configure_parsers">configure_parsers</string>
-    <string name="filter">true</string>
+    <string name="search">ابحث</string>
+    <string name="configure_parsers">اضبط المحلل</string>
+    <string name="filter">مفعل</string>
  
     <!-- View Titles -->
-    <string name="my_library">My library</string>
-    <string name="updates">Updates</string>
-    <string name="catalogues">Catalogues</string>
-    <string name="extensions">Extensions</string>
-    <string name="downloads">Downloads</string>
-    <string name="configure_extensions">Configure Extensions</string>
+    <string name="my_library">مكتبتي</string>
+    <string name="updates">التحديثات</string>
+    <string name="catalogues">الأدلة</string>
+    <string name="extensions">الإضافات</string>
+    <string name="downloads">التنزيلات</string>
+    <string name="configure_extensions">اضبط الإضافات</string>
     <string name="migration_view">Migration View</string>
-    <string name="settings">Settings</string>
-    <string name="settings_download">Settings > Download</string>
-    <string name="settings_update">Settings > Update</string>
-    <string name="settings_view">Settings > View</string>
-    <string name="settings_reader">Settings > Reader</string>
-    <string name="settings_advanced">Settings > Advanced</string>
-    <string name="settings_info">Settings > Info</string>
-    <string name="settings_backup">Settings > Backup</string>
+    <string name="settings">الاعدادات</string>
+    <string name="settings_download">الاعدادات > التنزيل</string>
+    <string name="settings_update">الاعدادات > التحديث</string>
+    <string name="settings_view">الاعدادات > العرض</string>
+    <string name="settings_reader">الاعدادات > القارئ</string>
+    <string name="settings_advanced">الاعدادات > متقدم</string>
+    <string name="settings_info">الاعدادات > المعلومات</string>
+    <string name="settings_backup">الاعدادات > النسخ الاحتياطي</string>
  
  
     <!-- Reader Settings -->
-    <string name="reader_theme">Reader Theme</string>
-    <string name="text_size">Text size</string>
-    <string name="paragraph_spacing">Paragraph spacing</string>
-    <string name="paragraph_indent">Paragraph indent</string>
+    <string name="reader_theme">سمة القارئ</string>
+    <string name="text_size">حجم النص</string>
+    <string name="paragraph_spacing">فضاء الفقرة</string>
+    <string name="paragraph_indent">إزاحة الفقرة</string>
  
-    <string name="novel_title">Title:</string>
-    <string name="novel_author">Author(s):</string>
-    <string name="novel_description">Description</string>
-    <string name="download">Download</string>
-    <string name="download_directory">Download directory</string>
-    <string name="position">Position:</string>
-    <string name="backup_now">Backup Now</string>
-    <string name="pending">Pending</string>
-    <string name="downloaded">Downloaded</string>
-    <string name="bookmark">Bookmark</string>
+    <string name="novel_title">العنوان:</string>
+    <string name="novel_author">المؤلفون:</string>
+    <string name="novel_description">الوصف</string>
+    <string name="download">نزّل</string>
+    <string name="download_directory">دليل التنزيل</string>
+    <string name="position">الموقع:</string>
+    <string name="backup_now">أنشئ نسخة احتياطية</string>
+    <string name="pending">معلق</string>
+    <string name="downloaded">منزّل</string>
+    <string name="bookmark">علّم</string>
  
-    <string name="large">Large</string>
-    <string name="medium">Medium</string>
-    <string name="small">Small</string>
-    <string name="none">None</string>
+    <string name="large">كبير</string>
+    <string name="medium">متوسط</string>
+    <string name="small">صغير</string>
+    <string name="none">بدون</string>
  
-    <string name="select_all">Select All</string>
-    <string name="delete_selected">Delete Selected</string>
-    <string name="deselect_all">Deselect All</string>
-    <string name="download_selected">Download Selected</string>
-    <string name="retry">Retry</string>
-    <string name="mark_as">Mark As</string>
-    <string name="read">Read</string>
-    <string name="unread">Unread</string>
-    <string name="reading">Reading</string>
-    <string name="no_change">No change</string>
-    <string name="download_speed">Download speed</string>
+    <string name="select_all">حدد الكل</string>
+    <string name="delete_selected">احذف المحددة</string>
+    <string name="deselect_all">ألغ تحديد الكل</string>
+    <string name="download_selected">نزّل المحددة</string>
+    <string name="retry">أعد</string>
+    <string name="mark_as">علّمه ك</string>
+    <string name="read">مقروء</string>
+    <string name="unread">غير مقروء</string>
+    <string name="reading">أقرؤه</string>
+    <string name="no_change">لا تغير</string>
+    <string name="download_speed">سرعة التحميل</string>
  
     <!-- Migration View -->
-    <string name="starting">Starting</string>
+    <string name="starting">يبدأ</string>
  
     <!-- Settings Info -->
-    <string name="version">Version</string>
-    <string name="report_bug">Report bug</string>
-    <string name="author">Author</string>
+    <string name="version">الاصدار</string>
+    <string name="report_bug">أبلغ عن علة</string>
+    <string name="author">المالك</string>
     <string name="author_name" translatable="false">Doomsdayrs</string>
-    <string name="disclaimer">Disclaimer</string>
-    <string name="license">License</string>
+    <string name="disclaimer">تنازل</string>
+    <string name="license">الرخصة</string>
  
-    <string name="theme">Theme:</string>
-    <string name="select_between">Select between</string>
-    <string name="selection_options">Selection options</string>
-    <string name="remove">Remove</string>
-    <string name="no_results_found">No results found!</string>
-    <string name="library_updates">Library updates</string>
-    <string name="update_now">Update now</string>
-    <string name="migrate_sources">Migrate sources</string>
-    <string name="confirm">Confirm</string>
-    <string name="selection">Selection</string>
+    <string name="theme">السمة:</string>
+    <string name="select_between">حدد بين</string>
+    <string name="selection_options">خيارات التحديد</string>
+    <string name="remove">أزل</string>
+    <string name="no_results_found">لم يُعثر على نتائج</string>
+    <string name="library_updates">تحديثات المكتبة</string>
+    <string name="update_now">حدّث الآن</string>
+    <string name="migrate_sources">غيّر المصادر</string>
+    <string name="confirm">أكد</string>
+    <string name="selection">تحديد</string>
     <string name="map_to">Map to</string>
-    <string name="migrate_source">Migrate source</string>
-    <string name="site">Site:</string>
-    <string name="artist_s">Artist(s):</string>
-    <string name="reading_status">Reading Status</string>
-    <string name="publishing_state">Publishing State:</string>
+    <string name="migrate_source">تغيير المصدر</string>
+    <string name="site">الموقع</string>
+    <string name="artist_s">الرسامون:</string>
+    <string name="reading_status">حالة القراءة:</string>
+    <string name="publishing_state">حالة النشر</string>
  
-    <string name="marking_mode">Marking Method</string>
+    <string name="marking_mode">طرق التعليم</string>
  
     <string-array name="marking_names">
         <item>On View Selected</item>
@@ -131,16 +131,16 @@
  
  
     <!-- Publishing status-->
-    <string name="paused">Paused</string>
-    <string name="completed">Completed</string>
-    <string name="publishing">Publishing</string>
-    <string name="unknown">Unknown</string>
-    <string name="restore_now">Restore now</string>
+    <string name="paused">متوقفة</string>
+    <string name="completed">مكتملة</string>
+    <string name="publishing">يجري نشرها</string>
+    <string name="unknown">مجهولة</string>
+    <string name="restore_now">استعد الآن</string>
  
  
     <!-- Backup and restore -->
-    <string name="reading_file">Reading</string>
-    <string name="tap_to_scroll">Tap to scroll</string>
+    <string name="reading_file">يقرأ</string>
+    <string name="tap_to_scroll">أنقر للتمرير</string>
     <string name="inverted_swipe">Inverted Chapter Swipe</string>
     <string name="press_to_continue_to_next_chapter">Press to continue to next chapter!</string>
     <string name="open_in_webview">Open in WebView</string>
