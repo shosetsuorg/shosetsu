@@ -33,7 +33,7 @@
     <string name="my_library">مكتبتي</string>
     <string name="updates">التحديثات</string>
     <string name="catalogues">الأدلة</string>
-    <string name="extensions">الإضافات</string>
+    <string name="extensions">التوسعات</string>
     <string name="downloads">التنزيلات</string>
     <string name="configure_extensions">اضبط الإضافات</string>
     <string name="migration_view">عرض تغيير المصادر</string>
@@ -188,11 +188,11 @@
  
     <!-- Download options -->
     <string name="download_next_chapter">نزّ الفصل التالي</string>
-    <string name="download_next_5_chapters">Download next 5 chapters</string>
-    <string name="download_next_10_chapters">Download next 10 chapters</string>
-    <string name="download_custom_chapters">Download custom</string>
-    <string name="download_all_chapters">Download all</string>
-    <string name="download_unread_chapters">Download unread</string>
+    <string name="download_next_5_chapters">نزّل 5 فصول التالية</string>
+    <string name="download_next_10_chapters">نزّل 10 فصول التالية</string>
+    <string name="download_custom_chapters">نزّل عددا مخصصا من الفصول</string>
+    <string name="download_all_chapters">نزّل الكل</string>
+    <string name="download_unread_chapters">نزّ غير المقروءة</string>
  
     <string-array name="chapters_download_options">
         <item>@string/download_all_chapters</item>
@@ -204,48 +204,48 @@
     </string-array>
  
  
-    <string name="processing_data">Processing data</string>
-    <string name="update_complete">Completed Update</string>
-    <string name="update_not_found">No updates found</string>
+    <string name="processing_data">يعالج البيانات</string>
+    <string name="update_complete">اكتمل التحديث</string>
+    <string name="update_not_found">لم يُعثر على تحديثات</string>
     <string name="download_fail_delete">Failed to delete, next download will correct</string>
-    <string name="you_not_online">You are not online</string>
-    <string name="download_chapter_updates">Download chapter updates</string>
-    <string name="update_list">Update list</string>
-    <string name="updated_extensions_list">List updated!</string>
-    <string name="uninstall">Uninstall</string>
-    <string name="install">Install</string>
-    <string name="update">Update</string>
-    <string name="sus_scripts">These scripts seem suspicious, Confirm actions. Canceling will uninstall all</string>
-    <string name="accept">Accept</string>
-    <string name="disable">Disable</string>
-    <string name="accept_temp">Temporary</string>
-    <string name="sus_script_title">Suspicious Scripts</string>
-    <string name="action">Action</string>
-    <string name="accept_all">Accept All</string>
+    <string name="you_not_online">لست متصلا</string>
+    <string name="download_chapter_updates">نزّل تحديثات الفصل</string>
+    <string name="update_list">حدّث القائمة</string>
+    <string name="updated_extensions_list">!حُدثت القائمة</string>
+    <string name="uninstall">ألغ التثبيت</string>
+    <string name="install">ثبت</string>
+    <string name="update">حدّث</string>
+    <string name="sus_scripts">هذه البرامج النصية مشبوهة، أكد الاجرآت. الإلغاء سيزيلها كلها.</string>
+    <string name="accept">قبول</string>
+    <string name="disable">عطّل</string>
+    <string name="accept_temp">مؤقت</string>
+    <string name="sus_script_title">برامج نصية مشبوهة</string>
+    <string name="action">إجراء</string>
+    <string name="accept_all">قبول الكل</string>
     <string name="temp_all">Temp All</string>
-    <string name="disable_all">Disable All</string>
-    <string name="uninstall_all">Uninstall All</string>
-    <string name="enabled">Enabled</string>
-    <string name="disabled">Disabled</string>
-    <string name="reload_list">Reload List</string>
-    <string name="chapters">Chapters</string>
-    <string name="results">Results</string>
-    <string name="today">Today</string>
-    <string name="yesterday">Yesterday</string>
-    <string name="view">View</string>
-    <string name="advanced">Advanced</string>
-    <string name="info">Info</string>
-    <string name="backup">Backup</string>
-    <string name="loading">Loading…</string>
+    <string name="disable_all">عطّل الكل</string>
+    <string name="uninstall_all">ألغ تثبيت الكل</string>
+    <string name="enabled">مفعل</string>
+    <string name="disabled">معطل</string>
+    <string name="reload_list">أعد تحميل القائمة</string>
+    <string name="chapters">الفصول</string>
+    <string name="results">النتائج</string>
+    <string name="today">اليوم</string>
+    <string name="yesterday">البارحة</string>
+    <string name="view">اعرض</string>
+    <string name="advanced">متقدم</string>
+    <string name="info">معلونات</string>
+    <string name="backup">النسخ الاحتياطي</string>
+    <string name="loading">…يحمل</string>
     <string name="amoled">Amoled</string>
-    <string name="crashCommentPromt">Crash Report</string>
-    <string name="crashDialogText">The application has crashed. Send a report to the developers?</string>
-    <string name="columns_of_novel_listing_p">Columns of novels in portrait mode</string>
-    <string name="columns_of_novel_listing_h">Columns of novels in landscape mode</string>
-    <string name="columns_zero_automatic">0 means automatic</string>
+    <string name="crashCommentPromt">تقرير عن انهيار</string>
+    <string name="crashDialogText">انهار التطبيق. أتريد ارسال تقرير للمطورين؟</string>
+    <string name="columns_of_novel_listing_p">أعمة الروايات في الوضع الافقي</string>
+    <string name="columns_of_novel_listing_h">أعمدة الروايات في الوضع العمودي</string>
+    <string name="columns_zero_automatic">0 يعني تلقائيا</string>
  
-    <string name="normal">Normal</string>
-    <string name="compressed">Compressed</string>
+    <string name="normal">عادي</string>
+    <string name="compressed">مضغوط</string>
     <string name="novel_card_type_selector_title">Novel card type</string>
     <string name="novel_card_type_selector_desc">Swap between a grid or list for displaying novels</string>
     <string name="library_update">Updating Library</string>
@@ -295,10 +295,10 @@
     <string name="extension_name_desc">Title of this extension</string>
     <string name="extension_image_desc">Image of this extension</string>
     <string name="extension_settings_desc">Settings of this extension</string>
-    <string name="share">Share</string>
-    <string name="browse">Browse</string>
-    <string name="more">More</string>
-    <string name="sources">Sources</string>
+    <string name="share">شارك</string>
+    <string name="browse">تصفح</string>
+    <string name="more">المزيد</string>
+    <string name="sources">المصادر</string>
     <string name="restart">Restart</string>
     <string name="need_restart">Activity needs to restart</string>
     <string name="never_mind">Nevermind</string>
