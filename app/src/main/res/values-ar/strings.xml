@@ -36,7 +36,7 @@
     <string name="extensions">الإضافات</string>
     <string name="downloads">التنزيلات</string>
     <string name="configure_extensions">اضبط الإضافات</string>
-    <string name="migration_view">Migration View</string>
+    <string name="migration_view">عرض تغيير المصادر</string>
     <string name="settings">الاعدادات</string>
     <string name="settings_download">الاعدادات > التنزيل</string>
     <string name="settings_update">الاعدادات > التحديث</string>
@@ -142,36 +142,36 @@
     <string name="reading_file">يقرأ</string>
     <string name="tap_to_scroll">أنقر للتمرير</string>
     <string name="inverted_swipe">Inverted Chapter Swipe</string>
-    <string name="press_to_continue_to_next_chapter">Press to continue to next chapter!</string>
-    <string name="open_in_webview">Open in WebView</string>
-    <string name="open_in_browser">Open in browser</string>
-    <string name="open_in">Open in</string>
-    <string name="webview" translatable="false">WebView</string>
-    <string name="browser">Browser</string>
-    <string name="reader">Reader</string>
-    <string name="default_reader">Default</string>
-    <string name="markdown_reader">MarkDown reader</string>
-    <string name="chapters_unread_label">Chapters unread: </string>
-    <string name="remove_novel_cache">Remove Novel Cache</string>
+    <string name="press_to_continue_to_next_chapter">!اضغط للتناسل للفصل التالي</string>
+    <string name="open_in_webview">افتحها في عرض الويب</string>
+    <string name="open_in_browser">افتحها في متصفح</string>
+    <string name="open_in">افتحها في</string>
+    <string name="webview" translatable="false">عرض الريب</string>
+    <string name="browser">المتصفح</string>
+    <string name="reader">القارئ</string>
+    <string name="default_reader">القارئ</string>
+    <string name="markdown_reader">قارئ ماركداون</string>
+    <string name="chapters_unread_label"> :الفصول غير المقروءة</string>
+    <string name="remove_novel_cache">أزل تخزين المؤقت للرواية</string>
  
  
     <!-- App Update -->
-    <string name="app_update_check">App Update Check</string>
-    <string name="app_update_available">App Update available</string>
-    <string name="check_out_latest_app">Check out the latest version available of the app!</string>
-    <string name="app_update_unavaliable">App Update not available</string>
-    <string name="check_updates_later">No update available. Check for updates again later!</string>
-    <string name="update_app_now_question">Update app now?</string>
-    <string name="update_dismiss">Maybe later</string>
-    <string name="update_not_interested">Huh, not interested</string>
+    <string name="app_update_check">التحقق من وجود تحديث للتطبيق</string>
+    <string name="app_update_available">يتوفر تحديث للتطبيق</string>
+    <string name="check_out_latest_app">!تحقق من آخر اصدار متوفر للتطبيق</string>
+    <string name="app_update_unavaliable">لا يتوافر تحديث للتطبيق</string>
+    <string name="check_updates_later">!لا يتوافر تحديث للتطبيق. تحقق لاحقا</string>
+    <string name="update_app_now_question">أتريد تحديث التطبيق الآن؟</string>
+    <string name="update_dismiss">لاحقا</string>
+    <string name="update_not_interested">غير مهتم</string>
  
     <!-- Theme -->
-    <string name="night">Night</string>
-    <string name="light">Light</string>
+    <string name="night">ليلي</string>
+    <string name="light">فاتح</string>
     <string name="sepia">Sepia</string>
-    <string name="dark">Dark</string>
-    <string name="light_dark">Gray</string>
-    <string name="custom">Custom</string>
+    <string name="dark">داكن</string>
+    <string name="light_dark">رمادي</string>
+    <string name="custom">مخصص</string>
  
     <string-array name="reader_themes">
         <item>@string/night</item>
@@ -183,11 +183,11 @@
     </string-array>
  
     <!-- Shortcuts -->
-    <string name="refresh_shortcut">Check for updates</string>
-    <string name="action_global_search_hint">Global search…</string>
+    <string name="refresh_shortcut">تحقق من التحديثات</string>
+    <string name="action_global_search_hint">…البحث العالمي</string>
  
     <!-- Download options -->
-    <string name="download_next_chapter">Download next chapter</string>
+    <string name="download_next_chapter">نزّ الفصل التالي</string>
     <string name="download_next_5_chapters">Download next 5 chapters</string>
     <string name="download_next_10_chapters">Download next 10 chapters</string>
     <string name="download_custom_chapters">Download custom</string>
@@ -311,12 +311,12 @@
     <string name="repositories">Repositories</string>
     <string name="chapter_select_between_error_empty_adapter">AdapterList returned empty, Try again?</string>
     <string name="volume_scroll">Volume Scroll</string>
-    <string name="all">All</string>
-    <string name="about">About</string>
-    <string name="check_for_app_update">Check for app update</string>
-    <string name="source_licenses">Source Licenses</string>
-    <string name="inverse_selection">Inverse Selection</string>
-    <string name="remove_bookmark">Remove Bookmark</string>
+    <string name="all">الكل</string>
+    <string name="about">حول</string>
+    <string name="check_for_app_update">تحقق من وجود تحديث للتطبيق</string>
+    <string name="source_licenses">رخص الشفرة المصدرية</string>
+    <string name="inverse_selection">اعكس التحديد</string>
+    <string name="remove_bookmark">أزل العالامة</string>
  
  
     <array name="application_themes">
