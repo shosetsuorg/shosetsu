@@ -12,7 +12,7 @@
     <string name="discord">Discord</string>
     <string name="discord_url" translatable="false">https://discord.gg/ttSX7gB</string>
  
-    <string name="patreon">ادعم التطوير على باتريون</string>
+    <string name="patreon">ادعم التطوير التطبيق على باتريون</string>
     <string name="patreon_url">https://www.patreon.com/doomsdayrs</string>
  
     <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
@@ -20,10 +20,10 @@
  
  
     <string name="header_text">اقرأ الروايات على هاتفك!</string>
-    <string name="todo">TODO</string>
+    <string name="todo">أشغال قادمة</string>
  
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">افتح درج الملاحة</string>
+    <string name="navigation_drawer_close">أغلق درج الملاحة</string>
  
     <string name="search">ابحث</string>
     <string name="configure_parsers">اضبط المحلل</string>
