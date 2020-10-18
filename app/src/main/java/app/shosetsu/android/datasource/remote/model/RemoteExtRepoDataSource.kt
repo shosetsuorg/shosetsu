@@ -8,8 +8,8 @@ import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
+import app.shosetsu.lib.json.RepoIndex
 import okhttp3.OkHttpClient
-import org.json.JSONObject
 
 /*
  * This file is part of shosetsu.
@@ -37,14 +37,12 @@ class RemoteExtRepoDataSource(
 ) : IRemoteExtRepoDataSource {
 	override suspend fun downloadRepoData(
 			repo: RepositoryEntity,
-	): HResult<JSONObject> = try {
+	): HResult<RepoIndex> = try {
 		@Suppress("BlockingMethodInNonBlockingContext")
 		(successResult(
-				JSONObject(
-						client.quickie(
-								"${repo.url}${REPO_DIR_STRUCT}index.json"
-						).body!!.string()
-				)
+				RepoIndex(client.quickie(
+						"${repo.url}${REPO_DIR_STRUCT}index.json"
+				).body!!.string())
 		))
 	} catch (e: Exception) {
 		errorResult(ErrorKeys.ERROR_GENERAL, e.message ?: "Unknown general error")

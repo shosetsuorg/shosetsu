@@ -3,7 +3,7 @@ package app.shosetsu.android.domain.repository.base
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.RepositoryEntity
-import org.json.JSONObject
+import app.shosetsu.lib.json.RepoIndex
 
 /*
  * This file is part of shosetsu.
@@ -33,7 +33,7 @@ import org.json.JSONObject
  */
 interface IExtRepoRepository {
 	/** Loads repository data */
-	suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<JSONObject>
+	suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<RepoIndex>
 
 	/** Loads all repositories present */
 	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>

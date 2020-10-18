@@ -4,7 +4,6 @@ import android.util.Log
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.HResult.Success
 import app.shosetsu.android.common.ext.containsName
-import app.shosetsu.android.common.ext.forEachTyped
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.model.local.ExtensionEntity
@@ -13,10 +12,8 @@ import app.shosetsu.android.domain.repository.base.IExtLibRepository
 import app.shosetsu.android.domain.repository.base.IExtRepoRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.lib.Version
-import app.shosetsu.lib.json.*
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
+import app.shosetsu.lib.json.RepoExtension
+import app.shosetsu.lib.json.RepoLibrary
 
 /*
  * This file is part of shosetsu.
@@ -62,9 +59,9 @@ class InitializeExtensionsUseCase(
                     extRepoRepo.loadRepoDataJSON(repo)
                             .takeIf { it is Success }
                             ?.let { (it as Success).data }
-                            ?.let { indexJSON ->
-                                updateLibraries(indexJSON, repo, progressUpdate)
-                                updateScript(indexJSON, repo)
+                            ?.let { repoIndex ->
+                                updateLibraries(repoIndex.libraries, repo, progressUpdate)
+                                updateScript(repoIndex.extensions, repo)
                             }
                 }
             else progressUpdate("Failed to get repos")
@@ -82,22 +79,10 @@ class InitializeExtensionsUseCase(
      * @param progressUpdate Upstream reporting
      */
     private suspend fun updateLibraries(
-            indexJSON: JSONObject,
+            indexJSON: List<RepoLibrary>,
             repo: RepositoryEntity,
             progressUpdate: (String) -> Unit,
     ) {
-        // Updates libraries
-
-        // Array of libraries
-        val libJSONArray: JSONArray
-        try {
-            libJSONArray = indexJSON
-                    .getJSONArray("libraries")
-        } catch (e: JSONException) {
-            Log.e(logID(), "Did not find libraries array", e)
-            return
-        }
-
         // Libraries in database
         extLibRepo.loadExtLibByRepo(repo)
                 .takeIf { it is Success }?.let { (it as Success).data }
@@ -106,47 +91,33 @@ class InitializeExtensionsUseCase(
                     val libsNotPresent = ArrayList<ExtLibEntity>()
 
                     // Loops through the json array of libraries
-                    for (index in 0 until libJSONArray.length()) {
-                        (libJSONArray[index] as JSONObject).let letFunction@{
-                            val name: String
-                            try {
-                                name = it.getString(J_AUTHOR)
-                            } catch (e: JSONException) {
-                                Log.e(logID(), "No name found", e)
-                                return@letFunction
-                            }
-                            val position = libEntities.containsName(name)
+                    for ((name, indexVersion) in indexJSON) {
+                        val position = libEntities.containsName(name)
 
-                            var install = false
-                            var extensionLibraryEntity: ExtLibEntity? = null
-                            var version = Version(0, 0, 0)
+                        var install = false
+                        var extensionLibraryEntity: ExtLibEntity? = null
+                        var version = Version(0, 0, 0)
 
-                            if (position != -1) {
-                                //  Checks if an update need
-                                try {
-                                    version = Version(it.getString(J_VERSION))
-                                } catch (e: JSONException) {
-                                    Log.e(logID(), "Error ", e)
-                                    return@letFunction
-                                }
-                                extensionLibraryEntity = libEntities[position]
-                                if (version != extensionLibraryEntity.version)
-                                    install = true
-                            } else {
-                                install = false
-                            }
-
-                            // If install is true, then it adds it to the notPresent
-                            if (install)
-                                libsNotPresent.add(
-                                        extensionLibraryEntity ?: ExtLibEntity(
-                                                scriptName = name,
-                                                version = version,
-                                                repoID = repo.id
-                                        )
-                                )
-
+                        if (position != -1) {
+                            //  Checks if an update need
+                            version = indexVersion
+                            extensionLibraryEntity = libEntities[position]
+                            if (version != extensionLibraryEntity.version)
+                                install = true
+                        } else {
+                            install = false
                         }
+
+                        // If install is true, then it adds it to the notPresent
+                        if (install)
+                            libsNotPresent.add(
+                                    extensionLibraryEntity ?: ExtLibEntity(
+                                            scriptName = name,
+                                            version = version,
+                                            repoID = repo.id
+                                    )
+                            )
+
                     }
 
                     // For each library not present, installs
@@ -157,76 +128,18 @@ class InitializeExtensionsUseCase(
                 }
     }
 
-    private suspend fun updateScript(indexJSON: JSONObject, repo: RepositoryEntity) {
-        // Updates Script Info
-        val scriptsArray: JSONArray
-        try {
-            scriptsArray = indexJSON.getJSONArray("scripts")
-        } catch (e: JSONException) {
-            Log.e(logID(), "JSON error", e)
-            return
-        }
-        val presentExtensions = ArrayList<Int>() // Extensions from repo
-        scriptsArray.forEachTyped { script: JSONObject ->
-            val formatterID: Int
-            val formatterName: String
-            val fileName: String
-            val imageURL: String
-            val lang: String
-            val version: String
-            val md5: String
+    private suspend fun updateScript(indexJSON: List<RepoExtension>, repo: RepositoryEntity) {
 
-            try {
-                formatterID = script.getInt(J_ID)
-            } catch (e: JSONException) {
-                Log.e(logID(), "Error getting id", e)
-                return@forEachTyped
-            }
-            presentExtensions.add(formatterID)
-            try {
-                formatterName = script.getString(J_NAME)
-            } catch (e: JSONException) {
-                Log.e(logID(), "Error getting name", e)
-                return@forEachTyped
-            }
-            try {
-                fileName = script.getString(J_FILE_NAME)
-            } catch (e: JSONException) {
-                Log.e(logID(), "Error getting fileName", e)
-                return@forEachTyped
-            }
-            try {
-                imageURL = script.getString(J_IMAGE_URL)
-            } catch (e: JSONException) {
-                Log.e(logID(), "Error getting imageURL", e)
-                return@forEachTyped
-            }
-            try {
-                lang = script.getString(J_LANGUAGE)
-            } catch (e: JSONException) {
-                Log.e(logID(), "Error getting lang", e)
-                return@forEachTyped
-            }
-            try {
-                version = script.getString(J_VERSION)
-            } catch (e: JSONException) {
-                Log.e(logID(), "Error getting version", e)
-                return@forEachTyped
-            }
-            try {
-                md5 = script.getString(J_MD5)
-            } catch (e: JSONException) {
-                Log.e(logID(), "Error getting md5", e)
-                return@forEachTyped
-            }
+        val presentExtensions = ArrayList<Int>() // Extensions from repo
+        indexJSON.forEach { (id, name, fileName, imageURL, lang, _, libVersion, md5) ->
             extRepo.insertOrUpdate(ExtensionEntity(
-                    id = formatterID,
+                    id = id,
                     repoID = repo.id,
-                    name = formatterName,
+                    name = name,
                     fileName = fileName,
                     imageURL = imageURL,
                     lang = lang,
-                    repositoryVersion = Version(version),
+                    repositoryVersion = libVersion,
                     md5 = md5
             ))
         }

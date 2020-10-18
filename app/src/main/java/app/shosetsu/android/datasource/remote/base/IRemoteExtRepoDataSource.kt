@@ -2,7 +2,7 @@ package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.RepositoryEntity
-import org.json.JSONObject
+import app.shosetsu.lib.json.RepoIndex
 
 /*
  * This file is part of shosetsu.
@@ -26,8 +26,8 @@ import org.json.JSONObject
  * 13 / 05 / 2020
  */
 interface IRemoteExtRepoDataSource {
-	/**
-	 * Download the current repository data
-	 */
-	suspend fun downloadRepoData(repo: RepositoryEntity): HResult<JSONObject>
+    /**
+     * Download the current repository data
+     */
+    suspend fun downloadRepoData(repo: RepositoryEntity): HResult<RepoIndex>
 }

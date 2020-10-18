@@ -6,7 +6,7 @@ import app.shosetsu.android.datasource.local.base.ILocalExtRepoDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.domain.repository.base.IExtRepoRepository
-import org.json.JSONObject
+import app.shosetsu.lib.json.RepoIndex
 
 /*
  * This file is part of shosetsu.
@@ -33,7 +33,7 @@ class ExtRepoRepository(
 		private val databaseSource: ILocalExtRepoDataSource,
 		private val remoteSource: IRemoteExtRepoDataSource
 ) : IExtRepoRepository {
-	override suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<JSONObject> =
+	override suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<RepoIndex> =
 			remoteSource.downloadRepoData(repositoryEntity)
 
 	override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
