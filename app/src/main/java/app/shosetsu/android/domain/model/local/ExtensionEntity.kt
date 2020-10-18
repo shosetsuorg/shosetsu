@@ -7,6 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.lib.Version
 import java.io.Serializable
 
 /*
@@ -35,54 +36,64 @@ import java.io.Serializable
  * This class represents a formatter
  */
 @Entity(
-		tableName = "extensions",
-		foreignKeys = [
-			ForeignKey(
-					entity = RepositoryEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["repoID"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("repoID")]
+        tableName = "extensions",
+        foreignKeys = [
+                ForeignKey(
+                        entity = RepositoryEntity::class,
+                        parentColumns = ["id"],
+                        childColumns = ["repoID"],
+                        onDelete = ForeignKey.CASCADE
+                )
+        ],
+        indices = [Index("repoID")]
 )
 
 data class ExtensionEntity(
-		/** Extension ID */
-		@PrimaryKey val id: Int,
-		/** Repository extension belongs too*/
-		val repoID: Int,
-		/** Name of the extension, can be changed */
-		@NonNull var name: String = "",
-		/** FileName of the extension */
-		@NonNull val fileName: String = "",
-		/** Image URL of the extension*/
-		var imageURL: String? = null,
-		/** The language of the extension */
-		val lang: String = "",
-		/** If extension is enabled */
-		var enabled: Boolean = false,
-		/** If extension is installed*/
-		var installed: Boolean = false,
-		/** Version currently installed */
-		var installedVersion: String? = null,
-		/** Version in repository*/
-		var repositoryVersion: String = "0.0.0",
-		/** MD5 to check against */
-		var md5: String = "",
+        /** Extension ID */
+        @PrimaryKey val id: Int,
+
+        /** Repository extension belongs too*/
+        val repoID: Int,
+
+        /** Name of the extension, can be changed */
+        @NonNull var name: String = "",
+
+        /** FileName of the extension */
+        @NonNull val fileName: String = "",
+
+        /** Image URL of the extension*/
+        var imageURL: String? = null,
+
+        /** The language of the extension */
+        val lang: String = "",
+
+        /** If extension is enabled */
+        var enabled: Boolean = false,
+
+        /** If extension is installed*/
+        var installed: Boolean = false,
+
+        /** Version currently installed */
+        var installedVersion: Version? = null,
+
+        /** Version in repository*/
+        var repositoryVersion: Version = Version(0, 0, 0),
+
+        /** MD5 to check against */
+        var md5: String = "",
 ) : Serializable, Convertible<ExtensionUI> {
-	override fun convertTo(): ExtensionUI =
-			ExtensionUI(
-					id,
-					repoID,
-					name,
-					fileName,
-					imageURL,
-					lang,
-					enabled,
-					installed,
-					installedVersion,
-					repositoryVersion,
-					md5
-			)
+        override fun convertTo(): ExtensionUI =
+                ExtensionUI(
+                        id,
+                        repoID,
+                        name,
+                        fileName,
+                        imageURL,
+                        lang,
+                        enabled,
+                        installed,
+                        installedVersion,
+                        repositoryVersion,
+                        md5
+                )
 }

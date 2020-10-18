@@ -70,25 +70,24 @@ class ExtensionsRepository(
 			)) {
 				is HResult.Success -> {
 					try {
-						val formatter = LuaExtension(result.data)
+                        val formatter = LuaExtension(result.data)
 
-						// Write to storage/cache
-						memorySource.putFormatterInMemory(formatter)
-						fileSource.writeFormatter(extensionEntity.fileName, result.data)
+                        // Write to storage/cache
+                        memorySource.putFormatterInMemory(formatter)
+                        fileSource.writeFormatter(extensionEntity.fileName, result.data)
 
-						// Update database info
-						formatter.metaData!!.let { meta ->
-							val version = meta.getString("version")
-							extensionEntity.installedVersion = version
-							extensionEntity.repositoryVersion = version
-						}
-						extensionEntity.name = formatter.name
-						extensionEntity.imageURL = formatter.imageURL
-						extensionEntity.installed = true
-						extensionEntity.enabled = true
-						databaseSource.updateExtension(extensionEntity)
-						return successResult("")
-					} catch (e: IllegalArgumentException) {
+                        // Update database info
+                        formatter.exMetaData.let { meta ->
+                            extensionEntity.installedVersion = meta.version
+                            extensionEntity.repositoryVersion = meta.version
+                        }
+                        extensionEntity.name = formatter.name
+                        extensionEntity.imageURL = formatter.imageURL
+                        extensionEntity.installed = true
+                        extensionEntity.enabled = true
+                        databaseSource.updateExtension(extensionEntity)
+                        return successResult("")
+                    } catch (e: IllegalArgumentException) {
 						return errorResult(ERROR_LUA_BROKEN, e).also { logError { it } }
 					} catch (e: Exception) {
 						return errorResult(ERROR_GENERAL, e).also { logError { it } }

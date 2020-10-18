@@ -14,6 +14,7 @@ import app.shosetsu.android.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.domain.repository.base.IExtLibRepository
+import app.shosetsu.lib.Version
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -58,7 +59,7 @@ class ExtLibRepository(
 			val data = it
 			val json = JSONObject(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
 			try {
-				extLibEntity.version = json.getString("version")
+				extLibEntity.version = Version(json.getString("version"))
 				databaseSource.updateOrInsert(extLibEntity)
 				cacheSource.setLibrary(extLibEntity.scriptName, data)
 				fileSource.writeExtLib(extLibEntity.scriptName, data)

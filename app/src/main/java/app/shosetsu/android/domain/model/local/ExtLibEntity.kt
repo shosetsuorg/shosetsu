@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import app.shosetsu.lib.Version
 import java.io.Serializable
 
 /*
@@ -44,6 +45,6 @@ import java.io.Serializable
 data class ExtLibEntity(
 		@PrimaryKey
 		val scriptName: String,
-		var version: String,
+		var version: Version,
 		var repoID: Int,
 ) : Serializable
