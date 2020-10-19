@@ -1,34 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Shosetsu</string>
     <string name="catalogue">الدليل</string>
- 
     <string name="website">الموقع</string>
-    <string name="website_url" translatable="false">https://shosetsu.app</string>
- 
     <string name="github">Github</string>
-    <string name="github_url" translatable="false">https://github.com/shosetsuorg/android-app</string>
-    <string name="extensions_url" translatable="false">https://github.com/shosetsuorg/extensions</string>
- 
     <string name="discord">Discord</string>
-    <string name="discord_url" translatable="false">https://discord.gg/ttSX7gB</string>
- 
     <string name="patreon">ادعم التطوير التطبيق على باتريون</string>
     <string name="patreon_url">https://www.patreon.com/doomsdayrs</string>
- 
-    <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
-    <string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>
- 
- 
     <string name="header_text">اقرأ الروايات على هاتفك!</string>
     <string name="todo">أشغال قادمة</string>
- 
     <string name="navigation_drawer_open">افتح درج الملاحة</string>
     <string name="navigation_drawer_close">أغلق درج الملاحة</string>
- 
     <string name="search">ابحث</string>
     <string name="configure_parsers">اضبط المحلل</string>
     <string name="filter">مفعل</string>
- 
     <!-- View Titles -->
     <string name="my_library">مكتبتي</string>
     <string name="updates">التحديثات</string>
@@ -38,21 +23,18 @@
     <string name="configure_extensions">اضبط الإضافات</string>
     <string name="migration_view">عرض تغيير المصادر</string>
     <string name="settings">الاعدادات</string>
-    <string name="settings_download">الاعدادات > التنزيل</string>
-    <string name="settings_update">الاعدادات > التحديث</string>
-    <string name="settings_view">الاعدادات > العرض</string>
-    <string name="settings_reader">الاعدادات > القارئ</string>
-    <string name="settings_advanced">الاعدادات > متقدم</string>
-    <string name="settings_info">الاعدادات > المعلومات</string>
-    <string name="settings_backup">الاعدادات > النسخ الاحتياطي</string>
- 
- 
+    <string name="settings_download">الاعدادات &gt; التنزيل</string>
+    <string name="settings_update">الاعدادات &gt; التحديث</string>
+    <string name="settings_view">الاعدادات &gt; العرض</string>
+    <string name="settings_reader">الاعدادات &gt; القارئ</string>
+    <string name="settings_advanced">الاعدادات &gt; متقدم</string>
+    <string name="settings_info">الاعدادات &gt; المعلومات</string>
+    <string name="settings_backup">الاعدادات &gt; النسخ الاحتياطي</string>
     <!-- Reader Settings -->
     <string name="reader_theme">سمة القارئ</string>
     <string name="text_size">حجم النص</string>
     <string name="paragraph_spacing">فضاء الفقرة</string>
     <string name="paragraph_indent">إزاحة الفقرة</string>
- 
     <string name="novel_title">العنوان:</string>
     <string name="novel_author">المؤلفون:</string>
     <string name="novel_description">الوصف</string>
@@ -63,12 +45,10 @@
     <string name="pending">معلق</string>
     <string name="downloaded">منزّل</string>
     <string name="bookmark">علّم</string>
- 
     <string name="large">كبير</string>
     <string name="medium">متوسط</string>
     <string name="small">صغير</string>
     <string name="none">بدون</string>
- 
     <string name="select_all">حدد الكل</string>
     <string name="delete_selected">احذف المحددة</string>
     <string name="deselect_all">ألغ تحديد الكل</string>
@@ -80,18 +60,14 @@
     <string name="reading">أقرؤه</string>
     <string name="no_change">لا تغير</string>
     <string name="download_speed">سرعة التحميل</string>
- 
     <!-- Migration View -->
     <string name="starting">يبدأ</string>
- 
     <!-- Settings Info -->
     <string name="version">الاصدار</string>
     <string name="report_bug">أبلغ عن علة</string>
     <string name="author">المالك</string>
-    <string name="author_name" translatable="false">Doomsdayrs</string>
     <string name="disclaimer">تنازل</string>
     <string name="license">الرخصة</string>
- 
     <string name="theme">السمة:</string>
     <string name="select_between">حدد بين</string>
     <string name="selection_options">خيارات التحديد</string>
@@ -102,42 +78,34 @@
     <string name="migrate_sources">غيّر المصادر</string>
     <string name="confirm">أكد</string>
     <string name="selection">تحديد</string>
-    <string name="map_to">Map to</string>
+    <string name="map_to">تعيين إلى</string>
     <string name="migrate_source">تغيير المصدر</string>
     <string name="site">الموقع</string>
     <string name="artist_s">الرسامون:</string>
     <string name="reading_status">حالة القراءة:</string>
     <string name="publishing_state">حالة النشر</string>
- 
     <string name="marking_mode">طرق التعليم</string>
- 
     <string-array name="marking_names">
         <item>On View Selected</item>
         <item>On View Scrolled</item>
     </string-array>
- 
     <string-array name="sizes_no_none">
         <item>@string/small</item>
         <item>@string/medium</item>
         <item>@string/large</item>
     </string-array>
- 
     <string-array name="sizes_with_none">
         <item>@string/none</item>
         <item>@string/small</item>
         <item>@string/medium</item>
         <item>@string/large</item>
     </string-array>
- 
- 
     <!-- Publishing status-->
     <string name="paused">متوقفة</string>
     <string name="completed">مكتملة</string>
     <string name="publishing">يجري نشرها</string>
     <string name="unknown">مجهولة</string>
     <string name="restore_now">استعد الآن</string>
- 
- 
     <!-- Backup and restore -->
     <string name="reading_file">يقرأ</string>
     <string name="tap_to_scroll">أنقر للتمرير</string>
@@ -146,15 +114,12 @@
     <string name="open_in_webview">افتحها في عرض الويب</string>
     <string name="open_in_browser">افتحها في متصفح</string>
     <string name="open_in">افتحها في</string>
-    <string name="webview" translatable="false">عرض الريب</string>
     <string name="browser">المتصفح</string>
     <string name="reader">القارئ</string>
     <string name="default_reader">القارئ</string>
     <string name="markdown_reader">قارئ ماركداون</string>
     <string name="chapters_unread_label"> :الفصول غير المقروءة</string>
     <string name="remove_novel_cache">أزل تخزين المؤقت للرواية</string>
- 
- 
     <!-- App Update -->
     <string name="app_update_check">التحقق من وجود تحديث للتطبيق</string>
     <string name="app_update_available">يتوفر تحديث للتطبيق</string>
@@ -164,15 +129,13 @@
     <string name="update_app_now_question">أتريد تحديث التطبيق الآن؟</string>
     <string name="update_dismiss">لاحقا</string>
     <string name="update_not_interested">غير مهتم</string>
- 
     <!-- Theme -->
     <string name="night">ليلي</string>
     <string name="light">فاتح</string>
-    <string name="sepia">Sepia</string>
+    <string name="sepia">بني داكن</string>
     <string name="dark">داكن</string>
     <string name="light_dark">رمادي</string>
     <string name="custom">مخصص</string>
- 
     <string-array name="reader_themes">
         <item>@string/night</item>
         <item>@string/light</item>
@@ -181,11 +144,9 @@
         <item>@string/light_dark</item>
         <item>@string/custom</item>
     </string-array>
- 
     <!-- Shortcuts -->
     <string name="refresh_shortcut">تحقق من التحديثات</string>
     <string name="action_global_search_hint">…البحث العالمي</string>
- 
     <!-- Download options -->
     <string name="download_next_chapter">نزّ الفصل التالي</string>
     <string name="download_next_5_chapters">نزّل 5 فصول التالية</string>
@@ -193,7 +154,6 @@
     <string name="download_custom_chapters">نزّل عددا مخصصا من الفصول</string>
     <string name="download_all_chapters">نزّل الكل</string>
     <string name="download_unread_chapters">نزّ غير المقروءة</string>
- 
     <string-array name="chapters_download_options">
         <item>@string/download_all_chapters</item>
         <item>@string/download_unread_chapters</item>
@@ -202,8 +162,6 @@
         <item>@string/download_next_5_chapters</item>
         <item>@string/download_next_chapter</item>
     </string-array>
- 
- 
     <string name="processing_data">يعالج البيانات</string>
     <string name="update_complete">اكتمل التحديث</string>
     <string name="update_not_found">لم يُعثر على تحديثات</string>
@@ -243,7 +201,6 @@
     <string name="columns_of_novel_listing_p">أعمدة الروايات في الوضع الافقي</string>
     <string name="columns_of_novel_listing_h">أعمدة الروايات في الوضع العمودي</string>
     <string name="columns_zero_automatic">0 يعني تلقائيا</string>
- 
     <string name="normal">عادي</string>
     <string name="compressed">مضغوط</string>
     <string name="novel_card_type_selector_title">نوع بطاقة الرواية</string>
@@ -254,7 +211,7 @@
     <string name="invalid_selection">اختيار غير صالح</string>
     <string name="set_to">عين الى:</string>
     <string name="suggest_token">In Advanced settings, Apply a github token for the fancy view uwu</string>
-    <string name="no_empty_key">Can\'t take an empty key!</string>
+    <string name="no_empty_key">لا يمكن التقاط مفتاح فارغ!</string>
     <string name="github_token_input_desc">Enable Shosetsu to access Github with an Github token</string>
     <string name="github_token_input_title">GitHub Oauth</string>
     <string name="apply">طبق</string>
@@ -264,23 +221,22 @@
     <string name="updating">يحدث</string>
     <string name="intro_title_greet">!Shosetsu مرحبا بك في</string>
     <string name="intro_what_is_app">؟shosetsu ماهو</string>
-    <string name="intro_what_is_app_desc">Shosetsu is a novel reading application, duh. Let\'s move on and read the license</string>
+    <string name="intro_what_is_app_desc">Shosetsu هو تطبيق قراءة روايات. دعونا ننتقل ونقرأ الترخيص</string>
     <string name="intro_perm_title">الأذون</string>
     <string name="intro_perm_desc">Shosetsu is highly function, thus, we need ALL YOUR PERMS</string>
     <string name="intro_happy_end">!مذهل</string>
-    <string name="intro_happy_end_desc">That\'s it for an intro, Read well!</string>
+    <string name="intro_happy_end_desc">كانت هذه المقدمة، اقرأ بتمعن!</string>
     <string name="text_custom_color">لون النص</string>
     <string name="text_custom_background_color">لون الخلفية</string>
     <string name="custom_theme_warn">للسمة المخصصة فقط</string>
-    <string name="backup_settings_option">Backup Settings?</string>
-    <string name="backup_chapters_option">Backup Chapters?</string>
-    <string name="backup_chapters_option_description">Default on, off will not save your progress</string>
-    <string name="backup_settings_option_desc">Default is off, which will not save your settings</string>
-    <string name="backup_quick_option">Quick Backup</string>
-    <string name="backup_quick_option_desc">Backups URL and simple data only. Will require network reload on restore</string>
+    <string name="backup_settings_option">أتريد نسخا احتياطيا للإعدادات؟</string>
+    <string name="backup_chapters_option">أتريد نسخا احتياطيا للفصول؟</string>
+    <string name="backup_chapters_option_description">مفعل افتراضيا، إن عطلته لن يحفظ تقدمك</string>
+    <string name="backup_settings_option_desc">معطل افتراضيا، أي لن تحفظ إعداداتك</string>
+    <string name="backup_quick_option">نسخ احتياطي سريع</string>
+    <string name="backup_quick_option_desc">ينسخ احتياطيا الروابط والبيانات البسيطة فقط. يحتاج الى الشبكة عند الاستعادة</string>
     <string name="accept_all_catalogue_choice_hint">Press this to confirm the catalogue for all</string>
- 
-    <string name="regret">This feature have not been reintroduced yet due to time constraints :(</string>
+    <string name="regret">لم تقدم هذه الميزة بسبب ضيق الوقت :(</string>
     <string name="installing">يثبت</string>
     <string name="toggle_bookmark">بدّل تعليمه</string>
     <string name="mark_read">علّمه كمقروء</string>
@@ -304,7 +260,7 @@
     <string name="never_mind">لا يهم</string>
     <string name="in_library">موجود في المكتبة</string>
     <string name="add_to_library">أضف للمكتبة</string>
-    <string name="obsolete_extension">Obsolete extension!</string>
+    <string name="obsolete_extension">توسعة ميتة!</string>
     <string name="ext_not_installed">لم تثبت التوسعة</string>
     <string name="id_label">:معرف</string>
     <string name="negative_one">-1</string>
@@ -317,35 +273,4 @@
     <string name="source_licenses">رخص الشفرة المصدرية</string>
     <string name="inverse_selection">اعكس التحديد</string>
     <string name="remove_bookmark">أزل العالامة</string>
- 
- 
-    <array name="application_themes">
-        <item>@string/light</item>
-        <item>@string/amoled</item>
-    </array>
- 
-    <array name="sus_array_actions">
-        <item>@string/accept</item>
-        <item>@string/accept_temp</item>
-        <item>@string/disable</item>
-        <item>@string/uninstall</item>
-    </array>
- 
-    <array name="browse_tab_names">
-        <item>@string/sources</item>
-        <item>@string/extensions</item>
-    </array>
- 
-    <array name="novel_fragment_names">
-        <item>@string/info</item>
-        <item>@string/chapters</item>
-    </array>
- 
-    <array name="novel_card_types">
-        <item>@string/normal</item>
-        <item>@string/compressed</item>
-    </array>
 </resources>
- 
- 
- 
