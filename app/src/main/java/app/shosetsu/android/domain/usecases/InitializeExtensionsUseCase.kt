@@ -4,6 +4,7 @@ import android.util.Log
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.HResult.Success
 import app.shosetsu.android.common.ext.containsName
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.model.local.ExtensionEntity
@@ -56,13 +57,17 @@ class InitializeExtensionsUseCase(
 
                     progressUpdate("Checking $repoName")
                     // gets the latest list for the repo
-                    extRepoRepo.loadRepoDataJSON(repo)
-                            .takeIf { it is Success }
+                    val result = extRepoRepo.loadRepoData(repo)
+                    result.takeIf { it is Success }
                             ?.let { (it as Success).data }
                             ?.let { repoIndex ->
                                 updateLibraries(repoIndex.libraries, repo, progressUpdate)
                                 updateScript(repoIndex.extensions, repo)
                             }
+                            ?: result.takeIf { it is HResult.Error }?.let { (it as HResult.Error) }?.let {
+                                logE("Exception! ${it.code} : ${it.message}", it.error)
+                            }
+
                 }
             else progressUpdate("Failed to get repos")
         } else {

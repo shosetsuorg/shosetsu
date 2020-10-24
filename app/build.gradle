@@ -109,7 +109,7 @@ dependencies {
 
 	// Core libraries
 	implementation 'org.luaj:luaj-jse:3.0.1'
-	implementation 'com.github.shosetsuorg:kotlin-lib:1.0.0-rc36'
+	implementation 'com.github.shosetsuorg:kotlin-lib:1.0.0-rc41'
 
 	// Image loading
 	implementation 'com.squareup.picasso:picasso:2.71828'
@@ -194,7 +194,7 @@ dependencies {
 	implementation "com.mikepenz:fastadapter-extensions-utils:${latestFastAdapterRelease}"
 
 	// Guava cache
-	implementation 'com.google.guava:guava:29.0-android'
+	implementation 'com.google.guava:guava:30.0-android'
 
 	// kode-in
 	implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
@@ -208,7 +208,6 @@ dependencies {
 	implementation "androidx.room:room-ktx:$room_version"
 	implementation "androidx.work:work-runtime-ktx:2.4.0"
 	implementation "androidx.collection:collection-ktx:1.1.0"
-
 
 	// FasterXML
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3'

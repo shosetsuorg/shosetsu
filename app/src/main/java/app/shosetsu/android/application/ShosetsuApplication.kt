@@ -122,7 +122,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 
         launchIO {
             initializeExtensionsUseCase {
-                logI(it)
+                logI("Initialize: $it")
             }
         }
     }

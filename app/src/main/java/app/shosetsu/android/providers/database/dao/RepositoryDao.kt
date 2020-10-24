@@ -83,7 +83,7 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 		val branch = if (BuildConfig.DEBUG) "dev" else "master"
 		val name = if (BuildConfig.DEBUG) "dev" else "master"
 		val repo = RepositoryEntity(
-				url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",
+				url = "https://raw.githubusercontent.com/doomsdayrs/shosetsu-extensions/$branch",
 				name = name
 		)
 		createIfNotExist(repo)
@@ -94,7 +94,7 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 	suspend fun createIfNotExist(repositoryEntity: RepositoryEntity): Int {
 		val tuple = repositoryCountAndROWIDFromURL(repositoryEntity.url)
 		if (tuple.count == 0)
-			return insertRepositoryAndReturn(repositoryEntity).id!!
+			return insertRepositoryAndReturn(repositoryEntity).id
 		return tuple.id
 	}
 }

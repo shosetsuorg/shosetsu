@@ -33,7 +33,7 @@ import app.shosetsu.lib.json.RepoIndex
  */
 interface IExtRepoRepository {
 	/** Loads repository data */
-	suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<RepoIndex>
+    suspend fun loadRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex>
 
 	/** Loads all repositories present */
 	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>

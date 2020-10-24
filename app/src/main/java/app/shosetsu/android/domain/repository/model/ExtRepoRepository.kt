@@ -33,13 +33,13 @@ class ExtRepoRepository(
 		private val databaseSource: ILocalExtRepoDataSource,
 		private val remoteSource: IRemoteExtRepoDataSource
 ) : IExtRepoRepository {
-	override suspend fun loadRepoDataJSON(repositoryEntity: RepositoryEntity): HResult<RepoIndex> =
-			remoteSource.downloadRepoData(repositoryEntity)
+    override suspend fun loadRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex> =
+            remoteSource.downloadRepoData(repositoryEntity)
 
-	override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
-			databaseSource.loadRepositories()
+    override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
+            databaseSource.loadRepositories()
 
-	override suspend fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>> =
-			databaseSource.loadRepositoriesLive()
+    override suspend fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>> =
+            databaseSource.loadRepositoriesLive()
 
 }

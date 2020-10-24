@@ -33,19 +33,19 @@ import okhttp3.OkHttpClient
  * 13 / 05 / 2020
  */
 class RemoteExtRepoDataSource(
-		private val client: OkHttpClient,
+        private val client: OkHttpClient,
 ) : IRemoteExtRepoDataSource {
-	override suspend fun downloadRepoData(
-			repo: RepositoryEntity,
-	): HResult<RepoIndex> = try {
-		@Suppress("BlockingMethodInNonBlockingContext")
-		(successResult(
-				RepoIndex(client.quickie(
-						"${repo.url}${REPO_DIR_STRUCT}index.json"
-				).body!!.string())
-		))
-	} catch (e: Exception) {
-		errorResult(ErrorKeys.ERROR_GENERAL, e.message ?: "Unknown general error")
-	}
+    override suspend fun downloadRepoData(
+            repo: RepositoryEntity,
+    ): HResult<RepoIndex> = try {
+        @Suppress("BlockingMethodInNonBlockingContext")
+        (successResult(
+                RepoIndex(client.quickie(
+                        "${repo.url}${REPO_DIR_STRUCT}index.json"
+                ).body!!.string())
+        ))
+    } catch (e: Exception) {
+        errorResult(ErrorKeys.ERROR_GENERAL, e.message ?: "Unknown general error", e)
+    }
 
 }
