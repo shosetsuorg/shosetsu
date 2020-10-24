@@ -45,7 +45,7 @@ class InitializeExtensionsUseCase(
         private val extLibRepo: IExtLibRepository,
         private var isOnlineUseCase: IsOnlineUseCase,
 ) {
-    suspend fun invoke(progressUpdate: (String) -> Unit) {
+    suspend operator fun invoke(progressUpdate: (String) -> Unit) {
         Log.i(logID(), "Starting Update")
         if (isOnlineUseCase()) {
             progressUpdate("Online, Loading repositories")

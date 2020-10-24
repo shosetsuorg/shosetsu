@@ -11,6 +11,8 @@ import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.di.*
 import app.shosetsu.android.di.datasource.cacheDataSouceModule
@@ -18,6 +20,7 @@ import app.shosetsu.android.di.datasource.fileDataSourceModule
 import app.shosetsu.android.di.datasource.localDataSouceModule
 import app.shosetsu.android.di.datasource.remoteDataSouceModule
 import app.shosetsu.android.domain.repository.base.IExtLibRepository
+import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
@@ -62,72 +65,79 @@ import org.kodein.di.generic.singleton
 @AcraCore(buildConfigClass = BuildConfig::class)
 @AcraDialog(resCommentPrompt = R.string.crashCommentPromt, resText = R.string.crashDialogText, resTheme = R.style.AppTheme_CrashReport)
 class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
-	private val extLibRepository by instance<IExtLibRepository>()
-	private val okHttpClient by instance<OkHttpClient>()
+    private val extLibRepository by instance<IExtLibRepository>()
+    private val okHttpClient by instance<OkHttpClient>()
+    private val initializeExtensionsUseCase: InitializeExtensionsUseCase by instance()
 
-	override val kodein: Kodein by Kodein.lazy {
-		bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
-		import(othersModule)
-		import(providersModule)
-		import(cacheDataSouceModule)
-		import(localDataSouceModule)
-		import(remoteDataSouceModule)
-		import(fileDataSourceModule)
-		import(networkModule)
-		import(databaseModule)
-		import(repositoryModule)
-		import(useCaseModule)
-		import(viewModelsModule)
-		bind<ShosetsuSettings>() with singleton { ShosetsuSettings(applicationContext) }
-		import(androidXModule(this@ShosetsuApplication))
-	}
+    override val kodein: Kodein by Kodein.lazy {
+        bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
+        import(othersModule)
+        import(providersModule)
+        import(cacheDataSouceModule)
+        import(localDataSouceModule)
+        import(remoteDataSouceModule)
+        import(fileDataSourceModule)
+        import(networkModule)
+        import(databaseModule)
+        import(repositoryModule)
+        import(useCaseModule)
+        import(viewModelsModule)
+        bind<ShosetsuSettings>() with singleton { ShosetsuSettings(applicationContext) }
+        import(androidXModule(this@ShosetsuApplication))
+    }
 
-	override fun attachBaseContext(base: Context?) {
-		super.attachBaseContext(base)
-		setupACRA()
-		Notifications.createChannels(this)
-		ShortCuts.createShortcuts(this)
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        setupACRA()
+        Notifications.createChannels(this)
+        ShortCuts.createShortcuts(this)
 
-	}
+    }
 
-	override fun onCreate() {
-		super.onCreate()
-		ShosetsuLuaLib.httpClient = okHttpClient
-		ShosetsuLuaLib.libLoader = libLoader@{ name ->
-			Log.i("LibraryLoaderSync", "Loading:\t$name")
-			return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {
-				is HResult.Success -> {
-					val l = try {
-						shosetsuGlobals().load(result.data)
-					} catch (e: Error) {
-						throw e
-					}
-					l.call()
-				}
-				else -> {
-					if (result is HResult.Error)
-						Log.e(logID(), "[${result.code}]\t${result.message}")
-					null
-				}
-			}
-		}
+    override fun onCreate() {
+        super.onCreate()
+        ShosetsuLuaLib.httpClient = okHttpClient
+        ShosetsuLuaLib.libLoader = libLoader@{ name ->
+            Log.i("LibraryLoaderSync", "Loading:\t$name")
+            return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {
+                is HResult.Success -> {
+                    val l = try {
+                        shosetsuGlobals().load(result.data)
+                    } catch (e: Error) {
+                        throw e
+                    }
+                    l.call()
+                }
+                else -> {
+                    if (result is HResult.Error)
+                        Log.e(logID(), "[${result.code}]\t${result.message}")
+                    null
+                }
+            }
+        }
 
-		// OLD DB TO NEW
-		@Suppress("DEPRECATION")
-		DBHelper(this@ShosetsuApplication).writableDatabase.close()
-	}
+        // OLD DB TO NEW
+        @Suppress("DEPRECATION")
+        DBHelper(this@ShosetsuApplication).writableDatabase.close()
 
-	private fun setupACRA() {
-		val config = CoreConfigurationBuilder(this)
-		config.setBuildConfigClass(BuildConfig::class.java).setReportFormat(StringFormat.JSON)
+        launchIO {
+            initializeExtensionsUseCase {
+                logI(it)
+            }
+        }
+    }
 
-		config.getPluginConfigurationBuilder(HttpSenderConfigurationBuilder::class.java)
-				.setHttpMethod(HttpSender.Method.POST)
-				.setUri("https://technojo4.com/acra.php")
-				.setEnabled(true)
+    private fun setupACRA() {
+        val config = CoreConfigurationBuilder(this)
+        config.setBuildConfigClass(BuildConfig::class.java).setReportFormat(StringFormat.JSON)
 
-		ACRA.init(this, config)
-	}
+        config.getPluginConfigurationBuilder(HttpSenderConfigurationBuilder::class.java)
+                .setHttpMethod(HttpSender.Method.POST)
+                .setUri("https://technojo4.com/acra.php")
+                .setEnabled(true)
 
-	override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {}
+        ACRA.init(this, config)
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {}
 }

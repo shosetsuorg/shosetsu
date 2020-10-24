@@ -3,15 +3,11 @@ package app.shosetsu.android.ui.splash
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.ShosetsuSettings
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.requestPerms
-import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.ui.intro.IntroductionActivity
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
@@ -43,63 +39,45 @@ import org.kodein.di.generic.instance
  * 9 / June / 2019
  */
 class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
-	companion object {
-		const val INTRO_CODE: Int = 1944
-	}
+    companion object {
+        const val INTRO_CODE: Int = 1944
+    }
 
-	override val kodein: Kodein by closestKodein()
-	val settings: ShosetsuSettings by instance()
-
-	lateinit var textView: TextView
-
-	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		super.onActivityResult(requestCode, resultCode, data)
-		if (requestCode == INTRO_CODE) {
-			settings.showIntro = false
-			startBoot()
-		}
-	}
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		this.requestPerms()
-		super.onCreate(savedInstanceState)
-		textView = findViewById(R.id.title)
-		// Settings setup
-		if (settings.showIntro) {
-			Log.i(logID(), "First time, Launching activity")
-			startActivityForResult(Intent(
-					this,
-					IntroductionActivity::class.java
-			), INTRO_CODE)
-		} else {
-			startBoot()
-		}
-	}
-
-	private fun progressUpdate(string: String) = launchUI {
-		textView.post { textView.text = string }
-	}
+    override val kodein: Kodein by closestKodein()
+    val settings: ShosetsuSettings by instance()
 
 
-	private val useCase by instance<InitializeExtensionsUseCase>()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == INTRO_CODE) {
+            settings.showIntro = false
+            startBoot()
+        }
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        this.requestPerms()
+        super.onCreate(savedInstanceState)
+        // Settings setup
+        if (settings.showIntro) {
+            Log.i(logID(), "First time, Launching activity")
+            startActivityForResult(Intent(
+                    this,
+                    IntroductionActivity::class.java
+            ), INTRO_CODE)
+        } else {
+            startBoot()
+        }
+    }
 
-	private fun startBoot() {
-		launchIO scope@{
-			progressUpdate("Setting up the application")
-			useCase.invoke { progressUpdate(it) }
-
-			launchUI {
-				with(this@SplashScreen) {
-					val intent = Intent(this, MainActivity::class.java)
-					Log.i(logID(), "Passing Intent ${this.intent.action}")
-					intent.action = this.intent.action
-					this.intent.extras?.let { intent.putExtras(it) }
-					startActivity(intent)
-					progressUpdate("Finished! Going to app now~")
-					finish()
-				}
-			}
-		}
-	}
+    private fun startBoot() {
+        with(this@SplashScreen) {
+            val intent = Intent(this, MainActivity::class.java)
+            Log.i(logID(), "Passing Intent ${this.intent.action}")
+            intent.action = this.intent.action
+            this.intent.extras?.let { intent.putExtras(it) }
+            startActivity(intent)
+            finish()
+        }
+    }
 }
