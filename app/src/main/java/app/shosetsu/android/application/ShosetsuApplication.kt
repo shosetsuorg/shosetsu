@@ -68,6 +68,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 	override val kodein: Kodein by Kodein.lazy {
 		bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
 		import(othersModule)
+		import(providersModule)
 		import(cacheDataSouceModule)
 		import(localDataSouceModule)
 		import(remoteDataSouceModule)
