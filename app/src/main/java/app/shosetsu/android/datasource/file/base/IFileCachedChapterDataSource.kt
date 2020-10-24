@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.cache.base
+package app.shosetsu.android.datasource.file.base
 
 import app.shosetsu.android.common.dto.HResult
 
@@ -28,18 +28,18 @@ import app.shosetsu.android.common.dto.HResult
  *
  * Files should not be stored for more then 10 minutes.
  */
-interface ICacheSecondaryChaptersDataSource {
-	/**
-	 * Puts a chapter passage into cache, if cache exists this overwrites
-	 *
-	 * Will launch a second coroutine that will clear out old content
-	 */
-	suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*>
+interface IFileCachedChapterDataSource {
+    /**
+     * Puts a chapter passage into cache, if cache exists this overwrites
+     *
+     * Will launch a second coroutine that will clear out old content
+     */
+    suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*>
 
-	/**
-	 * Gets chapter passage via it's ID
-	 *
-	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
-	 */
-	suspend fun loadChapterPassage(chapterID: Int): HResult<String>
+    /**
+     * Gets chapter passage via it's ID
+     *
+     * @return [HResult.Empty] if passage not found, [HResult.Success] if found
+     */
+    suspend fun loadChapterPassage(chapterID: Int): HResult<String>
 }

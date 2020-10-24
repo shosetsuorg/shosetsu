@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.cache.base
+package app.shosetsu.android.datasource.memory.base
 
 import app.shosetsu.android.common.dto.HResult
 
@@ -21,19 +21,21 @@ import app.shosetsu.android.common.dto.HResult
 
 /**
  * shosetsu
- * 04 / 05 / 2020
- *
- * This caches chapters, to prevent reloading issues
+ * 05 / 05 / 2020
  */
-interface ICacheChaptersDataSource {
-	/**
-	 * Puts a chapter passage into cache, if cache exists this overwrites
-	 */
-	suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*>
+interface IMemExtLibDataSource {
+    /** Load Library from memory */
+    suspend fun loadLibrary(name: String): HResult<String>
 
-	/**
-	 * Gets chapter passage via it's ID
-	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
-	 */
-	suspend fun loadChapterFromCache(chapterID: Int): HResult<String>
+    /** Load Library from memory */
+    fun blockingLoadLibrary(name: String): HResult<String>
+
+    /** Put Library in memory */
+    suspend fun setLibrary(name: String, data: String): HResult<*>
+
+    /** Put Library in memory */
+    fun blockingSetLibrary(name: String, data: String): HResult<*>
+
+    /** Remove Library by ID from cache*/
+    suspend fun removeLibrary(name: String): HResult<*>
 }

@@ -1,11 +1,10 @@
 package app.shosetsu.android.di
 
 import app.shosetsu.android.backend.workers.onetime.AppUpdateWorker
-import app.shosetsu.android.backend.workers.perodic.AppUpdateCycleWorker
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
 import app.shosetsu.android.backend.workers.onetime.UpdateWorker
+import app.shosetsu.android.backend.workers.perodic.AppUpdateCycleWorker
 import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
-import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -34,7 +33,6 @@ import org.kodein.di.generic.singleton
  */
 @Suppress("PublicApiImplicitType")
 val othersModule = Kodein.Module("others") {
-	bind<SharedPreferenceProvider>() with singleton { SharedPreferenceProvider((instance())) }
 
 	// Workers
 

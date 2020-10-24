@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.cache.base
+package app.shosetsu.android.datasource.file.base
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
@@ -25,18 +25,18 @@ import app.shosetsu.android.domain.model.remote.DebugAppUpdate
  * shosetsu
  * 07 / 09 / 2020
  */
-interface ICacheAppUpdateDataSource {
-	/**
-	 * Live data of the current update
-	 */
-	val updateAvaLive: LiveData<HResult<DebugAppUpdate>>
+interface IFileCachedAppUpdateDataSource {
+    /**
+     * Live data of the current update
+     */
+    val updateAvaLive: LiveData<HResult<DebugAppUpdate>>
 
-	/**
-	 * Accessor method to read the current cached update
-	 */
-	suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate>
+    /**
+     * Accessor method to read the current cached update
+     */
+    suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate>
 
-	/** Puts an update into cache */
-	suspend fun putAppUpdateInCache(debugAppUpdate: DebugAppUpdate, isUpdate: Boolean): HResult<*>
+    /** Puts an update into cache */
+    suspend fun putAppUpdateInCache(debugAppUpdate: DebugAppUpdate, isUpdate: Boolean): HResult<*>
 
 }

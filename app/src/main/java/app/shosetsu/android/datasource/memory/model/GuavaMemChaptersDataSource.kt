@@ -1,14 +1,14 @@
-package app.shosetsu.android.datasource.cache.model
+package app.shosetsu.android.datasource.memory.model
 
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.set
-import app.shosetsu.android.datasource.cache.base.ICacheExtLibDataSource
+import app.shosetsu.android.datasource.memory.base.IMemChaptersDataSource
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.MINUTES
 
 /*
  * This file is part of shosetsu.
@@ -29,31 +29,18 @@ import java.util.concurrent.TimeUnit
 
 /**
  * shosetsu
- * 13 / 05 / 2020
+ * 04 / 05 / 2020
  */
-class CacheExtLibDataSource : ICacheExtLibDataSource {
-	/** Library paring */
-	private val libraries: Cache<String, String> = CacheBuilder.newBuilder()
-			.maximumSize(200)
-			.expireAfterWrite(1, TimeUnit.HOURS)
-			.build()
+class GuavaMemChaptersDataSource : IMemChaptersDataSource {
+    /** Map of Chapter ID to Chapter Passage */
+    private val chapters: Cache<Int, String> = CacheBuilder.newBuilder()
+            .maximumSize(200)
+            .expireAfterWrite(2, MINUTES)
+            .build()
 
-	override suspend fun loadLibrary(name: String): HResult<String> =
-			blockingLoadLibrary(name)
+    override suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
+            successResult(chapters.set(chapterID, passage))
 
-	override fun blockingLoadLibrary(name: String): HResult<String> =
-			libraries[name]?.let { successResult(it) } ?: emptyResult()
-
-	override suspend fun setLibrary(name: String, data: String): HResult<*> {
-		libraries[name] = data
-		return successResult("")
-	}
-
-	override fun blockingSetLibrary(name: String, data: String): HResult<*> {
-		libraries[name] = data
-		return successResult("")
-	}
-
-	override suspend fun removeLibrary(name: String): HResult<*> =
-			successResult(libraries.invalidate(name))
+    override suspend fun loadChapterFromCache(chapterID: Int): HResult<String> =
+            chapters[chapterID]?.let { successResult(it) } ?: emptyResult()
 }

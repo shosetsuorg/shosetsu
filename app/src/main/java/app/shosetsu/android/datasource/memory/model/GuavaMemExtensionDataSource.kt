@@ -1,11 +1,11 @@
-package app.shosetsu.android.datasource.cache.model
+package app.shosetsu.android.datasource.memory.model
 
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.set
-import app.shosetsu.android.datasource.cache.base.ICacheExtensionsDataSource
+import app.shosetsu.android.datasource.memory.base.IMemExtensionsDataSource
 import app.shosetsu.lib.IExtension
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
@@ -32,18 +32,18 @@ import java.util.concurrent.TimeUnit.MINUTES
  * shosetsu
  * 04 / 05 / 2020
  */
-class CacheExtensionDataSource : ICacheExtensionsDataSource {
-	/** Map of Formatter ID to Formatter */
-	private val formatters: Cache<Int, IExtension> = CacheBuilder.newBuilder()
-			.expireAfterAccess(20, MINUTES)
-			.build()
+class GuavaMemExtensionDataSource : IMemExtensionsDataSource {
+    /** Map of Formatter ID to Formatter */
+    private val extensionsCache: Cache<Int, IExtension> = CacheBuilder.newBuilder()
+            .expireAfterAccess(20, MINUTES)
+            .build()
 
-	override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<IExtension> =
-			formatters[formatterID]?.let { successResult(it) } ?: emptyResult()
+    override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<IExtension> =
+            extensionsCache[formatterID]?.let { successResult(it) } ?: emptyResult()
 
-	override suspend fun putFormatterInMemory(formatter: IExtension): HResult<*> =
-			successResult(formatters.set(formatter.formatterID, formatter))
+    override suspend fun putFormatterInMemory(formatter: IExtension): HResult<*> =
+            successResult(extensionsCache.set(formatter.formatterID, formatter))
 
-	override suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*> =
-			successResult(formatters.invalidate(formatterID))
+    override suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*> =
+            successResult(extensionsCache.invalidate(formatterID))
 }

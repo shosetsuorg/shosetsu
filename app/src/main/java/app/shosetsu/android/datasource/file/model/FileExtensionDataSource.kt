@@ -1,6 +1,5 @@
 package app.shosetsu.android.datasource.file.model
 
-import android.content.Context
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.android.common.consts.SCRIPT_DIR
@@ -8,11 +7,13 @@ import app.shosetsu.android.common.consts.SOURCE_DIR
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.dto.withSuccess
+import app.shosetsu.android.common.enums.InternalFileDir.FILES
 import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
+import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.lua.LuaExtension
 import org.luaj.vm2.LuaError
-import java.io.File
 import java.io.FileNotFoundException
 
 /*
@@ -37,38 +38,28 @@ import java.io.FileNotFoundException
  * 12 / 05 / 2020
  */
 class FileExtensionDataSource(
-		private val context: Context,
+        private val iFileSystemProvider: IFileSystemProvider
 ) : IFileExtensionDataSource {
-	private val ap: String by lazy {
-		context.filesDir.absolutePath
-	}
 
-	private fun makeFormatterFile(fileName: String): File {
-		val f = File("$ap$SOURCE_DIR$SCRIPT_DIR$fileName.lua")
-		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
-		return f
-	}
+    private fun makeFormatterFile(fileName: String): String =
+            "$SOURCE_DIR$SCRIPT_DIR$fileName.lua"
 
-	override suspend fun loadFormatter(fileName: String): HResult<IExtension> = try {
-		successResult(LuaExtension(makeFormatterFile(fileName)))
-	} catch (e: LuaError) {
-		errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
-	} catch (e: FileNotFoundException) {
-		errorResult(ERROR_NOT_FOUND, e.message ?: "Unknown file not found", e)
-	}
 
-	override suspend fun writeFormatter(fileName: String, data: String): HResult<*> {
-		makeFormatterFile(fileName).also {
-			if (!it.exists()) {
-				it.parentFile?.mkdir()
-			}
-		}.writeText(data)
-		return successResult("")
-	}
+    override suspend fun loadFormatter(fileName: String): HResult<IExtension> = try {
+        iFileSystemProvider.readInternalFile(FILES, makeFormatterFile(fileName)).withSuccess {
+            successResult(LuaExtension(it, fileName))
+        }
+    } catch (e: LuaError) {
+        errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
+    } catch (e: FileNotFoundException) {
+        errorResult(ERROR_NOT_FOUND, e.message ?: "Unknown file not found", e)
+    }
 
-	override suspend fun deleteFormatter(fileName: String): HResult<*> {
-		makeFormatterFile(fileName).takeIf { it.exists() }?.delete()
-				?: errorResult(ERROR_NOT_FOUND, "Cannot delete unknown file: $fileName")
-		return successResult("")
-	}
+    override suspend fun writeFormatter(fileName: String, data: String): HResult<*> =
+            iFileSystemProvider.writeInternalFile(FILES, makeFormatterFile(fileName), data)
+
+
+    override suspend fun deleteFormatter(fileName: String): HResult<*> =
+            iFileSystemProvider.deleteInternalFile(FILES, makeFormatterFile(fileName))
+
 }

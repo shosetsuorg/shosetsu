@@ -1,7 +1,6 @@
-package app.shosetsu.android.datasource.cache.base
+package app.shosetsu.android.datasource.memory.base
 
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -22,15 +21,19 @@ import app.shosetsu.lib.IExtension
 
 /**
  * shosetsu
- * 05 / 05 / 2020
+ * 04 / 05 / 2020
+ *
+ * This caches chapters, to prevent reloading issues
  */
-interface ICacheExtensionsDataSource {
-	/** Load formatter from memory */
-	suspend fun loadFormatterFromMemory(formatterID: Int): HResult<IExtension>
+interface IMemChaptersDataSource {
+    /**
+     * Puts a chapter passage into cache, if cache exists this overwrites
+     */
+    suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*>
 
-	/** Put formatter in memory */
-	suspend fun putFormatterInMemory(formatter: IExtension): HResult<*>
-
-	/** Remove formatter by ID from cache*/
-	suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*>
+    /**
+     * Gets chapter passage via it's ID
+     * @return [HResult.Empty] if passage not found, [HResult.Success] if found
+     */
+    suspend fun loadChapterFromCache(chapterID: Int): HResult<String>
 }

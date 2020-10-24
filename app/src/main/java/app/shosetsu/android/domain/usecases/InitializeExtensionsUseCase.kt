@@ -74,12 +74,12 @@ class InitializeExtensionsUseCase(
     /**
      * Updates the libraries in the program
      *
-     * @param indexJSON of the application
+     * @param repoList of the application
      * @param repo Repo of the index
      * @param progressUpdate Upstream reporting
      */
     private suspend fun updateLibraries(
-            indexJSON: List<RepoLibrary>,
+            repoList: List<RepoLibrary>,
             repo: RepositoryEntity,
             progressUpdate: (String) -> Unit,
     ) {
@@ -91,7 +91,7 @@ class InitializeExtensionsUseCase(
                     val libsNotPresent = ArrayList<ExtLibEntity>()
 
                     // Loops through the json array of libraries
-                    for ((name, indexVersion) in indexJSON) {
+                    for ((name, indexVersion) in repoList) {
                         val position = libEntities.containsName(name)
 
                         var install = false
@@ -128,10 +128,9 @@ class InitializeExtensionsUseCase(
                 }
     }
 
-    private suspend fun updateScript(indexJSON: List<RepoExtension>, repo: RepositoryEntity) {
-
+    private suspend fun updateScript(repoList: List<RepoExtension>, repo: RepositoryEntity) {
         val presentExtensions = ArrayList<Int>() // Extensions from repo
-        indexJSON.forEach { (id, name, fileName, imageURL, lang, _, libVersion, md5) ->
+        repoList.forEach { (id, name, fileName, imageURL, lang, _, libVersion, md5) ->
             extRepo.insertOrUpdate(ExtensionEntity(
                     id = id,
                     repoID = repo.id,

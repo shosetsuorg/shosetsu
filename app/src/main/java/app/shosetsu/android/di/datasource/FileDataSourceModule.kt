@@ -1,11 +1,7 @@
 package app.shosetsu.android.di.datasource
 
-import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
-import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
-import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
-import app.shosetsu.android.datasource.file.model.FileChapterDataSource
-import app.shosetsu.android.datasource.file.model.FileExtLibDataSource
-import app.shosetsu.android.datasource.file.model.FileExtensionDataSource
+import app.shosetsu.android.datasource.file.base.*
+import app.shosetsu.android.datasource.file.model.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -33,13 +29,19 @@ import org.kodein.di.generic.singleton
  * 12 / 05 / 2020
  */
 val fileDataSourceModule: Kodein.Module = Kodein.Module("file_data_source") {
-	bind<IFileExtensionDataSource>() with singleton {
-		FileExtensionDataSource(instance())
-	}
-	bind<IFileChapterDataSource>() with singleton {
-		FileChapterDataSource(instance())
-	}
-	bind<IFileExtLibDataSource>() with singleton {
-		FileExtLibDataSource(instance())
-	}
+    bind<IFileExtensionDataSource>() with singleton {
+        FileExtensionDataSource(instance())
+    }
+    bind<IFileChapterDataSource>() with singleton {
+        FileChapterDataSource(instance())
+    }
+    bind<IFileExtLibDataSource>() with singleton {
+        FileExtLibDataSource(instance())
+    }
+    bind<IFileCachedChapterDataSource>() with singleton {
+        FileCachedChapterDataSource(instance())
+    }
+    bind<IFileCachedAppUpdateDataSource>() with singleton {
+        FileAppUpdateDataSource(instance())
+    }
 }

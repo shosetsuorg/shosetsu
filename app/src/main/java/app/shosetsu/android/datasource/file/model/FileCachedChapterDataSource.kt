@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.cache.model
+package app.shosetsu.android.datasource.file.model
 
 import android.app.Application
 import android.util.Log
@@ -8,7 +8,7 @@ import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.forEach
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.datasource.cache.base.ICacheSecondaryChaptersDataSource
+import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -35,9 +35,9 @@ import java.io.File
  * shosetsu
  * 17 / 08 / 2020
  */
-class CacheSecondaryChaptersDataSource(
+class FileCachedChapterDataSource(
 		private val application: Application,
-) : ICacheSecondaryChaptersDataSource {
+) : IFileCachedChapterDataSource {
 	@get:Synchronized
 	private val cacheDir by lazy { application.cacheDir }
 

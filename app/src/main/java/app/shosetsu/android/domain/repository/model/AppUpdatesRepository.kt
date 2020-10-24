@@ -8,7 +8,7 @@ import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.datasource.cache.base.ICacheAppUpdateDataSource
+import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
@@ -37,12 +37,12 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
  */
 class AppUpdatesRepository(
 		private val iRemoteAppUpdateDataSource: IRemoteAppUpdateDataSource,
-		private val iCacheAppUpdateDataSource: ICacheAppUpdateDataSource,
+		private val iFileAppUpdateDataSource: IFileCachedAppUpdateDataSource,
 ) : IAppUpdatesRepository {
 	private var running = false
 
 	override fun watchAppUpdates(): LiveData<HResult<DebugAppUpdate>> =
-			iCacheAppUpdateDataSource.updateAvaLive
+			iFileAppUpdateDataSource.updateAvaLive
 
 
 	private fun compareVersion(newVersion: DebugAppUpdate): HResult<DebugAppUpdate> {
@@ -93,7 +93,7 @@ class AppUpdatesRepository(
 		}!!
 
 		return compareVersion(rR).also {
-			iCacheAppUpdateDataSource.putAppUpdateInCache(rR, it is HResult.Success)
+			iFileAppUpdateDataSource.putAppUpdateInCache(rR, it is HResult.Success)
 			running = false
 		}
 	}

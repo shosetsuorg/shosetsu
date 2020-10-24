@@ -4,10 +4,10 @@ import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.and
-import app.shosetsu.android.datasource.cache.base.ICacheChaptersDataSource
-import app.shosetsu.android.datasource.cache.base.ICacheSecondaryChaptersDataSource
+import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.android.datasource.local.base.ILocalChaptersDataSource
+import app.shosetsu.android.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
@@ -45,8 +45,8 @@ import app.shosetsu.lib.Novel
  * @param fileSource Source from storage
  */
 class ChaptersRepository(
-		private val memorySource: ICacheChaptersDataSource,
-		private val cacheSource: ICacheSecondaryChaptersDataSource,
+		private val memorySource: IMemChaptersDataSource,
+		private val cacheSource: IFileCachedChapterDataSource,
 		private val dbSource: ILocalChaptersDataSource,
 		private val fileSource: IFileChapterDataSource,
 		private val remoteSource: IRemoteChaptersDataSource,

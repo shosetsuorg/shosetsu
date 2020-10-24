@@ -1,16 +1,11 @@
 package app.shosetsu.android.datasource.file.model
 
-import android.content.Context
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_IO
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.android.common.consts.LIBRARY_DIR
 import app.shosetsu.android.common.consts.SOURCE_DIR
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.enums.InternalFileDir.FILES
 import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
-import okio.IOException
-import java.io.File
+import app.shosetsu.android.providers.file.base.IFileSystemProvider
 
 /*
  * This file is part of shosetsu.
@@ -34,42 +29,25 @@ import java.io.File
  * 12 / 05 / 2020
  */
 class FileExtLibDataSource(
-		private val context: Context,
+        private val iFileSystemProvider: IFileSystemProvider,
 ) : IFileExtLibDataSource {
 
-	private val ap: String by lazy {
-		context.filesDir.absolutePath
-	}
+    private fun makeLibraryFile(fileName: String): String =
+            "$SOURCE_DIR$LIBRARY_DIR$fileName.lua"
 
-	private fun makeLibraryFile(fileName: String): File {
-		val f = File("$ap$SOURCE_DIR$LIBRARY_DIR$fileName.lua")
-		f.parentFile?.let { if (!it.exists()) it.mkdirs() }
-		return f
-	}
+    override suspend fun writeExtLib(fileName: String, data: String): HResult<*> =
+            iFileSystemProvider.writeInternalFile(
+                    FILES,
+                    makeLibraryFile(fileName),
+                    data
+            )
 
-	override suspend fun writeExtLib(fileName: String, data: String): HResult<*> {
-		try {
-			makeLibraryFile(fileName).also {
-				if (!it.exists()) it.parentFile?.mkdir()
-			}.writeText(data)
-		} catch (e: IOException) {
-			return errorResult(ERROR_IO, e)
-		}
-		return successResult("")
-	}
+    override suspend fun loadExtLib(fileName: String): HResult<String> =
+            blockingLoadLib(fileName)
 
-	override suspend fun loadExtLib(fileName: String): HResult<String> =
-			blockingLoadLib(fileName)
+    override fun blockingLoadLib(fileName: String): HResult<String> =
+            iFileSystemProvider.readInternalFile(FILES, makeLibraryFile(fileName))
 
-	override fun blockingLoadLib(fileName: String): HResult<String> =
-			makeLibraryFile(fileName).takeIf { it.exists() }?.let {
-				successResult(it.readText())
-			} ?: errorResult(ERROR_NOT_FOUND, "$fileName is not found in storage")
-
-
-	override suspend fun deleteExtLib(fileName: String): HResult<*> {
-		makeLibraryFile(fileName).takeIf { it.exists() }?.delete()
-				?: errorResult(ERROR_IO, "Cannot delete nonexistent lib: $fileName")
-		return successResult("")
-	}
+    override suspend fun deleteExtLib(fileName: String): HResult<*> =
+            iFileSystemProvider.deleteInternalFile(FILES, makeLibraryFile(fileName))
 }

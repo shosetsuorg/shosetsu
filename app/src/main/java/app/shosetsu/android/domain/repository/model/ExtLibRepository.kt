@@ -7,9 +7,9 @@ import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.datasource.cache.base.ICacheExtLibDataSource
 import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.android.datasource.local.base.ILocalExtLibDataSource
+import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
@@ -44,7 +44,7 @@ class ExtLibRepository(
 		private val fileSource: IFileExtLibDataSource,
 		private val databaseSource: ILocalExtLibDataSource,
 		private val remoteSource: IRemoteExtLibDataSource,
-		private val cacheSource: ICacheExtLibDataSource,
+		private val memSource: IMemExtLibDataSource,
 ) : IExtLibRepository {
 	override suspend fun loadExtLibByRepo(
 			repositoryEntity: RepositoryEntity,
@@ -62,7 +62,7 @@ class ExtLibRepository(
 			try {
 				extLibEntity.version = Version(json.getString(J_VERSION))
 				databaseSource.updateOrInsert(extLibEntity)
-				cacheSource.setLibrary(extLibEntity.scriptName, data)
+				memSource.setLibrary(extLibEntity.scriptName, data)
 				fileSource.writeExtLib(extLibEntity.scriptName, data)
 			} catch (e: JSONException) {
 				Log.e(logID(), "Unhandled", e)
@@ -73,9 +73,9 @@ class ExtLibRepository(
 	}
 
 	override fun blockingLoadExtLibrary(name: String): HResult<String> =
-			cacheSource.blockingLoadLibrary(name).takeIf { it is HResult.Success }
+			memSource.blockingLoadLibrary(name).takeIf { it is HResult.Success }
 					?: fileSource.blockingLoadLib(name).also {
 						if (it is HResult.Success)
-							cacheSource.blockingSetLibrary(name, it.data)
+							memSource.blockingSetLibrary(name, it.data)
 					}
 }

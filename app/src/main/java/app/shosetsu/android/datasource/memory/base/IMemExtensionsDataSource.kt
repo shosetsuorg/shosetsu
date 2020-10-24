@@ -1,6 +1,7 @@
-package app.shosetsu.android.datasource.cache.base
+package app.shosetsu.android.datasource.memory.base
 
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -23,19 +24,13 @@ import app.shosetsu.android.common.dto.HResult
  * shosetsu
  * 05 / 05 / 2020
  */
-interface ICacheExtLibDataSource {
-	/** Load Library from memory */
-	suspend fun loadLibrary(name: String): HResult<String>
+interface IMemExtensionsDataSource {
+    /** Load formatter from memory */
+    suspend fun loadFormatterFromMemory(formatterID: Int): HResult<IExtension>
 
-	/** Load Library from memory */
-	fun blockingLoadLibrary(name: String): HResult<String>
+    /** Put formatter in memory */
+    suspend fun putFormatterInMemory(formatter: IExtension): HResult<*>
 
-	/** Put Library in memory */
-	suspend fun setLibrary(name: String, data: String): HResult<*>
-
-	/** Put Library in memory */
-	fun blockingSetLibrary(name: String, data: String): HResult<*>
-
-	/** Remove Library by ID from cache*/
-	suspend fun removeLibrary(name: String): HResult<*>
+    /** Remove formatter by ID from cache*/
+    suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*>
 }

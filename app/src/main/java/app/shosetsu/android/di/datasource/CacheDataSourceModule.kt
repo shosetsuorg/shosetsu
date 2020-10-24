@@ -1,10 +1,13 @@
 package app.shosetsu.android.di.datasource
 
-import app.shosetsu.android.datasource.cache.base.*
-import app.shosetsu.android.datasource.cache.model.*
+import app.shosetsu.android.datasource.memory.base.IMemChaptersDataSource
+import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
+import app.shosetsu.android.datasource.memory.base.IMemExtensionsDataSource
+import app.shosetsu.android.datasource.memory.model.GuavaMemChaptersDataSource
+import app.shosetsu.android.datasource.memory.model.GuavaMemExtLibDataSource
+import app.shosetsu.android.datasource.memory.model.GuavaMemExtensionDataSource
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 
 /*
@@ -30,15 +33,10 @@ import org.kodein.di.generic.singleton
  * These modules handle cached data that is in memory
  */
 val cacheDataSouceModule: Kodein.Module = Kodein.Module("cache_data_source_module") {
-	bind<ICacheChaptersDataSource>() with singleton { CacheChaptersDataSource() }
+	bind<IMemChaptersDataSource>() with singleton { GuavaMemChaptersDataSource() }
 
-	bind<ICacheExtensionsDataSource>() with singleton { CacheExtensionDataSource() }
+	bind<IMemExtensionsDataSource>() with singleton { GuavaMemExtensionDataSource() }
 
-	bind<ICacheExtLibDataSource>() with singleton { CacheExtLibDataSource() }
+	bind<IMemExtLibDataSource>() with singleton { GuavaMemExtLibDataSource() }
 
-	bind<ICacheSecondaryChaptersDataSource>() with singleton {
-		CacheSecondaryChaptersDataSource(instance())
-	}
-
-	bind<ICacheAppUpdateDataSource>() with singleton { CacheAppUpdateDataSource(instance()) }
 }

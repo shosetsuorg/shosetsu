@@ -52,6 +52,9 @@ const val LIBRARY_DIR: String = "/libraries/"
 const val SOURCE_DIR: String = "/src/"
 const val REPO_DIR_STRUCT: String = "/src/main/resources/"
 
+const val APP_UPDATE_CACHE_FILE = "SHOSETSU_APP_UPDATE.json"
+
+
 @Deprecated("Just use View", replaceWith = ReplaceWith("VISIBLE", "import android.view.View.VISIBLE"), DeprecationLevel.WARNING)
 const val VISIBLE: Int = View.VISIBLE
 

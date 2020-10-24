@@ -58,4 +58,7 @@ object ErrorKeys {
 
 	/** When something is duplicated but shouldn't be */
 	const val ERROR_DUPLICATE: Int = 10
+
+	/** Lack permissions to do something */
+	const val ERROR_LACK_PERM: Int = 11
 }
