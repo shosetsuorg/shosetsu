@@ -1,6 +1,7 @@
 package app.shosetsu.android.providers.file.model
 
 import android.content.Context
+import app.shosetsu.android.common.consts.ErrorKeys.ERROR_IO
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LACK_PERM
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
@@ -12,6 +13,7 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import java.io.File
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -35,69 +37,83 @@ import java.io.File
  * 23 / 10 / 2020
  */
 class AndroidFileSystemProvider(
-        private val context: Context
+		private val context: Context
 ) : IFileSystemProvider {
-    private fun InternalFileDir.path() = when (this) {
-        InternalFileDir.CACHE -> context.cacheDir.absolutePath + "/"
-        InternalFileDir.FILES -> context.filesDir.absolutePath + "/"
-        InternalFileDir.GENERIC -> context.filesDir.absolutePath + "/"
-    }
+	private val cacheDirPath by lazy { context.cacheDir.absolutePath }
+	private val filesDirPath by lazy { context.filesDir.absolutePath }
 
-    override fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
-        val file = File(internalFileDir.path() + path)
-        logV("Reading $path in ${internalFileDir.path()} to $file")
+	private fun InternalFileDir.path() = when (this) {
+		InternalFileDir.CACHE -> "$cacheDirPath/"
+		InternalFileDir.FILES -> "$filesDirPath/"
+		InternalFileDir.GENERIC -> "$filesDirPath/"
+	}
 
-        if (!file.exists()) {
-            logE("File does not exist")
-            return emptyResult()
-        }
-        if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
-        return successResult(file.readText())
-    }
+	override fun doesInternalFileExist(internalFileDir: InternalFileDir, path: String): HResult<*> {
+		return if (!File(internalFileDir.path() + path).exists()) emptyResult() else successResult("")
+	}
 
-    override fun readExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<String> {
-        TODO("Not yet implemented")
-    }
+	override fun doesExternalFileExist(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+		TODO("Not yet implemented")
+	}
 
-    override fun deleteInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
-        val file = File(internalFileDir.path() + path)
-        logV("Deleting $path in ${internalFileDir.path()} to $file")
+	override fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
+		val file = File(internalFileDir.path() + path)
+		logV("Reading $path in ${internalFileDir.path()} to $file")
 
-        if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot delete file: $file")
-        return successResult(file.delete())
-    }
+		if (!file.exists()) {
+			logE("File does not exist")
+			return emptyResult()
+		}
+		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
+		return successResult(file.readText())
+	}
 
-    override fun deleteExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
-        TODO("Not yet implemented")
-    }
+	override fun readExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<String> {
+		TODO("Not yet implemented")
+	}
 
-    override fun writeInternalFile(internalFileDir: InternalFileDir, path: String, content: String): HResult<*> {
-        val file = File(internalFileDir.path() + path)
-        file.parentFile?.let {
-            if (!it.exists()) {
-                logV("Creating parent dir $it")
-                createInternalDirectory(internalFileDir, it.absolutePath)
-            }
-        }
-        logV("Writing $path in ${internalFileDir.path()} to $file")
-        if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
-        return successResult(file.writeText(content))
-    }
+	override fun deleteInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
+		val file = File(internalFileDir.path() + path)
+		logV("Deleting $path in ${internalFileDir.path()} to $file")
 
-    override fun writeExternalFile(externalFileDir: ExternalFileDir, path: String, content: String): HResult<*> {
-        TODO("Not yet implemented")
-    }
+		if (!file.canWrite() && file.exists()) return errorResult(ERROR_LACK_PERM, "Cannot delete file: $file")
+		return successResult(file.delete())
+	}
 
-    override fun createInternalDirectory(internalFileDir: InternalFileDir, path: String): HResult<*> {
-        val file = File(internalFileDir.path() + path)
-        logV("Creating $path in ${internalFileDir.path()}")
-        if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
-        val r = file.mkdirs()
-        logV("Success? $r")
-        return successResult(r)
-    }
+	override fun deleteExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+		TODO("Not yet implemented")
+	}
 
-    override fun createExternalDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*> {
-        TODO("Not yet implemented")
-    }
+	override fun writeInternalFile(internalFileDir: InternalFileDir, path: String, content: String): HResult<*> {
+		val file = File(internalFileDir.path() + path)
+		file.parentFile?.let {
+			if (!it.exists()) {
+				logV("Creating parent dir $it")
+				createInternalDirectory(internalFileDir, it.absolutePath)
+			}
+		}
+		logV("Writing $path in ${internalFileDir.path()} to $file")
+		if (!file.canWrite() && file.exists()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
+		try {
+			if (!file.exists()) file.createNewFile()
+		} catch (e: IOException) {
+			return errorResult(ERROR_IO, e)
+		}
+		return successResult(file.writeText(content))
+	}
+
+	override fun writeExternalFile(externalFileDir: ExternalFileDir, path: String, content: String): HResult<*> {
+		TODO("Not yet implemented")
+	}
+
+	override fun createInternalDirectory(internalFileDir: InternalFileDir, path: String): HResult<*> {
+		val file = File(internalFileDir.path() + path)
+		logV("Creating $path in ${internalFileDir.path()}")
+		// if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
+		return successResult(file.mkdirs())
+	}
+
+	override fun createExternalDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+		TODO("Not yet implemented")
+	}
 }

@@ -31,15 +31,19 @@ import app.shosetsu.android.common.enums.InternalFileDir
  */
 interface IFileSystemProvider {
 
-    /**
-     * Loads a file from the internal file directory
-     * This means loading data from the APP specific directory
-     *
-     * @return file content
-     */
-    fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String>
+	fun doesInternalFileExist(internalFileDir: InternalFileDir, path: String): HResult<*>
+	fun doesExternalFileExist(externalFileDir: ExternalFileDir, path: String): HResult<*>
 
-    /**
+
+	/**
+	 * Loads a file from the internal file directory
+	 * This means loading data from the APP specific directory
+	 *
+	 * @return file content
+	 */
+	fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String>
+
+	/**
      * Loads a file from the user directories (Pictures, Downloads, Etc)
      *
      * @return file content

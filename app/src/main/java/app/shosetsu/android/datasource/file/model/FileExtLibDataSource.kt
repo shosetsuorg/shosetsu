@@ -3,7 +3,9 @@ package app.shosetsu.android.datasource.file.model
 import app.shosetsu.android.common.consts.LIBRARY_DIR
 import app.shosetsu.android.common.consts.SOURCE_DIR
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.enums.InternalFileDir.FILES
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 
@@ -31,16 +33,28 @@ import app.shosetsu.android.providers.file.base.IFileSystemProvider
 class FileExtLibDataSource(
         private val iFileSystemProvider: IFileSystemProvider,
 ) : IFileExtLibDataSource {
+	init {
+		logV("Creating required directories")
+		iFileSystemProvider.createInternalDirectory(FILES, "$SOURCE_DIR$LIBRARY_DIR").handle(
+				onError = {
+					logV("Error on creation of directories $it")
+				},
+				onSuccess = {
+					logV("Created required directories")
+				}
+		)
+	}
 
-    private fun makeLibraryFile(fileName: String): String =
-            "$SOURCE_DIR$LIBRARY_DIR$fileName.lua"
 
-    override suspend fun writeExtLib(fileName: String, data: String): HResult<*> =
-            iFileSystemProvider.writeInternalFile(
-                    FILES,
-                    makeLibraryFile(fileName),
-                    data
-            )
+	private fun makeLibraryFile(fileName: String): String =
+			"$SOURCE_DIR$LIBRARY_DIR$fileName.lua"
+
+	override suspend fun writeExtLib(fileName: String, data: String): HResult<*> =
+			iFileSystemProvider.writeInternalFile(
+					FILES,
+					makeLibraryFile(fileName),
+					data
+			)
 
     override suspend fun loadExtLib(fileName: String): HResult<String> =
             blockingLoadLib(fileName)

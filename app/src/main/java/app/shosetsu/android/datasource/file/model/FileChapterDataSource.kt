@@ -4,8 +4,10 @@ import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.enums.InternalFileDir.FILES
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
@@ -37,6 +39,19 @@ import java.io.FileNotFoundException
 class FileChapterDataSource(
         private val iFileSystemProvider: IFileSystemProvider
 ) : IFileChapterDataSource {
+    init {
+        logV("Creating required directories")
+        iFileSystemProvider.createInternalDirectory(FILES, "/download/").handle(
+                onError = {
+                    logV("Error on creation of directories $it")
+                },
+                onSuccess = {
+                    logV("Created required directories")
+                }
+        )
+    }
+
+
     /** Makes path */
     private fun makePath(ce: ChapterEntity): String =
             "/download/${ce.formatterID}/${ce.novelID}/${ce.id}.txt"
