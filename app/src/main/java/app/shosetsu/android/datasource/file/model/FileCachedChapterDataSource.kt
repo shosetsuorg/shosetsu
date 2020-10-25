@@ -40,7 +40,7 @@ class FileCachedChapterDataSource(
 
     init {
         logV("Creating required directories")
-        iFileSystemProvider.createInternalDirectory(CACHE, "/cachedChapters/").handle(
+        iFileSystemProvider.createInternalDirectory(CACHE, chaptersCacheDir).handle(
                 onError = {
                     logV("Error on creation of directories $it")
                 },
@@ -184,7 +184,7 @@ class FileCachedChapterDataSource(
     }
 
     companion object {
-        const val chaptersCacheDir = "/chaptersCache/"
+        const val chaptersCacheDir = "/cachedChapters/"
         const val mapFile = "$chaptersCacheDir/map.json"
 
         private const val CHAPTER_KEY = "chapterID"

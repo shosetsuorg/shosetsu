@@ -86,19 +86,18 @@ class AndroidFileSystemProvider(
 
 	override fun writeInternalFile(internalFileDir: InternalFileDir, path: String, content: String): HResult<*> {
 		val file = File(internalFileDir.path() + path)
-		file.parentFile?.let {
-			if (!it.exists()) {
-				logV("Creating parent dir $it")
-				createInternalDirectory(internalFileDir, it.absolutePath)
-			}
-		}
+
 		logV("Writing $path in ${internalFileDir.path()} to $file")
-		if (!file.canWrite() && file.exists()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
+		if (!file.canWrite() && file.exists())
+			return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
+
 		try {
 			if (!file.exists()) file.createNewFile()
 		} catch (e: IOException) {
+			logE("IOException on attempt to create new file: $file", e)
 			return errorResult(ERROR_IO, e)
 		}
+
 		return successResult(file.writeText(content))
 	}
 
