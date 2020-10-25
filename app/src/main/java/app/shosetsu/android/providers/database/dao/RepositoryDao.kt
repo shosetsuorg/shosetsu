@@ -81,9 +81,9 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 	@Throws(SQLiteException::class)
 	suspend fun initializeData() {
 		val branch = if (BuildConfig.DEBUG) "dev" else "master"
-		val name = if (BuildConfig.DEBUG) "dev" else "master"
+		val name = if (BuildConfig.DEBUG) "Development" else "Stable"
 		val repo = RepositoryEntity(
-				url = "https://raw.githubusercontent.com/doomsdayrs/shosetsu-extensions/$branch",
+				url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",
 				name = name
 		)
 		createIfNotExist(repo)
