@@ -1,9 +1,11 @@
 {
-	"latestVersion":"989",
-	"url":"https://discord.gg/ttSX7gB",
-	"releaseNotes":[
-		"- Added a patreon link in about",
-		"- Added a barely functioning sticky header for updates",
-		"- Updates now only show items that are in your own library"
-	]
+  "latestVersion": "1005",
+  "url": "https://discord.gg/ttSX7gB",
+  "releaseNotes": [
+    "- Using fixed up kotlin-lib",
+    "- Fixed some random stuff",
+    "- New abstractions",
+    "- Fixed up extensions",
+    "- Working on hellish nightmares of code"
+  ]
 }
