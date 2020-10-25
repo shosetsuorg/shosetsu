@@ -2,10 +2,10 @@ package app.shosetsu.android.domain.usecases
 
 import android.util.Log
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.HResult.Error
 import app.shosetsu.android.common.dto.HResult.Success
-import app.shosetsu.android.common.ext.containsName
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
@@ -64,9 +64,14 @@ class InitializeExtensionsUseCase(
                                 updateLibraries(repoIndex.libraries, repo, progressUpdate)
                                 updateScript(repoIndex.extensions, repo)
                             }
-                            ?: result.takeIf { it is HResult.Error }?.let { (it as HResult.Error) }?.let {
-                                logE("Exception! ${it.code} : ${it.message}", it.error)
-                            }
+                            ?: result.takeIf { it is Error }
+                                    ?.let { (it as Error) }
+                                    ?.let {
+                                        logE(
+                                                "Exception! ${it.code} : ${it.message}",
+                                                it.error
+                                        )
+                                    }
 
                 }
             else progressUpdate("Failed to get repos")
@@ -89,35 +94,35 @@ class InitializeExtensionsUseCase(
             progressUpdate: (String) -> Unit,
     ) {
         // Libraries in database
-        extLibRepo.loadExtLibByRepo(repo)
-                .takeIf { it is Success }?.let { (it as Success).data }
+        val repoResult = extLibRepo.loadExtLibByRepo(repo)
+        repoResult.takeIf { it is Success }?.let { (it as Success).data }
                 ?.let { libEntities ->
                     // Libraries not installed or needs update
                     val libsNotPresent = ArrayList<ExtLibEntity>()
 
                     // Loops through the json array of libraries
-                    for ((name, indexVersion) in repoList) {
-                        val position = libEntities.containsName(name)
-
+                    for ((repoName, repoVersion) in repoList) {
+                        val position = libEntities.containsName(repoName)
+                        logV("$repoName:$position")
                         var install = false
                         var extensionLibraryEntity: ExtLibEntity? = null
                         var version = Version(0, 0, 0)
 
                         if (position != -1) {
                             //  Checks if an update need
-                            version = indexVersion
+                            version = repoVersion
                             extensionLibraryEntity = libEntities[position]
                             if (version != extensionLibraryEntity.version)
                                 install = true
                         } else {
-                            install = false
+                            install = true
                         }
 
                         // If install is true, then it adds it to the notPresent
                         if (install)
                             libsNotPresent.add(
                                     extensionLibraryEntity ?: ExtLibEntity(
-                                            scriptName = name,
+                                            scriptName = repoName,
                                             version = version,
                                             repoID = repo.id
                                     )
@@ -130,6 +135,9 @@ class InitializeExtensionsUseCase(
                         progressUpdate("Updating/Installing ${it.scriptName}")
                         extLibRepo.installExtLibrary(repo, it)
                     }
+                }
+                ?: repoResult.takeIf { it is Error }?.let { it as Error }?.let { (code, message, error) ->
+                    logE("Error with lib! $code : $message", error)
                 }
     }
 
@@ -146,15 +154,17 @@ class InitializeExtensionsUseCase(
                     repositoryVersion = libVersion,
                     md5 = md5
             ))
+            presentExtensions.add(id)
         }
-        extRepo.getExtensions(repo.id).let { r ->
-            if (r is Success) {
-                r.data.filterNot { presentExtensions.contains(it.id) }.forEach {
-                    if (it.installed)
-                        extRepo.updateExtension(it.copy(
-                                repositoryVersion = Version(-9, -9, -9)
-                        ))
-                    else extRepo.removeExtension(it)
+        extRepo.getExtensions(repo.id).handle { r ->
+            r.filterNot { presentExtensions.contains(it.id) }.forEach {
+                if (it.installed)
+                    extRepo.updateExtension(it.copy(
+                            repositoryVersion = Version(-9, -9, -9)
+                    ))
+                else {
+                    logI("Removing Extension: $it")
+                    extRepo.removeExtension(it)
                 }
             }
         }

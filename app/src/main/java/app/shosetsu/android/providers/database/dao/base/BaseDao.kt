@@ -67,8 +67,4 @@ interface BaseDao<T> {
 	@Delete
 	@Throws(SQLiteException::class)
 	suspend fun suspendedDelete(data: T)
-
-	@Delete
-	@Throws(SQLiteException::class)
-	fun blockingDelete(data: T)
 }

@@ -8,6 +8,8 @@ import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.enums.ExternalFileDir
 import app.shosetsu.android.common.enums.InternalFileDir
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import java.io.File
 
@@ -43,7 +45,12 @@ class AndroidFileSystemProvider(
 
     override fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
         val file = File(internalFileDir.path() + path)
-        if (!file.exists()) return emptyResult()
+        logV("Reading $path in ${internalFileDir.path()} to $file")
+
+        if (!file.exists()) {
+            logE("File does not exist")
+            return emptyResult()
+        }
         if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
         return successResult(file.readText())
     }
@@ -54,6 +61,8 @@ class AndroidFileSystemProvider(
 
     override fun deleteInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
         val file = File(internalFileDir.path() + path)
+        logV("Deleting $path in ${internalFileDir.path()} to $file")
+
         if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot delete file: $file")
         return successResult(file.delete())
     }
@@ -64,6 +73,13 @@ class AndroidFileSystemProvider(
 
     override fun writeInternalFile(internalFileDir: InternalFileDir, path: String, content: String): HResult<*> {
         val file = File(internalFileDir.path() + path)
+        file.parentFile?.let {
+            if (!it.exists()) {
+                logV("Creating parent dir $it")
+                createInternalDirectory(internalFileDir, it.absolutePath)
+            }
+        }
+        logV("Writing $path in ${internalFileDir.path()} to $file")
         if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
         return successResult(file.writeText(content))
     }
@@ -74,8 +90,11 @@ class AndroidFileSystemProvider(
 
     override fun createInternalDirectory(internalFileDir: InternalFileDir, path: String): HResult<*> {
         val file = File(internalFileDir.path() + path)
+        logV("Creating $path in ${internalFileDir.path()}")
         if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
-        return successResult(file.mkdirs())
+        val r = file.mkdirs()
+        logV("Success? $r")
+        return successResult(r)
     }
 
     override fun createExternalDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*> {

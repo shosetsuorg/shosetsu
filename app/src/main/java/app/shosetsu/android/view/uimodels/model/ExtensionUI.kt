@@ -33,100 +33,100 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding
  * 24 / 04 / 2020
  */
 data class ExtensionUI(
-		val id: Int,
-		val repoID: Int,
-		var name: String,
-		val fileName: String,
-		var imageURL: String?,
-		var lang: String,
-		var isExtEnabled: Boolean,
-		var installed: Boolean,
-		var installedVersion: Version?,
-		var repositoryVersion: Version,
-		var md5: String,
+        val id: Int,
+        val repoID: Int,
+        var name: String,
+        val fileName: String,
+        var imageURL: String?,
+        var lang: String,
+        var isExtEnabled: Boolean,
+        var installed: Boolean,
+        var installedVersion: Version?,
+        var repositoryVersion: Version,
+        var md5: String,
 ) : BaseRecyclerItem<ExtensionUI.ViewHolder>(), Convertible<ExtensionEntity> {
-	override val layoutRes: Int = R.layout.extension_card
-	override val type: Int = R.layout.extension_card
-	override var identifier: Long
-		get() = id.toLong()
-		set(value) {}
+    override val layoutRes: Int = R.layout.extension_card
+    override val type: Int = R.layout.extension_card
+    override var identifier: Long
+        get() = id.toLong()
+        set(value) {}
 
-	enum class State { UPDATE, NO_UPDATE, OBSOLETE }
+    enum class State { UPDATE, NO_UPDATE, OBSOLETE }
 
-	fun updateState(): State {
-		if (repositoryVersion == Version(-9, -9, -9)) return State.OBSOLETE
-		return if (installedVersion != null && installedVersion != repositoryVersion)
-			State.UPDATE else State.NO_UPDATE
-	}
+    fun updateState(): State {
+        if (repositoryVersion == Version(-9, -9, -9)) return State.OBSOLETE
+        return if (installedVersion != null && installedVersion != repositoryVersion)
+            State.UPDATE else State.NO_UPDATE
+    }
 
-	override fun convertTo(): ExtensionEntity = ExtensionEntity(
-			id,
-			repoID,
-			name,
-			fileName,
-			imageURL,
-			lang,
-			isExtEnabled,
-			installed,
-			installedVersion,
-			repositoryVersion,
-			md5
-	)
+    override fun convertTo(): ExtensionEntity = ExtensionEntity(
+            id,
+            repoID,
+            name,
+            fileName,
+            imageURL,
+            lang,
+            isExtEnabled,
+            installed,
+            installedVersion,
+            repositoryVersion,
+            md5
+    )
 
-	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+    override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
-	/***/
-	class ViewHolder(
-			view: View
-	) : BindViewHolder<ExtensionUI, ExtensionCardBinding>(view) {
-		override val binding = ExtensionCardBinding.bind(view)
+    /***/
+    class ViewHolder(
+            view: View
+    ) : BindViewHolder<ExtensionUI, ExtensionCardBinding>(view) {
+        override val binding = ExtensionCardBinding.bind(view)
 
-		override fun ExtensionCardBinding.bindView(item: ExtensionUI, payloads: List<Any>) {
-			if (item.installed && item.isExtEnabled) {
-				button.isVisible = false
-				version.text = item.installedVersion.toString()
+        override fun ExtensionCardBinding.bindView(item: ExtensionUI, payloads: List<Any>) {
+            if (item.installed && item.isExtEnabled) {
+                button.isVisible = false
+                version.text = item.installedVersion?.let { with(it) { "$major.$minor.$patch" } }
 
-				when (item.updateState()) {
-					State.UPDATE -> {
-						button.isVisible = true
-						button.setImageResource(R.drawable.download_tinted)
-						button.rotation = 180f
+                when (item.updateState()) {
+                    State.UPDATE -> {
+                        button.isVisible = true
+                        button.setImageResource(R.drawable.download_tinted)
+                        button.rotation = 180f
 
-						updateVersion.visibility = View.VISIBLE
-						updateVersion.text = item.repositoryVersion.toString()
-					}
-					State.NO_UPDATE -> {
-						updateVersion.visibility = View.GONE
-					}
-					State.OBSOLETE -> {
-						updateVersion.visibility = View.VISIBLE
-						updateVersion.setText(R.string.obsolete_extension)
-						updateVersion.textSize = 32f
-					}
-				}
-			} else {
-				version.text = item.repositoryVersion.toString()
-				settings.isVisible = false
-			}
+                        updateVersion.visibility = View.VISIBLE
+                        updateVersion.text = with(item.repositoryVersion) { "$major.$minor.$patch" }
+                    }
+                    State.NO_UPDATE -> {
+                        updateVersion.visibility = View.GONE
+                    }
+                    State.OBSOLETE -> {
+                        updateVersion.visibility = View.VISIBLE
+                        updateVersion.setText(R.string.obsolete_extension)
+                        updateVersion.textSize = 32f
+                    }
+                }
+            } else {
+                version.text = with(item.repositoryVersion) { "$major.$minor.$patch" }
+                settings.isVisible = false
+            }
 
-			title.text = item.name
-			language.text = item.lang
+            title.text = item.name
+            language.text = item.lang
 
-			if (!item.imageURL.isNullOrEmpty()) picasso(item.imageURL!!, imageView)
-		}
+            if (!item.imageURL.isNullOrEmpty()) picasso(item.imageURL!!, imageView)
+        }
 
-		override fun ExtensionCardBinding.unbindView(item: ExtensionUI) {
-			button.setImageResource(R.drawable.download)
-			button.rotation = 0f
-			button.isVisible = true
+        override fun ExtensionCardBinding.unbindView(item: ExtensionUI) {
+            button.setImageResource(R.drawable.download)
+            button.rotation = 0f
+            button.isVisible = true
 
-			settings.isVisible = true
+            settings.isVisible = true
 
-			version.text = null
-			updateVersion.text = null
-			title.text = null
-			language.text = null
-			imageView.setImageResource(R.drawable.broken_image)
-		}
-	}
+            version.text = null
+            updateVersion.text = null
+            title.text = null
+            language.text = null
+            imageView.setImageResource(R.drawable.broken_image)
+        }
+    }
 }

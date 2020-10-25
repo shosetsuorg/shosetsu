@@ -26,8 +26,14 @@ import app.shosetsu.lib.Version
  */
 class VersionConverter {
     @TypeConverter
-    fun toString(v: Version): String = with(v) { "$major.$minor.$patch" }
+    fun toString(v: Version?): String {
+        if (v == null) return ""
+        return with(v) { "$major.$minor.$patch" }
+    }
 
     @TypeConverter
-    fun toVersion(v: String): Version = Version(v)
+    fun toVersion(v: String): Version? {
+        if (v.isEmpty()) return null
+        return Version(v)
+    }
 }

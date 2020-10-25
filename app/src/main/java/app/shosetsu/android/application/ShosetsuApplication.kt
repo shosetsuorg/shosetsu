@@ -12,8 +12,8 @@ import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.di.*
 import app.shosetsu.android.di.datasource.cacheDataSouceModule
 import app.shosetsu.android.di.datasource.fileDataSourceModule
@@ -110,7 +110,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
                 }
                 else -> {
                     if (result is HResult.Error)
-                        Log.e(logID(), "[${result.code}]\t${result.message}")
+                        logE("[${result.code}]\t${result.message}", result.error)
                     null
                 }
             }
