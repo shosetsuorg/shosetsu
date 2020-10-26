@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.repository.model
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.datasource.local.base.ILocalUpdatesDataSource
+import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository

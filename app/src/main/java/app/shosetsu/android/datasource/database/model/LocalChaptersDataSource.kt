@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.local.model
+package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
@@ -7,7 +7,7 @@ import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.datasource.local.base.ILocalChaptersDataSource
+import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
@@ -50,12 +50,16 @@ class LocalChaptersDataSource(
 			emitSource(chaptersDao.loadLiveChapters(novelID).map { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
+		} catch (e: NullPointerException) {
+			emit(errorResult(e))
 		}
 	}
 
 	override suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity> = try {
 		successResult(chaptersDao.loadChapter(chapterID))
 	} catch (e: SQLiteException) {
+		errorResult(e)
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 
@@ -65,6 +69,8 @@ class LocalChaptersDataSource(
 		try {
 			emitSource(chaptersDao.loadLiveReaderChapters(novelID).map { successResult(it) })
 		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		} catch (e: NullPointerException) {
 			emit(errorResult(e))
 		}
 	}
@@ -77,6 +83,8 @@ class LocalChaptersDataSource(
 				successResult(chaptersDao.handleChapters(novelEntity, list))
 			} catch (e: SQLiteException) {
 				errorResult(e)
+			} catch (e: NullPointerException) {
+				errorResult(e)
 			}
 
 
@@ -87,11 +95,15 @@ class LocalChaptersDataSource(
 		chaptersDao.handleChaptersReturnNew(novelEntity, list)
 	} catch (e: SQLiteException) {
 		errorResult(e)
+	} catch (e: NullPointerException) {
+		errorResult(e)
 	}
 
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> = try {
 		successResult(chaptersDao.suspendedUpdate(chapterEntity))
 	} catch (e: SQLiteException) {
+		errorResult(e)
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 
@@ -100,6 +112,8 @@ class LocalChaptersDataSource(
 			try {
 				successResult(chaptersDao.updateReaderChapter(readerChapterEntity))
 			} catch (e: SQLiteException) {
+				errorResult(e)
+			} catch (e: NullPointerException) {
 				errorResult(e)
 			}
 

@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.local.model
+package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
@@ -7,9 +7,10 @@ import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.datasource.local.base.ILocalExtRepoDataSource
-import app.shosetsu.android.domain.model.local.RepositoryEntity
-import app.shosetsu.android.providers.database.dao.RepositoryDao
+import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
+import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
+import app.shosetsu.android.domain.model.local.UpdateEntity
+import app.shosetsu.android.providers.database.dao.UpdatesDao
 
 /*
  * This file is part of shosetsu.
@@ -32,26 +33,35 @@ import app.shosetsu.android.providers.database.dao.RepositoryDao
  * shosetsu
  * 12 / 05 / 2020
  */
-class LocalExtRepoDataSource(
-		private val repositoryDao: RepositoryDao,
-) : ILocalExtRepoDataSource {
-	override fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>> = liveData {
+class LocalUpdatesDataSource(
+		private val updatesDao: UpdatesDao,
+) : ILocalUpdatesDataSource {
+	override suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> = liveData {
 		try {
-			emitSource(repositoryDao.loadRepositoriesLive().map { successResult(it) })
+			emitSource(updatesDao.loadUpdates().map { successResult(it) })
 		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		} catch (e: NullPointerException) {
 			emit(errorResult(e))
 		}
 	}
 
-	override fun loadRepositories(): HResult<List<RepositoryEntity>> = try {
-		successResult(repositoryDao.loadRepositories())
+	override suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>> = try {
+		successResult(updatesDao.insertAllIgnore(list))
 	} catch (e: SQLiteException) {
+		errorResult(e)
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 
-	override fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
-		successResult(repositoryDao.loadRepositoryFromID(repoID))
-	} catch (e: SQLiteException) {
-		errorResult(e)
+	override suspend fun getCompleteUpdates(
+	): LiveData<HResult<List<UpdateCompleteEntity>>> = liveData {
+		try {
+			emitSource(updatesDao.loadCompleteUpdates().map { successResult(it) })
+		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		} catch (e: NullPointerException) {
+			emit(errorResult(e))
+		}
 	}
 }

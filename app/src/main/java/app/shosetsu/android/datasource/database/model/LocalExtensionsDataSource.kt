@@ -1,14 +1,13 @@
-package app.shosetsu.android.datasource.local.model
+package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
-import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.datasource.local.base.ILocalExtensionsDataSource
+import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.providers.database.dao.ExtensionsDao
@@ -43,6 +42,8 @@ class LocalExtensionsDataSource(
 			emitSource(extensionsDao.loadExtensions().map { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
+		} catch (e: NullPointerException) {
+			emit(errorResult(e))
 		}
 	}
 
@@ -50,6 +51,8 @@ class LocalExtensionsDataSource(
 		try {
 			emitSource(extensionsDao.getExtensionLive(formatterID).map { successResult(it) })
 		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		} catch (e: NullPointerException) {
 			emit(errorResult(e))
 		}
 	}
@@ -62,6 +65,8 @@ class LocalExtensionsDataSource(
 			})
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
+		} catch (e: NullPointerException) {
+			emit(errorResult(e))
 		}
 	}
 
@@ -69,14 +74,16 @@ class LocalExtensionsDataSource(
 		successResult(extensionsDao.suspendedUpdate(extensionEntity))
 	} catch (e: SQLiteException) {
 		errorResult(e)
-
+	} catch (e: NullPointerException) {
+		errorResult(e)
 	}
 
 	override suspend fun deleteExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
 		successResult(extensionsDao.suspendedDelete(extensionEntity))
 	} catch (e: SQLiteException) {
 		errorResult(e)
-
+	} catch (e: NullPointerException) {
+		errorResult(e)
 	}
 
 	override suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity> = try {
@@ -84,18 +91,22 @@ class LocalExtensionsDataSource(
 	} catch (e: SQLiteException) {
 		errorResult(e)
 	} catch (e: NullPointerException) {
-		errorResult(ErrorKeys.ERROR_IMPOSSIBLE, "NPE", e)
+		errorResult(e)
 	}
 
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> = try {
 		successResult(extensionsDao.insertOrUpdate(extensionEntity))
 	} catch (e: SQLiteException) {
 		errorResult(e)
+	} catch (e: NullPointerException) {
+		errorResult(e)
 	}
 
 	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> = try {
 		successResult(extensionsDao.getExtensions(repoID))
 	} catch (e: SQLiteException) {
+		errorResult(e)
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 

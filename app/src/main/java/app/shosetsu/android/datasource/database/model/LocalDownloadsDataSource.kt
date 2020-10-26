@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.local.model
+package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
@@ -8,7 +8,7 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.datasource.local.base.ILocalDownloadsDataSource
+import app.shosetsu.android.datasource.database.base.ILocalDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.providers.database.dao.DownloadsDao
 
@@ -41,6 +41,8 @@ class LocalDownloadsDataSource(
 			emitSource(downloadsDao.loadDownloadItems().map { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
+		} catch (e: NullPointerException) {
+			emit(errorResult(e))
 		}
 	}
 
@@ -48,11 +50,15 @@ class LocalDownloadsDataSource(
 		successResult(downloadsDao.loadDownloadCount())
 	} catch (e: SQLiteException) {
 		errorResult(e)
+	} catch (e: NullPointerException) {
+		errorResult(e)
 	}
 
 	override suspend fun loadFirstDownload(): HResult<DownloadEntity> = try {
 		downloadsDao.loadFirstDownload()?.let { successResult(it) } ?: emptyResult()
 	} catch (e: SQLiteException) {
+		errorResult(e)
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 
@@ -60,11 +66,15 @@ class LocalDownloadsDataSource(
 		successResult(downloadsDao.insertIgnore(downloadEntity))
 	} catch (e: SQLiteException) {
 		errorResult(e)
+	} catch (e: NullPointerException) {
+		errorResult(e)
 	}
 
 	override suspend fun updateDownload(downloadEntity: DownloadEntity): HResult<*> = try {
 		successResult(downloadsDao.suspendedUpdate(downloadEntity))
 	} catch (e: SQLiteException) {
+		errorResult(e)
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 
@@ -72,17 +82,23 @@ class LocalDownloadsDataSource(
 		successResult(downloadsDao.suspendedDelete(downloadEntity))
 	} catch (e: SQLiteException) {
 		errorResult(e)
+	} catch (e: NullPointerException) {
+		errorResult(e)
 	}
 
 	override suspend fun clearDownloads(): HResult<*> = try {
 		successResult(downloadsDao.clearData())
 	} catch (e: SQLiteException) {
 		errorResult(e)
+	} catch (e: NullPointerException) {
+		errorResult(e)
 	}
 
 	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> = try {
 		successResult(downloadsDao.loadDownload(chapterID))
 	} catch (e: SQLiteException) {
+		errorResult(e)
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 }

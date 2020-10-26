@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.local.base
+package app.shosetsu.android.datasource.database.base
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult

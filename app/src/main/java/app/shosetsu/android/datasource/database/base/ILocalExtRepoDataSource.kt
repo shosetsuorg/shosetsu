@@ -1,7 +1,7 @@
-package app.shosetsu.android.datasource.local.base
+package app.shosetsu.android.datasource.database.base
 
+import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 
 /*
@@ -21,20 +21,17 @@ import app.shosetsu.android.domain.model.local.RepositoryEntity
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 04 / 05 / 2020
  */
-interface ILocalExtLibDataSource {
-	/** Updates an [extLibEntity] */
-	suspend fun updateExtension(extLibEntity: ExtLibEntity): HResult<*>
+interface ILocalExtRepoDataSource {
+	/** Loads LiveData of the repositories */
+	fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>>
 
-	/** Update or insert an [extLibEntity] */
-	suspend fun updateOrInsert(extLibEntity: ExtLibEntity): HResult<*>
+	/** Loads a list of the repositories */
+	fun loadRepositories(): HResult<List<RepositoryEntity>>
 
-	/** Loads a [List] of [ExtLibEntity] by its [repositoryEntity] */
-	suspend fun loadExtLibByRepo(repositoryEntity: RepositoryEntity): HResult<List<ExtLibEntity>>
+	/** Loads a [RepositoryEntity] by its [repoID] */
+	fun loadRepository(repoID: Int): HResult<RepositoryEntity>
 }

@@ -19,7 +19,7 @@ package app.shosetsu.android.domain.repository.model
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.datasource.local.base.ILocalDownloadsDataSource
+import app.shosetsu.android.datasource.database.base.ILocalDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 

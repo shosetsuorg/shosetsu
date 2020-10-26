@@ -61,4 +61,9 @@ object ErrorKeys {
 
 	/** Lack permissions to do something */
 	const val ERROR_LACK_PERM: Int = 11
+
+	/**
+	 * Null pointer occurred
+	 */
+	const val ERROR_NPE: Int = 12
 }

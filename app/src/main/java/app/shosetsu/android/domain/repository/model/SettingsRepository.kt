@@ -3,7 +3,7 @@ package app.shosetsu.android.domain.repository.model
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.datasource.local.base.ILocalSettingsDataSource
+import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
@@ -28,7 +28,7 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
  * 18 / 09 / 2020
  */
 class SettingsRepository(
-		private val iLocalSettingsDataSource: ILocalSettingsDataSource
+		private val iLocalSettingsDataSource: IFileSettingsDataSource
 ) : ISettingsRepository {
 
 	override fun observeLong(key: SettingKey<Long>): LiveData<Long> =

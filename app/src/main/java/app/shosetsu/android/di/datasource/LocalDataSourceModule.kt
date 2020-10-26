@@ -1,7 +1,9 @@
 package app.shosetsu.android.di.datasource
 
-import app.shosetsu.android.datasource.local.base.*
-import app.shosetsu.android.datasource.local.model.*
+import app.shosetsu.android.datasource.database.base.*
+import app.shosetsu.android.datasource.database.model.*
+import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
+import app.shosetsu.android.datasource.file.model.FileSharedPreferencesSettingsDataSource
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -45,5 +47,5 @@ val localDataSouceModule: Kodein.Module = Kodein.Module("local_data_source_modul
 
 	bind<ILocalUpdatesDataSource>() with singleton { LocalUpdatesDataSource(instance()) }
 
-	bind<ILocalSettingsDataSource>() with singleton { LocalSettingsDataSource(instance()) }
+	bind<IFileSettingsDataSource>() with singleton { FileSharedPreferencesSettingsDataSource(instance()) }
 }

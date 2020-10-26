@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.repository.model
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.datasource.local.base.ILocalExtRepoDataSource
+import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.domain.repository.base.IExtRepoRepository

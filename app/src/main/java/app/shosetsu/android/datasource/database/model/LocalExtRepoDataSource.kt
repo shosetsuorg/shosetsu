@@ -1,13 +1,15 @@
-package app.shosetsu.android.datasource.local.model
+package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.datasource.local.base.ILocalExtLibDataSource
-import app.shosetsu.android.domain.model.local.ExtLibEntity
+import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
-import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
+import app.shosetsu.android.providers.database.dao.RepositoryDao
 
 /*
  * This file is part of shosetsu.
@@ -30,26 +32,32 @@ import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
  * shosetsu
  * 12 / 05 / 2020
  */
-class LocalExtLibDataSource(
-		private val extensionLibraryDao: ExtensionLibraryDao,
-) : ILocalExtLibDataSource {
-	override suspend fun updateExtension(extLibEntity: ExtLibEntity): HResult<*> = try {
-		successResult(extensionLibraryDao.suspendedUpdate(extLibEntity))
+class LocalExtRepoDataSource(
+		private val repositoryDao: RepositoryDao,
+) : ILocalExtRepoDataSource {
+	override fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>> = liveData {
+		try {
+			emitSource(repositoryDao.loadRepositoriesLive().map { successResult(it) })
+		} catch (e: SQLiteException) {
+			emit(errorResult(e))
+		} catch (e: NullPointerException) {
+			emit(errorResult(e))
+		}
+	}
+
+	override fun loadRepositories(): HResult<List<RepositoryEntity>> = try {
+		successResult(repositoryDao.loadRepositories())
 	} catch (e: SQLiteException) {
+		errorResult(e)
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 
-	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): HResult<*> = try {
-		successResult(extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity))
+	override fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
+		successResult(repositoryDao.loadRepositoryFromID(repoID))
 	} catch (e: SQLiteException) {
 		errorResult(e)
-	}
-
-	override suspend fun loadExtLibByRepo(
-			repositoryEntity: RepositoryEntity,
-	): HResult<List<ExtLibEntity>> = try {
-		successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id!!))
-	} catch (e: SQLiteException) {
+	} catch (e: NullPointerException) {
 		errorResult(e)
 	}
 }

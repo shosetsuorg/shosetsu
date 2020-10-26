@@ -8,9 +8,9 @@ import app.shosetsu.android.common.consts.ErrorKeys.ERROR_IMPOSSIBLE
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_BROKEN
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.ext.logError
+import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
+import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
 import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
-import app.shosetsu.android.datasource.local.base.ILocalExtRepoDataSource
-import app.shosetsu.android.datasource.local.base.ILocalExtensionsDataSource
 import app.shosetsu.android.datasource.memory.base.IMemExtensionsDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtensionDataSource

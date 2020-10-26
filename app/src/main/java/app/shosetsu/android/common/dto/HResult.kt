@@ -83,6 +83,10 @@ fun errorResult(e: SQLiteException): HResult.Error =
 fun errorResult(e: JSONException): HResult.Error =
 		HResult.Error(ErrorKeys.ERROR_JSON, e.message ?: "UnknownJSONException", e)
 
+/** An exception occurred in SQL*/
+fun errorResult(e: NullPointerException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_NPE, e.message ?: "UnknownNullException", e)
+
 
 /**
  * Converts shit

@@ -7,8 +7,8 @@ import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.datasource.database.base.ILocalExtLibDataSource
 import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
-import app.shosetsu.android.datasource.local.base.ILocalExtLibDataSource
 import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity

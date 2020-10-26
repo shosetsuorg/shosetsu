@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteException
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.and
+import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
 import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
-import app.shosetsu.android.datasource.local.base.ILocalChaptersDataSource
 import app.shosetsu.android.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity

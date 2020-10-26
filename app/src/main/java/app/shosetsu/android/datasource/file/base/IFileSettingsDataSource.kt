@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.local.base
+package app.shosetsu.android.datasource.file.base
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey
@@ -25,7 +25,7 @@ import app.shosetsu.android.common.dto.HResult
  * shosetsu
  * 17 / 09 / 2020
  */
-interface ILocalSettingsDataSource {
+interface IFileSettingsDataSource {
 
 	fun observeLong(key: SettingKey<Long>): LiveData<Long>
 

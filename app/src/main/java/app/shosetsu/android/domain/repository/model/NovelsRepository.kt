@@ -5,7 +5,7 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.datasource.local.base.ILocalNovelsDataSource
+import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage

@@ -1,10 +1,10 @@
-package app.shosetsu.android.datasource.local.model
+package app.shosetsu.android.datasource.file.model
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.datasource.local.base.ILocalSettingsDataSource
+import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 
 /*
@@ -28,9 +28,9 @@ import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
  * shosetsu
  * 17 / 09 / 2020
  */
-class LocalSettingsDataSource(
+class FileSharedPreferencesSettingsDataSource(
 		private val provider: SharedPreferenceProvider
-) : ILocalSettingsDataSource {
+) : IFileSettingsDataSource {
 	override fun observeLong(key: SettingKey<Long>): LiveData<Long> =
 			provider.observeLong(key)
 
