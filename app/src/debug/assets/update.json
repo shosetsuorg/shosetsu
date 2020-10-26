@@ -1,8 +1,8 @@
 {
-  "latestVersion": "1009",
+  "latestVersion": "1013",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Added ErrorReporting to HResult class",
-    "- Renamed Formatter to IExtension in IExtensionsRepository.kt"
+    "- Fixed NovelUI.kt errors",
+    "- Removed useless classes"
   ]
 }
