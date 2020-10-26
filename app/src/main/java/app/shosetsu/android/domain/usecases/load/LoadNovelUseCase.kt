@@ -41,7 +41,7 @@ class LoadNovelUseCase(
 		private val uR: IUpdatesRepository,
 ) {
 	private suspend fun main(novel: NovelEntity, loadChapters: Boolean, haveChaptersUpdate: () -> Unit = {}): HResult<Boolean> =
-			eR.loadFormatter(novel.formatterID).handleReturn { ext ->
+			eR.loadIExtension(novel.formatterID).handleReturn { ext ->
 				nR.retrieveNovelInfo(ext, novel, loadChapters).handleReturn { page ->
 					val currentStatus: Boolean = novel.loaded
 

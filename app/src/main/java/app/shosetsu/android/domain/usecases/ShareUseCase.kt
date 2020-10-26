@@ -56,7 +56,7 @@ class ShareUseCase(
 	}
 
 	suspend operator fun invoke(url: String, formatterID: Int, title: String, type: Int) {
-		repository.loadFormatter(formatterID).handle(
+		repository.loadIExtension(formatterID).handle(
 				onEmpty = {
 					Log.e(logID(), "Empty")
 					stringToastUseCase { "Empty??" }

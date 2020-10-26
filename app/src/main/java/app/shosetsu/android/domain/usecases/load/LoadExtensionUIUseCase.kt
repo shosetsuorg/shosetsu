@@ -37,6 +37,6 @@ class LoadExtensionUIUseCase(
 			liveData<HResult<ExtensionUI>> {
 				emit(loading())
 				if (id != -1)
-					emitSource(iExtensionsRepository.getExtensionLive(id).map { it.mapTo() })
+					emitSource(iExtensionsRepository.getExtensionEntityLive(id).map { it.mapTo() })
 			}
 }

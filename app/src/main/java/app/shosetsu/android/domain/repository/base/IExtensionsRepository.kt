@@ -30,13 +30,13 @@ import app.shosetsu.lib.Novel
  */
 interface IExtensionsRepository {
 	/** LiveData of all extensions */
-	fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
+	fun loadExtensionEntitiesLive(): LiveData<HResult<List<ExtensionEntity>>>
 
 	/** LiveData of a specific extension */
-	fun getExtensionLive(id: Int): LiveData<HResult<ExtensionEntity>>
+	fun getExtensionEntityLive(id: Int): LiveData<HResult<ExtensionEntity>>
 
 	/** Get extensions by their repository ID */
-	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
+	suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>>
 
 	/** Installs an [extensionEntity] */
 	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*>
@@ -48,13 +48,13 @@ interface IExtensionsRepository {
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*>
 
 	/** Updates an [extensionEntity] */
-	suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*>
 
 	/** Loads the formatter via its extension */
-	suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<IExtension>
+	suspend fun loadIExtension(extensionEntity: ExtensionEntity): HResult<IExtension>
 
 	/** Loads the formatter via its ID */
-	suspend fun loadFormatter(formatterID: Int): HResult<IExtension>
+	suspend fun loadIExtension(formatterID: Int): HResult<IExtension>
 
 	/** Gets the extensions as cards containing their ID, Title, and Image */
 	fun getCards(): LiveData<HResult<List<IDTitleImage>>>

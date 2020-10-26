@@ -41,7 +41,7 @@ class LoadCatalogueQueryDataUseCase(
 			formatterID: Int,
 			query: String,
 			filters: Map<Int, Any>
-	) = extensionRepository.loadFormatter(formatterID).handleReturn {
+	) = extensionRepository.loadIExtension(formatterID).handleReturn {
 		invoke(it, query, filters)
 	}
 

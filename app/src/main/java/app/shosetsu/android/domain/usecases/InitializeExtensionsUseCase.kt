@@ -156,10 +156,10 @@ class InitializeExtensionsUseCase(
             ))
             presentExtensions.add(id)
         }
-        extRepo.getExtensions(repo.id).handle { r ->
+        extRepo.getExtensionEntities(repo.id).handle { r ->
             r.filterNot { presentExtensions.contains(it.id) }.forEach {
                 if (it.installed)
-                    extRepo.updateExtension(it.copy(
+                    extRepo.updateExtensionEntity(it.copy(
                             repositoryVersion = Version(-9, -9, -9)
                     ))
                 else {

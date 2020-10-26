@@ -103,7 +103,7 @@ class DownloadWorker(
 				when (cR) {
 					is HResult.Success -> {
 						val chapterEntity = cR.data
-						extRepo.loadFormatter(chapterEntity.formatterID).let { fR: HResult<IExtension> ->
+						extRepo.loadIExtension(chapterEntity.formatterID).let { fR: HResult<IExtension> ->
 							when (fR) {
 								is HResult.Success -> {
 									val formatterEntity = fR.data

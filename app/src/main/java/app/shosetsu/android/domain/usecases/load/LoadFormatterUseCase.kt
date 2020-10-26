@@ -27,5 +27,5 @@ import app.shosetsu.lib.IExtension
  */
 class LoadFormatterUseCase(private val extensionsRepository: IExtensionsRepository) {
 	suspend operator fun invoke(formatterID: Int): HResult<IExtension> =
-			extensionsRepository.loadFormatter(formatterID)
+			extensionsRepository.loadIExtension(formatterID)
 }

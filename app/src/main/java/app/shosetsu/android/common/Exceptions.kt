@@ -1,5 +1,7 @@
 package app.shosetsu.android.common
 
+import app.shosetsu.android.common.dto.HResult
+
 /*
  * This file is part of shosetsu.
  *
@@ -25,3 +27,8 @@ package app.shosetsu.android.common
  * @author github.com/doomsdayrs
  */
 class IncorrectDateException(message: String?) : Exception(message)
+
+class HResultException(hResult: HResult.Error) : Exception(
+		"${hResult.code} ${hResult.message}",
+		hResult.error
+)

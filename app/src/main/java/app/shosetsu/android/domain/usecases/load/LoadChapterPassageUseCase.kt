@@ -40,7 +40,7 @@ class LoadChapterPassageUseCase(
 		return if (chapterResult is HResult.Success) {
 			Log.d(logID(), "Success")
 			val chapterEntity = chapterResult.data
-			val formatterResult = iExtensionsRepository.loadFormatter(chapterEntity.formatterID)
+			val formatterResult = iExtensionsRepository.loadIExtension(chapterEntity.formatterID)
 			if (formatterResult is HResult.Success) {
 				iChaptersRepository.loadChapterPassage(formatterResult.data, chapterEntity)
 			} else errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")

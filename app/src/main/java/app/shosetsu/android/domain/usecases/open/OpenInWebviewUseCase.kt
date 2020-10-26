@@ -59,7 +59,7 @@ class OpenInWebviewUseCase(
 
 
 	suspend operator fun invoke(url: String, formatterID: Int, type: Int) {
-		when (val fR: HResult<IExtension> = repository.loadFormatter(formatterID)) {
+		when (val fR: HResult<IExtension> = repository.loadIExtension(formatterID)) {
 			is HResult.Success -> {
 				val formatter = fR.data
 				this(formatter.expandURL(url, type))

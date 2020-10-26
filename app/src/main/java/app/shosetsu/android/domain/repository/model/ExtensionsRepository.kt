@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_IMPOSSIBLE
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_BROKEN
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.ext.logError
@@ -52,13 +51,13 @@ class ExtensionsRepository(
 		private val repositorySource: ILocalExtRepoDataSource,
 		private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
-	override fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>> =
+	override fun loadExtensionEntitiesLive(): LiveData<HResult<List<ExtensionEntity>>> =
 			databaseSource.loadExtensions()
 
-	override fun getExtensionLive(id: Int): LiveData<HResult<ExtensionEntity>> =
+	override fun getExtensionEntityLive(id: Int): LiveData<HResult<ExtensionEntity>> =
 			databaseSource.loadExtensionLive(id)
 
-	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> =
+	override suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>> =
 			databaseSource.getExtensions(repoID)
 
 	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*> {
@@ -70,24 +69,24 @@ class ExtensionsRepository(
 			)) {
 				is HResult.Success -> {
 					try {
-                        val formatter = LuaExtension(result.data)
+						val formatter = LuaExtension(result.data)
 
-                        // Write to storage/cache
-                        memorySource.putFormatterInMemory(formatter)
-                        fileSource.writeFormatter(extensionEntity.fileName, result.data)
+						// Write to storage/cache
+						memorySource.putFormatterInMemory(formatter)
+						fileSource.writeFormatter(extensionEntity.fileName, result.data)
 
-                        // Update database info
-                        formatter.exMetaData.let { meta ->
-                            extensionEntity.installedVersion = meta.version
-                            extensionEntity.repositoryVersion = meta.version
-                        }
-                        extensionEntity.name = formatter.name
-                        extensionEntity.imageURL = formatter.imageURL
-                        extensionEntity.installed = true
-                        extensionEntity.enabled = true
-                        databaseSource.updateExtension(extensionEntity)
-                        return successResult("")
-                    } catch (e: IllegalArgumentException) {
+						// Update database info
+						formatter.exMetaData.let { meta ->
+							extensionEntity.installedVersion = meta.version
+							extensionEntity.repositoryVersion = meta.version
+						}
+						extensionEntity.name = formatter.name
+						extensionEntity.imageURL = formatter.imageURL
+						extensionEntity.installed = true
+						extensionEntity.enabled = true
+						databaseSource.updateExtension(extensionEntity)
+						return successResult("")
+					} catch (e: IllegalArgumentException) {
 						return errorResult(ERROR_LUA_BROKEN, e).also { logError { it } }
 					} catch (e: Exception) {
 						return errorResult(ERROR_GENERAL, e).also { logError { it } }
@@ -111,20 +110,26 @@ class ExtensionsRepository(
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> =
 			databaseSource.insertOrUpdate(extensionEntity)
 
-	override suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*> =
+	override suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*> =
 			databaseSource.updateExtension(extensionEntity)
 
-	override suspend fun loadFormatter(extensionEntity: ExtensionEntity): HResult<IExtension> = try {
-		memorySource.loadFormatterFromMemory(extensionEntity.id).takeIf { it is HResult.Success }
-				?: fileSource.loadFormatter(extensionEntity.fileName).takeIf { it is HResult.Success }
-						?.also { if (it is HResult.Success) memorySource.putFormatterInMemory(it.data) }
-				?: errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
-	} catch (e: NullPointerException) {
-		errorResult(ERROR_IMPOSSIBLE, "Impossible NPE", e)
+	override suspend fun loadIExtension(extensionEntity: ExtensionEntity): HResult<IExtension> {
+		memorySource.loadFormatterFromMemory(extensionEntity.id)
+				.takeIf { it is HResult.Success }?.let { return it }
+
+		val fileResult = fileSource.loadFormatter(extensionEntity.fileName)
+		if (fileResult !is HResult.Success)
+			return errorResult(ErrorKeys.ERROR_NOT_FOUND, "Extension file not found")
+
+		if (!fileResult.data.exMetaData.libVersion.isCompatible())
+			return errorResult(ErrorKeys.ERROR_INCOMPATIBLE)
+
+		memorySource.putFormatterInMemory(fileResult.data)
+		return fileResult
 	}
 
-	override suspend fun loadFormatter(formatterID: Int): HResult<IExtension> =
-			databaseSource.loadExtension(formatterID).withSuccess { loadFormatter(it) }
+	override suspend fun loadIExtension(formatterID: Int): HResult<IExtension> =
+			databaseSource.loadExtension(formatterID).withSuccess { loadIExtension(it) }
 
 	override fun getCards(): LiveData<HResult<List<IDTitleImage>>> = liveData {
 		emitSource(databaseSource.loadPoweredExtensionsCards())

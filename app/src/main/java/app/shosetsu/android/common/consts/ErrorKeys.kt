@@ -66,4 +66,10 @@ object ErrorKeys {
 	 * Null pointer occurred
 	 */
 	const val ERROR_NPE: Int = 12
+
+	/**
+	 * The extension is incompatible, Please update or remove
+	 */
+	const val ERROR_INCOMPATIBLE: Int = 13
+
 }
