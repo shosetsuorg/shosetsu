@@ -1,11 +1,8 @@
 {
-  "latestVersion": "1005",
+  "latestVersion": "1009",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Using fixed up kotlin-lib",
-    "- Fixed some random stuff",
-    "- New abstractions",
-    "- Fixed up extensions",
-    "- Working on hellish nightmares of code"
+    "- Added ErrorReporting to HResult class",
+    "- Renamed Formatter to IExtension in IExtensionsRepository.kt"
   ]
 }
