@@ -62,7 +62,7 @@ sealed class HResult<out T : Any> {
 				ACRA.getErrorReporter()
 			} catch (e: IllegalStateException) {
 				null
-			}?.handleException(HResultException(this))
+			}?.handleSilentException(HResultException(this))
 		}
 	}
 }
