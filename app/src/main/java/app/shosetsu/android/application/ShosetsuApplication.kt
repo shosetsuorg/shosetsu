@@ -102,7 +102,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
             return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {
                 is HResult.Success -> {
                     val l = try {
-                        shosetsuGlobals().load(result.data)
+                        shosetsuGlobals().load(result.data, "lib($name)")
                     } catch (e: Error) {
                         throw e
                     }
