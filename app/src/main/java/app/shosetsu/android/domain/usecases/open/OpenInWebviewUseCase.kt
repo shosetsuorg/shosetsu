@@ -77,7 +77,7 @@ class OpenInWebviewUseCase(
 
 	suspend operator fun invoke(novelUI: NovelUI): Unit = this(
 			novelUI.novelURL,
-			novelUI.formatterID,
+			novelUI.extID,
 			KEY_NOVEL_URL
 	)
 

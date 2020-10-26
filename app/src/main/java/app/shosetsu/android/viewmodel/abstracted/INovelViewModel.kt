@@ -39,9 +39,6 @@ abstract class INovelViewModel
 	abstract val novelLive: LiveData<HResult<NovelUI>>
 	abstract val chaptersLive: LiveData<HResult<List<ChapterUI>>>
 
-	/** Name of the formatter */
-	abstract val formatterName: LiveData<HResult<String>>
-
 	/** Set's the value to be loaded */
 	abstract fun setNovelID(novelID: Int)
 

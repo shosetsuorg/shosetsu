@@ -35,6 +35,8 @@ interface IExtensionsRepository {
 	/** LiveData of a specific extension */
 	fun getExtensionEntityLive(id: Int): LiveData<HResult<ExtensionEntity>>
 
+	suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity>
+
 	/** Get extensions by their repository ID */
 	suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>>
 

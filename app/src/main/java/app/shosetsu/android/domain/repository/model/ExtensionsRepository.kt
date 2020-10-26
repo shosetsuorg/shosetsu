@@ -54,8 +54,12 @@ class ExtensionsRepository(
 	override fun loadExtensionEntitiesLive(): LiveData<HResult<List<ExtensionEntity>>> =
 			databaseSource.loadExtensions()
 
+
 	override fun getExtensionEntityLive(id: Int): LiveData<HResult<ExtensionEntity>> =
 			databaseSource.loadExtensionLive(id)
+
+	override suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity> =
+			databaseSource.loadExtension(id)
 
 	override suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>> =
 			databaseSource.getExtensions(repoID)

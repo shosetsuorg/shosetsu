@@ -5,7 +5,10 @@ import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.dto.*
+import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.dto.handleReturn
+import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
@@ -421,12 +424,6 @@ class NovelController(bundle: Bundle)
 
 		viewModel.chaptersLive.observe(this) {
 			handleRecyclerUpdate(chapterUIAdapter, { showEmpty() }, { hideEmpty() }, it)
-		}
-		viewModel.formatterName.observe(this) { result: HResult<String> ->
-			result.handledReturnAny(
-					{ "Loading" }, { ("UNKNOWN") },
-					{ showError(it); "Error on loading" },
-			) { it }?.let { setFormatterName(it) }
 		}
 	}
 

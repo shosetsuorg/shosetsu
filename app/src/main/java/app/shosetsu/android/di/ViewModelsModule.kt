@@ -60,7 +60,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<IExtensionConfigureViewModel>() with provider { ExtensionConfigureViewModel(i(), i(), i(), i()) }
 
 	// Novel View
-	bind<INovelViewModel>() with provider { NovelViewModel(i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i()) }
+	bind<INovelViewModel>() with provider { NovelViewModel(i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i()) }
 
 	// Chapter
 	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i(), i()) }

@@ -73,7 +73,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<LoadFormatterNameUseCase>() with provider { LoadFormatterNameUseCase(instance()) }
 
-	bind<GetNovelUIUseCase>() with provider { GetNovelUIUseCase(instance()) }
+	bind<GetNovelUIUseCase>() with provider { GetNovelUIUseCase(instance(), instance()) }
 
 	bind<LoadNovelUseCase>() with provider {
 		LoadNovelUseCase(instance(), instance(), instance(), instance())

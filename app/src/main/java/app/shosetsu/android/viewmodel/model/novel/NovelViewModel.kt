@@ -17,7 +17,6 @@ import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetChapterUIsUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
-import app.shosetsu.android.domain.usecases.load.LoadFormatterNameUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
@@ -52,7 +51,6 @@ import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
  * @author github.com/doomsdayrs
  */
 class NovelViewModel(
-		private val getFormatterNameUseCase: LoadFormatterNameUseCase,
 		private val getChapterUIsUseCase: GetChapterUIsUseCase,
 		private val loadNovelUIUseCase: GetNovelUIUseCase,
 
@@ -102,15 +100,6 @@ class NovelViewModel(
 						update()
 					}
 				})
-			}
-		}
-	}
-
-	override val formatterName: LiveData<HResult<String>> by lazy {
-		novelIDLive.switchMap {
-			liveDataIO {
-				emit(successResult(""))
-				emitSource(getFormatterNameUseCase(it))
 			}
 		}
 	}

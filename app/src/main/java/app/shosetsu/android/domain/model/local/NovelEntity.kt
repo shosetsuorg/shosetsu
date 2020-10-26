@@ -99,7 +99,7 @@ data class NovelEntity(
 	override fun convertTo(): NovelUI = NovelUI(
 			id = id!!,
 			novelURL = url,
-			formatterID = formatterID,
+			extID = formatterID,
 			bookmarked = bookmarked,
 			readerType = readerType,
 			title = title,
@@ -107,54 +107,12 @@ data class NovelEntity(
 			description = description,
 			loaded = loaded,
 			language = language,
-			genres = genres,
-			authors = authors,
-			artists = artists,
-			tags = tags,
+			genres = genres.toList(),
+			authors = authors.toList(),
+			artists = artists.toList(),
+			tags = tags.toList(),
 			status = status
 	)
 
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
 
-		other as NovelEntity
-
-		if (id != other.id) return false
-		if (url != other.url) return false
-		if (formatterID != other.formatterID) return false
-		if (bookmarked != other.bookmarked) return false
-		if (loaded != other.loaded) return false
-		if (readerType != other.readerType) return false
-		if (title != other.title) return false
-		if (imageURL != other.imageURL) return false
-		if (description != other.description) return false
-		if (language != other.language) return false
-		if (!genres.contentEquals(other.genres)) return false
-		if (!authors.contentEquals(other.authors)) return false
-		if (!artists.contentEquals(other.artists)) return false
-		if (!tags.contentEquals(other.tags)) return false
-		if (status != other.status) return false
-
-		return true
-	}
-
-	override fun hashCode(): Int {
-		var result = id ?: 0
-		result = 31 * result + url.hashCode()
-		result = 31 * result + formatterID
-		result = 31 * result + bookmarked.hashCode()
-		result = 31 * result + loaded.hashCode()
-		result = 31 * result + readerType
-		result = 31 * result + title.hashCode()
-		result = 31 * result + imageURL.hashCode()
-		result = 31 * result + description.hashCode()
-		result = 31 * result + language.hashCode()
-		result = 31 * result + genres.contentHashCode()
-		result = 31 * result + authors.contentHashCode()
-		result = 31 * result + artists.contentHashCode()
-		result = 31 * result + tags.contentHashCode()
-		result = 31 * result + status.hashCode()
-		return result
-	}
 }

@@ -43,7 +43,9 @@ data class NovelUI(
 
 		val novelURL: String,
 
-		val formatterID: Int,
+		val extID: Int,
+
+		var extName: String = "",
 
 		var bookmarked: Boolean,
 
@@ -57,30 +59,30 @@ data class NovelUI(
 		var loaded: Boolean,
 		var language: String,
 
-		var genres: Array<String>,
-		var authors: Array<String>,
-		var artists: Array<String>,
-		var tags: Array<String>,
+		var genres: List<String>,
+		var authors: List<String>,
+		var artists: List<String>,
+		var tags: List<String>,
 
 		var status: Novel.Status,
 ) : BaseRecyclerItem<ViewHolder>(), Convertible<NovelEntity> {
 	companion object {
 		fun instance() = NovelUI(
-				-1,
-				"",
-				-1,
-				false,
-				-1,
-				"",
-				"",
-				"",
-				true,
-				"",
-				arrayOf(),
-				arrayOf(),
-				arrayOf(),
-				arrayOf(),
-				Novel.Status.UNKNOWN
+				id = -1,
+				novelURL = "",
+				extID = -1,
+				bookmarked = false,
+				readerType = -1,
+				title = "",
+				imageURL = "",
+				description = "",
+				loaded = true,
+				language = "",
+				genres = listOf(),
+				authors = listOf(),
+				artists = listOf(),
+				tags = listOf(),
+				status = Novel.Status.UNKNOWN
 		)
 	}
 
@@ -97,7 +99,7 @@ data class NovelUI(
 	override fun convertTo(): NovelEntity = NovelEntity(
 			id = id,
 			url = novelURL,
-			formatterID = formatterID,
+			formatterID = extID,
 			bookmarked = bookmarked,
 			loaded = loaded,
 			readerType = readerType,
@@ -105,10 +107,10 @@ data class NovelUI(
 			imageURL = imageURL,
 			description = description,
 			language = language,
-			genres = genres,
-			authors = authors,
-			artists = artists,
-			tags = tags,
+			genres = genres.toTypedArray(),
+			authors = authors.toTypedArray(),
+			artists = artists.toTypedArray(),
+			tags = tags.toTypedArray(),
 			status = status
 	)
 
@@ -122,7 +124,7 @@ data class NovelUI(
 		override fun ControllerNovelInfoHeaderBinding.bindView(item: NovelUI, payloads: List<Any>) {
 			// Handle title
 			novelTitle.text = item.title
-
+			novelSite.text = item.extName
 			// Handle authors
 			if (item.authors.isNotEmpty())
 				novelAuthor.text = item.authors.takeIf {

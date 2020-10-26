@@ -73,7 +73,7 @@ class ShareUseCase(
 
 	suspend operator fun invoke(novelUI: NovelUI): Unit = this(
 			novelUI.novelURL,
-			novelUI.formatterID,
+			novelUI.extID,
 			novelUI.title,
 			KEY_NOVEL_URL
 	)
