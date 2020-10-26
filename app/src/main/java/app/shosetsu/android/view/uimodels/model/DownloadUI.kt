@@ -64,10 +64,22 @@ data class DownloadUI(
 			novelTitle.text = item.novelName
 			chapterTitle.text = item.chapterName
 			status.setText(when (item.status) {
-				DownloadStatus.PENDING -> R.string.pending
-				DownloadStatus.DOWNLOADING -> R.string.downloading
-				DownloadStatus.PAUSED -> R.string.paused
-				DownloadStatus.ERROR -> R.string.error
+				DownloadStatus.PENDING -> {
+					progress.isIndeterminate = false
+					R.string.pending
+				}
+				DownloadStatus.DOWNLOADING -> {
+					progress.isIndeterminate = true
+					R.string.downloading
+				}
+				DownloadStatus.PAUSED -> {
+					progress.isIndeterminate = false
+					R.string.paused
+				}
+				DownloadStatus.ERROR -> {
+					progress.isIndeterminate = false
+					R.string.error
+				}
 			})
 		}
 
@@ -75,6 +87,7 @@ data class DownloadUI(
 			novelTitle.text = null
 			chapterTitle.text = null
 			status.text = null
+			progress.isIndeterminate = false
 		}
 	}
 

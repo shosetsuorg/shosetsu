@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
+    android:layout_height="wrap_content"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@id/status"
+            android:layout_alignParentEnd="true"
             android:text="@string/todo"
             tools:text="Novel1" />
 
@@ -30,21 +30,30 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/novel_title"
             android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@id/status"
+            android:layout_alignParentEnd="true"
             android:text="@string/todo"
             android:textIsSelectable="false"
             tools:text="Chapter 28" />
 
         <TextView
             android:id="@+id/status"
-            android:layout_width="85dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/chapter_title"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
             android:text="@string/pending"
             android:textAlignment="viewEnd" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chapter_title"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp"
+            android:layout_toStartOf="@id/status" />
     </RelativeLayout>
 
 
