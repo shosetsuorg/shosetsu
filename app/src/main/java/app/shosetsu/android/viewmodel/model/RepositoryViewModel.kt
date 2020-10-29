@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
@@ -31,13 +32,18 @@ import kotlinx.coroutines.Dispatchers
  * 16 / 09 / 2020
  */
 class RepositoryViewModel(
-		private val loadRepositoriesUseCase: LoadRepositoriesUseCase
+		private val loadRepositoriesUseCase: LoadRepositoriesUseCase,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ARepositoryViewModel() {
 	override fun addRepository(url: String) {
 	}
 
 	override fun isURL(string: String): Boolean {
 		return false
+	}
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
 	}
 
 	override fun remove(repositoryInfoUI: RepositoryUI) {

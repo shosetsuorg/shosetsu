@@ -11,6 +11,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.liveDataIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.toggle
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
@@ -53,7 +54,7 @@ import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 class NovelViewModel(
 		private val getChapterUIsUseCase: GetChapterUIsUseCase,
 		private val loadNovelUIUseCase: GetNovelUIUseCase,
-
+		private val reportExceptionUseCase: ReportExceptionUseCase,
 		private val updateNovelUseCase: UpdateNovelUseCase,
 		private val openInBrowserUseCase: OpenInBrowserUseCase,
 		private val openInWebviewUseCase: OpenInWebviewUseCase,
@@ -65,6 +66,9 @@ class NovelViewModel(
 		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
 		private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
 ) : INovelViewModel() {
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
+	}
 
 	@get:Synchronized
 	private val chapters: ArrayList<ChapterUI>

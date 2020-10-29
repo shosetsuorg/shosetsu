@@ -5,6 +5,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
@@ -39,7 +40,8 @@ class MainViewModel(
 		private val loadAppUpdateUseCase: LoadAppUpdateLiveUseCase,
 		private val isOnlineUseCase: IsOnlineUseCase,
 		private val shareUseCase: ShareUseCase,
-		private val shosetsuSettings: ShosetsuSettings
+		private val shosetsuSettings: ShosetsuSettings,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IMainViewModel() {
 	override fun share(string: String, int: String) {
 		shareUseCase(string, string)
@@ -47,6 +49,10 @@ class MainViewModel(
 
 	override fun startDownloadWorker() {
 		startDownloadWorkerUseCase()
+	}
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
 	}
 
 	override fun startUpdateWorker() {}

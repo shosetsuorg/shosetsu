@@ -41,9 +41,6 @@ object ErrorKeys {
 	/** When the lua script is broken */
 	const val ERROR_LUA_BROKEN: Int = 4
 
-	/** When the extension has no search functionality */
-	const val ERROR_NO_SEARCH: Int = 5
-
 	/** When HTTP returns a non 200 code */
 	const val ERROR_HTTP_ERROR: Int = 6
 
@@ -71,5 +68,10 @@ object ErrorKeys {
 	 * The extension is incompatible, Please update or remove
 	 */
 	const val ERROR_INCOMPATIBLE: Int = 13
+
+
+	const val ERROR_FILE_IO: Int = 14
+
+	const val ERROR_NETWORK_IO: Int = 15
 
 }

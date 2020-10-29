@@ -17,7 +17,10 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.context
+import app.shosetsu.android.common.ext.getString
+import app.shosetsu.android.common.ext.setOnClickListener
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
@@ -170,9 +173,9 @@ class CatalogController(
 		binding.swipeRefreshLayout.isRefreshing = false
 	}
 
-	override fun showError(e: HResult.Error) {
-		logE("Error $e")
-		super.showError(e)
+	override fun handleErrorResult(e: HResult.Error) {
+		super.handleErrorResult(e)
+		viewModel.reportError(e)
 	}
 
 	override fun showLoading() {

@@ -1,5 +1,6 @@
 package app.shosetsu.android.di
 
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
@@ -140,5 +141,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<LoadChaptersResumeFirstUnreadUseCase>() with provider {
 		LoadChaptersResumeFirstUnreadUseCase(instance())
 	}
+
+	bind<ReportExceptionUseCase>() with provider { ReportExceptionUseCase(instance(), instance()) }
 
 }

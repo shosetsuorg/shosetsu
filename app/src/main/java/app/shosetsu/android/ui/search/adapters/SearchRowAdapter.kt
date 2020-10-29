@@ -10,7 +10,6 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.setOnClickListener
-import app.shosetsu.android.common.ext.withFadeTransaction
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI

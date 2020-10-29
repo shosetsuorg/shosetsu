@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 
 /*
@@ -27,7 +28,7 @@ import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
  * shosetsu
  * 20 / 06 / 2020
  */
-abstract class IMainViewModel : ViewModel(), IsOnlineCheckViewModel {
+abstract class IMainViewModel : ViewModel(), IsOnlineCheckViewModel, ErrorReportingViewModel {
 	abstract fun share(string: String, int: String)
 
 	abstract fun startDownloadWorker()

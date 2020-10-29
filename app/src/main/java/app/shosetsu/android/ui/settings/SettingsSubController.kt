@@ -2,6 +2,7 @@ package app.shosetsu.android.ui.settings
 
 import android.view.View
 import androidx.annotation.CallSuper
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
@@ -40,6 +41,11 @@ abstract class SettingsSubController : BasicFastAdapterRecyclerController<Settin
 
 	override fun updateUI(newList: List<SettingsItemData>) {
 		super.updateUI(newList.apply(adjustments))
+	}
+
+	override fun handleErrorResult(e: HResult.Error) {
+		super.handleErrorResult(e)
+		viewModel.reportError(e)
 	}
 
 	/** Finds a setting via its data ID */

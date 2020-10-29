@@ -5,7 +5,6 @@ import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NETWORK
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NO_SEARCH
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.errorResult
@@ -41,17 +40,18 @@ import org.luaj.vm2.LuaError
  */
 class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	override suspend fun search(
-			formatter: IExtension,
+			ext: IExtension,
 			query: String,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
-			if (formatter.hasSearch) {
-				val l = formatter.search(HashMap(data).apply {
+			if (ext.hasSearch) {
+				val l = ext.search(HashMap(data).apply {
 					this[QUERY_INDEX] = query
 				}).toList()
+
 				if (l.isEmpty()) emptyResult() else successResult(l)
-			} else errorResult(ERROR_NO_SEARCH, "This extension has no search functionality")
+			} else emptyResult()
 		} catch (e: IOException) {
 			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
 		} catch (e: LuaError) {
@@ -62,13 +62,13 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	}
 
 	override suspend fun loadListing(
-			formatter: IExtension,
+			ext: IExtension,
 			listing: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
 			logV("Data: $data")
-			val l = formatter.listings[listing]
+			val l = ext.listings[listing]
 			if (!l.isIncrementing && (data[PAGE_INDEX] as Int) > 0) emptyResult()
 			else successResult(l.getListing(data).toList())
 		} catch (e: HTTPException) {

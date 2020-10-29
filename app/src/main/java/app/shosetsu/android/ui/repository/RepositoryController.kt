@@ -2,6 +2,7 @@ package app.shosetsu.android.ui.repository
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
@@ -49,6 +50,11 @@ class RepositoryController : BasicFastAdapterRecyclerController<RepositoryUI>(),
 	override fun setupRecyclerView() {
 		super.setupRecyclerView()
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
+	}
+
+	override fun handleErrorResult(e: HResult.Error) {
+		super.handleErrorResult(e)
+		viewModel.reportError(e)
 	}
 
 	override fun setupFastAdapter() {

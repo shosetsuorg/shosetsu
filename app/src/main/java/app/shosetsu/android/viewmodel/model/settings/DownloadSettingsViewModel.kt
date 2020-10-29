@@ -2,8 +2,10 @@ package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
 import app.shosetsu.android.common.consts.settings.SettingKey.*
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -33,7 +35,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class DownloadSettingsViewModel(
 		private val context: Context,
-		iSettingsRepository: ISettingsRepository
+		iSettingsRepository: ISettingsRepository,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ADownloadSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 			textSettingData(1) {
@@ -102,4 +105,8 @@ class DownloadSettingsViewModel(
 				}
 			}
 	)
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
+	}
 }

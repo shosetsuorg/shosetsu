@@ -1,9 +1,8 @@
-package app.shosetsu.android.viewmodel.abstracted
+package app.shosetsu.android.viewmodel.base
 
-import androidx.lifecycle.ViewModel
-import app.shosetsu.android.view.uimodels.model.RepositoryUI
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.android.common.HResultException
+import app.shosetsu.android.common.dto.HResult.Error
+import org.acra.ACRA
 
 /*
  * This file is part of Shosetsu.
@@ -24,22 +23,25 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /**
  * shosetsu
- * 16 / 09 / 2020
+ * 26 / 10 / 2020
  */
-abstract class ARepositoryViewModel
-	: SubscribeHandleViewModel<List<RepositoryUI>>, ViewModel(), ErrorReportingViewModel {
-	/**
-	 * Adds a URL via a string the user provides
-	 */
-	abstract fun addRepository(url: String)
+interface ErrorReportingViewModel {
 
 	/**
-	 * is the string a URL
+	 * Reports an error to shosetsuOrg
 	 */
-	abstract fun isURL(string: String): Boolean
+	fun reportError(error: Error, isSilent: Boolean = true)
 
-	/**
-	 * Remove the repo from the system
-	 */
-	abstract fun remove(repositoryInfoUI: RepositoryUI)
+	fun basicReport(error: Error, isSilent: Boolean = true) {
+		val reporter = try {
+			ACRA.getErrorReporter()
+		} catch (e: IllegalStateException) {
+			null
+		}
+		reporter?.let {
+			(if (isSilent)
+				reporter::handleSilentException
+			else reporter::handleException).invoke(HResultException(error))
+		}
+	}
 }

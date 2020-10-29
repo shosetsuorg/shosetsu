@@ -400,7 +400,7 @@ class NovelController(bundle: Bundle)
 
 	private fun setObserver() {
 		viewModel.novelLive.observe(this) { result ->
-			result.handle(onError = { showError(it) }) {
+			result.handle(onError = { handleErrorResult(it) }) {
 				activity?.invalidateOptionsMenu()
 				// If the data is not present, loads it
 				if (!it.loaded) refresh()
@@ -427,7 +427,9 @@ class NovelController(bundle: Bundle)
 		}
 	}
 
-	private fun setFormatterName(text: String) {
+	override fun handleErrorResult(e: HResult.Error) {
+		super.handleErrorResult(e)
+		viewModel.reportError(e)
 	}
 
 	private fun selectedChapters(): List<ChapterUI> =
@@ -478,10 +480,6 @@ class NovelController(bundle: Bundle)
 
 	private fun deleteSelected() {
 		viewModel.delete(*selectedChapterArray())
-	}
-
-	private fun deselectAll() {
-		fastAdapter.getSelectExtension().deselect()
 	}
 
 	private fun markSelectedAs(readingStatus: ReadingStatus) {

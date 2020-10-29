@@ -18,6 +18,7 @@ package app.shosetsu.android.ui.updates
  */
 
 import android.view.View
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.base.CollapsedToolBarController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
@@ -67,6 +68,11 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(), Collap
 	override fun showEmpty() {
 		super.showEmpty()
 		binding.emptyDataView.show("No updates yet! Maybe check again?")
+	}
+
+	override fun handleErrorResult(e: HResult.Error) {
+		super.handleErrorResult(e)
+		viewModel.reportError(e)
 	}
 
 	private inner class UpdateCallback : StickyHeaderDecor.SectionCallback {

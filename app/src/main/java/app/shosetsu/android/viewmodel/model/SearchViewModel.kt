@@ -8,6 +8,7 @@ import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
 import app.shosetsu.android.domain.usecases.load.LoadCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
@@ -44,7 +45,8 @@ import kotlin.collections.set
 class SearchViewModel(
 		private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
 		private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
-		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase
+		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ISearchViewModel() {
 	private val hashMap = HashMap<Int, MutableLiveData<HResult<List<ACatalogNovelUI>>>>()
 	private val jobMap = HashMap<Int, Job>()
@@ -54,6 +56,10 @@ class SearchViewModel(
 			emit(loading())
 			emitSource(loadSearchRowUIUseCase())
 		}
+	}
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
 	}
 
 	private var query: String = ""

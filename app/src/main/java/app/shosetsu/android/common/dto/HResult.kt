@@ -1,10 +1,8 @@
 package app.shosetsu.android.common.dto
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.HResultException
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.domain.model.base.Convertible
-import org.acra.ACRA
 import org.json.JSONException
 
 
@@ -56,15 +54,7 @@ sealed class HResult<out T : Any> {
 			val code: Int,
 			val message: String,
 			val error: Exception? = null,
-	) : HResult<Nothing>() {
-		init {
-			try {
-				ACRA.getErrorReporter()
-			} catch (e: IllegalStateException) {
-				null
-			}?.handleSilentException(HResultException(this))
-		}
-	}
+	) : HResult<Nothing>()
 }
 
 /** This is a quick way to toss a success */

@@ -4,7 +4,9 @@ import android.content.Context
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -34,7 +36,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class AdvancedSettingsViewModel(
 		iSettingsRepository: ISettingsRepository,
-		private val context: Context
+		private val context: Context,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : AAdvancedSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 			spinnerSettingData(1) {
@@ -72,4 +75,8 @@ class AdvancedSettingsViewModel(
 				}
 			}
 	)
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportError(error, isSilent)
+	}
 }

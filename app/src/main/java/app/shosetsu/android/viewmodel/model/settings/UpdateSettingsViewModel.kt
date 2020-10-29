@@ -1,8 +1,10 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import app.shosetsu.android.common.consts.settings.SettingKey
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -29,8 +31,10 @@ import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewMod
  * shosetsu
  * 31 / 08 / 2020
  */
-class UpdateSettingsViewModel(iSettingsRepository: ISettingsRepository)
-	: AUpdateSettingsViewModel(iSettingsRepository) {
+class UpdateSettingsViewModel(
+		iSettingsRepository: ISettingsRepository,
+		private val reportExceptionUseCase: ReportExceptionUseCase
+) : AUpdateSettingsViewModel(iSettingsRepository) {
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 			// Update frequency
@@ -155,4 +159,8 @@ class UpdateSettingsViewModel(iSettingsRepository: ISettingsRepository)
 				}
 			}
 	)
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
+	}
 }

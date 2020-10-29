@@ -17,6 +17,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadChapterPassageUseCase
@@ -54,13 +55,18 @@ class ChapterReaderViewModel(
 		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
 		private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
 		private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
-		private val loadReadersThemes: LoadReaderThemes
+		private val loadReadersThemes: LoadReaderThemes,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IChapterReaderViewModel() {
 
 	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
 
 	override val liveData: LiveData<HResult<List<ReaderChapterUI>>> by lazy {
 		loadReaderChaptersUseCase(nID)
+	}
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
 	}
 
 	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {

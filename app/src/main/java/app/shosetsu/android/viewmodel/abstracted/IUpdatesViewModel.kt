@@ -3,6 +3,7 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.UpdateUI
+import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /*
@@ -29,6 +30,7 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  *
  * @author github.com/doomsdayrs
  */
-abstract class IUpdatesViewModel : ViewModel(), SubscribeHandleViewModel<List<UpdateUI>> {
+abstract class IUpdatesViewModel
+	: ViewModel(), SubscribeHandleViewModel<List<UpdateUI>>, ErrorReportingViewModel {
 	abstract suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus)
 }

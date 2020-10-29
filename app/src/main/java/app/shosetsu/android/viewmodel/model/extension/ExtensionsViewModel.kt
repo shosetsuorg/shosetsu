@@ -19,6 +19,7 @@ package app.shosetsu.android.viewmodel.model.extension
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.domain.usecases.InstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -45,8 +46,12 @@ class ExtensionsViewModel(
 		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
 		private val stringToastUseCase: StringToastUseCase,
 		private var isOnlineUseCase: IsOnlineUseCase,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IExtensionsViewModel() {
 
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
+	}
 
 	override fun refreshRepository() {
 		app.shosetsu.android.common.ext.launchIO {

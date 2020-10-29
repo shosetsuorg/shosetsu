@@ -31,7 +31,7 @@ interface IRemoteCatalogueDataSource {
 	 * Runs a search on an extension
 	 */
 	suspend fun search(
-			formatter: IExtension,
+			ext: IExtension,
 			query: String,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>
@@ -41,7 +41,7 @@ interface IRemoteCatalogueDataSource {
 	 * Loads a listings data from an extension
 	 */
 	suspend fun loadListing(
-			formatter: IExtension,
+			ext: IExtension,
 			listing: Int,
 			data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>

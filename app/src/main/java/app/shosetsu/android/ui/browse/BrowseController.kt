@@ -25,6 +25,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
@@ -58,7 +59,7 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 	}
 
 	/***/
-	private val viewModel: IExtensionsViewModel by viewModel()
+	val viewModel: IExtensionsViewModel by viewModel()
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_extensions, menu)
@@ -100,6 +101,11 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 			}
 
 		})
+	}
+
+	override fun handleErrorResult(e: HResult.Error) {
+		super.handleErrorResult(e)
+		viewModel.reportError(e)
 	}
 
 	override fun onViewCreated(view: View) {

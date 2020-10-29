@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
+import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +31,7 @@ import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
  * shosetsu
  * 01 / 05 / 2020
  */
-abstract class ISearchViewModel : ViewModel() {
+abstract class ISearchViewModel : ViewModel(), ErrorReportingViewModel {
 	abstract val listings: LiveData<HResult<List<SearchRowUI>>>
 
 	abstract fun setQuery(query: String)

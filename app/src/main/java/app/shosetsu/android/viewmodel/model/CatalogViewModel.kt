@@ -7,11 +7,11 @@ import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.load.LoadCatalogueListingDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadFormatterUseCase
-import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import app.shosetsu.lib.Filter
@@ -43,11 +43,11 @@ import kotlinx.coroutines.cancel
  * 01 / 05 / 2020
  */
 class CatalogViewModel(
-        private val getFormatterUseCase: LoadFormatterUseCase,
-        private val backgroundAddUseCase: NovelBackgroundAddUseCase,
-        private val loadCatalogueListingData: LoadCatalogueListingDataUseCase,
-        private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
-        private var toastErrorUseCase: ToastErrorUseCase,
+		private val getFormatterUseCase: LoadFormatterUseCase,
+		private val backgroundAddUseCase: NovelBackgroundAddUseCase,
+		private val loadCatalogueListingData: LoadCatalogueListingDataUseCase,
+		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
+		private var reportExceptionUseCase: ReportExceptionUseCase,
 ) : ICatalogViewModel() {
     private var formatter: IExtension? = null
 
@@ -141,10 +141,10 @@ class CatalogViewModel(
             }
             is HResult.Empty -> {
             }
-            is HResult.Error -> {
-                toastErrorUseCase<CatalogViewModel>(i)
-                logE("Error: ${i.code}|${i.message}", i.error)
-            }
+	        is HResult.Error -> {
+		        reportError(i)
+		        logE("Error: ${i.code}|${i.message}", i.error)
+	        }
         }
     }
 
@@ -185,15 +185,18 @@ class CatalogViewModel(
     override fun destroy() {
         launchIO {
             formatter = null
-            listingItems.clear()
-            filterData.clear()
-            query = ""
-            listingItemsLive.postValue(successResult(arrayListOf()))
-            filterItemsLive.postValue(successResult(arrayListOf()))
-            hasSearchLive.postValue(successResult(false))
-            hasSearchLive.postValue(loading())
-            extensionName.postValue(loading())
+	        listingItems.clear()
+	        filterData.clear()
+	        query = ""
+	        listingItemsLive.postValue(successResult(arrayListOf()))
+	        filterItemsLive.postValue(successResult(arrayListOf()))
+	        hasSearchLive.postValue(successResult(false))
+	        hasSearchLive.postValue(loading())
+	        extensionName.postValue(loading())
         }
     }
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) =
+			reportExceptionUseCase(error)
 }
 

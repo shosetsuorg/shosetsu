@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
@@ -42,12 +43,17 @@ class LibraryViewModel(
 		private val updateBookmarkedNovelUseCase: UpdateBookmarkedNovelUseCase,
 		private val isOnlineUseCase: IsOnlineUseCase,
 		private var startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ILibraryViewModel() {
 	override val liveData: LiveData<HResult<List<ABookmarkedNovelUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
 			emit(loading())
 			emitSource(libraryAsCardsUseCase())
 		}
+	}
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()

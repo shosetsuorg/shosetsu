@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.ViewModel
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
+import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.StartUpdateManagerViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
@@ -30,8 +31,12 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  *
  * @author github.com/doomsdayrs
  */
-abstract class ILibraryViewModel
-	: SubscribeHandleViewModel<List<ABookmarkedNovelUI>>, ViewModel(), IsOnlineCheckViewModel, StartUpdateManagerViewModel {
+abstract class ILibraryViewModel :
+		SubscribeHandleViewModel<List<ABookmarkedNovelUI>>,
+		ViewModel(),
+		IsOnlineCheckViewModel,
+		StartUpdateManagerViewModel,
+		ErrorReportingViewModel {
 	/**
 	 * Remove the following from the library
 	 */

@@ -18,6 +18,7 @@ package app.shosetsu.android.ui.downloads
  */
 
 import android.view.View
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
@@ -59,6 +60,10 @@ class DownloadsController : BasicFastAdapterRecyclerController<DownloadUI>(),
 		}
 	}
 
+	override fun handleErrorResult(e: HResult.Error) {
+		super.handleErrorResult(e)
+		viewModel.reportError(e)
+	}
 
 	override fun setupRecyclerView() {
 		recyclerView.setHasFixedSize(false)

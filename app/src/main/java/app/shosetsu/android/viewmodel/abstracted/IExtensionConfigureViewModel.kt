@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /*
@@ -32,7 +33,8 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  *
  * [liveData] is of the formatter object itself
  */
-abstract class IExtensionConfigureViewModel : ViewModel(), SubscribeHandleViewModel<ExtensionUI> {
+abstract class IExtensionConfigureViewModel
+	: ViewModel(), SubscribeHandleViewModel<ExtensionUI>, ErrorReportingViewModel {
 	abstract val extensionSettings: LiveData<HResult<List<SettingsItemData>>>
 
 	/** Set the extension ID to use */

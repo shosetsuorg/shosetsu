@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import app.shosetsu.android.common.consts.BundleKeys
+import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.search.adapters.SearchRowAdapter
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
@@ -66,6 +67,11 @@ class SearchController(bundle: Bundle)
 		inflater.inflate(R.menu.toolbar_search, menu)
 		searchView = menu.findItem(R.id.catalogues_search).actionView as SearchView
 		searchView?.setOnQueryTextListener(InternalQuery())
+	}
+
+	override fun handleErrorResult(e: HResult.Error) {
+		super.handleErrorResult(e)
+		viewModel.reportError(e)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = true

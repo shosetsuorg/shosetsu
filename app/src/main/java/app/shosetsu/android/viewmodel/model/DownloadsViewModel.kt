@@ -8,6 +8,7 @@ import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.liveDataIO
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
@@ -47,12 +48,17 @@ class DownloadsViewModel(
 		private val deleteDownloadUseCase: DeleteDownloadUseCase,
 		private val settings: ISettingsRepository,
 		private var isOnlineUseCase: IsOnlineUseCase,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IDownloadsViewModel() {
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		liveDataIO {
 			emit(loading())
 			emitSource(getDownloadsUseCase())
 		}
+	}
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()

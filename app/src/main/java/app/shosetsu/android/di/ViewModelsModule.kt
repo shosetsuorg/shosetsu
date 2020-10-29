@@ -37,18 +37,18 @@ import org.kodein.di.generic.instance as i
 val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	// Main
 	bind<IMainViewModel>() with provider {
-		MainViewModel(i(), i(), i(), i(), i())
+		MainViewModel(i(), i(), i(), i(), i(), i())
 	}
 
 	// Library
-	bind<ILibraryViewModel>() with provider { LibraryViewModel(i(), i(), i(), i()) }
+	bind<ILibraryViewModel>() with provider { LibraryViewModel(i(), i(), i(), i(), i()) }
 
 	// Other
 	bind<IDownloadsViewModel>() with provider {
-		DownloadsViewModel(i(), i(), i(), i(), i(), i())
+		DownloadsViewModel(i(), i(), i(), i(), i(), i(), i())
 	}
-	bind<ISearchViewModel>() with provider { SearchViewModel(i(), i(), i()) }
-	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i()) }
+	bind<ISearchViewModel>() with provider { SearchViewModel(i(), i(), i(), i()) }
+	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i(), i()) }
 
 	bind<AAboutViewModel>() with provider { AboutViewModel(i(), i(), i()) }
 
@@ -56,22 +56,22 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i(), i(), i()) }
 
 	// Extensions
-	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i(), i()) }
-	bind<IExtensionConfigureViewModel>() with provider { ExtensionConfigureViewModel(i(), i(), i(), i()) }
+	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i(), i(), i()) }
+	bind<IExtensionConfigureViewModel>() with provider { ExtensionConfigureViewModel(i(), i(), i(), i(), i()) }
 
 	// Novel View
-	bind<INovelViewModel>() with provider { NovelViewModel(i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i()) }
+	bind<INovelViewModel>() with provider { NovelViewModel(i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i()) }
 
 	// Chapter
-	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i(), i()) }
-	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i()) }
+	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i(), i(), i()) }
+	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i(), i()) }
 
 
 	// Settings
-	bind<AAdvancedSettingsViewModel>() with provider { AdvancedSettingsViewModel(i(), i()) }
-	bind<ABackupSettingsViewModel>() with provider { BackupSettingsViewModel(i()) }
-	bind<ADownloadSettingsViewModel>() with provider { DownloadSettingsViewModel(i(), i()) }
-	bind<AReaderSettingsViewModel>() with provider { ReaderSettingsViewModel(i(), i(), i()) }
-	bind<AUpdateSettingsViewModel>() with provider { UpdateSettingsViewModel(i()) }
-	bind<AViewSettingsViewModel>() with provider { ViewSettingsViewModel(i(), i()) }
+	bind<AAdvancedSettingsViewModel>() with provider { AdvancedSettingsViewModel(i(), i(), i()) }
+	bind<ABackupSettingsViewModel>() with provider { BackupSettingsViewModel(i(), i()) }
+	bind<ADownloadSettingsViewModel>() with provider { DownloadSettingsViewModel(i(), i(), i()) }
+	bind<AReaderSettingsViewModel>() with provider { ReaderSettingsViewModel(i(), i(), i(), i()) }
+	bind<AUpdateSettingsViewModel>() with provider { UpdateSettingsViewModel(i(), i()) }
+	bind<AViewSettingsViewModel>() with provider { ViewSettingsViewModel(i(), i(), i()) }
 }

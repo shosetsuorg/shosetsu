@@ -9,6 +9,7 @@ import app.shosetsu.android.common.enums.MarkingTypes
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
+import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /*
@@ -33,7 +34,7 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * 06 / 05 / 2020
  */
 abstract class IChapterReaderViewModel
-	: SubscribeHandleViewModel<List<ReaderChapterUI>>, ViewModel() {
+	: SubscribeHandleViewModel<List<ReaderChapterUI>>, ViewModel(), ErrorReportingViewModel {
 
 	abstract var currentChapterID: Int
 

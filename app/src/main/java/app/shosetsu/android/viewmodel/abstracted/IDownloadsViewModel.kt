@@ -3,6 +3,7 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import app.shosetsu.android.view.uimodels.model.DownloadUI
+import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
@@ -31,7 +32,10 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * @author github.com/doomsdayrs
  */
 abstract class IDownloadsViewModel :
-		SubscribeHandleViewModel<List<DownloadUI>>, ViewModel(), IsOnlineCheckViewModel {
+		SubscribeHandleViewModel<List<DownloadUI>>,
+		ViewModel(),
+		IsOnlineCheckViewModel,
+		ErrorReportingViewModel {
 
 	abstract val isDownloadPaused: LiveData<Boolean>
 

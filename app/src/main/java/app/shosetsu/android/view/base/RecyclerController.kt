@@ -81,7 +81,7 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 		when (result) {
 			is HResult.Loading -> showLoading()
 			is HResult.Success -> updateUI(result.data)
-			is HResult.Error -> showError(result)
+			is HResult.Error -> handleErrorResult(result)
 			is HResult.Empty -> showEmpty()
 		}
 	}

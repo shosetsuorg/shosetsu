@@ -162,7 +162,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	/**
 	 * Show an error on screen
 	 */
-	open fun showError(e: HResult.Error) {
+	open fun handleErrorResult(e: HResult.Error) {
 		toast { e.message }
 	}
 

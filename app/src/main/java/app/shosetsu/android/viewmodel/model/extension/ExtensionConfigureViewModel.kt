@@ -26,6 +26,7 @@ import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
 import app.shosetsu.android.domain.usecases.load.LoadExtensionUIUseCase
@@ -44,7 +45,8 @@ class ExtensionConfigureViewModel(
 		private val loadExtensionUIUI: LoadExtensionUIUseCase,
 		private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase,
 		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
-		private val getExtensionSettings: GetExtensionSettingsUseCase
+		private val getExtensionSettings: GetExtensionSettingsUseCase,
+		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IExtensionConfigureViewModel() {
 	private val idLive by lazy {
 		MutableLiveData(internalID)
@@ -55,6 +57,10 @@ class ExtensionConfigureViewModel(
 		idLive.switchMap {
 			loadExtensionUIUI(it)
 		}
+	}
+
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
 	}
 
 	override val extensionSettings: LiveData<HResult<List<SettingsItemData>>> by lazy {

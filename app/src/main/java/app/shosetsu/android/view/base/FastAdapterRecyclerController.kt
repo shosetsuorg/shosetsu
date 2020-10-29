@@ -6,8 +6,6 @@ import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logV
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.mikepenz.fastadapter.FastAdapter
@@ -83,7 +81,7 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 		when (result) {
 			is HResult.Loading -> showLoading()
 			is HResult.Success -> updateUI(itemAdapter, showEmpty, hideEmpty, result.data)
-			is HResult.Error -> showError(result)
+			is HResult.Error -> handleErrorResult(result)
 			is HResult.Empty -> showEmpty()
 		}
 	}
