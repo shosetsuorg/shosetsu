@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.repository.model
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_DUPLICATE
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
@@ -13,6 +12,7 @@ import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -41,7 +41,7 @@ class AppUpdatesRepository(
 ) : IAppUpdatesRepository {
 	private var running = false
 
-	override fun watchAppUpdates(): LiveData<HResult<DebugAppUpdate>> =
+	override fun watchAppUpdates(): Flow<HResult<DebugAppUpdate>> =
 			iFileAppUpdateDataSource.updateAvaLive
 
 

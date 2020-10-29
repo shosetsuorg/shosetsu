@@ -1,11 +1,11 @@
 package app.shosetsu.android.domain.repository.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -30,10 +30,10 @@ import app.shosetsu.lib.Novel
  */
 interface IExtensionsRepository {
 	/** LiveData of all extensions */
-	fun loadExtensionEntitiesLive(): LiveData<HResult<List<ExtensionEntity>>>
+	fun loadExtensionEntitiesLive(): Flow<HResult<List<ExtensionEntity>>>
 
 	/** LiveData of a specific extension */
-	fun getExtensionEntityLive(id: Int): LiveData<HResult<ExtensionEntity>>
+	fun getExtensionEntityLive(id: Int): Flow<HResult<ExtensionEntity>>
 
 	suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity>
 
@@ -59,7 +59,7 @@ interface IExtensionsRepository {
 	suspend fun loadIExtension(formatterID: Int): HResult<IExtension>
 
 	/** Gets the extensions as cards containing their ID, Title, and Image */
-	fun getCards(): LiveData<HResult<List<IDTitleImage>>>
+	fun getCards(): Flow<HResult<List<IDTitleImage>>>
 
 	/** Queries the extension for a search result*/
 	suspend fun loadCatalogueSearch(

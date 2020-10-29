@@ -194,7 +194,7 @@ dependencies {
 	implementation "com.mikepenz:fastadapter-extensions-utils:${latestFastAdapterRelease}"
 
 	// Guava cache
-	implementation 'com.google.guava:guava:30.0-android'
+	implementation 'com.google.guava:guava:29.0-android'
 
 	// kode-in
 	implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"

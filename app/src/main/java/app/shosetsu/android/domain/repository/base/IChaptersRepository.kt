@@ -1,12 +1,12 @@
 package app.shosetsu.android.domain.repository.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -62,7 +62,7 @@ interface IChaptersRepository {
 	): HResult<List<ChapterEntity>>
 
 	/** Loads [ChapterEntity]s matching [novelID] */
-	suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
+	suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>>
 
 	/** Loads a [ChapterEntity] by its [chapterID] */
 	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
@@ -71,7 +71,7 @@ interface IChaptersRepository {
 	suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*>
 
 	/** Loads [ReaderChapterEntity]s by it's [novelID] */
-	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
+	suspend fun loadReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
 
 	/** Update [readerChapterEntity] in database */
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*>

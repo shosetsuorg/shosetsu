@@ -1,15 +1,14 @@
 package app.shosetsu.android.providers.database.dao
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import app.shosetsu.android.common.IncorrectDateException
 import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
+import kotlinx.coroutines.flow.Flow
 import org.joda.time.DateTime
 import org.joda.time.Days
 
@@ -45,7 +44,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM updates")
-	fun loadUpdates(): LiveData<List<UpdateEntity>>
+	fun loadUpdates(): Flow<List<UpdateEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT time FROM updates ORDER BY ROWID DESC LIMIT 1")
@@ -64,11 +63,11 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	fun loadDayCountBetweenDates(date1: Long, date2: Long): Int
 
 	/**
-	 * Raw query without checking dates, suggested to use [getTimeBetweenDates]
+	 * Raw query without checking dates
 	 */
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM updates WHERE time < :date2 AND time >= :date1")
-	fun loadUpdatesBetweenDates(date1: Long, date2: Long): LiveData<Array<UpdateEntity>>
+	fun loadUpdatesBetweenDates(date1: Long, date2: Long): Flow<Array<UpdateEntity>>
 
 	@Transaction
 	@Throws(SQLiteException::class)
@@ -78,15 +77,6 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 		return Days.daysBetween(firstDay, latest).days
 	}
 
-	/**
-	 * [loadUpdatesBetweenDates] but with error checking
-	 */
-	@Transaction
-	@Throws(SQLiteException::class)
-	fun getTimeBetweenDates(date1: Long, date2: Long): Array<UpdateEntity> {
-		if (date2 <= date1) throw IncorrectDateException("Dates implemented wrongly")
-		return loadUpdatesBetweenDates(date1, date2).value ?: arrayOf()
-	}
 
 
 	@Query("DELETE FROM updates WHERE novelID = :novelID")
@@ -135,5 +125,5 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 							FROM novels WHERE id = updates.novelID
 						) = 1
 				""")
-	fun loadCompleteUpdates(): LiveData<List<UpdateCompleteEntity>>
+	fun loadCompleteUpdates(): Flow<List<UpdateCompleteEntity>>
 }

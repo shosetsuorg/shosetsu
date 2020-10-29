@@ -1,9 +1,6 @@
 package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
@@ -11,6 +8,10 @@ import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.providers.database.dao.ExtensionsDao
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of Shosetsu.
@@ -37,9 +38,9 @@ import app.shosetsu.android.providers.database.dao.ExtensionsDao
 class LocalExtensionsDataSource(
 		private val extensionsDao: ExtensionsDao,
 ) : ILocalExtensionsDataSource {
-	override fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>> = liveData {
+	override fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>> = flow {
 		try {
-			emitSource(extensionsDao.loadExtensions().map { successResult(it) })
+			emitAll(extensionsDao.loadExtensions().mapLatest { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -47,9 +48,9 @@ class LocalExtensionsDataSource(
 		}
 	}
 
-	override fun loadExtensionLive(formatterID: Int): LiveData<HResult<ExtensionEntity>> = liveData {
+	override fun loadExtensionLive(formatterID: Int): Flow<HResult<ExtensionEntity>> = flow {
 		try {
-			emitSource(extensionsDao.getExtensionLive(formatterID).map { successResult(it) })
+			emitAll(extensionsDao.getExtensionLive(formatterID).mapLatest { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -58,9 +59,9 @@ class LocalExtensionsDataSource(
 	}
 
 	override fun loadPoweredExtensionsCards(
-	): LiveData<HResult<List<IDTitleImage>>> = liveData {
+	): Flow<HResult<List<IDTitleImage>>> = flow {
 		try {
-			emitSource(extensionsDao.loadPoweredExtensionsBasic().map { list ->
+			emitAll(extensionsDao.loadPoweredExtensionsBasic().mapLatest { list ->
 				successResult(list.map { IDTitleImage(it.id, it.name, it.imageURL) })
 			})
 		} catch (e: SQLiteException) {

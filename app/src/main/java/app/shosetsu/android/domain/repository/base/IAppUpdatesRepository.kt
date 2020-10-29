@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.repository.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -28,7 +28,7 @@ import app.shosetsu.android.domain.model.remote.DebugAppUpdate
  * Source of truth for all app updates
  */
 interface IAppUpdatesRepository {
-	fun watchAppUpdates(): LiveData<HResult<DebugAppUpdate>>
+	fun watchAppUpdates(): Flow<HResult<DebugAppUpdate>>
 
 	suspend fun checkForAppUpdate(): HResult<DebugAppUpdate>
 }

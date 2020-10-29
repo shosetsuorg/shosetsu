@@ -17,11 +17,11 @@ package app.shosetsu.android.domain.repository.model
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.datasource.database.base.ILocalDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
+import kotlinx.coroutines.flow.Flow
 
 /**
  * shosetsu
@@ -32,7 +32,7 @@ import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 class DownloadsRepository(
 		private val iLocalDownloadsDataSource: ILocalDownloadsDataSource,
 ) : IDownloadsRepository {
-	override fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>> =
+	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> =
 			iLocalDownloadsDataSource.loadLiveDownloads()
 
 	override suspend fun loadFirstDownload(): HResult<DownloadEntity> =

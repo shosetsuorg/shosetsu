@@ -1,13 +1,14 @@
 package app.shosetsu.android.domain.usecases.load
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.mapListTo
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -32,13 +33,11 @@ import app.shosetsu.android.view.uimodels.model.ExtensionUI
  */
 class LoadExtensionsUIUseCase(
 		private val extensionsRepository: IExtensionsRepository,
-) : (() -> LiveData<HResult<List<ExtensionUI>>>) {
-	override fun invoke(): LiveData<HResult<List<ExtensionUI>>> {
-		return liveData {
-			loading()
-			emitSource(extensionsRepository.loadExtensionEntitiesLive().map {
-				it.mapListTo()
-			})
-		}
+) {
+	operator fun invoke(): Flow<HResult<List<ExtensionUI>>> = flow {
+		loading()
+		emitAll(extensionsRepository.loadExtensionEntitiesLive().mapLatest {
+			it.mapListTo()
+		})
 	}
 }

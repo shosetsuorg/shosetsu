@@ -1,7 +1,5 @@
 package app.shosetsu.android.domain.repository.model
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_BROKEN
@@ -19,6 +17,7 @@ import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.lua.LuaExtension
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -51,11 +50,11 @@ class ExtensionsRepository(
 		private val repositorySource: ILocalExtRepoDataSource,
 		private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
-	override fun loadExtensionEntitiesLive(): LiveData<HResult<List<ExtensionEntity>>> =
+	override fun loadExtensionEntitiesLive(): Flow<HResult<List<ExtensionEntity>>> =
 			databaseSource.loadExtensions()
 
 
-	override fun getExtensionEntityLive(id: Int): LiveData<HResult<ExtensionEntity>> =
+	override fun getExtensionEntityLive(id: Int): Flow<HResult<ExtensionEntity>> =
 			databaseSource.loadExtensionLive(id)
 
 	override suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity> =
@@ -135,9 +134,9 @@ class ExtensionsRepository(
 	override suspend fun loadIExtension(formatterID: Int): HResult<IExtension> =
 			databaseSource.loadExtension(formatterID).withSuccess { loadIExtension(it) }
 
-	override fun getCards(): LiveData<HResult<List<IDTitleImage>>> = liveData {
-		emitSource(databaseSource.loadPoweredExtensionsCards())
-	}
+	override fun getCards(): Flow<HResult<List<IDTitleImage>>> =
+			databaseSource.loadPoweredExtensionsCards()
+
 
 	override suspend fun loadCatalogueSearch(
 			formatter: IExtension,

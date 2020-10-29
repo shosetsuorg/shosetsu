@@ -62,7 +62,7 @@ class ChapterReaderViewModel(
 	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
 
 	override val liveData: LiveData<HResult<List<ReaderChapterUI>>> by lazy {
-		loadReaderChaptersUseCase(nID)
+		loadReaderChaptersUseCase(nID).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
@@ -71,7 +71,7 @@ class ChapterReaderViewModel(
 
 	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-			emitSource(iSettingsRepository.observeInt(ReaderTheme).switchMap { id: Int ->
+			emitSource(iSettingsRepository.observeInt(ReaderTheme).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO).switchMap { id: Int ->
 				logD("Loading theme for $id")
 				liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
 					val s = iSettingsRepository.getStringSet(ReaderUserThemes)
@@ -87,26 +87,28 @@ class ChapterReaderViewModel(
 	}
 
 	override val liveMarkingTypes: LiveData<MarkingTypes> by lazy {
-		iSettingsRepository.observeString(ReadingMarkingType).map { MarkingTypes.valueOf(it) }
+		iSettingsRepository.observeString(ReadingMarkingType)
+				.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+				.map { MarkingTypes.valueOf(it) }
 	}
 
 	override val liveThemes: LiveData<List<ColorChoiceUI>> by lazy {
-		loadReadersThemes()
+		loadReadersThemes().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 	}
 
 	override val liveIndentSize: LiveData<Int> by lazy {
-		iSettingsRepository.observeInt(ReaderIndentSize)
+		iSettingsRepository.observeInt(ReaderIndentSize).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 	}
 
 	override val liveParagraphSpacing: LiveData<Int> by lazy {
-		iSettingsRepository.observeInt(ReaderParagraphSpacing)
+		iSettingsRepository.observeInt(ReaderParagraphSpacing).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 	}
 
 	override val liveTextSize: LiveData<Float> by lazy {
-		iSettingsRepository.observeFloat(ReaderTextSize)
+		iSettingsRepository.observeFloat(ReaderTextSize).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 	}
 	override val liveVolumeScroll: LiveData<Boolean> by lazy {
-		iSettingsRepository.observeBoolean(ReaderVolumeScroll)
+		iSettingsRepository.observeBoolean(ReaderVolumeScroll).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 	}
 
 	override var currentChapterID: Int = -1

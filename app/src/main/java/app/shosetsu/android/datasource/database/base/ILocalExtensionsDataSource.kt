@@ -1,9 +1,9 @@
 package app.shosetsu.android.datasource.database.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -31,10 +31,10 @@ import app.shosetsu.android.domain.model.local.IDTitleImage
  */
 interface ILocalExtensionsDataSource {
 	/** Loads LiveData of extensions */
-	fun loadExtensions(): LiveData<HResult<List<ExtensionEntity>>>
+	fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>>
 
 	/** Loads LiveData of extension cards that are enabled */
-	fun loadPoweredExtensionsCards(): LiveData<HResult<List<IDTitleImage>>>
+	fun loadPoweredExtensionsCards(): Flow<HResult<List<IDTitleImage>>>
 
 	/** Updates [extensionEntity] */
 	suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*>
@@ -47,7 +47,7 @@ interface ILocalExtensionsDataSource {
 
 
 	/** Load an [ExtensionEntity] via its [formatterID]*/
-	fun loadExtensionLive(formatterID: Int): LiveData<HResult<ExtensionEntity>>
+	fun loadExtensionLive(formatterID: Int): Flow<HResult<ExtensionEntity>>
 
 	/** Inserts an [extensionEntity] otherwise updates it */
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*>

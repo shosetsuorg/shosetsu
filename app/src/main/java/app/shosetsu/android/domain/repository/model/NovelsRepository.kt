@@ -1,6 +1,5 @@
 package app.shosetsu.android.domain.repository.model
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.handleReturn
@@ -14,6 +13,7 @@ import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -42,7 +42,7 @@ class NovelsRepository(
 		private val database: ILocalNovelsDataSource,
 		private val remoteSource: IRemoteNovelDataSource,
 ) : INovelsRepository {
-	override suspend fun getLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>> =
+	override suspend fun getLiveBookmarked(): Flow<HResult<List<BookmarkedNovelEntity>>> =
 			database.loadLiveBookmarkedNovelsAndCount()
 
 	override suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>> =
@@ -73,7 +73,7 @@ class NovelsRepository(
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
 			database.loadNovel(novelID)
 
-	override suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>> =
+	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> =
 			database.loadNovelLive(novelID)
 
 	override suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): HResult<*> =

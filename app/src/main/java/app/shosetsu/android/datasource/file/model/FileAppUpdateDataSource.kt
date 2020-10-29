@@ -1,6 +1,5 @@
 package app.shosetsu.android.datasource.file.model
 
-import androidx.lifecycle.MutableLiveData
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.dto.*
@@ -12,6 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /*
  * This file is part of shosetsu.
@@ -34,35 +35,36 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
  * shosetsu
  * 07 / 09 / 2020
  */
+@ExperimentalCoroutinesApi
 class FileAppUpdateDataSource(
-        private val iFileSystemProvider: IFileSystemProvider
+		private val iFileSystemProvider: IFileSystemProvider
 ) : IFileCachedAppUpdateDataSource {
 
-    override val updateAvaLive: MutableLiveData<HResult<DebugAppUpdate>> by lazy {
-        MutableLiveData(emptyResult())
-    }
+	override val updateAvaLive: MutableStateFlow<HResult<DebugAppUpdate>> by lazy {
+		MutableStateFlow(emptyResult())
+	}
 
-    private fun write(debugAppUpdate: DebugAppUpdate): HResult<*> = try {
-        iFileSystemProvider.writeInternalFile(
-                CACHE,
-                APP_UPDATE_CACHE_FILE,
-                ObjectMapper().registerKotlinModule().writeValueAsString(debugAppUpdate)
-        )
-    } catch (e: JsonProcessingException) {
-        errorResult(ErrorKeys.ERROR_IO, e)
-    }
+	private fun write(debugAppUpdate: DebugAppUpdate): HResult<*> = try {
+		iFileSystemProvider.writeInternalFile(
+				CACHE,
+				APP_UPDATE_CACHE_FILE,
+				ObjectMapper().registerKotlinModule().writeValueAsString(debugAppUpdate)
+		)
+	} catch (e: JsonProcessingException) {
+		errorResult(ErrorKeys.ERROR_IO, e)
+	}
 
-    override suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate> =
-            iFileSystemProvider.readInternalFile(
-                    CACHE,
-                    APP_UPDATE_CACHE_FILE
-            ).withSuccess { ObjectMapper().registerKotlinModule().readValue(it) }
+	override suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate> =
+			iFileSystemProvider.readInternalFile(
+					CACHE,
+					APP_UPDATE_CACHE_FILE
+			).withSuccess { ObjectMapper().registerKotlinModule().readValue(it) }
 
-    override suspend fun putAppUpdateInCache(
-            debugAppUpdate: DebugAppUpdate,
-            isUpdate: Boolean
-    ): HResult<*> {
-        updateAvaLive.postValue(if (isUpdate) successResult(debugAppUpdate) else emptyResult())
-        return write(debugAppUpdate)
-    }
+	override suspend fun putAppUpdateInCache(
+			debugAppUpdate: DebugAppUpdate,
+			isUpdate: Boolean
+	): HResult<*> {
+		updateAvaLive.value = if (isUpdate) successResult(debugAppUpdate) else emptyResult()
+		return write(debugAppUpdate)
+	}
 }

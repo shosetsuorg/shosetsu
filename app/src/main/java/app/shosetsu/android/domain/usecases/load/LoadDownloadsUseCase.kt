@@ -1,12 +1,13 @@
 package app.shosetsu.android.domain.usecases.load
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.mapListTo
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import app.shosetsu.android.view.uimodels.model.DownloadUI
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of Shosetsu.
@@ -32,8 +33,8 @@ import app.shosetsu.android.view.uimodels.model.DownloadUI
  */
 class LoadDownloadsUseCase(
 		private val iDownloadsRepository: IDownloadsRepository,
-) : (() -> LiveData<HResult<List<DownloadUI>>>) {
-	override fun invoke(): LiveData<HResult<List<DownloadUI>>> {
-		return liveData { emitSource(iDownloadsRepository.loadLiveDownloads().map { it.mapListTo() }) }
+) {
+	operator fun invoke(): Flow<HResult<List<DownloadUI>>> = flow {
+		emitAll(iDownloadsRepository.loadLiveDownloads().mapLatest { it.mapListTo() })
 	}
 }

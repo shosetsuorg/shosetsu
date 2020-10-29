@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.repository.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.json.RepoIndex
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -39,5 +39,5 @@ interface IExtRepoRepository {
 	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
 
 	/** Loads all repositories present */
-	suspend fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>>
+	suspend fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
 }

@@ -1,14 +1,15 @@
 package app.shosetsu.android.domain.usecases.load
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.mapTo
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
 import app.shosetsu.android.view.uimodels.model.UpdateUI
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -33,9 +34,9 @@ import app.shosetsu.android.view.uimodels.model.UpdateUI
  */
 class LoadUpdatesUseCase(
 		private val updatesRepository: IUpdatesRepository,
-) : (() -> LiveData<HResult<List<UpdateUI>>>) {
-	override fun invoke(): LiveData<HResult<List<UpdateUI>>> = liveData {
-		emitSource(updatesRepository.getCompleteUpdates().map { result ->
+)  {
+	operator fun invoke(): Flow<HResult<List<UpdateUI>>> = flow {
+		emitAll(updatesRepository.getCompleteUpdates().mapLatest { result ->
 			result.handleReturn { successResult(it.mapTo()) }
 		})
 	}

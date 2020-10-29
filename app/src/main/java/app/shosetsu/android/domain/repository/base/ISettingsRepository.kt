@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.repository.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -27,17 +27,17 @@ import app.shosetsu.android.common.dto.HResult
  */
 interface ISettingsRepository {
 
-	fun observeLong(key: SettingKey<Long>): LiveData<Long>
+	fun observeLong(key: SettingKey<Long>): Flow<Long>
 
-	fun observeString(key: SettingKey<String>): LiveData<String>
+	fun observeString(key: SettingKey<String>): Flow<String>
 
-	fun observeInt(key: SettingKey<Int>): LiveData<Int>
+	fun observeInt(key: SettingKey<Int>): Flow<Int>
 
-	fun observeBoolean(key: SettingKey<Boolean>): LiveData<Boolean>
+	fun observeBoolean(key: SettingKey<Boolean>): Flow<Boolean>
 
-	fun observeStringSet(key: SettingKey<Set<String>>): LiveData<Set<String>>
+	fun observeStringSet(key: SettingKey<Set<String>>): Flow<Set<String>>
 
-	fun observeFloat(key: SettingKey<Float>): LiveData<Float>
+	fun observeFloat(key: SettingKey<Float>): Flow<Float>
 
 
 	suspend fun getLong(key: SettingKey<Long>): HResult<Long>

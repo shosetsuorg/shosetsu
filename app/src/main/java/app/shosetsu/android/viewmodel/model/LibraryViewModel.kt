@@ -18,6 +18,7 @@ package app.shosetsu.android.viewmodel.model
  */
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
@@ -48,7 +49,7 @@ class LibraryViewModel(
 	override val liveData: LiveData<HResult<List<ABookmarkedNovelUI>>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
 			emit(loading())
-			emitSource(libraryAsCardsUseCase())
+			emitSource(libraryAsCardsUseCase().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO))
 		}
 	}
 

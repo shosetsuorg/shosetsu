@@ -1,11 +1,11 @@
 package app.shosetsu.android.datasource.database.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -33,13 +33,13 @@ import app.shosetsu.lib.Novel
  */
 interface ILocalChaptersDataSource {
 	/** Get the chapters of a novel */
-	suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>>
+	suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>>
 
 	/** Loads a chapter by its ID */
 	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
 
 	/** Loads chapters by novelID */
-	suspend fun loadReaderChapters(novelID: Int): LiveData<HResult<List<ReaderChapterEntity>>>
+	suspend fun loadReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
 
 	/** Handles chapters from a remote source */
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>

@@ -1,8 +1,6 @@
 package app.shosetsu.android.viewmodel.model
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.loading
@@ -17,6 +15,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlin.collections.set
@@ -54,7 +53,7 @@ class SearchViewModel(
 	override val listings: LiveData<HResult<List<SearchRowUI>>> by lazy {
 		liveData {
 			emit(loading())
-			emitSource(loadSearchRowUIUseCase())
+			emitSource(loadSearchRowUIUseCase().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO))
 		}
 	}
 

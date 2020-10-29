@@ -17,10 +17,7 @@ package app.shosetsu.android.viewmodel.model.extension
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
@@ -34,6 +31,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateExtensionEntityUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
+import kotlinx.coroutines.Dispatchers
 
 /**
  * shosetsu
@@ -55,7 +53,7 @@ class ExtensionConfigureViewModel(
 
 	override val liveData: LiveData<HResult<ExtensionUI>> by lazy {
 		idLive.switchMap {
-			loadExtensionUIUI(it)
+			loadExtensionUIUI(it).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 		}
 	}
 

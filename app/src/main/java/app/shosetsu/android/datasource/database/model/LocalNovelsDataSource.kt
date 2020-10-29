@@ -1,9 +1,6 @@
 package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
@@ -12,6 +9,10 @@ import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.providers.database.dao.NovelsDao
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -37,9 +38,9 @@ import app.shosetsu.android.providers.database.dao.NovelsDao
 class LocalNovelsDataSource(
 		private val novelsDao: NovelsDao,
 ) : ILocalNovelsDataSource {
-	override suspend fun loadLiveBookmarkedNovels(): LiveData<HResult<List<NovelEntity>>> = liveData {
+	override suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>> = flow {
 		try {
-			emitSource(novelsDao.loadListBookmarkedNovels().map { successResult(it) })
+			emitAll(novelsDao.loadListBookmarkedNovels().mapLatest { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -56,9 +57,9 @@ class LocalNovelsDataSource(
 	}
 
 	override suspend fun loadLiveBookmarkedNovelsAndCount(
-	): LiveData<HResult<List<BookmarkedNovelEntity>>> = liveData {
+	): Flow<HResult<List<BookmarkedNovelEntity>>> = flow {
 		try {
-			emitSource(novelsDao.loadBookmarkedNovelsCount().map { successResult(it) })
+			emitAll(novelsDao.loadBookmarkedNovelsCount().mapLatest { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -74,9 +75,9 @@ class LocalNovelsDataSource(
 		errorResult(e)
 	}
 
-	override suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>> = liveData {
+	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
-			emitSource(novelsDao.loadNovelLive(novelID).map { successResult(it) })
+			emitAll(novelsDao.loadNovelLive(novelID).mapLatest { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {

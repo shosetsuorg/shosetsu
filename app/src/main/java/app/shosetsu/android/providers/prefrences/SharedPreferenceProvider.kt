@@ -3,10 +3,11 @@ package app.shosetsu.android.providers.prefrences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.ext.logV
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /*
  * This file is part of Shosetsu.
@@ -30,17 +31,18 @@ import app.shosetsu.android.common.ext.logV
  * 17 / 09 / 2020
  * This class contains all SharedPrefrenceData for shosetsu
  */
+@ExperimentalCoroutinesApi
 class SharedPreferenceProvider(
 		/** Application context for internal use */
 		val context: Context,
 		val settings: SharedPreferences = context.getSharedPreferences("view", 0),
 ) : SharedPreferences.OnSharedPreferenceChangeListener {
-	private val longMap: HashMap<SettingKey<Long>, MutableLiveData<Long>> by lazy { hashMapOf() }
-	private val stringMap: HashMap<SettingKey<String>, MutableLiveData<String>> by lazy { hashMapOf() }
-	private val intMap: HashMap<SettingKey<Int>, MutableLiveData<Int>> by lazy { hashMapOf() }
-	private val booleanMap: HashMap<SettingKey<Boolean>, MutableLiveData<Boolean>> by lazy { hashMapOf() }
-	private val stringSetMap: HashMap<SettingKey<Set<String>>, MutableLiveData<Set<String>>> by lazy { hashMapOf() }
-	private val floatMap: HashMap<SettingKey<Float>, MutableLiveData<Float>> by lazy { hashMapOf() }
+	private val longMap: HashMap<SettingKey<Long>, MutableStateFlow<Long>> by lazy { hashMapOf() }
+	private val stringMap: HashMap<SettingKey<String>, MutableStateFlow<String>> by lazy { hashMapOf() }
+	private val intMap: HashMap<SettingKey<Int>, MutableStateFlow<Int>> by lazy { hashMapOf() }
+	private val booleanMap: HashMap<SettingKey<Boolean>, MutableStateFlow<Boolean>> by lazy { hashMapOf() }
+	private val stringSetMap: HashMap<SettingKey<Set<String>>, MutableStateFlow<Set<String>>> by lazy { hashMapOf() }
+	private val floatMap: HashMap<SettingKey<Float>, MutableStateFlow<Float>> by lazy { hashMapOf() }
 
 	override fun onSharedPreferenceChanged(sp: SharedPreferences?, s: String) {
 		logV("Pref changed: $s")
@@ -49,42 +51,42 @@ class SharedPreferenceProvider(
 			is String -> {
 				val key = key as SettingKey<String>
 				val value = getString(key)
-				stringMap[key]?.postValue(value) ?: MutableLiveData(value).also {
+				stringMap[key]?.let { it.value = value } ?: MutableStateFlow(value).also {
 					stringMap[key] = it
 				}
 			}
 			is Int -> {
 				val key = key as SettingKey<Int>
 				val value = getInt(key)
-				intMap[key]?.postValue(value) ?: MutableLiveData(value).also {
+				intMap[key]?.let { it.value = value } ?: MutableStateFlow(value).also {
 					intMap[key] = it
 				}
 			}
 			is Boolean -> {
 				val key = key as SettingKey<Boolean>
 				val value = getBoolean(key)
-				booleanMap[key]?.postValue(value) ?: MutableLiveData(value).also {
+				booleanMap[key]?.let { it.value = value } ?: MutableStateFlow(value).also {
 					booleanMap[key] = it
 				}
 			}
 			is Long -> {
 				val key = key as SettingKey<Long>
 				val value = getLong(key)
-				longMap[key]?.postValue(value) ?: MutableLiveData(value).also {
+				longMap[key]?.let { it.value = value } ?: MutableStateFlow(value).also {
 					longMap[key] = it
 				}
 			}
 			is Float -> {
 				val key = key as SettingKey<Float>
 				val value = getFloat(key)
-				floatMap[key]?.postValue(value) ?: MutableLiveData(value).also {
+				floatMap[key]?.let { it.value = value } ?: MutableStateFlow(value).also {
 					floatMap[key] = it
 				}
 			}
 			is Set<*> -> {
 				val key = key as SettingKey<Set<String>>
 				val value = getStringSet(key)
-				stringSetMap[key]?.postValue(value) ?: MutableLiveData(value).also {
+				stringSetMap[key]?.let { it.value = value } ?: MutableStateFlow(value).also {
 					stringSetMap[key] = it
 				}
 			}
@@ -95,33 +97,33 @@ class SharedPreferenceProvider(
 		settings.registerOnSharedPreferenceChangeListener(this)
 	}
 
-	fun observeLong(key: SettingKey<Long>): LiveData<Long> =
-			longMap[key] ?: MutableLiveData(getLong(key)).also {
+	fun observeLong(key: SettingKey<Long>): Flow<Long> =
+			longMap[key] ?: MutableStateFlow(getLong(key)).also {
 				longMap[key] = it
 			}
 
-	fun observeString(key: SettingKey<String>): LiveData<String> =
-			stringMap[key] ?: MutableLiveData(getString(key)).also {
+	fun observeString(key: SettingKey<String>): Flow<String> =
+			stringMap[key] ?: MutableStateFlow(getString(key)).also {
 				stringMap[key] = it
 			}
 
-	fun observeInt(key: SettingKey<Int>): LiveData<Int> =
-			intMap[key] ?: MutableLiveData(getInt(key)).also {
+	fun observeInt(key: SettingKey<Int>): Flow<Int> =
+			intMap[key] ?: MutableStateFlow(getInt(key)).also {
 				intMap[key] = it
 			}
 
-	fun observeBoolean(key: SettingKey<Boolean>): LiveData<Boolean> =
-			booleanMap[key] ?: MutableLiveData(getBoolean(key)).also {
+	fun observeBoolean(key: SettingKey<Boolean>): Flow<Boolean> =
+			booleanMap[key] ?: MutableStateFlow(getBoolean(key)).also {
 				booleanMap[key] = it
 			}
 
-	fun observeStringSet(key: SettingKey<Set<String>>): LiveData<Set<String>> =
-			stringSetMap[key] ?: MutableLiveData(getStringSet(key)).also {
+	fun observeStringSet(key: SettingKey<Set<String>>): Flow<Set<String>> =
+			stringSetMap[key] ?: MutableStateFlow(getStringSet(key)).also {
 				stringSetMap[key] = it
 			}
 
-	fun observeFloat(key: SettingKey<Float>): LiveData<Float> =
-			floatMap[key] ?: MutableLiveData(getFloat(key)).also {
+	fun observeFloat(key: SettingKey<Float>): Flow<Float> =
+			floatMap[key] ?: MutableStateFlow(getFloat(key)).also {
 				floatMap[key] = it
 			}
 

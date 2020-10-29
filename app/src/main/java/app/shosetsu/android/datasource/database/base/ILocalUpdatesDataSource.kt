@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -32,11 +33,11 @@ import app.shosetsu.android.domain.model.local.UpdateEntity
 interface ILocalUpdatesDataSource {
 
 	/** Loads [LiveData] of a [List] of [UpdateEntity] */
-	suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>>
+	suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>>
 
 	/** Insert a [List] of [UpdateEntity] and returns an [HResult] of [Array] of [Long] */
 	suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>>
 
 	/** Loads [LiveData] of a [List] of [UpdateCompleteEntity] */
-	suspend fun getCompleteUpdates(): LiveData<HResult<List<UpdateCompleteEntity>>>
+	suspend fun getCompleteUpdates(): Flow<HResult<List<UpdateCompleteEntity>>>
 }

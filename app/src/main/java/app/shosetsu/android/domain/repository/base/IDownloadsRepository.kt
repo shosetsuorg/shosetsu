@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.repository.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.DownloadEntity
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +30,7 @@ import app.shosetsu.android.domain.model.local.DownloadEntity
 interface IDownloadsRepository {
 
 	/** Gets a live view of the downloads */
-	fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>>
+	fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>>
 
 	/** Loads the first download in the list, also starts it */
 	suspend fun loadFirstDownload(): HResult<DownloadEntity>

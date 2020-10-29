@@ -2,8 +2,6 @@ package app.shosetsu.android.domain.usecases.load
 
 import android.content.Context
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.consts.settings.SettingKey.ReaderUserThemes
 import app.shosetsu.android.common.dto.mapTo
 import app.shosetsu.android.common.ext.launchIO
@@ -12,6 +10,8 @@ import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of Shosetsu.
@@ -38,8 +38,9 @@ class LoadReaderThemes(
 		private val iSettingsRepository: ISettingsRepository,
 		private val context: Context
 ) {
-	operator fun invoke(): LiveData<List<ColorChoiceUI>> {
-		return iSettingsRepository.observeStringSet(ReaderUserThemes).map { set: Set<String> ->
+	operator fun invoke(): Flow<List<ColorChoiceUI>> {
+		return iSettingsRepository.observeStringSet(ReaderUserThemes)
+				.mapLatest { set: Set<String> ->
 
 			(if (set.isNotEmpty())
 				set.map { ColorChoiceData.fromString(it) }

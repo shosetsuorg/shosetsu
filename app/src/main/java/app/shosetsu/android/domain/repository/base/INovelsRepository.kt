@@ -15,7 +15,6 @@ package app.shosetsu.android.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
@@ -23,6 +22,7 @@ import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -33,7 +33,7 @@ import app.shosetsu.lib.Novel
  */
 interface INovelsRepository {
 	/** Gets all bookmarked as live data */
-	suspend fun getLiveBookmarked(): LiveData<HResult<List<BookmarkedNovelEntity>>>
+	suspend fun getLiveBookmarked(): Flow<HResult<List<BookmarkedNovelEntity>>>
 
 	/** Gets NovelEntities that are bookmarked */
 	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
@@ -45,7 +45,7 @@ interface INovelsRepository {
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
 
 	/** Loads live data of the [NovelEntity] by its [novelID] */
-	suspend fun loadNovelLive(novelID: Int): LiveData<HResult<NovelEntity>>
+	suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>>
 
 	/** Inserts the [novelEntity] and returns a UI version of it  */
 	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook>

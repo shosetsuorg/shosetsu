@@ -1,7 +1,6 @@
 package app.shosetsu.android.providers.database.dao
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -16,6 +15,7 @@ import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -52,7 +52,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
-	fun loadLiveChapters(novelID: Int): LiveData<List<ChapterEntity>>
+	fun loadLiveChapters(novelID: Int): Flow<List<ChapterEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
@@ -60,7 +60,7 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id, url, title, readingPosition, readingStatus, bookmarked FROM chapters WHERE novelID = :novelID")
-	fun loadLiveReaderChapters(novelID: Int): LiveData<List<ReaderChapterEntity>>
+	fun loadLiveReaderChapters(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 
 	//## Single result queries

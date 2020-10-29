@@ -1,7 +1,6 @@
 package app.shosetsu.android.providers.database.dao
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
@@ -10,6 +9,7 @@ import app.shosetsu.android.domain.model.local.CountIDTuple
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -59,7 +59,7 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
-	fun loadRepositoriesLive(): LiveData<List<RepositoryEntity>>
+	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories ORDER BY id ASC")

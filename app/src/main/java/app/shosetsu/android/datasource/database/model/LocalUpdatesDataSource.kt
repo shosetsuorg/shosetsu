@@ -1,9 +1,6 @@
 package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
@@ -11,6 +8,10 @@ import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.providers.database.dao.UpdatesDao
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -36,9 +37,9 @@ import app.shosetsu.android.providers.database.dao.UpdatesDao
 class LocalUpdatesDataSource(
 		private val updatesDao: UpdatesDao,
 ) : ILocalUpdatesDataSource {
-	override suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> = liveData {
+	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> = flow {
 		try {
-			emitSource(updatesDao.loadUpdates().map { successResult(it) })
+			emitAll(updatesDao.loadUpdates().mapLatest { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -55,9 +56,9 @@ class LocalUpdatesDataSource(
 	}
 
 	override suspend fun getCompleteUpdates(
-	): LiveData<HResult<List<UpdateCompleteEntity>>> = liveData {
+	): Flow<HResult<List<UpdateCompleteEntity>>> = flow {
 		try {
-			emitSource(updatesDao.loadCompleteUpdates().map { successResult(it) })
+			emitAll(updatesDao.loadCompleteUpdates().mapLatest { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {

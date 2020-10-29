@@ -1,14 +1,13 @@
 package app.shosetsu.android.domain.usecases.get
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -34,19 +33,17 @@ import kotlinx.coroutines.Dispatchers
 class GetNovelUIUseCase(
 		private val novelsRepository: INovelsRepository,
 		private val extensionRepository: IExtensionsRepository
-) : ((@ParameterName("novelID") Int) -> LiveData<HResult<NovelUI>>) {
-	override fun invoke(novelID: Int): LiveData<HResult<NovelUI>> = liveData(context = Dispatchers.IO) {
+) {
+	operator fun invoke(novelID: Int): Flow<HResult<NovelUI>> = flow {
 		emit(loading())
 		if (novelID != -1)
-			emitSource(novelsRepository.loadNovelLive(novelID).map { it.mapTo() }.switchMap { novelUIResult ->
-				liveData(context = Dispatchers.IO) {
-					emit(novelUIResult.handleReturn { novelUI ->
-						extensionRepository.getExtensionEntity(novelUI.extID).handleReturn { ext ->
-							successResult(novelUI.apply {
-								extName = ext.name
-							})
-						}
-					})
+			emitAll(novelsRepository.loadNovelLive(novelID).mapLatest { it.mapTo() }.mapLatest { novelUIResult ->
+				novelUIResult.handleReturn { novelUI ->
+					extensionRepository.getExtensionEntity(novelUI.extID).handleReturn { ext ->
+						successResult(novelUI.apply {
+							extName = ext.name
+						})
+					}
 				}
 			})
 

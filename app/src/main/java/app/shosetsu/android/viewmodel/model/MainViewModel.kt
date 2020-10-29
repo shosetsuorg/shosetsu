@@ -1,7 +1,7 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.dto.HResult
@@ -57,11 +57,8 @@ class MainViewModel(
 
 	override fun startUpdateWorker() {}
 
-	override fun startUpdateCheck(): LiveData<HResult<DebugAppUpdate>> {
-		return liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-			emitSource(loadAppUpdateUseCase())
-		}
-	}
+	override fun startUpdateCheck(): LiveData<HResult<DebugAppUpdate>> =
+			loadAppUpdateUseCase().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 
 	override fun navigationStyle(): Int = shosetsuSettings.navigationStyle
 

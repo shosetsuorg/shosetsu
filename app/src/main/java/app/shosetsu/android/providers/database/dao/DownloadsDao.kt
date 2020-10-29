@@ -1,11 +1,11 @@
 package app.shosetsu.android.providers.database.dao
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -53,7 +53,7 @@ interface DownloadsDao : BaseDao<DownloadEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads")
-	fun loadDownloadItems(): LiveData<List<DownloadEntity>>
+	fun loadDownloadItems(): Flow<List<DownloadEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads WHERE chapterID = :chapterID LIMIT 1")

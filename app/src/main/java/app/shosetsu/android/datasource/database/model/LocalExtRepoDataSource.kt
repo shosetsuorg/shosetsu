@@ -1,15 +1,16 @@
 package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.providers.database.dao.RepositoryDao
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -35,9 +36,9 @@ import app.shosetsu.android.providers.database.dao.RepositoryDao
 class LocalExtRepoDataSource(
 		private val repositoryDao: RepositoryDao,
 ) : ILocalExtRepoDataSource {
-	override fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>> = liveData {
+	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> = flow {
 		try {
-			emitSource(repositoryDao.loadRepositoriesLive().map { successResult(it) })
+			emitAll(repositoryDao.loadRepositoriesLive().mapLatest { successResult(it) })
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {

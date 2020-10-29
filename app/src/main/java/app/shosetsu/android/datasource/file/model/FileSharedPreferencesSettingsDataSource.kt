@@ -1,11 +1,11 @@
 package app.shosetsu.android.datasource.file.model
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -31,22 +31,22 @@ import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 class FileSharedPreferencesSettingsDataSource(
 		private val provider: SharedPreferenceProvider
 ) : IFileSettingsDataSource {
-	override fun observeLong(key: SettingKey<Long>): LiveData<Long> =
+	override fun observeLong(key: SettingKey<Long>): Flow<Long> =
 			provider.observeLong(key)
 
-	override fun observeString(key: SettingKey<String>): LiveData<String> =
+	override fun observeString(key: SettingKey<String>): Flow<String> =
 			provider.observeString(key)
 
-	override fun observeInt(key: SettingKey<Int>): LiveData<Int> =
+	override fun observeInt(key: SettingKey<Int>): Flow<Int> =
 			provider.observeInt(key)
 
-	override fun observeBoolean(key: SettingKey<Boolean>): LiveData<Boolean> =
+	override fun observeBoolean(key: SettingKey<Boolean>): Flow<Boolean> =
 			provider.observeBoolean(key)
 
-	override fun observeStringSet(key: SettingKey<Set<String>>): LiveData<Set<String>> =
+	override fun observeStringSet(key: SettingKey<Set<String>>): Flow<Set<String>> =
 			provider.observeStringSet(key)
 
-	override fun observeFloat(key: SettingKey<Float>): LiveData<Float> =
+	override fun observeFloat(key: SettingKey<Float>): Flow<Float> =
 			provider.observeFloat(key)
 
 	override suspend fun getLong(key: SettingKey<Long>): HResult<Long> =

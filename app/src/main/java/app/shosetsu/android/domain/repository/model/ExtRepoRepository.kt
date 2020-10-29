@@ -1,12 +1,12 @@
 package app.shosetsu.android.domain.repository.model
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.domain.repository.base.IExtRepoRepository
 import app.shosetsu.lib.json.RepoIndex
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -39,7 +39,7 @@ class ExtRepoRepository(
     override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
             databaseSource.loadRepositories()
 
-    override suspend fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>> =
+    override suspend fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> =
             databaseSource.loadRepositoriesLive()
 
 }

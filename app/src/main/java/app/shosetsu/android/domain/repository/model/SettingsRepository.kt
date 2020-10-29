@@ -1,10 +1,10 @@
 package app.shosetsu.android.domain.repository.model
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -31,22 +31,22 @@ class SettingsRepository(
 		private val iLocalSettingsDataSource: IFileSettingsDataSource
 ) : ISettingsRepository {
 
-	override fun observeLong(key: SettingKey<Long>): LiveData<Long> =
+	override fun observeLong(key: SettingKey<Long>): Flow<Long> =
 			iLocalSettingsDataSource.observeLong(key)
 
-	override fun observeString(key: SettingKey<String>): LiveData<String> =
+	override fun observeString(key: SettingKey<String>): Flow<String> =
 			iLocalSettingsDataSource.observeString(key)
 
-	override fun observeInt(key: SettingKey<Int>): LiveData<Int> =
+	override fun observeInt(key: SettingKey<Int>): Flow<Int> =
 			iLocalSettingsDataSource.observeInt(key)
 
-	override fun observeBoolean(key: SettingKey<Boolean>): LiveData<Boolean> =
+	override fun observeBoolean(key: SettingKey<Boolean>): Flow<Boolean> =
 			iLocalSettingsDataSource.observeBoolean(key)
 
-	override fun observeStringSet(key: SettingKey<Set<String>>): LiveData<Set<String>> =
+	override fun observeStringSet(key: SettingKey<Set<String>>): Flow<Set<String>> =
 			iLocalSettingsDataSource.observeStringSet(key)
 
-	override fun observeFloat(key: SettingKey<Float>): LiveData<Float> =
+	override fun observeFloat(key: SettingKey<Float>): Flow<Float> =
 			iLocalSettingsDataSource.observeFloat(key)
 
 	override suspend fun getLong(key: SettingKey<Long>): HResult<Long> =

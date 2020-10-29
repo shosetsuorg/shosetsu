@@ -1,7 +1,6 @@
 package app.shosetsu.android.providers.database.dao
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
@@ -9,6 +8,7 @@ import androidx.room.Transaction
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDNameImage
 import app.shosetsu.android.providers.database.dao.base.BaseDao
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -37,15 +37,15 @@ import app.shosetsu.android.providers.database.dao.base.BaseDao
 interface ExtensionsDao : BaseDao<ExtensionEntity> {
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions")
-	fun loadExtensions(): LiveData<List<ExtensionEntity>>
+	fun loadExtensions(): Flow<List<ExtensionEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE installed = 1 AND enabled = 1")
-	fun loadPoweredExtensions(): LiveData<List<ExtensionEntity>>
+	fun loadPoweredExtensions(): Flow<List<ExtensionEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id, name, imageURL FROM extensions WHERE installed = 1 AND enabled = 1")
-	fun loadPoweredExtensionsBasic(): LiveData<List<IDNameImage>>
+	fun loadPoweredExtensionsBasic(): Flow<List<IDNameImage>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
@@ -53,7 +53,7 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun getExtensionLive(formatterID: Int): LiveData<ExtensionEntity>
+	fun getExtensionLive(formatterID: Int): Flow<ExtensionEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")

@@ -1,9 +1,6 @@
 package app.shosetsu.android.viewmodel.model.novel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
@@ -27,6 +24,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -79,40 +77,40 @@ class NovelViewModel(
 	override val chaptersLive: LiveData<HResult<List<ChapterUI>>> by lazy {
 		novelIDLive.switchMap { id ->
 			liveDataIO {
-				emitSource(getChapterUIsUseCase(id).switchMap { list ->
-					MediatorLiveData<HResult<List<ChapterUI>>>().apply {
-						val update = {
-							postValue(list.handleReturn {
-								successResult(it.handleFilters())
-							})
-						}
-						addSource(chaptersManagement.onlyDownloadedLive) {
-							update()
-						}
-						addSource(chaptersManagement.onlyBookmarkedLive) {
-							update()
-						}
-						addSource(chaptersManagement.sortTypeLive) {
-							update()
-						}
-						addSource(chaptersManagement.reversedSortLive) {
-							update()
-						}
-						addSource(chaptersManagement.showOnlyReadingStatusOfLive) {
-							update()
-						}
-						update()
-					}
-				})
+				emitSource(getChapterUIsUseCase(id)
+						.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+						.switchMap { list ->
+							MediatorLiveData<HResult<List<ChapterUI>>>().apply {
+								val update = {
+									postValue(list.handleReturn {
+										successResult(it.handleFilters())
+									})
+								}
+								addSource(chaptersManagement.onlyDownloadedLive) {
+									update()
+								}
+								addSource(chaptersManagement.onlyBookmarkedLive) {
+									update()
+								}
+								addSource(chaptersManagement.sortTypeLive) {
+									update()
+								}
+								addSource(chaptersManagement.reversedSortLive) {
+									update()
+								}
+								addSource(chaptersManagement.showOnlyReadingStatusOfLive) {
+									update()
+								}
+								update()
+							}
+						})
 			}
 		}
 	}
 
 	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
 		novelIDLive.switchMap {
-			liveDataIO {
-				emitSource(loadNovelUIUseCase(it))
-			}
+			loadNovelUIUseCase(it).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 		}
 	}
 

@@ -1,7 +1,7 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.ReportExceptionUseCase
@@ -50,8 +50,6 @@ class RepositoryViewModel(
 	}
 
 	override val liveData: LiveData<HResult<List<RepositoryUI>>> by lazy {
-		liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-			emitSource(loadRepositoriesUseCase())
-		}
+		loadRepositoriesUseCase().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 	}
 }

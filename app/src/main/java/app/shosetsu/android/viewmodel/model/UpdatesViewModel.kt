@@ -1,12 +1,15 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
+import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -37,7 +40,7 @@ class UpdatesViewModel(
 		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IUpdatesViewModel() {
 	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
-		getUpdatesUseCase()
+		getUpdatesUseCase().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

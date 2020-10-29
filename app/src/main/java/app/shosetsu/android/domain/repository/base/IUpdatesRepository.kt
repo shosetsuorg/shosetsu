@@ -15,10 +15,10 @@ package app.shosetsu.android.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
+import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -32,8 +32,8 @@ interface IUpdatesRepository {
 	suspend fun addUpdates(list: List<UpdateEntity>): HResult<Array<Long>>
 
 	/** Get all LiveData of the updates */
-	suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>>
+	suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>>
 
 	/** Get all LiveData of the updates with completion */
-	suspend fun getCompleteUpdates(): LiveData<HResult<List<UpdateCompleteEntity>>>
+	suspend fun getCompleteUpdates(): Flow<HResult<List<UpdateCompleteEntity>>>
 }

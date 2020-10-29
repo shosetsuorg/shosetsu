@@ -1,13 +1,14 @@
 package app.shosetsu.android.domain.usecases.load
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.mapListTo
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -32,10 +33,10 @@ import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
  */
 class LoadReaderChaptersUseCase(
 		private val iChaptersRepository: IChaptersRepository,
-) : ((@kotlin.ParameterName("novelID") Int) -> LiveData<HResult<List<ReaderChapterUI>>>) {
-	override fun invoke(novelID: Int): LiveData<HResult<List<ReaderChapterUI>>> =
-			liveData<HResult<List<ReaderChapterUI>>> {
+) {
+	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =
+			flow {
 				emit(loading())
-				emitSource(iChaptersRepository.loadReaderChapters(novelID).map { it.mapListTo() })
+				emitAll(iChaptersRepository.loadReaderChapters(novelID).mapLatest { it.mapListTo() })
 			}
 }

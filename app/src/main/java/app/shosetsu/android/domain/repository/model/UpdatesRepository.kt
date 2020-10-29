@@ -1,11 +1,11 @@
 package app.shosetsu.android.domain.repository.model
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -38,9 +38,9 @@ class UpdatesRepository(
 	override suspend fun addUpdates(list: List<UpdateEntity>): HResult<Array<Long>> =
 			iLocalUpdatesDataSource.insertUpdates(list)
 
-	override suspend fun getUpdates(): LiveData<HResult<List<UpdateEntity>>> =
+	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> =
 			iLocalUpdatesDataSource.getUpdates()
 
-	override suspend fun getCompleteUpdates(): LiveData<HResult<List<UpdateCompleteEntity>>> =
+	override suspend fun getCompleteUpdates(): Flow<HResult<List<UpdateCompleteEntity>>> =
 			iLocalUpdatesDataSource.getCompleteUpdates()
 }

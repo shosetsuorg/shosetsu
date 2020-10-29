@@ -1,8 +1,8 @@
 package app.shosetsu.android.datasource.database.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.DownloadEntity
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -27,7 +27,7 @@ import app.shosetsu.android.domain.model.local.DownloadEntity
  */
 interface ILocalDownloadsDataSource {
 	/** Loads LiveData of [DownloadEntity]s */
-	fun loadLiveDownloads(): LiveData<HResult<List<DownloadEntity>>>
+	fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>>
 
 	/** Loads the download count */
 	suspend fun loadDownloadCount(): HResult<Int>

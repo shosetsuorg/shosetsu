@@ -1,12 +1,12 @@
 package app.shosetsu.android.providers.database.dao
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.domain.model.local.*
 import app.shosetsu.android.providers.database.dao.base.BaseDao
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -36,7 +36,7 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels")
-	fun loadNovels(): LiveData<List<NovelEntity>>
+	fun loadNovels(): Flow<List<NovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
@@ -44,7 +44,7 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
-	fun loadListBookmarkedNovels(): LiveData<List<NovelEntity>>
+	fun loadListBookmarkedNovels(): Flow<List<NovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
@@ -52,7 +52,7 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadNovelLive(novelID: Int): LiveData<NovelEntity>
+	fun loadNovelLive(novelID: Int): Flow<NovelEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT url,imageURL,title FROM novels WHERE id = :novelID LIMIT 1")
@@ -60,7 +60,7 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL FROM novels")
-	fun loadIDImageTitle(): LiveData<List<IDTitleImage>>
+	fun loadIDImageTitle(): Flow<List<IDTitleImage>>
 
 	@Throws(SQLiteException::class)
 	@Query("""SELECT 
@@ -74,7 +74,7 @@ interface NovelsDao : BaseDao<NovelEntity> {
 							FROM chapters WHERE novelID = novels.id AND readingStatus != 2 
 						) as unread 
 					FROM novels WHERE novels.bookmarked = 1""")
-	fun loadBookmarkedNovelsCount(): LiveData<List<BookmarkedNovelEntity>>
+	fun loadBookmarkedNovelsCount(): Flow<List<BookmarkedNovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id FROM novels")

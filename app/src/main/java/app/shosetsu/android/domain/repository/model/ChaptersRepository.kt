@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.repository.model
 
 import android.database.sqlite.SQLiteException
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.and
 import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
@@ -15,6 +14,7 @@ import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -99,7 +99,7 @@ class ChaptersRepository(
 	): HResult<List<ChapterEntity>> =
 			dbSource.handleChapterReturn(novelEntity, list)
 
-	override suspend fun loadChapters(novelID: Int): LiveData<HResult<List<ChapterEntity>>> =
+	override suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>> =
 			dbSource.loadChapters(novelID)
 
 	@Throws(SQLiteException::class)
@@ -111,7 +111,7 @@ class ChaptersRepository(
 
 	override suspend fun loadReaderChapters(
 			novelID: Int,
-	): LiveData<HResult<List<ReaderChapterEntity>>> = dbSource.loadReaderChapters(novelID)
+	): Flow<HResult<List<ReaderChapterEntity>>> = dbSource.loadReaderChapters(novelID)
 
 	@Throws(SQLiteException::class)
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*> =

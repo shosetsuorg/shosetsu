@@ -1,8 +1,8 @@
 package app.shosetsu.android.datasource.database.base
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.RepositoryEntity
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -27,7 +27,7 @@ import app.shosetsu.android.domain.model.local.RepositoryEntity
  */
 interface ILocalExtRepoDataSource {
 	/** Loads LiveData of the repositories */
-	fun loadRepositoriesLive(): LiveData<HResult<List<RepositoryEntity>>>
+	fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
 
 	/** Loads a list of the repositories */
 	fun loadRepositories(): HResult<List<RepositoryEntity>>

@@ -1,14 +1,14 @@
 package app.shosetsu.android.domain.usecases.load
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.mapListTo
 import app.shosetsu.android.domain.repository.base.IExtRepoRepository
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of Shosetsu.
@@ -34,8 +34,8 @@ import kotlinx.coroutines.Dispatchers
 class LoadRepositoriesUseCase(
 		private val iExtRepoRepository: IExtRepoRepository
 ) {
-	operator fun invoke(): LiveData<HResult<List<RepositoryUI>>> = liveData(context = Dispatchers.IO) {
+	operator fun invoke(): Flow<HResult<List<RepositoryUI>>> = flow {
 		emit(loading())
-		emitSource(iExtRepoRepository.loadRepositoriesLive().map { it.mapListTo() })
+		emitAll(iExtRepoRepository.loadRepositoriesLive().mapLatest { it.mapListTo() })
 	}
 }
