@@ -1,8 +1,6 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.consts.settings.SettingKey.IsDownloadPaused
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
@@ -19,7 +17,6 @@ import app.shosetsu.android.domain.usecases.load.LoadDownloadsUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateDownloadUseCase
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
-import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -56,7 +53,7 @@ class DownloadsViewModel(
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		liveDataIO {
 			emit(loading())
-			emitSource(getDownloadsUseCase().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO))
+			emitSource(getDownloadsUseCase().asIOLiveData())
 		}
 	}
 
@@ -67,7 +64,7 @@ class DownloadsViewModel(
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
 	override val isDownloadPaused: LiveData<Boolean> by lazy {
-		settings.observeBoolean(IsDownloadPaused).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+		settings.observeBoolean(IsDownloadPaused).asIOLiveData()
 	}
 
 	override fun togglePause() {

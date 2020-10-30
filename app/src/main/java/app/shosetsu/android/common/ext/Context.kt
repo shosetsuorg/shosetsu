@@ -5,12 +5,11 @@ import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.widget.Toast.*
+import android.widget.Toast.LENGTH_SHORT
+import android.widget.Toast.makeText
 import androidx.annotation.NonNull
 import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
-import app.shosetsu.android.common.ShosetsuSettings
-import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of shosetsu.
@@ -76,23 +75,4 @@ fun Context.requestPerms() {
 					WRITE_EXTERNAL_STORAGE,
 					WAKE_LOCK),
 			1)
-}
-
-/**
- * Regret message if a feature isn't re-introduced yet
- */
-fun Context.regret(): Unit = toast(R.string.regret, duration = LENGTH_LONG)
-
-@Deprecated("Move to [Settings]")
-fun Context.calculateColumnCount(columnWidthDp: Float, settings: ShosetsuSettings): Int {
-// For example columnWidthdp=180
-	val c = if (resources.configuration.orientation == 1)
-		settings.columnsInNovelsViewP
-	else settings.columnsInNovelsViewH
-
-	val displayMetrics = resources.displayMetrics
-	val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-
-	return if (c <= 0) (screenWidthDp / columnWidthDp + 0.5).toInt()
-	else (screenWidthDp / (screenWidthDp / c) + 0.5).toInt()
 }

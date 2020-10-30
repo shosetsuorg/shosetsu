@@ -1,6 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.ViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 
 /*
  * This file is part of Shosetsu.
@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModel
  * shosetsu
  * 01 / 10 / 2020
  */
-abstract class AAboutViewModel : ViewModel() {
+abstract class AAboutViewModel : ShosetsuViewModel() {
 	abstract fun openGithub()
 	abstract fun openWebsite()
 	abstract fun appUpdateCheck()

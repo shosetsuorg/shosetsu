@@ -3,8 +3,6 @@ package app.shosetsu.android.viewmodel.model.settings
 import android.content.Context
 import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
@@ -17,7 +15,6 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -48,7 +45,7 @@ class ReaderSettingsViewModel(
 ) : AReaderSettingsViewModel(iSettingsRepository) {
 
 	override fun getReaderThemes(): LiveData<List<ColorChoiceUI>> =
-			loadReaderThemes().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+			loadReaderThemes().asIOLiveData()
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 			customSettingData(1) {

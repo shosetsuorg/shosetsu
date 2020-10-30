@@ -1,8 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.ViewModel
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /*
@@ -27,7 +27,7 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * 16 / 09 / 2020
  */
 abstract class ARepositoryViewModel
-	: SubscribeHandleViewModel<List<RepositoryUI>>, ViewModel(), ErrorReportingViewModel {
+	: SubscribeHandleViewModel<List<RepositoryUI>>, ShosetsuViewModel(), ErrorReportingViewModel {
 	/**
 	 * Adds a URL via a string the user provides
 	 */

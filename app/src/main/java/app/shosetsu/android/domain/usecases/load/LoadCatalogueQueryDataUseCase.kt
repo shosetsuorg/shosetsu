@@ -1,11 +1,14 @@
 package app.shosetsu.android.domain.usecases.load
 
+import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handleReturn
+import app.shosetsu.android.common.dto.handledReturnAny
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.lib.IExtension
@@ -36,34 +39,35 @@ class LoadCatalogueQueryDataUseCase(
 		private val extensionRepository: IExtensionsRepository,
 		private val novelsRepository: INovelsRepository,
 		private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
+		private val iSettingsRepository: ISettingsRepository
 ) {
 	suspend operator fun invoke(
-			formatterID: Int,
+			extID: Int,
 			query: String,
 			filters: Map<Int, Any>
-	) = extensionRepository.loadIExtension(formatterID).handleReturn {
+	) = extensionRepository.loadIExtension(extID).handleReturn {
 		invoke(it, query, filters)
 	}
 
 	suspend operator fun invoke(
-			formatter: IExtension,
+			ext: IExtension,
 			query: String,
 			filters: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> = extensionRepository.loadCatalogueSearch(
-			formatter,
+			ext,
 			query,
 			filters
 	).handleReturn {
 		val data: List<Novel.Listing> = it
-		successResult(data.map { novelListing ->
-			novelListing.convertTo(formatter)
-		}.mapNotNull { ne ->
-			novelsRepository.insertNovelReturnCard(ne).let { result ->
-				if (result is HResult.Success)
-					convertNCToCNUIUseCase(result.data)
-				else null
-			}
-		})
+		iSettingsRepository.getInt(SettingKey.NovelCardType).handleReturn { cardType ->
+			successResult(data.map { novelListing ->
+				novelListing.convertTo(ext)
+			}.mapNotNull { ne ->
+				novelsRepository.insertNovelReturnCard(ne).handledReturnAny { card ->
+					convertNCToCNUIUseCase(card, cardType)
+				}
+			})
+		}
 	}
 
 }

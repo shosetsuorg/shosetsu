@@ -1,14 +1,11 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
-import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of Shosetsu.
@@ -50,6 +47,6 @@ class RepositoryViewModel(
 	}
 
 	override val liveData: LiveData<HResult<List<RepositoryUI>>> by lazy {
-		loadRepositoriesUseCase().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+		loadRepositoriesUseCase().asIOLiveData()
 	}
 }

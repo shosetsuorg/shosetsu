@@ -11,8 +11,6 @@ import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -141,7 +139,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	// From tachiyomi
 	private fun setSelectedDrawerItem(id: Int) {
 		if (!isFinishing) {
-			if (viewModel.navigationStyle() == 0) {
+			if (viewModel.navigationStyle().value == 0) {
 				bottomNavigationView.selectedItemId = id
 				bottomNavigationView.menu.performIdentifierAction(id, 0)
 			} else {
@@ -158,14 +156,14 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		toolbar.setNavigationOnClickListener {
 			logD("Toolbar clicked")
 			if (router.backstackSize == 1) {
-				if (viewModel.navigationStyle() == 1) {
+				if (viewModel.navigationStyle().value == 1) {
 					logD("Opening drawer")
 					drawer_layout.openDrawer(GravityCompat.START)
 				}
 			} else onBackPressed()
 		}
 
-		if (viewModel.navigationStyle() == 0) {
+		if (viewModel.navigationStyle().value == 0) {
 			bottomNavigationView.visibility = VISIBLE
 			nav_view.visibility = GONE
 			setupBottomNavigationDrawer()
@@ -334,7 +332,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		if (showHamburger) {
 			// Shows navigation
-			if (viewModel.navigationStyle() == 1) {
+			if (viewModel.navigationStyle().value == 1) {
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
 				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
@@ -345,7 +343,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		} else {
 
 			// Hides navigation
-			if (viewModel.navigationStyle() == 1) {
+			if (viewModel.navigationStyle().value == 1) {
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = false
 				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)

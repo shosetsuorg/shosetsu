@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import android.graphics.Color
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.enums.MarkingTypes
@@ -10,6 +9,7 @@ import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /*
@@ -34,7 +34,7 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * 06 / 05 / 2020
  */
 abstract class IChapterReaderViewModel
-	: SubscribeHandleViewModel<List<ReaderChapterUI>>, ViewModel(), ErrorReportingViewModel {
+	: SubscribeHandleViewModel<List<ReaderChapterUI>>, ShosetsuViewModel(), ErrorReportingViewModel {
 
 	abstract var currentChapterID: Int
 

@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
@@ -10,6 +9,7 @@ import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import kotlinx.coroutines.Dispatchers.IO
 
 /*
@@ -35,7 +35,7 @@ import kotlinx.coroutines.Dispatchers.IO
  */
 abstract class ASubSettingsViewModel(
 		val iSettingsRepository: ISettingsRepository
-) : ViewModel(), ErrorReportingViewModel {
+) : ShosetsuViewModel(), ErrorReportingViewModel {
 	abstract suspend fun settings(): List<SettingsItemData>
 
 	fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =

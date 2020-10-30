@@ -1,12 +1,10 @@
-package app.shosetsu.android.domain.usecases.get
+package app.shosetsu.android.viewmodel.base
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.lib.Filter
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 /*
  * This file is part of Shosetsu.
@@ -27,15 +25,9 @@ import kotlinx.coroutines.flow.flow
 
 /**
  * shosetsu
- * 14 / 09 / 2020
+ * 30 / 10 / 2020
  */
-class GetExtensionSettingsUseCase(
-		private val iExtensionsRepository: IExtensionsRepository
-) {
-	operator fun invoke(id: Int): Flow<HResult<List<Filter<*>>>> = flow {
-		emit(loading())
-		if (id != -1)
-			emit(successResult(arrayListOf()))
-		//TODO Create livedata for settings for extensions via [ShosetsuSettings] as source
-	}
+abstract class ShosetsuViewModel : ViewModel() {
+	fun <T> Flow<T>.asIOLiveData() =
+			asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 }

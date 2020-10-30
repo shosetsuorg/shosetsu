@@ -1,6 +1,5 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
@@ -27,12 +26,10 @@ import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
  * shosetsu
  * 08 / 09 / 2020
  */
-class ConvertNCToCNUIUseCase(
-		private val shosetsuSettings: ShosetsuSettings
-) {
-	operator fun invoke(idTitleImageBook: IDTitleImageBook): ACatalogNovelUI =
+class ConvertNCToCNUIUseCase {
+	operator fun invoke(idTitleImageBook: IDTitleImageBook, cardType: Int): ACatalogNovelUI =
 			idTitleImageBook.let { (id, title, imageURL, bookmarked) ->
-				if (shosetsuSettings.novelCardType == 0)
+				if (cardType == 0)
 					FullCatalogNovelUI(id, title, imageURL, bookmarked)
 				else CompactCatalogNovelUI(id, title, imageURL, bookmarked)
 			}

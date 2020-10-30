@@ -1,6 +1,9 @@
 package app.shosetsu.android.viewmodel.model.novel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
@@ -24,7 +27,6 @@ import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
-import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -78,7 +80,7 @@ class NovelViewModel(
 		novelIDLive.switchMap { id ->
 			liveDataIO {
 				emitSource(getChapterUIsUseCase(id)
-						.asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+						.asIOLiveData()
 						.switchMap { list ->
 							MediatorLiveData<HResult<List<ChapterUI>>>().apply {
 								val update = {
@@ -110,7 +112,7 @@ class NovelViewModel(
 
 	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
 		novelIDLive.switchMap {
-			loadNovelUIUseCase(it).asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+			loadNovelUIUseCase(it).asIOLiveData()
 		}
 	}
 

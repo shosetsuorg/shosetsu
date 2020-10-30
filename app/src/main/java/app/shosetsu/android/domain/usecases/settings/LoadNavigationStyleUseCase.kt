@@ -1,12 +1,8 @@
-package app.shosetsu.android.domain.usecases.get
+package app.shosetsu.android.domain.usecases.settings
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.lib.Filter
+import app.shosetsu.android.common.consts.settings.SettingKey
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 /*
  * This file is part of Shosetsu.
@@ -27,15 +23,10 @@ import kotlinx.coroutines.flow.flow
 
 /**
  * shosetsu
- * 14 / 09 / 2020
+ * 29 / 10 / 2020
  */
-class GetExtensionSettingsUseCase(
-		private val iExtensionsRepository: IExtensionsRepository
+class LoadNavigationStyleUseCase(
+		private val iSettingsRepository: ISettingsRepository
 ) {
-	operator fun invoke(id: Int): Flow<HResult<List<Filter<*>>>> = flow {
-		emit(loading())
-		if (id != -1)
-			emit(successResult(arrayListOf()))
-		//TODO Create livedata for settings for extensions via [ShosetsuSettings] as source
-	}
+	operator fun invoke(): Flow<Int> = iSettingsRepository.observeInt(SettingKey.NavStyle)
 }

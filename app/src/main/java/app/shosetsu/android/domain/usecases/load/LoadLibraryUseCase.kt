@@ -1,17 +1,18 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.ShosetsuSettings
+import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.CompactBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.FullBookmarkedNovelUI
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -36,32 +37,32 @@ import kotlinx.coroutines.flow.mapLatest
  */
 class LoadLibraryUseCase(
 		private val iNovelsRepository: INovelsRepository,
-		private val settings: ShosetsuSettings,
-)  {
+		private val settings: ISettingsRepository,
+) {
 	operator fun invoke(): Flow<HResult<List<ABookmarkedNovelUI>>> = flow {
-		emitAll(iNovelsRepository.getLiveBookmarked().mapLatest { origin ->
+		emitAll(iNovelsRepository.getLiveBookmarked().combine(settings.observeInt(SettingKey.NovelCardType)) { origin, cardType ->
 			origin.handleReturn {
 				val list = it
-				val newList =
-						list.map { (id, title, imageURL, bookmarked, unread) ->
-							if (settings.novelCardType == 0)
-								FullBookmarkedNovelUI(
-										id,
-										title,
-										imageURL,
-										bookmarked,
-										unread
-								)
-							else CompactBookmarkedNovelUI(
-									id,
-									title,
-									imageURL,
-									bookmarked,
-									unread
-							)
-						}
+				val newList = list.map { (id, title, imageURL, bookmarked, unread) ->
+					if (cardType == 0)
+						FullBookmarkedNovelUI(
+								id,
+								title,
+								imageURL,
+								bookmarked,
+								unread
+						)
+					else CompactBookmarkedNovelUI(
+							id,
+							title,
+							imageURL,
+							bookmarked,
+							unread
+					)
+				}
 				successResult(newList)
 			}
+
 		})
 	}
 

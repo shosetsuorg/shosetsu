@@ -11,6 +11,7 @@ import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
+import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.domain.usecases.update.*
@@ -81,7 +82,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 
 	bind<LoadCatalogueListingDataUseCase>() with provider {
-		LoadCatalogueListingDataUseCase(instance(), instance(), instance())
+		LoadCatalogueListingDataUseCase(instance(), instance(), instance(), instance())
 	}
 
 	bind<GetChapterUIsUseCase>() with provider { GetChapterUIsUseCase(instance()) }
@@ -128,9 +129,9 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<LoadAppUpdateLiveUseCase>() with provider { LoadAppUpdateLiveUseCase(instance()) }
 
 	bind<LoadCatalogueQueryDataUseCase>() with provider {
-		LoadCatalogueQueryDataUseCase(instance(), instance(), instance())
+		LoadCatalogueQueryDataUseCase(instance(), instance(), instance(), instance())
 	}
-	bind<ConvertNCToCNUIUseCase>() with provider { ConvertNCToCNUIUseCase(instance()) }
+	bind<ConvertNCToCNUIUseCase>() with provider { ConvertNCToCNUIUseCase() }
 	bind<LoadSearchRowUIUseCase>() with provider { LoadSearchRowUIUseCase((instance())) }
 	bind<GetExtensionSettingsUseCase>() with provider { GetExtensionSettingsUseCase(instance()) }
 	bind<LoadExtensionUIUseCase>() with provider { LoadExtensionUIUseCase(instance()) }
@@ -143,5 +144,6 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 
 	bind<ReportExceptionUseCase>() with provider { ReportExceptionUseCase(instance(), instance()) }
+	bind<LoadNavigationStyleUseCase>() with provider { LoadNavigationStyleUseCase(instance()) }
 
 }

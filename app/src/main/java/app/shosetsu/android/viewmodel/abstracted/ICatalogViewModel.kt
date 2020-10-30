@@ -1,10 +1,10 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import kotlinx.coroutines.Job
@@ -34,7 +34,7 @@ import kotlinx.coroutines.Job
  * 01 / 05 / 2020
  * Used for showing the specific listing of a novel
  */
-abstract class ICatalogViewModel : ViewModel(), ErrorReportingViewModel {
+abstract class ICatalogViewModel : ShosetsuViewModel(), ErrorReportingViewModel {
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */

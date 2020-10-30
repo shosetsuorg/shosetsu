@@ -1,9 +1,9 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.ViewModel
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 
 /*
@@ -31,7 +31,7 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * @author github.com/doomsdayrs
  */
 abstract class IExtensionsViewModel :
-		ViewModel(),
+		ShosetsuViewModel(),
 		SubscribeHandleViewModel<List<ExtensionUI>>,
 		IsOnlineCheckViewModel,
 		ErrorReportingViewModel {

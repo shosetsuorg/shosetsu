@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.usecases.backuprestore
 
 import android.content.Context
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository

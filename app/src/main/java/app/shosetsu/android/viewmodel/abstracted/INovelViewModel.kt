@@ -1,13 +1,13 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import javax.security.auth.Destroyable
 
 /*
@@ -35,7 +35,7 @@ import javax.security.auth.Destroyable
  * @author github.com/doomsdayrs
  */
 abstract class INovelViewModel
-	: ViewModel(), IsOnlineCheckViewModel, Destroyable, ErrorReportingViewModel {
+	: ShosetsuViewModel(), IsOnlineCheckViewModel, Destroyable, ErrorReportingViewModel {
 
 	abstract val novelLive: LiveData<HResult<NovelUI>>
 	abstract val chaptersLive: LiveData<HResult<List<ChapterUI>>>

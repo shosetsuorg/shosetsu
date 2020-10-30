@@ -18,8 +18,6 @@ package app.shosetsu.android.viewmodel.model.extension
  */
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
@@ -86,7 +84,7 @@ class ExtensionsViewModel(
 			uninstallExtensionUIUseCase(extensionUI)
 
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
-		getExtensionsUIUseCase().asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+		getExtensionsUIUseCase().asIOLiveData()
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
