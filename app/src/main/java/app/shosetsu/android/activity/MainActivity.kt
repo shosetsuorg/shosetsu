@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	// From tachiyomi
 	private fun setSelectedDrawerItem(id: Int) {
 		if (!isFinishing) {
-			if (viewModel.navigationStyle().value == 0) {
+			if (viewModel.navigationStyle() == 0) {
 				bottomNavigationView.selectedItemId = id
 				bottomNavigationView.menu.performIdentifierAction(id, 0)
 			} else {
@@ -156,14 +156,14 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		toolbar.setNavigationOnClickListener {
 			logD("Toolbar clicked")
 			if (router.backstackSize == 1) {
-				if (viewModel.navigationStyle().value == 1) {
+				if (viewModel.navigationStyle() == 1) {
 					logD("Opening drawer")
 					drawer_layout.openDrawer(GravityCompat.START)
 				}
 			} else onBackPressed()
 		}
 
-		if (viewModel.navigationStyle().value == 0) {
+		if (viewModel.navigationStyle() == 0) {
 			bottomNavigationView.visibility = VISIBLE
 			nav_view.visibility = GONE
 			setupBottomNavigationDrawer()
@@ -332,7 +332,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		if (showHamburger) {
 			// Shows navigation
-			if (viewModel.navigationStyle().value == 1) {
+			if (viewModel.navigationStyle() == 1) {
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
 				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
@@ -343,7 +343,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		} else {
 
 			// Hides navigation
-			if (viewModel.navigationStyle().value == 1) {
+			if (viewModel.navigationStyle() == 1) {
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = false
 				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)

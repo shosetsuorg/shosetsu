@@ -31,6 +31,7 @@ import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel, ErrorReportingViewModel {
 	abstract fun share(string: String, int: String)
 
+
 	abstract fun startDownloadWorker()
 
 	@Deprecated("Now auto started")
@@ -42,5 +43,5 @@ abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel, Err
 	 * If 0, Bottom
 	 * If 1, Drawer
 	 */
-	abstract fun navigationStyle(): LiveData<Int>
+	abstract fun navigationStyle(): Int
 }

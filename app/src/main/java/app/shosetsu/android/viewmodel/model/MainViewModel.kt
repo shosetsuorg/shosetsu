@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -10,6 +11,7 @@ import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateLiveUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
+import kotlinx.coroutines.flow.collect
 
 /*
  * This file is part of shosetsu.
@@ -40,7 +42,15 @@ class MainViewModel(
 		private val loadNavigationStyleUseCase: LoadNavigationStyleUseCase,
 		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IMainViewModel() {
+	private var navigationStyle = 0
 
+	init {
+		launchIO {
+			loadNavigationStyleUseCase().collect {
+				navigationStyle = it
+			}
+		}
+	}
 
 	override fun share(string: String, int: String) {
 		shareUseCase(string, string)
@@ -59,8 +69,7 @@ class MainViewModel(
 	override fun startUpdateCheck(): LiveData<HResult<DebugAppUpdate>> =
 			loadAppUpdateUseCase().asIOLiveData()
 
-	override fun navigationStyle(): LiveData<Int> =
-			loadNavigationStyleUseCase().asIOLiveData()
+	override fun navigationStyle(): Int = navigationStyle
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 }

@@ -103,6 +103,12 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 		})
 	}
 
+
+	override fun showEmpty() {
+		super.showEmpty()
+		binding.emptyDataView.show("No extensions installed, Press the refresh button on the top right")
+	}
+
 	override fun handleErrorResult(e: HResult.Error) {
 		super.handleErrorResult(e)
 		viewModel.reportError(e)
