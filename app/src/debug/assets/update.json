@@ -1,7 +1,9 @@
 {
-  "latestVersion": "1015",
+  "latestVersion": "1020",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- New handling for exceptions :D"
+    "- Flow for data streams now",
+    "- Fixed a few issues with parameters",
+    "- Mainly backend fixes"
   ]
 }
