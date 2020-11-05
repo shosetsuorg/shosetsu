@@ -1,9 +1,10 @@
 {
-  "latestVersion": "1020",
+  "latestVersion": "1022",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Flow for data streams now",
-    "- Fixed a few issues with parameters",
-    "- Mainly backend fixes"
+    "- Extended FAB in DownloadsController.kt",
+    "- Fixed button interaction for DownloadsController.kt",
+    "- Added simultaneous downloads, 6 max, 20 secs to download 50 chapters with UI lag",
+    "- Fixed download processing"
   ]
 }
