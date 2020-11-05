@@ -1,10 +1,10 @@
 {
-  "latestVersion": "1022",
+  "latestVersion": "1024",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Extended FAB in DownloadsController.kt",
-    "- Fixed button interaction for DownloadsController.kt",
-    "- Added simultaneous downloads, 6 max, 20 secs to download 50 chapters with UI lag",
-    "- Fixed download processing"
+    "- Cleaned up logging",
+    "- Added new state to downloads (Waiting) for when waiting for thread",
+    "- Added download threads per extension",
+    "- Added download set all pending function *USE WHEN PAUSED ONLY"
   ]
 }
