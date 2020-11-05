@@ -161,6 +161,8 @@ class DownloadWorker(
 					count++
 			} catch (e: NullPointerException) {
 				// Ignoring this due to async
+			} catch (e: IndexOutOfBoundsException) {
+				// Ignoring this due to async
 			}
 		}
 		return count
