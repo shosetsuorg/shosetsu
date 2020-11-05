@@ -17,6 +17,9 @@ package app.shosetsu.android.ui.downloads
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.viewModel
@@ -44,6 +47,25 @@ class DownloadsController : BasicFastAdapterRecyclerController<DownloadUI>(),
 
 	private var fab: ExtendedFloatingActionButton? = null
 
+	init {
+		setHasOptionsMenu(true)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		inflater.inflate(R.menu.toolbar_downloads, menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		return when (item.itemId) {
+			R.id.set_all_pending -> {
+				itemAdapter.itemList.items.forEach {
+					viewModel.start(it)
+				}
+				return true
+			}
+			else -> super.onOptionsItemSelected(item)
+		}
+	}
 
 	private fun togglePause() {
 		if (viewModel.isOnline()) viewModel.togglePause() else toast(R.string.you_not_online)

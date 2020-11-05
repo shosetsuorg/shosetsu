@@ -6,7 +6,6 @@ import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.ext.logV
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
@@ -89,10 +88,7 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 
 	override fun updateUI(newList: List<ITEM>) {
 		if (newList.isEmpty()) showEmpty() else hideEmpty()
-		logV("Calculating result")
-		val result = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
-		logV("Result calculated, Dispatching on UI")
-		FastAdapterDiffUtil[itemAdapter] = result
+		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}
 
 	fun <T : GenericItem> updateUI(
@@ -102,10 +98,7 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 			newList: List<T>
 	) {
 		if (newList.isEmpty()) showEmpty() else hideEmpty()
-		logV("Calculating result")
-		val result = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
-		logV("Result calculated, Dispatching on UI")
-		FastAdapterDiffUtil[itemAdapter] = result
+		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}
 
 	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =

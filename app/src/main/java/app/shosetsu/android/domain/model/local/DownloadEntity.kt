@@ -1,10 +1,7 @@
 package app.shosetsu.android.domain.model.local
 
 import androidx.annotation.NonNull
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.view.uimodels.model.DownloadUI
@@ -69,7 +66,8 @@ data class DownloadEntity(
 		val chapterName: String,
 		val novelName: String,
 		@NonNull
-		val formatterID: Int,
+		@ColumnInfo(name = "formatterID")
+		val extensionID: Int,
 		var status: DownloadStatus = DownloadStatus.PENDING,
 ) : Convertible<DownloadUI>, Serializable {
 	override fun convertTo(): DownloadUI =
@@ -79,7 +77,7 @@ data class DownloadEntity(
 					chapterURL,
 					chapterName,
 					novelName,
-					formatterID,
+					extensionID,
 					status
 			)
 }

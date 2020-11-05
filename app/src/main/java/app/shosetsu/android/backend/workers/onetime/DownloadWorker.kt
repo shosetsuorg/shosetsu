@@ -17,6 +17,7 @@ import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.*
@@ -28,6 +29,7 @@ import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.delay
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -76,7 +78,7 @@ class DownloadWorker(
 				.setSmallIcon(R.drawable.download)
 				.setContentTitle(applicationContext.getString(R.string.app_name))
 				.setContentText("Downloading Chapters")
-				.setOnlyAlertOnce(true)
+				.setOngoing(true)
 	}
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
@@ -84,8 +86,16 @@ class DownloadWorker(
 	private val extRepo by instance<IExtensionsRepository>()
 	private val settingRepo by instance<ISettingsRepository>()
 
+	/** How many jobs are currently running */
+	@get:Synchronized
+	@set:Synchronized
 	private var activeJobs = 0
 
+	/** Which extensions are currently working */
+	@get:Synchronized
+	private val activeExtensions = ArrayList<Int>()
+
+	/** Retrieves the setting for if the download system is paused or not */
 	private suspend fun isDownloadPaused(): Boolean =
 			settingRepo.getBoolean(IsDownloadPaused).let {
 				if (it is HResult.Success)
@@ -93,13 +103,23 @@ class DownloadWorker(
 				else IsDownloadPaused.default
 			}
 
+	/** Retrieves the setting for simultaneous download threads allowed */
 	private suspend fun getDownloadThreads(): Int =
-			settingRepo.getInt(DownloadThreads).let {
+			settingRepo.getInt(DownloadThreadPool).let {
 				if (it is HResult.Success)
 					it.data
-				else DownloadThreads.default
+				else DownloadThreadPool.default
 			}
 
+	/** Retrieves the setting for simultaneous download threads allowed per extension */
+	private suspend fun getDownloadThreadsPerExtension(): Int =
+			settingRepo.getInt(DownloadExtThreads).let {
+				if (it is HResult.Success)
+					it.data
+				else DownloadExtThreads.default
+			}
+
+	/** Loads the download count that is present currently */
 	private suspend fun getDownloadCount(): Int =
 			downloadsRepo.loadDownloadCount().let { if (it is HResult.Success) it.data else -1 }
 
@@ -131,35 +151,81 @@ class DownloadWorker(
 				}
 			}
 
-	private suspend fun launchDownload() {
-		downloadsRepo.loadFirstDownload().let {
-			if (it is HResult.Success) {
-				val downloadEntity: DownloadEntity = it.data
-				downloadEntity.status = DownloadStatus.DOWNLOADING
-				downloadsRepo.update(downloadEntity)
-
-				when (val downloadResult = download(downloadEntity)) {
-					is HResult.Success -> downloadsRepo.deleteEntity(downloadEntity)
-					is HError -> {
-						downloadsRepo.update(downloadEntity.copy(
-								status = DownloadStatus.ERROR
-						))
-						launchUI {
-							toast { downloadResult.message }
-						}
-					}
-					is HResult.Empty -> {
-						launchUI {
-							toast { "Empty Error" }
-						}
-					}
-					is HResult.Loading -> {
-						Exception("Should not be loading")
-					}
-				}
+	@Synchronized
+	private fun activeExt(id: Int): Int {
+		var count = 0
+		for (i in activeExtensions.size - 1 downTo 0) {
+			try {
+				val aEI = activeExtensions[i]
+				if (aEI == id)
+					count++
+			} catch (e: NullPointerException) {
+				// Ignoring this due to async
 			}
 		}
-		activeJobs-- // Drops active job count once completed task
+		return count
+	}
+
+	private suspend fun launchDownload() {
+		downloadsRepo.loadFirstDownload().handle { downloadEntity ->
+			val extID = downloadEntity.extensionID
+
+			// This will loop until the download status is DOWNLOADING
+			while (downloadEntity.status != DownloadStatus.DOWNLOADING) {
+				// Will stop if download is paused
+				if (isDownloadPaused()) {
+					downloadsRepo.update(downloadEntity.copy(
+							status = DownloadStatus.PENDING
+					))
+					return
+				}
+
+				// Checks if there is space for the extension download
+				// If space is free, will start the extension download and break out of the loop
+				if (activeExt(extID) <= getDownloadThreadsPerExtension()) {
+					downloadEntity.status = DownloadStatus.DOWNLOADING
+					downloadsRepo.update(downloadEntity)
+					break
+				} else {
+					// If the status is pending, it will now be waiting till the pool is open
+					if (downloadEntity.status == DownloadStatus.PENDING) {
+						downloadEntity.status = DownloadStatus.WAITING
+						downloadsRepo.update(downloadEntity)
+					}
+				}
+				delay(100)
+			}
+
+			// Adds the job as working
+			activeExtensions.add(extID)
+			activeJobs++
+
+			logI("Downloading $downloadEntity")
+			when (val downloadResult = download(downloadEntity)) {
+				is HResult.Success -> downloadsRepo.deleteEntity(downloadEntity)
+				is HError -> {
+					downloadsRepo.update(downloadEntity.copy(
+							status = DownloadStatus.ERROR
+					))
+					launchUI {
+						toast { downloadResult.message }
+					}
+				}
+				is HResult.Empty -> {
+					downloadsRepo.update(downloadEntity.copy(
+							status = DownloadStatus.ERROR
+					))
+					launchUI {
+						toast { "Empty Error" }
+					}
+				}
+				is HResult.Loading -> {
+					throw Exception("Should not be loading")
+				}
+			}
+			activeJobs-- // Drops active job count once completed task
+			activeExtensions.remove(downloadEntity.extensionID)
+		}
 	}
 
 	override suspend fun doWork(): Result {
@@ -170,20 +236,13 @@ class DownloadWorker(
 			// Notifies the application is downloading chapters
 			notificationManager.notify(ID_CHAPTER_DOWNLOAD, progressNotification.build())
 
+			// Will not run if there are no downloads or if the download is paused
 			while (getDownloadCount() >= 1 && !isDownloadPaused()) {
-
 				// Launches a job as long as there are threads to download via
 				val threadsAllowed = getDownloadThreads()
-				if (activeJobs <= threadsAllowed) {
-					logI("There are currently $activeJobs / $threadsAllowed jobs")
-					activeJobs++
-					logI("Now there are $activeJobs / $threadsAllowed jobs")
-					launchIO {
-						launchDownload()
-					}
+				if (activeJobs <= threadsAllowed) launchIO {
+					launchDownload()
 				}
-
-				// Delays each launch by 100ms to avoid app slowdowns
 			}
 
 			// Downloads the chapters

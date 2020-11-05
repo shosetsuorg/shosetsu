@@ -320,6 +320,7 @@
     <string name="downloading">Downloading</string>
     <string name="error">Error</string>
     <string name="resume">Resume</string>
+    <string name="waiting">Waiting</string>
 
 
     <array name="application_themes">

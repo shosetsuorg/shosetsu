@@ -30,6 +30,7 @@ class DownloadStatusConverter {
 		DownloadStatus.PENDING -> 0
 		DownloadStatus.DOWNLOADING -> 1
 		DownloadStatus.PAUSED -> 2
+		DownloadStatus.WAITING -> 3
 		DownloadStatus.ERROR -> -1
 	}
 
@@ -38,6 +39,7 @@ class DownloadStatusConverter {
 		0 -> DownloadStatus.PENDING
 		1 -> DownloadStatus.DOWNLOADING
 		2 -> DownloadStatus.PENDING
+		3 -> DownloadStatus.WAITING
 		else -> DownloadStatus.ERROR
 	}
 }

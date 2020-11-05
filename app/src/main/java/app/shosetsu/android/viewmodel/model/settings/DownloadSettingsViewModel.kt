@@ -5,7 +5,6 @@ import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
@@ -41,10 +40,10 @@ class DownloadSettingsViewModel(
 ) : ADownloadSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 			seekBarSettingData(6) {
-				title { "Download threads" }
+				title { "Download thread pool size" }
 				description { "How many simultaneous downloads occur at once" }
 				range { 1F to 6F }
-				iSettingsRepository.getInt(DownloadThreads).handle {
+				iSettingsRepository.getInt(DownloadThreadPool).handle {
 					progressValue = it.toFloat()
 				}
 				showSectionMark = true
@@ -68,8 +67,40 @@ class DownloadSettingsViewModel(
 				}
 				onProgressChanged { _, progress, _, fromUser ->
 					if (fromUser) launchIO {
-						logV("Progress is $progress")
-						iSettingsRepository.setInt(DownloadThreads, progress)
+						iSettingsRepository.setInt(DownloadThreadPool, progress)
+					}
+				}
+			},
+
+			seekBarSettingData(6) {
+				title { "Download threads per Extension" }
+				description { "How many simultaneous downloads per extension that can occur at once" }
+				range { 1F to 6F }
+				iSettingsRepository.getInt(DownloadExtThreads).handle {
+					progressValue = it.toFloat()
+				}
+				showSectionMark = true
+				showSectionText = true
+
+				seekBySection = true
+				seekByStepSection = true
+				autoAdjustSectionMark = true
+				touchToSeek = true
+				hideBubble = true
+
+				sectionC = 5
+				array.apply {
+					put(0, "1")
+					put(1, "2")
+					put(2, "3")
+					put(3, "4")
+					put(4, "5")
+					put(5, "6")
+
+				}
+				onProgressChanged { _, progress, _, fromUser ->
+					if (fromUser) launchIO {
+						iSettingsRepository.setInt(DownloadExtThreads, progress)
 					}
 				}
 			},

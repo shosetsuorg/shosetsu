@@ -40,7 +40,7 @@ data class DownloadUI(
 		val chapterURL: String,
 		val chapterName: String,
 		val novelName: String,
-		val formatterID: Int,
+		val extensionID: Int,
 		var status: DownloadStatus = DownloadStatus.PENDING,
 ) : BaseRecyclerItem<DownloadUI.ViewHolder>(), Convertible<DownloadEntity> {
 	override var identifier: Long
@@ -53,7 +53,7 @@ data class DownloadUI(
 			chapterURL,
 			chapterName,
 			novelName,
-			formatterID,
+			extensionID,
 			status
 	)
 
@@ -79,6 +79,10 @@ data class DownloadUI(
 				DownloadStatus.ERROR -> {
 					progress.isIndeterminate = false
 					R.string.error
+				}
+				DownloadStatus.WAITING -> {
+					progress.isIndeterminate = true
+					R.string.waiting
 				}
 			})
 		}

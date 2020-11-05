@@ -23,6 +23,10 @@ package app.shosetsu.android.common.enums
  */
 enum class DownloadStatus {
 	PENDING,
+
+	/** Notates that this download is currently waiting,
+	 * either for the thread pool to open up or some other reason */
+	WAITING,
 	DOWNLOADING,
 	PAUSED,
 	ERROR,

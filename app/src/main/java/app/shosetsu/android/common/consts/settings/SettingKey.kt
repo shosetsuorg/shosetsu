@@ -98,8 +98,12 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	// Download Options
 	object CustomExportDirectory : SettingKey<String>("downloadDirectory", "")
 
-	// - How many threads to download via
-	object DownloadThreads : SettingKey<Int>("downloadThreads", 1)
+	/** How many threads to download at the same time */
+	object DownloadThreadPool : SettingKey<Int>("downloadThreads", 1)
+
+	/** How many extension threads allowed to work in the pool */
+	object DownloadExtThreads : SettingKey<Int>("downloadExtThreads", 1)
+
 
 	companion object {
 		val KEYS: ArrayList<SettingKey<*>> by lazy {
@@ -164,7 +168,9 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 					// Download Options
 					CustomExportDirectory,
-					DownloadThreads
+
+					DownloadThreadPool,
+					DownloadExtThreads
 			)
 		}
 

@@ -2,9 +2,7 @@ package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey.IsDownloadPaused
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.dto.loading
+import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.liveDataIO
@@ -17,6 +15,7 @@ import app.shosetsu.android.domain.usecases.load.LoadDownloadsUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateDownloadUseCase
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -50,10 +49,27 @@ class DownloadsViewModel(
 		private var isOnlineUseCase: IsOnlineUseCase,
 		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IDownloadsViewModel() {
+
+	private fun List<DownloadUI>.sort() = sortedWith(compareBy<DownloadUI> {
+		it.status == DownloadStatus.ERROR
+	}.thenBy {
+		it.status == DownloadStatus.PAUSED
+	}.thenBy {
+		it.status == DownloadStatus.PENDING
+	}.thenBy {
+		it.status == DownloadStatus.WAITING
+	}.thenBy {
+		it.status == DownloadStatus.DOWNLOADING
+	})
+
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		liveDataIO {
 			emit(loading())
-			emitSource(getDownloadsUseCase().asIOLiveData())
+			emitSource(getDownloadsUseCase().mapLatest { result ->
+				result.handleReturn { list ->
+					successResult(list.sort())
+				}
+			}.asIOLiveData())
 		}
 	}
 
