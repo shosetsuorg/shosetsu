@@ -30,10 +30,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 06 / 09 / 2020
  */
 object ShortCuts {
-	const val ACTION_OPEN_LIBRARY = "openLibrary"
-	const val ACTION_OPEN_CATALOGUE = "openCatalogue"
-	const val ACTION_OPEN_UPDATES = "openUpdates"
-	const val ACTION_OPEN_SEARCH = "openSearch"
+
 
 	fun createShortcuts(context: Context) {
 		ShortcutManagerCompat.addDynamicShortcuts(context, listOf(

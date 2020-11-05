@@ -28,6 +28,6 @@ class DeleteDownloadUseCase(
 		private val iDownloadsRepository: IDownloadsRepository,
 ) {
 	suspend operator fun invoke(downloadUI: DownloadUI) {
-		iDownloadsRepository.delete(downloadUI.convertTo())
+		iDownloadsRepository.deleteEntity(downloadUI.convertTo())
 	}
 }

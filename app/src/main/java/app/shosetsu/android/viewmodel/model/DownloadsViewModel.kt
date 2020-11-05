@@ -72,7 +72,7 @@ class DownloadsViewModel(
 		launchIO {
 			settings.getBoolean(IsDownloadPaused).handle { isPaused ->
 				settings.setBoolean(IsDownloadPaused, !isPaused)
-				if (!isPaused) startDownloadWorkerUseCase()
+				if (isPaused) startDownloadWorkerUseCase()
 			}
 		}
 	}

@@ -17,8 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
-import app.shosetsu.android.common.consts.ShortCuts
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
@@ -106,10 +106,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			return
 		}
 		registerReceiver(broadcastReceiver, IntentFilter().apply {
-			addAction(ShortCuts.ACTION_OPEN_UPDATES)
-			addAction(ShortCuts.ACTION_OPEN_LIBRARY)
-			addAction(ShortCuts.ACTION_OPEN_CATALOGUE)
-			addAction(ShortCuts.ACTION_OPEN_SEARCH)
+			addAction(ACTION_OPEN_UPDATES)
+			addAction(ACTION_OPEN_LIBRARY)
+			addAction(ACTION_OPEN_CATALOGUE)
+			addAction(ACTION_OPEN_SEARCH)
+			addAction(ACTION_OPEN_APP_UPDATE)
 		})
 		registered = true
 		setContentView(R.layout.activity_main)
@@ -253,9 +254,9 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	internal fun handleIntentAction(intent: Intent) {
 		logD("Intent received was ${intent.action}")
 		when (intent.action) {
-			ShortCuts.ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_browse)
-			ShortCuts.ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updates)
-			ShortCuts.ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
+			ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_browse)
+			ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updates)
+			ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
 			Intent.ACTION_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 
@@ -263,7 +264,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
 				)))
 			}
-			ShortCuts.ACTION_OPEN_SEARCH -> {
+			ACTION_OPEN_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 
 				transitionView(SearchController(bundleOf(

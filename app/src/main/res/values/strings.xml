@@ -319,6 +319,7 @@
     <string name="remove_bookmark">Remove Bookmark</string>
     <string name="downloading">Downloading</string>
     <string name="error">Error</string>
+    <string name="resume">Resume</string>
 
 
     <array name="application_themes">

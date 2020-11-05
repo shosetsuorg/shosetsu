@@ -59,11 +59,7 @@ class AndroidFileSystemProvider(
 	override fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
 		val file = File(internalFileDir.path() + path)
 		logV("Reading $path in ${internalFileDir.path()} to $file")
-
-		if (!file.exists()) {
-			logE("File does not exist")
-			return emptyResult()
-		}
+		if (!file.exists()) return emptyResult()
 		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
 		return successResult(file.readText())
 	}

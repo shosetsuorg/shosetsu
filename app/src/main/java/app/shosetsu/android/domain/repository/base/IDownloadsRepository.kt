@@ -48,7 +48,7 @@ interface IDownloadsRepository {
 	suspend fun update(download: DownloadEntity): HResult<*>
 
 	/** Removes a download from the repository */
-	suspend fun delete(download: DownloadEntity): HResult<*>
+	suspend fun deleteEntity(download: DownloadEntity): HResult<*>
 
 	/** Orders database to set all values back to pending */
 	suspend fun resetList(): HResult<*>

@@ -50,7 +50,7 @@ class DownloadsRepository(
 	override suspend fun update(download: DownloadEntity): HResult<*> =
 			iLocalDownloadsDataSource.updateDownload(download)
 
-	override suspend fun delete(download: DownloadEntity): HResult<*> =
+	override suspend fun deleteEntity(download: DownloadEntity): HResult<*> =
 			iLocalDownloadsDataSource.deleteDownload(download)
 
 	override suspend fun resetList(): HResult<*> =

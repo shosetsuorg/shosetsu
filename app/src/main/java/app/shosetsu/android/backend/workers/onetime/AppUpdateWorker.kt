@@ -3,12 +3,14 @@ package app.shosetsu.android.backend.workers.onetime
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.common.consts.ACTION_OPEN_APP_UPDATE
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
@@ -23,6 +25,7 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
+import app.shosetsu.android.ui.splash.SplashScreen
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -55,8 +58,15 @@ class AppUpdateWorker(
 		params: WorkerParameters
 ) : CoroutineWorker(appContext, params), KodeinAware {
 	override val kodein: Kodein by closestKodein(applicationContext)
+	private val openAppForUpdateIntent: Intent
+		get() = Intent(applicationContext, SplashScreen::class.java).apply {
+			action = ACTION_OPEN_APP_UPDATE
+		}
+
 	private val appUpdateUseCase by instance<LoadAppUpdateUseCase>()
 	private val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
+
+
 	private val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			Notification.Builder(appContext, Notifications.CHANNEL_APP_UPDATE)

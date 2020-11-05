@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import app.shosetsu.android.common.consts.settings.SettingKey
-import app.shosetsu.android.common.ext.logV
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +44,6 @@ class SharedPreferenceProvider(
 	private val floatMap: HashMap<SettingKey<Float>, MutableStateFlow<Float>> by lazy { hashMapOf() }
 
 	override fun onSharedPreferenceChanged(sp: SharedPreferences?, s: String) {
-		logV("Pref changed: $s")
 		val key = SettingKey.getKey(s)
 		when (key.default) {
 			is String -> {

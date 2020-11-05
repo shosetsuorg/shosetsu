@@ -19,9 +19,7 @@ import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.enums.DownloadStatus
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
@@ -30,12 +28,10 @@ import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import com.github.doomsdayrs.apps.shosetsu.R
-import okio.IOException
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import java.io.File
 import app.shosetsu.android.common.dto.HResult.Error as HError
 
 /*
@@ -88,6 +84,8 @@ class DownloadWorker(
 	private val extRepo by instance<IExtensionsRepository>()
 	private val settingRepo by instance<ISettingsRepository>()
 
+	private var activeJobs = 0
+
 	private suspend fun isDownloadPaused(): Boolean =
 			settingRepo.getBoolean(IsDownloadPaused).let {
 				if (it is HResult.Success)
@@ -95,8 +93,16 @@ class DownloadWorker(
 				else IsDownloadPaused.default
 			}
 
+	private suspend fun getDownloadThreads(): Int =
+			settingRepo.getInt(DownloadThreads).let {
+				if (it is HResult.Success)
+					it.data
+				else DownloadThreads.default
+			}
+
 	private suspend fun getDownloadCount(): Int =
 			downloadsRepo.loadDownloadCount().let { if (it is HResult.Success) it.data else -1 }
+
 
 	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> =
 			chapRepo.loadChapter(downloadEntity.chapterID).let { cR: HResult<ChapterEntity> ->
@@ -125,78 +131,62 @@ class DownloadWorker(
 				}
 			}
 
+	private suspend fun launchDownload() {
+		downloadsRepo.loadFirstDownload().let {
+			if (it is HResult.Success) {
+				val downloadEntity: DownloadEntity = it.data
+				downloadEntity.status = DownloadStatus.DOWNLOADING
+				downloadsRepo.update(downloadEntity)
+
+				when (val downloadResult = download(downloadEntity)) {
+					is HResult.Success -> downloadsRepo.deleteEntity(downloadEntity)
+					is HError -> {
+						downloadsRepo.update(downloadEntity.copy(
+								status = DownloadStatus.ERROR
+						))
+						launchUI {
+							toast { downloadResult.message }
+						}
+					}
+					is HResult.Empty -> {
+						launchUI {
+							toast { "Empty Error" }
+						}
+					}
+					is HResult.Loading -> {
+						Exception("Should not be loading")
+					}
+				}
+			}
+		}
+		activeJobs-- // Drops active job count once completed task
+	}
+
 	override suspend fun doWork(): Result {
 		Log.i(logID(), "Starting loop")
 		if (isDownloadPaused())
 			Log.i(logID(), "Loop Paused")
 		else {
-			val pr = progressNotification
+			// Notifies the application is downloading chapters
+			notificationManager.notify(ID_CHAPTER_DOWNLOAD, progressNotification.build())
 
 			while (getDownloadCount() >= 1 && !isDownloadPaused()) {
-				Log.d(logID(), "Loop")
-				downloadsRepo.loadFirstDownload().let {
-					if (it is HResult.Success) {
-						val downloadEntity: DownloadEntity = it.data
-						downloadEntity.status = DownloadStatus.DOWNLOADING
-						downloadsRepo.update(downloadEntity)
 
-						notificationManager.notify(ID_CHAPTER_DOWNLOAD,
-								pr.setOngoing(true)
-										.setContentText(downloadEntity.chapterName)
-										.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 0, false)
-										.build()
-						)
-
-						val folder = File(makeDownloadPath(applicationContext, downloadEntity))
-						if (!folder.exists()) if (!folder.mkdirs())
-							throw IOException("Failed to mkdirs")
-
-
-						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr
-								.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 1, false)
-								.build()
-						)
-
-						val downloadResult = download(downloadEntity)
-
-						notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr
-								.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 2, false)
-								.build()
-						)
-
-						when (downloadResult) {
-							is HResult.Success -> {
-								downloadsRepo.delete(downloadEntity)
-								notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr
-										.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
-										.build()
-								)
-							}
-							is HError -> {
-								downloadEntity.status = DownloadStatus.ERROR
-								downloadsRepo.update(downloadEntity)
-								notificationManager.notify(ID_CHAPTER_DOWNLOAD, pr
-										.setProgress(MAX_CHAPTER_DOWNLOAD_PROGRESS, 3, false)
-										.build()
-								)
-
-								app.shosetsu.android.common.ext.launchUI {
-									toast { downloadResult.message }
-								}
-							}
-							is HResult.Empty -> {
-								app.shosetsu.android.common.ext.launchUI {
-									toast { "Empty Error" }
-								}
-							}
-							is HResult.Loading -> {
-								Exception("Should not be loading")
-							}
-						}
+				// Launches a job as long as there are threads to download via
+				val threadsAllowed = getDownloadThreads()
+				if (activeJobs <= threadsAllowed) {
+					logI("There are currently $activeJobs / $threadsAllowed jobs")
+					activeJobs++
+					logI("Now there are $activeJobs / $threadsAllowed jobs")
+					launchIO {
+						launchDownload()
 					}
 				}
+
+				// Delays each launch by 100ms to avoid app slowdowns
 			}
 
+			// Downloads the chapters
 			notificationManager.cancel(ID_CHAPTER_DOWNLOAD)
 		}
 		Log.i(logID(), "Completed download loop")
@@ -280,13 +270,6 @@ class DownloadWorker(
 		 * Stops the service.
 		 */
 		override fun stop(): Operation = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
-	}
-
-	/**
-	 * Makes a download path for a downloadEntity
-	 */
-	fun makeDownloadPath(context: Context, downloadEntity: DownloadEntity): String = with(downloadEntity) {
-		"${context.filesDir}/download/${formatterID}/${novelID}"
 	}
 
 	companion object {
