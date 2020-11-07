@@ -1,10 +1,13 @@
 {
-  "latestVersion": "1024",
+  "latestVersion": "1027",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Cleaned up logging",
-    "- Added new state to downloads (Waiting) for when waiting for thread",
-    "- Added download threads per extension",
-    "- Added download set all pending function *USE WHEN PAUSED ONLY"
+    "- Added select functions to DownloadsController.kt",
+    "- Fixed an issue with Paused downloads not displaying as paused in DownloadStatusConverter.kt",
+    "- Removed old popup menu xmls",
+    "- DownloadUI.kt with new selection stroke",
+    "- ChapterUI.kt has minor backend cleanup",
+    "- activity_chapter_view.xml is now activity_chapter_reader.xml",
+    "- minor renaming of xmls"
   ]
 }
