@@ -54,4 +54,10 @@ abstract class IDownloadsViewModel :
 
 	/** Starts a download */
 	abstract fun start(downloadUI: DownloadUI)
+
+	/** Marks all as pending */
+	abstract fun startAll(list: List<DownloadUI>)
+
+	/** Marks all as paused*/
+	abstract fun pauseAll(list: List<DownloadUI>)
 }

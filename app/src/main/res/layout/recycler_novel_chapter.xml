@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="75dp"
     app:cardCornerRadius="0dp"
-    app:strokeColor="@color/selected_blue">
+    app:strokeColor="@color/colorPrimary">
 
     <RelativeLayout
         android:id="@+id/constraint"

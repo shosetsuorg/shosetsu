@@ -57,11 +57,19 @@ import com.mikepenz.fastadapter.utils.AdapterPredicate
  */
 class NovelController(bundle: Bundle)
 	: FastAdapterRecyclerController<ControllerNovelInfoBinding, AbstractItem<*>>(bundle), FABController {
-	val viewModel: INovelViewModel by viewModel()
+
+	/*
+	/** Fixes invalid adapter postion errors */
+	override fun createLayoutManager(): RecyclerView.LayoutManager =
+			object : LinearLayoutManager(context) {
+				override fun supportsPredictiveItemAnimations(): Boolean = false
+			}
+	*/
+
+	private val viewModel: INovelViewModel by viewModel()
 	override val viewTitle: String
 		get() = ""
 	private var resume: FloatingActionButton? = null
-
 	private val novelUIAdapter by lazy { ItemAdapter<NovelUI>() }
 	private val chapterUIAdapter by lazy { ItemAdapter<ChapterUI>() }
 	override val fastAdapter: FastAdapter<AbstractItem<*>> by lazy {
@@ -70,7 +78,6 @@ class NovelController(bundle: Bundle)
 			addAdapter(1, chapterUIAdapter as ItemAdapter<AbstractItem<*>>)
 		}
 	}
-
 	private var actionMode: ActionMode? = null
 
 	init {
@@ -88,88 +95,6 @@ class NovelController(bundle: Bundle)
 		actionMode?.finish()
 		//	recyclerView.postDelayed(400) { (activity as MainActivity?)?.supportActionBar?.show() }
 	}
-
-	private inner class SelectionActionMode : ActionMode.Callback {
-		override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-			// Hides the original action bar
-			// (activity as MainActivity?)?.supportActionBar?.hide()
-
-			mode.menuInflater.inflate(R.menu.toolbar_chapters_selected, menu)
-			mode.setTitle(R.string.selection)
-			binding.bottomMenu.show(mode, R.menu.toolbar_chapters_selected_bottom) {
-				when (it.itemId) {
-					R.id.chapter_download_selected -> {
-						downloadSelected()
-						finishSelectionAction()
-						true
-					}
-					R.id.chapter_delete_selected -> {
-						deleteSelected()
-						finishSelectionAction()
-						true
-					}
-					R.id.mark_read -> {
-						markSelectedAs(ReadingStatus.READ)
-						finishSelectionAction()
-						true
-					}
-					R.id.mark_unread -> {
-						markSelectedAs(ReadingStatus.UNREAD)
-						finishSelectionAction()
-						true
-					}
-					R.id.bookmark -> {
-						bookmarkSelected()
-						finishSelectionAction()
-						true
-					}
-					R.id.remove_bookmark -> {
-						removeSelectedBookmark()
-						finishSelectionAction()
-						true
-					}
-					else -> false
-				}
-			}
-			calculateBottomSelectionMenuChanges()
-			return true
-		}
-
-		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = false
-
-		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
-				when (item.itemId) {
-					R.id.chapter_select_all -> {
-						selectAll()
-						true
-					}
-					R.id.chapter_select_between -> {
-						selectBetween()
-						true
-					}
-					R.id.chapter_inverse -> {
-						invertSelection()
-						true
-					}
-					else -> false
-				}
-
-		override fun onDestroyActionMode(mode: ActionMode) {
-			binding.bottomMenu.hide()
-			binding.bottomMenu.clear()
-			actionMode = null
-			showFAB(resume!!)
-			fastAdapter.getSelectExtension().deselect()
-		}
-	}
-
-	/*
-	/** Fixes invalid adapter postion errors */
-	override fun createLayoutManager(): RecyclerView.LayoutManager =
-			object : LinearLayoutManager(context) {
-				override fun supportsPredictiveItemAnimations(): Boolean = false
-			}
-	*/
 
 	/** Refreshes the novel */
 	private fun refresh() {
@@ -204,7 +129,6 @@ class NovelController(bundle: Bundle)
 	}
 
 	private fun getChapters(): List<ChapterUI> = chapterUIAdapter.itemList.items
-
 	override fun hideFAB(fab: FloatingActionButton) {
 		if (getChapters().isNotEmpty()) super.hideFAB(fab)
 	}
@@ -354,7 +278,6 @@ class NovelController(bundle: Bundle)
 			// Handles one click select when in selection mode
 			fastAdapter.selectExtension {
 				if (selectedItems.isNotEmpty()) {
-					logV("Is item selected? ${item.isSelected}")
 					if (!item.isSelected) {
 						select(
 								item = item,
@@ -436,7 +359,6 @@ class NovelController(bundle: Bundle)
 			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
 	private fun selectedChapterArray(): Array<ChapterUI> = selectedChapters().toTypedArray()
-
 	private fun bookmarkSelected() {
 		viewModel.bookmarkChapters(*selectedChapterArray())
 	}
@@ -522,5 +444,79 @@ class NovelController(bundle: Bundle)
 
 	private fun reverseChapters() {
 		viewModel.reverseChapters()
+	}
+
+	private inner class SelectionActionMode : ActionMode.Callback {
+		override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+			// Hides the original action bar
+			// (activity as MainActivity?)?.supportActionBar?.hide()
+
+			mode.menuInflater.inflate(R.menu.toolbar_chapters_selected, menu)
+			mode.setTitle(R.string.selection)
+			binding.bottomMenu.show(mode, R.menu.toolbar_chapters_selected_bottom) {
+				when (it.itemId) {
+					R.id.chapter_download_selected -> {
+						downloadSelected()
+						finishSelectionAction()
+						true
+					}
+					R.id.chapter_delete_selected -> {
+						deleteSelected()
+						finishSelectionAction()
+						true
+					}
+					R.id.mark_read -> {
+						markSelectedAs(ReadingStatus.READ)
+						finishSelectionAction()
+						true
+					}
+					R.id.mark_unread -> {
+						markSelectedAs(ReadingStatus.UNREAD)
+						finishSelectionAction()
+						true
+					}
+					R.id.bookmark -> {
+						bookmarkSelected()
+						finishSelectionAction()
+						true
+					}
+					R.id.remove_bookmark -> {
+						removeSelectedBookmark()
+						finishSelectionAction()
+						true
+					}
+					else -> false
+				}
+			}
+			calculateBottomSelectionMenuChanges()
+			return true
+		}
+
+		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = false
+
+		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
+				when (item.itemId) {
+					R.id.chapter_select_all -> {
+						selectAll()
+						true
+					}
+					R.id.chapter_select_between -> {
+						selectBetween()
+						true
+					}
+					R.id.chapter_inverse -> {
+						invertSelection()
+						true
+					}
+					else -> false
+				}
+
+		override fun onDestroyActionMode(mode: ActionMode) {
+			binding.bottomMenu.hide()
+			binding.bottomMenu.clear()
+			actionMode = null
+			showFAB(resume!!)
+			fastAdapter.getSelectExtension().deselect()
+		}
 	}
 }

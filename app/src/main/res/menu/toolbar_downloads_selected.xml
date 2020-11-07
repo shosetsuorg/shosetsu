@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/chapter_select_all"
+        android:icon="@drawable/select_all"
+        android:title="@string/select_all"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/chapter_inverse"
+        android:icon="@drawable/flip_to_back"
+        android:title="@string/inverse_selection"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/chapter_select_between"
+        android:icon="@drawable/unfold_less"
+        android:title="@string/select_between"
+        app:showAsAction="ifRoom" />
+</menu>

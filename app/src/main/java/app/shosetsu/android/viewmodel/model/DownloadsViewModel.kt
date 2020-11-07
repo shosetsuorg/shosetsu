@@ -104,4 +104,16 @@ class DownloadsViewModel(
 	override fun start(downloadUI: DownloadUI) {
 		launchIO { updateDownloadUseCase(downloadUI.copy(status = DownloadStatus.PENDING)) }
 	}
+
+	override fun pauseAll(list: List<DownloadUI>) {
+		launchIO {
+			list.forEach { updateDownloadUseCase(it.copy(status = DownloadStatus.PAUSED)) }
+		}
+	}
+
+	override fun startAll(list: List<DownloadUI>) {
+		launchIO {
+			list.forEach { updateDownloadUseCase(it.copy(status = DownloadStatus.PENDING)) }
+		}
+	}
 }

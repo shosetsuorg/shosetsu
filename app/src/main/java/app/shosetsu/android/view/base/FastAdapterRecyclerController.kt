@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerWithBottomMenuBinding
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -104,6 +105,29 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =
 			difAreContentsTheSame(oldItem, newItem)
 
+
+	abstract class BottomMenuBasicFastAdapterRecyclerController<ITEM : AbstractItem<*>> :
+			FastAdapterRecyclerController<ControllerRecyclerWithBottomMenuBinding, ITEM> {
+
+		constructor() : super()
+		constructor(args: Bundle) : super(args)
+
+		@CallSuper
+		override fun showEmpty() {
+			binding.recyclerView.isVisible = false
+		}
+
+
+		@CallSuper
+		override fun hideEmpty() {
+			binding.recyclerView.isVisible = true
+			binding.emptyDataView.hide()
+		}
+
+
+		override fun bindView(inflater: LayoutInflater): ControllerRecyclerWithBottomMenuBinding =
+				ControllerRecyclerWithBottomMenuBinding.inflate(inflater).also { recyclerView = it.recyclerView }
+	}
 
 	abstract class BasicFastAdapterRecyclerController<ITEM : AbstractItem<*>> :
 			FastAdapterRecyclerController<ControllerRecyclerBinding, ITEM> {

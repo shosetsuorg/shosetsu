@@ -91,9 +91,7 @@ data class ChapterUI(
 			//Log.d(logID(), "Binding ${chapterUI.id}")
 
 			cardView.strokeWidth = if (item.isSelected) SELECTED_STROKE_WIDTH else 0
-			if (item.isSelected) {
-				cardView.isSelected
-			}
+			if (item.isSelected) cardView.isSelected
 
 
 			title.text = item.title

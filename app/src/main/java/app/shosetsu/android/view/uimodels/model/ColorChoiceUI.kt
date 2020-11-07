@@ -3,6 +3,7 @@ package app.shosetsu.android.view.uimodels.model
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.ext.deserializeString
 import app.shosetsu.android.common.ext.serializeToString
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -77,7 +78,7 @@ data class ColorChoiceUI(
 				setBackgroundColor(item.backgroundColor)
 			}
 			view.findViewById<MaterialCardView>(R.id.materialCardView).apply {
-				strokeWidth = if (item.isSelected) 4 else 0
+				strokeWidth = if (item.isSelected) SELECTED_STROKE_WIDTH else 0
 			}
 
 			if (item.inReader)

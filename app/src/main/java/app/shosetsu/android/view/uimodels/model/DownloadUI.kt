@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
+import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.DownloadEntity
@@ -85,6 +86,8 @@ data class DownloadUI(
 					R.string.waiting
 				}
 			})
+			cardView.strokeWidth = if (item.isSelected) SELECTED_STROKE_WIDTH else 0
+			if (item.isSelected) cardView.isSelected
 		}
 
 		override fun RecyclerDownloadCardBinding.unbindView(item: DownloadUI) {

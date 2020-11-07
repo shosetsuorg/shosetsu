@@ -38,7 +38,7 @@ class DownloadStatusConverter {
 	fun toStatus(int: Int): DownloadStatus = when (int) {
 		0 -> DownloadStatus.PENDING
 		1 -> DownloadStatus.DOWNLOADING
-		2 -> DownloadStatus.PENDING
+		2 -> DownloadStatus.PAUSED
 		3 -> DownloadStatus.WAITING
 		else -> DownloadStatus.ERROR
 	}

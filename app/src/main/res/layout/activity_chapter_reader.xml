@@ -31,7 +31,7 @@
             android:clickable="true"
             android:focusable="true"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:menu="@menu/toolbar_chapter_view" />
+            app:menu="@menu/toolbar_reader" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
