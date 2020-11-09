@@ -13,6 +13,7 @@ import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.lua.LuaExtension
 import org.luaj.vm2.LuaError
 import java.io.FileNotFoundException
+import java.security.InvalidParameterException
 
 /*
  * This file is part of shosetsu.
@@ -36,39 +37,45 @@ import java.io.FileNotFoundException
  * 12 / 05 / 2020
  */
 class FileExtensionDataSource(
-        private val iFileSystemProvider: IFileSystemProvider
+		private val iFileSystemProvider: IFileSystemProvider
 ) : IFileExtensionDataSource {
-    init {
-        logV("Creating required directories")
-        iFileSystemProvider.createInternalDirectory(FILES, "$SOURCE_DIR$SCRIPT_DIR").handle(
-                onError = {
-                    logV("Error on creation of directories $it")
-                },
-                onSuccess = {
-                    logV("Created required directories")
-                }
-        )
-    }
+	init {
+		logV("Creating required directories")
+		iFileSystemProvider.createInternalDirectory(FILES, "$SOURCE_DIR$SCRIPT_DIR").handle(
+				onError = {
+					logV("Error on creation of directories $it")
+				},
+				onSuccess = {
+					logV("Created required directories")
+				}
+		)
+	}
 
-    private fun makeFormatterFile(fileName: String): String =
-            "$SOURCE_DIR$SCRIPT_DIR$fileName.lua"
-
-
-    override suspend fun loadFormatter(fileName: String): HResult<IExtension> = try {
-        iFileSystemProvider.readInternalFile(FILES, makeFormatterFile(fileName)).withSuccess {
-            successResult(LuaExtension(it, fileName))
-        }
-    } catch (e: LuaError) {
-        errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
-    } catch (e: FileNotFoundException) {
-        errorResult(ERROR_NOT_FOUND, e.message ?: "Unknown file not found", e)
-    }
-
-    override suspend fun writeFormatter(fileName: String, data: String): HResult<*> =
-            iFileSystemProvider.writeInternalFile(FILES, makeFormatterFile(fileName), data)
+	private fun makeFormatterFile(fileName: String): String =
+			"$SOURCE_DIR$SCRIPT_DIR$fileName.lua"
 
 
-    override suspend fun deleteFormatter(fileName: String): HResult<*> =
-            iFileSystemProvider.deleteInternalFile(FILES, makeFormatterFile(fileName))
+	override suspend fun loadFormatter(fileName: String): HResult<IExtension> = try {
+		iFileSystemProvider.readInternalFile(FILES, makeFormatterFile(fileName)).withSuccess {
+			try {
+				successResult(LuaExtension(it, fileName))
+			} catch (e: NullPointerException) {
+				errorResult(e)
+			} catch (e: InvalidParameterException) {
+				errorResult(e)
+			}
+		}
+	} catch (e: LuaError) {
+		errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
+	} catch (e: FileNotFoundException) {
+		errorResult(ERROR_NOT_FOUND, e.message ?: "Unknown file not found", e)
+	}
+
+	override suspend fun writeFormatter(fileName: String, data: String): HResult<*> =
+			iFileSystemProvider.writeInternalFile(FILES, makeFormatterFile(fileName), data)
+
+
+	override suspend fun deleteFormatter(fileName: String): HResult<*> =
+			iFileSystemProvider.deleteInternalFile(FILES, makeFormatterFile(fileName))
 
 }

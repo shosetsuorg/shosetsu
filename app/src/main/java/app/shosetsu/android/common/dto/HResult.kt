@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.domain.model.base.Convertible
 import org.json.JSONException
+import java.security.InvalidParameterException
 
 
 /*
@@ -79,12 +80,13 @@ fun errorResult(code: Int, error: Exception? = null): HResult.Error =
 fun errorResult(e: SQLiteException): HResult.Error =
 		HResult.Error(ErrorKeys.ERROR_HTTP_SQL, e.message ?: "UnknownSQLException", e)
 
-/** An exception occurred in SQL*/
 fun errorResult(e: JSONException): HResult.Error =
 		HResult.Error(ErrorKeys.ERROR_JSON, e.message ?: "UnknownJSONException", e)
 
-/** An exception occurred in SQL*/
 fun errorResult(e: NullPointerException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_NPE, e.message ?: "UnknownNullException", e)
+
+fun errorResult(e: InvalidParameterException): HResult.Error =
 		HResult.Error(ErrorKeys.ERROR_NPE, e.message ?: "UnknownNullException", e)
 
 
