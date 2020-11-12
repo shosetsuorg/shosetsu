@@ -1,11 +1,13 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
+import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.enums.MarkingTypes.*
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
@@ -142,10 +144,53 @@ class ReaderSettingsViewModel(
 					}
 				}
 			},
+
+			switchSettingData(6) {
+				title { R.string.mark_read_as_reading }
+				description { R.string.mark_read_as_reading_desc }
+				iSettingsRepository.getBoolean(ReaderMarkReadAsReading).handle {
+					isChecked = it
+				}
+				onChecked { _, isChecked ->
+					launchIO {
+						iSettingsRepository.setBoolean(ReaderMarkReadAsReading, isChecked)
+					}
+				}
+			},
+
+			spinnerSettingData(0) {
+				title { R.string.marking_mode }
+				arrayAdapter = ArrayAdapter(
+						context,
+						android.R.layout.simple_spinner_dropdown_item,
+						context.resources!!.getStringArray(R.array.marking_names)
+				)
+				iSettingsRepository.getString(ReadingMarkingType).handle {
+					valueOf(it).let {
+						spinnerValue {
+							when (it) {
+								ONSCROLL -> 1
+								ONVIEW -> 0
+							}
+						}
+
+					}
+				}
+				onSpinnerItemSelected { _, _, position, _ ->
+					launchIO {
+						when (position) {
+							0 -> iSettingsRepository.setString(ReadingMarkingType, ONVIEW.name)
+							1 -> iSettingsRepository.setString(ReadingMarkingType, ONSCROLL.name)
+							else -> Log.e("MarkingMode", "UnknownType")
+						}
+					}
+				}
+			},
+
 			switchSettingData(8) {
 				title { "Resume first unread" }
 				description {
-					"Instead of resuming the first chapter that is not read(can be reading), " +
+					"Instead of resuming the first chapter reading/unread, " +
 							"the app will open the first unread chapter"
 				}
 				iSettingsRepository.getBoolean(ChaptersResumeFirstUnread).handle {

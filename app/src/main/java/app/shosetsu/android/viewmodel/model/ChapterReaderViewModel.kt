@@ -12,6 +12,7 @@ import app.shosetsu.android.common.enums.MarkingTypes
 import app.shosetsu.android.common.enums.MarkingTypes.ONSCROLL
 import app.shosetsu.android.common.enums.MarkingTypes.ONVIEW
 import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.common.enums.ReadingStatus.READ
 import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
@@ -181,13 +182,19 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	private fun markAsReading(chapterUI: ReaderChapterUI, markingTypes: MarkingTypes,
-	                          readingPosition: Int = chapterUI.readingPosition) {
+	private fun markAsReading(
+			chapterUI: ReaderChapterUI,
+			markingTypes: MarkingTypes,
+			readingPosition: Int = chapterUI.readingPosition
+	) {
 		launchIO {
-			iSettingsRepository.getString(ReadingMarkingType).handle {
-				if (MarkingTypes.valueOf(it) == markingTypes) updateChapter(chapterUI.copy(
-						readingStatus = READING, readingPosition = readingPosition
-				))
+			iSettingsRepository.getBoolean(ReaderMarkReadAsReading).handle { markReadAsReading ->
+				if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
+				iSettingsRepository.getString(ReadingMarkingType).handle {
+					if (MarkingTypes.valueOf(it) == markingTypes) updateChapter(chapterUI.copy(
+							readingStatus = READING, readingPosition = readingPosition
+					))
+				}
 			}
 		}
 	}

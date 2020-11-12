@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
-import android.util.Log
 import android.widget.ArrayAdapter
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
@@ -41,22 +40,7 @@ class ViewSettingsViewModel(
 		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : AViewSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
-			spinnerSettingData(0) {
-				title { R.string.marking_mode }
-				onSpinnerItemSelected { _, _, position, _ ->
-					when (position) {
-						//0 -> setReaderMarkingType(MarkingTypes.ONVIEW)
-						//1 -> setReaderMarkingType(MarkingTypes.ONSCROLL)
-						else -> Log.e("MarkingMode", "UnknownType")
-					}
-				}
 
-				arrayAdapter = ArrayAdapter(
-						context,
-						android.R.layout.simple_spinner_dropdown_item,
-						context.resources!!.getStringArray(R.array.marking_names)
-				)
-			},
 			numberPickerSettingData(1) {
 				title { R.string.columns_of_novel_listing_p }
 				description { (R.string.columns_zero_automatic) }
