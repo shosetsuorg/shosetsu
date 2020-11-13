@@ -1,7 +1,8 @@
 package app.shosetsu.android.ui.reader.types.model
 
 import android.view.View
-import app.shosetsu.android.ui.reader.types.base.ReaderType
+import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
+import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.R
 import us.feras.mdv.MarkdownView
 
@@ -26,7 +27,7 @@ import us.feras.mdv.MarkdownView
  * shosetsu
  * 13 / 12 / 2019
  */
-class MarkdownReader(itemView: View) : ReaderType(itemView) {
+class MarkdownReader(itemView: View) : TypedReaderViewHolder(itemView) {
 	private val markdownView: MarkdownView = itemView.findViewById(R.id.markdown_view)
 
 	override fun setData(data: String) {
@@ -78,6 +79,14 @@ class MarkdownReader(itemView: View) : ReaderType(itemView) {
 	}
 
 	override fun depleteScroll() {
+		TODO("Not yet implemented")
+	}
+
+	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+		TODO("Not yet implemented")
+	}
+
+	override fun unbindView(item: ReaderChapterUI) {
 		TODO("Not yet implemented")
 	}
 }

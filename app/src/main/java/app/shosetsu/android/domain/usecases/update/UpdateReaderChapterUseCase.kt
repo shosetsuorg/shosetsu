@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
-import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.

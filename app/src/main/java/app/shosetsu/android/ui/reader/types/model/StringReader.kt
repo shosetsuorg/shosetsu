@@ -13,8 +13,9 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleObserver
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.ui.reader.types.base.ReaderType
+import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.view.setOnDoubleClickListener
+import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -43,7 +44,7 @@ import org.kodein.di.android.kodein
  */
 class StringReader(
 		itemView: View
-) : ReaderType(itemView), KodeinAware, LifecycleObserver {
+) : TypedReaderViewHolder(itemView), KodeinAware, LifecycleObserver {
 	override val kodein: Kodein by kodein(itemView.context)
 
 	/**
@@ -61,7 +62,6 @@ class StringReader(
 	private val errorButton: Button = itemView.findViewById(R.id.error_button)
 
 	private var unformattedText = ""
-
 
 	init {
 		scrollView.apply {
@@ -181,6 +181,12 @@ class StringReader(
 
 		if (currentY > scrollSpeed)
 			scrollView.smoothScrollTo(0, currentY - scrollSpeed)
+	}
+
+	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+	}
+
+	override fun unbindView(item: ReaderChapterUI) {
 	}
 
 	override fun incrementScroll() {

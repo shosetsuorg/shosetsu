@@ -1,7 +1,8 @@
 package app.shosetsu.android.ui.reader.types.model
 
 import android.view.View
-import app.shosetsu.android.ui.reader.types.base.ReaderType
+import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
+import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 
 /*
  * This file is part of Shosetsu.
@@ -31,7 +32,7 @@ import app.shosetsu.android.ui.reader.types.base.ReaderType
  *     A series of webviews can be used to represent different things (possible)
  * </p>
  */
-class EPUBReader(itemView: View) : ReaderType(itemView) {
+class EPUBReader(itemView: View) : TypedReaderViewHolder(itemView) {
 	override fun setData(data: String) {
 		TODO("Not yet implemented")
 	}
@@ -82,6 +83,14 @@ class EPUBReader(itemView: View) : ReaderType(itemView) {
 	}
 
 	override fun depleteScroll() {
+		TODO("Not yet implemented")
+	}
+
+	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+		TODO("Not yet implemented")
+	}
+
+	override fun unbindView(item: ReaderChapterUI) {
 		TODO("Not yet implemented")
 	}
 }

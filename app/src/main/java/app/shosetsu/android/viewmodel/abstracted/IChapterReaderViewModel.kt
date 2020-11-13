@@ -7,7 +7,8 @@ import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.enums.MarkingTypes
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
-import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
@@ -33,8 +34,10 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * shosetsu
  * 06 / 05 / 2020
  */
-abstract class IChapterReaderViewModel
-	: SubscribeHandleViewModel<List<ReaderChapterUI>>, ShosetsuViewModel(), ErrorReportingViewModel {
+abstract class IChapterReaderViewModel :
+		SubscribeHandleViewModel<List<ReaderUIItem<*, *>>>,
+		ShosetsuViewModel(),
+		ErrorReportingViewModel {
 
 	abstract var currentChapterID: Int
 
@@ -70,6 +73,7 @@ abstract class IChapterReaderViewModel
 	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<String>>
 	abstract fun appendID(readerChapterUI: ReaderChapterUI): String
 	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)
+
 	abstract fun updateChapter(
 			readerChapterUI: ReaderChapterUI,
 			readingPosition: Int = readerChapterUI.readingPosition,

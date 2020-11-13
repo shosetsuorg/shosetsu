@@ -2,7 +2,8 @@ package app.shosetsu.android.ui.reader.types.model
 
 import android.view.View
 import android.webkit.WebView
-import app.shosetsu.android.ui.reader.types.base.ReaderType
+import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
+import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -26,7 +27,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * shosetsu
  * 11 / 09 / 2020
  */
-class HTMLReader(itemView: View) : ReaderType(itemView) {
+class HTMLReader(itemView: View) : TypedReaderViewHolder(itemView) {
 	private val webView: WebView = itemView.findViewById(R.id.web_view)
 
 	override fun setData(data: String) {
@@ -77,6 +78,14 @@ class HTMLReader(itemView: View) : ReaderType(itemView) {
 	}
 
 	override fun depleteScroll() {
+		TODO("Not yet implemented")
+	}
+
+	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+		TODO("Not yet implemented")
+	}
+
+	override fun unbindView(item: ReaderChapterUI) {
 		TODO("Not yet implemented")
 	}
 }

@@ -180,7 +180,7 @@ dependencies {
 	kapt "androidx.room:room-compiler:$room_version"
 
 	// Fast Adapter
-	def latestFastAdapterRelease = "5.1.0"
+	def latestFastAdapterRelease = "5.3.0"
 
 	implementation "com.mikepenz:fastadapter:${latestFastAdapterRelease}"
 	implementation "com.mikepenz:fastadapter-extensions-expandable:${latestFastAdapterRelease}"

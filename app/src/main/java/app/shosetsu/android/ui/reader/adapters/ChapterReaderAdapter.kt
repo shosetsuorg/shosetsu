@@ -8,7 +8,7 @@ import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.ChapterReader
-import app.shosetsu.android.ui.reader.types.base.ReaderType
+import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.ui.reader.types.model.StringReader
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -38,16 +38,16 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class ChapterReaderAdapter(
 		private val chapterReader: ChapterReader,
-) : RecyclerView.Adapter<ReaderType>() {
-	var textReaders: ArrayList<ReaderType> = ArrayList()
+) : RecyclerView.Adapter<TypedReaderViewHolder>() {
+	var textTypedReaders: ArrayList<TypedReaderViewHolder> = ArrayList()
 
 	init {
 		setHasStableIds(true)
 	}
 
-	private fun chapters() = chapterReader.chapters
+	private fun chapters() = chapterReader.chapterItems
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReaderType {
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TypedReaderViewHolder {
 		Log.d(logID(), "Creating new view holder")
 		return StringReader(
 				itemView = from(parent.context).inflate(
@@ -55,12 +55,12 @@ class ChapterReaderAdapter(
 						parent,
 						false
 				)
-		).also { textReaders.add(it) }
+		).also { textTypedReaders.add(it) }
 	}
 
 	override fun getItemCount(): Int = chapters().size
 
-	override fun onBindViewHolder(holder: ReaderType, position: Int) {
+	override fun onBindViewHolder(holder: TypedReaderViewHolder, position: Int) {
 		val chapter = chapters()[position]
 		holder.attachData(chapter, chapterReader)
 
@@ -87,5 +87,5 @@ class ChapterReaderAdapter(
 		}
 	}
 
-	override fun getItemId(position: Int): Long = chapterReader.chapters[position].id.toLong()
+	override fun getItemId(position: Int): Long = chapterReader.chapterItems[position].id.toLong()
 }

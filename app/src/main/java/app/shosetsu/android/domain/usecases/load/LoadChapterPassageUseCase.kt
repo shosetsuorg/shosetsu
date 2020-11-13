@@ -7,7 +7,7 @@ import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.

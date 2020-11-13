@@ -2,8 +2,6 @@ package app.shosetsu.android.domain.model.local
 
 import androidx.annotation.NonNull
 import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.domain.model.base.Convertible
-import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
 
 /*
  * This file is part of shosetsu.
@@ -38,14 +36,4 @@ data class ReaderChapterEntity(
 		var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
 
 		var bookmarked: Boolean = false,
-) : Convertible<ReaderChapterUI> {
-	override fun convertTo(): ReaderChapterUI = ReaderChapterUI(
-			id,
-			url,
-			title,
-			readingPosition,
-			readingStatus,
-			bookmarked
-	)
-
-}
+)

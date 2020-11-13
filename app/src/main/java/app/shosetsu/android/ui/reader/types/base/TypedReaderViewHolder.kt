@@ -1,10 +1,9 @@
 package app.shosetsu.android.ui.reader.types.base
 
 import android.view.View
-import androidx.annotation.CallSuper
-import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.ui.reader.ChapterReader
-import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import com.mikepenz.fastadapter.FastAdapter
 
 /*
  * This file is part of shosetsu.
@@ -27,9 +26,9 @@ import app.shosetsu.android.view.uimodels.model.ReaderChapterUI
  * shosetsu
  * 13 / 12 / 2019
  */
-abstract class ReaderType(
+abstract class TypedReaderViewHolder(
 		itemView: View
-) : RecyclerView.ViewHolder(itemView) {
+) : FastAdapter.ViewHolder<ReaderChapterUI>(itemView) {
 	lateinit var chapter: ReaderChapterUI
 	lateinit var chapterReader: ChapterReader
 
