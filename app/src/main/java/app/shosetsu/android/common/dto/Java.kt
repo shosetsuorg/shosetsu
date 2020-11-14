@@ -1,12 +1,7 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.common.dto
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.mapLatestListTo
-import app.shosetsu.android.domain.repository.base.IDownloadsRepository
-import app.shosetsu.android.view.uimodels.model.DownloadUI
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
+import app.shosetsu.android.common.consts.ErrorKeys
+import java.security.InvalidParameterException
 
 /*
  * This file is part of Shosetsu.
@@ -26,14 +21,5 @@ import kotlinx.coroutines.flow.flow
  */
 
 
-/**
- * shosetsu
- * 12 / May / 2020
- */
-class LoadDownloadsUseCase(
-		private val iDownloadsRepository: IDownloadsRepository,
-) {
-	operator fun invoke(): Flow<HResult<List<DownloadUI>>> = flow {
-		emitAll(iDownloadsRepository.loadLiveDownloads().mapLatestListTo())
-	}
-}
+fun errorResult(e: InvalidParameterException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_NPE, e.message ?: "UnknownNullException", e)

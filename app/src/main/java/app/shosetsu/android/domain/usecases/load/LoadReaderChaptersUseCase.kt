@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handleReturn
 import app.shosetsu.android.common.dto.loading
+import app.shosetsu.android.common.dto.mapLatestResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -10,7 +10,6 @@ import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -39,12 +38,10 @@ class LoadReaderChaptersUseCase(
 	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =
 			flow {
 				emit(loading())
-				emitAll(iChaptersRepository.loadReaderChapters(novelID).mapLatest {
-					it.handleReturn {
-						successResult(it.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
-							ReaderChapterUI(id, url, title, readingPosition, readingStatus, bookmarked, Novel.ChapterType.STRING)
-						})
-					}
+				emitAll(iChaptersRepository.loadReaderChapters(novelID).mapLatestResult {
+					successResult(it.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
+						ReaderChapterUI(id, url, title, readingPosition, readingStatus, bookmarked, Novel.ChapterType.STRING)
+					})
 				})
 			}
 }

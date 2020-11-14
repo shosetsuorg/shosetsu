@@ -3,6 +3,7 @@ package app.shosetsu.android.datasource.database.model
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.android.common.dto.mapLatestToSuccess
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
@@ -12,7 +13,6 @@ import app.shosetsu.android.providers.database.dao.NovelsDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -40,7 +40,7 @@ class LocalNovelsDataSource(
 ) : ILocalNovelsDataSource {
 	override suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>> = flow {
 		try {
-			emitAll(novelsDao.loadListBookmarkedNovels().mapLatest { successResult(it) })
+			emitAll(novelsDao.loadListBookmarkedNovels().mapLatestToSuccess())
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -59,7 +59,7 @@ class LocalNovelsDataSource(
 	override suspend fun loadLiveBookmarkedNovelsAndCount(
 	): Flow<HResult<List<BookmarkedNovelEntity>>> = flow {
 		try {
-			emitAll(novelsDao.loadBookmarkedNovelsCount().mapLatest { successResult(it) })
+			emitAll(novelsDao.loadBookmarkedNovelsCount().mapLatestToSuccess())
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -77,7 +77,7 @@ class LocalNovelsDataSource(
 
 	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
-			emitAll(novelsDao.loadNovelLive(novelID).mapLatest { successResult(it) })
+			emitAll(novelsDao.loadNovelLive(novelID).mapLatestToSuccess())
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {

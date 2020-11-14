@@ -2,8 +2,8 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import androidx.core.view.isVisible
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.ext.picasso
-import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder

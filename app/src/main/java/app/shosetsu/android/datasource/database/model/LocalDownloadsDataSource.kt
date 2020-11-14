@@ -1,17 +1,13 @@
 package app.shosetsu.android.datasource.database.model
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.emptyResult
-import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.datasource.database.base.ILocalDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.providers.database.dao.DownloadsDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -39,7 +35,7 @@ class LocalDownloadsDataSource(
 ) : ILocalDownloadsDataSource {
 	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> = flow {
 		try {
-			emitAll(downloadsDao.loadDownloadItems().mapLatest { successResult(it) })
+			emitAll(downloadsDao.loadDownloadItems().mapLatestToSuccess())
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {

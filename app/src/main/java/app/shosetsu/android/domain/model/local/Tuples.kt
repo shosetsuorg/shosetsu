@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.model.local
 
 import androidx.room.ColumnInfo
-import app.shosetsu.android.domain.model.base.Convertible
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.view.uimodels.model.IDTitleImageBookUI
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.view.uimodels.model.URLTitleImageUI

@@ -3,9 +3,9 @@ package app.shosetsu.android.view.uimodels.model.library
 import android.view.View
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.toast
-import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.GetImageURL

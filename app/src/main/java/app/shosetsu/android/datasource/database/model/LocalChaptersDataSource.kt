@@ -3,6 +3,7 @@ package app.shosetsu.android.datasource.database.model
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.android.common.dto.mapLatestToSuccess
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
@@ -13,7 +14,6 @@ import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of Shosetsu.
@@ -48,7 +48,7 @@ class LocalChaptersDataSource(
 			novelID: Int,
 	): Flow<HResult<List<ChapterEntity>>> = flow {
 		try {
-			emitAll(chaptersDao.loadLiveChapters(novelID).mapLatest { successResult(it) })
+			emitAll(chaptersDao.loadLiveChapters(novelID).mapLatestToSuccess())
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -68,7 +68,7 @@ class LocalChaptersDataSource(
 			novelID: Int,
 	): Flow<HResult<List<ReaderChapterEntity>>> = flow {
 		try {
-			emitAll(chaptersDao.loadLiveReaderChapters(novelID).mapLatest { successResult(it) })
+			emitAll(chaptersDao.loadLiveReaderChapters(novelID).mapLatestToSuccess())
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {

@@ -1,8 +1,6 @@
 package app.shosetsu.android.view.uimodels.settings.base
 
-import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
-import app.shosetsu.android.common.consts.VISIBLE
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*

@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.model.local
 
-import app.shosetsu.android.domain.model.base.Convertible
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 
 /*

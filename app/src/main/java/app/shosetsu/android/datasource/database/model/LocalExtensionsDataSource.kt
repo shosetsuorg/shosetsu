@@ -3,6 +3,7 @@ package app.shosetsu.android.datasource.database.model
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.android.common.dto.mapLatestToSuccess
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
 import app.shosetsu.android.domain.model.local.ExtensionEntity
@@ -40,7 +41,7 @@ class LocalExtensionsDataSource(
 ) : ILocalExtensionsDataSource {
 	override fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>> = flow {
 		try {
-			emitAll(extensionsDao.loadExtensions().mapLatest { successResult(it) })
+			emitAll(extensionsDao.loadExtensions().mapLatestToSuccess())
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {
@@ -50,7 +51,7 @@ class LocalExtensionsDataSource(
 
 	override fun loadExtensionLive(formatterID: Int): Flow<HResult<ExtensionEntity>> = flow {
 		try {
-			emitAll(extensionsDao.getExtensionLive(formatterID).mapLatest { successResult(it) })
+			emitAll(extensionsDao.getExtensionLive(formatterID).mapLatestToSuccess())
 		} catch (e: SQLiteException) {
 			emit(errorResult(e))
 		} catch (e: NullPointerException) {

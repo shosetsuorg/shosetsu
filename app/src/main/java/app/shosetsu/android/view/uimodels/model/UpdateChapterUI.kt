@@ -1,6 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
-import app.shosetsu.android.domain.model.base.Convertible
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.domain.model.local.UpdateChapterSubEntity
 
 /*

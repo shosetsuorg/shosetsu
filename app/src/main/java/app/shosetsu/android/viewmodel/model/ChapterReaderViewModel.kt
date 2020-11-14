@@ -29,7 +29,6 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -64,26 +63,24 @@ class ChapterReaderViewModel(
 	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
 
 	override val liveData: LiveData<HResult<List<ReaderUIItem<*, *>>>> by lazy {
-		loadReaderChaptersUseCase(nID).mapLatest {
-			it.handleReturn {
-				val array = ArrayList<ReaderUIItem<*, *>>(it)
+		loadReaderChaptersUseCase(nID).mapLatestResult {
+			val array = ArrayList<ReaderUIItem<*, *>>(it)
 
-				// Adds the "No more chapters" marker
-				array.add(array.size, ReaderDividerUI(prev = it.last().title))
+			// Adds the "No more chapters" marker
+			array.add(array.size, ReaderDividerUI(prev = it.last().title))
 
-				/**
-				 * Loops down the list, adding inbetweens
-				 */
-				var index = array.size - 2
-				while (index > 1) {
-					val next = array[index] as ReaderChapterUI
-					val prev = array[index - 1] as ReaderChapterUI
-					array.add(index, ReaderDividerUI(prev.title, next.title))
-					index -= 2
-				}
-
-				successResult(array)
+			/**
+			 * Loops down the list, adding inbetweens
+			 */
+			var index = array.size - 2
+			while (index > 1) {
+				val next = array[index] as ReaderChapterUI
+				val prev = array[index - 1] as ReaderChapterUI
+				array.add(index, ReaderDividerUI(prev.title, next.title))
+				index -= 2
 			}
+
+			successResult(array)
 		}.asIOLiveData()
 	}
 

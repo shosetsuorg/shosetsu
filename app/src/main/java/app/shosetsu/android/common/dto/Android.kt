@@ -1,12 +1,8 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.common.dto
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.mapLatestListTo
-import app.shosetsu.android.domain.repository.base.IDownloadsRepository
-import app.shosetsu.android.view.uimodels.model.DownloadUI
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
+import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.consts.ErrorKeys
+import org.json.JSONException
 
 /*
  * This file is part of Shosetsu.
@@ -26,14 +22,9 @@ import kotlinx.coroutines.flow.flow
  */
 
 
-/**
- * shosetsu
- * 12 / May / 2020
- */
-class LoadDownloadsUseCase(
-		private val iDownloadsRepository: IDownloadsRepository,
-) {
-	operator fun invoke(): Flow<HResult<List<DownloadUI>>> = flow {
-		emitAll(iDownloadsRepository.loadLiveDownloads().mapLatestListTo())
-	}
-}
+/** An exception occurred in SQL*/
+fun errorResult(e: SQLiteException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_HTTP_SQL, e.message ?: "UnknownSQLException", e)
+
+fun errorResult(e: JSONException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_JSON, e.message ?: "UnknownJSONException", e)

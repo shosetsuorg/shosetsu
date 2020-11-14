@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.android.domain.model.base.Convertible
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.lib.Version
 import java.io.Serializable

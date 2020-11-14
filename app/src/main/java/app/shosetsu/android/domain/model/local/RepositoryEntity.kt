@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import app.shosetsu.android.domain.model.base.Convertible
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import java.io.Serializable
 

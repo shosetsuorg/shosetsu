@@ -25,6 +25,4 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
  */
 class LoadReaderTextSizeUseCase(
 		private val iSettingsRepository: ISettingsRepository
-) {
-
-}
+)

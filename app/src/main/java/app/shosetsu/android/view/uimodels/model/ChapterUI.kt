@@ -4,8 +4,8 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.content.ContextCompat
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder

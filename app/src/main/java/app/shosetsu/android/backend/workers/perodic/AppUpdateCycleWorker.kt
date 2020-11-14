@@ -1,33 +1,20 @@
 package app.shosetsu.android.backend.workers.perodic
 
-import android.app.Notification
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
-import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.onetime.AppUpdateWorker
 import app.shosetsu.android.common.consts.LogConstants
-import app.shosetsu.android.common.consts.Notifications
-import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
-import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit
 
@@ -74,19 +61,19 @@ class AppUpdateCycleWorker(
 			if (it is HResult.Success)
 				it.data.toLong()
 			else AppUpdateCycle.default.toLong()
-		};
+		}
 
 		private suspend fun appUpdateOnMetered(): Boolean = iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection).let {
 			if (it is HResult.Success)
 				it.data
 			else AppUpdateOnMeteredConnection.default
-		};
+		}
 
 		private suspend fun appUpdateOnlyIdle(): Boolean = iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle).let {
 			if (it is HResult.Success)
 				it.data
 			else AppUpdateOnlyWhenIdle.default
-		};
+		}
 
 		/**
 		 * Returns the status of the service.

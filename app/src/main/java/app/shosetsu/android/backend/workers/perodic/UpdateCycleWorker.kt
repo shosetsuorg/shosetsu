@@ -1,12 +1,9 @@
 package app.shosetsu.android.backend.workers.perodic
 
-import android.app.Notification
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.util.Log
-import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
@@ -14,25 +11,13 @@ import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.onetime.UpdateWorker
 import app.shosetsu.android.common.consts.LogConstants
-import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
-import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.domain.model.local.NovelEntity
-import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
-import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
-import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit.HOURS
 import androidx.work.PeriodicWorkRequestBuilder as PWRB
@@ -77,35 +62,35 @@ class UpdateCycleWorker(
 			if (it is HResult.Success)
 				it.data.toLong()
 			else UpdateCycle.default.toLong()
-		};
+		}
 
 		private suspend fun updateOnMetered(): Boolean =
 				iSettingsRepository.getBoolean(UpdateOnMeteredConnection).let {
 					if (it is HResult.Success)
 						it.data
 					else UpdateOnMeteredConnection.default
-				};
+				}
 
 		private suspend fun updateOnLowStorage(): Boolean =
 				iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
 					if (it is HResult.Success)
 						it.data
 					else UpdateOnLowStorage.default
-				};
+				}
 
 		private suspend fun updateOnLowBattery(): Boolean =
 				iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
 					if (it is HResult.Success)
 						it.data
 					else UpdateOnLowBattery.default
-				};
+				}
 
 		private suspend fun updateOnlyIdle(): Boolean =
 				iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
 					if (it is HResult.Success)
 						it.data
 					else UpdateOnlyWhenIdle.default
-				};
+				}
 
 		/**
 		 * Returns the status of the service.

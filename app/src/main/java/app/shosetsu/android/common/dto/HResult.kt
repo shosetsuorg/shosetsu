@@ -1,10 +1,6 @@
 package app.shosetsu.android.common.dto
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.consts.ErrorKeys
-import app.shosetsu.android.domain.model.base.Convertible
-import org.json.JSONException
-import java.security.InvalidParameterException
 
 
 /*
@@ -58,6 +54,27 @@ sealed class HResult<out T : Any> {
 	) : HResult<Nothing>()
 }
 
+interface Convertible<T> {
+	/** States this [Convertible] can turn into [T]*/
+	fun convertTo(): T
+}
+
+/**
+ * Converts shit
+ */
+inline fun <reified O : Any, reified I : Convertible<O>> HResult<List<I>>.mapListTo()
+		: HResult<List<O>> = this.handleReturn { successResult(it.mapTo()) }
+
+/**
+ * Converts shit
+ */
+inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
+		: HResult<O> = this.handleReturn { successResult(it.convertTo()) }
+
+inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo(): List<O> =
+		this.map { it.convertTo() }
+
+
 /** This is a quick way to toss a success */
 inline fun <reified T : Any> successResult(data: T): HResult.Success<T> = HResult.Success(data)
 
@@ -76,34 +93,10 @@ fun errorResult(code: Int, message: String, error: Exception? = null): HResult.E
 fun errorResult(code: Int, error: Exception? = null): HResult.Error =
 		HResult.Error(code, error?.message ?: "UnknownException", error)
 
-/** An exception occurred in SQL*/
-fun errorResult(e: SQLiteException): HResult.Error =
-		HResult.Error(ErrorKeys.ERROR_HTTP_SQL, e.message ?: "UnknownSQLException", e)
-
-fun errorResult(e: JSONException): HResult.Error =
-		HResult.Error(ErrorKeys.ERROR_JSON, e.message ?: "UnknownJSONException", e)
 
 fun errorResult(e: NullPointerException): HResult.Error =
 		HResult.Error(ErrorKeys.ERROR_NPE, e.message ?: "UnknownNullException", e)
 
-fun errorResult(e: InvalidParameterException): HResult.Error =
-		HResult.Error(ErrorKeys.ERROR_NPE, e.message ?: "UnknownNullException", e)
-
-
-/**
- * Converts shit
- */
-inline fun <reified O : Any, reified I : Convertible<O>> HResult<List<I>>.mapListTo()
-		: HResult<List<O>> = this.handleReturn { successResult(it.mapTo()) }
-
-/**
- * Converts shit
- */
-inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
-		: HResult<O> = this.handleReturn { successResult(it.convertTo()) }
-
-inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo(): List<O> =
-		this.map { it.convertTo() }
 
 inline fun <reified I : Any, O : Any> HResult<I>.withSuccess(action: (I) -> HResult<O>): HResult<O> =
 		this.handleReturn { action(it) }

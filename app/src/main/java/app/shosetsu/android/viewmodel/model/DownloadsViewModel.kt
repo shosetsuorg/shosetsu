@@ -15,7 +15,6 @@ import app.shosetsu.android.domain.usecases.load.LoadDownloadsUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateDownloadUseCase
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -65,10 +64,8 @@ class DownloadsViewModel(
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		liveDataIO {
 			emit(loading())
-			emitSource(getDownloadsUseCase().mapLatest { result ->
-				result.handleReturn { list ->
-					successResult(list.sort())
-				}
+			emitSource(getDownloadsUseCase().mapLatestResult { list ->
+				successResult(list.sort())
 			}.asIOLiveData())
 		}
 	}

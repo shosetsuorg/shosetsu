@@ -1,15 +1,12 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handleReturn
-import app.shosetsu.android.common.dto.mapTo
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.dto.mapLatestListTo
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -34,10 +31,8 @@ import kotlinx.coroutines.flow.mapLatest
  */
 class LoadUpdatesUseCase(
 		private val updatesRepository: IUpdatesRepository,
-)  {
+) {
 	operator fun invoke(): Flow<HResult<List<UpdateUI>>> = flow {
-		emitAll(updatesRepository.getCompleteUpdates().mapLatest { result ->
-			result.handleReturn { successResult(it.mapTo()) }
-		})
+		emitAll(updatesRepository.getCompleteUpdates().mapLatestListTo())
 	}
 }

@@ -2,8 +2,8 @@ package app.shosetsu.android.domain.model.local
 
 import androidx.annotation.NonNull
 import androidx.room.*
+import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.enums.DownloadStatus
-import app.shosetsu.android.domain.model.base.Convertible
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import java.io.Serializable
 
