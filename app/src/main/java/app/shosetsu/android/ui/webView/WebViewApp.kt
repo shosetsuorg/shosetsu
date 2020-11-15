@@ -87,7 +87,7 @@ class WebViewApp : AppCompatActivity(R.layout.activity_webview), KodeinAware {
 				}
 			}
 		}
-		webview.loadUrl(intent.getStringExtra(BUNDLE_URL))
+		webview.loadUrl(intent.getStringExtra(BUNDLE_URL)!!)
 
 	}
 
