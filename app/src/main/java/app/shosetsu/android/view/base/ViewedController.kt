@@ -67,7 +67,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	lateinit var binding: VB
 
 	init {
-		addLifecycleListener(object : LifecycleListener {
+		addLifecycleListener(object : LifecycleListener() {
 			override fun postCreateView(controller: Controller, view: View) {
 				onViewCreated(view)
 			}
