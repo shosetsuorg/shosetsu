@@ -83,11 +83,11 @@ class ChapterReaderViewModel(
 			 * Loops down the list, adding inbetweens
 			 */
 			var index = array.size - 2
-			while (index > 1) {
+			while (index > 0) {
 				val next: ReaderChapterUI = array[index] as ReaderChapterUI
 				val prev: ReaderChapterUI = array[index - 1] as ReaderChapterUI
 				array.add(index, ReaderDividerUI(prev.title, next.title))
-				index -= 2
+				index -= 1
 			}
 
 			successResult(array)

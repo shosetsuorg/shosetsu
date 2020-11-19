@@ -20,6 +20,7 @@ import app.shosetsu.android.ui.reader.adapters.ChapterReaderAdapter
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -74,8 +75,10 @@ class ChapterReader
 	private val fastAdapter by lazy {
 		FastAdapter.with(itemAdapter)
 	}
+
 	val chapterItems: List<ReaderChapterUI>
 		get() = itemAdapter.itemList.items.filterIsInstance<ReaderChapterUI>()
+
 	private val bottomSheetBehavior: ChapterReaderBottomBar<LinearLayout> by lazy {
 		from(chapter_reader_bottom) as ChapterReaderBottomBar
 	}
@@ -115,6 +118,31 @@ class ChapterReader
 		viewpager.unregisterOnPageChangeCallback(pageChangeCallback)
 	}
 
+	private fun handleChaptersResult(list: List<ReaderUIItem<*, *>>) {
+		val oldSize = itemAdapter.itemList.size()
+
+		logD("Received ${list.size} chapter(s), old size: $oldSize")
+
+		// Prints out the pattern
+		run {
+			var string = ""
+			list.forEach {
+				when (it) {
+					is ReaderChapterUI -> string += "C"
+					is ReaderDividerUI -> string += "#"
+				}
+			}
+			logV("Pattern for received stuff\n$string")
+		}
+
+		FastAdapterDiffUtil[itemAdapter] =
+				calculateDiff(itemAdapter, list)
+
+		logD("New size ${itemAdapter.itemList.size()}")
+		if (oldSize == 0)
+			viewpager.setCurrentItem(getCurrentChapterIndex(), false)
+	}
+
 	private fun setObservers() {
 		viewModel.liveData.observe(this) { result ->
 			result.handle(
@@ -122,8 +150,8 @@ class ChapterReader
 						logD("Loading")
 					}
 			) {
-				FastAdapterDiffUtil[itemAdapter] =
-						calculateDiff(itemAdapter, it)
+				handleChaptersResult(it)
+
 			}
 		}
 
@@ -338,10 +366,8 @@ class ChapterReader
 	private fun setupViewPager() {
 		logV("Setting up ViewPager")
 		viewpager.apply {
-
-			adapter = chapterReaderAdapter
+			adapter = fastAdapter
 			registerOnPageChangeCallback(pageChangeCallback)
-			setCurrentItem(getCurrentChapterIndex(), false)
 			orientation = ViewPager2.ORIENTATION_VERTICAL
 		}
 	}

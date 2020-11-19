@@ -15,6 +15,10 @@ data class ReaderDividerUI(
 		val prev: String,
 		val next: String? = null
 ) : ReaderUIItem<ReaderDividerUI, ReaderDividerUI.ViewHolder>() {
+	override val layoutRes: Int = R.layout.chapter_divider
+	override val type: Int = R.layout.chapter_divider
+	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+
 	class ViewHolder(view: View) : BindViewHolder<ReaderDividerUI, ChapterDividerBinding>(view) {
 		override val binding: ChapterDividerBinding =
 				ChapterDividerBinding.bind(view)
@@ -38,9 +42,4 @@ data class ReaderDividerUI(
 			previousChapter.text = null
 		}
 	}
-
-	override val layoutRes: Int = R.layout.chapter_divider
-	override val type: Int = R.layout.chapter_divider
-
-	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 }
