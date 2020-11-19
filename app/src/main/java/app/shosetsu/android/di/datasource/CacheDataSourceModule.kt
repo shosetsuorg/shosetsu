@@ -1,11 +1,16 @@
 package app.shosetsu.android.di.datasource
 
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.LOLLIPOP_MR1
 import app.shosetsu.android.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.android.datasource.memory.base.IMemExtensionsDataSource
-import app.shosetsu.android.datasource.memory.model.GuavaMemChaptersDataSource
-import app.shosetsu.android.datasource.memory.model.GuavaMemExtLibDataSource
-import app.shosetsu.android.datasource.memory.model.GuavaMemExtensionDataSource
+import app.shosetsu.android.datasource.memory.model.guava.GuavaMemChaptersDataSource
+import app.shosetsu.android.datasource.memory.model.guava.GuavaMemExtLibDataSource
+import app.shosetsu.android.datasource.memory.model.guava.GuavaMemExtensionDataSource
+import app.shosetsu.android.datasource.memory.model.manual.ManualMemChaptersDataSource
+import app.shosetsu.android.datasource.memory.model.manual.ManualMemExtLibDataSource
+import app.shosetsu.android.datasource.memory.model.manual.ManualMemExtensionDataSource
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.singleton
@@ -32,11 +37,24 @@ import org.kodein.di.generic.singleton
  * 04 / 05 / 2020
  * These modules handle cached data that is in memory
  */
-val cacheDataSouceModule: Kodein.Module = Kodein.Module("cache_data_source_module") {
-	bind<IMemChaptersDataSource>() with singleton { GuavaMemChaptersDataSource() }
 
-	bind<IMemExtensionsDataSource>() with singleton { GuavaMemExtensionDataSource() }
+val cacheDataSourceModule: Kodein.Module = Kodein.Module("cache_data_source_module") {
+	bind<IMemChaptersDataSource>() with singleton {
+		if (SDK_INT <= LOLLIPOP_MR1)
+			ManualMemChaptersDataSource() else
+			GuavaMemChaptersDataSource()
+	}
 
-	bind<IMemExtLibDataSource>() with singleton { GuavaMemExtLibDataSource() }
+	bind<IMemExtensionsDataSource>() with singleton {
+		if (SDK_INT <= LOLLIPOP_MR1)
+			ManualMemExtensionDataSource() else
+			GuavaMemExtensionDataSource()
+	}
+
+	bind<IMemExtLibDataSource>() with singleton {
+		if (SDK_INT <= LOLLIPOP_MR1)
+			ManualMemExtLibDataSource() else
+			GuavaMemExtLibDataSource()
+	}
 
 }

@@ -25,12 +25,17 @@ import kotlinx.coroutines.flow.mapLatest
  * Maps the latest result of a Flow<HResult<*>>
  */
 inline fun <reified I : Any, O : Any> Flow<HResult<I>>.mapLatestResult(
-		crossinline onLoading: suspend () -> HResult<O> = { this as HResult.Loading },
-		crossinline onEmpty: suspend () -> HResult<O> = { this as HResult.Empty },
-		crossinline onError: suspend (HResult.Error) -> HResult<O> = { this as HResult.Error },
-		crossinline onSuccess: suspend (I) -> HResult<O>
+		noinline onLoading: suspend () -> HResult<O> = { loading() },
+		noinline onEmpty: suspend () -> HResult<O> = { emptyResult() },
+		noinline onError: suspend (HResult.Error) -> HResult<O> = { it },
+		noinline onSuccess: suspend (I) -> HResult<O>
 ): Flow<HResult<O>> = mapLatest {
-	it.handleReturn({ onLoading() }, { onEmpty() }, { onError(it) }, { onSuccess(it) })
+	it.handleReturn(
+			onLoading = { onLoading() },
+			onEmpty = { onEmpty() },
+			onError = { onError(it) },
+			onSuccess = { onSuccess(it) }
+	)
 }
 
 /**

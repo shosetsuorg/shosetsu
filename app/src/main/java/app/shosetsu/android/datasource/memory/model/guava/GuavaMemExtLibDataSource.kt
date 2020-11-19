@@ -1,5 +1,7 @@
-package app.shosetsu.android.datasource.memory.model
+package app.shosetsu.android.datasource.memory.model.guava
 
+import app.shosetsu.android.common.consts.MEMORY_EXPIRE_EXTENSION_TIME
+import app.shosetsu.android.common.consts.MEMORY_MAX_EXT_LIBS
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.successResult
@@ -9,7 +11,7 @@ import app.shosetsu.android.common.ext.set
 import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.HOURS
 
 /*
  * This file is part of shosetsu.
@@ -35,8 +37,8 @@ import java.util.concurrent.TimeUnit
 class GuavaMemExtLibDataSource : IMemExtLibDataSource {
     /** Library paring */
     private val libraries: Cache<String, String> = CacheBuilder.newBuilder()
-            .maximumSize(200)
-            .expireAfterWrite(1, TimeUnit.HOURS)
+            .maximumSize(MEMORY_MAX_EXT_LIBS)
+            .expireAfterWrite(MEMORY_EXPIRE_EXTENSION_TIME, HOURS)
             .build()
 
     override suspend fun loadLibrary(name: String): HResult<String> =

@@ -1,5 +1,7 @@
-package app.shosetsu.android.datasource.memory.model
+package app.shosetsu.android.datasource.memory.model.guava
 
+import app.shosetsu.android.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
+import app.shosetsu.android.common.consts.MEMORY_MAX_CHAPTERS
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
 import app.shosetsu.android.common.dto.successResult
@@ -32,15 +34,15 @@ import java.util.concurrent.TimeUnit.MINUTES
  * 04 / 05 / 2020
  */
 class GuavaMemChaptersDataSource : IMemChaptersDataSource {
-    /** Map of Chapter ID to Chapter Passage */
-    private val chapters: Cache<Int, String> = CacheBuilder.newBuilder()
-            .maximumSize(200)
-            .expireAfterWrite(2, MINUTES)
-            .build()
+	/** Map of Chapter ID to Chapter Passage */
+	private val chapters: Cache<Int, String> = CacheBuilder.newBuilder()
+			.maximumSize(MEMORY_MAX_CHAPTERS)
+			.expireAfterWrite(MEMORY_EXPIRE_CHAPTER_TIME, MINUTES)
+			.build()
 
-    override suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
-            successResult(chapters.set(chapterID, passage))
+	override suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
+			successResult(chapters.set(chapterID, passage))
 
-    override suspend fun loadChapterFromCache(chapterID: Int): HResult<String> =
-            chapters[chapterID]?.let { successResult(it) } ?: emptyResult()
+	override suspend fun loadChapterFromCache(chapterID: Int): HResult<String> =
+			chapters[chapterID]?.let { successResult(it) } ?: emptyResult()
 }

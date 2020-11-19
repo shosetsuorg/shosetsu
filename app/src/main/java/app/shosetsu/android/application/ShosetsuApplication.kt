@@ -15,7 +15,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.di.*
-import app.shosetsu.android.di.datasource.cacheDataSouceModule
+import app.shosetsu.android.di.datasource.cacheDataSourceModule
 import app.shosetsu.android.di.datasource.fileDataSourceModule
 import app.shosetsu.android.di.datasource.localDataSouceModule
 import app.shosetsu.android.di.datasource.remoteDataSouceModule
@@ -72,9 +72,9 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
     override val kodein: Kodein by Kodein.lazy {
         bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
         import(othersModule)
-        import(providersModule)
-        import(cacheDataSouceModule)
-        import(localDataSouceModule)
+	    import(providersModule)
+	    import(cacheDataSourceModule)
+	    import(localDataSouceModule)
         import(remoteDataSouceModule)
         import(fileDataSourceModule)
         import(networkModule)
