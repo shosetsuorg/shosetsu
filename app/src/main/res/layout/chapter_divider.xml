@@ -16,6 +16,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textColor="@color/grey_B_40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Last chapter: " />
@@ -23,6 +24,7 @@
         <TextView
             android:id="@+id/previous_chapter"
             android:layout_width="wrap_content"
+            android:textColor="@color/grey_B_40"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             tools:text="Chapter 1" />
@@ -38,11 +40,13 @@
 
         <TextView
             android:layout_width="wrap_content"
+            android:textColor="@color/grey_B_40"
             android:layout_height="wrap_content"
             android:text="Next chapter: " />
 
         <TextView
             android:id="@+id/next_chapter"
+            android:textColor="@color/grey_B_40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
@@ -54,6 +58,7 @@
         android:id="@+id/no_more_chapters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/grey_B_40"
         android:text="@string/no_more_chapters"
         android:textAlignment="center"
         android:visibility="gone" />

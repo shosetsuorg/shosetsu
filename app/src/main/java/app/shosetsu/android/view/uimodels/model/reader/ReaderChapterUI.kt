@@ -2,7 +2,9 @@ package app.shosetsu.android.view.uimodels.model.reader
 
 import android.view.View
 import app.shosetsu.android.common.dto.Convertible
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
@@ -68,6 +70,30 @@ data class ReaderChapterUI(
 			ChapterType.STRING -> StringReader(v)
 			else -> TODO()
 		}.also { reader = it }
+	}
+
+	override fun bindView(holder: TypedReaderViewHolder, payloads: List<Any>) {
+		super.bindView(holder, payloads)
+		chapterReader?.let {
+			it.viewModel.getChapterPassage(this).observe(it) { result ->
+				result.handle(
+						{ logD("Showing loading"); holder.showProgress() },
+						{ logD("Empty result") },
+						{
+							logD("Showing error")
+							//	holder.setError(it.message, "Retry") {
+							//		TODO("Figure out how to restart the liveData")
+							//		}
+						}) {
+					logD("Successfully loaded :D")
+					holder.hideProgress()
+					holder.setData(it)
+					holder.itemView.post {
+						holder.setProgress(this.readingPosition)
+					}
+				}
+			}
+		}
 	}
 
 	override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
