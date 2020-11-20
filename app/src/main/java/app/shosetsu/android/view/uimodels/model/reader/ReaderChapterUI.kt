@@ -4,6 +4,7 @@ import android.view.View
 import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
+import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.ui.reader.types.model.StringReader
 import app.shosetsu.lib.Novel.ChapterType
@@ -23,7 +24,22 @@ data class ReaderChapterUI(
 		private val chapterType: ChapterType
 ) : Convertible<ReaderChapterEntity>, ReaderUIItem<ReaderChapterUI, TypedReaderViewHolder>() {
 
+	var chapterReader: ChapterReader? = null
+		set(value) {
+			field = value?.apply {
+				reader?.chapterReader = value
+			}
+		}
+
 	var reader: TypedReaderViewHolder? = null
+		set(value) {
+			field = value?.apply {
+				this.chapter = this@ReaderChapterUI
+				this@ReaderChapterUI.chapterReader?.let {
+					this.chapterReader = it
+				}
+			}
+		}
 
 	override val layoutRes: Int by lazy {
 		when (chapterType) {

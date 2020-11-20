@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
-import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,7 +15,6 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.enums.TextSizes
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.ui.reader.adapters.ChapterReaderAdapter
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -63,28 +61,28 @@ class ChapterReader
 	: AppCompatActivity(R.layout.activity_chapter_reader), KodeinAware {
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel: IChapterReaderViewModel by viewModel()
-	private val chapterReaderAdapter: ChapterReaderAdapter by lazy {
-		ChapterReaderAdapter(this)
-	}
-	private val pageChangeCallback: OnPageChangeCallback by lazy {
-		ChapterReaderPageChange()
-	}
-	private val itemAdapter by lazy {
-		ItemAdapter<ReaderUIItem<*, *>>()
-	}
-	private val fastAdapter by lazy {
-		FastAdapter.with(itemAdapter)
-	}
 
+	private val pageChangeCallback: OnPageChangeCallback by lazy { ChapterReaderPageChange() }
+
+	private val itemAdapter by lazy { ItemAdapter<ReaderUIItem<*, *>>() }
+	private val fastAdapter by lazy { FastAdapter.with(itemAdapter) }
+
+	/** Gets chapters from the [itemAdapter] */
 	val chapterItems: List<ReaderChapterUI>
 		get() = itemAdapter.itemList.items.filterIsInstance<ReaderChapterUI>()
+
+	/** Gets dividers from the [itemAdapter] */
+	val dividerItems: List<ReaderDividerUI>
+		get() = itemAdapter.itemList.items.filterIsInstance<ReaderDividerUI>()
 
 	private val bottomSheetBehavior: ChapterReaderBottomBar<LinearLayout> by lazy {
 		from(chapter_reader_bottom) as ChapterReaderBottomBar
 	}
+
 	private val colorItemAdapterUI: ItemAdapter<ColorChoiceUI> by lazy {
 		ItemAdapter()
 	}
+
 	private val colorFastAdapterUI: FastAdapter<ColorChoiceUI> by lazy {
 		FastAdapter.with(colorItemAdapterUI)
 	}
@@ -120,7 +118,10 @@ class ChapterReader
 
 	private fun handleChaptersResult(list: List<ReaderUIItem<*, *>>) {
 		val oldSize = itemAdapter.itemList.size()
-
+		list.forEach {
+			if (it is ReaderChapterUI)
+				it.chapterReader = this
+		}
 		logD("Received ${list.size} chapter(s), old size: $oldSize")
 
 		// Prints out the pattern
@@ -196,13 +197,14 @@ class ChapterReader
 	}
 
 	private fun applyToReaders(onlyCurrent: Boolean = false, action: TypedReaderViewHolder.() -> Unit) {
-		chapterReaderAdapter.textTypedReaders.find {
+		val textTypedReaders = chapterItems.mapNotNull { it.reader }
+		textTypedReaders.find {
 			it.chapter.id == viewModel.currentChapterID
 		}?.action()
 
 		// Sets other views down
 		if (!onlyCurrent)
-			chapterReaderAdapter.textTypedReaders.filter {
+			textTypedReaders.filter {
 				it.chapter.id != viewModel.currentChapterID
 			}.forEach {
 				it.action()
@@ -214,8 +216,10 @@ class ChapterReader
 				it.id == viewModel.currentChapterID
 			}
 
-	private fun getCurrentChapterIndex(): Int = chapterItems.indexOfFirst {
-		it.id == viewModel.currentChapterID
+	private fun getCurrentChapterIndex(): Int = itemAdapter.itemList.items.indexOfFirst {
+		if (it is ReaderChapterUI)
+			it.id == viewModel.currentChapterID
+		else false
 	}
 
 	private fun setBookmarkIcon(readerChapterUI: ReaderChapterUI) {
@@ -372,15 +376,6 @@ class ChapterReader
 		}
 	}
 
-	/** Syncs [bottomSheetBehavior] with [toolbar] */
-	private fun fixHeight() {
-		bottomSheetBehavior.apply {
-			state = if (toolbar.visibility == VISIBLE) {
-				STATE_COLLAPSED
-			} else STATE_HIDDEN
-		}
-	}
-
 	/**
 	 * What to do when an menu item is selected
 	 *
@@ -432,11 +427,13 @@ class ChapterReader
 
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
-			logD("Page changed to $position ${chapterItems[position].link}")
-			with(chapterItems[position]) {
+			itemAdapter.getAdapterItem(position).takeIf { it is ReaderChapterUI }?.apply {
+				this as ReaderChapterUI
+				logD("Page changed to $position ${chapterItems[position].link}")
 				viewModel.currentChapterID = id
 				viewModel.markAsReadingOnView(this)    // Mark read if set to onview
 				chapterItems.mapNotNull { it.reader }.find { it.chapter.id == id }?.apply {
+					chapterReader = this@ChapterReader
 					syncBackgroundColor()
 					syncTextColor()
 					syncTextSize()
@@ -444,7 +441,9 @@ class ChapterReader
 				}
 				supportActionBar?.title = title
 				setBookmarkIcon(this)
-			}
+			} ?: {
+				supportActionBar?.setTitle(R.string.next_chapter)
+			}()
 		}
 	}
 }

@@ -324,6 +324,7 @@
     <string name="mark_read_as_reading">Mark read as reading</string>
     <string name="mark_read_as_reading_desc">Allows the reader to mark a read chapter as reading when its opened up.</string>
     <string name="no_more_chapters">No more chapters</string>
+    <string name="next_chapter">Next Chapter...</string>
 
 
     <array name="application_themes">
