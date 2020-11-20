@@ -96,6 +96,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	 * @param savedInstanceState savedData from destruction
 	 */
 	override fun onCreate(savedInstanceState: Bundle?) {
+		viewModel.navigationStyle()
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
 		// Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079
@@ -176,6 +177,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	}
 
 	private fun setupNavigationDrawer() {
+		logV("Setting up legacy navigation")
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		actionBarDrawerToggle = ActionBarDrawerToggle(
@@ -204,6 +206,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	}
 
 	private fun setupBottomNavigationDrawer() {
+		logV("Setting up modern navigation")
 		drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
 
 		bottomNavigationView.setOnNavigationItemSelectedListener {
@@ -215,7 +218,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	}
 
 	private fun handleNavigationSelected(id: Int) {
-		Log.d("Nav", "Selected $id")
 		when (id) {
 			// Bottom nav
 			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
@@ -334,6 +336,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		if (showHamburger) {
 			// Shows navigation
 			if (viewModel.navigationStyle() == 1) {
+				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
 				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
@@ -345,6 +348,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 			// Hides navigation
 			if (viewModel.navigationStyle() == 1) {
+				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = false
 				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
