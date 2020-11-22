@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
@@ -43,4 +44,6 @@ abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel, Err
 	 * If 1, Drawer
 	 */
 	abstract fun navigationStyle(): Int
+
+	abstract fun appTheme(): LiveData<AppThemes>
 }

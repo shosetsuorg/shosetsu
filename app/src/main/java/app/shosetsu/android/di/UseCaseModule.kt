@@ -146,4 +146,5 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<ReportExceptionUseCase>() with provider { ReportExceptionUseCase(instance(), instance()) }
 	bind<LoadNavigationStyleUseCase>() with provider { LoadNavigationStyleUseCase(instance()) }
 
+	bind<LoadLiveAppThemeUseCase>() with provider { LoadLiveAppThemeUseCase(instance()) }
 }

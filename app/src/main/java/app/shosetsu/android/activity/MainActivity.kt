@@ -14,12 +14,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.enums.AppThemes.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
@@ -97,6 +99,23 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	 */
 	override fun onCreate(savedInstanceState: Bundle?) {
 		viewModel.navigationStyle()
+		viewModel.appTheme().observe(this) {
+			when (it) {
+				FOLLOW_SYSTEM -> {
+					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+				}
+				LIGHT -> {
+					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+				}
+				DARK -> {
+					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+				}
+				AMOLED -> {
+					// TODO Implement amoled mode
+					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+				}
+			}
+		}
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
 		// Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079

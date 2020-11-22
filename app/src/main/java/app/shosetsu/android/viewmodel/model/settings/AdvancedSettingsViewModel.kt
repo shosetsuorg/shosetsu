@@ -2,9 +2,10 @@ package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import app.shosetsu.android.common.consts.settings.SettingKey.AppTheme
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
@@ -47,24 +48,17 @@ class AdvancedSettingsViewModel(
 						android.R.layout.simple_spinner_dropdown_item,
 						context.resources.getStringArray(R.array.application_themes)
 				)
-				onSpinnerItemSelected { adapterView, _, position, _ ->
-					if (position in 0..1) {
-						val delegate = (context as AppCompatActivity).delegate
-						when (position) {
-							0 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
-							1 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-						}
-						val theme = delegate.localNightMode
-						adapterView?.setSelection(if (
-								theme == AppCompatDelegate.MODE_NIGHT_YES ||
-								theme == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
-								theme == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-						) 1 else 0)
-					}
+
+				iSettingsRepository.getInt(AppTheme).handle {
+					spinnerValue { it }
+				}
+
+				onSpinnerItemSelected { adapter, _, selectedTheme, _ ->
+					launchIO { iSettingsRepository.setInt(AppTheme, selectedTheme) }
 				}
 			},
 			buttonSettingData(2) {
-				title { com.github.doomsdayrs.apps.shosetsu.R.string.remove_novel_cache }
+				title { R.string.remove_novel_cache }
 				onButtonClicked {
 					try {
 						// TODO purge

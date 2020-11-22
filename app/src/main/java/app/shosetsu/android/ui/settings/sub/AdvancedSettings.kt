@@ -2,19 +2,9 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.content.res.Resources
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.SettingsSubController
-import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
-import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
-import app.shosetsu.android.view.uimodels.settings.dsl.onSpinnerItemSelected
-import app.shosetsu.android.view.uimodels.settings.dsl.title
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
-import app.shosetsu.android.viewmodel.model.settings.AdvancedSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 
 
@@ -44,23 +34,6 @@ class AdvancedSettings : SettingsSubController() {
 	override val viewTitleRes: Int = R.string.settings_advanced
 
 
-	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		find<SpinnerSettingData>(1)?.onSpinnerItemSelected { adapterView, _, position, _ ->
-			if (position in 0..1) {
-				val delegate = (activity as AppCompatActivity).delegate
-				when (position) {
-					0 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
-					1 -> delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-				}
-				val theme = delegate.localNightMode
-				adapterView?.setSelection(if (
-						theme == AppCompatDelegate.MODE_NIGHT_YES ||
-						theme == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
-						theme == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-				) 1 else 0)
-			}
-		}
-	}
 
 	@Throws(Resources.NotFoundException::class)
 	override fun onViewCreated(view: View) {

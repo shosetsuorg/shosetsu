@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
@@ -9,6 +10,7 @@ import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateLiveUseCase
+import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
 import kotlinx.coroutines.flow.collect
@@ -40,7 +42,8 @@ class MainViewModel(
 		private val isOnlineUseCase: IsOnlineUseCase,
 		private val shareUseCase: ShareUseCase,
 		private val loadNavigationStyleUseCase: LoadNavigationStyleUseCase,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+		private val reportExceptionUseCase: ReportExceptionUseCase,
+		private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase
 ) : IMainViewModel() {
 	private var navigationStyle = 0
 
@@ -72,4 +75,6 @@ class MainViewModel(
 	override fun navigationStyle(): Int = navigationStyle
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
+
+	override fun appTheme(): LiveData<AppThemes> = loadLiveAppThemeUseCase().asIOLiveData()
 }

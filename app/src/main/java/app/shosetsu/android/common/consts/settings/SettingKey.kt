@@ -107,6 +107,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	/** If the reader can mark a read chapter as reading when its opened / scrolled */
 	object ReaderMarkReadAsReading : SettingKey<Boolean>("readerMarkReadAsReading", false)
 
+	object AppTheme : SettingKey<Int>("selectedAppTheme", 0)
+
 	companion object {
 		val KEYS: ArrayList<SettingKey<*>> by lazy {
 			arrayListOf(
@@ -172,7 +174,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 					CustomExportDirectory,
 
 					DownloadThreadPool,
-					DownloadExtThreads
+					DownloadExtThreads,
+					AppTheme
 			)
 		}
 

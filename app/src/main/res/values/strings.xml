@@ -326,10 +326,12 @@
     <string name="no_more_chapters">No more chapters</string>
     <string name="next_chapter">Next Chapter...</string>
 
+    <string name="follow_system_theme">Follow System</string>
 
     <array name="application_themes">
+        <item>@string/follow_system_theme</item>
         <item>@string/light</item>
-        <item>@string/amoled</item>
+        <item>@string/dark</item>
     </array>
 
     <array name="sus_array_actions">
