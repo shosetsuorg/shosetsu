@@ -129,6 +129,7 @@ class NovelController(bundle: Bundle)
 	}
 
 	private fun getChapters(): List<ChapterUI> = chapterUIAdapter.itemList.items
+
 	override fun hideFAB(fab: FloatingActionButton) {
 		if (getChapters().isNotEmpty()) super.hideFAB(fab)
 	}
@@ -166,12 +167,17 @@ class NovelController(bundle: Bundle)
 		this.recyclerView = it.recyclerView
 	}
 
+	fun migrateOpen() {
+		parentController?.router?.pushController(MigrationController(bundleOf(Pair(
+				TARGETS_BUNDLE_KEY,
+				arrayOf(args.getNovelID()).toIntArray()
+		))).withFadeTransaction())
+	}
+
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		id.source_migrate -> {
-			parentController?.router?.pushController(MigrationController(bundleOf(Pair(
-					TARGETS_BUNDLE_KEY,
-					arrayOf(args.getNovelID()).toIntArray()
-			))).withFadeTransaction())
+			// migrateOpen()
+			toast { "Sorry, This hasn't been implemented yet" }
 			true
 		}
 		id.webview -> {
