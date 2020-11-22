@@ -1,10 +1,9 @@
 package app.shosetsu.android.datasource.database.model
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.mapLatestToSuccess
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.providers.database.dao.RepositoryDao
@@ -39,26 +38,20 @@ class LocalExtRepoDataSource(
 	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> = flow {
 		try {
 			emitAll(repositoryDao.loadRepositoriesLive().mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
 	override fun loadRepositories(): HResult<List<RepositoryEntity>> = try {
 		successResult(repositoryDao.loadRepositories())
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
 		successResult(repositoryDao.loadRepositoryFromID(repoID))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 }

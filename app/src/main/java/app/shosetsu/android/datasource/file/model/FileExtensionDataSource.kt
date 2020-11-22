@@ -7,13 +7,13 @@ import app.shosetsu.android.common.consts.SOURCE_DIR
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.InternalFileDir.FILES
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.lua.LuaExtension
 import org.luaj.vm2.LuaError
 import java.io.FileNotFoundException
-import java.security.InvalidParameterException
 
 /*
  * This file is part of shosetsu.
@@ -59,10 +59,8 @@ class FileExtensionDataSource(
 		iFileSystemProvider.readInternalFile(FILES, makeFormatterFile(fileName)).withSuccess {
 			try {
 				successResult(LuaExtension(it, fileName))
-			} catch (e: NullPointerException) {
-				errorResult(e)
-			} catch (e: InvalidParameterException) {
-				errorResult(e)
+			} catch (e: Exception) {
+				e.toHError()
 			}
 		}
 	} catch (e: LuaError) {

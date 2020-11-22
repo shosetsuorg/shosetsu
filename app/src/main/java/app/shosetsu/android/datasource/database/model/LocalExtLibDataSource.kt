@@ -1,9 +1,8 @@
 package app.shosetsu.android.datasource.database.model
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
@@ -35,27 +34,21 @@ class LocalExtLibDataSource(
 ) : ILocalExtLibDataSource {
 	override suspend fun updateExtension(extLibEntity: ExtLibEntity): HResult<*> = try {
 		successResult(extensionLibraryDao.suspendedUpdate(extLibEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): HResult<*> = try {
 		successResult(extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun loadExtLibByRepo(
 			repositoryEntity: RepositoryEntity,
 	): HResult<List<ExtLibEntity>> = try {
 		successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 }

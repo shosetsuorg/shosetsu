@@ -1,12 +1,12 @@
 package app.shosetsu.android.datasource.file.model
 
 import android.util.Log
-import app.shosetsu.android.common.dto.*
+import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.dto.handledReturnAny
+import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.enums.InternalFileDir.CACHE
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import org.json.JSONArray
@@ -172,8 +172,8 @@ class FileCachedChapterDataSource(
 
             launchIO { launchCleanUp() } // Launch cleanup separately
             return successResult("")
-        } catch (e: JSONException) {
-            return errorResult(e)
+        } catch (e: Exception) {
+            return e.toHError()
         }
     }
 

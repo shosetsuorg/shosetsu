@@ -123,6 +123,14 @@ class ReportExceptionUseCase(
 			ErrorKeys.ERROR_NETWORK_IO -> {
 				toast(result)
 			}
+
+			ErrorKeys.ERROR_HOST_UNKNOWN -> {
+				toast(result)
+			}
+
+			ErrorKeys.ERROR_TIMEOUT -> {
+				toast(result)
+			}
 		}
 	}
 }

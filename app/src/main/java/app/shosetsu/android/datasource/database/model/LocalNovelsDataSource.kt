@@ -1,10 +1,9 @@
 package app.shosetsu.android.datasource.database.model
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.mapLatestToSuccess
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
@@ -41,83 +40,65 @@ class LocalNovelsDataSource(
 	override suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>> = flow {
 		try {
 			emitAll(novelsDao.loadListBookmarkedNovels().mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
 	override suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>> = try {
 		successResult(novelsDao.loadBookmarkedNovels())
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun loadLiveBookmarkedNovelsAndCount(
 	): Flow<HResult<List<BookmarkedNovelEntity>>> = flow {
 		try {
 			emitAll(novelsDao.loadBookmarkedNovelsCount().mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> = try {
 		successResult(novelsDao.loadNovel(novelID))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
 			emitAll(novelsDao.loadNovelLive(novelID).mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
 	override suspend fun updateNovel(novelEntity: NovelEntity): HResult<*> = try {
 		successResult(novelsDao.suspendedUpdate(novelEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun updateBookmarkedNovels(
 			list: List<BookmarkedNovelEntity>
 	): HResult<*> = try {
 		successResult(novelsDao.updateBookmarked(list))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun insertNovelReturnCard(
 			novelEntity: NovelEntity,
 	): HResult<IDTitleImageBook> = try {
 		successResult(novelsDao.insertNovelReturnCard(novelEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> = try {
 		successResult(novelsDao.insertIgnore(novelEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 }

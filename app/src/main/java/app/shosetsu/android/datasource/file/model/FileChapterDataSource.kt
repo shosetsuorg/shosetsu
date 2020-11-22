@@ -1,10 +1,10 @@
 package app.shosetsu.android.datasource.file.model
 
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.InternalFileDir.FILES
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
@@ -75,9 +75,9 @@ class FileChapterDataSource(
 			try {
 				iFileSystemProvider.readInternalFile(FILES, makePath(chapterEntity))
 			} catch (e: FileNotFoundException) {
-				errorResult(ERROR_NOT_FOUND, e)
+				emptyResult()
 			} catch (e: Exception) {
-				errorResult(ERROR_GENERAL, e)
+				e.toHError()
 			}
 
 	override suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*> {

@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.MutableLiveData
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.dto.loading
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
@@ -49,152 +50,152 @@ class CatalogViewModel(
 		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
 		private var reportExceptionUseCase: ReportExceptionUseCase,
 ) : ICatalogViewModel() {
-    private var formatter: IExtension? = null
+	private var formatter: IExtension? = null
 
-    private var listingItems: ArrayList<ACatalogNovelUI> = arrayListOf()
-    private var filterData = hashMapOf<Int, Any>()
-    private var query: String = ""
+	private var listingItems: ArrayList<ACatalogNovelUI> = arrayListOf()
+	private var filterData = hashMapOf<Int, Any>()
+	private var query: String = ""
 
-    override val listingItemsLive: MutableLiveData<HResult<List<ACatalogNovelUI>>> by lazy {
-        MutableLiveData<HResult<List<ACatalogNovelUI>>>(loading())
-    }
+	override val listingItemsLive: MutableLiveData<HResult<List<ACatalogNovelUI>>> by lazy {
+		MutableLiveData<HResult<List<ACatalogNovelUI>>>(loading())
+	}
 
-    override val filterItemsLive: MutableLiveData<HResult<List<Filter<*>>>> by lazy {
-        MutableLiveData(loading())
-    }
+	override val filterItemsLive: MutableLiveData<HResult<List<Filter<*>>>> by lazy {
+		MutableLiveData(loading())
+	}
 
-    override val hasSearchLive: MutableLiveData<HResult<Boolean>> by lazy {
-        MutableLiveData(loading())
-    }
+	override val hasSearchLive: MutableLiveData<HResult<Boolean>> by lazy {
+		MutableLiveData(loading())
+	}
 
-    override val extensionName: MutableLiveData<HResult<String>> by lazy {
-        MutableLiveData<HResult<String>>(loading())
-    }
+	override val extensionName: MutableLiveData<HResult<String>> by lazy {
+		MutableLiveData<HResult<String>>(loading())
+	}
 
 
-    private fun setFID(fID: Int): Job = launchIO {
-        when {
-            formatter == null -> {
-                this@CatalogViewModel.logI("Loading formatter")
-                when (val v = getFormatterUseCase(fID)) {
-                    is HResult.Success -> {
-                        formatter = v.data
-                        extensionName.postValue(successResult(v.data.name))
-                        hasSearchLive.postValue(successResult(v.data.hasSearch))
-                        filterData.putAll(v.data.searchFiltersModel.mapify())
-                        filterItemsLive.postValue(successResult(v.data.searchFiltersModel.toList()))
-                    }
-                    is HResult.Loading -> extensionName.postValue(v)
-                    is HResult.Error -> extensionName.postValue(v)
-                    is HResult.Empty -> extensionName.postValue(v)
-                }
-            }
-            formatter!!.formatterID != fID -> {
-                this@CatalogViewModel.logI("Resetting formatter")
-                destroy()
-                setFID(fID).join()
-            }
-            else -> this@CatalogViewModel.logI("FID are the same, ignoring")
-        }
-    }
+	private fun setFID(fID: Int): Job = launchIO {
+		when {
+			formatter == null -> {
+				this@CatalogViewModel.logI("Loading formatter")
+				when (val v = getFormatterUseCase(fID)) {
+					is HResult.Success -> {
+						formatter = v.data
+						extensionName.postValue(successResult(v.data.name))
+						hasSearchLive.postValue(successResult(v.data.hasSearch))
+						filterData.putAll(v.data.searchFiltersModel.mapify())
+						filterItemsLive.postValue(successResult(v.data.searchFiltersModel.toList()))
+					}
+					is HResult.Loading -> extensionName.postValue(v)
+					is HResult.Error -> extensionName.postValue(v)
+					is HResult.Empty -> extensionName.postValue(v)
+				}
+			}
+			formatter!!.formatterID != fID -> {
+				this@CatalogViewModel.logI("Resetting formatter")
+				destroy()
+				setFID(fID).join()
+			}
+			else -> this@CatalogViewModel.logI("FID are the same, ignoring")
+		}
+	}
 
-    override fun setFormatterID(fID: Int) {
-        setFID(fID)
-    }
+	override fun setFormatterID(fID: Int) {
+		setFID(fID)
+	}
 
-    /**
-     * Current loading job
-     */
-    private var loadingJob: Job = launchIO { }
+	/**
+	 * Current loading job
+	 */
+	private var loadingJob: Job = launchIO { }
 
-    override fun setQuery(string: String) {
-        this.query = string
-    }
+	override fun setQuery(string: String) {
+		this.query = string
+	}
 
-    @Synchronized
-    override fun loadData(): Job = launchIO {
-        if (formatter == null) {
-            logE("formatter was null")
-            this.cancel("Extension not loaded")
-            return@launchIO
-        }
-        currentMaxPage++
-        val values = listingItems
 
-        listingItemsLive.postValue(loading())
+	private suspend fun getDataLoaderAndLoad(): HResult<List<ACatalogNovelUI>> {
+		return if (query.isEmpty()) loadCatalogueListingData(
+				formatter!!,
+				filterData.apply {
+					this[PAGE_INDEX] = currentMaxPage
+				}
+		) else loadCatalogueQueryDataUseCase(
+				formatter!!,
+				query,
+				filterData.apply {
+					this[PAGE_INDEX] = currentMaxPage
+				}
+		)
+	}
 
-        when (val i: HResult<List<ACatalogNovelUI>> = if (query.isEmpty()) loadCatalogueListingData(
-                formatter!!,
-                filterData.apply {
-                    this[PAGE_INDEX] = currentMaxPage
-                }
-        ) else loadCatalogueQueryDataUseCase(
-                formatter!!,
-                query,
-                filterData.apply {
-                    this[PAGE_INDEX] = currentMaxPage
-                }
-        )) {
-            is HResult.Success -> {
-                listingItems = values.also { it.addAll(i.data) }
-                listingItemsLive.postValue(successResult(values + i.data))
-            }
-            is HResult.Empty -> {
-            }
-	        is HResult.Error -> {
-		        reportError(i)
-		        logE("Error: ${i.code}|${i.message}", i.error)
-	        }
-        }
-    }
+	@Synchronized
+	override fun loadData(): Job = launchIO {
+		if (formatter == null) {
+			logE("formatter was null")
+			this.cancel("Extension not loaded")
+			return@launchIO
+		}
+		currentMaxPage++
+		val values = listingItems
 
-    override fun loadQuery(): Job = launchIO {
-        currentMaxPage = 0
-        loadingJob.cancel("Loading a query")
-        listingItems.clear()
-        listingItemsLive.postValue(successResult(arrayListOf()))
-        loadingJob = loadData()
-    }
+		listingItemsLive.postValue(loading())
 
-    @Synchronized
-    override fun loadMore() {
-        if (loadingJob.isCompleted)
-            loadingJob = loadData()
-    }
+		getDataLoaderAndLoad().handle(onError = {
+			reportError(it)
+			logE("Error: ${it.code}|${it.message}", it.error)
+		}) { newList ->
+			listingItemsLive.postValue(successResult(values + newList))
+			listingItems = values.apply { addAll(newList) }
+		}
+	}
 
-    override fun resetView() {
-        listingItemsLive.postValue(successResult(arrayListOf()))
-        listingItems.clear()
-        currentMaxPage = 0
-        loadData()
-    }
+	override fun loadQuery(): Job = launchIO {
+		currentMaxPage = 0
+		loadingJob.cancel("Loading a query")
+		listingItems.clear()
+		listingItemsLive.postValue(successResult(arrayListOf()))
+		loadingJob = loadData()
+	}
 
-    override fun backgroundNovelAdd(novelID: Int) {
-        launchIO { backgroundAddUseCase(novelID) }
-    }
+	@Synchronized
+	override fun loadMore() {
+		if (loadingJob.isCompleted)
+			loadingJob = loadData()
+	}
 
-    override fun setFilters(map: Map<Int, Any>) {
-        launchIO {
-            filterData.putAll(map)
-            listingItems.clear()
-            listingItemsLive.postValue(successResult(arrayListOf()))
-            loadData()
-        }
-    }
+	override fun resetView() {
+		listingItemsLive.postValue(successResult(arrayListOf()))
+		listingItems.clear()
+		currentMaxPage = 0
+		loadData()
+	}
 
-    override fun destroy() {
-        launchIO {
-            formatter = null
-	        listingItems.clear()
-	        filterData.clear()
-	        query = ""
-	        listingItemsLive.postValue(successResult(arrayListOf()))
-	        filterItemsLive.postValue(successResult(arrayListOf()))
-	        hasSearchLive.postValue(successResult(false))
-	        hasSearchLive.postValue(loading())
-	        extensionName.postValue(loading())
-        }
-    }
+	override fun backgroundNovelAdd(novelID: Int) {
+		launchIO { backgroundAddUseCase(novelID) }
+	}
+
+	override fun setFilters(map: Map<Int, Any>) {
+		launchIO {
+			filterData.putAll(map)
+			listingItems.clear()
+			listingItemsLive.postValue(successResult(arrayListOf()))
+			loadData()
+		}
+	}
+
+	override fun destroy() {
+		launchIO {
+			formatter = null
+			listingItems.clear()
+			filterData.clear()
+			query = ""
+			listingItemsLive.postValue(successResult(arrayListOf()))
+			filterItemsLive.postValue(successResult(arrayListOf()))
+			hasSearchLive.postValue(successResult(false))
+			hasSearchLive.postValue(loading())
+			extensionName.postValue(loading())
+		}
+	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) =
 			reportExceptionUseCase(error)

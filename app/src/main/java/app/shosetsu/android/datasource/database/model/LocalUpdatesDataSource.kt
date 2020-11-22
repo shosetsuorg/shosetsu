@@ -1,10 +1,9 @@
 package app.shosetsu.android.datasource.database.model
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.mapLatestToSuccess
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
@@ -40,29 +39,23 @@ class LocalUpdatesDataSource(
 	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> = flow {
 		try {
 			emitAll(updatesDao.loadUpdates().mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
 	override suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>> = try {
 		successResult(updatesDao.insertAllIgnore(list))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun getCompleteUpdates(
 	): Flow<HResult<List<UpdateCompleteEntity>>> = flow {
 		try {
 			emitAll(updatesDao.loadCompleteUpdates().mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 }

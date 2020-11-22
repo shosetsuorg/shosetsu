@@ -1,11 +1,10 @@
 package app.shosetsu.android.datasource.remote.model
 
-import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.quickie
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.json.RepoIndex
@@ -45,7 +44,7 @@ class RemoteExtRepoDataSource(
                 ).body!!.string())
         ))
     } catch (e: Exception) {
-        errorResult(ErrorKeys.ERROR_GENERAL, e.message ?: "Unknown general error", e)
+        e.toHError()
     }
 
 }

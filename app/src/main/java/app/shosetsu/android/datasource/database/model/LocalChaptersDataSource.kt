@@ -1,10 +1,9 @@
 package app.shosetsu.android.datasource.database.model
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.mapLatestToSuccess
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
@@ -49,19 +48,15 @@ class LocalChaptersDataSource(
 	): Flow<HResult<List<ChapterEntity>>> = flow {
 		try {
 			emitAll(chaptersDao.loadLiveChapters(novelID).mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
 	override suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity> = try {
 		successResult(chaptersDao.loadChapter(chapterID))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun loadReaderChapters(
@@ -69,10 +64,8 @@ class LocalChaptersDataSource(
 	): Flow<HResult<List<ReaderChapterEntity>>> = flow {
 		try {
 			emitAll(chaptersDao.loadLiveReaderChapters(novelID).mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
@@ -82,10 +75,8 @@ class LocalChaptersDataSource(
 	): HResult<*> =
 			try {
 				successResult(chaptersDao.handleChapters(novelEntity, list))
-			} catch (e: SQLiteException) {
-				errorResult(e)
-			} catch (e: NullPointerException) {
-				errorResult(e)
+			} catch (e: Exception) {
+				e.toHError()
 			}
 
 
@@ -94,28 +85,22 @@ class LocalChaptersDataSource(
 			list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>> = try {
 		chaptersDao.handleChaptersReturnNew(novelEntity, list)
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> = try {
 		successResult(chaptersDao.suspendedUpdate(chapterEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*> =
 			try {
 				successResult(chaptersDao.updateReaderChapter(readerChapterEntity))
-			} catch (e: SQLiteException) {
-				errorResult(e)
-			} catch (e: NullPointerException) {
-				errorResult(e)
+			} catch (e: Exception) {
+				e.toHError()
 			}
 
 }

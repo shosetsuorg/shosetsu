@@ -69,9 +69,12 @@ object ErrorKeys {
 	 */
 	const val ERROR_INCOMPATIBLE: Int = 13
 
-
 	const val ERROR_FILE_IO: Int = 14
 
 	const val ERROR_NETWORK_IO: Int = 15
 
+	/** Timeout exception */
+	const val ERROR_TIMEOUT: Int = 16
+
+	const val ERROR_HOST_UNKNOWN: Int = 17
 }

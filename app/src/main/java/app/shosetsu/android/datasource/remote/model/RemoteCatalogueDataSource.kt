@@ -1,20 +1,15 @@
 package app.shosetsu.android.datasource.remote.model
 
-import android.util.Log
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_HTTP_ERROR
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_GENERAL
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NETWORK
 import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.emptyResult
-import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
-import app.shosetsu.lib.*
-import okio.IOException
-import org.luaj.vm2.LuaError
+import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.Novel
+import app.shosetsu.lib.PAGE_INDEX
+import app.shosetsu.lib.QUERY_INDEX
 
 /*
  * This file is part of Shosetsu.
@@ -39,6 +34,8 @@ import org.luaj.vm2.LuaError
  * 10 / May / 2020
  */
 class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
+
+
 	override suspend fun search(
 			ext: IExtension,
 			query: String,
@@ -52,12 +49,8 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 
 				if (l.isEmpty()) emptyResult() else successResult(l)
 			} else emptyResult()
-		} catch (e: IOException) {
-			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception")
-		} catch (e: LuaError) {
-			errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error")
 		} catch (e: Exception) {
-			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error")
+			e.toHError()
 		}
 	}
 
@@ -71,21 +64,8 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			val l = ext.listings[listing]
 			if (!l.isIncrementing && (data[PAGE_INDEX] as Int) > 0) emptyResult()
 			else successResult(l.getListing(data).toList())
-		} catch (e: HTTPException) {
-			Log.d(logID(), "HTTP Exception")
-			errorResult(ERROR_HTTP_ERROR, e.message!!, e)
-		} catch (e: IOException) {
-			Log.d(logID(), "Network exception")
-			errorResult(ERROR_NETWORK, e.message ?: "Unknown Network Exception", e)
-		} catch (e: LuaError) {
-			if (e.cause != null && e.cause is HTTPException) {
-				Log.d(logID(), "HTTP exception")
-				errorResult(ERROR_HTTP_ERROR, e.cause!!.message!!)
-			} else
-				errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
 		} catch (e: Exception) {
-			Log.d(logID(), "General exception")
-			errorResult(ERROR_GENERAL, e.message ?: "Unknown General Error", e)
+			e.toHError()
 		}
 	}
 }

@@ -4,6 +4,7 @@ import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
 import app.shosetsu.android.common.consts.ErrorKeys
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.enums.InternalFileDir.CACHE
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
@@ -52,6 +53,8 @@ class FileAppUpdateDataSource(
 		)
 	} catch (e: JsonProcessingException) {
 		errorResult(ErrorKeys.ERROR_IO, e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate> =

@@ -1,10 +1,9 @@
 package app.shosetsu.android.datasource.database.model
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.dto.mapLatestToSuccess
 import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
@@ -42,74 +41,57 @@ class LocalExtensionsDataSource(
 	override fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>> = flow {
 		try {
 			emitAll(extensionsDao.loadExtensions().mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
 	override fun loadExtensionLive(formatterID: Int): Flow<HResult<ExtensionEntity>> = flow {
 		try {
 			emitAll(extensionsDao.getExtensionLive(formatterID).mapLatestToSuccess())
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
-	override fun loadPoweredExtensionsCards(
-	): Flow<HResult<List<IDTitleImage>>> = flow {
+	override fun loadPoweredExtensionsCards(): Flow<HResult<List<IDTitleImage>>> = flow {
 		try {
 			emitAll(extensionsDao.loadPoweredExtensionsBasic().mapLatest { list ->
 				successResult(list.map { IDTitleImage(it.id, it.name, it.imageURL) })
 			})
-		} catch (e: SQLiteException) {
-			emit(errorResult(e))
-		} catch (e: NullPointerException) {
-			emit(errorResult(e))
+		} catch (e: Exception) {
+			emit(e.toHError())
 		}
 	}
 
 	override suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
 		successResult(extensionsDao.suspendedUpdate(extensionEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun deleteExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
 		successResult(extensionsDao.suspendedDelete(extensionEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity> = try {
 		successResult(extensionsDao.getExtension(formatterID))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> = try {
 		successResult(extensionsDao.insertOrUpdate(extensionEntity))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> = try {
 		successResult(extensionsDao.getExtensions(repoID))
-	} catch (e: SQLiteException) {
-		errorResult(e)
-	} catch (e: NullPointerException) {
-		errorResult(e)
+	} catch (e: Exception) {
+		e.toHError()
 	}
 
 }

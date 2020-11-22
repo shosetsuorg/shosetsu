@@ -1,6 +1,8 @@
 package app.shosetsu.android.common.dto
 
 import app.shosetsu.android.common.consts.ErrorKeys
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.security.InvalidParameterException
 
 /*
@@ -23,3 +25,9 @@ import java.security.InvalidParameterException
 
 fun errorResult(e: InvalidParameterException): HResult.Error =
 		HResult.Error(ErrorKeys.ERROR_NPE, e.message ?: "UnknownNullException", e)
+
+fun errorResult(e: SocketTimeoutException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_TIMEOUT, e.message ?: "UnknownTimeoutException", e)
+
+fun errorResult(e: UnknownHostException): HResult.Error =
+		HResult.Error(ErrorKeys.ERROR_HOST_UNKNOWN, e.message ?: "Unknown-UnknownHostException", e)
