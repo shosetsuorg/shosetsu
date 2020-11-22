@@ -67,12 +67,10 @@ class StringReader(
 		scrollView.apply {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				setOnScrollChangeListener { _: View?, _: Int, _: Int, _: Int, _: Int ->
-					Log.d(logID(), "Scrolled")
 					scrollHitBottom()
 				}
 			} else {
 				viewTreeObserver.addOnScrollChangedListener {
-					Log.d(logID(), "Scrolled")
 					scrollHitBottom()
 				}
 			}

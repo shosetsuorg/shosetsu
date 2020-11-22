@@ -25,6 +25,9 @@ data class ReaderChapterUI(
 		var bookmarked: Boolean,
 		private val chapterType: ChapterType
 ) : Convertible<ReaderChapterEntity>, ReaderUIItem<ReaderChapterUI, TypedReaderViewHolder>() {
+	override var identifier: Long
+		get() = id.toLong()
+		set(value) {}
 
 	var chapterReader: ChapterReader? = null
 		set(value) {
@@ -115,7 +118,6 @@ data class ReaderChapterUI(
 		if (link != other.link) return false
 		if (title != other.title) return false
 		if (bookmarked != other.bookmarked) return false
-
 		return true
 	}
 

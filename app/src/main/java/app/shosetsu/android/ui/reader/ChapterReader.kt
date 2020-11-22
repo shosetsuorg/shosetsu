@@ -112,8 +112,8 @@ class ChapterReader
 	/** On Destroy */
 	override fun onDestroy() {
 		logD("Destroying")
-		super.onDestroy()
 		viewpager.unregisterOnPageChangeCallback(pageChangeCallback)
+		super.onDestroy()
 	}
 
 	private fun handleChaptersResult(list: List<ReaderUIItem<*, *>>) {
@@ -122,24 +122,10 @@ class ChapterReader
 			if (it is ReaderChapterUI)
 				it.chapterReader = this
 		}
-		logD("Received ${list.size} chapter(s), old size: $oldSize")
-
-		// Prints out the pattern
-		run {
-			var string = ""
-			list.forEach {
-				when (it) {
-					is ReaderChapterUI -> string += "C"
-					is ReaderDividerUI -> string += "#"
-				}
-			}
-			logV("Pattern for received stuff\n$string")
-		}
 
 		FastAdapterDiffUtil[itemAdapter] =
 				calculateDiff(itemAdapter, list)
 
-		logD("New size ${itemAdapter.itemList.size()}")
 		if (oldSize == 0)
 			viewpager.setCurrentItem(getCurrentChapterIndex(), false)
 	}
@@ -152,7 +138,6 @@ class ChapterReader
 					}
 			) {
 				handleChaptersResult(it)
-
 			}
 		}
 
@@ -388,7 +373,6 @@ class ChapterReader
 			true
 		}
 		R.id.browser -> {
-
 			val url = chapterItems[viewModel.currentChapterID].link
 			if (url.isNotEmpty())
 				openInBrowser(url)
