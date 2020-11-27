@@ -1,20 +1,8 @@
 {
-  "latestVersion": "1049",
+  "latestVersion": "1051",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Emergency app update to fix critical issues",
-    "- Infinite scrolling, A bit buggy but works",
-    "- Locked out migration until figured out",
-    "- Working on TriStateButton.kt for filters",
-    "- Fixed mark read issues",
-    "- Fixed UI theme changing (hopefully)",
-    "- Cannot change versionName until i change versionCode which i cant change until a release",
-    "- Chapter filtering / sorting has framework has been added, nothing UI side",
-    "- DirectionalGroup.kt for new tri-state based buttons for chapter filtering",
-    "- Minor changes to NetworkControls.kt",
-    "- Minor changes to CatalogViewModel.kt",
-    "- Made nav bar transparent",
-    "# increment",
-    "- Fixed chapter resume button"
+    "- Fixed update hell in ChapterReader.kt",
+    "- New concurrency in ChapterReaderViewModel.kt"
   ]
 }
