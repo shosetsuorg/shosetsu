@@ -129,6 +129,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 					ReaderVolumeScroll,
 					ReaderIsInvertedSwipe,
 					ReadingMarkingType,
+					ReaderMarkReadAsReading,
+
 
 					//- Some things
 					ChaptersResumeFirstUnread,
@@ -179,7 +181,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 			)
 		}
 
-		fun getKey(key: String): SettingKey<*> = KEYS.find { it.name == key }!!
+		fun getKey(key: String): SettingKey<*> =
+				KEYS.find { it.name == key } ?: throw NullPointerException("Cannot find $key")
 	}
 }
 
