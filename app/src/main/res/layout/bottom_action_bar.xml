@@ -3,28 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_action_bar"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
     android:clipToPadding="false"
     android:padding="8dp"
     android:visibility="gone"
     tools:visibility="visible">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:cardCornerRadius="8dp">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="bottom"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:contentInsetEnd="8dp"
             app:contentInsetStart="8dp">
 
             <androidx.appcompat.widget.ActionMenuView
                 android:id="@+id/bottom_action_menu"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>
