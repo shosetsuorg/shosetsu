@@ -1,13 +1,18 @@
 {
-  "latestVersion": "1027",
+  "latestVersion": "1047",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Added select functions to DownloadsController.kt",
-    "- Fixed an issue with Paused downloads not displaying as paused in DownloadStatusConverter.kt",
-    "- Removed old popup menu xmls",
-    "- DownloadUI.kt with new selection stroke",
-    "- ChapterUI.kt has minor backend cleanup",
-    "- activity_chapter_view.xml is now activity_chapter_reader.xml",
-    "- minor renaming of xmls"
+    "- Emergency app update to fix critical issues",
+    "- Infinite scrolling, A bit buggy but works",
+    "- Locked out migration until figured out",
+    "- Working on TriStateButton.kt for filters",
+    "- Fixed mark read issues",
+    "- Fixed UI theme changing (hopefully)",
+    "- Cannot change versionName until i change versionCode which i cant change until a release",
+    "- Chapter filtering / sorting has framework has been added, nothing UI side",
+    "- DirectionalGroup.kt for new tri-state based buttons for chapter filtering",
+    "- Minor changes to NetworkControls.kt",
+    "- Minor changes to CatalogViewModel.kt",
+    "- Made nav bar transparent"
   ]
 }
