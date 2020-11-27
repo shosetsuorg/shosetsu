@@ -413,7 +413,7 @@ class ChapterReader
 		override fun onPageSelected(position: Int) {
 			itemAdapter.getAdapterItem(position).takeIf { it is ReaderChapterUI }?.apply {
 				this as ReaderChapterUI
-				logD("Page changed to $position ${chapterItems[position].link}")
+				logD("Page changed to $position ${this.link}")
 				viewModel.currentChapterID = id
 				viewModel.markAsReadingOnView(this)    // Mark read if set to onview
 				chapterItems.mapNotNull { it.reader }.find { it.chapter.id == id }?.apply {
