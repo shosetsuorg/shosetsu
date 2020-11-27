@@ -230,6 +230,23 @@ class NovelViewModel(
 			}
 
 	override fun reverseChapters() = chaptersManagement.toggleReverse()
+	override fun toggleOnlyDownloaded() {
+		TODO("Not yet implemented")
+	}
+
+	override fun toggleOnlyBookmarked() {
+		TODO("Not yet implemented")
+	}
+
+	override fun setSortType(sortType: ChapterSortType) {
+		TODO("Not yet implemented")
+	}
+
+	override fun showOnlyStatus(status: ReadingStatus?) {
+		TODO("Not yet implemented")
+	}
+
+
 	override fun setNovelID(novelID: Int) {
 		when {
 			novelIDValue == -1 -> logI("Setting NovelID")

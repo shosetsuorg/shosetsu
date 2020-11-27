@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+
+    <declare-styleable name="TriStateButton">
+        <attr name="android:text" format="string" />
+        <attr name="button_checked" format="reference" />
+        <attr name="button_unchecked" format="reference" />
+        <attr name="button_disabled" format="reference" />
+    </declare-styleable>
+</resources>

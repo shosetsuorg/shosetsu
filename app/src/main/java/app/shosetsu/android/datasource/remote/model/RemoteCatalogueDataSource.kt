@@ -62,8 +62,10 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 		return try {
 			logV("Data: $data")
 			val l = ext.listings[listing]
-			if (!l.isIncrementing && (data[PAGE_INDEX] as Int) > 0) emptyResult()
-			else successResult(l.getListing(data).toList())
+			if (!l.isIncrementing && (data[PAGE_INDEX] as Int) > 1) {
+				logV("### EMPTY RESULT ###")
+				emptyResult()
+			} else successResult(l.getListing(data).toList())
 		} catch (e: Exception) {
 			e.toHError()
 		}

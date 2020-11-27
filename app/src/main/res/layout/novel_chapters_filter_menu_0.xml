@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/read"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/read" />
+
+
+    <CheckBox
+        android:id="@+id/unread"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/unread" />
+
+
+    <CheckBox
+        android:id="@+id/downloaded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/downloaded" />
+
+    <CheckBox
+        android:id="@+id/bookmarked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bookmarked" />
+</LinearLayout>

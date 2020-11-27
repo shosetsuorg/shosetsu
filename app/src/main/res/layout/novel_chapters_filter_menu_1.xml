@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <app.shosetsu.android.view.widget.DirectionalGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <app.shosetsu.android.view.widget.TriStateButton
+            android:id="@+id/by_source"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:button="@drawable/directional_box_drawable"
+            android:text="By source"
+            app:button_checked="@drawable/expand_more"
+            app:button_unchecked="@drawable/expand_less" />
+
+        <app.shosetsu.android.view.widget.TriStateButton
+            android:id="@+id/by_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:button="@drawable/directional_box_drawable"
+            android:text="By number"
+            app:button_checked="@drawable/expand_more"
+            app:button_unchecked="@drawable/expand_less" />
+
+    </app.shosetsu.android.view.widget.DirectionalGroup>
+</LinearLayout>

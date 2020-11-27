@@ -27,7 +27,7 @@
 
     <string name="search">Search</string>
     <string name="configure_parsers">configure_parsers</string>
-    <string name="filter">true</string>
+    <string name="filter">Filter</string>
 
     <!-- View Titles -->
     <string name="my_library">My library</string>
@@ -327,6 +327,8 @@
     <string name="next_chapter">Next Chapter...</string>
 
     <string name="follow_system_theme">Follow System</string>
+    <string name="sort">Sort</string>
+    <string name="bookmarked">Bookmarked</string>
 
     <array name="application_themes">
         <item>@string/follow_system_theme</item>

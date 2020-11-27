@@ -66,7 +66,7 @@ class NovelController(bundle: Bundle)
 			}
 	*/
 
-	private val viewModel: INovelViewModel by viewModel()
+	internal val viewModel: INovelViewModel by viewModel()
 	override val viewTitle: String
 		get() = ""
 	private var resume: FloatingActionButton? = null
@@ -318,7 +318,22 @@ class NovelController(bundle: Bundle)
 				viewModel.openWebView()
 			}
 		})
+
+		fastAdapter.addEventHook(object : ClickEventHook<NovelUI>() {
+			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.filterChip else null
+
+			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<NovelUI>, item: NovelUI) {
+				openFilterMenu()
+			}
+		})
+
+
+
 		setObserver()
+	}
+
+	internal fun openFilterMenu() {
+
 	}
 
 	override fun onDestroy() {
@@ -363,6 +378,7 @@ class NovelController(bundle: Bundle)
 
 	private fun selectedChapters(): List<ChapterUI> =
 			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
+
 
 	private fun selectedChapterArray(): Array<ChapterUI> = selectedChapters().toTypedArray()
 	private fun bookmarkSelected() {

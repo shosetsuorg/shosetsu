@@ -8,6 +8,7 @@ import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.load.LoadCatalogueListingDataUseCase
@@ -114,18 +115,24 @@ class CatalogViewModel(
 
 
 	private suspend fun getDataLoaderAndLoad(): HResult<List<ACatalogNovelUI>> {
-		return if (query.isEmpty()) loadCatalogueListingData(
-				formatter!!,
-				filterData.apply {
-					this[PAGE_INDEX] = currentMaxPage
-				}
-		) else loadCatalogueQueryDataUseCase(
-				formatter!!,
-				query,
-				filterData.apply {
-					this[PAGE_INDEX] = currentMaxPage
-				}
-		)
+		return if (query.isEmpty()) {
+			logV("Loading listing data")
+			loadCatalogueListingData(
+					formatter!!,
+					filterData.apply {
+						this[PAGE_INDEX] = currentMaxPage
+					}
+			)
+		} else {
+			logV("Loading query data")
+			loadCatalogueQueryDataUseCase(
+					formatter!!,
+					query,
+					filterData.apply {
+						this[PAGE_INDEX] = currentMaxPage
+					}
+			)
+		}
 	}
 
 	@Synchronized

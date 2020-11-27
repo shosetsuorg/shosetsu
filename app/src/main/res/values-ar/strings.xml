@@ -13,7 +13,7 @@
     <string name="navigation_drawer_close">أغلق درج التصفح</string>
     <string name="search">ابحث</string>
     <string name="configure_parsers">اضبط المحللات</string>
-    <string name="filter">صحيح</string>
+    <string name="filter">منقي</string>
     <!-- View Titles -->
     <string name="my_library">مكتبتي</string>
     <string name="updates">التحديثات</string>

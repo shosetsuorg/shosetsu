@@ -1,6 +1,6 @@
 package app.shosetsu.android.providers.network
 
-import android.util.Log
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.utils.CookieJarSync
 import okhttp3.OkHttpClient
 import java.util.logging.Level
@@ -32,10 +32,10 @@ import java.util.logging.Logger
 fun createOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
 		.addInterceptor {
 			val r = it.request()
-			Log.i("OkHttpClient request", r.url.toUrl().toExternalForm())
+			it.logI(r.url.toUrl().toExternalForm())
 			return@addInterceptor it.proceed(r)
 		}.apply {
-			Logger.getLogger(OkHttpClient::class.java.name).level = Level.FINE
+			Logger.getLogger(OkHttpClient::class.java.name).level = Level.ALL
 		}
 		.cookieJar(CookieJarSync())
 		.build()

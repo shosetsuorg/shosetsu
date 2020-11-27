@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
@@ -60,6 +61,7 @@ abstract class INovelViewModel
 	abstract fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>>
 
 	abstract fun markAllChaptersAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus)
+
 	/**
 	 * Opens the chapter in webview
 	 */
@@ -67,7 +69,14 @@ abstract class INovelViewModel
 
 	abstract fun openBrowser(chapterUI: ChapterUI)
 
+
 	abstract fun reverseChapters()
+
+	abstract fun toggleOnlyDownloaded()
+	abstract fun toggleOnlyBookmarked()
+	abstract fun setSortType(sortType: ChapterSortType)
+	abstract fun showOnlyStatus(status: ReadingStatus?)
+
 
 	/**
 	 * Deletes a chapter
