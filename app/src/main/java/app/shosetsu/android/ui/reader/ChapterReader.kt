@@ -35,6 +35,7 @@ import kotlinx.android.synthetic.main.chapter_reader_bottom.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
+import kotlin.system.measureTimeMillis
 
 /*
  * This file is part of shosetsu.
@@ -117,29 +118,44 @@ class ChapterReader
 	}
 
 	private fun handleChaptersResult(list: List<ReaderUIItem<*, *>>) {
-		val oldSize = itemAdapter.itemList.size()
-		list.forEach {
-			if (it is ReaderChapterUI)
-				it.chapterReader = this
+		logV("handleChaptersResult")
+		val time = measureTimeMillis {
+			val oldSize = itemAdapter.itemList.size()
+
+			logV("Attaching self to each item")
+			val time = measureTimeMillis {
+
+				list.forEach {
+					if (it is ReaderChapterUI)
+						it.chapterReader = this
+				}
+			}
+			logV("Attaching self to each item completed in $time ms")
+
+			FastAdapterDiffUtil[itemAdapter] =
+					calculateDiff(itemAdapter, list)
+
+			if (oldSize == 0)
+				viewpager.setCurrentItem(getCurrentChapterIndex(), false)
 		}
+		logV("handleChaptersResult completed in $time ms")
 
-		FastAdapterDiffUtil[itemAdapter] =
-				calculateDiff(itemAdapter, list)
-
-		if (oldSize == 0)
-			viewpager.setCurrentItem(getCurrentChapterIndex(), false)
 	}
 
 	private fun setObservers() {
+		var collected = false
 		viewModel.liveData.observe(this) { result ->
-			result.handle(
-					onLoading = {
-						logD("Loading")
-					}
-			) {
-				handleChaptersResult(it)
-			}
+			if (!collected)
+				result.handle(
+						onLoading = {
+							logD("Loading")
+						}
+				) {
+					collected = true
+					handleChaptersResult(it)
+				}
 		}
+
 
 		viewModel.liveTheme.observe(this) { (t, b) ->
 			viewModel.defaultForeground = t
@@ -358,6 +374,7 @@ class ChapterReader
 			adapter = fastAdapter
 			registerOnPageChangeCallback(pageChangeCallback)
 			orientation = ViewPager2.ORIENTATION_VERTICAL
+			isNestedScrollingEnabled = true
 		}
 	}
 

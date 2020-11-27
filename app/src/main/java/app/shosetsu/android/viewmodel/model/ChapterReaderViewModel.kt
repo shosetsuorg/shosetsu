@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.model
 
 import android.graphics.Color
-import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
 import app.shosetsu.android.common.consts.settings.SettingKey.*
@@ -15,7 +14,6 @@ import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
@@ -29,6 +27,9 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 
 /*
  * This file is part of shosetsu.
@@ -60,37 +61,27 @@ class ChapterReaderViewModel(
 		private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IChapterReaderViewModel() {
 
-	private val hashMap: HashMap<Int, MutableLiveData<*>> = hashMapOf()
+	private val hashMap: HashMap<Int, Flow<*>> = hashMapOf()
 
 	override val liveData: LiveData<HResult<List<ReaderUIItem<*, *>>>> by lazy {
 		loadReaderChaptersUseCase(nID).mapLatestResult {
-			val array = ArrayList<ReaderUIItem<*, *>>(it)
+			withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+				successResult(ArrayList<ReaderUIItem<*, *>>(it).apply {
+					// Adds the "No more chapters" marker
+					add(size, ReaderDividerUI(prev = it.last().title))
 
-			// Adds the "No more chapters" marker
-			array.add(array.size, ReaderDividerUI(prev = it.last().title))
+					/**
+					 * Loops down the list, adding inbetweens
+					 */
+					val startPoint = size - 2
+					for (index in startPoint downTo 1)
+						add(index, ReaderDividerUI(
+								(this[index - 1] as ReaderChapterUI).title,
+								(this[index] as ReaderChapterUI).title
+						))
 
-			/**
-			 * Loops down the list, adding inbetweens
-			 */
-
-			/**
-			 * Loops down the list, adding inbetweens
-			 */
-			/**
-			 * Loops down the list, adding inbetweens
-			 */
-			/**
-			 * Loops down the list, adding inbetweens
-			 */
-			var index = array.size - 2
-			while (index > 0) {
-				val next: ReaderChapterUI = array[index] as ReaderChapterUI
-				val prev: ReaderChapterUI = array[index - 1] as ReaderChapterUI
-				array.add(index, ReaderDividerUI(prev.title, next.title))
-				index -= 1
+				})
 			}
-
-			successResult(array)
 		}.asIOLiveData()
 	}
 
@@ -170,22 +161,15 @@ class ChapterReaderViewModel(
 
 	@WorkerThread
 	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<String>> {
-		if (hashMap.containsKey(readerChapterUI.id)) {
-			Log.d(logID(), "Loading existing live data for ${readerChapterUI.id}")
-			return hashMap[readerChapterUI.id] as LiveData<HResult<String>>
-		}
+		if (hashMap.containsKey(readerChapterUI.id))
+			return hashMap[readerChapterUI.id]!!.asIOLiveData() as LiveData<HResult<String>>
 
-		Log.d(logID(), "Creating a new live data for ${readerChapterUI.id}")
-		val data = MutableLiveData<HResult<String>>()
-		hashMap[readerChapterUI.id] = data
-		launchIO {
-			data.postValue(loading())
-			Log.d(logID(), "Loading ${readerChapterUI.link}")
-			val v = loadChapterPassageUseCase(readerChapterUI)
-			Log.d(logID(), "I got a ${v.javaClass.simpleName}")
-			data.postValue(v)
-		}
-		return data
+		return flow {
+			emit(loading())
+			emit(loadChapterPassageUseCase(readerChapterUI))
+		}.also {
+			hashMap[readerChapterUI.id] = it
+		}.asIOLiveData()
 	}
 
 	override fun appendID(readerChapterUI: ReaderChapterUI): String =
