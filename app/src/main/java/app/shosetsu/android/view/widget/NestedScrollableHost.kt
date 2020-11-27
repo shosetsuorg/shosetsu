@@ -36,9 +36,10 @@ import kotlin.math.sign
  * This solution has limitations when using multiple levels of nested scrollable elements
  * (e.g. a horizontal RecyclerView in a vertical RecyclerView in a horizontal ViewPager2).
  */
-class NestedScrollableHost : FrameLayout {
-	constructor(context: Context) : super(context)
-	constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+class NestedScrollableHost @JvmOverloads constructor(
+		context: Context,
+		attrs: AttributeSet? = null
+) : FrameLayout(context, attrs) {
 
 	private var touchSlop = 0
 	private var initialX = 0f
@@ -67,9 +68,8 @@ class NestedScrollableHost : FrameLayout {
 		}
 	}
 
-	override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-		return handleInterceptTouchEvent(e) || super.onInterceptTouchEvent(e)
-	}
+	override fun onInterceptTouchEvent(e: MotionEvent): Boolean =
+			handleInterceptTouchEvent(e) || super.onInterceptTouchEvent(e)
 
 	/**
 	 * @return The child does not need to scroll.
