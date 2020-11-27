@@ -60,4 +60,7 @@ abstract class IDownloadsViewModel :
 
 	/** Marks all as paused*/
 	abstract fun pauseAll(list: List<DownloadUI>)
+
+
+	abstract fun deleteAll(list: List<DownloadUI>)
 }

@@ -113,4 +113,10 @@ class DownloadsViewModel(
 			list.forEach { updateDownloadUseCase(it.copy(status = DownloadStatus.PENDING)) }
 		}
 	}
+
+	override fun deleteAll(list: List<DownloadUI>) {
+		launchIO {
+			list.forEach { deleteDownloadUseCase(it) }
+		}
+	}
 }

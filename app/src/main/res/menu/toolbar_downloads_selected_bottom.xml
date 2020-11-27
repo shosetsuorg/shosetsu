@@ -23,4 +23,11 @@
         android:title="@string/restart"
         android:visible="false"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/trash"
+        android:title="@string/delete"
+        android:visible="false"
+        app:showAsAction="always" />
 </menu>

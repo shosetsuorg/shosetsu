@@ -20,7 +20,6 @@ package app.shosetsu.android.ui.downloads
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.enums.DownloadStatus.*
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.setOnPreClickListener
@@ -70,15 +69,19 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 				fastAdapter.getSelectExtension().selectedItems.toList()
 
 		binding.bottomMenu.findItem(R.id.pause)?.isVisible = selectedDownloads.any {
-			it.status == DownloadStatus.PENDING
+			it.status == PENDING
 		}
 
 		binding.bottomMenu.findItem(R.id.restart)?.isVisible = selectedDownloads.any {
-			it.status == DownloadStatus.ERROR
+			it.status == ERROR
 		}
 
 		binding.bottomMenu.findItem(R.id.start)?.isVisible = selectedDownloads.any {
 			it.status == PAUSED
+		}
+
+		binding.bottomMenu.findItem(R.id.delete)?.isVisible = selectedDownloads.any {
+			it.status == PAUSED || it.status == PENDING || it.status == ERROR
 		}
 	}
 
@@ -221,6 +224,14 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		}
 	}
 
+	private fun deleteNotDownloadingSelection() {
+		fastAdapter.getSelectExtension().selectedItems.filter {
+			it.status == PENDING || it.status == ERROR || it.status == PAUSED
+		}.let {
+			viewModel.deleteAll(it)
+		}
+	}
+
 	private fun selectAll() {
 		fastAdapter.getSelectExtension().select(true)
 	}
@@ -302,6 +313,11 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 					}
 					R.id.restart -> {
 						startFailedSelection()
+						actionMode?.finish()
+						true
+					}
+					R.id.delete -> {
+						deleteNotDownloadingSelection()
 						actionMode?.finish()
 						true
 					}
