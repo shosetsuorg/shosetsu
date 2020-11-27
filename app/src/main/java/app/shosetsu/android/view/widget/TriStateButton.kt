@@ -57,11 +57,10 @@ class TriStateButton @JvmOverloads constructor(
 	init {
 		inflate(context, R.layout.tri_state_button, this)
 		context.theme.obtainStyledAttributes(attrs, R.styleable.TriStateButton, defStyleAttr, 0).apply {
-
-			checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
-			uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
-			goneRes = getResourceId(R.styleable.TriStateButton_button_disabled, 0)
 			try {
+				checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
+				uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
+				goneRes = getResourceId(R.styleable.TriStateButton_button_disabled, 0)
 				textView.text = getString(R.styleable.TriStateButton_android_text) ?: ""
 			} finally {
 				recycle()
