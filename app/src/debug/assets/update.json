@@ -1,5 +1,5 @@
 {
-  "latestVersion": "1047",
+  "latestVersion": "1049",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
     "- Emergency app update to fix critical issues",
@@ -13,6 +13,8 @@
     "- DirectionalGroup.kt for new tri-state based buttons for chapter filtering",
     "- Minor changes to NetworkControls.kt",
     "- Minor changes to CatalogViewModel.kt",
-    "- Made nav bar transparent"
+    "- Made nav bar transparent",
+    "# increment",
+    "- Fixed chapter resume button"
   ]
 }
