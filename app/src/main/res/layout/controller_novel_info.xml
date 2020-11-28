@@ -14,11 +14,13 @@
 
         <app.shosetsu.android.view.widget.FlingRecyclerView
             android:id="@+id/recyclerView"
-            android:scrollbarSize="4dp"
-            android:scrollbarStyle="insideOverlay"
-            android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:fastScrollEnabled="true"
+            app:fastScrollHorizontalThumbDrawable="@drawable/thumb_drawable"
+            app:fastScrollHorizontalTrackDrawable="@drawable/track_drawable"
+            app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
+            app:fastScrollVerticalTrackDrawable="@drawable/track_drawable"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="100"
             tools:listitem="@layout/recycler_novel_chapter" />
