@@ -1,8 +1,9 @@
 {
-  "latestVersion": "1051",
+  "latestVersion": "1061",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Fixed update hell in ChapterReader.kt",
-    "- New concurrency in ChapterReaderViewModel.kt"
+    "- added fast scroller to recyclerviews",
+    "- flinging in novel info view goes to top or bottom of the list respectfully",
+    "- updated kotlin-lib"
   ]
 }
