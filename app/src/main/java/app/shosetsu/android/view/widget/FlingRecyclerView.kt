@@ -3,11 +3,10 @@ package app.shosetsu.android.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.consts.FLING_DIVIDE
-import app.shosetsu.android.common.consts.FLING_SPEED
 import app.shosetsu.android.common.consts.FLING_THRESHOLD
-import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
+import kotlin.math.abs
 
 /*
  * This file is part of Shosetsu.
@@ -30,23 +29,29 @@ import app.shosetsu.android.common.ext.logV
  * shosetsu
  * 30 / 09 / 2020
  */
-class FlingRecyclerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : RecyclerView(context, attrs) {
+class FlingRecyclerView @JvmOverloads constructor(
+		context: Context,
+		attrs: AttributeSet? = null
+) : RecyclerView(context, attrs) {
 	init {
 		setItemViewCacheSize(20)
+		isNestedScrollingEnabled = false
 	}
 
 	override fun fling(velocityX: Int, velocityY: Int): Boolean {
 		// ignore if under a certain fling
-		if (velocityY < FLING_THRESHOLD) return super.fling(velocityX, velocityY)
+		logV("Velocity is $velocityY")
+		if (abs(velocityY) <= FLING_THRESHOLD) return super.fling(velocityX, velocityY)
 
-		logV("Fling")
-		val size = adapter?.itemCount ?: 1
-		logD("Size: $size")
-		val extraFling = (size / FLING_DIVIDE) + 1
-		val multiplier = (FLING_SPEED + extraFling)
-		logD("Extra by $extraFling, final multiplier $multiplier")
-		val finalVelocity = velocityY * multiplier
-		logD("Final velocity: $finalVelocity")
-		return super.fling(velocityX, finalVelocity)
+		val position = if (velocityY > 0) {
+			logI("Launching to the bottom")
+			(adapter!!.itemCount) - 5
+		} else {
+			logI("Launching to the top")
+			0
+		}
+
+		super.scrollToPosition(position)
+		return false
 	}
 }
