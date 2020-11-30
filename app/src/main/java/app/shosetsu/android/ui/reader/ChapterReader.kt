@@ -143,15 +143,12 @@ class ChapterReader
 	}
 
 	private fun setObservers() {
-		var collected = false
 		viewModel.liveData.observe(this) { result ->
-			if (!collected)
 				result.handle(
 						onLoading = {
 							logD("Loading")
 						}
 				) {
-					collected = true
 					handleChaptersResult(it)
 				}
 		}

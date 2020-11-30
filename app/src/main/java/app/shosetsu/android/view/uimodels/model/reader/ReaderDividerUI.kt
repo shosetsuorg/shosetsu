@@ -15,9 +15,34 @@ data class ReaderDividerUI(
 		val prev: String,
 		val next: String? = null
 ) : ReaderUIItem<ReaderDividerUI, ReaderDividerUI.ViewHolder>() {
+	override var identifier: Long
+		get() = (prev.hashCode() + next.hashCode()).toLong()
+		set(value) {}
+
 	override val layoutRes: Int = R.layout.chapter_divider
 	override val type: Int = R.layout.chapter_divider
+
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+		if (!super.equals(other)) return false
+
+		other as ReaderDividerUI
+
+		if (prev != other.prev) return false
+		if (next != other.next) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = super.hashCode()
+		result = 31 * result + prev.hashCode()
+		result = 31 * result + (next?.hashCode() ?: 0)
+		return result
+	}
 
 	class ViewHolder(view: View) : BindViewHolder<ReaderDividerUI, ChapterDividerBinding>(view) {
 		override val binding: ChapterDividerBinding =
@@ -42,4 +67,6 @@ data class ReaderDividerUI(
 			previousChapter.text = null
 		}
 	}
+
+
 }
