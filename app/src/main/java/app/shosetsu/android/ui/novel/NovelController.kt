@@ -157,7 +157,9 @@ class NovelController(bundle: Bundle)
 							activity?.openChapter(getChapters()[chapterIndex])
 						}
 					}
-					HResult.Loading -> TODO()
+					is HResult.Loading -> {
+						// Ignore the loading
+					}
 				}
 			})
 		}
