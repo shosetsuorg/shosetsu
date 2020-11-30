@@ -1,8 +1,8 @@
 {
-  "latestVersion": "1068",
+  "latestVersion": "1071",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- increased velocity required to fling to top and bottom of novel info",
-    "- fixed bottom menu not appearing"
+    "- added transparency to reader bars",
+    "- added focusing ability by clicking the reader context, this hides the top and bottom bar in the reader, warning is that you will need to jiggle after un-hiding"
   ]
 }
