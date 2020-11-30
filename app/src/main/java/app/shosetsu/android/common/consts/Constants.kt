@@ -59,3 +59,5 @@ const val VISIBLE: Int = View.VISIBLE
 
 @Deprecated("Just use View", replaceWith = ReplaceWith("GONE", "import android.view.View.GONE"), DeprecationLevel.WARNING)
 const val GONE: Int = View.GONE
+
+const val READER_BAR_ALPHA: Float = 0.8F

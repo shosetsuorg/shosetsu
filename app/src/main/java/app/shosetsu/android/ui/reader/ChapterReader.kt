@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
+import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.enums.TextSizes
@@ -111,6 +112,9 @@ class ChapterReader
 		setupViewPager()
 		setupBottomMenu()
 		setObservers()
+
+		toolbar.alpha = READER_BAR_ALPHA
+		chapter_reader_bottom.alpha = READER_BAR_ALPHA
 	}
 
 	/** On Destroy */
