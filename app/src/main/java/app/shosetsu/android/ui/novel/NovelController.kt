@@ -153,10 +153,11 @@ class NovelController(bundle: Bundle)
 						val chapterIndex = result.data
 						Log.d(logID(), "Got a value of $chapterIndex")
 						if (chapterIndex != -1) {
-							recyclerView.scrollToPosition(chapterIndex)
+							recyclerView.scrollToPosition(itemAdapter.getAdapterPosition(getChapters()[chapterIndex].identifier))
 							activity?.openChapter(getChapters()[chapterIndex])
 						}
 					}
+					HResult.Loading -> TODO()
 				}
 			})
 		}
@@ -379,8 +380,8 @@ class NovelController(bundle: Bundle)
 	private fun selectedChapters(): List<ChapterUI> =
 			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
-
 	private fun selectedChapterArray(): Array<ChapterUI> = selectedChapters().toTypedArray()
+
 	private fun bookmarkSelected() {
 		viewModel.bookmarkChapters(*selectedChapterArray())
 	}
