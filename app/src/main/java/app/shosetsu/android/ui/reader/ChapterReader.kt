@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.dto.handle
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.enums.TextSizes
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
@@ -124,7 +125,6 @@ class ChapterReader
 
 			logV("Attaching self to each item")
 			val time = measureTimeMillis {
-
 				list.forEach {
 					if (it is ReaderChapterUI)
 						it.chapterReader = this
@@ -428,23 +428,33 @@ class ChapterReader
 
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
-			itemAdapter.getAdapterItem(position).takeIf { it is ReaderChapterUI }?.apply {
-				this as ReaderChapterUI
-				logD("Page changed to $position ${this.link}")
-				viewModel.currentChapterID = id
-				viewModel.markAsReadingOnView(this)    // Mark read if set to onview
-				chapterItems.mapNotNull { it.reader }.find { it.chapter.id == id }?.apply {
-					chapterReader = this@ChapterReader
-					syncBackgroundColor()
-					syncTextColor()
-					syncTextSize()
-					syncTextPadding()
+			when (val item = itemAdapter.getAdapterItem(position)) {
+				is ReaderChapterUI -> {
+					item.apply {
+						logD("Page changed to $position ${this.link}")
+						viewModel.currentChapterID = id
+						viewModel.markAsReadingOnView(this)    // Mark read if set to onview
+						chapterItems.mapNotNull { it.reader }.find { it.chapter.id == id }?.apply {
+							chapterReader = this@ChapterReader
+							syncBackgroundColor()
+							syncTextColor()
+							syncTextSize()
+							syncTextPadding()
+						}
+						supportActionBar?.title = title
+						setBookmarkIcon(this)
+					}
 				}
-				supportActionBar?.title = title
-				setBookmarkIcon(this)
-			} ?: {
-				supportActionBar?.setTitle(R.string.next_chapter)
-			}()
+				is ReaderDividerUI -> {
+					supportActionBar?.setTitle(R.string.next_chapter)
+					val lastChapter = itemAdapter.getAdapterItem(position - 1) as ReaderChapterUI
+
+					// Marks the previous chapter as read when you hit the divider
+					// This was implemented due to performance shortcuts taken due to excessive
+					// [handleChaptersResult] operation time
+					viewModel.updateChapter(lastChapter, readingStatus = ReadingStatus.READ, readingPosition = 0)
+				}
+			}
 		}
 	}
 }
