@@ -35,7 +35,6 @@ class FlingRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs) {
 	init {
 		setItemViewCacheSize(20)
-		isNestedScrollingEnabled = false
 	}
 
 	override fun fling(velocityX: Int, velocityY: Int): Boolean {

@@ -44,7 +44,7 @@ val SHOSETSU_UPDATE_URL: String =
 const val SELECTED_STROKE_WIDTH: Int = 8
 
 /** How fast the user must fling inorder to activate the scroll to last */
-const val FLING_THRESHOLD = 18000
+const val FLING_THRESHOLD = 19999
 
 const val SCRIPT_DIR: String = "/scripts/"
 const val LIBRARY_DIR: String = "/libraries/"
