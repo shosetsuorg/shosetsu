@@ -56,7 +56,7 @@ abstract class TypedReaderViewHolder(
 	/**
 	 * When the user double clicks the window
 	 */
-	abstract fun setOnFocusListener(focus: () -> Unit)
+	abstract fun getFocusTarget(): View?
 
 	abstract fun hideProgress()
 	abstract fun showProgress()

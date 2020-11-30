@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.util.set
+import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
@@ -31,7 +32,8 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.mikepenz.fastadapter.select.selectExtension
 import com.skydoves.colorpickerview.ColorPickerDialog
-import kotlinx.android.synthetic.main.activity_chapter_reader.*
+import kotlinx.android.synthetic.main.activity_reader.*
+import kotlinx.android.synthetic.main.bottom_action_bar.view.*
 import kotlinx.android.synthetic.main.chapter_reader_bottom.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -60,7 +62,7 @@ import kotlin.system.measureTimeMillis
  * 13 / 12 / 2019
  */
 class ChapterReader
-	: AppCompatActivity(R.layout.activity_chapter_reader), KodeinAware {
+	: AppCompatActivity(R.layout.activity_reader), KodeinAware {
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel: IChapterReaderViewModel by viewModel()
 
@@ -144,13 +146,13 @@ class ChapterReader
 
 	private fun setObservers() {
 		viewModel.liveData.observe(this) { result ->
-				result.handle(
-						onLoading = {
-							logD("Loading")
-						}
-				) {
-					handleChaptersResult(it)
-				}
+			result.handle(
+					onLoading = {
+						logD("Loading")
+					}
+			) {
+				handleChaptersResult(it)
+			}
 		}
 
 
@@ -423,6 +425,38 @@ class ChapterReader
 		return super.onKeyDown(keyCode, event)
 	}
 
+	private fun focusListener(view: View) {
+
+		toolbar.isVisible = if (toolbar.isVisible) {
+			toast("hidden")
+			chapter_reader_bottom.isVisible = false
+			false
+		} else {
+			toast("shown")
+			chapter_reader_bottom.isVisible = true
+			true
+		}
+
+
+		bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
+			STATE_HIDDEN -> STATE_COLLAPSED
+			else -> STATE_HIDDEN
+		}
+	}
+
+	fun syncReader(typedReaderViewHolder: TypedReaderViewHolder) = typedReaderViewHolder.apply {
+		chapterReader = this@ChapterReader
+		syncBackgroundColor()
+		syncTextColor()
+		syncTextSize()
+		syncTextPadding()
+		getFocusTarget()?.setOnClickListener {
+			logI("Click")
+			focusListener(it)
+		} ?: logE("Returned target was null")
+	}
+
+
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
 			when (val item = itemAdapter.getAdapterItem(position)) {
@@ -431,13 +465,7 @@ class ChapterReader
 						logD("Page changed to $position ${this.link}")
 						viewModel.currentChapterID = id
 						viewModel.markAsReadingOnView(this)    // Mark read if set to onview
-						chapterItems.mapNotNull { it.reader }.find { it.chapter.id == id }?.apply {
-							chapterReader = this@ChapterReader
-							syncBackgroundColor()
-							syncTextColor()
-							syncTextSize()
-							syncTextPadding()
-						}
+						reader?.let { syncReader(it) } ?: logE("Reader is null")
 						supportActionBar?.title = title
 						setBookmarkIcon(this)
 					}

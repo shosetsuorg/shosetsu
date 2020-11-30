@@ -14,7 +14,6 @@ import androidx.lifecycle.LifecycleObserver
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
-import app.shosetsu.android.view.setOnDoubleClickListener
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
@@ -141,9 +140,7 @@ class StringReader(
 		scrollView.scrollTo(0, progress)
 	}
 
-	override fun setOnFocusListener(focus: () -> Unit) {
-		textView.setOnDoubleClickListener { focus() }
-	}
+	override fun getFocusTarget(): View = textView
 
 	override fun syncTextColor() {
 		textView.setTextColor(chapterReader.viewModel.defaultForeground)
@@ -189,6 +186,7 @@ class StringReader(
 	}
 
 	override fun unbindView(item: ReaderChapterUI) {
+		textView.setOnClickListener(null)
 	}
 
 	override fun incrementScroll() {

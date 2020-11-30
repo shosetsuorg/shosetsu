@@ -61,7 +61,7 @@ class HTMLReader(itemView: View) : TypedReaderViewHolder(itemView) {
 	override fun setProgress(progress: Int) {
 	}
 
-	override fun setOnFocusListener(focus: () -> Unit) {
+	override fun getFocusTarget(): View? {
 		TODO("Not yet implemented")
 	}
 

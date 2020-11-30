@@ -66,7 +66,7 @@ class EPUBReader(itemView: View) : TypedReaderViewHolder(itemView) {
 		TODO("Not yet implemented")
 	}
 
-	override fun setOnFocusListener(focus: () -> Unit) {
+	override fun getFocusTarget(): View? {
 		TODO("Not yet implemented")
 	}
 

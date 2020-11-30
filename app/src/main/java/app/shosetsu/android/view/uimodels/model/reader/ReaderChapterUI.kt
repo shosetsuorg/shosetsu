@@ -5,6 +5,7 @@ import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
@@ -42,7 +43,8 @@ data class ReaderChapterUI(
 				this.chapter = this@ReaderChapterUI
 				this@ReaderChapterUI.chapterReader?.let {
 					this.chapterReader = it
-				}
+				} ?: logE("ChapterReader reference is null")
+				this.chapterReader.syncReader(this)
 			}
 		}
 
