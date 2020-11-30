@@ -1,9 +1,8 @@
 {
-  "latestVersion": "1065",
+  "latestVersion": "1068",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "Solved an issue with performance, restoring the reactive data stream",
-    "Fixed resume button not scrolling to proper chapter",
-    "Fixed reading status not being marked read when going into a divider"
+    "- increased velocity required to fling to top and bottom of novel info",
+    "- fixed bottom menu not appearing"
   ]
 }
