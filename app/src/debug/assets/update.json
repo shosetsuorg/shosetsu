@@ -1,9 +1,9 @@
 {
-  "latestVersion": "1061",
+  "latestVersion": "1065",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- added fast scroller to recyclerviews",
-    "- flinging in novel info view goes to top or bottom of the list respectfully",
-    "- updated kotlin-lib"
+    "Solved an issue with performance, restoring the reactive data stream",
+    "Fixed resume button not scrolling to proper chapter",
+    "Fixed reading status not being marked read when going into a divider"
   ]
 }
