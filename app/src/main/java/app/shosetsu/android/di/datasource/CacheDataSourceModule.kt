@@ -1,7 +1,7 @@
 package app.shosetsu.android.di.datasource
 
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.LOLLIPOP_MR1
+import android.os.Build.VERSION_CODES.M
 import app.shosetsu.android.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.android.datasource.memory.base.IMemExtensionsDataSource
@@ -40,19 +40,19 @@ import org.kodein.di.generic.singleton
 
 val cacheDataSourceModule: Kodein.Module = Kodein.Module("cache_data_source_module") {
 	bind<IMemChaptersDataSource>() with singleton {
-		if (SDK_INT <= LOLLIPOP_MR1)
+		if (SDK_INT <= M)
 			ManualMemChaptersDataSource() else
 			GuavaMemChaptersDataSource()
 	}
 
 	bind<IMemExtensionsDataSource>() with singleton {
-		if (SDK_INT <= LOLLIPOP_MR1)
+		if (SDK_INT <= M)
 			ManualMemExtensionDataSource() else
 			GuavaMemExtensionDataSource()
 	}
 
 	bind<IMemExtLibDataSource>() with singleton {
-		if (SDK_INT <= LOLLIPOP_MR1)
+		if (SDK_INT <= M)
 			ManualMemExtLibDataSource() else
 			GuavaMemExtLibDataSource()
 	}
