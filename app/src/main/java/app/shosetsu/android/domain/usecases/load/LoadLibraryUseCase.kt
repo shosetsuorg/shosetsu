@@ -1,14 +1,14 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.consts.settings.SettingKey
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handleReturn
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.CompactBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.FullBookmarkedNovelUI
+import app.shosetsu.common.com.consts.settings.SettingKey
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handleReturn
+import app.shosetsu.common.com.dto.successResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll

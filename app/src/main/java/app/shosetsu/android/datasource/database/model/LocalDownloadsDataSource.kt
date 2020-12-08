@@ -1,13 +1,11 @@
 package app.shosetsu.android.datasource.database.model
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.emptyResult
-import app.shosetsu.android.common.dto.mapLatestToSuccess
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.providers.database.dao.DownloadsDao
+import app.shosetsu.common.com.dto.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -38,7 +36,7 @@ class LocalDownloadsDataSource(
 ) : ILocalDownloadsDataSource {
 	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> = flow {
 		try {
-			emitAll(downloadsDao.loadDownloadItems().mapLatestToSuccess())
+			emitAll(downloadsDao.loadDownloadItems().mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
@@ -51,25 +49,25 @@ class LocalDownloadsDataSource(
 	}
 
 	override suspend fun loadFirstDownload(): HResult<DownloadEntity> = try {
-		downloadsDao.loadFirstDownload()?.let { successResult(it) } ?: emptyResult()
+		downloadsDao.loadFirstDownload()?.convertTo()?.let { successResult(it) } ?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun insertDownload(downloadEntity: DownloadEntity): HResult<Long> = try {
-		successResult(downloadsDao.insertIgnore(downloadEntity))
+		successResult(downloadsDao.insertIgnore(downloadEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun updateDownload(downloadEntity: DownloadEntity): HResult<*> = try {
-		successResult(downloadsDao.suspendedUpdate(downloadEntity))
+		successResult(downloadsDao.suspendedUpdate(downloadEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun deleteDownload(downloadEntity: DownloadEntity): HResult<*> = try {
-		successResult(downloadsDao.suspendedDelete(downloadEntity))
+		successResult(downloadsDao.suspendedDelete(downloadEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
@@ -81,7 +79,7 @@ class LocalDownloadsDataSource(
 	}
 
 	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> = try {
-		successResult(downloadsDao.loadDownload(chapterID))
+		successResult(downloadsDao.loadDownload(chapterID).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}

@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.model.local
 
 import androidx.annotation.NonNull
-import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.common.com.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

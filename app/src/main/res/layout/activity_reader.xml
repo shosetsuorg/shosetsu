@@ -43,5 +43,6 @@
         android:textIsSelectable="false"
         tools:text="20%" />
 
-    <include layout="@layout/chapter_reader_bottom" />
+    <include layout="@layout/chapter_reader_bottom"
+        android:id="@+id/chapter_reader_bottom"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

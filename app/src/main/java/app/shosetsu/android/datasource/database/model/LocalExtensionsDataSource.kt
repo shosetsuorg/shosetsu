@@ -1,13 +1,12 @@
 package app.shosetsu.android.datasource.database.model
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.mapLatestToSuccess
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.providers.database.dao.ExtensionsDao
+import app.shosetsu.common.com.dto.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -40,7 +39,7 @@ class LocalExtensionsDataSource(
 ) : ILocalExtensionsDataSource {
 	override fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>> = flow {
 		try {
-			emitAll(extensionsDao.loadExtensions().mapLatestToSuccess())
+			emitAll(extensionsDao.loadExtensions().mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
@@ -48,7 +47,7 @@ class LocalExtensionsDataSource(
 
 	override fun loadExtensionLive(formatterID: Int): Flow<HResult<ExtensionEntity>> = flow {
 		try {
-			emitAll(extensionsDao.getExtensionLive(formatterID).mapLatestToSuccess())
+			emitAll(extensionsDao.getExtensionLive(formatterID).mapLatestTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
@@ -65,31 +64,31 @@ class LocalExtensionsDataSource(
 	}
 
 	override suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
-		successResult(extensionsDao.suspendedUpdate(extensionEntity))
+		successResult(extensionsDao.suspendedUpdate(extensionEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun deleteExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
-		successResult(extensionsDao.suspendedDelete(extensionEntity))
+		successResult(extensionsDao.suspendedDelete(extensionEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity> = try {
-		successResult(extensionsDao.getExtension(formatterID))
+		successResult(extensionsDao.getExtension(formatterID).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> = try {
-		successResult(extensionsDao.insertOrUpdate(extensionEntity))
+		successResult(extensionsDao.insertOrUpdate(extensionEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> = try {
-		successResult(extensionsDao.getExtensions(repoID))
+		successResult(extensionsDao.getExtensions(repoID).mapTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}

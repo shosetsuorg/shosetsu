@@ -1,12 +1,12 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

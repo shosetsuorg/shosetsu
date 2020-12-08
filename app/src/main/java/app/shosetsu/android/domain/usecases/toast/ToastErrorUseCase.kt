@@ -2,8 +2,8 @@ package app.shosetsu.android.domain.usecases.toast
 
 import android.app.Application
 import android.widget.Toast
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.toast
+import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.lib.HTTPException
 
 /*

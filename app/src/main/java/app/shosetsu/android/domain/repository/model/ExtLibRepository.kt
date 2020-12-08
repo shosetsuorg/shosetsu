@@ -1,12 +1,7 @@
 package app.shosetsu.android.domain.repository.model
 
 import android.database.sqlite.SQLiteException
-import android.util.Log
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.datasource.database.base.ILocalExtLibDataSource
 import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
@@ -14,6 +9,9 @@ import app.shosetsu.android.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.domain.repository.base.IExtLibRepository
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.dto.successResult
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.J_VERSION
 import org.json.JSONException
@@ -65,7 +63,6 @@ class ExtLibRepository(
 				memSource.setLibrary(extLibEntity.scriptName, data)
 				fileSource.writeExtLib(extLibEntity.scriptName, data)
 			} catch (e: JSONException) {
-				Log.e(logID(), "Unhandled", e)
 				return errorResult(e)
 			}
 		}

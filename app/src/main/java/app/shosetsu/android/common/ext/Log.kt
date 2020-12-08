@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.ext
 
 import android.util.Log.*
-import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.common.com.dto.HResult
 
 /*
  * This file is part of shosetsu.

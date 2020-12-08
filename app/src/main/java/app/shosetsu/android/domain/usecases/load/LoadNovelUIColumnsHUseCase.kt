@@ -1,4 +1,7 @@
-package app.shosetsu.android.common.consts
+package app.shosetsu.android.domain.usecases.load
+
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.common.com.consts.settings.SettingKey.ChapterColumnsInLandscape
 
 /*
  * This file is part of Shosetsu.
@@ -17,24 +20,12 @@ package app.shosetsu.android.common.consts
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Control memory parameters
-
-/** How many chapters allowed in memory at once */
-const val MEMORY_MAX_CHAPTERS = 100L
-
-/** How long can a chapter can remain in memory (minutes) */
-const val MEMORY_EXPIRE_CHAPTER_TIME = 10L
-
-
-/** How many extensions allowed in memory at once */
-const val MEMORY_MAX_EXTENSIONS = 100L
-
-/** How long can an extension remain in memory (hours) */
-const val MEMORY_EXPIRE_EXTENSION_TIME = 1L
-
-
-/** How many ext-libs allowed in memory at once */
-const val MEMORY_MAX_EXT_LIBS = 100L
-
-/** How long can a ext-lib remain in memory (minutes) */
-const val MEMORY_EXPIRE_EXT_LIB_TIME = 20L
+/**
+ * shosetsu
+ * 08 / 12 / 2020
+ */
+class LoadNovelUIColumnsHUseCase(
+		private val iSettingsRepository: ISettingsRepository
+) {
+	operator fun invoke() = iSettingsRepository.observeInt(ChapterColumnsInLandscape)
+}

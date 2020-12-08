@@ -3,6 +3,7 @@ package app.shosetsu.android.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.ActionMode
+import android.view.LayoutInflater.from
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
@@ -11,7 +12,8 @@ import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.android.synthetic.main.bottom_action_bar.view.*
+import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding.inflate
 
 /*
  * This file is part of Shosetsu.
@@ -37,39 +39,38 @@ import kotlinx.android.synthetic.main.bottom_action_bar.view.*
 class BottomActionBar @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null)
 	: FrameLayout(context, attrs) {
 
-	init {
-		inflate(context, R.layout.bottom_action_bar, this)
-	}
+	private val binding: BottomActionBarBinding =
+			inflate(from(context), this, false)
 
 	/**
 	 * Removes all items
 	 */
 	fun clear() {
-		bottom_action_menu.menu.clear()
-		bottom_action_menu.setOnMenuItemClickListener(null)
+		binding.bottomActionMenu.menu.clear()
+		binding.bottomActionMenu.setOnMenuItemClickListener(null)
 	}
 
-	fun findItem(@IdRes id: Int): MenuItem? = bottom_action_menu.menu.findItem(id)
+	fun findItem(@IdRes id: Int): MenuItem? = binding.bottomActionMenu.menu.findItem(id)
 
 	fun show(mode: ActionMode, @MenuRes menuRes: Int, listener: (item: MenuItem) -> Boolean) {
 		// Avoid re-inflating the menu
-		if (bottom_action_menu.menu.size() == 0) {
-			mode.menuInflater.inflate(menuRes, bottom_action_menu.menu)
-			bottom_action_menu.setOnMenuItemClickListener { listener(it) }
+		if (binding.bottomActionMenu.menu.size() == 0) {
+			mode.menuInflater.inflate(menuRes, binding.bottomActionMenu.menu)
+			binding.bottomActionMenu.setOnMenuItemClickListener { listener(it) }
 		}
 
-		bottom_action_bar.visibility = View.VISIBLE
+		binding.bottomActionBar.visibility = View.VISIBLE
 		val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_down)
-		bottom_action_bar.startAnimation(bottomAnimation)
+		binding.bottomActionBar.startAnimation(bottomAnimation)
 	}
 
 	fun hide() {
 		val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_up)
 		bottomAnimation.setAnimationListener(object : SimpleAnimationListener() {
 			override fun onAnimationEnd(animation: Animation) {
-				bottom_action_bar.visibility = View.GONE
+				binding.bottomActionBar.visibility = View.GONE
 			}
 		})
-		bottom_action_bar.startAnimation(bottomAnimation)
+		binding.bottomActionBar.startAnimation(bottomAnimation)
 	}
 }

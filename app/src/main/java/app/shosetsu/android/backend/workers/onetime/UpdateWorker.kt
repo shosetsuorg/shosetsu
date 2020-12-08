@@ -16,9 +16,6 @@ import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
-import app.shosetsu.android.common.consts.settings.SettingKey.*
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.combine
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
@@ -28,6 +25,9 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
+import app.shosetsu.common.com.consts.settings.SettingKey.*
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handle
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein

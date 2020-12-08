@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.activity.MainActivity
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.requestPerms
 import app.shosetsu.android.ui.intro.IntroductionActivity
+import app.shosetsu.android.viewmodel.abstracted.ASplashScreenViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -39,45 +39,44 @@ import org.kodein.di.generic.instance
  * 9 / June / 2019
  */
 class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
-    companion object {
-        const val INTRO_CODE: Int = 1944
-    }
+	companion object {
+		const val INTRO_CODE: Int = 1944
+	}
 
-    override val kodein: Kodein by closestKodein()
-    val settings: ShosetsuSettings by instance()
+	override val kodein: Kodein by closestKodein()
+	private val viewModel: ASplashScreenViewModel by instance()
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == INTRO_CODE) {
-            settings.showIntro = false
-            startBoot()
-        }
-    }
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if (requestCode == INTRO_CODE) {
+			viewModel.toggleShowIntro()
+			startBoot()
+		}
+	}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        this.requestPerms()
-        super.onCreate(savedInstanceState)
-        // Settings setup
-        if (settings.showIntro) {
-            Log.i(logID(), "First time, Launching activity")
-            startActivityForResult(Intent(
-                    this,
-                    IntroductionActivity::class.java
-            ), INTRO_CODE)
-        } else {
-            startBoot()
-        }
-    }
+	override fun onCreate(savedInstanceState: Bundle?) {
+		this.requestPerms()
+		super.onCreate(savedInstanceState)
+		// Settings setup
+		if (viewModel.showIntro()) {
+			Log.i(logID(), "First time, Launching activity")
+			startActivityForResult(Intent(
+					this,
+					IntroductionActivity::class.java
+			), INTRO_CODE)
+		} else {
+			startBoot()
+		}
+	}
 
-    private fun startBoot() {
-        with(this@SplashScreen) {
-            val intent = Intent(this, MainActivity::class.java)
-            Log.i(logID(), "Passing Intent ${this.intent.action}")
-            intent.action = this.intent.action
-            this.intent.extras?.let { intent.putExtras(it) }
-            startActivity(intent)
-            finish()
-        }
-    }
+	private fun startBoot() {
+		with(this@SplashScreen) {
+			startActivity(Intent(this, MainActivity::class.java).apply {
+				action = intent.action
+				intent.extras?.let { putExtras(it) }
+			})
+			finish()
+		}
+	}
 }

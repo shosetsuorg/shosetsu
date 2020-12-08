@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.file.base
 
-import app.shosetsu.android.common.consts.settings.SettingKey
-import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.common.com.consts.settings.SettingKey
+import app.shosetsu.common.com.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*

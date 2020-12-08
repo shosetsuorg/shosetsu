@@ -6,11 +6,11 @@ import android.content.Intent
 import android.util.Log
 import app.shosetsu.android.backend.workers.perodic.AppUpdateCycleWorker
 import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
-import app.shosetsu.android.common.consts.settings.SettingKey
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.common.com.consts.settings.SettingKey
+import app.shosetsu.common.com.dto.HResult
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein

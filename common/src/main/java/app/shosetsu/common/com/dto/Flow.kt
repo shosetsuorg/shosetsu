@@ -1,4 +1,4 @@
-package app.shosetsu.android.common.dto
+package app.shosetsu.common.com.dto
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
@@ -38,14 +38,24 @@ inline fun <reified I : Any, O : Any> Flow<HResult<I>>.mapLatestResult(
 	)
 }
 
-/**
- *
- */
+
+/** Converts each [Convertible] emitted by the [Flow] from its [O] form to its [I] form */
+inline fun <reified I : Convertible<O>, reified O : Any> Flow<I>.mapLatestTo()
+		: Flow<O> = mapLatest { it.convertTo() }
+
+/** Converts each [List] of [Convertible] emitted by the [Flow] from its [O] form to its [I] form */
+inline fun <reified I : Convertible<O>, reified O : Any> Flow<List<I>>.mapLatestListTo()
+		: Flow<List<O>> = mapLatest { it.mapTo() }
+
+/** Converts each value emitted by the [Flow] as an [HResult.Success] */
 inline fun <reified I : Any> Flow<I>.mapLatestToSuccess(): Flow<HResult<I>> =
 		mapLatest { successResult(it) }
 
-inline fun <reified I : Convertible<O>, reified O : Any> Flow<HResult<List<I>>>.mapLatestListTo()
+/** Converts a [HResult.Success] of a [List] of [Convertible]s from its [I] form to its [O] form */
+inline fun <reified I : Convertible<O>, reified O : Any> Flow<HResult<List<I>>>.mapLatestResultListTo()
 		: Flow<HResult<List<O>>> = mapLatest { it.mapListTo() }
 
-inline fun <reified I : Convertible<O>, reified O : Any> Flow<HResult<I>>.mapLatestTo()
+
+/** Converts a [HResult.Success] of a [Convertible] from its [I] form to its [O] form */
+inline fun <reified I : Convertible<O>, reified O : Any> Flow<HResult<I>>.mapLatestResultTo()
 		: Flow<HResult<O>> = mapLatest { it.mapTo() }

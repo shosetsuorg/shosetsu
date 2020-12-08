@@ -1,7 +1,7 @@
 package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
-import app.shosetsu.android.common.enums.DownloadStatus
+import app.shosetsu.common.com.enums.DownloadStatus
 
 /*
  * This file is part of Shosetsu.

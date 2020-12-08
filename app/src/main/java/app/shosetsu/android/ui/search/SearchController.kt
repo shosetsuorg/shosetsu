@@ -7,13 +7,13 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.search.adapters.SearchRowAdapter
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
+import app.shosetsu.common.com.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter

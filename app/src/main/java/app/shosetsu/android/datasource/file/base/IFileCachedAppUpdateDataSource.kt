@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.file.base
 
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.common.com.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*

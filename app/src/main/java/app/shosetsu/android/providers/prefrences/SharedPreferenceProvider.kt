@@ -3,7 +3,7 @@ package app.shosetsu.android.providers.prefrences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import app.shosetsu.android.common.consts.settings.SettingKey
+import app.shosetsu.common.com.consts.settings.SettingKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,14 +1,14 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.enums.ChapterSortType
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.enums.ChapterSortType
+import app.shosetsu.common.com.enums.ReadingStatus
 import javax.security.auth.Destroyable
 
 /*

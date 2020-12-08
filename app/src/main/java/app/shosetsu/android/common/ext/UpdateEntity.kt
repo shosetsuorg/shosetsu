@@ -1,4 +1,7 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.android.common.ext
+
+import app.shosetsu.android.domain.model.database.DBUpdate
+import app.shosetsu.android.domain.model.local.UpdateEntity
 
 /*
  * This file is part of Shosetsu.
@@ -19,10 +22,9 @@ package app.shosetsu.android.common.enums
 
 /**
  * shosetsu
- * 18 / 09 / 2020
+ * 05 / 12 / 2020
  */
-enum class TextSizes(val i: Float) {
-	SMALL(14F),
-	MEDIUM(17F),
-	LARGE(20F)
-}
+
+fun UpdateEntity.toDB() = DBUpdate(chapterID, novelID, time)
+
+fun List<UpdateEntity>.toDB() = map { it.toDB() }

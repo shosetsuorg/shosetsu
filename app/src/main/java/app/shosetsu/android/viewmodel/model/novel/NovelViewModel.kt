@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
-import app.shosetsu.android.common.dto.*
-import app.shosetsu.android.common.enums.ChapterSortType
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.liveDataIO
 import app.shosetsu.android.common.ext.logI
@@ -27,6 +24,9 @@ import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.com.enums.ChapterSortType
+import app.shosetsu.common.com.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

@@ -1,9 +1,5 @@
 package app.shosetsu.android.domain.model.local
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import app.shosetsu.android.common.dto.Convertible
-import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import java.io.Serializable
 
 /*
@@ -30,12 +26,8 @@ import java.io.Serializable
  *
  * @author github.com/doomsdayrs
  */
-@Entity(tableName = "repositories")
 data class RepositoryEntity(
-		@PrimaryKey(autoGenerate = true)
 		val id: Int = -1,
 		val url: String,
 		var name: String,
-) : Serializable, Convertible<RepositoryUI> {
-	override fun convertTo(): RepositoryUI = RepositoryUI(id, url, name)
-}
+) : Serializable

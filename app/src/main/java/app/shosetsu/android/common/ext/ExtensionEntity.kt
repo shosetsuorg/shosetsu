@@ -1,4 +1,7 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.android.common.ext
+
+import app.shosetsu.android.domain.model.database.DBExtensionEntity
+import app.shosetsu.android.domain.model.local.ExtensionEntity
 
 /*
  * This file is part of Shosetsu.
@@ -19,12 +22,19 @@ package app.shosetsu.android.common.enums
 
 /**
  * shosetsu
- * 30 / 09 / 2020
+ * 05 / 12 / 2020
  */
-enum class ChapterSortType {
-	/** How it originally is provided by source */
-	SOURCE,
 
-	/** Sort by its upload date */
-	UPLOAD
-}
+fun ExtensionEntity.toDB(): DBExtensionEntity = DBExtensionEntity(
+		id,
+		repoID,
+		name,
+		fileName,
+		imageURL,
+		lang,
+		enabled,
+		installed,
+		installedVersion,
+		repositoryVersion,
+		md5
+)

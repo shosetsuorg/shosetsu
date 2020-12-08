@@ -1,4 +1,7 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.android.common.ext
+
+import app.shosetsu.android.domain.model.database.DBNovelEntity
+import app.shosetsu.android.domain.model.local.NovelEntity
 
 /*
  * This file is part of Shosetsu.
@@ -18,27 +21,26 @@ package app.shosetsu.android.common.enums
  */
 
 /**
- * Shosetsu
- * 20 / 06 / 2019
- * Status of a [com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity]
+ * shosetsu
+ * 05 / 12 / 2020
  */
-enum class ReadingStatus(val a: Int, val status: String) {
-	// Novels and chapters
-	UNREAD(0, "Unread"), READING(1, "Reading"), READ(2, "Read"),
 
-	UNKNOWN(-1, "Unknown");
+fun NovelEntity.toDB() = DBNovelEntity(
+		id,
+		url,
+		formatterID,
+		bookmarked,
+		loaded,
+		readerType,
+		title,
+		imageURL,
+		description,
+		language,
+		genres,
+		authors,
+		artists,
+		tags,
+		status
+)
 
-	override fun toString(): String = a.toString()
-
-	companion object {
-		fun getStatus(a: Int): ReadingStatus {
-			return when (a) {
-				0 -> UNREAD
-				1 -> READING
-				2 -> READ
-				else -> UNKNOWN
-			}
-		}
-	}
-
-}
+fun List<NovelEntity>.toDB() = map { it.toDB() }

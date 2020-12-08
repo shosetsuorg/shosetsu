@@ -1,13 +1,13 @@
 package app.shosetsu.android.datasource.remote.model
 
 import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.remote.base.IRemoteExtensionDataSource
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.successResult
 import okhttp3.OkHttpClient
 
 /*
@@ -45,9 +45,9 @@ class RemoteExtensionDataSource(
 			try {
 				@Suppress("BlockingMethodInNonBlockingContext")
 				(successResult(client.quickie(makeFormatterURL(
-						repositoryEntity,
-						extensionEntity
-				)).body!!.string()))
+				repositoryEntity,
+				extensionEntity
+		)).body!!.string()))
 			} catch (e: Exception) {
 				e.toHError()
 			}

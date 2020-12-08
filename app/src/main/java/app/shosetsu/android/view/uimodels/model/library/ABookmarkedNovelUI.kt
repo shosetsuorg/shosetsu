@@ -3,7 +3,6 @@ package app.shosetsu.android.view.uimodels.model.library
 import android.view.View
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
-import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
@@ -11,6 +10,7 @@ import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.GetImageURL
 import app.shosetsu.android.view.uimodels.base.GetTitle
 import app.shosetsu.android.view.viewholders.TitleImageFViewHolder
+import app.shosetsu.common.com.dto.Convertible
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip

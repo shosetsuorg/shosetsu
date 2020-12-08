@@ -7,13 +7,13 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
+import app.shosetsu.common.com.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter

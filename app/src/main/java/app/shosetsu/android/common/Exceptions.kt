@@ -1,6 +1,6 @@
 package app.shosetsu.android.common
 
-import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.common.com.dto.HResult
 
 /*
  * This file is part of shosetsu.

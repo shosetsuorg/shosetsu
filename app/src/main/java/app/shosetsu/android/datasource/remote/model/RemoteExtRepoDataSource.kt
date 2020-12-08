@@ -1,12 +1,12 @@
 package app.shosetsu.android.datasource.remote.model
 
 import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.successResult
 import app.shosetsu.lib.json.RepoIndex
 import okhttp3.OkHttpClient
 
@@ -39,10 +39,10 @@ class RemoteExtRepoDataSource(
     ): HResult<RepoIndex> = try {
         @Suppress("BlockingMethodInNonBlockingContext")
         (successResult(
-                RepoIndex(client.quickie(
-                        "${repo.url}${REPO_DIR_STRUCT}index.json"
-                ).body!!.string())
-        ))
+				RepoIndex(client.quickie(
+						"${repo.url}${REPO_DIR_STRUCT}index.json"
+				).body!!.string())
+		))
     } catch (e: Exception) {
         e.toHError()
     }

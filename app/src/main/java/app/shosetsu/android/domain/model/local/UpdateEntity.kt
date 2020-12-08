@@ -1,8 +1,5 @@
 package app.shosetsu.android.domain.model.local
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
@@ -30,17 +27,7 @@ import java.io.Serializable
  *
  * @author github.com/doomsdayrs
  */
-@Entity(tableName = "updates",
-		foreignKeys = [
-			ForeignKey(
-					entity = ChapterEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["chapterID"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("chapterID")]
-)
+
 data class UpdateEntity(
 		@PrimaryKey
 		val chapterID: Int,

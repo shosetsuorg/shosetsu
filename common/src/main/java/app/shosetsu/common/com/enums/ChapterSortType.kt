@@ -1,4 +1,4 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.common.com.enums
 
 /*
  * This file is part of Shosetsu.
@@ -19,17 +19,12 @@ package app.shosetsu.android.common.enums
 
 /**
  * shosetsu
- * 23 / 10 / 2020
- *
- * Defines the 'type' of directory the file should be pulled from
+ * 30 / 09 / 2020
  */
-enum class ExternalFileDir {
-    /** Refers to the app specific external dir */
-    APP,
-    PICTURES,
-    DOWNLOADS,
-    DOCUMENTS,
-    MUSIC,
-    MOVIES
+enum class ChapterSortType {
+	/** How it originally is provided by source */
+	SOURCE,
 
+	/** Sort by its upload date */
+	UPLOAD
 }

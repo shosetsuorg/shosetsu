@@ -1,9 +1,6 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.consts.settings.SettingKey.IsDownloadPaused
-import app.shosetsu.android.common.dto.*
-import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.liveDataIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
@@ -15,6 +12,9 @@ import app.shosetsu.android.domain.usecases.load.LoadDownloadsUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateDownloadUseCase
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
+import app.shosetsu.common.com.consts.settings.SettingKey.IsDownloadPaused
+import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.com.enums.DownloadStatus
 
 /*
  * This file is part of shosetsu.

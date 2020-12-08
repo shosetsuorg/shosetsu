@@ -1,6 +1,5 @@
 package app.shosetsu.android.domain.model.local
 
-import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.ext.deserializeString
 import app.shosetsu.android.common.ext.serializeToString
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
@@ -35,9 +34,7 @@ data class ColorChoiceData(
 		val name: String,
 		val textColor: Int,
 		val backgroundColor: Int,
-) : Convertible<ColorChoiceUI> {
-	override fun convertTo(): ColorChoiceUI =
-			ColorChoiceUI(identifier, name, textColor, backgroundColor)
+)  {
 
 	override fun toString(): String =
 			"$identifier,${name.serializeToString()},$textColor,$backgroundColor"

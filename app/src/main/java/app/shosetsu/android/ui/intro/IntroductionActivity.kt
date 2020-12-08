@@ -2,16 +2,18 @@ package app.shosetsu.android.ui.intro
 
 import android.Manifest.permission
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.shosetsu.android.common.ext.readAsset
 import app.shosetsu.android.ui.splash.SplashScreen.Companion.INTRO_CODE
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.IntroLicenseBinding
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.heinrichreimersoftware.materialintro.app.NavigationPolicy
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide
-import kotlinx.android.synthetic.main.intro_license.*
 
 /*
  * This file is part of shosetsu.
@@ -37,8 +39,17 @@ import kotlinx.android.synthetic.main.intro_license.*
 class IntroductionActivity : IntroActivity() {
 	internal class License : Fragment(R.layout.intro_license) {
 		private var message = ""
+
+		private lateinit var introLicenseBinding: IntroLicenseBinding
+
 		override fun onSaveInstanceState(outState: Bundle) {
 			outState.putString("message", message)
+		}
+
+		override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+			return super.onCreateView(inflater, container, savedInstanceState)?.also {
+				introLicenseBinding = IntroLicenseBinding.bind(it)
+			}
 		}
 
 		override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +57,7 @@ class IntroductionActivity : IntroActivity() {
 				message = activity?.readAsset("license.txt") ?: ""
 			else if (message.isEmpty() && savedInstanceState != null)
 				message = savedInstanceState.getString("message", "")
-			title.text = message
+			introLicenseBinding.title.text = message
 		}
 	}
 

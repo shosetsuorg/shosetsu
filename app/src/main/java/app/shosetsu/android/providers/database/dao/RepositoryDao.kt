@@ -5,8 +5,8 @@ import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
 import androidx.room.Transaction
+import app.shosetsu.android.domain.model.database.DBRepositoryEntity
 import app.shosetsu.android.domain.model.local.CountIDTuple
-import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.flow.Flow
@@ -36,34 +36,34 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 @Dao
-interface RepositoryDao : BaseDao<RepositoryEntity> {
+interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 	@Throws(SQLiteException::class)
 	@Transaction
-	suspend fun insertRepositoryAndReturn(repositoryEntity: RepositoryEntity): RepositoryEntity =
-			loadRepositoryFromROWID(insertReplace(repositoryEntity))
+	suspend fun insertRepositoryAndReturn(DBRepositoryEntity: DBRepositoryEntity): DBRepositoryEntity =
+			loadRepositoryFromROWID(insertReplace(DBRepositoryEntity))
 
 	/**
 	 * Run only if you know for sure the data exists
 	 */
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE url = :url LIMIT 1")
-	fun loadRepositoryFromURL(url: String): RepositoryEntity
+	fun loadRepositoryFromURL(url: String): DBRepositoryEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE id = :rowID LIMIT 1")
-	fun loadRepositoryFromROWID(rowID: Long): RepositoryEntity
+	fun loadRepositoryFromROWID(rowID: Long): DBRepositoryEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE id = :repositoryID LIMIT 1")
-	fun loadRepositoryFromID(repositoryID: Int): RepositoryEntity
+	fun loadRepositoryFromID(repositoryID: Int): DBRepositoryEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
-	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
+	fun loadRepositoriesLive(): Flow<List<DBRepositoryEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
-	fun loadRepositories(): List<RepositoryEntity>
+	fun loadRepositories(): List<DBRepositoryEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM repositories WHERE url = :url")
@@ -82,7 +82,7 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 	suspend fun initializeData() {
 		val branch = if (BuildConfig.DEBUG) "dev" else "master"
 		val name = if (BuildConfig.DEBUG) "Development" else "Stable"
-		val repo = RepositoryEntity(
+		val repo = DBRepositoryEntity(
 				url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",
 				name = name
 		)
@@ -91,10 +91,10 @@ interface RepositoryDao : BaseDao<RepositoryEntity> {
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun createIfNotExist(repositoryEntity: RepositoryEntity): Int {
-		val tuple = repositoryCountAndROWIDFromURL(repositoryEntity.url)
+	suspend fun createIfNotExist(DBRepositoryEntity: DBRepositoryEntity): Int {
+		val tuple = repositoryCountAndROWIDFromURL(DBRepositoryEntity.url)
 		if (tuple.count == 0)
-			return insertRepositoryAndReturn(repositoryEntity).id
+			return insertRepositoryAndReturn(DBRepositoryEntity).id
 		return tuple.id
 	}
 }

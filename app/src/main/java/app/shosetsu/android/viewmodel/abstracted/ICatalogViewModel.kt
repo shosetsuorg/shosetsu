@@ -1,10 +1,12 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.enums.NovelUIType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import kotlinx.coroutines.Job
@@ -34,7 +36,10 @@ import kotlinx.coroutines.Job
  * 01 / 05 / 2020
  * Used for showing the specific listing of a novel
  */
-abstract class ICatalogViewModel : ShosetsuViewModel(), ErrorReportingViewModel {
+abstract class ICatalogViewModel :
+		ShosetsuViewModel(),
+		ErrorReportingViewModel,
+		ColumnCalculator {
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */
@@ -81,6 +86,7 @@ abstract class ICatalogViewModel : ShosetsuViewModel(), ErrorReportingViewModel 
 	 * If [inSearch] it rejects the action
 	 * Else loads more default data
 	 */
+	abstract fun getNovelUIType(): NovelUIType
 
 	abstract fun loadMore()
 

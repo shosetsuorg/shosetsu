@@ -1,8 +1,5 @@
 package app.shosetsu.android.domain.model.local
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.lib.Version
 import java.io.Serializable
@@ -32,16 +29,7 @@ import java.io.Serializable
  * @author github.com/doomsdayrs
  * This class represents a library that is installed in system
  */
-@Entity(tableName = "libs",
-		foreignKeys = [
-			ForeignKey(
-					entity = RepositoryEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["repoID"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("repoID")])
+
 data class ExtLibEntity(
 		@PrimaryKey
 		val scriptName: String,

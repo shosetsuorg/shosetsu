@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import app.shosetsu.android.domain.model.database.DBNovelEntity
 import app.shosetsu.android.domain.model.local.*
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
@@ -32,27 +33,27 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 @Dao
-interface NovelsDao : BaseDao<NovelEntity> {
+interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels")
-	fun loadNovels(): Flow<List<NovelEntity>>
+	fun loadNovels(): Flow<List<DBNovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
-	fun loadBookmarkedNovels(): List<NovelEntity>
+	fun loadBookmarkedNovels(): List<DBNovelEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
-	fun loadListBookmarkedNovels(): Flow<List<NovelEntity>>
+	fun loadListBookmarkedNovels(): Flow<List<DBNovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadNovel(novelID: Int): NovelEntity
+	fun loadNovel(novelID: Int): DBNovelEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadNovelLive(novelID: Int): Flow<NovelEntity>
+	fun loadNovelLive(novelID: Int): Flow<DBNovelEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT url,imageURL,title FROM novels WHERE id = :novelID LIMIT 1")
@@ -82,18 +83,18 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Transaction
-	suspend fun unBookmarkNovels(selectedNovels: List<Int>, entities: List<NovelEntity>) {
+	suspend fun unBookmarkNovels(selectedNovels: List<Int>, entities: List<DBNovelEntity>) {
 		selectedNovels.forEach { targetID ->
-			entities.find { it.id == targetID }?.let { novelEntity ->
-				novelEntity.bookmarked = false
-				suspendedUpdate(novelEntity)
+			entities.find { it.id == targetID }?.let { DBNovel ->
+				DBNovel.bookmarked = false
+				suspendedUpdate(DBNovel)
 			}
 		}
 	}
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE _rowid_ = :rowID LIMIT 1")
-	fun loadNovel(rowID: Long): NovelEntity
+	fun loadNovel(rowID: Long): DBNovelEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE _rowid_ = :rowID LIMIT 1")
@@ -118,20 +119,20 @@ interface NovelsDao : BaseDao<NovelEntity> {
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): IDTitleImageBook {
-		val has = hasNovel(novelEntity.url)
+	suspend fun insertNovelReturnCard(DBNovelEntity: DBNovelEntity): IDTitleImageBook {
+		val has = hasNovel(DBNovelEntity.url)
 		return if (has.boolean) {
 			loadIDTitleImageBook(has.id)
 		} else {
-			val rowID = insertAbort(novelEntity)
+			val rowID = insertAbort(DBNovelEntity)
 			loadIDTitleImageBook(rowID)
 		}
 	}
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun insertAndReturn(novelEntity: NovelEntity): NovelEntity =
-			loadNovel(insertIgnore(novelEntity))
+	suspend fun insertAndReturn(DBNovelEntity: DBNovelEntity): DBNovelEntity =
+			loadNovel(insertIgnore(DBNovelEntity))
 
 	@Throws(SQLiteException::class)
 	@Query("UPDATE novels SET bookmarked = :bookmarked WHERE id = :novelID")
@@ -148,5 +149,5 @@ interface NovelsDao : BaseDao<NovelEntity> {
 	}
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	//fun loadNovelWithChapters(novelID: Int): NovelEntityWithChapters
+	//fun loadNovelWithChapters(novelID: Int): DBNovelWithChapters
 }

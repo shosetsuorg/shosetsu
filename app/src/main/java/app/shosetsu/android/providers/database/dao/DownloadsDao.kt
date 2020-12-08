@@ -3,7 +3,7 @@ package app.shosetsu.android.providers.database.dao
 import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
-import app.shosetsu.android.domain.model.local.DownloadEntity
+import app.shosetsu.android.domain.model.database.DBDownloadEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
 
@@ -32,13 +32,13 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 @Dao
-interface DownloadsDao : BaseDao<DownloadEntity> {
+interface DownloadsDao : BaseDao<DBDownloadEntity> {
 	/**
 	 * Loads the first download
 	 */
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads WHERE status = 0 LIMIT 1")
-	suspend fun loadFirstDownload(): DownloadEntity?
+	suspend fun loadFirstDownload(): DBDownloadEntity?
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM downloads WHERE status == 0")
@@ -53,11 +53,11 @@ interface DownloadsDao : BaseDao<DownloadEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads")
-	fun loadDownloadItems(): Flow<List<DownloadEntity>>
+	fun loadDownloadItems(): Flow<List<DBDownloadEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM downloads WHERE chapterID = :chapterID LIMIT 1")
-	suspend fun loadDownload(chapterID: Int): DownloadEntity
+	suspend fun loadDownload(chapterID: Int): DBDownloadEntity
 
 	@Query("DELETE FROM downloads")
 	@Throws(SQLiteException::class)

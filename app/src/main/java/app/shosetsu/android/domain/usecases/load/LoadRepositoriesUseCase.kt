@@ -1,10 +1,11 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.mapLatestListTo
+import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
 import app.shosetsu.android.domain.repository.base.IExtRepoRepository
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.loading
+import app.shosetsu.common.com.dto.mapLatestResultListTo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -35,6 +36,6 @@ class LoadRepositoriesUseCase(
 ) {
 	operator fun invoke(): Flow<HResult<List<RepositoryUI>>> = flow {
 		emit(loading())
-		emitAll(iExtRepoRepository.loadRepositoriesLive().mapLatestListTo())
+		emitAll(iExtRepoRepository.loadRepositoriesLive().mapLatestToResultFlowWithFactory().mapLatestResultListTo())
 	}
 }

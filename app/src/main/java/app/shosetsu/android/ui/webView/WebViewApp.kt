@@ -1,16 +1,19 @@
 package app.shosetsu.android.ui.webView
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_URL
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.android.synthetic.main.activity_webview.*
+import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -47,6 +50,14 @@ class WebViewApp : AppCompatActivity(R.layout.activity_webview), KodeinAware {
 	override val kodein: Kodein by closestKodein()
 	private val openInBrowserUseCase: OpenInBrowserUseCase by instance()
 
+	private lateinit var binding: ActivityWebviewBinding
+
+	override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+		return super.onCreateView(name, context, attrs)?.also {
+			binding = ActivityWebviewBinding.bind(it)
+		}
+	}
+
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		when (item.itemId) {
 			android.R.id.home -> finish()
@@ -67,27 +78,27 @@ class WebViewApp : AppCompatActivity(R.layout.activity_webview), KodeinAware {
 	@SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		this.setSupportActionBar(toolbar)
+		this.setSupportActionBar(binding.toolbar)
 		supportActionBar?.apply {
 			setDisplayHomeAsUpEnabled(true)
 		}
 
 		val action = Actions.actions[intent.getIntExtra("action", 0)]
-		webview.settings.javaScriptEnabled = true
+		binding.webview.settings.javaScriptEnabled = true
 		when (action) {
-			Actions.VIEW -> webview.webViewClient = WebViewClient()
+			Actions.VIEW -> binding.webview.webViewClient = WebViewClient()
 			Actions.CLOUD_FLARE -> {
 				// webview.addJavascriptInterface(JSInterface(), "HtmlViewer")
-				webview.webViewClient = object : WebViewClient() {
+				binding.webview.webViewClient = object : WebViewClient() {
 					override fun onPageFinished(view: WebView, url: String) {
-						webview.loadUrl("javascript:window.HtmlViewer.showHTML" +
+						binding.webview.loadUrl("javascript:window.HtmlViewer.showHTML" +
 								"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');")
 						finish()
 					}
 				}
 			}
 		}
-		webview.loadUrl(intent.getStringExtra(BUNDLE_URL)!!)
+		binding.webview.loadUrl(intent.getStringExtra(BUNDLE_URL)!!)
 
 	}
 

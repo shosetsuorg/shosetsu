@@ -2,10 +2,10 @@ package app.shosetsu.android.domain.usecases.load
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handleReturn
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handleReturn
+import app.shosetsu.common.com.dto.loading
+import app.shosetsu.common.com.dto.successResult
 import kotlinx.coroutines.Dispatchers
 
 /*

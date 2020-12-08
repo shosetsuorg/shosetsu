@@ -1,11 +1,11 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.mapLatestResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.loading
+import app.shosetsu.common.com.dto.mapLatestResult
+import app.shosetsu.common.com.dto.successResult
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll

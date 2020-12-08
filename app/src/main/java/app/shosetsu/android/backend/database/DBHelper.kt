@@ -8,15 +8,16 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import app.shosetsu.android.backend.database.DBHelper.Columns.*
 import app.shosetsu.android.backend.database.DBHelper.Tables.*
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.deserializeString
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.providers.database.converters.NovelStatusConverter
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.android.providers.database.dao.NovelsDao
+import app.shosetsu.common.com.enums.ReadingStatus
 import app.shosetsu.lib.Novel
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -224,8 +225,8 @@ class DBHelper(context: Context) :
 
 		launchIO {
 			try {
-				novelDAO.insertAllIgnore(novels)
-				chapterDAO.insertAllIgnore(chapters)
+				novelDAO.insertAllIgnore(novels.toDB())
+				chapterDAO.insertAllIgnore(chapters.toDB())
 				Log.d(logID(), "Finished insert, Deleting tables")
 
 				db.execSQL("DROP TABLE IF EXISTS $CHAPTER_IDENTIFICATION")

@@ -1,6 +1,6 @@
-package app.shosetsu.android.common.consts.settings
+package app.shosetsu.common.com.consts.settings
 
-import app.shosetsu.android.common.enums.MarkingTypes
+import app.shosetsu.common.com.enums.MarkingTypes.ONVIEW
 
 /*
  * This file is part of shosetsu.
@@ -46,10 +46,13 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 
 	object ReaderIsInvertedSwipe : SettingKey<Boolean>("invertedSwipe", false)
-	object ReadingMarkingType : SettingKey<String>("readingMarkingType", MarkingTypes.ONVIEW.name)
+	object ReadingMarkingType : SettingKey<String>("readingMarkingType", ONVIEW.name)
 
 	//- Some things
-	object ChaptersResumeFirstUnread : SettingKey<Boolean>("readerResumeFirstUnread", false)
+	object ChaptersResumeFirstUnread : SettingKey<Boolean>(
+			"readerResumeFirstUnread",
+			false
+	)
 
 	// Download options
 	object IsDownloadPaused : SettingKey<Boolean>("isDownloadPaused", false)
@@ -64,7 +67,10 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object DeleteReadChapter : SettingKey<Int>("deleteReadChapter", -1)
 	object DownloadOnLowStorage : SettingKey<Boolean>("downloadNotLowStorage", false)
 	object DownloadOnLowBattery : SettingKey<Boolean>("downloadNotLowBattery", false)
-	object DownloadOnMeteredConnection : SettingKey<Boolean>("downloadNotMetered", false)
+	object DownloadOnMeteredConnection : SettingKey<Boolean>(
+			"downloadNotMetered",
+			false
+	)
 	object DownloadOnlyWhenIdle : SettingKey<Boolean>("downloadIdle", false)
 
 	// Update options
@@ -79,7 +85,10 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	// App Update Options
 	object AppUpdateOnStartup : SettingKey<Boolean>("appUpdateOnStartup", true)
-	object AppUpdateOnMeteredConnection : SettingKey<Boolean>("appUpdateMetered", false)
+	object AppUpdateOnMeteredConnection : SettingKey<Boolean>(
+			"appUpdateMetered",
+			false
+	)
 	object AppUpdateOnlyWhenIdle : SettingKey<Boolean>("appUpdateIdle", false)
 	object AppUpdateCycle : SettingKey<Int>("appUpdateCycle", 1)
 
@@ -105,7 +114,10 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object DownloadExtThreads : SettingKey<Int>("downloadExtThreads", 1)
 
 	/** If the reader can mark a read chapter as reading when its opened / scrolled */
-	object ReaderMarkReadAsReading : SettingKey<Boolean>("readerMarkReadAsReading", false)
+	object ReaderMarkReadAsReading : SettingKey<Boolean>(
+			"readerMarkReadAsReading",
+			false
+	)
 
 	object AppTheme : SettingKey<Int>("selectedAppTheme", 0)
 

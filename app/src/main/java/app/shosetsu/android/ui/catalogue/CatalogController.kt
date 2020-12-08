@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.catalogue
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -7,16 +8,12 @@ import android.view.MenuInflater
 import android.view.View
 import android.widget.SearchView
 import androidx.core.os.bundleOf
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handle
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.getString
 import app.shosetsu.android.common.ext.setOnClickListener
@@ -28,14 +25,15 @@ import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ProgressItem
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.enums.NovelUIType.COMPRESSED
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
-import com.google.android.material.navigation.NavigationView
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
-import org.kodein.di.generic.instance
 
 /*
  * This file is part of Shosetsu.
@@ -68,14 +66,10 @@ class CatalogController(
 		PushCapableController {
 	private var searchView: SearchView? = null
 
-	private var navigationView: NavigationView? = null
-	private var drawerLayout: DrawerLayout? = null
-
 	lateinit var pushController: (Controller) -> Unit
 
 	/***/
 	val viewModel: ICatalogViewModel by viewModel()
-	private val settings by instance<ShosetsuSettings>()
 	private val progressAdapter by lazy { ItemAdapter<ProgressItem>() }
 
 
@@ -102,17 +96,38 @@ class CatalogController(
 	}
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
-		return if (settings.novelCardType == 0) GridLayoutManager(
-				context,
-				settings.calculateColumnCount(context!!, 200f),
-				VERTICAL,
-				false
-		)
-		else LinearLayoutManager(
-				context,
-				VERTICAL,
-				false
-		)
+		return when (viewModel.getNovelUIType()) {
+			COMPRESSED -> LinearLayoutManager(
+					context,
+					VERTICAL,
+					false
+			)
+			else -> GridLayoutManager(
+					context,
+					context!!.resources.let {
+						val density = it.displayMetrics.density
+						val widthPixels = it.displayMetrics.widthPixels
+						when (it.configuration.orientation) {
+							Configuration.ORIENTATION_LANDSCAPE -> {
+								viewModel.calculateHColumnCount(
+										widthPixels,
+										density,
+										200f
+								)
+							}
+							else -> {
+								viewModel.calculatePColumnCount(
+										widthPixels,
+										density,
+										200f
+								)
+							}
+						}
+					},
+					VERTICAL,
+					false
+			)
+		}
 	}
 
 	override fun setupFastAdapter() {

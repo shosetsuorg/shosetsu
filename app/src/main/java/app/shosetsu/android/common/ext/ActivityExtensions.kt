@@ -11,7 +11,6 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.webView.WebViewApp
 import app.shosetsu.android.view.uimodels.model.ChapterUI
-import app.shosetsu.android.view.uimodels.model.UpdateChapterUI
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -60,7 +59,6 @@ fun Activity.openInWebView(url: String) {
  * @param activity     activity
  * @param cUI novel chapter
  */
-fun Activity.openChapter(cUI: UpdateChapterUI): Unit = openChapter(cUI.id, cUI.novelID)
 
 fun Activity.openChapter(cUI: ChapterUI): Unit = openChapter(cUI.id, cUI.novelID)
 

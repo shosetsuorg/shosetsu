@@ -9,11 +9,11 @@ import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.annotation.StringRes
 import androidx.viewbinding.ViewBinding
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.getString
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.toast
+import app.shosetsu.common.com.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import com.github.doomsdayrs.apps.shosetsu.R

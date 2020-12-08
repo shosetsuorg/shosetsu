@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteException
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
-import app.shosetsu.android.domain.model.local.*
+import app.shosetsu.android.domain.model.database.*
 import app.shosetsu.android.providers.database.converters.*
 import app.shosetsu.android.providers.database.dao.*
 import app.shosetsu.android.providers.database.migrations.RemoveMigration
@@ -38,13 +38,13 @@ import kotlinx.coroutines.launch
 @Fts4
 @Database(
 		entities = [
-			ExtensionEntity::class,
-			RepositoryEntity::class,
-			ExtLibEntity::class,
-			DownloadEntity::class,
-			UpdateEntity::class,
-			ChapterEntity::class,
-			NovelEntity::class
+			DBExtensionEntity::class,
+			DBRepositoryEntity::class,
+			DBExtLibEntity::class,
+			DBDownloadEntity::class,
+			DBUpdate::class,
+			DBChapterEntity::class,
+			DBNovelEntity::class
 		],
 		version = 2
 )

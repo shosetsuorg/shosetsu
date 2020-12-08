@@ -20,8 +20,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.enums.AppThemes.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
@@ -32,12 +30,14 @@ import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.ui.updates.UpdatesController
 import app.shosetsu.android.view.base.*
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.enums.AppThemes.*
 import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.android.synthetic.main.activity_main.*
+import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -66,6 +66,8 @@ import org.kodein.di.android.closestKodein
  * @author github.com/doomsdayrs
  */
 class MainActivity : AppCompatActivity(), KodeinAware {
+	private lateinit var binding: ActivityMainBinding
+
 	private var registered = false
 
 	// The main router of the application
@@ -133,7 +135,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			addAction(ACTION_OPEN_APP_UPDATE)
 		})
 		registered = true
-		setContentView(R.layout.activity_main)
+		setContentView(ActivityMainBinding.inflate(layoutInflater).also { binding = it }.root)
+
 		setupView()
 		setupRouter(savedInstanceState)
 		handleIntentAction(intent)
@@ -146,9 +149,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	override fun onBackPressed() {
 		logD("Back Pressed")
 		val backStackSize = router.backstackSize
+
 		when {
-			drawer_layout.isDrawerOpen(GravityCompat.START) ->
-				drawer_layout.closeDrawer(GravityCompat.START)
+			binding.drawerLayout.isDrawerOpen(GravityCompat.START) ->
+				binding.drawerLayout.closeDrawer(GravityCompat.START)
 
 			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
 				setSelectedDrawerItem(R.id.nav_library)
@@ -161,36 +165,36 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	private fun setSelectedDrawerItem(id: Int) {
 		if (!isFinishing) {
 			if (viewModel.navigationStyle() == 0) {
-				bottomNavigationView.selectedItemId = id
-				bottomNavigationView.menu.performIdentifierAction(id, 0)
+				binding.bottomNavigationView.selectedItemId = id
+				binding.bottomNavigationView.menu.performIdentifierAction(id, 0)
 			} else {
-				nav_view.setCheckedItem(id)
-				nav_view.menu.performIdentifierAction(id, 0)
+				binding.navView.setCheckedItem(id)
+				binding.navView.menu.performIdentifierAction(id, 0)
 			}
 		}
 	}
 
 	private fun setupView() {
 		//Sets the toolbar
-		setSupportActionBar(toolbar)
+		setSupportActionBar(binding.toolbar)
 
-		toolbar.setNavigationOnClickListener {
+		binding.toolbar.setNavigationOnClickListener {
 			logD("Toolbar clicked")
 			if (router.backstackSize == 1) {
 				if (viewModel.navigationStyle() == 1) {
 					logD("Opening drawer")
-					drawer_layout.openDrawer(GravityCompat.START)
+					binding.drawerLayout.openDrawer(GravityCompat.START)
 				}
 			} else onBackPressed()
 		}
 
 		if (viewModel.navigationStyle() == 0) {
-			bottomNavigationView.visibility = VISIBLE
-			nav_view.visibility = GONE
+			binding.bottomNavigationView.visibility = VISIBLE
+			binding.navView.visibility = GONE
 			setupBottomNavigationDrawer()
 		} else {
-			nav_view.visibility = VISIBLE
-			bottomNavigationView.visibility = GONE
+			binding.navView.visibility = VISIBLE
+			binding.bottomNavigationView.visibility = GONE
 			setupNavigationDrawer()
 		}
 	}
@@ -201,34 +205,34 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		actionBarDrawerToggle = ActionBarDrawerToggle(
 				this,
-				drawer_layout,
-				toolbar,
+				binding.drawerLayout,
+				binding.toolbar,
 				R.string.todo,
 				R.string.todo
 		)
 
-		val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
+		val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar,
 				R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-		drawer_layout.addDrawerListener(toggle)
+		binding.drawerLayout.addDrawerListener(toggle)
 		toggle.syncState()
 
 
 		// Navigation view
 		//nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
-		nav_view.setNavigationItemSelectedListener {
+		binding.navView.setNavigationItemSelectedListener {
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
 			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
-			drawer_layout.closeDrawer(GravityCompat.START)
+			binding.drawerLayout.closeDrawer(GravityCompat.START)
 			return@setNavigationItemSelectedListener true
 		}
 	}
 
 	private fun setupBottomNavigationDrawer() {
 		logV("Setting up modern navigation")
-		drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
+		binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, binding.navView)
 
-		bottomNavigationView.setOnNavigationItemSelectedListener {
+		binding.bottomNavigationView.setOnNavigationItemSelectedListener {
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
 			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
@@ -248,7 +252,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	}
 
 	private fun setupRouter(savedInstanceState: Bundle?) {
-		router = attachRouter(this, controller_container, savedInstanceState)
+		router = attachRouter(this, binding.controllerContainer, savedInstanceState)
 		router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
 			override fun onChangeStarted(
 					to: Controller?,
@@ -358,10 +362,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
-				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, nav_view)
+				binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, binding.navView)
 			} else {
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
-				bottomNavigationView.visibility = VISIBLE
+				binding.bottomNavigationView.visibility = VISIBLE
 			}
 		} else {
 
@@ -370,13 +374,15 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = false
-				drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, nav_view)
+				binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, binding.navView)
 			} else {
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
-				bottomNavigationView.visibility = GONE
+				binding.bottomNavigationView.visibility = GONE
 			}
 		}
 
+		val fab = binding.fab
+		val efab = binding.efab
 		if (from is FABController) {
 			from.hideFAB(fab)
 			from.resetFAB(fab)
@@ -399,6 +405,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		if (to is PushCapableController) to.acceptPushing { transitionView(it) }
 
+		val tabLayout = binding.tabLayout
+
 		if (from is TabbedController) {
 			logV("from is a toolbarController")
 			tabLayout.removeAllTabs()
@@ -416,13 +424,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		when (to) {
 			is CollapsedToolBarController -> {
-				elevatedAppBarLayout.drop()
+				binding.elevatedAppBarLayout.drop()
 			}
 			is LiftOnScrollToolBarController -> {
-				elevatedAppBarLayout.elevate(true)
+				binding.elevatedAppBarLayout.elevate(true)
 			}
 			else -> {
-				elevatedAppBarLayout.elevate(false)
+				binding.elevatedAppBarLayout.elevate(false)
 			}
 		}
 	}

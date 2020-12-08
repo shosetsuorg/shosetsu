@@ -1,4 +1,7 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.android.common.ext
+
+import app.shosetsu.android.domain.model.database.DBChapterEntity
+import app.shosetsu.android.domain.model.local.ChapterEntity
 
 /*
  * This file is part of Shosetsu.
@@ -19,15 +22,21 @@ package app.shosetsu.android.common.enums
 
 /**
  * shosetsu
- * 09 / 10 / 2020
+ * 05 / 12 / 2020
  */
-enum class DownloadStatus {
-	PENDING,
 
-	/** Notates that this download is currently waiting,
-	 * either for the thread pool to open up or some other reason */
-	WAITING,
-	DOWNLOADING,
-	PAUSED,
-	ERROR,
-}
+fun ChapterEntity.toDB(): DBChapterEntity = DBChapterEntity(
+		id,
+		url,
+		novelID,
+		formatterID,
+		title,
+		releaseDate,
+		order,
+		readingPosition,
+		readingStatus,
+		bookmarked,
+		isSaved
+)
+
+fun List<ChapterEntity>.toDB() = map { it.toDB() }

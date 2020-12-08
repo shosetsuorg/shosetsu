@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 ext {
@@ -96,6 +95,7 @@ dependencies {
 
 	// - Life Cycle
 	implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+	implementation project(path: ':common')
 
 	// Test classes
 	testImplementation 'junit:junit:4.13.1'

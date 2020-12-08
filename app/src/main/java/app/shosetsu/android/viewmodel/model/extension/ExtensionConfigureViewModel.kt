@@ -20,9 +20,6 @@ package app.shosetsu.android.viewmodel.model.extension
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.mapLatestResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.ReportExceptionUseCase
@@ -33,6 +30,9 @@ import app.shosetsu.android.domain.usecases.update.UpdateExtensionEntityUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.mapLatestResult
+import app.shosetsu.common.com.dto.successResult
 
 /**
  * shosetsu

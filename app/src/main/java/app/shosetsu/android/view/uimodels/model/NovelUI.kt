@@ -2,13 +2,13 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import android.widget.ImageView
-import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.ext.getString
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.NovelUI.ViewHolder
+import app.shosetsu.common.com.dto.Convertible
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoHeaderBinding

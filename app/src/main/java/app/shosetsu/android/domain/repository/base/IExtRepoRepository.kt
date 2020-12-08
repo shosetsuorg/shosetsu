@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.repository.base
 
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.RepositoryEntity
+import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
 

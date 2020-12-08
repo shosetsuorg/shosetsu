@@ -2,7 +2,7 @@ package app.shosetsu.android.providers.database.dao
 
 import android.database.sqlite.SQLiteException
 import androidx.room.*
-import app.shosetsu.android.domain.model.local.ExtLibEntity
+import app.shosetsu.android.domain.model.database.DBExtLibEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 
 /*
@@ -30,14 +30,14 @@ import app.shosetsu.android.providers.database.dao.base.BaseDao
  * @author github.com/doomsdayrs
  */
 @Dao
-interface ExtensionLibraryDao : BaseDao<ExtLibEntity> {
+interface ExtensionLibraryDao : BaseDao<DBExtLibEntity> {
 	@Throws(SQLiteException::class)
-	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = ExtLibEntity::class)
-	fun insertScriptLib(extLibEntity: ExtLibEntity)
+	@Insert(onConflict = OnConflictStrategy.IGNORE, entity = DBExtLibEntity::class)
+	fun insertScriptLib(extLibEntityEntity: DBExtLibEntity)
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM libs WHERE repoID = :repositoryID")
-	fun loadLibByRepoID(repositoryID: Int): List<ExtLibEntity>
+	fun loadLibByRepoID(repositoryID: Int): List<DBExtLibEntity>
 
 
 	@Throws(SQLiteException::class)
@@ -50,10 +50,10 @@ interface ExtensionLibraryDao : BaseDao<ExtLibEntity> {
 
 	@Throws(SQLiteException::class)
 	@Transaction
-	fun insertOrUpdateScriptLib(extLibEntity: ExtLibEntity) {
-		if (scriptLibCountFromName(extLibEntity.scriptName) > 0) {
-			blockingUpdate(extLibEntity)
-		} else insertScriptLib(extLibEntity)
+	fun insertOrUpdateScriptLib(extLibEntityEntity: DBExtLibEntity) {
+		if (scriptLibCountFromName(extLibEntityEntity.scriptName) > 0) {
+			blockingUpdate(extLibEntityEntity)
+		} else insertScriptLib(extLibEntityEntity)
 	}
 
 }

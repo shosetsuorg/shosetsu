@@ -1,27 +1,28 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.MutableLiveData
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
-import app.shosetsu.android.domain.usecases.load.LoadCatalogueListingDataUseCase
-import app.shosetsu.android.domain.usecases.load.LoadCatalogueQueryDataUseCase
-import app.shosetsu.android.domain.usecases.load.LoadFormatterUseCase
+import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
+import app.shosetsu.common.com.consts.settings.SettingKey
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.dto.loading
+import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.com.enums.NovelUIType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.mapify
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
 
 /*
  * This file is part of shosetsu.
@@ -50,9 +51,14 @@ class CatalogViewModel(
 		private val loadCatalogueListingData: LoadCatalogueListingDataUseCase,
 		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
 		private var reportExceptionUseCase: ReportExceptionUseCase,
+		private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
+		private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
+		private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 ) : ICatalogViewModel() {
+	private var novelUIType: NovelUIType = NovelUIType.fromInt(SettingKey.NovelCardType.default)
+	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
+	private var columnH: Int = SettingKey.ChapterColumnsInLandscape.default
 	private var formatter: IExtension? = null
-
 	private var listingItems: ArrayList<ACatalogNovelUI> = arrayListOf()
 	private var filterData = hashMapOf<Int, Any>()
 	private var query: String = ""
@@ -60,19 +66,34 @@ class CatalogViewModel(
 	override val listingItemsLive: MutableLiveData<HResult<List<ACatalogNovelUI>>> by lazy {
 		MutableLiveData<HResult<List<ACatalogNovelUI>>>(loading())
 	}
-
 	override val filterItemsLive: MutableLiveData<HResult<List<Filter<*>>>> by lazy {
 		MutableLiveData(loading())
 	}
-
 	override val hasSearchLive: MutableLiveData<HResult<Boolean>> by lazy {
 		MutableLiveData(loading())
 	}
-
 	override val extensionName: MutableLiveData<HResult<String>> by lazy {
 		MutableLiveData<HResult<String>>(loading())
 	}
 
+	/**
+	 * Current loading job
+	 */
+	private var loadingJob: Job = launchIO { }
+
+	init {
+		launchIO {
+			loadNovelUIColumnsHUseCase().collectLatest {
+				columnH = it
+			}
+			loadNovelUIColumnsPUseCase().collectLatest {
+				columnP = it
+			}
+			loadNovelUITypeUseCase().collectLatest {
+				novelUIType = it
+			}
+		}
+	}
 
 	private fun setFID(fID: Int): Job = launchIO {
 		when {
@@ -104,15 +125,9 @@ class CatalogViewModel(
 		setFID(fID)
 	}
 
-	/**
-	 * Current loading job
-	 */
-	private var loadingJob: Job = launchIO { }
-
 	override fun setQuery(string: String) {
 		this.query = string
 	}
-
 
 	private suspend fun getDataLoaderAndLoad(): HResult<List<ACatalogNovelUI>> {
 		return if (query.isEmpty()) {
@@ -206,5 +221,10 @@ class CatalogViewModel(
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) =
 			reportExceptionUseCase(error)
+
+	override fun getColumnsInP(): Int = columnP
+	override fun getColumnsInH(): Int = columnH
+	override fun getNovelUIType(): NovelUIType = novelUIType
+
 }
 

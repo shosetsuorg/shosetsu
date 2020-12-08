@@ -1,18 +1,15 @@
 package app.shosetsu.android.ui.library
 
+import android.content.res.Configuration
 import android.util.Log
 import android.view.*
-import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
@@ -21,13 +18,13 @@ import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.enums.NovelUIType.COMPRESSED
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBinding
-import com.google.android.material.navigation.NavigationView
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
-import org.kodein.di.generic.instance
 
 /*
  * This file is part of Shosetsu.
@@ -62,7 +59,6 @@ class LibraryController
 
 	/***/
 	val viewModel: ILibraryViewModel by viewModel()
-	private val settings by instance<ShosetsuSettings>()
 
 	/** Inflater */
 	val inflater: MenuInflater = MenuInflater(applicationContext)
@@ -75,18 +71,38 @@ class LibraryController
 			ControllerLibraryBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
-		return if (settings.novelCardType == 0)
-			GridLayoutManager(
-					applicationContext,
-					settings.calculateColumnCount(applicationContext!!, 200f),
-					RecyclerView.VERTICAL,
-					false
-			) else
-			LinearLayoutManager(
+		return when (viewModel.getNovelUIType()) {
+			COMPRESSED -> LinearLayoutManager(
 					applicationContext,
 					LinearLayoutManager.VERTICAL,
 					false
 			)
+			else -> GridLayoutManager(
+					applicationContext,
+					context!!.resources.let {
+						val density = it.displayMetrics.density
+						val widthPixels = it.displayMetrics.widthPixels
+						when (it.configuration.orientation) {
+							Configuration.ORIENTATION_LANDSCAPE -> {
+								viewModel.calculateHColumnCount(
+										widthPixels,
+										density,
+										200f
+								)
+							}
+							else -> {
+								viewModel.calculatePColumnCount(
+										widthPixels,
+										density,
+										200f
+								)
+							}
+						}
+					},
+					RecyclerView.VERTICAL,
+					false
+			)
+		}
 	}
 
 	override fun onViewCreated(view: View) {

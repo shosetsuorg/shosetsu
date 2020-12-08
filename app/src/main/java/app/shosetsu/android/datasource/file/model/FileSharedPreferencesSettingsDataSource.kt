@@ -1,10 +1,10 @@
 package app.shosetsu.android.datasource.file.model
 
-import app.shosetsu.android.common.consts.settings.SettingKey
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
+import app.shosetsu.common.com.consts.settings.SettingKey
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.successResult
 import kotlinx.coroutines.flow.Flow
 
 /*

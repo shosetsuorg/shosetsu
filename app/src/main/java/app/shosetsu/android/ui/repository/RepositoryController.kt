@@ -2,12 +2,12 @@ package app.shosetsu.android.ui.repository
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
+import app.shosetsu.common.com.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter

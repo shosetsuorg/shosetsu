@@ -1,8 +1,5 @@
 package app.shosetsu.android.domain.model.local
 
-import app.shosetsu.android.common.dto.Convertible
-import app.shosetsu.android.view.uimodels.model.UpdateUI
-
 /*
  * This file is part of shosetsu.
  *
@@ -40,14 +37,4 @@ data class UpdateCompleteEntity(
 		val chapterName: String,
 		val novelName: String,
 		val novelImageURL: String,
-) : Convertible<UpdateUI> {
-
-	override fun convertTo(): UpdateUI = UpdateUI(
-			chapterID,
-			novelID,
-			time,
-			chapterName,
-			novelName,
-			novelImageURL
-	)
-}
+)

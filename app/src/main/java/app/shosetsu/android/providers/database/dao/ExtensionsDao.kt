@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
 import androidx.room.Transaction
-import app.shosetsu.android.domain.model.local.ExtensionEntity
+import app.shosetsu.android.domain.model.database.DBExtensionEntity
 import app.shosetsu.android.domain.model.local.IDNameImage
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
@@ -34,14 +34,14 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 @Dao
-interface ExtensionsDao : BaseDao<ExtensionEntity> {
+interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions")
-	fun loadExtensions(): Flow<List<ExtensionEntity>>
+	fun loadExtensions(): Flow<List<DBExtensionEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE installed = 1 AND enabled = 1")
-	fun loadPoweredExtensions(): Flow<List<ExtensionEntity>>
+	fun loadPoweredExtensions(): Flow<List<DBExtensionEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id, name, imageURL FROM extensions WHERE installed = 1 AND enabled = 1")
@@ -49,11 +49,11 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun getExtension(formatterID: Int): ExtensionEntity
+	fun getExtension(formatterID: Int): DBExtensionEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun getExtensionLive(formatterID: Int): Flow<ExtensionEntity>
+	fun getExtensionLive(formatterID: Int): Flow<DBExtensionEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
@@ -64,20 +64,20 @@ interface ExtensionsDao : BaseDao<ExtensionEntity> {
 	fun doesExtensionExist(formatterID: Int): Boolean = getExtensionCountFromID(formatterID) > 0
 
 	@Query("SELECT * FROM extensions WHERE repoID = :repoID")
-	fun getExtensions(repoID: Int): List<ExtensionEntity>
+	fun getExtensions(repoID: Int): List<DBExtensionEntity>
 
 	@Throws(SQLiteException::class)
 	@Transaction
-	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity) {
-		if (doesExtensionExist(extensionEntity.id)) {
-			suspendedUpdate(getExtension(extensionEntity.id).copy(
-					name = extensionEntity.name,
-					imageURL = extensionEntity.imageURL,
-					repositoryVersion = extensionEntity.repositoryVersion,
-					md5 = extensionEntity.md5
+	suspend fun insertOrUpdate(DBExtensionEntity: DBExtensionEntity) {
+		if (doesExtensionExist(DBExtensionEntity.id)) {
+			suspendedUpdate(getExtension(DBExtensionEntity.id).copy(
+					name = DBExtensionEntity.name,
+					imageURL = DBExtensionEntity.imageURL,
+					repositoryVersion = DBExtensionEntity.repositoryVersion,
+					md5 = DBExtensionEntity.md5
 			))
 		} else {
-			insertReplace(extensionEntity)
+			insertReplace(DBExtensionEntity)
 		}
 	}
 }

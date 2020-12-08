@@ -1,11 +1,11 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
-import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.RepositoryUI.ViewHolder
+import app.shosetsu.common.com.dto.Convertible
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding.bind
@@ -40,7 +40,7 @@ data class RepositoryUI(
 	override val type: Int = R.layout.recycler_repository_info
 	override var identifier: Long
 		get() = id.toLong()
-		set(value) {}
+		set(_) {}
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 

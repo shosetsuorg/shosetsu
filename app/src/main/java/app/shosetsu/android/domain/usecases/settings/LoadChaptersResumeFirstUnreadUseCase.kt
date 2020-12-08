@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.settings
 
-import app.shosetsu.android.common.consts.settings.SettingKey
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.common.com.consts.settings.SettingKey
+import app.shosetsu.common.com.dto.HResult
 
 /*
  * This file is part of Shosetsu.

@@ -1,8 +1,6 @@
 package app.shosetsu.android.viewmodel.model
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
@@ -13,6 +11,8 @@ import app.shosetsu.android.domain.usecases.load.LoadAppUpdateLiveUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.enums.AppThemes
 import kotlinx.coroutines.flow.collect
 
 /*

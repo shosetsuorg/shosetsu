@@ -1,4 +1,7 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.android.common.ext
+
+import app.shosetsu.android.domain.model.database.DBExtLibEntity
+import app.shosetsu.android.domain.model.local.ExtLibEntity
 
 /*
  * This file is part of Shosetsu.
@@ -19,6 +22,8 @@ package app.shosetsu.android.common.enums
 
 /**
  * shosetsu
- * 18 / 09 / 2020
+ * 05 / 12 / 2020
  */
-enum class MarkingTypes { ONVIEW, ONSCROLL }
+fun ExtLibEntity.toDB() = DBExtLibEntity(scriptName, version, repoID)
+
+fun List<ExtLibEntity>.toDB() = map { it.toDB() }

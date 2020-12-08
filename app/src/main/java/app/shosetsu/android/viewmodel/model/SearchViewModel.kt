@@ -3,10 +3,6 @@ package app.shosetsu.android.viewmodel.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handleReturn
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
@@ -17,6 +13,10 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handleReturn
+import app.shosetsu.common.com.dto.loading
+import app.shosetsu.common.com.dto.successResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlin.collections.set

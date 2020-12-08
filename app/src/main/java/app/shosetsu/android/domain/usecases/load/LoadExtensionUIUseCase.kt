@@ -1,10 +1,9 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.loading
-import app.shosetsu.android.common.dto.mapLatestTo
+import app.shosetsu.android.common.utils.uifactory.ExtensionConversionFactory
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.common.com.dto.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -36,6 +35,8 @@ class LoadExtensionUIUseCase(
 	operator fun invoke(id: Int): Flow<HResult<ExtensionUI>> = flow {
 		emit(loading())
 		if (id != -1)
-			emitAll(iExtensionsRepository.getExtensionEntityLive(id).mapLatestTo())
+			emitAll(iExtensionsRepository.getExtensionEntityLive(id).mapLatestResult {
+				successResult(ExtensionConversionFactory(it))
+			}.mapLatestResultTo())
 	}
 }

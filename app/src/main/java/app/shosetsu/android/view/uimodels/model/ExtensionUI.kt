@@ -2,11 +2,11 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import androidx.core.view.isVisible
-import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
+import app.shosetsu.common.com.dto.Convertible
 import app.shosetsu.lib.Version
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding
@@ -49,7 +49,7 @@ data class ExtensionUI(
 	override val type: Int = R.layout.extension_card
 	override var identifier: Long
 		get() = id.toLong()
-		set(value) {}
+		set(_) {}
 
 	enum class State { UPDATE, NO_UPDATE, OBSOLETE }
 

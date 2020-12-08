@@ -1,10 +1,10 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.common.com.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

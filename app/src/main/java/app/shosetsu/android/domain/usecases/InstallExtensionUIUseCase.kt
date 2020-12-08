@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.common.com.dto.HResult
 
 /*
  * This file is part of shosetsu.

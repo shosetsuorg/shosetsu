@@ -3,9 +3,9 @@ package app.shosetsu.android.view.uimodels.model
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import app.shosetsu.android.common.enums.SettingCategory
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
+import app.shosetsu.common.com.enums.SettingCategory
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerSettingsCardBinding
 

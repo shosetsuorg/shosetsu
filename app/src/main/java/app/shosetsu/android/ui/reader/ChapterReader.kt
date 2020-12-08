@@ -14,9 +14,6 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.common.enums.TextSizes
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
@@ -24,7 +21,12 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.com.enums.TextSizes
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.mikepenz.fastadapter.FastAdapter
@@ -33,9 +35,6 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.mikepenz.fastadapter.select.selectExtension
 import com.skydoves.colorpickerview.ColorPickerDialog
-import kotlinx.android.synthetic.main.activity_reader.*
-import kotlinx.android.synthetic.main.bottom_action_bar.view.*
-import kotlinx.android.synthetic.main.chapter_reader_bottom.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -67,10 +66,43 @@ class ChapterReader
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel: IChapterReaderViewModel by viewModel()
 
+	private lateinit var binding: ActivityReaderBinding
+
+	private val toolbar: MaterialToolbar
+		get() = binding.toolbar
+
+	private val chapterReaderBottom: LinearLayout
+		get() = binding.chapterReaderBottom.chapterReaderBottom
+
+	private val viewpager
+		get() = binding.viewpager
+
+	private val drawerToggle
+		get() = binding.chapterReaderBottom.drawerToggle
+
+	private val textSizeBar
+		get() = binding.chapterReaderBottom.textSizeBar
+	private val paraIndentBar
+		get() = binding.chapterReaderBottom.paraIndentBar
+	private val paraSpaceBar
+		get() = binding.chapterReaderBottom.paraSpaceBar
+
+	private val colorPickerOptions
+		get() = binding.chapterReaderBottom.colorPickerOptions
+	private val volumeToScrollBar
+		get() = binding.chapterReaderBottom.volumeToScrollBar
+
+
 	private val pageChangeCallback: OnPageChangeCallback by lazy { ChapterReaderPageChange() }
 
 	private val itemAdapter by lazy { ItemAdapter<ReaderUIItem<*, *>>() }
 	private val fastAdapter by lazy { FastAdapter.with(itemAdapter) }
+
+	private val bookmark
+		get() = binding.chapterReaderBottom.bookmark
+
+	private val theme_select
+		get() = binding.chapterReaderBottom.themeSelect
 
 	/** Gets chapters from the [itemAdapter] */
 	val chapterItems: List<ReaderChapterUI>
@@ -81,7 +113,7 @@ class ChapterReader
 		get() = itemAdapter.itemList.items.filterIsInstance<ReaderDividerUI>()
 
 	private val bottomSheetBehavior: ChapterReaderBottomBar<LinearLayout> by lazy {
-		from(chapter_reader_bottom) as ChapterReaderBottomBar
+		from(chapterReaderBottom) as ChapterReaderBottomBar
 	}
 
 	private val colorItemAdapterUI: ItemAdapter<ColorChoiceUI> by lazy {
@@ -114,7 +146,7 @@ class ChapterReader
 		setObservers()
 
 		toolbar.alpha = READER_BAR_ALPHA
-		chapter_reader_bottom.alpha = READER_BAR_ALPHA
+		chapterReaderBottom.alpha = READER_BAR_ALPHA
 	}
 
 	/** On Destroy */
@@ -261,10 +293,10 @@ class ChapterReader
 				override fun onStateChanged(bottomSheet: View, newState: Int) {
 					when (newState) {
 						STATE_COLLAPSED -> {
-							drawer_toggle.setImageResource(R.drawable.expand_less)
+							drawerToggle.setImageResource(R.drawable.expand_less)
 						}
 						STATE_EXPANDED -> {
-							drawer_toggle.setImageResource(R.drawable.expand_more)
+							drawerToggle.setImageResource(R.drawable.expand_more)
 						}
 						else -> {
 						}
@@ -272,12 +304,12 @@ class ChapterReader
 				}
 
 				override fun onSlide(bottomSheet: View, slideOffset: Float) {
-					drawer_toggle.setImageResource(R.drawable.ic_baseline_drag_handle_24)
+					drawerToggle.setImageResource(R.drawable.ic_baseline_drag_handle_24)
 				}
 
 			})
 		}
-		drawer_toggle.apply {
+		drawerToggle.apply {
 			setOnClickListener {
 				bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
 					STATE_EXPANDED -> STATE_COLLAPSED
@@ -286,7 +318,7 @@ class ChapterReader
 			}
 		}
 
-		text_size_bar?.apply {
+		textSizeBar.apply {
 			setCustomSectionTextArray { _, array ->
 				array.apply {
 					clear()
@@ -308,7 +340,7 @@ class ChapterReader
 			}
 		}
 
-		para_space_bar?.apply {
+		paraSpaceBar.apply {
 			setCustomSectionTextArray { _, array ->
 				array.apply {
 					clear()
@@ -323,7 +355,7 @@ class ChapterReader
 			}
 		}
 
-		para_indent_bar?.apply {
+		paraIndentBar.apply {
 			setCustomSectionTextArray { _, array ->
 				array.apply {
 					clear()
@@ -338,7 +370,7 @@ class ChapterReader
 			}
 		}
 
-		color_picker_options?.apply {
+		colorPickerOptions.apply {
 			colorFastAdapterUI.selectExtension {
 				isSelectable = true
 				setSelectionListener { item, _ ->
@@ -363,7 +395,7 @@ class ChapterReader
 			}
 		}
 
-		volume_to_scroll_bar?.apply {
+		volumeToScrollBar.apply {
 			isChecked = viewModel.volumeScroll
 			this.setOnCheckedChangeListener { _, isChecked ->
 				viewModel.setOnVolumeScroll(isChecked)
@@ -433,11 +465,11 @@ class ChapterReader
 
 		toolbar.isVisible = if (toolbar.isVisible) {
 			toast("hidden")
-			chapter_reader_bottom.isVisible = false
+			chapterReaderBottom.isVisible = false
 			false
 		} else {
 			toast("shown")
-			chapter_reader_bottom.isVisible = true
+			chapterReaderBottom.isVisible = true
 			true
 		}
 

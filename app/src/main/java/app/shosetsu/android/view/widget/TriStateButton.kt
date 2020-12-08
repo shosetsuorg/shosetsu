@@ -6,7 +6,7 @@ import android.widget.RelativeLayout
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.isVisible
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.android.synthetic.main.tri_state_button.view.*
+import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateButtonBinding
 
 /*
  * This file is part of Shosetsu.
@@ -41,6 +41,7 @@ class TriStateButton @JvmOverloads constructor(
 	private val checkedRes: Int
 	private val uncheckedRes: Int
 	private val goneRes: Int
+	private lateinit var binding: TriStateButtonBinding
 
 	var isChecked = false
 		set(value) {
@@ -56,12 +57,14 @@ class TriStateButton @JvmOverloads constructor(
 
 	init {
 		inflate(context, R.layout.tri_state_button, this)
+		binding = TriStateButtonBinding.bind(this)
+
 		context.theme.obtainStyledAttributes(attrs, R.styleable.TriStateButton, defStyleAttr, 0).apply {
 			try {
 				checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
 				uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
 				goneRes = getResourceId(R.styleable.TriStateButton_button_disabled, 0)
-				textView.text = getString(R.styleable.TriStateButton_android_text) ?: ""
+				binding.textView.text = getString(R.styleable.TriStateButton_android_text) ?: ""
 			} finally {
 				recycle()
 			}
@@ -79,10 +82,10 @@ class TriStateButton @JvmOverloads constructor(
 
 	private fun setDrawable(isActive: Boolean, isChecked: Boolean) {
 		if (!isActive && goneRes != 0) {
-			imageView.setImageResource(goneRes)
+			binding.imageView.setImageResource(goneRes)
 			return
-		} else imageView.isVisible = isActive
-		imageView.setImageResource(if (isChecked) checkedRes else uncheckedRes)
+		} else binding.imageView.isVisible = isActive
+		binding.imageView.setImageResource(if (isChecked) checkedRes else uncheckedRes)
 	}
 
 	fun isFacingSouth() = isChecked

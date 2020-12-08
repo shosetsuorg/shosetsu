@@ -1,10 +1,6 @@
 package app.shosetsu.android.domain.model.local
 
-import androidx.annotation.NonNull
-import androidx.room.*
-import app.shosetsu.android.common.dto.Convertible
-import app.shosetsu.android.common.enums.DownloadStatus
-import app.shosetsu.android.view.uimodels.model.DownloadUI
+import app.shosetsu.common.com.enums.DownloadStatus
 import java.io.Serializable
 
 /*
@@ -31,53 +27,13 @@ import java.io.Serializable
  *
  * @author github.com/doomsdayrs
  */
-@Entity(tableName = "downloads",
-		foreignKeys = [
-			ForeignKey(
-					entity = ChapterEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["chapterID"],
-					onDelete = ForeignKey.CASCADE
-			),
-			ForeignKey(
-					entity = NovelEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["novelID"],
-					onDelete = ForeignKey.CASCADE
-			),
-			ForeignKey(
-					entity = ChapterEntity::class,
-					parentColumns = ["url"],
-					childColumns = ["chapterURL"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [
-			Index("chapterID"),
-			Index("novelID"),
-			Index("chapterURL")
-		]
-)
+
 data class DownloadEntity(
-		@PrimaryKey
 		val chapterID: Int,
 		val novelID: Int,
 		val chapterURL: String,
 		val chapterName: String,
 		val novelName: String,
-		@NonNull
-		@ColumnInfo(name = "formatterID")
 		val extensionID: Int,
 		var status: DownloadStatus = DownloadStatus.PENDING,
-) : Convertible<DownloadUI>, Serializable {
-	override fun convertTo(): DownloadUI =
-			DownloadUI(
-					chapterID,
-					novelID,
-					chapterURL,
-					chapterName,
-					novelName,
-					extensionID,
-					status
-			)
-}
+) : Serializable

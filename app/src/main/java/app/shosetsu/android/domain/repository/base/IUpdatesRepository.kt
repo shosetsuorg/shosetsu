@@ -15,9 +15,9 @@ package app.shosetsu.android.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
+import app.shosetsu.common.com.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 

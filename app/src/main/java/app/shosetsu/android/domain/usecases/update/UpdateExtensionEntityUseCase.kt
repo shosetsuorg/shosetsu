@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.com.dto.HResult
 
 /*
  * This file is part of shosetsu.

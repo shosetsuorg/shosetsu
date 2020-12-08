@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
+import app.shosetsu.common.com.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ConfigureExtensionViewBinding
 

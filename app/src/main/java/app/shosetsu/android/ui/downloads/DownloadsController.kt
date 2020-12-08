@@ -19,8 +19,6 @@ package app.shosetsu.android.ui.downloads
 
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.enums.DownloadStatus.*
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.setOnPreClickListener
 import app.shosetsu.android.common.ext.setSelectionListener
@@ -30,6 +28,8 @@ import app.shosetsu.android.view.base.FastAdapterRecyclerController.BottomMenuBa
 import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.enums.DownloadStatus.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

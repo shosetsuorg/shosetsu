@@ -5,11 +5,6 @@ import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.dto.handleReturn
-import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
@@ -18,6 +13,11 @@ import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.dto.handleReturn
+import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.com.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding

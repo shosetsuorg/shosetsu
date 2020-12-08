@@ -1,9 +1,9 @@
 package app.shosetsu.android.datasource.database.base
 
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
+import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 

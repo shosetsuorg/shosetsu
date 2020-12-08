@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
+import app.shosetsu.common.com.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*

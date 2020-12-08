@@ -1,13 +1,13 @@
 package app.shosetsu.android.datasource.remote.model
 
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import app.shosetsu.android.common.consts.SHOSETSU_UPDATE_URL
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.common.com.consts.ErrorKeys.ERROR_HTTP_ERROR
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.errorResult
+import app.shosetsu.common.com.dto.successResult
 import app.shosetsu.lib.HTTPException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue

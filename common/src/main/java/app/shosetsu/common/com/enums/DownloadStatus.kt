@@ -1,4 +1,4 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.common.com.enums
 
 /*
  * This file is part of Shosetsu.
@@ -19,16 +19,15 @@ package app.shosetsu.android.common.enums
 
 /**
  * shosetsu
- * 23 / 10 / 2020
- *
- * Defines location of internal file directories
+ * 09 / 10 / 2020
  */
-enum class InternalFileDir {
-    CACHE,
-    FILES,
+enum class DownloadStatus {
+	PENDING,
 
-    /**
-     * Just dumps into the app dir
-     */
-    GENERIC
+	/** Notates that this download is currently waiting,
+	 * either for the thread pool to open up or some other reason */
+	WAITING,
+	DOWNLOADING,
+	PAUSED,
+	ERROR,
 }

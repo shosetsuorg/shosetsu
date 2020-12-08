@@ -18,7 +18,6 @@ package app.shosetsu.android.viewmodel.model.extension
  */
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.domain.usecases.InstallExtensionUIUseCase
@@ -28,6 +27,7 @@ import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.IExtensionsViewModel
+import app.shosetsu.common.com.dto.HResult
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

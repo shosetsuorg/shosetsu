@@ -1,9 +1,5 @@
 package app.shosetsu.android.domain.repository.model
 
-import app.shosetsu.android.common.consts.ErrorKeys
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_BROKEN
-import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.ext.logError
 import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
 import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
@@ -14,6 +10,10 @@ import app.shosetsu.android.datasource.remote.base.IRemoteExtensionDataSource
 import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.com.consts.ErrorKeys
+import app.shosetsu.common.com.consts.ErrorKeys.ERROR_GENERAL
+import app.shosetsu.common.com.consts.ErrorKeys.ERROR_LUA_BROKEN
+import app.shosetsu.common.com.dto.*
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.lua.LuaExtension
@@ -90,9 +90,9 @@ class ExtensionsRepository(
 						databaseSource.updateExtension(extensionEntity)
 						return successResult("")
 					} catch (e: IllegalArgumentException) {
-						return errorResult(ERROR_LUA_BROKEN, e).also { logError { it } }
+						return app.shosetsu.common.com.dto.errorResult(ERROR_LUA_BROKEN, e).also { logError { it } }
 					} catch (e: Exception) {
-						return errorResult(ERROR_GENERAL, e).also { logError { it } }
+						return app.shosetsu.common.com.dto.errorResult(ERROR_GENERAL, e).also { logError { it } }
 					}
 				}
 				is HResult.Error -> {
@@ -122,10 +122,10 @@ class ExtensionsRepository(
 
 		val fileResult = fileSource.loadFormatter(extensionEntity.fileName)
 		if (fileResult !is HResult.Success)
-			return errorResult(ErrorKeys.ERROR_NOT_FOUND, "Extension file not found")
+			return app.shosetsu.common.com.dto.errorResult(ErrorKeys.ERROR_NOT_FOUND, "Extension file not found")
 
 		if (!fileResult.data.exMetaData.libVersion.isCompatible())
-			return errorResult(ErrorKeys.ERROR_INCOMPATIBLE)
+			return app.shosetsu.common.com.dto.errorResult(ErrorKeys.ERROR_INCOMPATIBLE)
 
 		memorySource.putFormatterInMemory(fileResult.data)
 		return fileResult

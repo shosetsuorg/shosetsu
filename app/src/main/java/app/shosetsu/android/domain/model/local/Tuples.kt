@@ -1,10 +1,10 @@
 package app.shosetsu.android.domain.model.local
 
 import androidx.room.ColumnInfo
-import app.shosetsu.android.common.dto.Convertible
 import app.shosetsu.android.view.uimodels.model.IDTitleImageBookUI
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.view.uimodels.model.URLTitleImageUI
+import app.shosetsu.common.com.dto.Convertible
 import java.io.Serializable
 
 /*
@@ -34,12 +34,6 @@ import java.io.Serializable
 
 data class CountIDTuple(
 		@ColumnInfo(name = "id") val id: Int,
-		@ColumnInfo(name = "COUNT(*)") val count: Int,
-) : Serializable
-
-
-data class CountNovelIDTuple(
-		@ColumnInfo(name = "novelID") val id: Int,
 		@ColumnInfo(name = "COUNT(*)") val count: Int,
 ) : Serializable
 

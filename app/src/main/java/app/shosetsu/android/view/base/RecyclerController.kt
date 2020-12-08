@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.common.com.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding.inflate
 

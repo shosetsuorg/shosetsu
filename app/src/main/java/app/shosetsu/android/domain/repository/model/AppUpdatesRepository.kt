@@ -1,16 +1,16 @@
 package app.shosetsu.android.domain.repository.model
 
 import android.util.Log
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_DUPLICATE
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.emptyResult
-import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
+import app.shosetsu.common.com.consts.ErrorKeys.ERROR_DUPLICATE
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.emptyResult
+import app.shosetsu.common.com.dto.errorResult
+import app.shosetsu.common.com.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.flow.Flow
 

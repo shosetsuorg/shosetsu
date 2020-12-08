@@ -1,15 +1,18 @@
 package app.shosetsu.android.datasource.file.model
 
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_LUA_GENERAL
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.android.common.consts.SCRIPT_DIR
 import app.shosetsu.android.common.consts.SOURCE_DIR
-import app.shosetsu.android.common.dto.*
-import app.shosetsu.android.common.enums.InternalFileDir.FILES
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
+import app.shosetsu.common.com.consts.ErrorKeys.ERROR_LUA_GENERAL
+import app.shosetsu.common.com.consts.ErrorKeys.ERROR_NOT_FOUND
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.com.dto.withSuccess
+import app.shosetsu.common.com.enums.InternalFileDir.FILES
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.lua.LuaExtension
 import org.luaj.vm2.LuaError
@@ -64,9 +67,11 @@ class FileExtensionDataSource(
 			}
 		}
 	} catch (e: LuaError) {
-		errorResult(ERROR_LUA_GENERAL, e.message ?: "Unknown Lua Error", e)
+		app.shosetsu.common.com.dto.errorResult(ERROR_LUA_GENERAL, e.message
+				?: "Unknown Lua Error", e)
 	} catch (e: FileNotFoundException) {
-		errorResult(ERROR_NOT_FOUND, e.message ?: "Unknown file not found", e)
+		app.shosetsu.common.com.dto.errorResult(ERROR_NOT_FOUND, e.message
+				?: "Unknown file not found", e)
 	}
 
 	override suspend fun writeFormatter(fileName: String, data: String): HResult<*> =

@@ -1,14 +1,14 @@
 package app.shosetsu.android.datasource.file.model
 
 import android.util.Log
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.dto.handledReturnAny
-import app.shosetsu.android.common.dto.successResult
-import app.shosetsu.android.common.enums.InternalFileDir.CACHE
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.dto.handledReturnAny
+import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.com.enums.InternalFileDir.CACHE
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject

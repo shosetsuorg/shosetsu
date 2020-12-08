@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.consts.settings.SettingKey
-import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.common.com.consts.settings.SettingKey
+import app.shosetsu.common.com.enums.AppThemes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 

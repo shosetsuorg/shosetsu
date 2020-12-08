@@ -1,12 +1,5 @@
 package app.shosetsu.android.domain.model.local
 
-import androidx.annotation.NonNull
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import app.shosetsu.android.common.dto.Convertible
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.lib.Version
 import java.io.Serializable
 
@@ -35,31 +28,18 @@ import java.io.Serializable
  * @author github.com/doomsdayrs
  * This class represents a formatter
  */
-@Entity(
-        tableName = "extensions",
-        foreignKeys = [
-                ForeignKey(
-                        entity = RepositoryEntity::class,
-                        parentColumns = ["id"],
-                        childColumns = ["repoID"],
-                        onDelete = ForeignKey.CASCADE
-                )
-        ],
-        indices = [Index("repoID")]
-)
-
 data class ExtensionEntity(
         /** Extension ID */
-        @PrimaryKey val id: Int,
+        val id: Int,
 
         /** Repository extension belongs too*/
         val repoID: Int,
 
         /** Name of the extension, can be changed */
-        @NonNull var name: String = "",
+        var name: String = "",
 
         /** FileName of the extension */
-        @NonNull val fileName: String = "",
+        val fileName: String = "",
 
         /** Image URL of the extension*/
         var imageURL: String? = null,
@@ -81,19 +61,4 @@ data class ExtensionEntity(
 
         /** MD5 to check against */
         var md5: String = "",
-) : Serializable, Convertible<ExtensionUI> {
-        override fun convertTo(): ExtensionUI =
-                ExtensionUI(
-                        id,
-                        repoID,
-                        name,
-                        fileName,
-                        imageURL,
-                        lang,
-                        enabled,
-                        installed,
-                        installedVersion,
-                        repositoryVersion,
-                        md5
-                )
-}
+) : Serializable

@@ -1,15 +1,15 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
 import android.view.View
-import app.shosetsu.android.common.dto.Convertible
-import app.shosetsu.android.common.dto.handle
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.ui.reader.types.model.StringReader
+import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.com.enums.ReadingStatus
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
 

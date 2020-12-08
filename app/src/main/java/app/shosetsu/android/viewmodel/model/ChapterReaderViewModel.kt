@@ -3,14 +3,7 @@ package app.shosetsu.android.viewmodel.model
 import android.graphics.Color
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
-import app.shosetsu.android.common.consts.settings.SettingKey.*
 import app.shosetsu.android.common.dto.*
-import app.shosetsu.android.common.enums.MarkingTypes
-import app.shosetsu.android.common.enums.MarkingTypes.ONSCROLL
-import app.shosetsu.android.common.enums.MarkingTypes.ONVIEW
-import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.common.enums.ReadingStatus.READ
-import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
@@ -26,6 +19,14 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
+import app.shosetsu.common.com.consts.settings.SettingKey.*
+import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.com.enums.MarkingTypes
+import app.shosetsu.common.com.enums.MarkingTypes.ONSCROLL
+import app.shosetsu.common.com.enums.MarkingTypes.ONVIEW
+import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.com.enums.ReadingStatus.READ
+import app.shosetsu.common.com.enums.ReadingStatus.READING
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -70,6 +71,9 @@ class ChapterReaderViewModel(
 					// Adds the "No more chapters" marker
 					add(size, ReaderDividerUI(prev = it.last().title))
 
+					/**
+					 * Loops down the list, adding inbetweens
+					 */
 					/**
 					 * Loops down the list, adding inbetweens
 					 */

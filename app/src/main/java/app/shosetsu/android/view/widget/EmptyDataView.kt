@@ -2,21 +2,23 @@ package app.shosetsu.android.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.isVisible
-import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.android.synthetic.main.common_empty_view.view.*
+import com.github.doomsdayrs.apps.shosetsu.databinding.CommonEmptyViewBinding
 import kotlin.random.Random
 
 class EmptyDataView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
 		RelativeLayout(context, attrs) {
 
-	init {
-		inflate(context, R.layout.common_empty_view, this)
-	}
+	private val binding: CommonEmptyViewBinding = CommonEmptyViewBinding.inflate(
+			LayoutInflater.from(context),
+			this,
+			false
+	)
 
 	/**
 	 * Hide the information view
@@ -34,10 +36,10 @@ class EmptyDataView @JvmOverloads constructor(context: Context, attrs: Attribute
 	}
 
 	fun show(message: String, actions: List<Action>? = null) {
-		text_face.text = getRandomErrorFace()
-		text_label.text = message
+		binding.textFace.text = getRandomErrorFace()
+		binding.textLabel.text = message
 
-		actions_container.removeAllViews()
+		binding.actionsContainer.removeAllViews()
 		if (!actions.isNullOrEmpty()) {
 			actions.forEach {
 				val button = AppCompatButton(context).apply {
@@ -50,7 +52,7 @@ class EmptyDataView @JvmOverloads constructor(context: Context, attrs: Attribute
 					setOnClickListener(it.listener)
 				}
 
-				actions_container.addView(button)
+				binding.actionsContainer.addView(button)
 			}
 		}
 

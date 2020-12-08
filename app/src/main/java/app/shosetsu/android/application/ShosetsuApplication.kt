@@ -7,10 +7,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.backend.database.DBHelper
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
@@ -22,6 +20,7 @@ import app.shosetsu.android.di.datasource.remoteDataSouceModule
 import app.shosetsu.android.domain.repository.base.IExtLibRepository
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
+import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
@@ -82,7 +81,6 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
         import(repositoryModule)
         import(useCaseModule)
         import(viewModelsModule)
-        bind<ShosetsuSettings>() with singleton { ShosetsuSettings(applicationContext) }
         import(androidXModule(this@ShosetsuApplication))
     }
 

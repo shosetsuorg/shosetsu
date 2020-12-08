@@ -1,4 +1,4 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.common.com.enums
 
 enum class SettingCategory {
 	DOWNLOAD, // Settings for download options

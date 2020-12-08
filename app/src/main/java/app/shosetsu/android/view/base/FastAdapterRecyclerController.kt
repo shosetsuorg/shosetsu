@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
-import app.shosetsu.android.common.dto.HResult
+import app.shosetsu.common.com.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerWithBottomMenuBinding
 import com.mikepenz.fastadapter.FastAdapter

@@ -1,12 +1,10 @@
 package app.shosetsu.android.datasource.database.model
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.mapLatestToSuccess
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.providers.database.dao.RepositoryDao
+import app.shosetsu.common.com.dto.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -37,20 +35,20 @@ class LocalExtRepoDataSource(
 ) : ILocalExtRepoDataSource {
 	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> = flow {
 		try {
-			emitAll(repositoryDao.loadRepositoriesLive().mapLatestToSuccess())
+			emitAll(repositoryDao.loadRepositoriesLive().mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
 	}
 
 	override fun loadRepositories(): HResult<List<RepositoryEntity>> = try {
-		successResult(repositoryDao.loadRepositories())
+		successResult(repositoryDao.loadRepositories().mapTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
-		successResult(repositoryDao.loadRepositoryFromID(repoID))
+		successResult(repositoryDao.loadRepositoryFromID(repoID).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}

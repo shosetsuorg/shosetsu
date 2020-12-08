@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.settings
 
-import app.shosetsu.android.common.consts.settings.SettingKey
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.common.com.consts.settings.SettingKey
 import kotlinx.coroutines.flow.Flow
 
 /*

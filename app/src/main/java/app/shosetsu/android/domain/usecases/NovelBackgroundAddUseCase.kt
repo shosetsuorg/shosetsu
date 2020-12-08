@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.common.dto.HResult
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
+import app.shosetsu.common.com.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -34,9 +34,9 @@ class NovelBackgroundAddUseCase(
 			loadNovelUseCase(novelID, false).also {
 				if (it is HResult.Success<*>) {
 					if (it.data is NovelEntity) {
-						updateNovelEntityUseCase(it.data.copy(
+						updateNovelEntityUseCase((it.data as NovelEntity).copy(
 								bookmarked = true
-						).convertTo())
+						))
 					}
 				}
 			}

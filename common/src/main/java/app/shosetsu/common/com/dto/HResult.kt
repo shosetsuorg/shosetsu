@@ -1,6 +1,6 @@
-package app.shosetsu.android.common.dto
+package app.shosetsu.common.com.dto
 
-import app.shosetsu.android.common.consts.ErrorKeys
+import app.shosetsu.common.com.consts.ErrorKeys
 
 
 /*

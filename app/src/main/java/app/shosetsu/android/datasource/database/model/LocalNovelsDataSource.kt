@@ -1,14 +1,13 @@
 package app.shosetsu.android.datasource.database.model
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.mapLatestToSuccess
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.providers.database.dao.NovelsDao
+import app.shosetsu.common.com.dto.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -39,14 +38,14 @@ class LocalNovelsDataSource(
 ) : ILocalNovelsDataSource {
 	override suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>> = flow {
 		try {
-			emitAll(novelsDao.loadListBookmarkedNovels().mapLatestToSuccess())
+			emitAll(novelsDao.loadListBookmarkedNovels().mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
 	}
 
 	override suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>> = try {
-		successResult(novelsDao.loadBookmarkedNovels())
+		successResult(novelsDao.loadBookmarkedNovels().mapTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}
@@ -61,21 +60,21 @@ class LocalNovelsDataSource(
 	}
 
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> = try {
-		successResult(novelsDao.loadNovel(novelID))
+		successResult(novelsDao.loadNovel(novelID).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
-			emitAll(novelsDao.loadNovelLive(novelID).mapLatestToSuccess())
+			emitAll(novelsDao.loadNovelLive(novelID).mapLatestTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
 	}
 
 	override suspend fun updateNovel(novelEntity: NovelEntity): HResult<*> = try {
-		successResult(novelsDao.suspendedUpdate(novelEntity))
+		successResult(novelsDao.suspendedUpdate(novelEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
@@ -91,13 +90,13 @@ class LocalNovelsDataSource(
 	override suspend fun insertNovelReturnCard(
 			novelEntity: NovelEntity,
 	): HResult<IDTitleImageBook> = try {
-		successResult(novelsDao.insertNovelReturnCard(novelEntity))
+		successResult(novelsDao.insertNovelReturnCard(novelEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> = try {
-		successResult(novelsDao.insertIgnore(novelEntity))
+		successResult(novelsDao.insertIgnore(novelEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}

@@ -1,13 +1,6 @@
 package app.shosetsu.android.domain.model.local
 
-import androidx.annotation.NonNull
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import app.shosetsu.android.common.dto.Convertible
-import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.com.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.
@@ -33,40 +26,18 @@ import app.shosetsu.android.view.uimodels.model.ChapterUI
  *
  * @author github.com/doomsdayrs
  */
-@Entity(tableName = "chapters",
-		foreignKeys = [
-			ForeignKey(
-					entity = NovelEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["novelID"],
-					onDelete = ForeignKey.CASCADE
-			),
-			ForeignKey(
-					entity = ExtensionEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["formatterID"],
-					onDelete = ForeignKey.SET_NULL,
-					onUpdate = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("novelID"), Index("url", unique = true), Index("formatterID")]
-)
+
 data class ChapterEntity(
-		@PrimaryKey(autoGenerate = true)
 		var id: Int? = null,
 
-		@NonNull
 		var url: String,
 
-		@NonNull
 		val novelID: Int,
 
 		val formatterID: Int,
 
-		@NonNull
 		var title: String,
 
-		@NonNull
 		var releaseDate: String,
 
 		var order: Double,
@@ -78,21 +49,4 @@ data class ChapterEntity(
 		var bookmarked: Boolean = false,
 
 		var isSaved: Boolean = false,
-) : Convertible<ChapterUI> {
-
-
-	override fun convertTo(): ChapterUI =
-			ChapterUI(
-					id!!,
-					novelID,
-					url,
-					formatterID,
-					title,
-					releaseDate,
-					order,
-					readingPosition,
-					readingStatus,
-					bookmarked,
-					isSaved
-			)
-}
+)

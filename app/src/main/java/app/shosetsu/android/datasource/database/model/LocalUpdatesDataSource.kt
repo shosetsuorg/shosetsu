@@ -1,13 +1,15 @@
 package app.shosetsu.android.datasource.database.model
 
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.mapLatestToSuccess
-import app.shosetsu.android.common.dto.successResult
+import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.providers.database.dao.UpdatesDao
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.mapLatestListTo
+import app.shosetsu.common.com.dto.mapLatestToSuccess
+import app.shosetsu.common.com.dto.successResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -38,14 +40,14 @@ class LocalUpdatesDataSource(
 ) : ILocalUpdatesDataSource {
 	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> = flow {
 		try {
-			emitAll(updatesDao.loadUpdates().mapLatestToSuccess())
+			emitAll(updatesDao.loadUpdates().mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
 	}
 
 	override suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>> = try {
-		successResult(updatesDao.insertAllIgnore(list))
+		successResult(updatesDao.insertAllIgnore(list.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}

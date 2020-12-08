@@ -1,4 +1,7 @@
-package app.shosetsu.android.common.enums
+package app.shosetsu.android.common.ext
+
+import app.shosetsu.android.domain.model.database.DBRepositoryEntity
+import app.shosetsu.android.domain.model.local.RepositoryEntity
 
 /*
  * This file is part of Shosetsu.
@@ -19,15 +22,8 @@ package app.shosetsu.android.common.enums
 
 /**
  * shosetsu
- * 22 / 11 / 2020
+ * 05 / 12 / 2020
  */
-enum class AppThemes(val key: Int) {
-	FOLLOW_SYSTEM(0),
-	LIGHT(1),
-	DARK(2),
-	AMOLED(3);
+fun RepositoryEntity.toDB() = DBRepositoryEntity(id, url, name)
 
-	companion object {
-		fun fromKey(key: Int): AppThemes = values().find { it.key == key } ?: FOLLOW_SYSTEM
-	}
-}
+fun List<RepositoryEntity>.toDB() = map { it.toDB() }

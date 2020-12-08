@@ -4,16 +4,16 @@ import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import app.shosetsu.android.common.consts.ErrorKeys.ERROR_GENERAL
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.entity
-import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.android.domain.model.local.CountIDTuple
+import app.shosetsu.android.common.ext.toDB
+import app.shosetsu.android.domain.model.database.DBChapterEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
+import app.shosetsu.common.com.consts.ErrorKeys.ERROR_GENERAL
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.errorResult
+import app.shosetsu.common.com.dto.successResult
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
@@ -42,21 +42,21 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 @Dao
-interface ChaptersDao : BaseDao<ChapterEntity> {
+interface ChaptersDao : BaseDao<DBChapterEntity> {
 
 	//# Queries
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters")
-	fun loadAllChapters(): Array<ChapterEntity>
+	fun loadAllChapters(): Array<DBChapterEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
-	fun loadLiveChapters(novelID: Int): Flow<List<ChapterEntity>>
+	fun loadLiveChapters(novelID: Int): Flow<List<DBChapterEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
-	suspend fun loadChapters(novelID: Int): List<ChapterEntity>
+	suspend fun loadChapters(novelID: Int): List<DBChapterEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id, url, title, readingPosition, readingStatus, bookmarked FROM chapters WHERE novelID = :novelID")
@@ -67,15 +67,12 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE id = :chapterID LIMIT 1")
-	suspend fun loadChapter(chapterID: Int): ChapterEntity
+	suspend fun loadChapter(chapterID: Int): DBChapterEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE _rowid_ = :rowID LIMIT 1")
-	suspend fun loadChapter(rowID: Long): ChapterEntity
+	suspend fun loadChapter(rowID: Long): DBChapterEntity
 
-	@Throws(SQLiteException::class)
-	@Query("SELECT COUNT(*),id FROM chapters WHERE url = :chapterURL")
-	suspend fun loadChapterCount(chapterURL: String): CountIDTuple
 
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
 	@Throws(SQLiteException::class)
@@ -85,19 +82,19 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
-			loadChapter(readerChapterEntity.id).copy(
-					readingPosition = readerChapterEntity.readingPosition,
-					readingStatus = readerChapterEntity.readingStatus,
-					bookmarked = readerChapterEntity.bookmarked
+	suspend fun updateReaderChapter(readerDBChapter: ReaderChapterEntity): Unit =
+			loadChapter(readerDBChapter.id).copy(
+					readingPosition = readerDBChapter.readingPosition,
+					readingStatus = readerDBChapter.readingStatus,
+					bookmarked = readerDBChapter.bookmarked
 			).let { suspendedUpdate(it) }
 
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
-		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!)
+		val databaseChapterEntities: List<DBChapterEntity> = loadChapters(novelEntity.id!!)
 		list.forEach { novelChapter: Novel.Chapter ->
-			databaseChapters.find { it.url == novelChapter.link }?.let {
+			databaseChapterEntities.find { it.url == novelChapter.link }?.let {
 				handleUpdate(it, novelChapter)
 			} ?: handleAbortInsert(novelChapter, novelEntity)
 		}
@@ -108,11 +105,11 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 	suspend fun handleChaptersReturnNew(
 			novelEntity: NovelEntity,
 			list: List<Novel.Chapter>,
-	): HResult<List<ChapterEntity>> {
-		val newChapters = ArrayList<ChapterEntity>()
-		val databaseChapters: List<ChapterEntity> = loadChapters(novelEntity.id!!)
+	): HResult<List<DBChapterEntity>> {
+		val newChapters = ArrayList<DBChapterEntity>()
+		val databaseChapterEntities: List<DBChapterEntity> = loadChapters(novelEntity.id!!)
 		list.forEach { novelChapter: Novel.Chapter ->
-			databaseChapters.find { it.url == novelChapter.link }?.let {
+			databaseChapterEntities.find { it.url == novelChapter.link }?.let {
 				handleUpdate(it, novelChapter)
 			} ?: insertReturn(novelEntity, novelChapter).let {
 				if (it is HResult.Success)
@@ -124,14 +121,14 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Throws(SQLiteException::class)
 	@Transaction
-	suspend fun insertAndReturnChapterEntity(chapterEntity: ChapterEntity): ChapterEntity =
-			loadChapter(insertReplace(chapterEntity))
+	suspend fun insertAndReturnDBChapter(DBChapterEntity: DBChapterEntity): DBChapterEntity =
+			loadChapter(insertReplace(DBChapterEntity))
 
 
 	private suspend fun insertReturn(
 			novelEntity: NovelEntity,
 			novelChapter: Novel.Chapter,
-	): HResult<ChapterEntity> {
+	): HResult<DBChapterEntity> {
 		try {
 			val row = handleAbortInsert(novelChapter, novelEntity)
 			if (row < 0) return errorResult(ERROR_GENERAL, "Aborted")
@@ -144,11 +141,11 @@ interface ChaptersDao : BaseDao<ChapterEntity> {
 
 	@Throws(SQLiteException::class)
 	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) =
-			insertAbort(novelChapter.entity(novelEntity))
+			insertAbort(novelChapter.entity(novelEntity).toDB())
 
 	@Throws(SQLiteException::class)
-	private suspend fun handleUpdate(chapterEntity: ChapterEntity, novelChapter: Novel.Chapter) {
-		suspendedUpdate(chapterEntity.copy(
+	private suspend fun handleUpdate(DBChapterEntity: DBChapterEntity, novelChapter: Novel.Chapter) {
+		suspendedUpdate(DBChapterEntity.copy(
 				title = novelChapter.title,
 				releaseDate = novelChapter.release,
 				order = novelChapter.order

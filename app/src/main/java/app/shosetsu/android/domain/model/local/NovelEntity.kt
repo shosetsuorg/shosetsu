@@ -1,12 +1,6 @@
 package app.shosetsu.android.domain.model.local
 
 import androidx.annotation.NonNull
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import app.shosetsu.android.common.dto.Convertible
-import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.lib.Novel
 
 /*
@@ -33,24 +27,11 @@ import app.shosetsu.lib.Novel
  *
  * @author github.com/doomsdayrs
  */
-@Entity(tableName = "novels",
-		foreignKeys = [
-			ForeignKey(
-					entity = ExtensionEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["formatterID"],
-					onDelete = ForeignKey.SET_NULL,
-					onUpdate = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("formatterID")]
-)
+
 data class NovelEntity(
-		@PrimaryKey(autoGenerate = true)
 		/** ID of this novel */
 		var id: Int? = null,
 
-		@NonNull
 		/** URL of the novel */
 		var url: String,
 
@@ -66,7 +47,6 @@ data class NovelEntity(
 		/** What kind of reader is this novel using */
 		var readerType: Int = -1,
 
-		@NonNull
 		/** The title of the novel */
 		var title: String,
 
@@ -92,27 +72,6 @@ data class NovelEntity(
 		/** Tags this novel matches, in case genres were not enough*/
 		var tags: Array<String> = arrayOf(),
 
-		@NonNull
 		/** The publishing status of this novel */
 		var status: Novel.Status = Novel.Status.UNKNOWN,
-) : Convertible<NovelUI> {
-	override fun convertTo(): NovelUI = NovelUI(
-			id = id!!,
-			novelURL = url,
-			extID = formatterID,
-			bookmarked = bookmarked,
-			readerType = readerType,
-			title = title,
-			imageURL = imageURL,
-			description = description,
-			loaded = loaded,
-			language = language,
-			genres = genres.toList(),
-			authors = authors.toList(),
-			artists = artists.toList(),
-			tags = tags.toList(),
-			status = status
-	)
-
-
-}
+)

@@ -1,14 +1,14 @@
 package app.shosetsu.android.datasource.memory.model.guava
 
-import app.shosetsu.android.common.consts.MEMORY_EXPIRE_EXTENSION_TIME
-import app.shosetsu.android.common.consts.MEMORY_MAX_EXT_LIBS
-import app.shosetsu.android.common.dto.HResult
-import app.shosetsu.android.common.dto.emptyResult
-import app.shosetsu.android.common.dto.successResult
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.set
 import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
+import app.shosetsu.common.com.consts.MEMORY_EXPIRE_EXTENSION_TIME
+import app.shosetsu.common.com.consts.MEMORY_MAX_EXT_LIBS
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.emptyResult
+import app.shosetsu.common.com.dto.successResult
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit.HOURS

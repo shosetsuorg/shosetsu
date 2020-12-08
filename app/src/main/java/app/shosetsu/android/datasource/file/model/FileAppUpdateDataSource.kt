@@ -1,13 +1,16 @@
 package app.shosetsu.android.datasource.file.model
 
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
-import app.shosetsu.android.common.consts.ErrorKeys
-import app.shosetsu.android.common.dto.*
-import app.shosetsu.android.common.enums.InternalFileDir.CACHE
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
+import app.shosetsu.common.com.consts.ErrorKeys
+import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.com.dto.emptyResult
+import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.com.dto.withSuccess
+import app.shosetsu.common.com.enums.InternalFileDir.CACHE
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -52,7 +55,7 @@ class FileAppUpdateDataSource(
 				ObjectMapper().registerKotlinModule().writeValueAsString(debugAppUpdate)
 		)
 	} catch (e: JsonProcessingException) {
-		errorResult(ErrorKeys.ERROR_IO, e)
+		app.shosetsu.common.com.dto.errorResult(ErrorKeys.ERROR_IO, e)
 	} catch (e: Exception) {
 		e.toHError()
 	}

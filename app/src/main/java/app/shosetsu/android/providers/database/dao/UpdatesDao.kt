@@ -5,8 +5,8 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.common.ext.trimDate
+import app.shosetsu.android.domain.model.database.DBUpdate
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
 import org.joda.time.DateTime
@@ -37,14 +37,14 @@ import org.joda.time.Days
  * @author github.com/doomsdayrs
  */
 @Dao
-interface UpdatesDao : BaseDao<UpdateEntity> {
+interface UpdatesDao : BaseDao<DBUpdate> {
 	@Throws(SQLiteException::class)
 	@Query("SELECT time FROM updates ORDER BY ROWID ASC LIMIT 1")
 	fun loadStartingDayTime(): Long
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM updates")
-	fun loadUpdates(): Flow<List<UpdateEntity>>
+	fun loadUpdates(): Flow<List<DBUpdate>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT time FROM updates ORDER BY ROWID DESC LIMIT 1")
@@ -67,7 +67,7 @@ interface UpdatesDao : BaseDao<UpdateEntity> {
 	 */
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM updates WHERE time < :date2 AND time >= :date1")
-	fun loadUpdatesBetweenDates(date1: Long, date2: Long): Flow<Array<UpdateEntity>>
+	fun loadUpdatesBetweenDates(date1: Long, date2: Long): Flow<Array<DBUpdate>>
 
 	@Transaction
 	@Throws(SQLiteException::class)

@@ -1,7 +1,8 @@
 package app.shosetsu.android.common.dto
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.consts.ErrorKeys
+import app.shosetsu.common.com.consts.ErrorKeys
+import app.shosetsu.common.com.dto.HResult
 import org.json.JSONException
 
 /*
