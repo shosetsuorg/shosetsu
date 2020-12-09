@@ -2,10 +2,8 @@ package app.shosetsu.android.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.activity.MainActivity
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.requestPerms
 import app.shosetsu.android.ui.intro.IntroductionActivity
 import app.shosetsu.android.viewmodel.abstracted.ASplashScreenViewModel
@@ -48,26 +46,22 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		super.onActivityResult(requestCode, resultCode, data)
 		if (requestCode == INTRO_CODE) {
 			viewModel.toggleShowIntro()
 			startBoot()
-		}
+		} else super.onActivityResult(requestCode, resultCode, data)
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
 		// Settings setup
-		if (viewModel.showIntro()) {
-			Log.i(logID(), "First time, Launching activity")
+		if (viewModel.showIntro())
 			startActivityForResult(Intent(
 					this,
 					IntroductionActivity::class.java
 			), INTRO_CODE)
-		} else {
-			startBoot()
-		}
+		else startBoot()
 	}
 
 	private fun startBoot() {

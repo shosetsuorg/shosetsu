@@ -3,23 +3,19 @@ package app.shosetsu.android.ui.settings.sub.backup
 import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
-import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
-import app.shosetsu.android.viewmodel.model.settings.BackupSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.vincent.filepicker.Constant
 import com.vincent.filepicker.Constant.REQUEST_CODE_PICK_FILE
 import com.vincent.filepicker.activity.NormalFilePickActivity
 import com.vincent.filepicker.filter.entity.NormalFile
-import org.kodein.di.generic.instance
 import java.util.*
 
 /*

@@ -1,15 +1,8 @@
 package app.shosetsu.android.ui.settings.sub
 
-import android.os.Build.VERSION_CODES
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.SettingsSubController
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
-import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
 import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
-import app.shosetsu.android.viewmodel.model.settings.UpdateSettingsViewModel
-import org.kodein.di.generic.instance
 
 /*
  * This file is part of shosetsu.

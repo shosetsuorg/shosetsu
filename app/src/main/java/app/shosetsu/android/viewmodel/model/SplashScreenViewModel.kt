@@ -1,9 +1,9 @@
 package app.shosetsu.android.viewmodel.model
 
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.domain.repository.model.SettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.viewmodel.abstracted.ASplashScreenViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey
+import app.shosetsu.common.com.consts.settings.SettingKey.FirstTime
 import kotlinx.coroutines.flow.collectLatest
 
 /*
@@ -28,13 +28,13 @@ import kotlinx.coroutines.flow.collectLatest
  * 08 / 12 / 2020
  */
 class SplashScreenViewModel(
-		private val settingsRepository: SettingsRepository
+		private val settingsRepository: ISettingsRepository
 ) : ASplashScreenViewModel() {
-	private var showIntro = true
+	private var showIntro = FirstTime.default
 
 	init {
 		launchIO {
-			settingsRepository.observeBoolean(SettingKey.FirstTime).collectLatest {
+			settingsRepository.observeBoolean(FirstTime).collectLatest {
 				showIntro = it
 			}
 		}
@@ -44,7 +44,7 @@ class SplashScreenViewModel(
 
 	override fun toggleShowIntro() {
 		launchIO {
-			settingsRepository.setBoolean(SettingKey.FirstTime, !showIntro)
+			settingsRepository.setBoolean(FirstTime, !showIntro)
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package app.shosetsu.android.common.ext
 
 import android.content.Context
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.lib.IExtension
 
 /*
@@ -50,38 +49,3 @@ fun Context.getStringSetting(formatter: IExtension, settingID: Int): String? =
 			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
 					.getString("$settingID", it.state as String)
 		}
-
-
-@Suppress("DEPRECATION")
-inline fun <reified I : Any> ShosetsuSettings.getFormSetting(formatter: IExtension, settingID: Int): I? {
-	return when (I::class) {
-		Int::class -> context.getIntSetting(formatter, settingID)
-		String::class -> context.getStringSetting(formatter, settingID)
-		Boolean::class -> context.getBooleanSetting(formatter, settingID)
-		Double::class -> context.getDoubleSetting(formatter, settingID)
-		else -> null
-	} as I?
-}
-
-@Suppress("DEPRECATION")
-inline fun <reified I : Any> ShosetsuSettings.setFormSetting(
-		formatter: IExtension,
-		settingID: Int,
-		v: I,
-) {
-	val s = "$settingID"
-	when (I::class) {
-		Int::class ->
-			context.getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
-					.edit().putInt(s, v as Int).apply()
-		String::class ->
-			context.getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
-					.edit().putString(s, v as String).apply()
-		Boolean::class ->
-			context.getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
-					.edit().putBoolean(s, v as Boolean).apply()
-		Double::class ->
-			context.getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
-					.edit().putFloat(s, (v as Double).toFloat()).apply()
-	}
-}

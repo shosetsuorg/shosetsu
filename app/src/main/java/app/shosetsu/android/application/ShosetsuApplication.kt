@@ -89,11 +89,9 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
         setupACRA()
         Notifications.createChannels(this)
         ShortCuts.createShortcuts(this)
-
     }
 
     override fun onCreate() {
-        super.onCreate()
         ShosetsuLuaLib.httpClient = okHttpClient
         ShosetsuLuaLib.libLoader = libLoader@{ name ->
             Log.i("LibraryLoaderSync", "Loading:\t$name")
@@ -123,6 +121,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
                 logI("Initialize: $it")
             }
         }
+        super.onCreate()
     }
 
     private fun setupACRA() {

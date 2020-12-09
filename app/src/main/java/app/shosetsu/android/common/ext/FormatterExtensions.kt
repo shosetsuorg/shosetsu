@@ -5,7 +5,6 @@ import android.content.Context
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import app.shosetsu.android.common.ShosetsuSettings
 import app.shosetsu.android.view.builder.SDViewBuilder
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -40,7 +39,6 @@ import app.shosetsu.lib.IExtension
 fun Array<Filter<*>>.toSettingItems(
 		formatter: IExtension,
 		context: Context,
-		setting: ShosetsuSettings,
 ): List<SettingsItemData> {
 	val settings = ArrayList<SettingsItemData>()
 	forEach { filter ->
@@ -49,9 +47,7 @@ fun Array<Filter<*>>.toSettingItems(
 				settings.add(
 						checkBoxSettingData(filter.id) {
 							title { filter.name }
-							isChecked = setting.getFormSetting(formatter, filter.id) ?: filter.state
 							onChecked { _, isChecked ->
-								setting.setFormSetting(formatter, filter.id, isChecked)
 							}
 						}
 				)
@@ -65,11 +61,7 @@ fun Array<Filter<*>>.toSettingItems(
 									R.layout.simple_list_item_1,
 									filter.choices
 							)
-							spinnerValue {
-								setting.getFormSetting(formatter, filter.id) ?: filter.state
-							}
 							onSpinnerItemSelected { _, _, position, _ ->
-								setting.setFormSetting(formatter, filter.id, position)
 							}
 						}
 				)
@@ -80,7 +72,7 @@ fun Array<Filter<*>>.toSettingItems(
 			}
 			is Filter.List -> {
 				settings.addAll(
-						filter.filters.toSettingItems(formatter, context, setting)
+						filter.filters.toSettingItems(formatter, context)
 				)
 			}
 			is Filter.RadioGroup -> {
@@ -92,11 +84,7 @@ fun Array<Filter<*>>.toSettingItems(
 									R.layout.simple_list_item_1,
 									filter.choices
 							)
-							spinnerValue {
-								setting.getFormSetting(formatter, filter.id) ?: filter.state
-							}
 							onSpinnerItemSelected { _, _, position, _ ->
-								setting.setFormSetting(formatter, filter.id, position)
 							}
 						}
 				)
@@ -107,9 +95,7 @@ fun Array<Filter<*>>.toSettingItems(
 				settings.add(
 						switchSettingData(filter.id) {
 							title { filter.name }
-							isChecked = setting.getFormSetting(formatter, filter.id) ?: filter.state
 							onChecked { _, isChecked ->
-								setting.setFormSetting(formatter, filter.id, isChecked)
 							}
 						}
 				)
@@ -118,10 +104,7 @@ fun Array<Filter<*>>.toSettingItems(
 				settings.add(
 						textInputSettingData(filter.id) {
 							title { filter.name }
-							initialText = setting.getFormSetting(formatter, filter.id)
-									?: filter.state
 							doAfterTextChanged {
-								setting.setFormSetting(formatter, filter.id, it.toString())
 							}
 						}
 				)
