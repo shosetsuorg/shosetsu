@@ -17,7 +17,7 @@ class EmptyDataView @JvmOverloads constructor(context: Context, attrs: Attribute
 	private val binding: CommonEmptyViewBinding = CommonEmptyViewBinding.inflate(
 			LayoutInflater.from(context),
 			this,
-			false
+			true
 	)
 
 	/**

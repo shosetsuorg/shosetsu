@@ -40,7 +40,7 @@ class BottomActionBar @JvmOverloads constructor(context: Context, attrs: Attribu
 	: FrameLayout(context, attrs) {
 
 	private val binding: BottomActionBarBinding =
-			inflate(from(context), this, false)
+			inflate(from(context), this, true)
 
 	/**
 	 * Removes all items

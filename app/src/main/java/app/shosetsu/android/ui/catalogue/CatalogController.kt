@@ -161,6 +161,7 @@ class CatalogController(
 		//recyclerView.addOnScrollListener(CatalogueHitBottom(viewModel))
 		recyclerView.addOnScrollListener(object : EndlessRecyclerOnScrollListener(progressAdapter) {
 			override fun onLoadMore(currentPage: Int) {
+				// these are throwing exceptions that cant be catched, just ignore em
 				progressAdapter.clear()
 				progressAdapter.add(ProgressItem())
 

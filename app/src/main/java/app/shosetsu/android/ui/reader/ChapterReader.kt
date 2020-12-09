@@ -62,9 +62,10 @@ import kotlin.system.measureTimeMillis
  * 13 / 12 / 2019
  */
 class ChapterReader
-	: AppCompatActivity(R.layout.activity_reader), KodeinAware {
+	: AppCompatActivity(), KodeinAware {
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel: IChapterReaderViewModel by viewModel()
+
 
 	private lateinit var binding: ActivityReaderBinding
 
@@ -137,7 +138,9 @@ class ChapterReader
 			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
 			currentChapterID = intent.getIntExtra(BUNDLE_CHAPTER_ID, -1)
 		}
+
 		super.onCreate(savedInstanceState)
+		setContentView(ActivityReaderBinding.inflate(layoutInflater).also { binding = it }.root)
 		setSupportActionBar(toolbar as Toolbar)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 		//slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
