@@ -36,8 +36,9 @@ class ManualMemChaptersDataSource : IMemChaptersDataSource {
 		}
 
 	private fun recycle(hashMap: HashMap<Int, Pair<Long, String>>) {
-		for (i in hashMap.keys) {
-			val (time) = hashMap[i]!!
+		val keys = hashMap.keys
+		for (i in keys) {
+			val (time) = hashMap[i] ?: continue
 			if (time + ((MEMORY_EXPIRE_CHAPTER_TIME * 1000) * 60) <= System.currentTimeMillis())
 				hashMap.remove(i)
 		}

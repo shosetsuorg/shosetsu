@@ -37,8 +37,9 @@ class ManualMemExtensionDataSource : IMemExtensionsDataSource {
 		}
 
 	private fun recycle(hashMap: HashMap<Int, Pair<Long, IExtension>>) {
-		for (i in hashMap.keys) {
-			val (time) = hashMap[i]!!
+		val keys = hashMap.keys
+		for (i in keys) {
+			val (time) = hashMap[i] ?: continue
 			if (time + ((MEMORY_EXPIRE_EXTENSION_TIME * 1000) * 60) <= System.currentTimeMillis())
 				hashMap.remove(i)
 		}
