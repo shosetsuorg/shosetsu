@@ -42,8 +42,8 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 	}
 
 	override val kodein: Kodein by closestKodein()
-	private val viewModel: ASplashScreenViewModel by instance()
 
+	private val viewModel: ASplashScreenViewModel by instance()
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		if (requestCode == INTRO_CODE) {
@@ -53,6 +53,8 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
+		viewModel
+
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
 		// Settings setup

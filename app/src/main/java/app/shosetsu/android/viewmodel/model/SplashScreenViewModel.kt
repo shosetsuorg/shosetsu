@@ -1,6 +1,7 @@
 package app.shosetsu.android.viewmodel.model
 
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.viewmodel.abstracted.ASplashScreenViewModel
 import app.shosetsu.common.com.consts.settings.SettingKey.FirstTime
@@ -35,6 +36,7 @@ class SplashScreenViewModel(
 	init {
 		launchIO {
 			settingsRepository.observeBoolean(FirstTime).collectLatest {
+				logV("Collected $it")
 				showIntro = it
 			}
 		}
