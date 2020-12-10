@@ -21,13 +21,17 @@ package app.shosetsu.common.com.enums
  * shosetsu
  * 09 / 10 / 2020
  */
-enum class DownloadStatus {
-	PENDING,
+enum class DownloadStatus(val key: Int) {
+	PENDING(0),
 
 	/** Notates that this download is currently waiting,
 	 * either for the thread pool to open up or some other reason */
-	WAITING,
-	DOWNLOADING,
-	PAUSED,
-	ERROR,
+	WAITING(3),
+	DOWNLOADING(1),
+	PAUSED(2),
+	ERROR(-1), ;
+
+	companion object {
+		fun fromInt(key: Int) = values().find { it.key == key } ?: ERROR
+	}
 }

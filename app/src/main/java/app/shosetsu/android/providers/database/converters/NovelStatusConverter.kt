@@ -1,8 +1,8 @@
 package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
-import app.shosetsu.lib.Novel
-import app.shosetsu.lib.Novel.Status.*
+import app.shosetsu.lib.Novel.Status
+import app.shosetsu.lib.Novel.Status.Companion.fromInt
 
 /*
  * This file is part of shosetsu.
@@ -30,18 +30,8 @@ import app.shosetsu.lib.Novel.Status.*
  */
 class NovelStatusConverter {
 	@TypeConverter
-	fun toInt(status: Novel.Status): Int = when (status) {
-		UNKNOWN -> -1
-		PUBLISHING -> 0
-		COMPLETED -> 1
-		PAUSED -> 2
-	}
+	fun toInt(status: Status): Int = status.key
 
 	@TypeConverter
-	fun toStatus(int: Int): Novel.Status = when (int) {
-		0 -> PUBLISHING
-		1 -> COMPLETED
-		2 -> PAUSED
-		else -> UNKNOWN
-	}
+	fun toStatus(key: Int): Status = fromInt(key)
 }

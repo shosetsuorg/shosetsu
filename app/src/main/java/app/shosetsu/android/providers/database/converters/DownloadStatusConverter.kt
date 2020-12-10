@@ -2,6 +2,7 @@ package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
 import app.shosetsu.common.com.enums.DownloadStatus
+import app.shosetsu.common.com.enums.DownloadStatus.Companion.fromInt
 
 /*
  * This file is part of Shosetsu.
@@ -26,20 +27,8 @@ import app.shosetsu.common.com.enums.DownloadStatus
  */
 class DownloadStatusConverter {
 	@TypeConverter
-	fun toInt(downloadStatus: DownloadStatus): Int = when (downloadStatus) {
-		DownloadStatus.PENDING -> 0
-		DownloadStatus.DOWNLOADING -> 1
-		DownloadStatus.PAUSED -> 2
-		DownloadStatus.WAITING -> 3
-		DownloadStatus.ERROR -> -1
-	}
+	fun toInt(downloadStatus: DownloadStatus): Int = downloadStatus.key
 
 	@TypeConverter
-	fun toStatus(int: Int): DownloadStatus = when (int) {
-		0 -> DownloadStatus.PENDING
-		1 -> DownloadStatus.DOWNLOADING
-		2 -> DownloadStatus.PAUSED
-		3 -> DownloadStatus.WAITING
-		else -> DownloadStatus.ERROR
-	}
+	fun toStatus(key: Int): DownloadStatus = fromInt(key)
 }

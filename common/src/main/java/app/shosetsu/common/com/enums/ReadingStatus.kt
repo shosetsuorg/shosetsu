@@ -22,23 +22,18 @@ package app.shosetsu.common.com.enums
  * 20 / 06 / 2019
  * Status of a [com.github.doomsdayrs.apps.shosetsu.domain.model.local.ChapterEntity]
  */
-enum class ReadingStatus(val a: Int, val status: String) {
+enum class ReadingStatus(val key: Int, val status: String) {
 	// Novels and chapters
-	UNREAD(0, "Unread"), READING(1, "Reading"), READ(2, "Read"),
+	UNREAD(0, "Unread"),
+	READING(1, "Reading"),
+	READ(2, "Read"),
 
 	UNKNOWN(-1, "Unknown");
 
-	override fun toString(): String = a.toString()
+	override fun toString(): String = key.toString()
 
 	companion object {
-		fun getStatus(a: Int): ReadingStatus {
-			return when (a) {
-				0 -> UNREAD
-				1 -> READING
-				2 -> READ
-				else -> UNKNOWN
-			}
-		}
+		fun fromInt(key: Int): ReadingStatus = values().find { it.key == key } ?: UNKNOWN
 	}
 
 }
