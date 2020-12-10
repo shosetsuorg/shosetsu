@@ -5,7 +5,7 @@ import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.common.com.consts.ErrorKeys
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.errorResult
-import app.shosetsu.lib.exceptions.HTTPException
+import app.shosetsu.lib.exceptions.*
 import org.json.JSONException
 import org.luaj.vm2.LuaError
 import java.io.IOException
@@ -34,17 +34,29 @@ import java.security.InvalidParameterException
  * Converts Exceptions to their respective error result
  */
 fun Exception.toHError(): HResult.Error = when (this) {
+	is JsonMissingKeyException -> {
+		errorResult(ErrorKeys.ERROR_JSON, this)
+	}
+	is MissingExtensionLibrary -> {
+		errorResult(ErrorKeys.ERROR_LUA_GENERAL, this)
+	}
+	is MissingOrInvalidKeysException -> {
+		errorResult(ErrorKeys.ERROR_LUA_BROKEN, this)
+	}
+	is InvalidFilterIDException -> {
+		errorResult(ErrorKeys.ERROR_LUA_BROKEN, this)
+	}
 	is HTTPException -> {
-		logD("HTTP Exception")
+		logE("HTTP Exception")
 		errorResult(ErrorKeys.ERROR_HTTP_ERROR, message!!, this)
 	}
 	is IOException -> {
-		logD("Network exception")
+		logE("Network exception")
 		errorResult(ErrorKeys.ERROR_NETWORK, message ?: "Unknown Network Exception", this)
 	}
 	is LuaError -> {
 		if (cause != null && cause is HTTPException) {
-			logD("HTTP exception")
+			logE("HTTP exception")
 			errorResult(ErrorKeys.ERROR_HTTP_ERROR, cause!!.message!!)
 		} else errorResult(ErrorKeys.ERROR_LUA_GENERAL, message ?: "Unknown Lua Error", this)
 	}
