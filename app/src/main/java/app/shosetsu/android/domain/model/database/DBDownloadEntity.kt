@@ -2,9 +2,9 @@ package app.shosetsu.android.domain.model.database
 
 import androidx.annotation.NonNull
 import androidx.room.*
-import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.common.com.dto.Convertible
 import app.shosetsu.common.com.enums.DownloadStatus
+import app.shosetsu.common.domain.model.local.DownloadEntity
 
 /*
  * This file is part of Shosetsu.

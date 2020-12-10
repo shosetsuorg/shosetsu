@@ -2,13 +2,13 @@ package app.shosetsu.android.datasource.database.model
 
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.datasource.database.base.ILocalExtLibDataSource
-import app.shosetsu.android.domain.model.local.ExtLibEntity
-import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.mapTo
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.datasource.database.base.ILocalExtLibDataSource
+import app.shosetsu.common.domain.model.local.ExtLibEntity
+import app.shosetsu.common.domain.model.local.RepositoryEntity
 
 /*
  * This file is part of shosetsu.

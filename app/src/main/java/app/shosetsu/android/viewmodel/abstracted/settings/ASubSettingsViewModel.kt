@@ -3,13 +3,13 @@ package app.shosetsu.android.viewmodel.abstracted.settings
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.loading
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import kotlinx.coroutines.Dispatchers.IO
 
 /*

@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.common.com.dto.Convertible
 import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.domain.model.local.ChapterEntity
 
 /*
  * This file is part of Shosetsu.

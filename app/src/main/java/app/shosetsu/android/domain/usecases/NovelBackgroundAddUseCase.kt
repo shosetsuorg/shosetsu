@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.

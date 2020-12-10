@@ -1,9 +1,15 @@
 package app.shosetsu.android.di.datasource
 
-import app.shosetsu.android.datasource.database.base.*
+import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
+import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
+import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
+import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.android.datasource.database.model.*
-import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.android.datasource.file.model.FileSharedPreferencesSettingsDataSource
+import app.shosetsu.common.datasource.database.base.ILocalDownloadsDataSource
+import app.shosetsu.common.datasource.database.base.ILocalExtLibDataSource
+import app.shosetsu.common.datasource.database.base.ILocalExtRepoDataSource
+import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance

@@ -3,13 +3,13 @@ package app.shosetsu.android.viewmodel.model.settings
 import android.widget.CompoundButton
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
 import app.shosetsu.common.com.consts.settings.SettingKey
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*

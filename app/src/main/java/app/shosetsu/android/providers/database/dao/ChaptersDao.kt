@@ -7,13 +7,13 @@ import androidx.room.Transaction
 import app.shosetsu.android.common.ext.entity
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.database.DBChapterEntity
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.common.com.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.errorResult
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 

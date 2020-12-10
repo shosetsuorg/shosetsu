@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.lib.Version
 
 /*

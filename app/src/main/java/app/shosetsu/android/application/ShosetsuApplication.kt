@@ -17,10 +17,10 @@ import app.shosetsu.android.di.datasource.cacheDataSourceModule
 import app.shosetsu.android.di.datasource.fileDataSourceModule
 import app.shosetsu.android.di.datasource.localDataSouceModule
 import app.shosetsu.android.di.datasource.remoteDataSouceModule
-import app.shosetsu.android.domain.repository.base.IExtLibRepository
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.domain.repositories.base.IExtLibRepository
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig

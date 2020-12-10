@@ -1,6 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*
  * This file is part of shosetsu.

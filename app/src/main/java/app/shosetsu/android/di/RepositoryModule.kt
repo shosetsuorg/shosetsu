@@ -2,6 +2,9 @@ package app.shosetsu.android.di
 
 import app.shosetsu.android.domain.repository.base.*
 import app.shosetsu.android.domain.repository.model.*
+import app.shosetsu.common.domain.repositories.base.IExtLibRepository
+import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance

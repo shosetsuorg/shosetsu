@@ -1,10 +1,10 @@
 package app.shosetsu.android.common.utils.uifactory
 
-import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.handleReturn
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.domain.model.local.ChapterEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 

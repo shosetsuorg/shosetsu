@@ -18,8 +18,8 @@ package app.shosetsu.android.domain.repository.base
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow

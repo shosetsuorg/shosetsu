@@ -4,13 +4,13 @@ import androidx.appcompat.app.AlertDialog
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.settings.SwitchSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.onChecked
 import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
 import app.shosetsu.common.com.consts.settings.SettingKey.NavStyle
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.generic.instance
 

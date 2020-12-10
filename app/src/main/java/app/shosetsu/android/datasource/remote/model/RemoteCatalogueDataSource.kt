@@ -2,10 +2,10 @@ package app.shosetsu.android.datasource.remote.model
 
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.emptyResult
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX

@@ -1,10 +1,10 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.domain.model.local.DownloadEntity
 
 /*
  * This file is part of shosetsu.

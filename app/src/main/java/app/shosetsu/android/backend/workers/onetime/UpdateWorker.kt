@@ -19,15 +19,15 @@ import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.combine
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.common.com.consts.settings.SettingKey.*
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein

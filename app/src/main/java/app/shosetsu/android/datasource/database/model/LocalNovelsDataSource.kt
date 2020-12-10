@@ -5,9 +5,9 @@ import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.providers.database.dao.NovelsDao
 import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.domain.model.local.NovelEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

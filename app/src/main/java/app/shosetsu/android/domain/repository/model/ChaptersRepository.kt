@@ -2,16 +2,16 @@ package app.shosetsu.android.domain.repository.model
 
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
-import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
-import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
-import app.shosetsu.android.datasource.memory.base.IMemChaptersDataSource
-import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
-import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.and
+import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
+import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
+import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
+import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
+import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow

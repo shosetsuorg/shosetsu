@@ -12,9 +12,9 @@ import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.common.com.consts.settings.SettingKey.*
 import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit
 

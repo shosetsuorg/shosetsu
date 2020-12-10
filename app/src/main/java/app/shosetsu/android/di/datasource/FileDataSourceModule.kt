@@ -1,7 +1,11 @@
 package app.shosetsu.android.di.datasource
 
-import app.shosetsu.android.datasource.file.base.*
+import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.file.model.*
+import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
+import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
+import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
+import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance

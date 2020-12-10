@@ -2,10 +2,10 @@ package app.shosetsu.android.datasource.database.model
 
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.datasource.database.base.ILocalDownloadsDataSource
-import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.providers.database.dao.DownloadsDao
 import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.datasource.database.base.ILocalDownloadsDataSource
+import app.shosetsu.common.domain.model.local.DownloadEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

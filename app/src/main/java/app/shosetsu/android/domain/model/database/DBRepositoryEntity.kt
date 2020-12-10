@@ -2,8 +2,8 @@ package app.shosetsu.android.domain.model.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.domain.model.local.RepositoryEntity
 
 /*
  * This file is part of Shosetsu.

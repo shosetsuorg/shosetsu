@@ -3,10 +3,10 @@ package app.shosetsu.android.view.uimodels.model
 import android.view.View
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.ext.picasso
-import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.lib.Version
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding

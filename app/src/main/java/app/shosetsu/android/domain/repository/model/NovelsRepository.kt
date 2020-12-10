@@ -1,16 +1,16 @@
 package app.shosetsu.android.domain.repository.model
 
 import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
-import app.shosetsu.android.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.emptyResult
 import app.shosetsu.common.com.dto.handleReturn
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow

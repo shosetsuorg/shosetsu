@@ -4,12 +4,12 @@ import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.providers.database.dao.UpdatesDao
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.mapLatestListTo
 import app.shosetsu.common.com.dto.mapLatestToSuccess
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.domain.model.local.UpdateEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

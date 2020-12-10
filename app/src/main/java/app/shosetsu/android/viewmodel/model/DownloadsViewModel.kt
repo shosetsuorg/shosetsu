@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.liveDataIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
@@ -15,6 +14,7 @@ import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
 import app.shosetsu.common.com.consts.settings.SettingKey.IsDownloadPaused
 import app.shosetsu.common.com.dto.*
 import app.shosetsu.common.com.enums.DownloadStatus
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*
  * This file is part of shosetsu.

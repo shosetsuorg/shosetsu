@@ -3,10 +3,10 @@ package app.shosetsu.android.datasource.database.model
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
-import app.shosetsu.android.domain.model.local.ExtensionEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.providers.database.dao.ExtensionsDao
 import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.domain.model.local.ExtensionEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

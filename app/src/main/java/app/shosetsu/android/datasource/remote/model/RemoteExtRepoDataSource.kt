@@ -3,10 +3,10 @@ package app.shosetsu.android.datasource.remote.model
 import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
-import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
+import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.json.RepoIndex
 import okhttp3.OkHttpClient
 
@@ -35,7 +35,7 @@ class RemoteExtRepoDataSource(
         private val client: OkHttpClient,
 ) : IRemoteExtRepoDataSource {
     override suspend fun downloadRepoData(
-            repo: RepositoryEntity,
+		    repo: RepositoryEntity,
     ): HResult<RepoIndex> = try {
         @Suppress("BlockingMethodInNonBlockingContext")
         (successResult(

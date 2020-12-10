@@ -1,7 +1,5 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.domain.model.local.NovelEntity
-import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
@@ -10,6 +8,8 @@ import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.handle
 import app.shosetsu.common.com.dto.handleReturn
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.UpdateEntity
 
 /*
  * This file is part of shosetsu.

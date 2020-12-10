@@ -2,8 +2,8 @@ package app.shosetsu.android.datasource.database.base
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.domain.model.local.UpdateEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

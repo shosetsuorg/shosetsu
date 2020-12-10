@@ -9,7 +9,6 @@ import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.local.ColorChoiceData
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.load.LoadReaderChaptersUseCase
 import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
@@ -27,6 +26,7 @@ import app.shosetsu.common.com.enums.MarkingTypes.ONVIEW
 import app.shosetsu.common.com.enums.ReadingStatus
 import app.shosetsu.common.com.enums.ReadingStatus.READ
 import app.shosetsu.common.com.enums.ReadingStatus.READING
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

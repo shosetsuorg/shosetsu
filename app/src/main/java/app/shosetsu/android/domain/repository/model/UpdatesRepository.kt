@@ -2,9 +2,9 @@ package app.shosetsu.android.domain.repository.model
 
 import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
 import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.domain.model.local.UpdateEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

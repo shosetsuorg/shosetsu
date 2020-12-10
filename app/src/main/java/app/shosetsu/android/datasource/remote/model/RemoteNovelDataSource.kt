@@ -1,9 +1,9 @@
 package app.shosetsu.android.datasource.remote.model
 
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 

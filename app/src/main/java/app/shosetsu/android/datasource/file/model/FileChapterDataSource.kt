@@ -3,12 +3,12 @@ package app.shosetsu.android.datasource.file.model
 import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
-import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.com.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.common.com.dto.*
 import app.shosetsu.common.com.enums.InternalFileDir.FILES
+import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
+import app.shosetsu.common.domain.model.local.ChapterEntity
 import java.io.File
 import java.io.FileNotFoundException
 

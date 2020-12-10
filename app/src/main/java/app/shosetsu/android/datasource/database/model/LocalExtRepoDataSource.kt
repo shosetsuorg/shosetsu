@@ -1,10 +1,10 @@
 package app.shosetsu.android.datasource.database.model
 
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.datasource.database.base.ILocalExtRepoDataSource
-import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.providers.database.dao.RepositoryDao
 import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.datasource.database.base.ILocalExtRepoDataSource
+import app.shosetsu.common.domain.model.local.RepositoryEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

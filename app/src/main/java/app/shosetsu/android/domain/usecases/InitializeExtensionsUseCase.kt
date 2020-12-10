@@ -2,16 +2,16 @@ package app.shosetsu.android.domain.usecases
 
 import android.util.Log
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.model.local.ExtLibEntity
-import app.shosetsu.android.domain.model.local.ExtensionEntity
-import app.shosetsu.android.domain.model.local.RepositoryEntity
-import app.shosetsu.android.domain.repository.base.IExtLibRepository
-import app.shosetsu.android.domain.repository.base.IExtRepoRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.HResult.Error
 import app.shosetsu.common.com.dto.HResult.Success
 import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.domain.model.local.ExtLibEntity
+import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.domain.repositories.base.IExtLibRepository
+import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary

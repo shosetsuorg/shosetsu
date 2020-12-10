@@ -1,7 +1,8 @@
 package app.shosetsu.android.di.datasource
 
-import app.shosetsu.android.datasource.remote.base.*
+import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.model.*
+import app.shosetsu.common.datasource.remote.base.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance

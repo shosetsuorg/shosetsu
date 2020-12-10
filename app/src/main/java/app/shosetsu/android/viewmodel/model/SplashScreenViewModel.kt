@@ -2,9 +2,9 @@ package app.shosetsu.android.viewmodel.model
 
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.viewmodel.abstracted.ASplashScreenViewModel
 import app.shosetsu.common.com.consts.settings.SettingKey.FirstTime
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import kotlinx.coroutines.flow.collectLatest
 
 /*

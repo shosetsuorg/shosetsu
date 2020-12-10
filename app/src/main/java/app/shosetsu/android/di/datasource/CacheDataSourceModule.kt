@@ -2,15 +2,15 @@ package app.shosetsu.android.di.datasource
 
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.M
-import app.shosetsu.android.datasource.memory.base.IMemChaptersDataSource
-import app.shosetsu.android.datasource.memory.base.IMemExtLibDataSource
-import app.shosetsu.android.datasource.memory.base.IMemExtensionsDataSource
-import app.shosetsu.android.datasource.memory.model.guava.GuavaMemChaptersDataSource
-import app.shosetsu.android.datasource.memory.model.guava.GuavaMemExtLibDataSource
-import app.shosetsu.android.datasource.memory.model.guava.GuavaMemExtensionDataSource
-import app.shosetsu.android.datasource.memory.model.manual.ManualMemChaptersDataSource
-import app.shosetsu.android.datasource.memory.model.manual.ManualMemExtLibDataSource
-import app.shosetsu.android.datasource.memory.model.manual.ManualMemExtensionDataSource
+import app.shosetsu.android.datasource.memory.impl.GuavaMemChaptersDataSource
+import app.shosetsu.android.datasource.memory.impl.GuavaMemExtLibDataSource
+import app.shosetsu.android.datasource.memory.impl.GuavaMemExtensionDataSource
+import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
+import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
+import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
+import app.shosetsu.common.datasource.memory.impl.GenericMemChaptersDataSource
+import app.shosetsu.common.datasource.memory.impl.GenericMemExtLibDataSource
+import app.shosetsu.common.datasource.memory.impl.GenericMemExtensionDataSource
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.singleton
@@ -41,19 +41,19 @@ import org.kodein.di.generic.singleton
 val cacheDataSourceModule: Kodein.Module = Kodein.Module("cache_data_source_module") {
 	bind<IMemChaptersDataSource>() with singleton {
 		if (SDK_INT <= M)
-			ManualMemChaptersDataSource() else
+			GenericMemChaptersDataSource() else
 			GuavaMemChaptersDataSource()
 	}
 
 	bind<IMemExtensionsDataSource>() with singleton {
 		if (SDK_INT <= M)
-			ManualMemExtensionDataSource() else
+			GenericMemExtensionDataSource() else
 			GuavaMemExtensionDataSource()
 	}
 
 	bind<IMemExtLibDataSource>() with singleton {
 		if (SDK_INT <= M)
-			ManualMemExtLibDataSource() else
+			GenericMemExtLibDataSource() else
 			GuavaMemExtLibDataSource()
 	}
 

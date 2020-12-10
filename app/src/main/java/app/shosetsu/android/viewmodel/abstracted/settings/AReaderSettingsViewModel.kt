@@ -1,9 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*
  * This file is part of shosetsu.

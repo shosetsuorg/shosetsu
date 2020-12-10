@@ -3,11 +3,11 @@ package app.shosetsu.android.datasource.database.model
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
-import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll

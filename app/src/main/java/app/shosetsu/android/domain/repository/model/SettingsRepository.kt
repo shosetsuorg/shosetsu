@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.repository.model
 
-import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.common.com.consts.settings.SettingKey
 import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
 
 /*

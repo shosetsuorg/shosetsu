@@ -12,12 +12,12 @@ import app.shosetsu.android.common.ext.deserializeString
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.toDB
-import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.providers.database.converters.NovelStatusConverter
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.android.providers.database.dao.NovelsDao
 import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.Novel
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware

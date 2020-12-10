@@ -19,13 +19,13 @@ import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.ui.splash.SplashScreen
 import app.shosetsu.common.com.consts.settings.SettingKey.AppUpdateOnMeteredConnection
 import app.shosetsu.common.com.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
 import app.shosetsu.common.com.dto.handle
 import app.shosetsu.common.com.dto.handledReturnAny
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware

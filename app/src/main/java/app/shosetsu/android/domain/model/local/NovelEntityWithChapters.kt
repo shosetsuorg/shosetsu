@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.model.local
 
 import androidx.room.Relation
+import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
 
 /*
  * This file is part of shosetsu.
