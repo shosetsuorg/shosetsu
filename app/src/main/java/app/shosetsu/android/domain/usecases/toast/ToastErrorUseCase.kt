@@ -4,7 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.lib.HTTPException
+import app.shosetsu.lib.exceptions.HTTPException
 
 /*
  * This file is part of shosetsu.

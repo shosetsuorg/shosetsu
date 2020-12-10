@@ -8,7 +8,7 @@ import app.shosetsu.common.com.consts.ErrorKeys.ERROR_HTTP_ERROR
 import app.shosetsu.common.com.dto.HResult
 import app.shosetsu.common.com.dto.errorResult
 import app.shosetsu.common.com.dto.successResult
-import app.shosetsu.lib.HTTPException
+import app.shosetsu.lib.exceptions.HTTPException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
