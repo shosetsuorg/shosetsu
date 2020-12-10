@@ -200,7 +200,7 @@ class DBHelper(context: Context) :
 						order = it.getDouble(ORDER),
 						yPosition = it.getInt(Y_POSITION),
 						readChapter = it.getInt(READ_CHAPTER).let {
-							ReadingStatus.getStatus(it)
+							ReadingStatus.fromInt(it)
 						},
 						bookmarked = it.getInt(BOOKMARKED) == 1
 				))
