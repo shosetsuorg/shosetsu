@@ -2,7 +2,8 @@ package app.shosetsu.android.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.RelativeLayout
+import android.view.LayoutInflater.from
+import android.widget.FrameLayout
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.isVisible
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -33,7 +34,7 @@ class TriStateButton @JvmOverloads constructor(
 		context: Context,
 		attrs: AttributeSet? = null,
 		defStyleAttr: Int = 0
-) : RelativeLayout(
+) : FrameLayout(
 		context,
 		attrs,
 		defStyleAttr
@@ -41,7 +42,12 @@ class TriStateButton @JvmOverloads constructor(
 	private val checkedRes: Int
 	private val uncheckedRes: Int
 	private val goneRes: Int
-	private lateinit var binding: TriStateButtonBinding
+
+	private val binding: TriStateButtonBinding by lazy {
+		TriStateButtonBinding.inflate(
+				from(context), this, true
+		)
+	}
 
 	var isChecked = false
 		set(value) {
@@ -56,15 +62,13 @@ class TriStateButton @JvmOverloads constructor(
 		}
 
 	init {
-		inflate(context, R.layout.tri_state_button, this)
-		binding = TriStateButtonBinding.bind(this)
-
 		context.theme.obtainStyledAttributes(attrs, R.styleable.TriStateButton, defStyleAttr, 0).apply {
 			try {
 				checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
 				uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
 				goneRes = getResourceId(R.styleable.TriStateButton_button_disabled, 0)
-				binding.textView.text = getString(R.styleable.TriStateButton_android_text) ?: ""
+				binding.textView.text = getString(R.styleable.TriStateButton_android_text)
+						?: ""
 			} finally {
 				recycle()
 			}

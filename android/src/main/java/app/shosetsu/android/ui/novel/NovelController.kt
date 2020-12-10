@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
+import app.shosetsu.android.ui.novel.filter.NovelFilterMenu
 import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.ChapterUI
@@ -338,7 +340,10 @@ class NovelController(bundle: Bundle)
 	}
 
 	internal fun openFilterMenu() {
+		NovelFilterMenu(context!!).apply {
+			isVisible = false
 
+		}
 	}
 
 	override fun onDestroy() {

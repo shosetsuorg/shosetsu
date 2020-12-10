@@ -1,14 +1,17 @@
 package app.shosetsu.android.ui.novel.filter
 
 import android.content.Context
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.content.getSystemService
 import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.ui.novel.filter.NovelFilterMenu.Pages.FILTER
 import app.shosetsu.android.ui.novel.filter.NovelFilterMenu.Pages.SORT
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.NovelChaptersFilterMenu0Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.NovelChaptersFilterMenu1Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.NovelChaptersFilterMenuBinding
@@ -34,25 +37,40 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.NovelChaptersFilterMenuBi
  * shosetsu
  * 22 / 11 / 2020
  */
-class NovelFilterMenu(val context: Context, val root: ViewGroup) {
+class NovelFilterMenu @JvmOverloads constructor(
+		context: Context,
+		attrs: AttributeSet? = null
+) : FrameLayout(context) {
 	var viewModel: INovelViewModel? = null
+
 	internal val layoutInflater = context.getSystemService<LayoutInflater>()!!
 
-	private enum class Pages { FILTER, SORT }
-
-
-	init {
-		NovelChaptersFilterMenuBinding.inflate(layoutInflater).apply {
-			root.apply {
-
+	private val binding by lazy {
+		NovelChaptersFilterMenuBinding.inflate(
+				LayoutInflater.from(context),
+				this,
+				true
+		).also { binding ->
+			binding.root.apply {
+				this.adapter = MenuAdapter()
 			}
 		}
 	}
 
+	init {
+		binding.root
+	}
+
+	private enum class Pages { FILTER, SORT }
 	inner class MenuAdapter : PagerAdapter() {
 		private val pages = HashMap<Pages, View>()
 
 		override fun getCount(): Int = 2
+		override fun getPageTitle(position: Int): CharSequence? = when (position) {
+			0 -> context.getString(R.string.filter)
+			1 -> context.getString(R.string.sort)
+			else -> null
+		}
 
 		override fun isViewFromObject(view: View, obj: Any): Boolean {
 			if (obj !is Pages && pages.contains(obj)) return pages[obj] == view
