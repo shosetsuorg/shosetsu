@@ -108,7 +108,7 @@ dependencies {
 
 	// Core libraries
 	implementation 'org.luaj:luaj-jse:3.0.1'
-	implementation 'com.github.shosetsuorg:kotlin-lib:v1.0.0-rc45'
+	implementation 'com.github.shosetsuorg:kotlin-lib:v1.0.0-rc49'
 
 	// Image loading
 	implementation 'com.squareup.picasso:picasso:2.71828'
