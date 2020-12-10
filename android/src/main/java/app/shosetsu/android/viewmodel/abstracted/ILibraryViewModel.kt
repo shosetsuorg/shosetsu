@@ -3,7 +3,7 @@ package app.shosetsu.android.viewmodel.abstracted
 import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.base.*
-import app.shosetsu.common.com.enums.NovelUIType
+import app.shosetsu.common.enums.NovelUIType
 
 /*
  * This file is part of shosetsu.

@@ -19,7 +19,7 @@ import app.shosetsu.android.di.datasource.localDataSouceModule
 import app.shosetsu.android.di.datasource.remoteDataSouceModule
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.repositories.base.IExtLibRepository
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
@@ -105,8 +105,8 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
                     l.call()
                 }
                 else -> {
-                    if (result is HResult.Error)
-                        logE("[${result.code}]\t${result.message}", result.error)
+	                if (result is HResult.Error)
+		                logE("[${result.code}]\t${result.message}", result.error)
                     null
                 }
             }
@@ -118,7 +118,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 
         launchIO {
             initializeExtensionsUseCase {
-                logI("Initialize: $it")
+	            logI("Initialize: $it")
             }
         }
         super.onCreate()

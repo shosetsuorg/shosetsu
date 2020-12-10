@@ -22,6 +22,6 @@ package app.shosetsu.android.common.ext
  * 30 / 09 / 2020
  */
 
-fun Iterable<String>.combine(separator: String): String = StringBuilder().apply {
+fun combine(separator: String): String = StringBuilder().apply {
 	forEach { append(it).append(separator) }
 }.toString()

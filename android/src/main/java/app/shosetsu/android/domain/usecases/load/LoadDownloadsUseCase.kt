@@ -1,10 +1,10 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
-import app.shosetsu.android.domain.repository.base.IDownloadsRepository
+import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.android.view.uimodels.model.DownloadUI
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.mapLatestResultListTo
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.mapLatestResultListTo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

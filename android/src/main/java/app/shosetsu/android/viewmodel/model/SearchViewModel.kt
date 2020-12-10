@@ -13,10 +13,10 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handleReturn
-import app.shosetsu.common.com.dto.loading
-import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.loading
+import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlin.collections.set

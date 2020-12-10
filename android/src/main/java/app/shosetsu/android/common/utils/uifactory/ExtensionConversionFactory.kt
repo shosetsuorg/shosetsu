@@ -1,9 +1,9 @@
 package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handleReturn
-import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest

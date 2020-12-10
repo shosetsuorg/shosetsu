@@ -31,7 +31,7 @@ fun ListenableWorker.toast(
 		length: Int = Toast.LENGTH_SHORT,
 		message: () -> String,
 ) {
-	app.shosetsu.android.common.ext.launchUI {
+	launchUI {
 		applicationContext.toast(message(), length)
 	}
 }
@@ -41,7 +41,7 @@ fun ListenableWorker.toast(
 		length: Int = Toast.LENGTH_SHORT,
 		@StringRes message: Int,
 ) {
-	app.shosetsu.android.common.ext.launchUI {
+	launchUI {
 		applicationContext.toast(message, length)
 	}
 }

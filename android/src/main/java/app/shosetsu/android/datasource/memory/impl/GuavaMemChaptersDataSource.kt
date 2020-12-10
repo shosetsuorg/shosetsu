@@ -2,11 +2,11 @@ package app.shosetsu.android.datasource.memory.impl
 
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.set
-import app.shosetsu.common.com.consts.MEMORY_EXPIRE_CHAPTER_TIME
-import app.shosetsu.common.com.consts.MEMORY_MAX_CHAPTERS
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.emptyResult
-import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
+import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder

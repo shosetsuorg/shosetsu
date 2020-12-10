@@ -1,7 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.com.consts.settings.SettingKey
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*

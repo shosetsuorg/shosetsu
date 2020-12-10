@@ -1,7 +1,7 @@
 package app.shosetsu.android.view.uimodels.model
 
 import app.shosetsu.android.domain.model.local.IDTitleImage
-import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.dto.Convertible
 
 /*
  * This file is part of shosetsu.

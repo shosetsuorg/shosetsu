@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.settings
 
+import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.settings.base.TextRequiringSettingData
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
@@ -33,7 +34,7 @@ class TextSettingData(id: Int) : TextRequiringSettingData(id) {
 				textView.setText(textID)
 			else
 				textView.text = textText
-			textView.visibility = View.VISIBLE
+			textView.isVisible = true
 			textView.setOnClickListener(textViewOnClickListener)
 		}
 	}

@@ -28,8 +28,8 @@ import app.shosetsu.android.view.base.FastAdapterRecyclerController.BottomMenuBa
 import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.DownloadStatus.*
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.DownloadStatus.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -68,19 +68,19 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		val selectedDownloads =
 				fastAdapter.getSelectExtension().selectedItems.toList()
 
-		binding.bottomMenu.findItem(R.id.pause).isVisible = selectedDownloads.any {
+		binding.bottomMenu.findItem(R.id.pause)?.isVisible = selectedDownloads.any {
 			it.status == PENDING
 		}
 
-		binding.bottomMenu.findItem(R.id.restart).isVisible = selectedDownloads.any {
+		binding.bottomMenu.findItem(R.id.restart)?.isVisible = selectedDownloads.any {
 			it.status == ERROR
 		}
 
-		binding.bottomMenu.findItem(R.id.start).isVisible = selectedDownloads.any {
+		binding.bottomMenu.findItem(R.id.start)?.isVisible = selectedDownloads.any {
 			it.status == PAUSED
 		}
 
-		binding.bottomMenu.findItem(R.id.delete).isVisible = selectedDownloads.any {
+		binding.bottomMenu.findItem(R.id.delete)?.isVisible = selectedDownloads.any {
 			it.status == PAUSED || it.status == PENDING || it.status == ERROR
 		}
 	}

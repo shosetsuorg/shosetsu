@@ -3,11 +3,11 @@ package app.shosetsu.android.datasource.memory.impl
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.set
-import app.shosetsu.common.com.consts.MEMORY_EXPIRE_EXTENSION_TIME
-import app.shosetsu.common.com.consts.MEMORY_MAX_EXT_LIBS
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.emptyResult
-import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.consts.MEMORY_EXPIRE_EXTENSION_TIME
+import app.shosetsu.common.consts.MEMORY_MAX_EXT_LIBS
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
@@ -45,18 +45,18 @@ class GuavaMemExtLibDataSource : IMemExtLibDataSource {
             blockingLoadLibrary(name)
 
     override fun blockingLoadLibrary(name: String): HResult<String> {
-        val result = libraries[name]
-        logV("Loading $name from memory (success?: ${result != null})")
-        return result?.let { successResult(it) } ?: emptyResult()
+	    val result = libraries[name]
+	    logV("Loading $name from memory (success?: ${result != null})")
+	    return result?.let { successResult(it) } ?: emptyResult()
     }
 
     override suspend fun setLibrary(name: String, data: String): HResult<*> =
             blockingSetLibrary(name, data)
 
     override fun blockingSetLibrary(name: String, data: String): HResult<*> {
-        logV("Putting $name into memory")
-        libraries[name] = data
-        return successResult("")
+	    logV("Putting $name into memory")
+	    libraries[name] = data
+	    return successResult("")
     }
 
     override suspend fun removeLibrary(name: String): HResult<*> =

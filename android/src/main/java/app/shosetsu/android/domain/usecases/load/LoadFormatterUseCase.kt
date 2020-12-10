@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 
 /*

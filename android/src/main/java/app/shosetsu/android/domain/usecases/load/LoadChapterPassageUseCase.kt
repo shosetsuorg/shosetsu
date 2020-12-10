@@ -2,12 +2,12 @@ package app.shosetsu.android.domain.usecases.load
 
 import android.util.Log
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.domain.repository.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import app.shosetsu.common.com.consts.ErrorKeys
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.errorResult
+import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.errorResult
 
 /*
  * This file is part of shosetsu.

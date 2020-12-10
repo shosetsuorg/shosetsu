@@ -36,7 +36,7 @@ import java.io.File
 class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
 
 
-	val files: ArrayList<FileObject> = ArrayList<FileObject>()
+	val files: ArrayList<FileObject> = ArrayList()
 
 	init {
 		for (file in fileList) {

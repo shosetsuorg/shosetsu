@@ -15,8 +15,8 @@ import app.shosetsu.android.common.consts.WorkerTags.UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.common.com.consts.settings.SettingKey.*
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit.HOURS
@@ -132,7 +132,7 @@ class UpdateCycleWorker(
 						)
 								.build()
 				)
-				workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID).get()[0].let {
+				workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID).await()[0].let {
 					Log.d(logID(), "State ${it.state}")
 				}
 			}

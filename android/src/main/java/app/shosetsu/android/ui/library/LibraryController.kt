@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,8 +18,8 @@ import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.NovelUIType.COMPRESSED
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.NovelUIType.COMPRESSED
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBinding

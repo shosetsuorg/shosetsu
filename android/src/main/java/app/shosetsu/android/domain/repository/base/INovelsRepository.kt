@@ -15,10 +15,10 @@ package app.shosetsu.android.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel

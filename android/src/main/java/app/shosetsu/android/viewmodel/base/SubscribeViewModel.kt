@@ -1,7 +1,7 @@
 package app.shosetsu.android.viewmodel.base
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.

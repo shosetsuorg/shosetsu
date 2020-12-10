@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.model.local
 import app.shosetsu.android.common.ext.deserializeString
 import app.shosetsu.android.common.ext.serializeToString
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -34,10 +35,13 @@ data class ColorChoiceData(
 		val name: String,
 		val textColor: Int,
 		val backgroundColor: Int,
-)  {
+) {
 
-	override fun toString(): String =
-			"$identifier,${name.serializeToString()},$textColor,$backgroundColor"
+	override fun toString(): String = try {
+		"$identifier,${name.serializeToString()},$textColor,$backgroundColor"
+	} catch (e: Exception) {
+		"$identifier,FAILED,$textColor,$backgroundColor"
+	}
 
 	companion object {
 		/**
@@ -46,10 +50,15 @@ data class ColorChoiceData(
 		fun fromString(string: String): ColorChoiceData = string.split(",").let {
 			ColorChoiceData(
 					it[0].toLong(),
-					it[1].deserializeString() ?: "UNKNOWN",
+					try {
+						it[1].deserializeString()
+					} catch (e: Exception) {
+						null
+					} ?: "UNKNOWN",
 					it[2].toInt(),
 					it[3].toInt()
 			)
 		}
 	}
+
 }

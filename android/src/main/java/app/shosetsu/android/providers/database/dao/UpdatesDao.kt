@@ -6,7 +6,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.domain.model.database.DBUpdate
-import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
+import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
 import org.joda.time.DateTime

@@ -2,8 +2,8 @@ package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.mapTo
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.mapTo
 
 /*
  * This file is part of shosetsu.

@@ -1,11 +1,11 @@
 package app.shosetsu.android.di.datasource
 
-import app.shosetsu.android.datasource.database.base.ILocalChaptersDataSource
+import app.shosetsu.common.datasource.database.base.ILocalChaptersDataSource
 import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
 import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
-import app.shosetsu.android.datasource.database.base.ILocalUpdatesDataSource
-import app.shosetsu.android.datasource.database.model.*
-import app.shosetsu.android.datasource.file.model.FileSharedPreferencesSettingsDataSource
+import app.shosetsu.common.datasource.database.base.ILocalUpdatesDataSource
+import app.shosetsu.android.datasource.database.impl.*
+import app.shosetsu.android.datasource.file.impl.FileSharedPreferencesSettingsDataSource
 import app.shosetsu.common.datasource.database.base.ILocalDownloadsDataSource
 import app.shosetsu.common.datasource.database.base.ILocalExtLibDataSource
 import app.shosetsu.common.datasource.database.base.ILocalExtRepoDataSource

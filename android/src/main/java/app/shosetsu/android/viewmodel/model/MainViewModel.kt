@@ -11,8 +11,8 @@ import app.shosetsu.android.domain.usecases.load.LoadAppUpdateLiveUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.AppThemes
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.AppThemes
 import kotlinx.coroutines.flow.collect
 
 /*
@@ -66,8 +66,6 @@ class MainViewModel(
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 		reportExceptionUseCase(error)
 	}
-
-	override fun startUpdateWorker() {}
 
 	override fun startUpdateCheck(): LiveData<HResult<DebugAppUpdate>> =
 			loadAppUpdateUseCase().asIOLiveData()

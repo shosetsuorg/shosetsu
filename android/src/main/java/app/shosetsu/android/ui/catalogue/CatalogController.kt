@@ -25,9 +25,9 @@ import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ProgressItem
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.enums.NovelUIType.COMPRESSED
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.enums.NovelUIType.COMPRESSED
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding

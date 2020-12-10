@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
-import app.shosetsu.android.common.ext.deserializeString
 import app.shosetsu.android.common.ext.serializeToString
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.card.MaterialCardView
@@ -48,24 +47,12 @@ data class ColorChoiceUI(
 	 */
 	var inReader: Boolean = false
 
-	companion object {
-		/**
-		 * Converts a string into a [ColorChoiceUI]
-		 */
-		@Deprecated("")
-		fun fromString(string: String): ColorChoiceUI = string.split(",").let {
-			ColorChoiceUI(
-					it[0].toLong(),
-					it[1].deserializeString() ?: "UNKNOWN",
-					it[2].toInt(),
-					it[3].toInt()
-			)
-		}
+
+	override fun toString(): String = try {
+		"$identifier,${name.serializeToString()},$textColor,$backgroundColor"
+	} catch (e: Exception) {
+		"$identifier,FAILED,$textColor,$backgroundColor"
 	}
-
-
-	override fun toString(): String =
-			"$identifier,${name.serializeToString()},$textColor,$backgroundColor"
 
 	/**
 	 * View Holder

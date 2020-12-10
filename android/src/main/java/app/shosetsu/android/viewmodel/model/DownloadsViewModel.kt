@@ -11,10 +11,10 @@ import app.shosetsu.android.domain.usecases.load.LoadDownloadsUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateDownloadUseCase
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey.IsDownloadPaused
-import app.shosetsu.common.com.dto.*
-import app.shosetsu.common.com.enums.DownloadStatus
+import app.shosetsu.common.consts.settings.SettingKey.IsDownloadPaused
+import app.shosetsu.common.enums.DownloadStatus
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.*
 
 /*
  * This file is part of shosetsu.

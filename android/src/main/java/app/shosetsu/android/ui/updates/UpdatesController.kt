@@ -24,7 +24,7 @@ import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAda
 import app.shosetsu.android.view.decoration.StickyHeaderDecor
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.joda.time.DateTime
 

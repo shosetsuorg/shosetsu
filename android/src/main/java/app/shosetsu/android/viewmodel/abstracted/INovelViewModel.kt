@@ -6,9 +6,9 @@ import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.ChapterSortType
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.ChapterSortType
+import app.shosetsu.common.enums.ReadingStatus
 import javax.security.auth.Destroyable
 
 /*

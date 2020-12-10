@@ -56,7 +56,6 @@ fun Activity.openInWebView(url: String) {
  * @author github.com/doomsdayrs
  * Pre resquite requires chapter to already have been added to library
  *
- * @param activity     activity
  * @param cUI novel chapter
  */
 

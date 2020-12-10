@@ -1,6 +1,5 @@
 package app.shosetsu.android.common.ext
 
-import android.view.View
 import android.view.View.*
 import android.view.Window
 
@@ -32,7 +31,7 @@ import android.view.Window
 fun Window.showBar() {
 	val uiFlags = SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
 			SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-			View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+			SYSTEM_UI_FLAG_LAYOUT_STABLE
 	decorView.systemUiVisibility = uiFlags
 }
 

@@ -1,6 +1,8 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
+import android.content.res.Resources
+import android.content.res.Resources.NotFoundException
 import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
@@ -11,10 +13,10 @@ import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey.*
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.enums.MarkingTypes.*
+import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.enums.MarkingTypes.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -55,11 +57,15 @@ class ReaderSettingsViewModel(
 			},
 			spinnerSettingData(2) {
 				title { R.string.paragraph_spacing }
-				arrayAdapter = ArrayAdapter(
-						context,
-						android.R.layout.simple_spinner_dropdown_item,
-						context.resources!!.getStringArray(R.array.sizes_with_none)
-				)
+				try {
+					arrayAdapter = ArrayAdapter(
+							context,
+							android.R.layout.simple_spinner_dropdown_item,
+							context.resources!!.getStringArray(R.array.sizes_with_none)
+					)
+				} catch (e: NotFoundException) {
+					TODO("Add error handling here")
+				}
 				iSettingsRepository.getInt(ReaderParagraphSpacing).handle {
 					spinnerValue { it }
 				}
@@ -71,11 +77,15 @@ class ReaderSettingsViewModel(
 			},
 			spinnerSettingData(3) {
 				title { R.string.text_size }
-				arrayAdapter = ArrayAdapter(
-						context,
-						android.R.layout.simple_spinner_dropdown_item,
-						context.resources!!.getStringArray(R.array.sizes_no_none)
-				)
+				try {
+					arrayAdapter = ArrayAdapter(
+							context,
+							android.R.layout.simple_spinner_dropdown_item,
+							context.resources!!.getStringArray(R.array.sizes_no_none)
+					)
+				} catch (e: NotFoundException) {
+					TODO("Add error handling here")
+				}
 				iSettingsRepository.getFloat(ReaderTextSize).handle {
 					spinnerValue {
 						when (it) {
@@ -105,11 +115,15 @@ class ReaderSettingsViewModel(
 			},
 			spinnerSettingData(4) {
 				title { R.string.paragraph_indent }
-				arrayAdapter = ArrayAdapter(
-						context,
-						android.R.layout.simple_spinner_dropdown_item,
-						context.resources!!.getStringArray(R.array.sizes_with_none)
-				)
+				try {
+					arrayAdapter = ArrayAdapter(
+							context,
+							android.R.layout.simple_spinner_dropdown_item,
+							context.resources!!.getStringArray(R.array.sizes_with_none)
+					)
+				} catch (e: NotFoundException) {
+					TODO("Add error handling here")
+				}
 				iSettingsRepository.getInt(ReaderIndentSize).handle {
 					spinnerValue { it }
 				}
@@ -160,11 +174,15 @@ class ReaderSettingsViewModel(
 
 			spinnerSettingData(0) {
 				title { R.string.marking_mode }
-				arrayAdapter = ArrayAdapter(
-						context,
-						android.R.layout.simple_spinner_dropdown_item,
-						context.resources!!.getStringArray(R.array.marking_names)
-				)
+				try {
+					arrayAdapter = ArrayAdapter(
+							context,
+							android.R.layout.simple_spinner_dropdown_item,
+							context.resources!!.getStringArray(R.array.marking_names)
+					)
+				} catch (e: NotFoundException) {
+					TODO("Add error handling here")
+				}
 				iSettingsRepository.getString(ReadingMarkingType).handle {
 					valueOf(it).let {
 						spinnerValue {

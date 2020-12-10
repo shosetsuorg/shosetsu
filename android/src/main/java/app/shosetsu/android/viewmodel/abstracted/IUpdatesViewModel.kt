@@ -4,7 +4,7 @@ import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

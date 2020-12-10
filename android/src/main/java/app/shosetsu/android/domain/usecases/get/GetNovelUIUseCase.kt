@@ -4,7 +4,7 @@ import app.shosetsu.android.common.utils.uifactory.NovelConversionFactory
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.common.com.dto.*
+import app.shosetsu.common.dto.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

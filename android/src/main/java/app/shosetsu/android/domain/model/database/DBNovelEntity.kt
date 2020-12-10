@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.Novel
 
@@ -78,16 +78,16 @@ data class DBNovelEntity(
 		var language: String = "",
 
 		/** Genres this novel matches too */
-		var genres: Array<String> = arrayOf(),
+		var genres: List<String> = listOf(),
 
 		/** Authors of this novel */
-		var authors: Array<String> = arrayOf(),
+		var authors: List<String> = listOf(),
 
 		/** Artists who helped with the novel illustration */
-		var artists: Array<String> = arrayOf(),
+		var artists: List<String> = listOf(),
 
 		/** Tags this novel matches, in case genres were not enough*/
-		var tags: Array<String> = arrayOf(),
+		var tags: List<String> = listOf(),
 
 		@NonNull
 		/** The publishing status of this novel */

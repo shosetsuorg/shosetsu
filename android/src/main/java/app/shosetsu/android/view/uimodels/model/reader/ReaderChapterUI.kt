@@ -3,13 +3,13 @@ package app.shosetsu.android.view.uimodels.model.reader
 import android.view.View
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.ui.reader.types.model.StringReader
-import app.shosetsu.common.com.dto.Convertible
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.domain.model.local.ReaderChapterEntity
+import app.shosetsu.common.dto.Convertible
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -79,8 +79,8 @@ data class ReaderChapterUI(
 
 	override fun bindView(holder: TypedReaderViewHolder, payloads: List<Any>) {
 		super.bindView(holder, payloads)
-		chapterReader?.let {
-			it.viewModel.getChapterPassage(this).observe(it) { result ->
+		chapterReader?.let { reader ->
+			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
 				result.handle(
 						{ logD("Showing loading"); holder.showProgress() },
 						{ logD("Empty result") },

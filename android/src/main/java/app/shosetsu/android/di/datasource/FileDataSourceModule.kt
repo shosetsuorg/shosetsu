@@ -1,7 +1,7 @@
 package app.shosetsu.android.di.datasource
 
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
-import app.shosetsu.android.datasource.file.model.*
+import app.shosetsu.android.datasource.file.impl.*
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource

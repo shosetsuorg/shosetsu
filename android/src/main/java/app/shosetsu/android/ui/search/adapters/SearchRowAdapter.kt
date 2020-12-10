@@ -13,7 +13,7 @@ import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter

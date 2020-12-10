@@ -1,16 +1,17 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
+import android.content.res.Resources
 import android.widget.ArrayAdapter
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey.*
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -78,11 +79,15 @@ class ViewSettingsViewModel(
 						iSettingsRepository.setInt(NovelCardType, position)
 					}
 				}
-				arrayAdapter = ArrayAdapter(
-						context,
-						android.R.layout.simple_spinner_dropdown_item,
-						context.resources!!.getStringArray(R.array.novel_card_types)
-				)
+				try {
+					arrayAdapter = ArrayAdapter(
+							context,
+							android.R.layout.simple_spinner_dropdown_item,
+							context.resources!!.getStringArray(R.array.novel_card_types)
+					)
+				} catch (e: Resources.NotFoundException) {
+					TODO("Add error handling here")
+				}
 			},
 			switchSettingData(4) {
 				title { "Legacy navigation" }

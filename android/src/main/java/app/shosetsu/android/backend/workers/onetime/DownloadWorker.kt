@@ -15,15 +15,15 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.repository.base.IChaptersRepository
-import app.shosetsu.android.domain.repository.base.IDownloadsRepository
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.common.com.consts.ErrorKeys
-import app.shosetsu.common.com.consts.settings.SettingKey.*
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.dto.successResult
-import app.shosetsu.common.com.enums.DownloadStatus
+import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.enums.DownloadStatus
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -34,7 +34,7 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import app.shosetsu.common.com.dto.HResult.Error as HError
+import app.shosetsu.common.dto.HResult.Error as HError
 
 /*
  * This file is part of shosetsu.
@@ -291,7 +291,6 @@ class DownloadWorker(
 		/**
 		 * Returns the status of the service.
 		 *
-		 * @param context the application context.
 		 * @return true if the service is running, false otherwise.
 		 */
 		override fun isRunning(): Boolean = try {

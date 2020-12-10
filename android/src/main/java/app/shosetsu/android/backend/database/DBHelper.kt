@@ -15,7 +15,7 @@ import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.providers.database.converters.NovelStatusConverter
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.android.providers.database.dao.NovelsDao
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.Novel
@@ -182,10 +182,10 @@ class DBHelper(context: Context) :
 					imageURL = imageURL,
 					description = description,
 					language = language,
-					genres = genres,
-					authors = authors,
-					artists = artists,
-					tags = tags,
+					genres = genres.toList(),
+					authors = authors.toList(),
+					artists = artists.toList(),
+					tags = tags.toList(),
 					status = publishingStatus
 			)
 		}

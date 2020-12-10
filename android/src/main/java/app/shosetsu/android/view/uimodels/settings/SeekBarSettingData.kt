@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.settings
 
 import android.util.SparseArray
+import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 import com.xw.repo.BubbleSeekBar
@@ -80,7 +81,7 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
 		super.bindBinding(holder, payloads)
 		with(holder) {
-			bubbleSeekBar.visibility = View.VISIBLE
+			bubbleSeekBar.isVisible = true
 
 			bubbleSeekBar.configBuilder.apply {
 				min(minValue)

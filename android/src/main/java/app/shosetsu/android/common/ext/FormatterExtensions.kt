@@ -56,7 +56,7 @@ fun Array<Filter<*>>.toSettingItems(
 				settings.add(
 						spinnerSettingData(filter.id) {
 							title { filter.name }
-							arrayAdapter = ArrayAdapter<String>(
+							arrayAdapter = ArrayAdapter(
 									context,
 									R.layout.simple_list_item_1,
 									filter.choices
@@ -79,7 +79,7 @@ fun Array<Filter<*>>.toSettingItems(
 				settings.add(
 						spinnerSettingData(filter.id) {
 							title { filter.name }
-							arrayAdapter = ArrayAdapter<String>(
+							arrayAdapter = ArrayAdapter(
 									context,
 									R.layout.simple_list_item_1,
 									filter.choices
@@ -134,6 +134,9 @@ fun Filter<*>.build(builder: SDViewBuilder) {
 		}
 		is Filter.RadioGroup -> builder.radioGroup(name, choices, state).also {
 			it.setOnCheckedChangeListener { _, i -> state = i }
+		}
+		else -> {
+
 		}
 	}
 }

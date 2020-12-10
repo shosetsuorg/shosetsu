@@ -8,10 +8,10 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.MarkingTypes
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.MarkingTypes
+import app.shosetsu.common.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

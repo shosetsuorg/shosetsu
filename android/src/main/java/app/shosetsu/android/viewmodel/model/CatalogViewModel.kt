@@ -10,12 +10,12 @@ import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.dto.loading
-import app.shosetsu.common.com.dto.successResult
-import app.shosetsu.common.com.enums.NovelUIType
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.loading
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.enums.NovelUIType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
@@ -98,7 +98,7 @@ class CatalogViewModel(
 	private fun setFID(fID: Int): Job = launchIO {
 		when {
 			formatter == null -> {
-				this@CatalogViewModel.logI("Loading formatter")
+				logI("Loading formatter")
 				when (val v = getFormatterUseCase(fID)) {
 					is HResult.Success -> {
 						formatter = v.data
@@ -113,11 +113,11 @@ class CatalogViewModel(
 				}
 			}
 			formatter!!.formatterID != fID -> {
-				this@CatalogViewModel.logI("Resetting formatter")
+				logI("Resetting formatter")
 				destroy()
 				setFID(fID).join()
 			}
-			else -> this@CatalogViewModel.logI("FID are the same, ignoring")
+			else -> logI("FID are the same, ignoring")
 		}
 	}
 

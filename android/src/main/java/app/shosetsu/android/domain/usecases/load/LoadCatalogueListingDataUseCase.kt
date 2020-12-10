@@ -5,11 +5,11 @@ import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.common.com.consts.settings.SettingKey
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handleReturn
-import app.shosetsu.common.com.dto.handledReturnAny
-import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.handledReturnAny
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel

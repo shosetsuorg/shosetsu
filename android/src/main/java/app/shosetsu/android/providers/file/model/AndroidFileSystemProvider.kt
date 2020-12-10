@@ -4,14 +4,14 @@ import android.content.Context
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
-import app.shosetsu.common.com.consts.ErrorKeys.ERROR_IO
-import app.shosetsu.common.com.consts.ErrorKeys.ERROR_LACK_PERM
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.emptyResult
-import app.shosetsu.common.com.dto.errorResult
-import app.shosetsu.common.com.dto.successResult
-import app.shosetsu.common.com.enums.ExternalFileDir
-import app.shosetsu.common.com.enums.InternalFileDir
+import app.shosetsu.common.consts.ErrorKeys.ERROR_IO
+import app.shosetsu.common.consts.ErrorKeys.ERROR_LACK_PERM
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
+import app.shosetsu.common.dto.errorResult
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.enums.ExternalFileDir
+import app.shosetsu.common.enums.InternalFileDir
 import java.io.File
 import java.io.IOException
 

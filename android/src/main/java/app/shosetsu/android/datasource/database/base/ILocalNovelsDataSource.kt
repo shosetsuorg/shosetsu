@@ -1,9 +1,9 @@
 package app.shosetsu.android.datasource.database.base
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.NovelEntity
 import kotlinx.coroutines.flow.Flow
 

@@ -1,6 +1,6 @@
 package app.shosetsu.common.datasource.file.base
 
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ChapterEntity
 
 /*

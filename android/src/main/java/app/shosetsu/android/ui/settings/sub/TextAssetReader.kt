@@ -9,6 +9,7 @@ import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.readAsset
 import app.shosetsu.android.view.base.ViewedController
 import com.github.doomsdayrs.apps.shosetsu.databinding.LargeReaderBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.LargeReaderBinding.inflate
 import java.util.*
 
 

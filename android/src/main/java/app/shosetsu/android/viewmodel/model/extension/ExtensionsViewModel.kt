@@ -27,7 +27,7 @@ import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.IExtensionsViewModel
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

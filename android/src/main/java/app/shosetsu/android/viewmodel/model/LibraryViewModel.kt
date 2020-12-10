@@ -31,12 +31,12 @@ import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey
-import app.shosetsu.common.com.consts.settings.SettingKey.ChapterColumnsInLandscape
-import app.shosetsu.common.com.consts.settings.SettingKey.ChapterColumnsInPortait
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.loading
-import app.shosetsu.common.com.enums.NovelUIType
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInLandscape
+import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInPortait
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.loading
+import app.shosetsu.common.enums.NovelUIType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 

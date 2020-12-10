@@ -5,8 +5,8 @@ import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.NovelUIType
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.NovelUIType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import kotlinx.coroutines.Job

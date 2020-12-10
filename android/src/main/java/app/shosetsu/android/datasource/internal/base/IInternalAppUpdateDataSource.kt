@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.internal.base
 
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.

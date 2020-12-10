@@ -5,8 +5,8 @@ import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

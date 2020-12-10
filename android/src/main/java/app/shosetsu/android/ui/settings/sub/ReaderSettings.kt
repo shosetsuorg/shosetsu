@@ -13,8 +13,8 @@ import app.shosetsu.android.view.uimodels.settings.CustomBottomSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.customView
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey
-import app.shosetsu.common.com.dto.handledReturnAny
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.dto.handledReturnAny
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter

@@ -18,15 +18,15 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey.*
-import app.shosetsu.common.com.dto.*
-import app.shosetsu.common.com.enums.MarkingTypes
-import app.shosetsu.common.com.enums.MarkingTypes.ONSCROLL
-import app.shosetsu.common.com.enums.MarkingTypes.ONVIEW
-import app.shosetsu.common.com.enums.ReadingStatus
-import app.shosetsu.common.com.enums.ReadingStatus.READ
-import app.shosetsu.common.com.enums.ReadingStatus.READING
+import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.enums.MarkingTypes
+import app.shosetsu.common.enums.MarkingTypes.ONSCROLL
+import app.shosetsu.common.enums.MarkingTypes.ONVIEW
+import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.enums.ReadingStatus.READ
+import app.shosetsu.common.enums.ReadingStatus.READING
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -72,10 +72,7 @@ class ChapterReaderViewModel(
 					add(size, ReaderDividerUI(prev = it.last().title))
 
 					/**
-					 * Loops down the list, adding inbetweens
-					 */
-					/**
-					 * Loops down the list, adding inbetweens
+					 * Loops down the list, adding in betweens
 					 */
 					val startPoint = size - 2
 					for (index in startPoint downTo 1)

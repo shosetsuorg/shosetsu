@@ -1,8 +1,8 @@
 package app.shosetsu.android.providers.file.base
 
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.ExternalFileDir
-import app.shosetsu.common.com.enums.InternalFileDir
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.ExternalFileDir
+import app.shosetsu.common.enums.InternalFileDir
 
 /*
  * This file is part of Shosetsu.

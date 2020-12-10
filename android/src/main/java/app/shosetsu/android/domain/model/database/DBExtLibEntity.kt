@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.lib.Version
 

@@ -56,7 +56,7 @@ class BackupSettings : SettingsSubController() {
 		val intent = Intent(context, NormalFilePickActivity::class.java)
 		intent.putExtra(Constant.MAX_NUMBER, 9)
 		intent.putExtra(NormalFilePickActivity.SUFFIX, arrayOf("shoback", "json"))
-		activity?.startActivityForResult(intent, Constant.REQUEST_CODE_PICK_FILE)
+		activity?.startActivityForResult(intent, REQUEST_CODE_PICK_FILE)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

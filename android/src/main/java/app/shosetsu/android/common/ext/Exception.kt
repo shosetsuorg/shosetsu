@@ -2,9 +2,9 @@ package app.shosetsu.android.common.ext
 
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.common.com.consts.ErrorKeys
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.errorResult
+import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.errorResult
 import app.shosetsu.lib.exceptions.*
 import org.json.JSONException
 import org.luaj.vm2.LuaError

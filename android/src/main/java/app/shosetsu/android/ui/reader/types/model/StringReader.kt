@@ -14,7 +14,7 @@ import androidx.lifecycle.LifecycleObserver
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware

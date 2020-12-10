@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.dto
 
-import app.shosetsu.common.com.consts.ErrorKeys
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.dto.HResult
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.security.InvalidParameterException

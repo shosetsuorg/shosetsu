@@ -13,14 +13,15 @@ import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.dto.handleReturn
-import app.shosetsu.common.com.dto.successResult
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
@@ -30,6 +31,7 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
 import com.mikepenz.fastadapter.utils.AdapterPredicate
+import javax.security.auth.DestroyFailedException
 
 /*
  * This file is part of Shosetsu.
@@ -165,9 +167,10 @@ class NovelController(bundle: Bundle)
 		fab.setImageResource(R.drawable.play_arrow)
 	}
 
-	override fun bindView(inflater: LayoutInflater): ControllerNovelInfoBinding = inflate(inflater).also {
-		this.recyclerView = it.recyclerView
-	}
+	override fun bindView(inflater: LayoutInflater): ControllerNovelInfoBinding =
+			inflate(inflater).also {
+				this.recyclerView = it.recyclerView
+			}
 
 	fun migrateOpen() {
 		parentController?.router?.pushController(MigrationController(bundleOf(Pair(
@@ -240,28 +243,28 @@ class NovelController(bundle: Bundle)
 
 		// If any are not bookmarked, show bookmark option
 		if (chaptersSelected.any { !it.bookmarked }) {
-			binding.bottomMenu.findItem(R.id.bookmark).isVisible = false
-			binding.bottomMenu.findItem(R.id.remove_bookmark).isVisible = true
+			binding.bottomMenu.findItem(id.bookmark)?.isVisible = false
+			binding.bottomMenu.findItem(id.remove_bookmark)?.isVisible = true
 		} else {
-			binding.bottomMenu.findItem(R.id.bookmark).isVisible = true
-			binding.bottomMenu.findItem(R.id.remove_bookmark).isVisible = false
+			binding.bottomMenu.findItem(id.bookmark)?.isVisible = true
+			binding.bottomMenu.findItem(id.remove_bookmark)?.isVisible = false
 		}
 
 		// If any are downloaded, show delete
-		binding.bottomMenu.findItem(R.id.chapter_delete_selected).isVisible =
+		binding.bottomMenu.findItem(id.chapter_delete_selected)?.isVisible =
 				chaptersSelected.any { it.isSaved }
 
 		// If any are not downloaded, show download option
-		binding.bottomMenu.findItem(R.id.chapter_download_selected).isVisible =
+		binding.bottomMenu.findItem(id.chapter_download_selected)?.isVisible =
 				chaptersSelected.any { !it.isSaved }
 
 		// If any are unread, show read option
 		if (chaptersSelected.any { it.readingStatus == ReadingStatus.UNREAD }) {
-			binding.bottomMenu.findItem(R.id.mark_unread).isVisible = false
-			binding.bottomMenu.findItem(R.id.mark_read).isVisible = true
+			binding.bottomMenu.findItem(id.mark_unread)?.isVisible = false
+			binding.bottomMenu.findItem(id.mark_read)?.isVisible = true
 		} else {
-			binding.bottomMenu.findItem(R.id.mark_unread).isVisible = true
-			binding.bottomMenu.findItem(R.id.mark_read).isVisible = false
+			binding.bottomMenu.findItem(id.mark_unread)?.isVisible = true
+			binding.bottomMenu.findItem(id.mark_read)?.isVisible = false
 		}
 	}
 
@@ -339,7 +342,11 @@ class NovelController(bundle: Bundle)
 	}
 
 	override fun onDestroy() {
-		viewModel.destroy()
+		try {
+			viewModel.destroy()
+		} catch (e: DestroyFailedException) {
+			TODO("Add error handling here")
+		}
 		actionMode?.finish()
 		super.onDestroy()
 	}
@@ -479,32 +486,32 @@ class NovelController(bundle: Bundle)
 			mode.setTitle(R.string.selection)
 			binding.bottomMenu.show(mode, R.menu.toolbar_chapters_selected_bottom) {
 				when (it.itemId) {
-					R.id.chapter_download_selected -> {
+					id.chapter_download_selected -> {
 						downloadSelected()
 						finishSelectionAction()
 						true
 					}
-					R.id.chapter_delete_selected -> {
+					id.chapter_delete_selected -> {
 						deleteSelected()
 						finishSelectionAction()
 						true
 					}
-					R.id.mark_read -> {
+					id.mark_read -> {
 						markSelectedAs(ReadingStatus.READ)
 						finishSelectionAction()
 						true
 					}
-					R.id.mark_unread -> {
+					id.mark_unread -> {
 						markSelectedAs(ReadingStatus.UNREAD)
 						finishSelectionAction()
 						true
 					}
-					R.id.bookmark -> {
+					id.bookmark -> {
 						bookmarkSelected()
 						finishSelectionAction()
 						true
 					}
-					R.id.remove_bookmark -> {
+					id.remove_bookmark -> {
 						removeSelectedBookmark()
 						finishSelectionAction()
 						true
@@ -520,15 +527,15 @@ class NovelController(bundle: Bundle)
 
 		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
 				when (item.itemId) {
-					R.id.chapter_select_all -> {
+					id.chapter_select_all -> {
 						selectAll()
 						true
 					}
-					R.id.chapter_select_between -> {
+					id.chapter_select_between -> {
 						selectBetween()
 						true
 					}
-					R.id.chapter_inverse -> {
+					id.chapter_inverse -> {
 						invertSelection()
 						true
 					}

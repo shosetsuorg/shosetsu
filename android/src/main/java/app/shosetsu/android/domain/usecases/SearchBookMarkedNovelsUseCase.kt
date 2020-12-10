@@ -2,8 +2,8 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.mapListTo
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.mapListTo
 
 /*
  * This file is part of shosetsu.

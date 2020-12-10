@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.util.set
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -20,9 +21,9 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.enums.ReadingStatus
-import app.shosetsu.common.com.enums.TextSizes
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.enums.TextSizes
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
 import com.google.android.material.appbar.MaterialToolbar
@@ -101,11 +102,11 @@ class ChapterReader
 	private val bookmark
 		get() = binding.chapterReaderBottom.bookmark
 
-	private val theme_select
+	private val themeSelect
 		get() = binding.chapterReaderBottom.themeSelect
 
 	/** Gets chapters from the [itemAdapter] */
-	val chapterItems: List<ReaderChapterUI>
+	private val chapterItems: List<ReaderChapterUI>
 		get() = itemAdapter.itemList.items.filterIsInstance<ReaderChapterUI>()
 
 	/** Gets dividers from the [itemAdapter] */
@@ -278,7 +279,7 @@ class ChapterReader
 				}
 			}
 		}
-		theme_select.apply {
+		themeSelect.apply {
 			setOnClickListener {
 				ColorPickerDialog.Builder(context)
 						.setPositiveButton("") { _, _ ->

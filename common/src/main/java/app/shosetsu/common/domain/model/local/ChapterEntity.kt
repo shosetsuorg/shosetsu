@@ -1,6 +1,6 @@
 package app.shosetsu.common.domain.model.local
 
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

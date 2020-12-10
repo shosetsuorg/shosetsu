@@ -23,11 +23,11 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
-import app.shosetsu.common.com.consts.settings.SettingKey.*
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
@@ -142,7 +142,7 @@ class UpdateWorker(
 								}.build()
 						).build()
 				)
-				workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).get()[0].let {
+				workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).await()[0].let {
 					Log.d(logID(), "State ${it.state}")
 				}
 			}
@@ -222,7 +222,7 @@ class UpdateWorker(
 					pr.setContentTitle(applicationContext.getString(R.string.update))
 					pr.setContentText(
 							applicationContext.getString(R.string.update_complete) + "\n" +
-									updateNovels.map { it.title }.combine(",\n")
+									combine(",\n")
 					)
 					pr.setOngoing(false)
 					pr.setProgress(0, 0, false)

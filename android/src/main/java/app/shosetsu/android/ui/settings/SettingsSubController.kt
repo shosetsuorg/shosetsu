@@ -5,7 +5,7 @@ import androidx.annotation.CallSuper
 import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.

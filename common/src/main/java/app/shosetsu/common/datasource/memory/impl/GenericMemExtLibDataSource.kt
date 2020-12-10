@@ -1,10 +1,10 @@
 package app.shosetsu.common.datasource.memory.impl
 
-import app.shosetsu.common.com.consts.MEMORY_EXPIRE_CHAPTER_TIME
-import app.shosetsu.common.com.consts.MEMORY_MAX_CHAPTERS
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.emptyResult
-import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
+import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 
 /*

@@ -1,8 +1,8 @@
 package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
-import app.shosetsu.common.com.enums.ReadingStatus
-import app.shosetsu.common.com.enums.ReadingStatus.Companion.fromInt
+import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.enums.ReadingStatus.Companion.fromInt
 
 /*
  * This file is part of shosetsu.

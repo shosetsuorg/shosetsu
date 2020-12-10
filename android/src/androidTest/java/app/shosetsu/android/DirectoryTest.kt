@@ -29,7 +29,7 @@ import java.io.File
  */
 class DirectoryTest {
 
-	lateinit var context: Context
+	private lateinit var context: Context
 
 	@Before
 	fun setup() {

@@ -49,11 +49,12 @@ import kotlinx.coroutines.launch
 		version = 2
 )
 @TypeConverters(
-        ReadingStatusConverter::class,
-        StringArrayConverters::class,
-        NovelStatusConverter::class,
-        DownloadStatusConverter::class,
-        VersionConverter::class
+		ReadingStatusConverter::class,
+		StringArrayConverters::class,
+		NovelStatusConverter::class,
+		DownloadStatusConverter::class,
+		VersionConverter::class,
+		ListConverter::class,
 )
 abstract class ShosetsuDatabase : RoomDatabase() {
 	companion object {

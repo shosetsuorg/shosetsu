@@ -6,7 +6,7 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.

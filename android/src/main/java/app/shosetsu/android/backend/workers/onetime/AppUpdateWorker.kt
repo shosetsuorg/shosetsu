@@ -21,10 +21,10 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.ui.splash.SplashScreen
-import app.shosetsu.common.com.consts.settings.SettingKey.AppUpdateOnMeteredConnection
-import app.shosetsu.common.com.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.dto.handledReturnAny
+import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
+import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.handledReturnAny
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
@@ -138,7 +138,7 @@ class AppUpdateWorker(
 		 */
 		override fun start() {
 			launchIO {
-				this@Manager.logI(LogConstants.SERVICE_NEW)
+				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(
 						APP_UPDATE_WORK_ID,
 						ExistingWorkPolicy.REPLACE,
@@ -152,8 +152,8 @@ class AppUpdateWorker(
 						}.build()
 						).build()
 				)
-				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).get()[0].let {
-					this@Manager.logI("Worker State ${it.state}")
+				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).await()[0].let {
+					logI("Worker State ${it.state}")
 				}
 			}
 		}

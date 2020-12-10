@@ -2,9 +2,9 @@ package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.mapLatestResult
-import app.shosetsu.common.com.dto.successResult
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.mapLatestResult
+import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.flow.Flow
 
 class LoadSearchRowUIUseCase(

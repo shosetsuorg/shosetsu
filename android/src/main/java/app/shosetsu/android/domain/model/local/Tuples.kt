@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import app.shosetsu.android.view.uimodels.model.IDTitleImageBookUI
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.view.uimodels.model.URLTitleImageUI
-import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.dto.Convertible
 import java.io.Serializable
 
 /*

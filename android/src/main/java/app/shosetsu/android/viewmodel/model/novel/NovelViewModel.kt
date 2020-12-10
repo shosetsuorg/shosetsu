@@ -24,9 +24,9 @@ import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
-import app.shosetsu.common.com.dto.*
-import app.shosetsu.common.com.enums.ChapterSortType
-import app.shosetsu.common.com.enums.ReadingStatus
+import app.shosetsu.common.dto.*
+import app.shosetsu.common.enums.ChapterSortType
+import app.shosetsu.common.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

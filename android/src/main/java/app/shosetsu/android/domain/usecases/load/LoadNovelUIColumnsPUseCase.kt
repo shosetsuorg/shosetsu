@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.com.consts.settings.SettingKey.ChapterColumnsInPortait
+import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInPortait
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*

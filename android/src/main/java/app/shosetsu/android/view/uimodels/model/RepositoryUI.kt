@@ -4,7 +4,7 @@ import android.view.View
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.RepositoryUI.ViewHolder
-import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding

@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
 import android.view.View
+import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterDividerBinding

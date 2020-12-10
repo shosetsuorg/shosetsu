@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.NovelEntity
 
 /*

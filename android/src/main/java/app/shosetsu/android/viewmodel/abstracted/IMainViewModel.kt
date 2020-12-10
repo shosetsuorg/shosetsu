@@ -5,8 +5,8 @@ import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.enums.AppThemes
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.AppThemes
 
 /*
  * This file is part of shosetsu.
@@ -34,8 +34,6 @@ abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel, Err
 
 	abstract fun startDownloadWorker()
 
-	@Deprecated("Now auto started")
-	abstract fun startUpdateWorker()
 
 	abstract fun startUpdateCheck(): LiveData<HResult<DebugAppUpdate>>
 

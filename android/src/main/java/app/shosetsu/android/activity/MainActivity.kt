@@ -21,6 +21,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.utils.collapse
+import app.shosetsu.android.common.utils.expand
 import app.shosetsu.android.ui.browse.BrowseController
 import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.MoreController
@@ -28,8 +30,8 @@ import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.ui.updates.UpdatesController
 import app.shosetsu.android.view.base.*
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
-import app.shosetsu.common.com.dto.handle
-import app.shosetsu.common.com.enums.AppThemes.*
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.enums.AppThemes.*
 import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler

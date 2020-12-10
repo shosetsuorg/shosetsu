@@ -3,6 +3,7 @@ package app.shosetsu.android.view.uimodels.settings.base
 import android.os.Build
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder

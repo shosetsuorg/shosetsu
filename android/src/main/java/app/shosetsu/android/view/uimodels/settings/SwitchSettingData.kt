@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.settings
 
+import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.settings.base.ToggleableStateSettingData
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
@@ -28,7 +29,7 @@ class SwitchSettingData(id: Int) : ToggleableStateSettingData(id) {
 	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
 		super.bindBinding(holder, payloads)
 		with(holder) {
-			switchView.visibility = View.VISIBLE
+			switchView.isVisible = true
 			switchView.isChecked = isChecked
 			switchView.setOnCheckedChangeListener(onCheckedListener)
 		}

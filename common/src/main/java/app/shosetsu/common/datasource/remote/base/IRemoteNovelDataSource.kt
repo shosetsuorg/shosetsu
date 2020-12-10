@@ -1,6 +1,6 @@
 package app.shosetsu.common.datasource.remote.base
 
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 

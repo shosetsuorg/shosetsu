@@ -2,8 +2,8 @@ package app.shosetsu.android.domain
 
 import app.shosetsu.android.common.HResultException
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
-import app.shosetsu.common.com.consts.ErrorKeys
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import org.acra.ACRA
 

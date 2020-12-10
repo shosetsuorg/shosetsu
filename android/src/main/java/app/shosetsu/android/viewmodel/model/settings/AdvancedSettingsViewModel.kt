@@ -1,6 +1,7 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
+import android.content.res.Resources
 import android.widget.ArrayAdapter
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.toast
@@ -8,9 +9,9 @@ import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
-import app.shosetsu.common.com.consts.settings.SettingKey.AppTheme
-import app.shosetsu.common.com.dto.HResult
-import app.shosetsu.common.com.dto.handle
+import app.shosetsu.common.consts.settings.SettingKey.AppTheme
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -43,11 +44,15 @@ class AdvancedSettingsViewModel(
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 			spinnerSettingData(1) {
 				title { R.string.theme }
-				arrayAdapter = ArrayAdapter(
-						context,
-						android.R.layout.simple_spinner_dropdown_item,
-						context.resources.getStringArray(R.array.application_themes)
-				)
+				try {
+					arrayAdapter = ArrayAdapter(
+							context,
+							android.R.layout.simple_spinner_dropdown_item,
+							context.resources.getStringArray(R.array.application_themes)
+					)
+				} catch (e: Resources.NotFoundException) {
+					TODO("Add error handling here")
+				}
 
 				iSettingsRepository.getInt(AppTheme).handle {
 					spinnerValue { it }

@@ -1,6 +1,6 @@
 package app.shosetsu.android.common.utils.uifactory
 
-import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.dto.Convertible
 
 /*
  * This file is part of Shosetsu.

@@ -132,10 +132,10 @@ open class SDViewBuilder(
 	}
 
 	val addEditText: (a: String) -> SDViewBuilder = wrap<String> { editText(it) }
-	val addSwitch: (a: String, b: Boolean) -> SDViewBuilder = wrap<String, Boolean> { a, b -> switch(a, b) }
-	val addSpinner: (a: String, b: Array<String>, c: Int) -> SDViewBuilder = wrap<String, Array<String>, Int> { a, b, c -> spinner(a, b, c) }
-	val addRadioGroup: (a: String, b: Array<String>, c: Int) -> SDViewBuilder = wrap<String, Array<String>, Int> { a, b, c -> radioGroup(a, b, c) }
-	val createInner: (a: String, b: (SDViewBuilder) -> Unit) -> SDViewBuilder = wrap<String, (SDViewBuilder) -> Unit> { a, b -> inner(a, b) }
+	val addSwitch: (a: String, b: Boolean) -> SDViewBuilder = wrap { a, b -> switch(a, b) }
+	val addSpinner: (a: String, b: Array<String>, c: Int) -> SDViewBuilder = wrap { a, b, c -> spinner(a, b, c) }
+	val addRadioGroup: (a: String, b: Array<String>, c: Int) -> SDViewBuilder = wrap { a, b, c -> radioGroup(a, b, c) }
+	val createInner: (a: String, b: (SDViewBuilder) -> Unit) -> SDViewBuilder = wrap { a, b -> inner(a, b) }
 
 	/*@SuppressLint("ResourceType")
 	open fun add(view: View): SDViewBuilder {

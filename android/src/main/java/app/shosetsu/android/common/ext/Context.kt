@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.content.res.Resources
 import android.widget.Toast.LENGTH_SHORT
 import android.widget.Toast.makeText
 import androidx.annotation.NonNull
@@ -47,7 +48,11 @@ import androidx.core.app.ActivityCompat
  * @param duration the duration of the toast. Defaults to short.
  */
 fun Context.toast(@StringRes resource: Int, duration: Int = LENGTH_SHORT) {
-	makeText(this, resource, duration).show()
+	try {
+		makeText(this, resource, duration).show()
+	} catch (e: Resources.NotFoundException) {
+		logE("NotFoundException", e)
+	}
 }
 
 fun Context.toast(string: String, duration: Int = LENGTH_SHORT) {

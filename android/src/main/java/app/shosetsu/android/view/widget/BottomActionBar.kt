@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.widget
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.ActionMode
 import android.view.LayoutInflater.from
@@ -13,6 +14,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding.inflate
 
 /*
  * This file is part of Shosetsu.
@@ -59,17 +61,25 @@ class BottomActionBar @JvmOverloads constructor(context: Context, attrs: Attribu
 		}
 
 		binding.bottomActionBar.visibility = View.VISIBLE
-		val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_down)
-		binding.bottomActionBar.startAnimation(bottomAnimation)
+		try {
+			val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_down)
+			binding.bottomActionBar.startAnimation(bottomAnimation)
+		} catch (e: Resources.NotFoundException) {
+			TODO("Add error handling here")
+		}
 	}
 
 	fun hide() {
-		val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_up)
-		bottomAnimation.setAnimationListener(object : SimpleAnimationListener() {
-			override fun onAnimationEnd(animation: Animation) {
-				binding.bottomActionBar.visibility = View.GONE
-			}
-		})
-		binding.bottomActionBar.startAnimation(bottomAnimation)
+		try {
+			val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_up)
+			bottomAnimation.setAnimationListener(object : SimpleAnimationListener() {
+				override fun onAnimationEnd(animation: Animation) {
+					binding.bottomActionBar.visibility = View.GONE
+				}
+			})
+			binding.bottomActionBar.startAnimation(bottomAnimation)
+		} catch (e: Resources.NotFoundException) {
+			TODO("Add error handling here")
+		}
 	}
 }

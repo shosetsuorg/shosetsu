@@ -12,9 +12,9 @@ import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.common.com.consts.settings.SettingKey.*
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.HResult
 import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit
 
@@ -93,7 +93,7 @@ class AppUpdateCycleWorker(
 		 */
 		override fun start() {
 			launchIO {
-				this@Manager.logI(LogConstants.SERVICE_NEW)
+				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniquePeriodicWork(
 						APP_UPDATE_CYCLE_WORK_ID,
 						ExistingPeriodicWorkPolicy.REPLACE,
@@ -109,8 +109,8 @@ class AppUpdateCycleWorker(
 						}.build()
 						).build()
 				)
-				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_CYCLE_WORK_ID).get()[0].let {
-					this@Manager.logI("Worker State ${it.state}")
+				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_CYCLE_WORK_ID).await()[0].let {
+					logI("Worker State ${it.state}")
 				}
 			}
 		}

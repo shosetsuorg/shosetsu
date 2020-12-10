@@ -1,6 +1,8 @@
 package app.shosetsu.android.view.uimodels.model
 
+import android.text.format.DateFormat.format
 import android.view.View
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R

@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.delete
 
-import app.shosetsu.android.domain.repository.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 
 /*

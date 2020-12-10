@@ -7,6 +7,7 @@ import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBNovelEntity
 import app.shosetsu.android.domain.model.local.*
 import app.shosetsu.android.providers.database.dao.base.BaseDao
+import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

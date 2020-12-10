@@ -16,6 +16,7 @@ import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.MigrationViewBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.MigrationViewBinding.inflate
 
 /*
  * This file is part of Shosetsu.

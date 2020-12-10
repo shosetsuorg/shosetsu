@@ -2,14 +2,17 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import android.widget.ImageView
+import app.shosetsu.android.common.ext.getString
+import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.NovelUI.ViewHolder
-import app.shosetsu.common.com.dto.Convertible
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoHeaderBinding
+import com.google.android.material.chip.Chip
 
 /*
  * This file is part of shosetsu.
@@ -104,10 +107,10 @@ data class NovelUI(
 			imageURL = imageURL,
 			description = description,
 			language = language,
-			genres = genres.toTypedArray(),
-			authors = authors.toTypedArray(),
-			artists = artists.toTypedArray(),
-			tags = tags.toTypedArray(),
+			genres = genres,
+			authors = authors,
+			artists = artists,
+			tags = tags,
 			status = status
 	)
 

@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.settings
 
 import android.text.Editable
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding

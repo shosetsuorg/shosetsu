@@ -6,14 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding.inflate
 
 /*
  * This file is part of shosetsu.

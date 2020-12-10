@@ -13,7 +13,7 @@ import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAda
 import app.shosetsu.android.view.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
-import app.shosetsu.common.com.dto.HResult
+import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
