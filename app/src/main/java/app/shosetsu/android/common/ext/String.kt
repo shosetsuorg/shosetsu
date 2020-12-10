@@ -2,7 +2,6 @@ package app.shosetsu.android.common.ext
 
 import android.util.Base64
 import android.util.Log
-import app.shosetsu.lib.Novel
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream
@@ -66,62 +65,6 @@ inline fun <reified R> String.deserializeString(): R? {
 }
 
 /**
- * Checks string before deserialization
- * If null or empty, returns "". Else deserializes the string and returns
- *
- * @return Completed String
- */
-fun String?.checkStringDeserialize(): String {
-	if (this.isNullOrBlank()) {
-		return ""
-	} else {
-		try {
-			return deserializeString() ?: return ""
-		} catch (e: IOException) {
-			e.printStackTrace()
-		} catch (e: ClassNotFoundException) {
-			e.printStackTrace()
-		}
-	}
-	return ""
-}
-
-/**
- * Checks string before serialization
- * If null or empty, returns "". Else serializes the string and returns
- *
- * @return Completed String
- */
-fun String?.checkStringSerialize(): String {
-	if (this.isNullOrEmpty()) {
-		return ""
-	} else {
-		try {
-			return serializeToString()
-		} catch (e: IOException) {
-			e.printStackTrace()
-		}
-	}
-	return ""
-}
-
-/**
- * Converts String Stati back into Stati
- *
- * @return Stati
- */
-fun String?.convertStringToStati(): Novel.Status {
-	return when (this) {
-		"Publishing" -> Novel.Status.PUBLISHING
-		"Completed" -> Novel.Status.COMPLETED
-		"Paused" -> Novel.Status.PAUSED
-		"Unknown" -> Novel.Status.UNKNOWN
-		else -> Novel.Status.UNKNOWN
-	}
-}
-
-
-/**
  * Converts a String Array back into an Array of Strings
  *
  * @return Array of Strings
@@ -137,7 +80,7 @@ fun String.convertStringToArray(): Array<String> {
 /**
  * Makes an MD5 of the string
  */
-fun String.md5(): String? {
+fun String.md5(): String {
 	try {
 		// Create MD5 Hash
 		val digest = MessageDigest.getInstance("MD5")
