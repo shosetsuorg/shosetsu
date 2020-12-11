@@ -57,7 +57,7 @@ open class WriteDebugUpdate : DefaultTask() {
 	@Throws(IOException::class)
 	@TaskAction
 	fun main() {
-		val file = File("app/src/debug/assets/update.json")
+		val file = File("android/src/debug/assets/update.json")
 		file.writeText("""
 		{
 			"latestVersion":"${getCommitCount()}",
