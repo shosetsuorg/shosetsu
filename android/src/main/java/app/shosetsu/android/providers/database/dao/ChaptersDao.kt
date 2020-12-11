@@ -5,15 +5,18 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.common.ext.entity
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.database.DBChapterEntity
-import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
+import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
+import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
@@ -111,9 +114,14 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 		list.forEach { novelChapter: Novel.Chapter ->
 			databaseChapterEntities.find { it.url == novelChapter.link }?.let {
 				handleUpdate(it, novelChapter)
-			} ?: insertReturn(novelEntity, novelChapter).let {
-				if (it is HResult.Success)
-					newChapters.add(it.data)
+			} ?: run {
+				insertReturn(novelEntity, novelChapter).handle(
+						onError = {
+							logE(it.toString())
+						}
+				) {
+					newChapters.add(it)
+				}
 			}
 		}
 		return successResult(newChapters)

@@ -66,7 +66,6 @@ class ChapterReader
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel: IChapterReaderViewModel by viewModel()
 
-
 	private lateinit var binding: ActivityReaderBinding
 
 	private val toolbar: MaterialToolbar

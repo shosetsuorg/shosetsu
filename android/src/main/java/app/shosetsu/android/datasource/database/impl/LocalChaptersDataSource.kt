@@ -7,10 +7,7 @@ import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestListTo
-import app.shosetsu.common.dto.mapLatestToSuccess
-import app.shosetsu.common.dto.mapListTo
+import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -56,7 +53,7 @@ class LocalChaptersDataSource(
 	}
 
 	override suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity> = try {
-		app.shosetsu.common.dto.successResult(chaptersDao.loadChapter(chapterID).convertTo())
+		successResult(chaptersDao.loadChapter(chapterID).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}
@@ -76,7 +73,7 @@ class LocalChaptersDataSource(
 			list: List<Novel.Chapter>,
 	): HResult<*> =
 			try {
-				app.shosetsu.common.dto.successResult(chaptersDao.handleChapters(novelEntity, list))
+				successResult(chaptersDao.handleChapters(novelEntity, list))
 			} catch (e: Exception) {
 				e.toHError()
 			}
@@ -92,7 +89,7 @@ class LocalChaptersDataSource(
 	}
 
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> = try {
-		app.shosetsu.common.dto.successResult(chaptersDao.suspendedUpdate(chapterEntity.toDB()))
+		successResult(chaptersDao.suspendedUpdate(chapterEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
@@ -100,7 +97,7 @@ class LocalChaptersDataSource(
 
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*> =
 			try {
-				app.shosetsu.common.dto.successResult(chaptersDao.updateReaderChapter(readerChapterEntity))
+				successResult(chaptersDao.updateReaderChapter(readerChapterEntity))
 			} catch (e: Exception) {
 				e.toHError()
 			}

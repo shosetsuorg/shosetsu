@@ -14,6 +14,7 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_URL
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding.inflate
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -46,7 +47,7 @@ import java.util.*
  * Opens a URL in the apps internal webview
  * This allows cross saving cookies, allowing the app to access features such as logins
  */
-class WebViewApp : AppCompatActivity(R.layout.activity_webview), KodeinAware {
+class WebViewApp : AppCompatActivity(), KodeinAware {
 	override val kodein: Kodein by closestKodein()
 	private val openInBrowserUseCase: OpenInBrowserUseCase by instance()
 
@@ -78,6 +79,7 @@ class WebViewApp : AppCompatActivity(R.layout.activity_webview), KodeinAware {
 	@SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		setContentView(inflate(layoutInflater).also { binding = it }.root)
 		this.setSupportActionBar(binding.toolbar)
 		supportActionBar?.apply {
 			setDisplayHomeAsUpEnabled(true)
