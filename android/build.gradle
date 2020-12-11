@@ -25,7 +25,7 @@ android {
 		applicationId 'com.github.doomsdayrs.apps.shosetsu'
 		minSdkVersion 22
 		targetSdkVersion 30
-		versionCode 28
+		versionCode 26
 		versionName "v1.2.0"
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 		multiDexEnabled true
