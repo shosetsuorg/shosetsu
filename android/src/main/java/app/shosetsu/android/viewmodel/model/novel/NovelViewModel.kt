@@ -66,10 +66,6 @@ class NovelViewModel(
 		private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
 		private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
 ) : INovelViewModel() {
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
-
 	@get:Synchronized
 	private val chapters: ArrayList<ChapterUI>
 		get() = chaptersLive.value?.handledReturnAny { ArrayList((it)) } ?: arrayListOf()
@@ -81,29 +77,76 @@ class NovelViewModel(
 			liveDataIO {
 				emitSource(getChapterUIsUseCase(id)
 						.asIOLiveData()
-						.switchMap { list ->
+						.switchMap { receivedResult ->
 							MediatorLiveData<HResult<List<ChapterUI>>>().apply {
-								val update = {
-									postValue(list.handleReturn {
-										successResult(it.handleFilters())
+								val update = { onlyBookmarked: Boolean,
+								               onlyDownloaded: Boolean,
+								               showOnlyReadingStatusOf: ReadingStatus?,
+								               sortType: ChapterSortType,
+								               reversedSort: Boolean ->
+
+									postValue(receivedResult.handleReturn { list ->
+										successResult(list.handleFilters(
+												onlyBookmarked = onlyBookmarked,
+												onlyDownloaded = onlyDownloaded,
+												showOnlyReadingStatusOf = showOnlyReadingStatusOf,
+												sortType = sortType,
+												reversedSort = reversedSort
+										))
 									})
 								}
 								addSource(chaptersManagement.onlyDownloadedLive) {
-									update()
+									update(
+											chaptersManagement.onlyBookmarked,
+											it,
+											chaptersManagement.showOnlyReadingStatusOf,
+											chaptersManagement.sortType,
+											chaptersManagement.reversedSort
+									)
 								}
 								addSource(chaptersManagement.onlyBookmarkedLive) {
-									update()
+									update(
+											it,
+											chaptersManagement.onlyDownloaded,
+											chaptersManagement.showOnlyReadingStatusOf,
+											chaptersManagement.sortType,
+											chaptersManagement.reversedSort
+									)
 								}
 								addSource(chaptersManagement.sortTypeLive) {
-									update()
+									update(
+											chaptersManagement.onlyBookmarked,
+											chaptersManagement.onlyDownloaded,
+											chaptersManagement.showOnlyReadingStatusOf,
+											it,
+											chaptersManagement.reversedSort
+									)
 								}
 								addSource(chaptersManagement.reversedSortLive) {
-									update()
+									update(
+											chaptersManagement.onlyBookmarked,
+											chaptersManagement.onlyDownloaded,
+											chaptersManagement.showOnlyReadingStatusOf,
+											chaptersManagement.sortType,
+											it
+									)
 								}
 								addSource(chaptersManagement.showOnlyReadingStatusOfLive) {
-									update()
+									update(
+											chaptersManagement.onlyBookmarked,
+											chaptersManagement.onlyDownloaded,
+											it,
+											chaptersManagement.sortType,
+											chaptersManagement.reversedSort
+									)
 								}
-								update()
+								update(
+										chaptersManagement.onlyBookmarked,
+										chaptersManagement.onlyDownloaded,
+										chaptersManagement.showOnlyReadingStatusOf,
+										chaptersManagement.sortType,
+										chaptersManagement.reversedSort
+								)
 							}
 						})
 			}
@@ -115,26 +158,38 @@ class NovelViewModel(
 			loadNovelUIUseCase(it).asIOLiveData()
 		}
 	}
-
 	private val novelIDLive: MutableLiveData<Int> by lazy { MutableLiveData() }
-
 	private var novelIDValue = -1
 
-	private fun List<ChapterUI>.handleFilters(): List<ChapterUI> {
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
+	}
+
+	private fun List<ChapterUI>.handleFilters(
+			onlyBookmarked: Boolean,
+			onlyDownloaded: Boolean,
+			showOnlyReadingStatusOf: ReadingStatus?,
+			sortType: ChapterSortType,
+			reversedSort: Boolean
+	): List<ChapterUI> {
 		var result: List<ChapterUI> = this
-		if (chaptersManagement.onlyBookmarked)
+		if (onlyBookmarked)
 			result = result.filter { it.bookmarked }
 
-		if (chaptersManagement.onlyDownloaded)
+		if (onlyDownloaded)
 			result = result.filter { it.isSaved }
 
-		chaptersManagement.showOnlyReadingStatusOf?.let { status ->
-			result = result.filter { it.readingStatus == status }
+		showOnlyReadingStatusOf?.let { status ->
+			result = if (status != ReadingStatus.UNREAD)
+				result.filter { it.readingStatus == status }
+			else result.filter {
+				it.readingStatus == status || it.readingStatus == ReadingStatus.READING
+			}
 		}
 
-		when (chaptersManagement.sortType) {
+		when (sortType) {
 			ChapterSortType.SOURCE -> {
-				if (chaptersManagement.reversedSort)
+				if (reversedSort)
 					result = result.reversed()
 			}
 			ChapterSortType.UPLOAD -> {
@@ -230,22 +285,15 @@ class NovelViewModel(
 			}
 
 	override fun reverseChapters() = chaptersManagement.toggleReverse()
-	override fun toggleOnlyDownloaded() {
-		TODO("Not yet implemented")
-	}
-
-	override fun toggleOnlyBookmarked() {
-		TODO("Not yet implemented")
-	}
-
+	override fun toggleOnlyDownloaded() = chaptersManagement.toggleOnlyDownloaded()
+	override fun toggleOnlyBookmarked() = chaptersManagement.toggleOnlyBookMarked()
 	override fun setSortType(sortType: ChapterSortType) {
-		TODO("Not yet implemented")
+		chaptersManagement.sortType = sortType
 	}
 
 	override fun showOnlyStatus(status: ReadingStatus?) {
-		TODO("Not yet implemented")
+		chaptersManagement.showOnlyReadingStatusOf = status
 	}
-
 
 	override fun setNovelID(novelID: Int) {
 		when {
@@ -264,7 +312,7 @@ class NovelViewModel(
 		launchIO { novelLive.value?.handle { shareUseCase(it) } }
 	}
 
-	override fun toggleBookmark() {
+	override fun toggleNovelBookmark() {
 		launchIO {
 			novelLive.value?.handle { updateNovelUseCase(it.copy(bookmarked = !it.bookmarked)) }
 		}
@@ -366,28 +414,28 @@ class NovelViewModel(
 	private inner class ChaptersManagement {
 		var showOnlyReadingStatusOf: ReadingStatus? = null
 			set(value) {
-				launchIO { showOnlyReadingStatusOfLive.postValue(value) }
 				field = value
+				launchIO { showOnlyReadingStatusOfLive.postValue(value) }
 			}
 		var onlyDownloaded: Boolean = false
 			set(value) {
-				launchIO { onlyDownloadedLive.postValue(value) }
 				field = value
+				launchIO { onlyDownloadedLive.postValue(value) }
 			}
 		var onlyBookmarked: Boolean = false
 			set(value) {
-				launchIO { onlyBookmarkedLive.postValue(value) }
 				field = value
+				launchIO { onlyBookmarkedLive.postValue(value) }
 			}
 		var sortType: ChapterSortType = ChapterSortType.SOURCE
 			set(value) {
-				launchIO { sortTypeLive.postValue(value) }
 				field = value
+				launchIO { sortTypeLive.postValue(value) }
 			}
 		var reversedSort: Boolean = false
 			set(value) {
-				launchIO { reversedSortLive.postValue(value) }
 				field = value
+				launchIO { reversedSortLive.postValue(value) }
 			}
 
 

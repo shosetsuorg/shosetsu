@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
+import androidx.core.view.isVisible
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding.inflate
@@ -37,8 +38,10 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding.in
  * shosetsu
  * 01 / 10 / 2020
  */
-class BottomActionBar @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null)
-	: FrameLayout(context, attrs) {
+class BottomActionBar @JvmOverloads constructor(
+		context: Context,
+		attrs: AttributeSet? = null
+) : FrameLayout(context, attrs) {
 
 	private val binding: BottomActionBarBinding =
 			inflate(from(context), this, true)
@@ -60,9 +63,9 @@ class BottomActionBar @JvmOverloads constructor(context: Context, attrs: Attribu
 			binding.bottomActionMenu.setOnMenuItemClickListener { listener(it) }
 		}
 
-		binding.bottomActionBar.visibility = View.VISIBLE
+		binding.bottomActionBar.isVisible = true
 		try {
-			val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_down)
+			val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_up)
 			binding.bottomActionBar.startAnimation(bottomAnimation)
 		} catch (e: Resources.NotFoundException) {
 			TODO("Add error handling here")
@@ -71,10 +74,10 @@ class BottomActionBar @JvmOverloads constructor(context: Context, attrs: Attribu
 
 	fun hide() {
 		try {
-			val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_up)
+			val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_down)
 			bottomAnimation.setAnimationListener(object : SimpleAnimationListener() {
 				override fun onAnimationEnd(animation: Animation) {
-					binding.bottomActionBar.visibility = View.GONE
+					binding.bottomActionBar.isVisible = false
 				}
 			})
 			binding.bottomActionBar.startAnimation(bottomAnimation)

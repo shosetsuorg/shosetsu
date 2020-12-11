@@ -5,12 +5,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils.loadAnimation
 import android.widget.FrameLayout
 import androidx.core.content.getSystemService
+import androidx.core.view.isVisible
 import androidx.viewpager.widget.PagerAdapter
-import app.shosetsu.android.ui.novel.filter.NovelFilterMenu.Pages.FILTER
-import app.shosetsu.android.ui.novel.filter.NovelFilterMenu.Pages.SORT
+import app.shosetsu.android.view.widget.SimpleAnimationListener
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.NovelChaptersFilterMenu0Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.NovelChaptersFilterMenu1Binding
@@ -40,8 +44,10 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.NovelChaptersFilterMenuBi
 class NovelFilterMenu @JvmOverloads constructor(
 		context: Context,
 		attrs: AttributeSet? = null
-) : FrameLayout(context) {
+) : FrameLayout(context, attrs) {
 	var viewModel: INovelViewModel? = null
+	var onShowListener: () -> Unit = {}
+	var onHideListener: () -> Unit = {}
 
 	internal val layoutInflater = context.getSystemService<LayoutInflater>()!!
 
@@ -51,20 +57,80 @@ class NovelFilterMenu @JvmOverloads constructor(
 				this,
 				true
 		).also { binding ->
-			binding.root.apply {
+			binding.viewPager.apply {
 				this.adapter = MenuAdapter()
+			}
+			binding.background.setOnClickListener {
+				hide()
 			}
 		}
 	}
 
 	init {
-		binding.root
+		binding.root.isVisible = false
 	}
 
-	private enum class Pages { FILTER, SORT }
-	inner class MenuAdapter : PagerAdapter() {
-		private val pages = HashMap<Pages, View>()
 
+	fun show() {
+		onShowListener()
+		binding.root.isVisible = true
+
+		binding.root.startAnimation(loadAnimation(context, R.anim.bottom_slide_up).apply {
+			duration = 300
+			interpolator = AccelerateDecelerateInterpolator()
+			setAnimationListener(object : SimpleAnimationListener() {
+				override fun onAnimationStart(animation: Animation) {
+					binding.background.isVisible = false
+					binding.cardView.isVisible = true
+					binding.root.isVisible = true
+				}
+
+				override fun onAnimationEnd(animation: Animation) {
+					binding.background.startAnimation(loadAnimation(context, R.anim.fade_in).apply {
+						duration = 100
+						setAnimationListener(object : SimpleAnimationListener() {
+							override fun onAnimationEnd(animation: Animation) {
+								binding.background.isVisible = true
+							}
+						})
+					})
+				}
+			})
+		})
+
+	}
+
+	fun hide() {
+		binding.background.startAnimation(loadAnimation(context, R.anim.fade_out).apply {
+			duration = 50
+			setAnimationListener(object : SimpleAnimationListener() {
+				override fun onAnimationEnd(animation: Animation) {
+					binding.background.isVisible = false
+
+					binding.cardView.startAnimation(loadAnimation(context, R.anim.bottom_slide_down).apply {
+						duration = 300
+						interpolator = AccelerateDecelerateInterpolator()
+						setAnimationListener(object : SimpleAnimationListener() {
+							override fun onAnimationStart(animation: Animation) {
+
+							}
+
+							override fun onAnimationEnd(animation: Animation) {
+								binding.cardView.isVisible = false
+								binding.root.isVisible = false
+								onHideListener()
+							}
+						})
+					})
+				}
+			})
+		})
+
+
+	}
+
+
+	inner class MenuAdapter : PagerAdapter() {
 		override fun getCount(): Int = 2
 		override fun getPageTitle(position: Int): CharSequence? = when (position) {
 			0 -> context.getString(R.string.filter)
@@ -72,55 +138,57 @@ class NovelFilterMenu @JvmOverloads constructor(
 			else -> null
 		}
 
-		override fun isViewFromObject(view: View, obj: Any): Boolean {
-			if (obj !is Pages && pages.contains(obj)) return pages[obj] == view
-			return false
-		}
+		override fun isViewFromObject(view: View, obj: Any): Boolean = view == obj
 
 		override fun instantiateItem(container: ViewGroup, position: Int): Any {
 			when (position) {
 				0 -> {
-					pages[FILTER] = NovelChaptersFilterMenu0Binding.inflate(
+					val view = NovelChaptersFilterMenu0Binding.inflate(
 							layoutInflater,
 							container,
 							false
 					).also {
 						it.bookmarked.setOnCheckedChangeListener { buttonView, isChecked ->
-
+							viewModel?.toggleOnlyBookmarked()
 						}
 
 						it.downloaded.setOnCheckedChangeListener { buttonView, isChecked ->
-
+							viewModel?.toggleOnlyDownloaded()
 						}
 
-						it.read.setOnCheckedChangeListener { buttonView, isChecked ->
+						it.all.isChecked = true
+						it.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+							when (checkedId) {
+								R.id.all -> viewModel?.showOnlyStatus(null)
 
+								R.id.read -> viewModel?.showOnlyStatus(ReadingStatus.READ)
+
+								R.id.unread -> viewModel?.showOnlyStatus(ReadingStatus.UNREAD)
+
+							}
 						}
 
-						it.unread.setOnCheckedChangeListener { buttonView, isChecked ->
-
-						}
 					}.root
-					return FILTER
+					container.addView(view)
+					return view
 				}
 				1 -> {
-					pages[SORT] = NovelChaptersFilterMenu1Binding.inflate(
+					val view = NovelChaptersFilterMenu1Binding.inflate(
 							layoutInflater,
 							container,
 							false
 					).also {
 					}.root
-					return SORT
+					container.addView(view)
+					return view
 				}
 			}
 			return super.instantiateItem(container, position)
 		}
 
-		override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-			container.removeViewAt(position)
-			when (position) {
-				0 -> pages.remove(FILTER)
-				1 -> pages.remove(SORT)
+		override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+			(obj as? View)?.let {
+				container.removeView(it)
 			}
 		}
 	}

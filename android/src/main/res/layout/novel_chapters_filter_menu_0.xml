@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:padding="8dp"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <CheckBox
-        android:id="@+id/read"
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/read" />
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/all" />
+
+        <RadioButton
+            android:id="@+id/read"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/read" />
 
 
-    <CheckBox
-        android:id="@+id/unread"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/unread" />
+        <RadioButton
+            android:id="@+id/unread"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/unread" />
+
+    </RadioGroup>
 
 
     <CheckBox

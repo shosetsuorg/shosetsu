@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
-import app.shosetsu.android.ui.novel.filter.NovelFilterMenu
 import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.ChapterUI
@@ -237,6 +235,13 @@ class NovelController(bundle: Bundle)
 				refresh()
 			else toast(R.string.you_not_online)
 		}
+		binding.filterMenu.viewModel = viewModel
+		binding.filterMenu.onHideListener = {
+			resume?.let { showFAB(it) }
+		}
+		binding.filterMenu.onShowListener = {
+			resume?.let { hideFAB(it) }
+		}
 	}
 
 	private fun calculateBottomSelectionMenuChanges() {
@@ -314,7 +319,7 @@ class NovelController(bundle: Bundle)
 			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.inLibrary else null
 
 			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<NovelUI>, item: NovelUI) {
-				viewModel.toggleBookmark()
+				viewModel.toggleNovelBookmark()
 			}
 		})
 
@@ -340,10 +345,7 @@ class NovelController(bundle: Bundle)
 	}
 
 	internal fun openFilterMenu() {
-		NovelFilterMenu(context!!).apply {
-			isVisible = false
-
-		}
+		binding.filterMenu.show()
 	}
 
 	override fun onDestroy() {
