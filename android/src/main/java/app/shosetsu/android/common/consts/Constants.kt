@@ -31,7 +31,7 @@ val SHOSETSU_UPDATE_URL: String =
 			if (BuildConfig.DEBUG)
 				"development"
 			else "master"
-		}/app/src/${
+		}/android/src/${
 			if (BuildConfig.DEBUG)
 				"debug"
 			else "master"
