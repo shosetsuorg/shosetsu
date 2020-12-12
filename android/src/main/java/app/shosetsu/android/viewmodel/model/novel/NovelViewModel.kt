@@ -362,6 +362,16 @@ class NovelViewModel(
 		}
 	}
 
+	override fun getSortReadingStatusOf(): ReadingStatus? = chaptersManagement.showOnlyReadingStatusOf
+
+	override fun showOnlyDownloadedChapters(): Boolean = chaptersManagement.onlyDownloaded
+
+	override fun showOnlyBookmarkedChapters(): Boolean = chaptersManagement.onlyBookmarked
+
+	override fun getSortType(): ChapterSortType = chaptersManagement.sortType
+
+	override fun isReversedSortOrder(): Boolean = chaptersManagement.reversedSort
+
 	/**
 	 * This class manages how chapters are filtered, sorted, and displayed
 	 */

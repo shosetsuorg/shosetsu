@@ -164,4 +164,14 @@ abstract class INovelViewModel
 
 	/** Download all chapters */
 	abstract fun downloadAllChapters()
+
+	// Chapters Filtering and sorting
+
+
+	abstract fun getSortReadingStatusOf(): ReadingStatus?
+	abstract fun showOnlyDownloadedChapters(): Boolean
+	abstract fun showOnlyBookmarkedChapters(): Boolean
+	abstract fun getSortType(): ChapterSortType
+	abstract fun isReversedSortOrder(): Boolean
+
 }

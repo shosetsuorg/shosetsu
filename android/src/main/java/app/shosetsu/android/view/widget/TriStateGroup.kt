@@ -62,7 +62,9 @@ class TriStateGroup @JvmOverloads constructor(
 	}
 
 	private fun buttonClicked(triStateButton: TriStateButton) {
+		triStateButton.skipIgnored = true
 		buttons.filterNot { it == triStateButton }.forEach {
+			it.skipIgnored = false
 			it.state = State.IGNORED
 		}
 	}

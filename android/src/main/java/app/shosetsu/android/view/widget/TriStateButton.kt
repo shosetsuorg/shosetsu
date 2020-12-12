@@ -45,9 +45,18 @@ class TriStateButton @JvmOverloads constructor(
 	private val uncheckedRes: Int
 	private val ignoredRes: Int
 
+
+	/**
+	 * Prevents this button from going into an ignored state
+	 */
+	var skipIgnored = false
+
 	var state: State = IGNORED
 		set(value) {
 			field = value
+			onStateChangeListener.forEach { listener ->
+				listener(value)
+			}
 			setDrawable()
 		}
 
@@ -117,7 +126,7 @@ class TriStateButton @JvmOverloads constructor(
 		state = when (state) {
 			IGNORED -> CHECKED
 			CHECKED -> UNCHECKED
-			UNCHECKED -> IGNORED
+			UNCHECKED -> if (skipIgnored) CHECKED else IGNORED
 		}
 	}
 
