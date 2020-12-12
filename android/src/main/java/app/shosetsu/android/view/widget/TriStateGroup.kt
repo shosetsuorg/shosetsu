@@ -2,8 +2,10 @@ package app.shosetsu.android.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.children
+import app.shosetsu.android.view.widget.TriStateButton.State
 
 /*
  * This file is part of Shosetsu.
@@ -26,20 +28,50 @@ import androidx.core.view.children
  * shosetsu
  * 24 / 11 / 2020
  */
-class DirectionalGroup @JvmOverloads constructor(
+class TriStateGroup @JvmOverloads constructor(
 		context: Context,
 		attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
-	private val buttons: List<TriStateButton> =
-			children.filterIsInstance<TriStateButton>().toList()
+	private val stateChangeListeners = ArrayList<(Int, State) -> Unit>()
+
+	private val buttons: List<TriStateButton>
+		get() = children.filterIsInstance<TriStateButton>().toList()
+
+	override fun onViewAdded(child: View?) {
+		super.onViewAdded(child)
+		if (child is TriStateButton) {
+			child.addOnClickListener {
+				buttonClicked(child)
+			}
+
+			child.addOnStateChangeListener {
+				if (it != State.IGNORED)
+					stateChangeListeners.forEach { listener ->
+						listener(child.id, it)
+					}
+			}
+		}
+	}
+
+	override fun onViewRemoved(child: View?) {
+		super.onViewRemoved(child)
+		if (child is TriStateButton) {
+			child.clearOnClickListeners()
+			child.clearOnStateChangeListener()
+		}
+	}
 
 	private fun buttonClicked(triStateButton: TriStateButton) {
 		buttons.filterNot { it == triStateButton }.forEach {
-			it.isChecked = false
-			it.isActive = false
+			it.state = State.IGNORED
 		}
-		if (triStateButton.isActive)
-			triStateButton.toggle()
-		else triStateButton.toggleIsActive()
 	}
+
+	/**
+	 * When a state becomes something other then ignored for a certain button
+	 */
+	fun addOnStateChangeListener(listener: (
+			@ParameterName("id") Int,
+			@ParameterName("state") State
+	) -> Unit) = stateChangeListeners.add(listener)
 }

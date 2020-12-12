@@ -3,9 +3,15 @@
 
     <declare-styleable name="TriStateButton">
         <attr name="android:text" format="string" />
+
+        <attr name="state" format="enum">
+            <enum name="IGNORED" value="0" />
+            <enum name="CHECKED" value="1" />
+            <enum name="UNCHECKED" value="2" />
+        </attr>
         <attr name="button_checked" format="reference" />
         <attr name="button_unchecked" format="reference" />
-        <attr name="button_disabled" format="reference" />
+        <attr name="button_ignored" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="BottomActionBar">

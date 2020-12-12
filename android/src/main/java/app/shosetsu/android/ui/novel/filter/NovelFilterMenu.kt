@@ -9,11 +9,14 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils.loadAnimation
 import android.widget.FrameLayout
+import android.widget.RadioGroup
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.view.widget.SimpleAnimationListener
+import app.shosetsu.android.view.widget.TriStateButton.State
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.NovelChaptersFilterMenu0Binding
@@ -178,6 +181,32 @@ class NovelFilterMenu @JvmOverloads constructor(
 							container,
 							false
 					).also {
+						it.triStateGroup.addOnStateChangeListener { id, state ->
+							when (id) {
+								R.id.by_date -> {
+									viewModel?.setSortType(ChapterSortType.UPLOAD)
+									when (state) {
+										State.IGNORED -> {
+										}
+										State.CHECKED -> viewModel?.setReverse(true)
+										State.UNCHECKED -> viewModel?.setReverse(false)
+									}
+
+								}
+								R.id.by_source -> {
+									viewModel?.setSortType(ChapterSortType.SOURCE)
+									when (state) {
+										State.IGNORED -> {
+										}
+										State.CHECKED -> viewModel?.setReverse(true)
+										State.UNCHECKED -> viewModel?.setReverse(false)
+									}
+								}
+								else -> {
+
+								}
+							}
+						}
 					}.root
 					container.addView(view)
 					return view

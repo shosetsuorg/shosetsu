@@ -1,13 +1,7 @@
 package app.shosetsu.android.viewmodel.model.novel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.liveDataIO
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.toggle
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -27,6 +21,7 @@ import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ReadingStatus
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -72,132 +67,84 @@ class NovelViewModel(
 
 	private val chaptersManagement = ChaptersManagement()
 
-	override val chaptersLive: LiveData<HResult<List<ChapterUI>>> by lazy {
-		novelIDLive.switchMap { id ->
-			liveDataIO {
-				emitSource(getChapterUIsUseCase(id)
-						.asIOLiveData()
-						.switchMap { receivedResult ->
-							MediatorLiveData<HResult<List<ChapterUI>>>().apply {
-								val update = { onlyBookmarked: Boolean,
-								               onlyDownloaded: Boolean,
-								               showOnlyReadingStatusOf: ReadingStatus?,
-								               sortType: ChapterSortType,
-								               reversedSort: Boolean ->
-
-									postValue(receivedResult.handleReturn { list ->
-										successResult(list.handleFilters(
-												onlyBookmarked = onlyBookmarked,
-												onlyDownloaded = onlyDownloaded,
-												showOnlyReadingStatusOf = showOnlyReadingStatusOf,
-												sortType = sortType,
-												reversedSort = reversedSort
-										))
-									})
-								}
-								addSource(chaptersManagement.onlyDownloadedLive) {
-									update(
-											chaptersManagement.onlyBookmarked,
-											it,
-											chaptersManagement.showOnlyReadingStatusOf,
-											chaptersManagement.sortType,
-											chaptersManagement.reversedSort
-									)
-								}
-								addSource(chaptersManagement.onlyBookmarkedLive) {
-									update(
-											it,
-											chaptersManagement.onlyDownloaded,
-											chaptersManagement.showOnlyReadingStatusOf,
-											chaptersManagement.sortType,
-											chaptersManagement.reversedSort
-									)
-								}
-								addSource(chaptersManagement.sortTypeLive) {
-									update(
-											chaptersManagement.onlyBookmarked,
-											chaptersManagement.onlyDownloaded,
-											chaptersManagement.showOnlyReadingStatusOf,
-											it,
-											chaptersManagement.reversedSort
-									)
-								}
-								addSource(chaptersManagement.reversedSortLive) {
-									update(
-											chaptersManagement.onlyBookmarked,
-											chaptersManagement.onlyDownloaded,
-											chaptersManagement.showOnlyReadingStatusOf,
-											chaptersManagement.sortType,
-											it
-									)
-								}
-								addSource(chaptersManagement.showOnlyReadingStatusOfLive) {
-									update(
-											chaptersManagement.onlyBookmarked,
-											chaptersManagement.onlyDownloaded,
-											it,
-											chaptersManagement.sortType,
-											chaptersManagement.reversedSort
-									)
-								}
-								update(
-										chaptersManagement.onlyBookmarked,
-										chaptersManagement.onlyDownloaded,
-										chaptersManagement.showOnlyReadingStatusOf,
-										chaptersManagement.sortType,
-										chaptersManagement.reversedSort
-								)
-							}
-						})
+	private fun Flow<HResult<List<ChapterUI>>>.combineBookmarked(): Flow<HResult<List<ChapterUI>>> =
+			combine(chaptersManagement.onlyBookmarkedLive) { result, onlyBookmarked ->
+				if (onlyBookmarked)
+					result.handleReturn { chapters ->
+						successResult(chapters.filter { ui -> ui.bookmarked })
+					}
+				else result
 			}
-		}
+
+	private fun Flow<HResult<List<ChapterUI>>>.combineDownloaded(): Flow<HResult<List<ChapterUI>>> =
+			combine(chaptersManagement.onlyDownloadedLive) { result, onlyDownloaded ->
+				if (onlyDownloaded)
+					result.handleReturn { chapters ->
+						successResult(chapters.filter { it.isSaved })
+					}
+				else result
+			}
+
+	private fun Flow<HResult<List<ChapterUI>>>.combineStatus(): Flow<HResult<List<ChapterUI>>> =
+			combine(chaptersManagement.showOnlyReadingStatusOfLive) { result, readingStatusOf ->
+				readingStatusOf?.let { status ->
+					result.handleReturn { chapters ->
+						successResult(
+								if (status != ReadingStatus.UNREAD)
+									chapters.filter { it.readingStatus == status }
+								else chapters.filter {
+									it.readingStatus == status || it.readingStatus == ReadingStatus.READING
+								}
+						)
+					}
+
+				} ?: result
+			}
+
+	private fun Flow<HResult<List<ChapterUI>>>.combineSort(): Flow<HResult<List<ChapterUI>>> =
+			combine(chaptersManagement.sortTypeLive) { result, sortType ->
+				result.handleReturn { chapters ->
+					successResult(when (sortType) {
+						ChapterSortType.SOURCE -> {
+							chapters.sortedBy { it.order }
+						}
+						ChapterSortType.UPLOAD -> {
+							chapters.sortedBy { it.releaseDate }
+						}
+					})
+				}
+			}
+
+	private fun Flow<HResult<List<ChapterUI>>>.combineReverse(): Flow<HResult<List<ChapterUI>>> =
+			combine(chaptersManagement.reversedSortLive) { result, reverse ->
+				if (reverse)
+					result.handleReturn { chapters -> successResult(chapters.reversed()) }
+				else result
+			}
+
+	override val chaptersLive: LiveData<HResult<List<ChapterUI>>> by lazy {
+		novelIDLive.transformLatest { id: Int ->
+			emitAll(
+					getChapterUIsUseCase(id)
+							.combineBookmarked()
+							.combineDownloaded()
+							.combineStatus()
+							.combineSort()
+							.combineReverse()
+			)
+		}.asIOLiveData()
 	}
 
 	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
-		novelIDLive.switchMap {
-			loadNovelUIUseCase(it).asIOLiveData()
-		}
+		novelIDLive.transformLatest {
+			emitAll(loadNovelUIUseCase(it))
+		}.asIOLiveData()
 	}
-	private val novelIDLive: MutableLiveData<Int> by lazy { MutableLiveData() }
+	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(novelIDValue) }
 	private var novelIDValue = -1
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 		reportExceptionUseCase(error)
-	}
-
-	private fun List<ChapterUI>.handleFilters(
-			onlyBookmarked: Boolean,
-			onlyDownloaded: Boolean,
-			showOnlyReadingStatusOf: ReadingStatus?,
-			sortType: ChapterSortType,
-			reversedSort: Boolean
-	): List<ChapterUI> {
-		var result: List<ChapterUI> = this
-		if (onlyBookmarked)
-			result = result.filter { it.bookmarked }
-
-		if (onlyDownloaded)
-			result = result.filter { it.isSaved }
-
-		showOnlyReadingStatusOf?.let { status ->
-			result = if (status != ReadingStatus.UNREAD)
-				result.filter { it.readingStatus == status }
-			else result.filter {
-				it.readingStatus == status || it.readingStatus == ReadingStatus.READING
-			}
-		}
-
-		when (sortType) {
-			ChapterSortType.SOURCE -> {
-				if (reversedSort)
-					result = result.reversed()
-			}
-			ChapterSortType.UPLOAD -> {
-
-			}
-		}
-
-		return result
 	}
 
 	override fun delete(vararg chapterUI: ChapterUI) {
@@ -223,7 +170,7 @@ class NovelViewModel(
 		}
 		novelIDValue = -1
 		launchIO {
-			novelIDLive.postValue(-1)
+			novelIDLive.emit(-1)
 		}
 	}
 
@@ -295,6 +242,11 @@ class NovelViewModel(
 		chaptersManagement.showOnlyReadingStatusOf = status
 	}
 
+	override fun setReverse(b: Boolean) {
+		chaptersManagement.reversedSort = b
+		logV("Set reverse")
+	}
+
 	override fun setNovelID(novelID: Int) {
 		when {
 			novelIDValue == -1 -> logI("Setting NovelID")
@@ -304,8 +256,10 @@ class NovelViewModel(
 				return
 			}
 		}
-		novelIDLive.postValue(novelID)
-		novelIDValue = novelID
+		launchIO {
+			novelIDLive.emit(novelID)
+			novelIDValue = novelID
+		}
 	}
 
 	override fun share() {
@@ -415,36 +369,35 @@ class NovelViewModel(
 		var showOnlyReadingStatusOf: ReadingStatus? = null
 			set(value) {
 				field = value
-				launchIO { showOnlyReadingStatusOfLive.postValue(value) }
+				launchIO { showOnlyReadingStatusOfLive.emit(value) }
 			}
 		var onlyDownloaded: Boolean = false
 			set(value) {
 				field = value
-				launchIO { onlyDownloadedLive.postValue(value) }
+				launchIO { onlyDownloadedLive.emit(value) }
 			}
 		var onlyBookmarked: Boolean = false
 			set(value) {
 				field = value
-				launchIO { onlyBookmarkedLive.postValue(value) }
+				launchIO { onlyBookmarkedLive.emit(value) }
 			}
 		var sortType: ChapterSortType = ChapterSortType.SOURCE
 			set(value) {
 				field = value
-				launchIO { sortTypeLive.postValue(value) }
+				launchIO { sortTypeLive.emit(value) }
 			}
 		var reversedSort: Boolean = false
 			set(value) {
 				field = value
-				launchIO { reversedSortLive.postValue(value) }
+				launchIO { reversedSortLive.emit(value) }
 			}
 
+		val showOnlyReadingStatusOfLive: MutableStateFlow<ReadingStatus?> = MutableStateFlow(showOnlyReadingStatusOf)
+		val onlyDownloadedLive: MutableStateFlow<Boolean> = MutableStateFlow(onlyDownloaded)
+		val onlyBookmarkedLive: MutableStateFlow<Boolean> = MutableStateFlow(onlyBookmarked)
 
-		val showOnlyReadingStatusOfLive: MutableLiveData<ReadingStatus?> = MutableLiveData(showOnlyReadingStatusOf)
-		val onlyDownloadedLive: MutableLiveData<Boolean> = MutableLiveData(onlyDownloaded)
-		val onlyBookmarkedLive: MutableLiveData<Boolean> = MutableLiveData(onlyBookmarked)
-
-		val sortTypeLive: MutableLiveData<ChapterSortType> = MutableLiveData(sortType)
-		val reversedSortLive: MutableLiveData<Boolean> = MutableLiveData(reversedSort)
+		val sortTypeLive: MutableStateFlow<ChapterSortType> = MutableStateFlow(sortType)
+		val reversedSortLive: MutableStateFlow<Boolean> = MutableStateFlow(reversedSort)
 
 		fun toggleOnlyDownloaded() = this::onlyDownloaded.toggle()
 		fun toggleOnlyBookMarked() = this::onlyBookmarked.toggle()

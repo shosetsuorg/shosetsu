@@ -6,7 +6,8 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <app.shosetsu.android.view.widget.DirectionalGroup
+    <app.shosetsu.android.view.widget.TriStateGroup
+        android:id="@+id/triStateGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -17,17 +18,17 @@
             android:layout_height="wrap_content"
             android:button="@drawable/directional_box_drawable"
             android:text="By source"
-            app:button_checked="@drawable/expand_more"
-            app:button_unchecked="@drawable/expand_less" />
+            app:button_checked="@drawable/expand_less"
+            app:button_unchecked="@drawable/expand_more"
+            app:state="CHECKED" />
 
         <app.shosetsu.android.view.widget.TriStateButton
-            android:id="@+id/by_number"
+            android:id="@+id/by_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@drawable/directional_box_drawable"
-            android:text="By number"
-            app:button_checked="@drawable/expand_more"
-            app:button_unchecked="@drawable/expand_less" />
-
-    </app.shosetsu.android.view.widget.DirectionalGroup>
+            android:text="By date"
+            app:button_checked="@drawable/expand_less"
+            app:button_unchecked="@drawable/expand_more" />
+    </app.shosetsu.android.view.widget.TriStateGroup>
 </LinearLayout>

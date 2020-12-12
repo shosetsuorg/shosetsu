@@ -46,8 +46,20 @@ abstract class INovelViewModel
 
 	/** Toggles the bookmark of this ui */
 	abstract fun toggleNovelBookmark()
+
+	/**
+	 * Opens the novel in browser
+	 */
 	abstract fun openBrowser()
+
+	/**
+	 * Opens the novel in web view
+	 */
 	abstract fun openWebView()
+
+	/**
+	 * Opens the share menu
+	 */
 	abstract fun share()
 
 	/** Instruction to download a specific chapter */
@@ -60,6 +72,9 @@ abstract class INovelViewModel
 	/** Next chapter to read uwu */
 	abstract fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>>
 
+	/**
+	 * Marks all the provided chapters as whatever [readingStatus] is
+	 */
 	abstract fun markAllChaptersAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus)
 
 	/**
@@ -67,16 +82,38 @@ abstract class INovelViewModel
 	 */
 	abstract fun openWebView(chapterUI: ChapterUI)
 
+	/**
+	 * Opens the chapter in the browser
+	 */
 	abstract fun openBrowser(chapterUI: ChapterUI)
 
 
 	abstract fun reverseChapters()
 
+	/**
+	 * Display only downloaded chapters
+	 */
 	abstract fun toggleOnlyDownloaded()
+
+	/**
+	 * Display only bookmarked chapters
+	 */
 	abstract fun toggleOnlyBookmarked()
+
+	/**
+	 * Sort by [sortType]
+	 */
 	abstract fun setSortType(sortType: ChapterSortType)
+
+	/**
+	 * Display only chapters matching [status]
+	 */
 	abstract fun showOnlyStatus(status: ReadingStatus?)
 
+	/**
+	 * Reverse the displayed chapters
+	 */
+	abstract fun setReverse(b: Boolean)
 
 	/**
 	 * Deletes a chapter
@@ -86,22 +123,45 @@ abstract class INovelViewModel
 
 	/** Refresh media */
 	abstract fun refresh(): LiveData<HResult<*>>
+
+	/**
+	 * Is the novel bookmarked?
+	 */
 	abstract fun isBookmarked(): Boolean
 
+	/** Self explanatory */
 	abstract fun markChapterAsRead(chapterUI: ChapterUI)
+
+	/** Self explanatory */
 	abstract fun markChapterAsUnread(chapterUI: ChapterUI)
+
+	/** Self explanatory */
 	abstract fun markChapterAsReading(chapterUI: ChapterUI)
+
+	/** Self explanatory */
 	abstract fun toggleChapterBookmark(chapterUI: ChapterUI)
 
+	/** Removes the bookmarks of the chapters provided */
 	abstract fun removeChapterBookmarks(vararg chapterUI: ChapterUI)
+
+	/** Bookmarks the chapters provided */
 	abstract fun bookmarkChapters(vararg chapterUI: ChapterUI)
 
-
+	/** Download the next unread chapters */
 	abstract fun downloadNextChapter()
+
+	/** Download the next 5 unread chapters */
 	abstract fun downloadNext5Chapters()
+
+	/** Download the next 10 unread chapters */
 	abstract fun downloadNext10Chapters()
+
+	/** Download the next [max] unread chapters */
 	abstract fun downloadNextCustomChapters(max: Int)
 
+	/** Download all unread chapters */
 	abstract fun downloadAllUnreadChapters()
+
+	/** Download all chapters */
 	abstract fun downloadAllChapters()
 }

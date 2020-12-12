@@ -22,9 +22,9 @@ package app.shosetsu.common.enums
  * 30 / 09 / 2020
  */
 enum class ChapterSortType {
-	/** How it originally is provided by source */
+	/** How it by it's source # */
 	SOURCE,
 
-	/** Sort by its upload date */
-	UPLOAD
+	/** Sort by it's upload date */
+	UPLOAD,
 }
