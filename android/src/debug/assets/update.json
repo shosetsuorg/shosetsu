@@ -1,12 +1,13 @@
 {
-  "latestVersion": "1092",
+  "latestVersion": "1098",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- Added filter menu into novel info UI, Missing order filtering",
-    "- Fixed random crashes on older versions of android (6 and below)",
-    "- Code abstracted more, common created inorder to prepare for multi-platform",
-    "- kotlin-lib updated, providing greater stability and error handling",
-    "- Renamed app to android, preparing for multi-platform kotlin",
-    "- other bug fixes and improvements"
+    "- Tri-state filters fully implemented into Novel info view",
+    "- Added state preserving between rotations",
+    " * (known issue, chapters do not reappear properly with filters applied after rotation)",
+    "- renamed methods for HResult.kt",
+    "- Split Convertible.kt out of HResult.kt",
+    "- ConvertibleHResult.kt for extensions combining both",
+    "- Added more documentation"
   ]
 }
