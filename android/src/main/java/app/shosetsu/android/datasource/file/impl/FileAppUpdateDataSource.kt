@@ -61,7 +61,7 @@ class FileAppUpdateDataSource(
 			iFileSystemProvider.readInternalFile(
 					CACHE,
 					APP_UPDATE_CACHE_FILE
-			).withSuccess { ObjectMapper().registerKotlinModule().readValue(it) }
+			).transform { ObjectMapper().registerKotlinModule().readValue(it) }
 
 	override suspend fun putAppUpdateInCache(
 			debugAppUpdate: DebugAppUpdate,

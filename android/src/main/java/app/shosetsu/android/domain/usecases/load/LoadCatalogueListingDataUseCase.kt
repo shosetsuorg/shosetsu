@@ -7,8 +7,8 @@ import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handleReturn
-import app.shosetsu.common.dto.handledReturnAny
+import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
@@ -45,7 +45,7 @@ class LoadCatalogueListingDataUseCase(
 			formatter: IExtension,
 			data: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> {
-		val cardType = iSettingsRepository.getInt(SettingKey.NovelCardType).handledReturnAny(
+		val cardType = iSettingsRepository.getInt(SettingKey.NovelCardType).transmogrify(
 				onError = {
 					return it
 				},
@@ -60,7 +60,7 @@ class LoadCatalogueListingDataUseCase(
 				formatter,
 				0,
 				data
-		).handleReturn {
+		).transform {
 			val list: List<Novel.Listing> = it
 			successResult(list.map { novelListing ->
 				novelListing.convertTo(formatter)

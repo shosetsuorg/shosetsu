@@ -60,7 +60,7 @@ class FileChapterDataSource(
 		return iFileSystemProvider.createInternalDirectory(
 				FILES,
 				path.substringBeforeLast("/")
-		).handleReturn {
+		).transform {
 			iFileSystemProvider.writeInternalFile(
 					FILES,
 					path,

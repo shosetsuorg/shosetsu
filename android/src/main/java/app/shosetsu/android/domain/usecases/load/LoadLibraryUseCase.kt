@@ -6,7 +6,7 @@ import app.shosetsu.android.view.uimodels.model.library.CompactBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.FullBookmarkedNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +41,7 @@ class LoadLibraryUseCase(
 ) {
 	operator fun invoke(): Flow<HResult<List<ABookmarkedNovelUI>>> = flow {
 		emitAll(iNovelsRepository.getLiveBookmarked().combine(settings.observeInt(SettingKey.NovelCardType)) { origin, cardType ->
-			origin.handleReturn {
+			origin.transform {
 				val list = it
 				val newList = list.map { (id, title, imageURL, bookmarked, unread) ->
 					if (cardType == 0)

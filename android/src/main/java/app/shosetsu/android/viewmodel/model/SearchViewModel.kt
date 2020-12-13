@@ -14,7 +14,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.Job
@@ -79,7 +79,7 @@ class SearchViewModel(
 	private fun loadLibrary(): Job {
 		jobMap[-1] = launchIO {
 			hashMap[-1]?.postValue(searchBookMarkedNovelsUseCase(query).let { result: HResult<List<IDTitleImageUI>> ->
-				result.handleReturn {
+				result.transform {
 					successResult(it.map { (id, title, imageURL) ->
 						FullCatalogNovelUI(id, title, imageURL, false)
 					})

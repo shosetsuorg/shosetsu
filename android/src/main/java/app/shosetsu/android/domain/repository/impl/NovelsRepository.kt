@@ -7,7 +7,7 @@ import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.common.domain.model.local.NovelEntity
@@ -61,7 +61,7 @@ class NovelsRepository(
 
 	override suspend fun searchBookmarked(string: String): HResult<List<IDTitleImage>> =
 			getBookmarkedNovels().let { result ->
-				result.handleReturn { list: List<NovelEntity> ->
+				result.transform { list: List<NovelEntity> ->
 					if (list.isEmpty()) emptyResult()
 					successResult(list.filter { it.title.contains(string, false) }.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
 						IDTitleImage(id!!, t, imageURL)

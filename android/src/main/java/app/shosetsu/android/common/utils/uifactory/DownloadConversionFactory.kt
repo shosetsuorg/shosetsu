@@ -2,7 +2,7 @@ package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +47,7 @@ fun List<DownloadEntity>.mapToFactory() =
 		map { DownloadConversionFactory(it) }
 
 fun HResult<List<DownloadEntity>>.mapResultWithFactory() =
-		handleReturn { successResult(it.mapToFactory()) }
+		transform { successResult(it.mapToFactory()) }
 
 fun Flow<HResult<List<DownloadEntity>>>.mapLatestToResultFlowWithFactory() =
 		mapLatest { it.mapResultWithFactory() }

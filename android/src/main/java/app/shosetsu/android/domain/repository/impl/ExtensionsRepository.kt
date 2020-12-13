@@ -132,7 +132,7 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun loadIExtension(formatterID: Int): HResult<IExtension> =
-			databaseSource.loadExtension(formatterID).withSuccess { loadIExtension(it) }
+			databaseSource.loadExtension(formatterID).transform { loadIExtension(it) }
 
 	override fun getCards(): Flow<HResult<List<IDTitleImage>>> =
 			databaseSource.loadPoweredExtensionsCards()

@@ -15,7 +15,7 @@ import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -339,8 +339,6 @@ class NovelController(bundle: Bundle)
 			}
 		})
 
-
-
 		setObserver()
 	}
 
@@ -378,7 +376,7 @@ class NovelController(bundle: Bundle)
 					novelUIAdapter,
 					{ showEmpty() },
 					{ hideEmpty() },
-					hResult.handleReturn { successResult(listOf(it)) }
+					hResult.transform { successResult(listOf(it)) }
 			)
 		}
 

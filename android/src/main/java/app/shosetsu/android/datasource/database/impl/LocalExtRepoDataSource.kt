@@ -7,7 +7,7 @@ import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.mapLatestListTo
 import app.shosetsu.common.dto.mapLatestToSuccess
-import app.shosetsu.common.dto.mapTo
+import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -45,7 +45,7 @@ class LocalExtRepoDataSource(
 	}
 
 	override fun loadRepositories(): HResult<List<RepositoryEntity>> = try {
-		app.shosetsu.common.dto.successResult(repositoryDao.loadRepositories().mapTo())
+		app.shosetsu.common.dto.successResult(repositoryDao.loadRepositories().convertList())
 	} catch (e: Exception) {
 		e.toHError()
 	}

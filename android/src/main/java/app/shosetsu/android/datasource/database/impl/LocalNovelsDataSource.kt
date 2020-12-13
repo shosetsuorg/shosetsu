@@ -45,7 +45,7 @@ class LocalNovelsDataSource(
 	}
 
 	override suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>> = try {
-		successResult(novelsDao.loadBookmarkedNovels().mapTo())
+		successResult(novelsDao.loadBookmarkedNovels().convertList())
 	} catch (e: Exception) {
 		e.toHError()
 	}

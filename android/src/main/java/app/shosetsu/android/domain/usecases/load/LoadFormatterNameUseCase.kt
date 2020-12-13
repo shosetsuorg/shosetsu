@@ -3,7 +3,7 @@ package app.shosetsu.android.domain.usecases.load
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +36,7 @@ class LoadFormatterNameUseCase(
 		return liveData(context = Dispatchers.IO) {
 			emit(loading())
 			if (formatterID != -1)
-				emit(getFormatterUseCase(formatterID).handleReturn { successResult(it.name) })
+				emit(getFormatterUseCase(formatterID).transform { successResult(it.name) })
 		}
 	}
 }

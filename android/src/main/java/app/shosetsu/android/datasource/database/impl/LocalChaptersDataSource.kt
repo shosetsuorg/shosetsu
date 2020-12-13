@@ -83,7 +83,7 @@ class LocalChaptersDataSource(
 			novelEntity: NovelEntity,
 			list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>> = try {
-		chaptersDao.handleChaptersReturnNew(novelEntity, list).mapListTo()
+		chaptersDao.handleChaptersReturnNew(novelEntity, list).convertList()
 	} catch (e: Exception) {
 		e.toHError()
 	}

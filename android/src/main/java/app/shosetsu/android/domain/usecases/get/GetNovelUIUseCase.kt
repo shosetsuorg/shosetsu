@@ -39,11 +39,11 @@ class GetNovelUIUseCase(
 		emit(loading())
 		if (novelID != -1)
 			emitAll(novelsRepository.loadNovelLive(novelID).mapLatest {
-				it.handleReturn {
+				it.transform {
 					successResult(NovelConversionFactory(it))
 				}
 			}.mapLatestResultTo().mapLatestResult { novelUI ->
-				extensionRepository.getExtensionEntity(novelUI.extID).handleReturn { ext ->
+				extensionRepository.getExtensionEntity(novelUI.extID).transform { ext ->
 					successResult(novelUI.apply {
 						extName = ext.name
 					})

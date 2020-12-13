@@ -3,7 +3,7 @@ package app.shosetsu.android.common.utils.uifactory
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
@@ -44,7 +44,7 @@ fun List<UpdateCompleteEntity>.mapToFactory() =
 		map { UpdateConversionFactory(it) }
 
 fun HResult<List<UpdateCompleteEntity>>.mapResultWithFactory() =
-		handleReturn { successResult(it.mapToFactory()) }
+		transform { successResult(it.mapToFactory()) }
 
 fun Flow<HResult<List<UpdateCompleteEntity>>>.mapLatestToResultFlowWithFactory() =
 		mapLatest { it.mapResultWithFactory() }

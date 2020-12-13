@@ -63,14 +63,14 @@ class NovelViewModel(
 ) : INovelViewModel() {
 	@get:Synchronized
 	private val chapters: ArrayList<ChapterUI>
-		get() = chaptersLive.value?.handledReturnAny { ArrayList((it)) } ?: arrayListOf()
+		get() = chaptersLive.value?.transmogrify { ArrayList((it)) } ?: arrayListOf()
 
 	private val chaptersManagement = ChaptersManagement()
 
 	private fun Flow<HResult<List<ChapterUI>>>.combineBookmarked(): Flow<HResult<List<ChapterUI>>> =
 			combine(chaptersManagement.onlyBookmarkedLive) { result, onlyBookmarked ->
 				if (onlyBookmarked)
-					result.handleReturn { chapters ->
+					result.transform { chapters ->
 						successResult(chapters.filter { ui -> ui.bookmarked })
 					}
 				else result
@@ -79,7 +79,7 @@ class NovelViewModel(
 	private fun Flow<HResult<List<ChapterUI>>>.combineDownloaded(): Flow<HResult<List<ChapterUI>>> =
 			combine(chaptersManagement.onlyDownloadedLive) { result, onlyDownloaded ->
 				if (onlyDownloaded)
-					result.handleReturn { chapters ->
+					result.transform { chapters ->
 						successResult(chapters.filter { it.isSaved })
 					}
 				else result
@@ -88,7 +88,7 @@ class NovelViewModel(
 	private fun Flow<HResult<List<ChapterUI>>>.combineStatus(): Flow<HResult<List<ChapterUI>>> =
 			combine(chaptersManagement.showOnlyReadingStatusOfLive) { result, readingStatusOf ->
 				readingStatusOf?.let { status ->
-					result.handleReturn { chapters ->
+					result.transform { chapters ->
 						successResult(
 								if (status != ReadingStatus.UNREAD)
 									chapters.filter { it.readingStatus == status }
@@ -103,7 +103,7 @@ class NovelViewModel(
 
 	private fun Flow<HResult<List<ChapterUI>>>.combineSort(): Flow<HResult<List<ChapterUI>>> =
 			combine(chaptersManagement.sortTypeLive) { result, sortType ->
-				result.handleReturn { chapters ->
+				result.transform { chapters ->
 					successResult(when (sortType) {
 						ChapterSortType.SOURCE -> {
 							chapters.sortedBy { it.order }
@@ -118,7 +118,7 @@ class NovelViewModel(
 	private fun Flow<HResult<List<ChapterUI>>>.combineReverse(): Flow<HResult<List<ChapterUI>>> =
 			combine(chaptersManagement.reversedSortLive) { result, reverse ->
 				if (reverse)
-					result.handleReturn { chapters -> successResult(chapters.reversed()) }
+					result.transform { chapters -> successResult(chapters.reversed()) }
 				else result
 			}
 
@@ -272,7 +272,7 @@ class NovelViewModel(
 		}
 	}
 
-	override fun isBookmarked(): Boolean = novelLive.value?.handledReturnAny { it.bookmarked }
+	override fun isBookmarked(): Boolean = novelLive.value?.transmogrify { it.bookmarked }
 			?: false
 
 	override fun markChapterAsRead(chapterUI: ChapterUI) {

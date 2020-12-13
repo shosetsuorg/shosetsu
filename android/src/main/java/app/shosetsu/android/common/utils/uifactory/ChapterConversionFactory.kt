@@ -2,7 +2,7 @@ package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import kotlinx.coroutines.flow.Flow
@@ -49,7 +49,7 @@ fun List<ChapterEntity>.mapToFactory() =
 		map { ChapterConversionFactory(it) }
 
 fun HResult<List<ChapterEntity>>.mapResultWithFactory() =
-		handleReturn { successResult(it.mapToFactory()) }
+		transform { successResult(it.mapToFactory()) }
 
 fun Flow<HResult<List<ChapterEntity>>>.mapLatestToResultFlowWithFactory() =
 		mapLatest { it.mapResultWithFactory() }

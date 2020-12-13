@@ -6,7 +6,7 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.handleReturn
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
@@ -41,8 +41,8 @@ class LoadNovelUseCase(
 		private val uR: IUpdatesRepository,
 ) {
 	private suspend fun main(novel: NovelEntity, loadChapters: Boolean, haveChaptersUpdate: () -> Unit = {}): HResult<Boolean> =
-			eR.loadIExtension(novel.formatterID).handleReturn { ext ->
-				nR.retrieveNovelInfo(ext, novel, loadChapters).handleReturn { page ->
+			eR.loadIExtension(novel.formatterID).transform { ext ->
+				nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
 					val currentStatus: Boolean = novel.loaded
 
 					// Fills the novel with new data
@@ -72,7 +72,7 @@ class LoadNovelUseCase(
 	suspend operator fun invoke(
 			novelID: Int,
 			loadChapters: Boolean
-	): HResult<Any> = nR.loadNovel(novelID).handleReturn { novel ->
+	): HResult<Any> = nR.loadNovel(novelID).transform { novel ->
 		main(novel, loadChapters)
 	}
 

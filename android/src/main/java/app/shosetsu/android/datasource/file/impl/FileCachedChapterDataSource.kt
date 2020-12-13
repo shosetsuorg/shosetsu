@@ -6,7 +6,7 @@ import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.handledReturnAny
+import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.InternalFileDir.CACHE
 import org.json.JSONArray
@@ -55,7 +55,7 @@ class FileCachedChapterDataSource(
 		iFileSystemProvider.readInternalFile(
 				CACHE,
 				mapFile
-		).handledReturnAny(
+		).transmogrify(
 				onError = {
 					logE("Error on reading cache chapters index, Writing empty one")
 					iFileSystemProvider.writeInternalFile(

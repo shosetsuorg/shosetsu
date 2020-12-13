@@ -88,7 +88,7 @@ class LocalExtensionsDataSource(
 	}
 
 	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> = try {
-		app.shosetsu.common.dto.successResult(extensionsDao.getExtensions(repoID).mapTo())
+		app.shosetsu.common.dto.successResult(extensionsDao.getExtensions(repoID).convertList())
 	} catch (e: Exception) {
 		e.toHError()
 	}

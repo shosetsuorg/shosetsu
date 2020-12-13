@@ -28,17 +28,12 @@ import app.shosetsu.common.consts.ErrorKeys
  * Handles upstream data results
  */
 sealed class HResult<out T : Any> {
+
 	/** The operation was a success, here is your data [data] */
 	class Success<out T : Any>(
 			/** Returned data */
 			val data: T,
 	) : app.shosetsu.common.dto.HResult<T>()
-
-	/** This states that the operation is currently pending */
-	object Loading : app.shosetsu.common.dto.HResult<Nothing>()
-
-	/** This states that the operation has returned nothing */
-	object Empty : app.shosetsu.common.dto.HResult<Nothing>()
 
 	/**
 	 * This states that the operation has failed
@@ -52,28 +47,13 @@ sealed class HResult<out T : Any> {
 			val message: String,
 			val error: Exception? = null,
 	) : app.shosetsu.common.dto.HResult<Nothing>()
+
+	/** This states that the operation is currently pending */
+	object Loading : app.shosetsu.common.dto.HResult<Nothing>()
+
+	/** This states that the operation has returned nothing */
+	object Empty : app.shosetsu.common.dto.HResult<Nothing>()
 }
-
-interface Convertible<T> {
-	/** States this [Convertible] can turn into [T]*/
-	fun convertTo(): T
-}
-
-/**
- * Converts shit
- */
-inline fun <reified O : Any, reified I : Convertible<O>> HResult<List<I>>.mapListTo()
-		: HResult<List<O>> = this.handleReturn { successResult(it.mapTo()) }
-
-/**
- * Converts shit
- */
-inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.mapTo()
-		: HResult<O> = this.handleReturn { successResult(it.convertTo()) }
-
-inline fun <reified O : Any, reified I : Convertible<O>> List<I>.mapTo(): List<O> =
-		this.map { it.convertTo() }
-
 
 /** This is a quick way to toss a success */
 inline fun <reified T : Any> successResult(data: T): HResult.Success<T> = HResult.Success(data)
@@ -99,19 +79,37 @@ fun errorResult(e: NullPointerException): HResult.Error =
 		HResult.Error(ErrorKeys.ERROR_NPE, e.message
 				?: "UnknownNullException", e)
 
-
-inline fun <reified I : Any, O : Any> HResult<I>.withSuccess(action: (I) -> HResult<O>): HResult<O> =
-		this.handleReturn { action(it) }
-
+/**
+ * Used to sequence HResult returning methods together
+ */
 inline infix fun <reified I1 : Any, reified I2 : Any> HResult<I1>.and(
 		hResult: HResult<I2>,
 ): HResult<*> {
 	if (this is HResult.Success && hResult is HResult.Success) return successResult("")
-	this.handle({ return this }, { return this }, { return this })
-	hResult.handle({ return hResult }, { return hResult }, { return hResult })
+
+	/** Returns the reason why the [HResult] [I1] is not a success */
+	this.handle(
+			onLoading = { return this },
+			onEmpty = { return this },
+			onError = { return this }
+	)
+
+	/** Returns the reason why the [HResult] [I2] is not a success */
+	hResult.handle(
+			onLoading = { return hResult },
+			onEmpty = { return hResult },
+			onError = { return hResult }
+	)
+
+	/**
+	 * Default message for when the above somehow does not catch the issue
+	 */
 	return errorResult(ErrorKeys.ERROR_GENERAL, "Unknown case for both results")
 }
 
+/**
+ * Convenience method to easily handle the HResult
+ */
 inline fun <reified I : Any> HResult<I>.handle(
 		onLoading: () -> Unit = {},
 		onEmpty: () -> Unit = {},
@@ -124,26 +122,63 @@ inline fun <reified I : Any> HResult<I>.handle(
 	is HResult.Error -> onError(this)
 }
 
-inline fun <reified I : Any, O : Any> HResult<I>.handledReturnAny(
+
+/**
+ * If [this] is an [HResult.Success], returns [I]
+ * But if [this] is not an [HResult.Success], returns a null
+ */
+inline fun <reified I : Any> HResult<I>.unwrap(): I? = when (this) {
+	is HResult.Success -> this.data
+	HResult.Loading -> null
+	HResult.Empty -> null
+	is HResult.Error -> null
+}
+
+/**
+ *  [unwrap], but
+ *  opens up process to allow custom values for when [this] is not an [HResult.Success]
+ *
+ *  Shares similarities with [transform]
+ *
+ *  @see unwrap
+ *  @see transform
+ */
+inline fun <reified I : Any, O : Any> HResult<I>.transmogrify(
 		onLoading: () -> O? = { null },
 		onEmpty: () -> O? = { null },
 		onError: (HResult.Error) -> O? = { null },
-		onSuccess: (I) -> O? = { null }
+		transformSuccess: (I) -> O? = { null }
 ): O? = when (this) {
-	is HResult.Success -> onSuccess(this.data)
+	is HResult.Success -> transformSuccess(this.data)
 	HResult.Loading -> onLoading()
 	HResult.Empty -> onEmpty()
 	is HResult.Error -> onError(this)
 }
 
+/**
+ * Transform [this] [HResult] of [I] into a [HResult] of [O]
+ */
+inline fun <reified I : Any, O : Any> HResult<I>.transform(
+		transformSuccess: (I) -> HResult<O>
+): HResult<O> = when (this) {
+	is HResult.Success -> transformSuccess(this.data)
+	HResult.Loading -> this as HResult.Loading
+	HResult.Empty -> this as HResult.Empty
+	is HResult.Error -> this
+}
 
-inline fun <reified I : Any, O : Any> HResult<I>.handleReturn(
+/**
+ * Transform [this] [HResult] of [I] into a [HResult] of [O]
+ *
+ * This exposes the methods to apply custom transformations
+ */
+inline fun <reified I : Any, O : Any> HResult<I>.transform(
 		onLoading: () -> HResult<O> = { this as HResult.Loading },
 		onEmpty: () -> HResult<O> = { this as HResult.Empty },
 		onError: (HResult.Error) -> HResult<O> = { this as HResult.Error },
-		onSuccess: (I) -> HResult<O>
+		transformSuccess: (I) -> HResult<O>
 ): HResult<O> = when (this) {
-	is HResult.Success -> onSuccess(this.data)
+	is HResult.Success -> transformSuccess(this.data)
 	HResult.Loading -> onLoading()
 	HResult.Empty -> onEmpty()
 	is HResult.Error -> onError(this)

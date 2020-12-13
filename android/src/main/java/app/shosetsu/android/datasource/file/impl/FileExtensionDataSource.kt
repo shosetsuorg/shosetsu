@@ -56,7 +56,7 @@ class FileExtensionDataSource(
 
 
 	override suspend fun loadFormatter(fileName: String): HResult<IExtension> = try {
-		iFileSystemProvider.readInternalFile(FILES, makeFormatterFile(fileName)).withSuccess {
+		iFileSystemProvider.readInternalFile(FILES, makeFormatterFile(fileName)).transform {
 			try {
 				successResult(LuaExtension(it, fileName))
 			} catch (e: Exception) {

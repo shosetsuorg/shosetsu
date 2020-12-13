@@ -7,8 +7,8 @@ import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handleReturn
-import app.shosetsu.common.dto.handledReturnAny
+import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
@@ -45,7 +45,7 @@ class LoadCatalogueQueryDataUseCase(
 			extID: Int,
 			query: String,
 			filters: Map<Int, Any>
-	) = extensionRepository.loadIExtension(extID).handleReturn {
+	) = extensionRepository.loadIExtension(extID).transform {
 		invoke(it, query, filters)
 	}
 
@@ -57,13 +57,13 @@ class LoadCatalogueQueryDataUseCase(
 			ext,
 			query,
 			filters
-	).handleReturn {
+	).transform {
 		val data: List<Novel.Listing> = it
-		iSettingsRepository.getInt(SettingKey.NovelCardType).handleReturn { cardType ->
+		iSettingsRepository.getInt(SettingKey.NovelCardType).transform { cardType ->
 			successResult(data.map { novelListing ->
 				novelListing.convertTo(ext)
 			}.mapNotNull { ne ->
-				novelsRepository.insertNovelReturnCard(ne).handledReturnAny { card ->
+				novelsRepository.insertNovelReturnCard(ne).transmogrify { card ->
 					convertNCToCNUIUseCase(card, cardType)
 				}
 			})
